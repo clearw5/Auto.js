@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">免Root脚本精灵</string>
+    <string name="action_settings">设置</string>
+    <string name="action_disable_service">关闭服务</string>
+    <string name="text_accesibility_service_description">略略略</string>
+    <string name="text_new_file">新建文件</string>
+    <string name="text_import_from_file">从文件导入</string>
+    <string name="action_exit">退出</string>
+    <string name="text_service_disabled">服务已关闭</string>
+    <string name="text_file_manager_not_found">找不到文件管理器T.T</string>
+    <string name="text_file_create_fail">文件创建失败</string>
+    <string name="text_please_input_name">请输入名称</string>
+    <string name="text_name">名称</string>
+    <string name="text_go_to_setting">去设置</string>
+    <string name="explain_accessibility_permission">软件需要权限才能运行 ~ 请在随后的设置中选择”脚本执行机器人\"并开启权限</string>
+    <string name="text_cancel">取消</string>
+    <string name="text_path_is_empty">路径为空</string>
+    <string name="text_file_not_exists">文件不存在</string>
+    <string name="text_no_file_rw_permission">无文件读写权限</string>
+</resources>
