@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -51,7 +52,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void checkPermissions() {
-        //checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
         goToAccessibilityPermissionSettingIfDisabled();
     }
 
