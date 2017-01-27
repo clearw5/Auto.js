@@ -2,9 +2,6 @@ package com.stardust.scriptdroid;
 
 import org.junit.Test;
 
-import java.util.Iterator;
-import java.util.Stack;
-
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
@@ -13,7 +10,6 @@ import java.util.Stack;
 public class ExampleUnitTest {
     @Test
     public void testStack() throws Exception {
-
 
     }
 }

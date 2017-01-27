@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.data.ScriptFile;
-import com.stardust.scriptdroid.data.ScriptFileList;
+import com.stardust.scriptdroid.droid.script.file.ScriptFile;
+import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.tool.ClassTool;
 
 import static com.stardust.scriptdroid.tool.ViewTool.$;

@@ -10,16 +10,17 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.scriptdroid.action.ActionPerformService;
-import com.stardust.scriptdroid.data.ScriptFile;
-import com.stardust.scriptdroid.data.ScriptFileList;
-import com.stardust.scriptdroid.data.SharedPrefScriptFileList;
+import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
+import com.stardust.scriptdroid.droid.script.file.ScriptFile;
+import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
+import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
 import com.stardust.scriptdroid.file.FileChooser;
 import com.stardust.scriptdroid.file.FileUtils;
 import com.stardust.scriptdroid.ui.ScriptFileOperation;
 import com.stardust.scriptdroid.ui.ScriptListRecyclerView;
 import com.stardust.scriptdroid.ui.SlidingUpPanel;
 import com.stardust.util.MapEntries;
+import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
 import java.util.Map;
 import java.util.Optional;
@@ -42,13 +43,27 @@ public class MainActivity extends BaseActivity {
         setUpFileChooser();
 
         checkPermissions();
+
+    }
+
+    public void onStart() {
+        super.onStart();
     }
 
     private void checkPermissions() {
         //checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
-        ActionPerformService.goToPermissionSettingIfDisabled(this);
+        goToAccessibilityPermissionSettingIfDisabled();
     }
 
+    private void goToAccessibilityPermissionSettingIfDisabled() {
+        if (!AccessibilityServiceUtils.isAccessibilityServiceEnabled(this, ActionPerformService.class)) {
+            new MaterialDialog.Builder(this)
+                    .content(R.string.explain_accessibility_permission)
+                    .positiveText(R.string.text_go_to_setting)
+                    .negativeText(R.string.text_cancel)
+                    .onPositive((dialog, which) -> AccessibilityServiceUtils.goToPermissionSetting(this)).show();
+        }
+    }
 
     private void setUpFileChooser() {
         mFileChooser = new FileChooser(this);
@@ -80,7 +95,7 @@ public class MainActivity extends BaseActivity {
     private void setUpToolbar() {
         Toolbar toolbar = $(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.script_droid_50);
+        toolbar.setNavigationIcon(R.drawable.ic_script_droid_40);
         toolbar.setTitle(R.string.app_name);
     }
 
@@ -100,7 +115,7 @@ public class MainActivity extends BaseActivity {
         new MaterialDialog.Builder(this).title(R.string.text_name)
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .input(getString(R.string.text_please_input_name), "", (dialog, input) -> {
-                    String path = ScriptFile.DEFAULT_FOLDER + input + ".text";
+                    String path = ScriptFile.DEFAULT_FOLDER + input + ".js";
                     createScriptFile(input.toString(), path);
                 }).show();
     }
@@ -131,7 +146,6 @@ public class MainActivity extends BaseActivity {
     private final Map<Integer, Runnable> mOptionActionMap = new MapEntries<Integer, Runnable>()
             .entry(R.id.action_exit, this::finish)
             .entry(R.id.action_disable_service, this::disableAccessibilityService)
-            .entry(R.id.action_settings, () -> ActionPerformService.setActions(ActionPerformService.NO_ACTION))
             .map();
 
 

@@ -78,7 +78,7 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:padding="10dp"
-                    android:src="@drawable/sdcard_icon_black"/>
+                    android:src="@drawable/ic_sdcard_black"/>
 
                 <TextView
                     android:layout_width="match_parent"

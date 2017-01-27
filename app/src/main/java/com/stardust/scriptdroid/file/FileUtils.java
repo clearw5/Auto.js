@@ -76,4 +76,20 @@ public class FileUtils {
             return false;
         }
     }
+
+    public static String readString(File file, String encoding) {
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            byte[] bytes = new byte[fis.available()];
+            fis.read(bytes);
+            return new String(bytes, encoding);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String readString(File file) {
+        return readString(file, "utf-8");
+    }
 }

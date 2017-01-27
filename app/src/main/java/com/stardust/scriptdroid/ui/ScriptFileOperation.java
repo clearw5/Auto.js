@@ -8,8 +8,8 @@ import android.support.design.widget.Snackbar;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ShortcutActivity;
-import com.stardust.scriptdroid.data.ScriptFile;
-import com.stardust.scriptdroid.data.ScriptFileList;
+import com.stardust.scriptdroid.droid.script.file.ScriptFile;
+import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.shortcut.Shortcut;
 
 import java.util.ArrayList;

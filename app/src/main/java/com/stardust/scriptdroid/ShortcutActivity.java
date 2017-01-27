@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.droid.Droid;
@@ -38,9 +39,14 @@ public class ShortcutActivity extends Activity {
                 .fall();
     }
 
+    public void onStart() {
+        super.onStart();
+        finish();
+    }
+
     private void runScriptFile(String path) {
         try {
-            Droid.run(this, new File(path));
+            Droid.getInstance().runScriptFile(path);
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();

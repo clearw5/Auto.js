@@ -17,7 +17,7 @@
         android:layout_centerVertical="true"
         android:contentDescription="@string/app_name"
         android:scaleType="fitCenter"
-        android:src="@drawable/robot_icon_green"/>
+        android:src="@drawable/ic_robot_green"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -81,7 +81,7 @@
             android:layout_height="20dp"
             android:layout_gravity="center"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/navigation_show_more_vertical_512"/>
+            android:src="@drawable/ic_navigation_show_more_vertical_512"/>
     </FrameLayout>
 
 
