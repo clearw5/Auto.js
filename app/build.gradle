@@ -5,16 +5,13 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.stardust.scriptdroid"
-        minSdkVersion 24
+        minSdkVersion 19
         //由于不知道在API24以上如何调起其他文件编辑器应用编辑文件，只能改到API23。FileProvider貌似只能查看编辑后不能保存？
         //参照ScriptFileOperation.Edit
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        jackOptions {
-            enabled true
-        }
     }
     buildTypes {
         release {
@@ -23,9 +20,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
         encoding = 'utf-8'
+    }
+    dataBinding {
+        enabled = true
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
     }
 }
 
@@ -45,5 +51,22 @@ dependencies {
     compile 'com.furture.react:DuktapeJava:1.1.0'
 
     compile files('libs/JSTransformer.jar')
+
+    compile 'com.afollestad.material-dialogs:commons:0.9.2.3'
+    compile 'com.makeramen:roundedimageview:2.2.1'
+    compile 'com.rengwuxian.materialedittext:library:2.0.3'
+    compile(name:'920-common-release', ext:'aar'){
+        transitive = true
+    }
+    compile(name:'920-styles-debug', ext:'aar'){
+        transitive = true
+    }
+    compile(name:'920-file_explorer-release', ext:'aar'){
+        transitive = true
+    }
+    compile(name:'920-app-debug', ext:'aar'){
+        transitive = true
+    }
+
 
 }

@@ -86,9 +86,12 @@ public class ScriptListRecyclerView extends RecyclerView {
 
     private void initScriptFileOperationPopupMenu() {
         mScriptFileOperationPopupMenu = new ScriptFileOperationPopupMenu(getContext());
-        mScriptFileOperationPopupMenu.setOnItemClickListener((view, position) -> {
-            ScriptFileOperation.getOperation(position).operate(ScriptListRecyclerView.this, mScriptFileList, mOperateFileIndex);
-            mScriptFileOperationPopupMenu.dismiss();
+        mScriptFileOperationPopupMenu.setOnItemClickListener(new ScriptFileOperationPopupMenu.OnItemClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                ScriptFileOperation.getOperation(position).operate(ScriptListRecyclerView.this, mScriptFileList, mOperateFileIndex);
+                mScriptFileOperationPopupMenu.dismiss();
+            }
         });
     }
 
@@ -99,7 +102,12 @@ public class ScriptListRecyclerView extends RecyclerView {
 
     private void showOperationDialog(final int position) {
         new MaterialDialog.Builder(getContext()).items(ScriptFileOperation.getOperationNames())
-                .itemsCallback((dialog, itemView, operation, text) -> ScriptFileOperation.getOperation(operation).operate(ScriptListRecyclerView.this, mScriptFileList, position)).show();
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View itemView, int operation, CharSequence text) {
+                        ScriptFileOperation.getOperation(operation).operate(ScriptListRecyclerView.this, mScriptFileList, position);
+                    }
+                }).show();
     }
 
     private void showOrDismissOperationPopupMenu(View v) {

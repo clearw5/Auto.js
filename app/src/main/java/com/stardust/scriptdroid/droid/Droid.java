@@ -35,12 +35,15 @@ public class Droid {
         runScriptFile(new File(path));
     }
 
-    public void runScript(String script) {
-        new Thread(() -> {
-            try {
-                JAVA_SCRIPT_ENGINE.execute(script);
-            } catch (Exception e) {
-                RUNTIME.toast("错误" + e.getMessage());
+    public void runScript(final String script) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JAVA_SCRIPT_ENGINE.execute(script);
+                } catch (Exception e) {
+                    RUNTIME.toast("错误" + e.getMessage());
+                }
             }
         }).start();
     }

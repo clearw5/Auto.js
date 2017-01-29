@@ -22,19 +22,51 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
  */
 public class ShortcutActivity extends Activity {
 
+    interface BooleanSupplier {
+        boolean getAsBoolean();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final String path = getIntent().getStringExtra("path");
-        if (!ensure(() -> !TextUtils.isEmpty(path), R.string.text_path_is_empty))
+        if (!ensure(new BooleanSupplier() {
+            @Override
+            public boolean getAsBoolean() {
+                return !TextUtils.isEmpty(path);
+            }
+        }, R.string.text_path_is_empty))
             return;
         final File scriptFile = new File(path);
         new Domino()
-                .then(() -> ensure(scriptFile::exists, R.string.text_file_not_exists))
-                .then(() -> ensure(this::hasStorageReadPermission, R.string.text_no_file_rw_permission))
-                .then(() -> {
-                    runScriptFile(path);
-                    return true;
+                .then(new Tile() {
+                    @Override
+                    public boolean fall() {
+                        return ShortcutActivity.this.ensure(new BooleanSupplier() {
+                            @Override
+                            public boolean getAsBoolean() {
+                                return scriptFile.exists();
+                            }
+                        }, R.string.text_file_not_exists);
+                    }
+                })
+                .then(new Tile() {
+                    @Override
+                    public boolean fall() {
+                        return ShortcutActivity.this.ensure(new BooleanSupplier() {
+                            @Override
+                            public boolean getAsBoolean() {
+                                return ShortcutActivity.this.hasStorageReadPermission();
+                            }
+                        }, R.string.text_no_file_rw_permission);
+                    }
+                })
+                .then(new Tile() {
+                    @Override
+                    public boolean fall() {
+                        ShortcutActivity.this.runScriptFile(path);
+                        return true;
+                    }
                 })
                 .fall();
     }
@@ -70,7 +102,6 @@ public class ShortcutActivity extends Activity {
                 checkSelfPermission(READ_EXTERNAL_STORAGE) == PERMISSION_GRANTED;
     }
 
-    @FunctionalInterface
     interface Tile {
         boolean fall();
     }

@@ -3,6 +3,7 @@ package com.stardust.scriptdroid.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -91,9 +92,12 @@ public abstract class ScriptFileOperation {
         public void operate(final ScriptListRecyclerView recyclerView, final ScriptFileList scriptFileList, final int position) {
             String oldName = scriptFileList.get(position).name;
             new MaterialDialog.Builder(recyclerView.getContext()).title("重命名")
-                    .input("输入新名称", oldName, (dialog, input) -> {
-                        scriptFileList.rename(position, input.toString());
-                        recyclerView.getAdapter().notifyItemChanged(position);
+                    .input("输入新名称", oldName, new MaterialDialog.InputCallback() {
+                        @Override
+                        public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                            scriptFileList.rename(position, input.toString());
+                            recyclerView.getAdapter().notifyItemChanged(position);
+                        }
                     }).show();
         }
     }

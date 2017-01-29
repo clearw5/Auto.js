@@ -56,7 +56,12 @@ public class SlidingUpPanel extends FrameLayout {
 
     public void dismiss() {
         mContentContainer.startAnimation(mSlideDownAnimation);
-        postDelayed(() -> setVisibility(GONE), mSlideDownAnimation.getDuration());
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SlidingUpPanel.this.setVisibility(GONE);
+            }
+        }, mSlideDownAnimation.getDuration());
         mShowing = false;
     }
 
@@ -85,7 +90,12 @@ public class SlidingUpPanel extends FrameLayout {
 
     private void initShadow() {
         mShadow = findViewById(R.id.shadow);
-        mShadow.setOnClickListener(v -> dismiss());
+        mShadow.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SlidingUpPanel.this.dismiss();
+            }
+        });
     }
 
     @Override

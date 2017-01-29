@@ -15,8 +15,14 @@
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/action_exit"
+        android:id="@+id/action_test"
         android:orderInCategory="300"
+        android:title="@string/action_test"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_exit"
+        android:orderInCategory="400"
         android:title="@string/action_exit"
         app:showAsAction="never"/>
 </menu>

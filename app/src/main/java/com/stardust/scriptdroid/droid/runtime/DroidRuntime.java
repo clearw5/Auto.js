@@ -148,8 +148,13 @@ public class DroidRuntime implements IDroidRuntime {
 
 
     @Override
-    public void toast(String text) {
-        mUIHandler.post(() -> Toast.makeText(App.getApp(), text, Toast.LENGTH_SHORT).show());
+    public void toast(final String text) {
+        mUIHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(App.getApp(), text, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

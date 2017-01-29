@@ -12,7 +12,7 @@ public class MapEntries<K, V> {
     private Map<K, V> mMap;
 
     public MapEntries() {
-        this(new TreeMap<>());
+        this(new TreeMap<K, V>());
     }
 
     public MapEntries(Map<K, V> map) {

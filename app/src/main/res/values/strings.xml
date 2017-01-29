@@ -17,4 +17,5 @@
     <string name="text_path_is_empty">路径为空</string>
     <string name="text_file_not_exists">文件不存在</string>
     <string name="text_no_file_rw_permission">无文件读写权限</string>
+    <string name="action_test">内嵌920测试</string>
 </resources>

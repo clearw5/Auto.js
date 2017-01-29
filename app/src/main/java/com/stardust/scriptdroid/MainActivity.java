@@ -1,8 +1,10 @@
 package com.stardust.scriptdroid;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -10,7 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.jecelyin.editor.v2.core.widget.JecEditText;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
@@ -23,8 +27,8 @@ import com.stardust.scriptdroid.ui.SlidingUpPanel;
 import com.stardust.util.MapEntries;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
+import java.io.InputStream;
 import java.util.Map;
-import java.util.Optional;
 
 
 public class MainActivity extends BaseActivity {
@@ -54,6 +58,7 @@ public class MainActivity extends BaseActivity {
     private void checkPermissions() {
         checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
         goToAccessibilityPermissionSettingIfDisabled();
+        JecEditText jecEditText = new JecEditText(this);
     }
 
     private void goToAccessibilityPermissionSettingIfDisabled() {
@@ -62,19 +67,37 @@ public class MainActivity extends BaseActivity {
                     .content(R.string.explain_accessibility_permission)
                     .positiveText(R.string.text_go_to_setting)
                     .negativeText(R.string.text_cancel)
-                    .onPositive((dialog, which) -> AccessibilityServiceUtils.goToPermissionSetting(this)).show();
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            AccessibilityServiceUtils.goToPermissionSetting(MainActivity.this);
+                        }
+                    }).show();
         }
     }
 
     private void setUpFileChooser() {
         mFileChooser = new FileChooser(this);
-        mFileChooser.setOnFileChoseListener(inputStream -> Optional.ofNullable(FileUtils.getPath(inputStream)).ifPresent(this::addScriptFile));
+        mFileChooser.setOnFileChoseListener(new FileChooser.OnFileChoseListener() {
+            @Override
+            public void onFileChose(InputStream inputStream) {
+                String path = FileUtils.getPath(inputStream);
+                if (path != null) {
+                    MainActivity.this.addScriptFile(path);
+                }
+            }
+        });
     }
 
     private void addScriptFile(final String path) {
         new MaterialDialog.Builder(this).title(R.string.text_name)
                 .inputType(InputType.TYPE_CLASS_TEXT)
-                .input(getString(R.string.text_please_input_name), "", (dialog, input) -> addScriptFile(input.toString(), path)).show();
+                .input(getString(R.string.text_please_input_name), "", new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                        MainActivity.this.addScriptFile(input.toString(), path);
+                    }
+                }).show();
     }
 
     private void addScriptFile(String name, String path) {
@@ -107,17 +130,35 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setUpListener() {
-        $(R.id.fab).setOnClickListener(view -> mSlidingUpPanel.show());
-        $(R.id.import_from_file).setOnClickListener(v -> showFileChooser());
-        $(R.id.create_new_file).setOnClickListener(v -> createScriptFile());
+        $(R.id.fab).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSlidingUpPanel.show();
+            }
+        });
+        $(R.id.import_from_file).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.this.showFileChooser();
+            }
+        });
+        $(R.id.create_new_file).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.this.createScriptFile();
+            }
+        });
     }
 
     private void createScriptFile() {
         new MaterialDialog.Builder(this).title(R.string.text_name)
                 .inputType(InputType.TYPE_CLASS_TEXT)
-                .input(getString(R.string.text_please_input_name), "", (dialog, input) -> {
-                    String path = ScriptFile.DEFAULT_FOLDER + input + ".js";
-                    createScriptFile(input.toString(), path);
+                .input(getString(R.string.text_please_input_name), "", new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                        String path = ScriptFile.DEFAULT_FOLDER + input + ".js";
+                        MainActivity.this.createScriptFile(input.toString(), path);
+                    }
                 }).show();
     }
 
@@ -131,9 +172,12 @@ public class MainActivity extends BaseActivity {
     }
 
     private void showFileChooser() {
-        mFileChooser.startFileManagerToChoose("*/*", (exception, mimeType) -> {
-            exception.printStackTrace();
-            Snackbar.make(mView, R.string.text_file_manager_not_found, Snackbar.LENGTH_SHORT).show();
+        mFileChooser.startFileManagerToChoose("*/*", new FileChooser.FileManagerNotFoundHandler() {
+            @Override
+            public void handle(ActivityNotFoundException exception, String mimeType) {
+                exception.printStackTrace();
+                Snackbar.make(mView, R.string.text_file_manager_not_found, Snackbar.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -145,8 +189,24 @@ public class MainActivity extends BaseActivity {
 
 
     private final Map<Integer, Runnable> mOptionActionMap = new MapEntries<Integer, Runnable>()
-            .entry(R.id.action_exit, this::finish)
-            .entry(R.id.action_disable_service, this::disableAccessibilityService)
+            .entry(R.id.action_exit, new Runnable() {
+                @Override
+                public void run() {
+                    MainActivity.this.finish();
+                }
+            })
+            .entry(R.id.action_disable_service, new Runnable() {
+                @Override
+                public void run() {
+                    MainActivity.this.disableAccessibilityService();
+                }
+            })
+            .entry(R.id.action_test, new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(MainActivity.this, TestActivity.class));
+                }
+            })
             .map();
 
 
@@ -156,7 +216,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void disableAccessibilityService() {
-        Optional.ofNullable(ActionPerformService.getInstance()).ifPresent(ActionPerformService::disableSelf);
+        if (ActionPerformService.getInstance() != null) {
+            ActionPerformService.getInstance().disableSelf();
+        }
         Snackbar.make(mView, R.string.text_service_disabled, Snackbar.LENGTH_SHORT).show();
     }
 
