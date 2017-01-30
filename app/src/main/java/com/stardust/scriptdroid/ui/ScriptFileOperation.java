@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.scriptdroid.EditActivity;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ShortcutActivity;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
@@ -63,14 +64,28 @@ public abstract class ScriptFileOperation {
         public void operate(ScriptListRecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
             Snackbar.make(recyclerView, "开始运行", Snackbar.LENGTH_SHORT).show();
             ScriptFile scriptFile = scriptFileList.get(position);
-            scriptFile.run(recyclerView.getContext());
+            scriptFile.run();
         }
     }
 
     public static class Edit extends ScriptFileOperation {
 
         static {
-            addOperation("编辑", R.drawable.ic_edit_green_48dp, new Edit());
+            //addOperation("编辑", R.drawable.ic_edit_green_48dp, new Edit());
+        }
+
+        @Override
+        public void operate(ScriptListRecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
+            Context context = recyclerView.getContext();
+            ScriptFile scriptFile = scriptFileList.get(position);
+            EditActivity.editFile(context, scriptFile.name, scriptFile.path);
+        }
+    }
+
+    public static class OpenByOtherApp extends ScriptFileOperation {
+
+        static {
+            addOperation("用其他应用打开", R.drawable.ic_open_in_new_green_48dp, new OpenByOtherApp());
         }
 
         @Override
@@ -78,7 +93,7 @@ public abstract class ScriptFileOperation {
             Context context = recyclerView.getContext();
             ScriptFile scriptFile = scriptFileList.get(position);
             Uri uri = Uri.parse("file://" + scriptFile.path);
-            context.startActivity(new Intent(Intent.ACTION_EDIT).setDataAndType(uri, "text/plain"));
+            context.startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(uri, "text/plain"));
         }
     }
 
