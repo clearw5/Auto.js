@@ -22,7 +22,11 @@ public class GBJDuktapeJavaScriptEngine implements JavaScriptEngine {
     public GBJDuktapeJavaScriptEngine(IDroidRuntime runtime) {
         setRuntime(runtime);
         mDuktapeEngine.put("context", App.getApp());
-        execute(init);
+        try {
+            execute(init);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setRuntime(IDroidRuntime runtime) {
@@ -30,12 +34,8 @@ public class GBJDuktapeJavaScriptEngine implements JavaScriptEngine {
     }
 
     @Override
-    public void execute(String script) {
-        try {
-            mDuktapeEngine.execute(JSTransformer.parse(new StringReader(script)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public Object execute(String script) throws IOException {
+        return mDuktapeEngine.execute(JSTransformer.parse(new StringReader(script)));
     }
 
     @Override

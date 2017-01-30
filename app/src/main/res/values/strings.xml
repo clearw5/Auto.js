@@ -18,4 +18,15 @@
     <string name="text_file_not_exists">文件不存在</string>
     <string name="text_no_file_rw_permission">无文件读写权限</string>
     <string name="action_test">内嵌920测试</string>
+    <string name="text_no_accessibility_permission">辅助性服务未启动</string>
+    <string name="text_drawer_close">关闭侧拉菜单</string>
+    <string name="text_drawer_open">打开侧拉菜单</string>
+    <string name="text_undo">撤销</string>
+    <string name="text_redo">重做</string>
+    <string name="text_save">保存</string>
+    <string name="text_run">运行</string>
+    <string name="text_alert">提示</string>
+    <string name="edit_exit_without_save_warn">内容尚未保存，您确定要退出吗？</string>
+    <string name="text_save_and_exit">保存并退出</string>
+    <string name="text_exit_directly">直接退出</string>
 </resources>

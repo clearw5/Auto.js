@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_redo"
+        android:icon="@drawable/ic_undo_white_48dp"
+        android:orderInCategory="100"
+        android:title="@string/text_undo"
+        app:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/action_undo"
+        android:icon="@drawable/ic_redo_white_48dp"
+        android:orderInCategory="200"
+        android:title="@string/text_redo"
+        app:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/action_save"
+        android:icon="@drawable/ic_save_white_48dp"
+        android:orderInCategory="300"
+        android:title="@string/text_save"
+        app:showAsAction="ifRoom|withText"/>
+
+</menu>

@@ -72,7 +72,9 @@
                 android:resource="@xml/provider_paths"/>
         </provider>
 
-        <activity android:name=".TestActivity"/>
+        <activity android:name=".EditActivity"/>
+
+        <activity android:name="com.jecelyin.editor.v2.ui.MainActivity"/>
     </application>
 
 </manifest>

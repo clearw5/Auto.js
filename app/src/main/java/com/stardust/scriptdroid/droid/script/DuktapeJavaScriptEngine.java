@@ -30,8 +30,8 @@ public class DuktapeJavaScriptEngine implements JavaScriptEngine {
 
 
     @Override
-    public void execute(String script) {
-        mDuktape.evaluate(script);
+    public Object execute(String script) {
+        return mDuktape.evaluate(script);
     }
 
     public <T> void set(String varName, Class<T> c, T value) {

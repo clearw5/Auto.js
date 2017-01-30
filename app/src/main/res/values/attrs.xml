@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="MaterialEditText"><attr format="color" name="met_baseColor"/><attr format="color" name="met_primaryColor"/><attr name="met_floatingLabel"><enum name="none" value="0"/><enum name="normal" value="1"/><enum name="highlight" value="2"/></attr><attr format="color" name="met_errorColor"/><attr format="integer" name="met_minCharacters"/><attr format="integer" name="met_maxCharacters"/><attr format="boolean" name="met_singleLineEllipsis"/><attr format="integer" name="met_minBottomTextLines"/><attr format="string" name="met_helperText"/><attr format="color" name="met_helperTextColor"/><attr format="string" name="met_accentTypeface"/><attr format="string" name="met_typeface"/><attr format="string" name="met_floatingLabelText"/><attr format="dimension" name="met_floatingLabelPadding"/><attr format="boolean" name="met_hideUnderline"/><attr format="color" name="met_underlineColor"/><attr format="boolean" name="met_autoValidate"/><attr format="reference" name="met_iconLeft"/><attr format="reference" name="met_iconRight"/><attr format="dimension" name="met_iconPadding"/><attr format="boolean" name="met_clearButton"/><attr format="dimension" name="met_floatingLabelTextSize"/><attr format="color" name="met_floatingLabelTextColor"/><attr format="dimension" name="met_bottomTextSize"/><attr format="boolean" name="met_floatingLabelAlwaysShown"/><attr format="boolean" name="met_helperTextAlwaysShown"/><attr format="boolean" name="met_floatingLabelAnimating"/><attr format="color" name="met_textColor"/><attr format="color" name="met_textColorHint"/></declare-styleable>
+    <declare-styleable name="ToolbarMenuItem">
+        <attr name="text" format="string|reference"/>
+        <attr name="icon" format="reference"/>
+        <attr name="icon_color" format="color|reference"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="MaterialEditText">
+        <attr name="met_baseColor" format="color"/>
+        <attr name="met_primaryColor" format="color"/>
+        <attr name="met_floatingLabel">
+            <enum name="none" value="0"/>
+            <enum name="normal" value="1"/>
+            <enum name="highlight" value="2"/>
+        </attr>
+        <attr name="met_errorColor" format="color"/>
+        <attr name="met_minCharacters" format="integer"/>
+        <attr name="met_maxCharacters" format="integer"/>
+        <attr name="met_singleLineEllipsis" format="boolean"/>
+        <attr name="met_minBottomTextLines" format="integer"/>
+        <attr name="met_helperText" format="string"/>
+        <attr name="met_helperTextColor" format="color"/>
+        <attr name="met_accentTypeface" format="string"/>
+        <attr name="met_typeface" format="string"/>
+        <attr name="met_floatingLabelText" format="string"/>
+        <attr name="met_floatingLabelPadding" format="dimension"/>
+        <attr name="met_hideUnderline" format="boolean"/>
+        <attr name="met_underlineColor" format="color"/>
+        <attr name="met_autoValidate" format="boolean"/>
+        <attr name="met_iconLeft" format="reference"/>
+        <attr name="met_iconRight" format="reference"/>
+        <attr name="met_iconPadding" format="dimension"/>
+        <attr name="met_clearButton" format="boolean"/>
+        <attr name="met_floatingLabelTextSize" format="dimension"/>
+        <attr name="met_floatingLabelTextColor" format="color"/>
+        <attr name="met_bottomTextSize" format="dimension"/>
+        <attr name="met_floatingLabelAlwaysShown" format="boolean"/>
+        <attr name="met_helperTextAlwaysShown" format="boolean"/>
+        <attr name="met_floatingLabelAnimating" format="boolean"/>
+        <attr name="met_textColor" format="color"/>
+        <attr name="met_textColorHint" format="color"/>
+    </declare-styleable>
     <!-- From: file:/Users/rengwuxian/projects/MaterialEditText/library/src/main/res/values/dimens.xml -->
     <eat-comment/>
     <dimen name="bottom_ellipsis_height">4dp</dimen>
@@ -12,7 +53,33 @@
     <dimen name="inner_padding_left">0dp</dimen>
     <dimen name="inner_padding_right">0dp</dimen>
 
-    <declare-styleable name="RoundedImageView"><attr format="dimension" name="riv_corner_radius"/><attr format="dimension" name="riv_corner_radius_top_left"/><attr format="dimension" name="riv_corner_radius_top_right"/><attr format="dimension" name="riv_corner_radius_bottom_left"/><attr format="dimension" name="riv_corner_radius_bottom_right"/><attr format="dimension" name="riv_border_width"/><attr format="color" name="riv_border_color"/><attr format="boolean" name="riv_mutate_background"/><attr format="boolean" name="riv_oval"/><attr name="android:scaleType"/><attr name="riv_tile_mode"><enum name="clamp" value="0"/><enum name="repeat" value="1"/><enum name="mirror" value="2"/></attr><attr name="riv_tile_mode_x"><enum name="clamp" value="0"/><enum name="repeat" value="1"/><enum name="mirror" value="2"/></attr><attr name="riv_tile_mode_y"><enum name="clamp" value="0"/><enum name="repeat" value="1"/><enum name="mirror" value="2"/></attr></declare-styleable>
+    <declare-styleable name="RoundedImageView">
+        <attr name="riv_corner_radius" format="dimension"/>
+        <attr name="riv_corner_radius_top_left" format="dimension"/>
+        <attr name="riv_corner_radius_top_right" format="dimension"/>
+        <attr name="riv_corner_radius_bottom_left" format="dimension"/>
+        <attr name="riv_corner_radius_bottom_right" format="dimension"/>
+        <attr name="riv_border_width" format="dimension"/>
+        <attr name="riv_border_color" format="color"/>
+        <attr name="riv_mutate_background" format="boolean"/>
+        <attr name="riv_oval" format="boolean"/>
+        <attr name="android:scaleType"/>
+        <attr name="riv_tile_mode">
+            <enum name="clamp" value="0"/>
+            <enum name="repeat" value="1"/>
+            <enum name="mirror" value="2"/>
+        </attr>
+        <attr name="riv_tile_mode_x">
+            <enum name="clamp" value="0"/>
+            <enum name="repeat" value="1"/>
+            <enum name="mirror" value="2"/>
+        </attr>
+        <attr name="riv_tile_mode_y">
+            <enum name="clamp" value="0"/>
+            <enum name="repeat" value="1"/>
+            <enum name="mirror" value="2"/>
+        </attr>
+    </declare-styleable>
     <!-- From: file:/Users/vince/Documents/vinc3m1/RoundedImageView/roundedimageview/src/main/res/values/about_libraries_def.xml -->
     <eat-comment/>
     <string name="define_roundedimageview"/>

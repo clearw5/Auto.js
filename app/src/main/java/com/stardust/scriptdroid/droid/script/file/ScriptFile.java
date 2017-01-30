@@ -23,7 +23,7 @@ public class ScriptFile {
         this.path = path;
     }
 
-    public void run(Context context) {
+    public void run() {
         Droid.getInstance().runScriptFile(toFile());
     }
 

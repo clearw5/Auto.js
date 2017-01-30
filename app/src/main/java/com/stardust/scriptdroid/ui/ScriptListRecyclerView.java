@@ -167,7 +167,7 @@ public class ScriptListRecyclerView extends RecyclerView {
     }
 
     private static void loadScriptFileOperations() {
-        ClassTool.loadClasses(Run.class, Edit.class, Rename.class, CreateShortcut.class, Remove.class, Delete.class);
+        ClassTool.loadClasses(Run.class, Rename.class, OpenByOtherApp.class, CreateShortcut.class, Remove.class, Delete.class);
     }
 
 }

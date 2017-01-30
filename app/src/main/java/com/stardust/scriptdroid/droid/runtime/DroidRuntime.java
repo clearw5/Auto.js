@@ -9,6 +9,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.runtime.action.Action;
 import com.stardust.scriptdroid.droid.runtime.action.ActionFactory;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
@@ -101,11 +102,11 @@ public class DroidRuntime implements IDroidRuntime {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD));
     }
 
-    public boolean scrollAllUp(){
+    public boolean scrollAllUp() {
         return performAction(ActionFactory.createScrollAllAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD));
     }
 
-    public boolean scrollAllDown(){
+    public boolean scrollAllDown() {
         return performAction(ActionFactory.createScrollAllAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD));
     }
 
@@ -132,8 +133,8 @@ public class DroidRuntime implements IDroidRuntime {
 
     private boolean performAction(Action action) {
         if (ActionPerformService.getInstance() == null) {
-            toast("没有权限");
-            return false;
+            toast(App.getApp().getString(R.string.text_no_accessibility_permission));
+            throw new PermissionDeniedException(App.getApp().getString(R.string.text_no_accessibility_permission));
         }
         ActionPerformService.setAction(action);
         synchronized (mLock) {
@@ -159,7 +160,7 @@ public class DroidRuntime implements IDroidRuntime {
 
     @Override
     public void sleep(long millis) {
-        try{
+        try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
             e.printStackTrace();

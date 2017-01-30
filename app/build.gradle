@@ -64,9 +64,7 @@ dependencies {
     compile(name:'920-file_explorer-release', ext:'aar'){
         transitive = true
     }
-    compile(name:'920-app-debug', ext:'aar'){
-        transitive = true
-    }
+    compile(name:'920-app-debug', ext:'aar')
 
 
 }

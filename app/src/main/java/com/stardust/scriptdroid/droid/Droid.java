@@ -14,8 +14,20 @@ import java.io.FileNotFoundException;
 
 public class Droid {
 
+    public interface OnRunFinishedListener {
+        void onRunFinished(Object result, Exception e);
+    }
+
     private static final DroidRuntime RUNTIME = DroidRuntime.getRuntime();
     private static final JavaScriptEngine JAVA_SCRIPT_ENGINE = new GBJDuktapeJavaScriptEngine(RUNTIME);
+    private static final OnRunFinishedListener DEFAULT_LISTENER = new OnRunFinishedListener() {
+        @Override
+        public void onRunFinished(Object result, Exception e) {
+            if (e != null) {
+                RUNTIME.toast("错误: " + e.getMessage());
+            }
+        }
+    };
     private static Droid instance = new Droid();
 
     protected Droid() {
@@ -31,18 +43,30 @@ public class Droid {
         runScript(FileUtils.readString(file));
     }
 
+    public void runScriptFile(File file, OnRunFinishedListener listener) {
+        checkFile(file);
+        runScript(FileUtils.readString(file), listener);
+    }
+
+    private void runScript(String script) {
+        runScript(script, null);
+    }
+
     public void runScriptFile(String path) {
         runScriptFile(new File(path));
     }
 
-    public void runScript(final String script) {
+    public void runScript(final String script, OnRunFinishedListener listener) {
+        if (listener == null)
+            listener = DEFAULT_LISTENER;
+        final OnRunFinishedListener finalListener = listener;
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    JAVA_SCRIPT_ENGINE.execute(script);
+                    finalListener.onRunFinished(JAVA_SCRIPT_ENGINE.execute(script), null);
                 } catch (Exception e) {
-                    RUNTIME.toast("错误" + e.getMessage());
+                    finalListener.onRunFinished(null, e);
                 }
             }
         }).start();

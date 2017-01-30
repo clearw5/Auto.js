@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="#ffffffff"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              tools:showIn="@layout/activity_edit">
 
     <com.jecelyin.editor.v2.view.EditorView xmlns:android="http://schemas.android.com/apk/res/android"
                                             android:id="@+id/editor"
                                             android:layout_width="match_parent"
-                                            android:layout_height="match_parent">
+                                            android:layout_height="match_parent"
+                                            android:paddingTop="?android:attr/actionBarSize">
+
 
         <com.jecelyin.editor.v2.core.widget.JecEditText
             android:id="@+id/edit_text"
@@ -19,7 +23,6 @@
             android:gravity="start|top"
             android:inputType="textMultiLine"
             android:padding="5dp"
-            android:scrollbarAlwaysDrawVerticalTrack="false"
             android:scrollbarThumbVertical="@android:color/transparent"
             android:scrollbarTrackVertical="@null"
             android:scrollbars="vertical"/>
