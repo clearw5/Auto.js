@@ -5,13 +5,13 @@
                                         android:id="@+id/drawer_layout"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        android:fitsSystemWindows="true"
                                         tools:context="com.stardust.scriptdroid.MainActivity">
 
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -55,16 +55,17 @@
                     android:orientation="vertical">
 
                     <ImageView
-                        android:layout_width="600dp"
+                        android:layout_width="60dp"
                         android:layout_height="60dp"
-                        android:src="@drawable/ic_create_new_folder_black_48dp"/>
+                        android:padding="10dp"
+                        android:src="@drawable/ic_add_file_green"/>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="@string/text_new_file"
-                        android:textColor="@android:color/secondary_text_light"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="16sp"/>
 
                 </LinearLayout>
@@ -83,14 +84,14 @@
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:padding="10dp"
-                        android:src="@drawable/ic_sdcard_black"/>
+                        android:src="@drawable/ic_folder_open_outline_green"/>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="@string/text_import_from_file"
-                        android:textColor="@android:color/secondary_text_light"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="16sp"/>
 
                 </LinearLayout>
@@ -102,9 +103,10 @@
     </android.support.design.widget.CoordinatorLayout>
 
     <include
-        layout="@layout/slide_menu"
-        android:layout_width="280dp"
+        layout="@layout/drawer"
+        android:layout_width="304dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start"/>
+        android:layout_gravity="start"
+        />
 </android.support.v4.widget.DrawerLayout>
 

@@ -27,7 +27,6 @@
 
         <activity
             android:name=".ShortcutActivity"
-            android:label="脚本执行机器人"
             android:theme="@style/AppTheme.NoActionBar">
 
             <intent-filter>
@@ -40,7 +39,7 @@
             android:name=".droid.runtime.action.ActionPerformService"
             android:enabled="true"
             android:exported="true"
-            android:label="脚本执行机器人"
+            android:label="@string/app_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService"/>
@@ -74,7 +73,6 @@
 
         <activity android:name=".EditActivity"/>
 
-        <activity android:name="com.jecelyin.editor.v2.ui.MainActivity"/>
     </application>
 
 </manifest>

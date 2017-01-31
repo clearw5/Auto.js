@@ -72,6 +72,11 @@ public class Droid {
         }).start();
     }
 
+
+    public int stopAll() {
+        return JAVA_SCRIPT_ENGINE.stopAll();
+    }
+
     private void checkFile(File file) {
         if (file == null) {
             throw new NullPointerException("file = null");

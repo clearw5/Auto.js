@@ -1,6 +1,5 @@
 package com.stardust.scriptdroid.droid.script.file;
 
-import android.content.Context;
 import android.os.Environment;
 
 import com.stardust.scriptdroid.droid.Droid;
@@ -31,4 +30,8 @@ public class ScriptFile {
         return new File(path);
     }
 
+    public void rename(String newName) {
+        File file = toFile();
+        file.renameTo(new File(file.getParent(), newName));
+    }
 }

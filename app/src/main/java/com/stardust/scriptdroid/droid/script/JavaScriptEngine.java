@@ -15,7 +15,11 @@ public interface JavaScriptEngine {
 
     <T> void set(String varName, Class<T> c, T value);
 
+    int stopAll();
+
     class Init {
+        public static final String INIT_SCRIPT = readInitScript();
+
         static String readInitScript() {
             return AssetScript.read(App.getApp(), "javasccript_engine_init.js");
         }

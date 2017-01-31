@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.graphics.Rect;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
+import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -114,7 +116,8 @@ public class ActionPerformService extends AccessibilityService {
             AccessibilityNodeInfo nodeInfo = event.getSource();
             if (nodeInfo == null) {
                 return;
-            }nodeInfo.refresh();
+            }
+            nodeInfo.refresh();
             Log.v(TAG, "click: " + nodeInfo);
             Rect rect = new Rect();
             nodeInfo.getBoundsInScreen(rect);
@@ -141,4 +144,13 @@ public class ActionPerformService extends AccessibilityService {
         assistModeEnable = PreferenceManager.getDefaultSharedPreferences(App.getApp()).getBoolean(KEY_ASSIST_MODE_ENABLE, false);
     }
 
+    public static void disable() {
+        if (instance != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            instance.disableSelf();
+        }
+    }
+
+    public static boolean isEnable() {
+        return AccessibilityServiceUtils.isAccessibilityServiceEnabled(App.getApp(), ActionPerformService.class);
+    }
 }

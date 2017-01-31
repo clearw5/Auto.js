@@ -38,6 +38,12 @@ public class DuktapeJavaScriptEngine implements JavaScriptEngine {
         mDuktape.set(varName, c, value);
     }
 
+    @Override
+    public int stopAll() {
+        mDuktape.close();
+        return 1;
+    }
+
     public void recycle() {
         if (!mRecycled) {
             mDuktape.close();

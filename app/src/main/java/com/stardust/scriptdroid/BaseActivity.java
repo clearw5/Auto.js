@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid;
 
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -17,6 +18,8 @@ import static android.content.pm.PackageManager.PERMISSION_DENIED;
 public class BaseActivity extends AppCompatActivity {
 
 
+    protected static final int PERMISSION_REQUEST_CODE = 11186;
+
     @SuppressWarnings("unchecked")
     public <T extends View> T $(int resId) {
         return (T) findViewById(resId);
@@ -26,10 +29,11 @@ public class BaseActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             String[] requestPermissions = getRequestPermissions(permissions);
             if (requestPermissions.length > 0)
-                requestPermissions(requestPermissions, 0);
+                requestPermissions(requestPermissions, PERMISSION_REQUEST_CODE);
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private String[] getRequestPermissions(String[] permissions) {
         List<String> list = new ArrayList<>();
         for (String permission : permissions) {

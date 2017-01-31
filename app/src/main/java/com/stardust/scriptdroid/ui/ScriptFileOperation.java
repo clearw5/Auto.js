@@ -106,14 +106,20 @@ public abstract class ScriptFileOperation {
         @Override
         public void operate(final ScriptListRecyclerView recyclerView, final ScriptFileList scriptFileList, final int position) {
             String oldName = scriptFileList.get(position).name;
-            new MaterialDialog.Builder(recyclerView.getContext()).title("重命名")
+            new MaterialDialog.Builder(recyclerView.getContext())
+                    .title("重命名")
+                    .checkBoxPrompt("同时重命名原文件", false, null)
                     .input("输入新名称", oldName, new MaterialDialog.InputCallback() {
                         @Override
                         public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                             scriptFileList.rename(position, input.toString());
+                            if(dialog.isPromptCheckBoxChecked()){
+                                scriptFileList.get(position).rename(input);
+                            }
                             recyclerView.getAdapter().notifyItemChanged(position);
                         }
-                    }).show();
+                    })
+                    .show();
         }
     }
 

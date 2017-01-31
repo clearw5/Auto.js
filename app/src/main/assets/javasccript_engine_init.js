@@ -110,3 +110,10 @@ var input = function(a, b){
 var sleep = function(millis){
     droid.sleep(millis);
 }
+
+
+importClass("java.lang.Runnable");
+
+var ui = function(action){
+    droid.ui(new Runnable(action));
+}

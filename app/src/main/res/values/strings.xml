@@ -2,7 +2,7 @@
     <string name="app_name">免Root脚本机器人</string>
     <string name="action_settings">设置</string>
     <string name="action_disable_service">关闭服务</string>
-    <string name="text_accesibility_service_description">略略略</string>
+    <string name="text_accessibility_service_description">使脚本自动操作(点击、长按、滑动等)所需，若关闭则只能执行不涉及自动操作的脚本。</string>
     <string name="text_new_file">新建文件</string>
     <string name="text_import_from_file">从文件导入</string>
     <string name="action_exit">退出</string>
@@ -12,13 +12,13 @@
     <string name="text_please_input_name">请输入名称</string>
     <string name="text_name">名称</string>
     <string name="text_go_to_setting">去设置</string>
-    <string name="explain_accessibility_permission">软件需要权限才能运行 ~ 请在随后的设置中选择”脚本执行机器人\"并开启权限</string>
+    <string name="explain_accessibility_permission">软件需要打开\"自动操作服务\"才能运行，请在随后的设置中选择\"免Root脚本机器人\"并开启服务。\n您也可以稍后在侧拉菜单中设置。</string>
     <string name="text_cancel">取消</string>
     <string name="text_path_is_empty">路径为空</string>
     <string name="text_file_not_exists">文件不存在</string>
     <string name="text_no_file_rw_permission">无文件读写权限</string>
     <string name="action_test">内嵌920测试</string>
-    <string name="text_no_accessibility_permission">辅助性服务未启动</string>
+    <string name="text_no_accessibility_permission">自动操作服务未启动，脚本已停止运行</string>
     <string name="text_drawer_close">关闭侧拉菜单</string>
     <string name="text_drawer_open">打开侧拉菜单</string>
     <string name="text_undo">撤销</string>
@@ -29,4 +29,16 @@
     <string name="edit_exit_without_save_warn">内容尚未保存，您确定要退出吗？</string>
     <string name="text_save_and_exit">保存并退出</string>
     <string name="text_exit_directly">直接退出</string>
+    <string name="text_setting">设置</string>
+    <string name="text_exit">退出</string>
+    <string name="text_auto_operate_service">自动操作服务</string>
+    <string name="version">Version 1.17.0130</string>
+    <string name="text_syntax_and_api">语法与API</string>
+    <string name="text_close_all_running_scripts">关闭所有正在运行的脚本</string>
+    <string name="text_about">关于</string>
+    <string name="text_licenses">开放源代码许可</string>
+    <string name="text_do_not_remind_again">不再提示</string>
+    <string name="text_sample_open_what_moment">示例：打开朋友圈</string>
+    <string name="text_sample_open_running_services">示例：打开正在运行的服务(安卓6.0+)</string>
+    <string name="text_sample_simple_calculator">示例：简单计算器</string>
 </resources>

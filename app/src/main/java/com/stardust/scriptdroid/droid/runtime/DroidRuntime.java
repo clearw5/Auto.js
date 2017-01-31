@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.droid.runtime;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -8,6 +9,8 @@ import android.os.Handler;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.UIActionPerformActivity;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.runtime.action.Action;
@@ -25,14 +28,19 @@ import java.util.List;
 public class DroidRuntime implements IDroidRuntime {
 
     private static final String TAG = "DroidRuntime";
+    private static DroidRuntime runtime = new DroidRuntime();
+    private static Context context;
 
     private final Object mLock = new Object();
-    private static DroidRuntime runtime = new DroidRuntime();
     private boolean mActionPerformResult;
     private Handler mUIHandler;
 
     public static DroidRuntime getRuntime() {
         return runtime;
+    }
+
+    public static void setContext(Context context) {
+        DroidRuntime.context = context;
     }
 
     protected DroidRuntime() {
@@ -167,6 +175,10 @@ public class DroidRuntime implements IDroidRuntime {
         }
     }
 
+    @Override
+    public MaterialDialog.Builder dialog() {
+        return new Builder();
+    }
 
     public void notifyActionPerformed(boolean succeed) {
         mActionPerformResult = succeed;
@@ -174,4 +186,22 @@ public class DroidRuntime implements IDroidRuntime {
             mLock.notify();
         }
     }
+
+    public class Builder extends MaterialDialog.Builder {
+
+        public Builder() {
+            super(DroidRuntime.context);
+        }
+
+        public MaterialDialog show(final MaterialDialog.Builder dialog) {
+            UIActionPerformActivity.performAction(new Runnable() {
+                @Override
+                public void run() {
+                    dialog.show();
+                }
+            });
+            return null;
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.droid.runtime.api;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.droid.runtime.action.ActionTarget;
 
 /**
@@ -41,4 +42,5 @@ public interface IDroidRuntime {
 
     void sleep(long millis);
 
+    MaterialDialog.Builder dialog();
 }

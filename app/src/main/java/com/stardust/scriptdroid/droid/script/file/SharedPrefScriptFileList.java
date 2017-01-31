@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.stardust.scriptdroid.App;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -21,15 +22,22 @@ public class SharedPrefScriptFileList extends ScriptFileList {
     private static final String SP_KEY_SCRIPT_NAME = "script_name";
     private static final String SP_KEY_SCRIPT_PATH = "script_path";
 
+    private static ScriptFileList instance = new SharedPrefScriptFileList(App.getApp());
+
     private SharedPreferences mSharedPreferences;
     private List<String> mScriptPath;
     private List<String> mScriptName;
 
+    public static ScriptFileList getInstance() {
+        return instance;
+    }
 
     public SharedPrefScriptFileList(Context context) {
         mSharedPreferences = context.getSharedPreferences("SharedPrefScriptFileList", Context.MODE_PRIVATE);
         readFromSharedPref();
     }
+
+
 
     private void readFromSharedPref() {
         Type type = new TypeToken<List<String>>() {
