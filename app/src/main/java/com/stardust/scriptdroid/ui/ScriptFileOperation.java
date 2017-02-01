@@ -112,10 +112,7 @@ public abstract class ScriptFileOperation {
                     .input("输入新名称", oldName, new MaterialDialog.InputCallback() {
                         @Override
                         public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                            scriptFileList.rename(position, input.toString());
-                            if(dialog.isPromptCheckBoxChecked()){
-                                scriptFileList.get(position).rename(input);
-                            }
+                            scriptFileList.rename(position, input.toString(), dialog.isPromptCheckBoxChecked());
                             recyclerView.getAdapter().notifyItemChanged(position);
                         }
                     })

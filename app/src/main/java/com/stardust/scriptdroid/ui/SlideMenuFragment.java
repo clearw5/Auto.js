@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -12,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.stardust.app.Fragment;
+import com.stardust.scriptdroid.DocumentActivity;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
@@ -94,8 +96,7 @@ public class SlideMenuFragment extends Fragment {
 
     @ViewBinding.Click(R.id.syntax_and_api)
     private void startSyntaxHelpActivity() {
-        // TODO: 2017/1/30  startSyntaxHelpActivity
-        Toast.makeText(getContext(), "暂无", Toast.LENGTH_LONG).show();
+        startActivity(new Intent(getContext(), DocumentActivity.class));
     }
 
     @ViewBinding.Click(R.id.about_app)

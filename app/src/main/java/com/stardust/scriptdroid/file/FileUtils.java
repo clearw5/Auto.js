@@ -8,6 +8,7 @@ import com.stardust.scriptdroid.App;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -78,7 +79,7 @@ public class FileUtils {
         if (i >= 0) {
             String folder = path.substring(0, i);
             File file = new File(folder);
-            if(file.exists())
+            if (file.exists())
                 return true;
             return file.mkdirs();
         } else {
@@ -88,11 +89,8 @@ public class FileUtils {
 
     public static String readString(File file, String encoding) {
         try {
-            FileInputStream fis = new FileInputStream(file);
-            byte[] bytes = new byte[fis.available()];
-            fis.read(bytes);
-            return new String(bytes, encoding);
-        } catch (IOException e) {
+            return readString(new FileInputStream(file), encoding);
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -100,6 +98,21 @@ public class FileUtils {
 
     public static String readString(File file) {
         return readString(file, "utf-8");
+    }
+
+    public static String readString(InputStream is, String encoding) {
+        try {
+            byte[] bytes = new byte[is.available()];
+            is.read(bytes);
+            return new String(bytes, encoding);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String readString(InputStream inputStream) {
+        return readString(inputStream, "utf-8");
     }
 
     public static boolean copy(int rawId, String path) {
@@ -147,4 +160,20 @@ public class FileUtils {
             return false;
         }
     }
+
+    public static String renameWithoutExtension(String path, String newName) {
+        File file = new File(path);
+        File newFile = new File(file.getParent(), newName + "." + getExtension(file.getName()));
+        file.renameTo(newFile);
+        return newFile.getAbsolutePath();
+    }
+
+    public static String getExtension(String fileName) {
+        int i = fileName.lastIndexOf('.');
+        if (i < 0)
+            return "";
+        return fileName.substring(i + 1);
+    }
+
+
 }

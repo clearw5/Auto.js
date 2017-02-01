@@ -73,6 +73,8 @@
 
         <activity android:name=".EditActivity"/>
 
+        <activity android:name=".DocumentActivity"/>
+
     </application>
 
 </manifest>

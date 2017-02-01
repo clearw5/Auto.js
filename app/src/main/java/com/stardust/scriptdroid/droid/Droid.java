@@ -45,31 +45,24 @@ public class Droid {
 
     public void runScriptFile(File file, OnRunFinishedListener listener) {
         checkFile(file);
-        runScript(FileUtils.readString(file), listener);
+        runScript(FileUtils.readString(file), listener, RunningConfig.getDefault());
     }
 
     private void runScript(String script) {
-        runScript(script, null);
+        runScript(script, null, RunningConfig.getDefault());
     }
 
     public void runScriptFile(String path) {
         runScriptFile(new File(path));
     }
 
-    public void runScript(final String script, OnRunFinishedListener listener) {
-        if (listener == null)
-            listener = DEFAULT_LISTENER;
-        final OnRunFinishedListener finalListener = listener;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    finalListener.onRunFinished(JAVA_SCRIPT_ENGINE.execute(script), null);
-                } catch (Exception e) {
-                    finalListener.onRunFinished(null, e);
-                }
-            }
-        }).start();
+    public void runScript(final String script, OnRunFinishedListener listener, RunningConfig config) {
+        if (config.runInNewThread) {
+            new Thread(new RunScriptRunnable(script, listener, config)).start();
+        }else {
+            new RunScriptRunnable(script, listener, config).run();
+        }
+
     }
 
 
@@ -90,4 +83,23 @@ public class Droid {
     }
 
 
+    private static class RunScriptRunnable implements Runnable {
+
+        private final String mScript;
+        private OnRunFinishedListener mOnRunFinishedListener;
+
+        public RunScriptRunnable(String script, OnRunFinishedListener listener, RunningConfig config) {
+            mOnRunFinishedListener = listener == null ? DEFAULT_LISTENER : listener;
+            mScript = script;
+        }
+
+        @Override
+        public void run() {
+            try {
+                mOnRunFinishedListener.onRunFinished(JAVA_SCRIPT_ENGINE.execute(mScript), null);
+            } catch (Exception e) {
+                mOnRunFinishedListener.onRunFinished(null, e);
+            }
+        }
+    }
 }

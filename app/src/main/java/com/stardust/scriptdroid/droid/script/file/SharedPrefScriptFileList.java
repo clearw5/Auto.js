@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.file.FileUtils;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -36,7 +37,6 @@ public class SharedPrefScriptFileList extends ScriptFileList {
         mSharedPreferences = context.getSharedPreferences("SharedPrefScriptFileList", Context.MODE_PRIVATE);
         readFromSharedPref();
     }
-
 
 
     private void readFromSharedPref() {
@@ -75,8 +75,12 @@ public class SharedPrefScriptFileList extends ScriptFileList {
     }
 
     @Override
-    public void rename(int position, String newName) {
+    public void rename(int position, String newName, boolean renameFile) {
         mScriptName.set(position, newName);
+        if (renameFile) {
+            String newPath = FileUtils.renameWithoutExtension(mScriptPath.get(position), newName);
+            mScriptPath.set(position, newPath);
+        }
         syncWithSharedPref();
     }
 

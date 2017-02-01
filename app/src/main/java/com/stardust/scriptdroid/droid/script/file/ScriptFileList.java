@@ -14,7 +14,7 @@ public abstract class ScriptFileList {
 
     public abstract void remove(int i);
 
-    public abstract void rename(int position, String newName);
+    public abstract void rename(int position, String newName, boolean renameFile);
 
     public abstract int size();
 
