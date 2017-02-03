@@ -18,7 +18,7 @@ public class NonUiInitializer {
     private static final Map<String, Integer> SAMPLES = new MapEntries<String, Integer>()
             .entry("sample_open_wechat_moment.js", R.string.text_sample_open_what_moment)
             .entry("sample_open_running_services.js", R.string.text_sample_open_running_services)
-            .entry("sample_simple_calculator.js", R.string.text_sample_simple_calculator)
+            .entry("sample_hello_big_sister.js", R.string.text_sample_hello_big_sister)
             .map();
 
     private static NonUiInitializer instance = new NonUiInitializer();
@@ -35,7 +35,7 @@ public class NonUiInitializer {
 
     }
 
-    public void copySampleScriptFileIfNeeded(){
+    public void copySampleScriptFileIfNeeded() {
         if (!Pref.def().getBoolean(Pref.SAMPLE_SCRIPTS_COPIED, false)) {
             copySampleScriptFile();
         }

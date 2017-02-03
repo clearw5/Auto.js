@@ -1,6 +1,7 @@
 package com.stardust.view;
 
 import android.view.View;
+import android.widget.CompoundButton;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -21,7 +22,31 @@ public class ViewBinder {
         }
         Method[] methods = o.getClass().getDeclaredMethods();
         for (Method method : methods) {
+            method.setAccessible(true);
             bindClick(o, method, findViewById);
+            bindCheck(o, method, findViewById);
+        }
+    }
+
+    private static void bindCheck(final Object o, final Method method, Method findViewById) {
+        ViewBinding.Check annotation = method.getAnnotation(ViewBinding.Check.class);
+        if (annotation == null || annotation.value() == 0)
+            return;
+        int id = annotation.value();
+        try {
+            CompoundButton button = (CompoundButton) findViewById.invoke(o, id);
+            button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    try {
+                        method.invoke(o, isChecked);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
         }
     }
 
@@ -45,7 +70,6 @@ public class ViewBinder {
 
     private static void invokeMethod(Object o, Method method) {
         try {
-            method.setAccessible(true);
             method.invoke(o);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);

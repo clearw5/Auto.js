@@ -10,7 +10,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.UIActionPerformActivity;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.runtime.action.Action;
@@ -194,12 +193,7 @@ public class DroidRuntime implements IDroidRuntime {
         }
 
         public MaterialDialog show(final MaterialDialog.Builder dialog) {
-            UIActionPerformActivity.performAction(new Runnable() {
-                @Override
-                public void run() {
-                    dialog.show();
-                }
-            });
+
             return null;
         }
     }

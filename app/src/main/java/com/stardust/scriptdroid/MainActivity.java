@@ -1,7 +1,6 @@
 package com.stardust.scriptdroid;
 
 import android.Manifest;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -12,17 +11,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.folderselector.FileChooserDialog;
 import com.stardust.app.NotRemindAgainDialog;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
-import com.stardust.scriptdroid.file.FileChooser;
 import com.stardust.scriptdroid.file.FileUtils;
+import com.stardust.scriptdroid.tool.BackPressedHandler;
 import com.stardust.scriptdroid.ui.ScriptFileOperation;
 import com.stardust.scriptdroid.ui.ScriptListRecyclerView;
 import com.stardust.scriptdroid.ui.SlideMenuFragment;
@@ -32,22 +31,19 @@ import com.stardust.view.ViewBinding;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
 import java.io.File;
-import java.io.InputStream;
 
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements FileChooserDialog.FileCallback {
 
     private SlidingUpPanel mAddFilePanel;
     private ScriptListRecyclerView mScriptListRecyclerView;
     private ScriptFileList mScriptFileList;
-    private FileChooser mFileChooser;
     private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setUpUI();
-        setUpFileChooser();
         checkPermissions();
     }
 
@@ -70,19 +66,6 @@ public class MainActivity extends BaseActivity {
                         }
                     }).show();
         }
-    }
-
-    private void setUpFileChooser() {
-        mFileChooser = new FileChooser(this);
-        mFileChooser.setOnFileChoseListener(new FileChooser.OnFileChoseListener() {
-            @Override
-            public void onFileChose(InputStream inputStream) {
-                String path = FileUtils.getPath(inputStream);
-                if (path != null) {
-                    MainActivity.this.addScriptFile(path);
-                }
-            }
-        });
     }
 
     private void addScriptFile(final String path) {
@@ -159,28 +142,19 @@ public class MainActivity extends BaseActivity {
 
     @ViewBinding.Click(R.id.import_from_file)
     private void showFileChooser() {
-        mFileChooser.startFileManagerToChoose("*/*", new FileChooser.FileManagerNotFoundHandler() {
-            @Override
-            public void handle(ActivityNotFoundException exception, String mimeType) {
-                exception.printStackTrace();
-                Snackbar.make(mDrawerLayout, R.string.text_file_manager_not_found, Snackbar.LENGTH_SHORT).show();
-            }
-        });
+        new FileChooserDialog.Builder(this)
+                .extensionsFilter(".js", ".txt")
+                .show();
     }
 
     @ViewBinding.Click(R.id.setting)
     private void startSettingActivity() {
-        //TODO create Setting Activity
-        Toast.makeText(this, "暂无", Toast.LENGTH_LONG).show();
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     @ViewBinding.Click(R.id.exit)
     public void finish() {
         super.finish();
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mFileChooser.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -190,5 +164,17 @@ public class MainActivity extends BaseActivity {
             NonUiInitializer.getInstance().copySampleScriptFileIfNeeded();
             mScriptListRecyclerView.getAdapter().notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onFileSelection(@NonNull FileChooserDialog dialog, @NonNull File file) {
+        addScriptFile(file.getPath());
+    }
+
+
+    private BackPressedHandler mBackPressedHandler = new BackPressedHandler.DoublePressExit(this);
+    @Override
+    public void onBackPressed() {
+        mBackPressedHandler.onBackPressed();
     }
 }

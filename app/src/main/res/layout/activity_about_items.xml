@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="12dp"
+              android:background="@android:color/white"
+              android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/developer"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_developer_512"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/developer"
+            android:textColor="@android:color/secondary_text_light"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <include layout="@layout/divider"/>
+
+    <LinearLayout
+        android:id="@+id/github"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:clickable="true"
+        android:foreground="?selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_github_mark"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/github"
+            android:textColor="@android:color/secondary_text_light"
+            android:textIsSelectable="true"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <include layout="@layout/divider"/>
+
+    <LinearLayout
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_email_black_48dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/email"
+            android:textColor="@android:color/secondary_text_light"
+            android:textIsSelectable="true"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <include layout="@layout/divider"/>
+
+    <LinearLayout
+        android:id="@+id/qq"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_qq_black"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/qq"
+            android:textColor="@android:color/secondary_text_light"
+            android:textIsSelectable="true"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+    <include layout="@layout/divider"/>
+
+    <LinearLayout
+        android:id="@+id/donate"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_money_black"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/donate_developer"
+            android:textColor="@android:color/secondary_text_light"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <include layout="@layout/divider"/>
+</LinearLayout>

@@ -26,4 +26,10 @@ public @interface ViewBinding {
     @interface Click {
         int value();
     }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Check {
+        int value();
+    }
 }

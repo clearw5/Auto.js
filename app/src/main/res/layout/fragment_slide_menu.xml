@@ -5,6 +5,28 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/syntax_and_api"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="?selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_js"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/text_syntax_and_api"
+            android:textColor="@android:color/primary_text_light"/>
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/auto_operate_service"
         android:layout_width="match_parent"
@@ -39,27 +61,71 @@
     </RelativeLayout>
 
 
-    <LinearLayout
-        android:id="@+id/syntax_and_api"
+    <RelativeLayout
+        android:id="@+id/assist_service"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:background="?selectableItemBackground"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:gravity="center_vertical">
 
         <ImageView
+            android:id="@+id/icon_assist_service"
             android:layout_width="20dp"
             android:layout_height="20dp"
+            android:layout_alignParentLeft="true"
             android:layout_margin="16dp"
-            android:src="@drawable/ic_js"/>
+            android:src="@drawable/ic_service_green"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_toRightOf="@id/icon_assist_service"
             android:gravity="center"
-            android:text="@string/text_syntax_and_api"
+            android:text="@string/text_assist_service"
             android:textColor="@android:color/primary_text_light"/>
-    </LinearLayout>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/sw_assist_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/assist_service_notification"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="?selectableItemBackground"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/icon_assist_service_notification"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_notifications_green_48dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/icon_assist_service_notification"
+            android:gravity="center"
+            android:text="@string/text_assist_service_notification"
+            android:textColor="@android:color/primary_text_light"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/sw_assist_service_notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"/>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/stop_all_running_scripts"
@@ -83,47 +149,4 @@
             android:textColor="@android:color/primary_text_light"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/about_app"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:background="?selectableItemBackground"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_about_us_green_100px"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/text_about"
-            android:textColor="@android:color/primary_text_light"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/licenses"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:background="?selectableItemBackground"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_license_green"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/text_licenses"
-            android:textColor="@android:color/primary_text_light"/>
-    </LinearLayout>
-</LinearLayout>
+ </LinearLayout>

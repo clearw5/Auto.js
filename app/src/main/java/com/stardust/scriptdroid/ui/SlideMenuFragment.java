@@ -1,6 +1,9 @@
 package com.stardust.scriptdroid.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -9,8 +12,6 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.Toast;
 
 import com.stardust.app.Fragment;
 import com.stardust.scriptdroid.DocumentActivity;
@@ -21,7 +22,7 @@ import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
-import de.psdev.licensesdialog.LicensesDialog;
+import static com.stardust.scriptdroid.droid.runtime.action.ActionPerformService.ACTION_CHANGE_ASSIST_MODE;
 
 /**
  * Created by Stardust on 2017/1/30.
@@ -35,7 +36,8 @@ public class SlideMenuFragment extends Fragment {
         activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).commit();
     }
 
-    private SwitchCompat mAutoOperateServiceSwitch;
+    private SwitchCompat mAutoOperateServiceSwitch, mAssistServiceSwitch, mAssistServiceNotificationSwitch;
+    private Receiver mReceiver = new Receiver();
 
     @Nullable
     @Override
@@ -49,40 +51,68 @@ public class SlideMenuFragment extends Fragment {
         if (mAutoOperateServiceSwitch == null) {
             setUpSwitchCompat();
             ViewBinder.bind(this);
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(ACTION_CHANGE_ASSIST_MODE);
+            getContext().registerReceiver(mReceiver, filter);
         }
-        syncSwitchStatus();
+        syncSwitchState();
     }
 
-    private void syncSwitchStatus() {
+    private void syncSwitchState() {
         mAutoOperateServiceSwitch.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mAutoOperateServiceSwitch.setChecked(ActionPerformService.isEnable());
             }
         }, 450);
+        mAssistServiceSwitch.setChecked(ActionPerformService.isAssistModeEnable());
+        mAssistServiceNotificationSwitch.setChecked(AssistModeSwitchNotification.isEnable());
     }
 
     private void setUpSwitchCompat() {
         mAutoOperateServiceSwitch = $(R.id.sw_auto_operate_service);
-        mAutoOperateServiceSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked && !ActionPerformService.isEnable()) {
-                    AccessibilityServiceUtils.goToPermissionSetting(getContext());
-                } else if (!isChecked && ActionPerformService.isEnable()) {
-                    ActionPerformService.disable();
-                }
-            }
-        });
+        mAssistServiceSwitch = $(R.id.sw_assist_service);
+        mAssistServiceNotificationSwitch = $(R.id.sw_assist_service_notification);
     }
 
-    @ViewBinding.Click(R.id.licenses)
-    private void showLicenseDialog() {
-        new LicensesDialog.Builder(getActivity())
-                .setNotices(R.raw.licenses)
-                .setIncludeOwnLicense(true)
-                .build()
-                .showAppCompat();
+    @ViewBinding.Click(R.id.syntax_and_api)
+    private void startSyntaxHelpActivity() {
+        startActivity(new Intent(getContext(), DocumentActivity.class));
+    }
+
+    @ViewBinding.Click(R.id.auto_operate_service)
+    private void clickAutoOperateServiceSwitch() {
+        mAutoOperateServiceSwitch.toggle();
+    }
+
+    @ViewBinding.Check(R.id.sw_auto_operate_service)
+    private void setAutoOperateServiceEnable(boolean enable) {
+        if (enable && !ActionPerformService.isEnable()) {
+            AccessibilityServiceUtils.goToPermissionSetting(getContext());
+        } else if (!enable && ActionPerformService.isEnable()) {
+            ActionPerformService.disable();
+        }
+    }
+
+    @ViewBinding.Check(R.id.sw_assist_service)
+    private void setAssistServiceEnable(boolean enable) {
+        ActionPerformService.setAssistModeEnable(enable);
+        AssistModeSwitchNotification.notifyAssistModeChanged();
+    }
+
+    @ViewBinding.Click(R.id.assist_service)
+    private void toggleAssistServiceSwitch() {
+        mAssistServiceSwitch.toggle();
+    }
+
+    @ViewBinding.Check(R.id.sw_assist_service_notification)
+    private void setAssistServiceNotificationEnable(boolean enable) {
+        AssistModeSwitchNotification.setEnable(enable);
+    }
+
+    @ViewBinding.Click(R.id.assist_service_notification)
+    private void toggleAssistServiceNotificationSwitch() {
+        mAssistServiceNotificationSwitch.toggle();
     }
 
     @ViewBinding.Click(R.id.stop_all_running_scripts)
@@ -94,19 +124,23 @@ public class SlideMenuFragment extends Fragment {
             Snackbar.make(getActivityContentView(), "没有正在运行的脚本", Snackbar.LENGTH_SHORT).show();
     }
 
-    @ViewBinding.Click(R.id.syntax_and_api)
-    private void startSyntaxHelpActivity() {
-        startActivity(new Intent(getContext(), DocumentActivity.class));
+    @Override
+    public void onDestroy() {
+        getContext().unregisterReceiver(mReceiver);
+        super.onDestroy();
     }
 
-    @ViewBinding.Click(R.id.about_app)
-    private void startAboutActivity() {
-        // TODO: 2017/1/30 startAboutActivity
-        Toast.makeText(getContext(), "暂无", Toast.LENGTH_LONG).show();
+    private class Receiver extends BroadcastReceiver {
+
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(ACTION_CHANGE_ASSIST_MODE)) {
+                AssistModeSwitchNotification.notifyAssistModeChanged();
+                mAssistServiceSwitch.setChecked(intent.getBooleanExtra("enable", false));
+            }
+        }
     }
 
-    @ViewBinding.Click(R.id.auto_operate_service)
-    private void clickAutoOperateServiceSwitch() {
-        mAutoOperateServiceSwitch.setChecked(!mAutoOperateServiceSwitch.isChecked());
-    }
+
 }

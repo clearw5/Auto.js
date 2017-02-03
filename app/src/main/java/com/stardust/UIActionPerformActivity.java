@@ -1,5 +1,6 @@
 package com.stardust;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,9 +16,9 @@ import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 public class UIActionPerformActivity extends AppCompatActivity {
 
 
-    private static volatile Runnable action;
+    private static volatile UIAction action;
 
-    public static void performAction(Runnable action) {
+    public static void performAction(UIAction action) {
         if (UIActionPerformActivity.action != null) {
             return;
         }
@@ -30,10 +31,20 @@ public class UIActionPerformActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DroidRuntime.setContext(this);
-        action.run();
+        action.setActivity(this).run();
     }
 
 
+    public abstract static class UIAction implements Runnable {
+
+        protected Activity mActivity;
+
+        public UIAction setActivity(Activity activity) {
+            mActivity = activity;
+            return this;
+        }
+
+    }
 
 
 }

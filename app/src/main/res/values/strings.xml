@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">免Root脚本机器人</string>
+    <string name="version">Version 1.17.0202</string>
     <string name="action_settings">设置</string>
     <string name="action_disable_service">关闭服务</string>
     <string name="text_accessibility_service_description">使脚本自动操作(点击、长按、滑动等)所需，若关闭则只能执行不涉及自动操作的脚本。</string>
@@ -32,7 +33,6 @@
     <string name="text_setting">设置</string>
     <string name="text_exit">退出</string>
     <string name="text_auto_operate_service">自动操作服务</string>
-    <string name="version">Version 1.17.0130</string>
     <string name="text_syntax_and_api">语法与API</string>
     <string name="text_close_all_running_scripts">关闭所有正在运行的脚本</string>
     <string name="text_about">关于</string>
@@ -41,4 +41,23 @@
     <string name="text_sample_open_what_moment">示例：打开朋友圈</string>
     <string name="text_sample_open_running_services">示例：打开正在运行的服务(安卓6.0+)</string>
     <string name="text_sample_simple_calculator">示例：简单计算器</string>
+    <string name="copyright">Copyright©2016 All right reserves.</string>
+    <string name="developer">星尘幻影</string>
+    <string name="qq">946994919</string>
+    <string name="email">hybbbb1996@gmail.com</string>
+    <string name="github">软件源代码</string>
+    <string name="text_already_copy_to_clip">已复制到剪贴板</string>
+    <string name="donate_developer">打赏作者</string>
+    <string name="text_email">邮箱</string>
+    <string name="my_github">https://github.com/hyb1996/NoRootScriptDroid</string>
+    <string name="share_app">[免Root脚本机器人]下载地址：https://github.com/hyb1996/NoRootScriptDroid/releases</string>
+    <string name="text_assist_service">脚本辅助服务</string>
+    <string name="text_assist_serivce_notification">通知栏显示脚本辅助开关</string>
+    <string name="text_assist_service_notification">通知栏显示脚本辅助开关</string>
+    <string name="text_others">其他</string>
+    <string name="text_assist_mode_enabled">脚本辅助已开启(点击关闭)</string>
+    <string name="text_assist_mode_disabled">脚本辅助已关闭(点击开启)</string>
+    <string name="text_error_report">错误报告</string>
+    <string name="text_sample_hello_big_sister">大姐姐好</string>
+    <string name="text_press_again_to_exit">再按一次退出程序</string>
 </resources>

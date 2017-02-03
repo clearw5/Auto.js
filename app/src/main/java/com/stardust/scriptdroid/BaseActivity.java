@@ -6,10 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static android.content.pm.PackageManager.PERMISSION_DENIED;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 /**
  * Created by Stardust on 2017/1/23.
@@ -30,6 +31,10 @@ public class BaseActivity extends AppCompatActivity {
             String[] requestPermissions = getRequestPermissions(permissions);
             if (requestPermissions.length > 0)
                 requestPermissions(requestPermissions, PERMISSION_REQUEST_CODE);
+        } else {
+            int[] grantResults = new int[permissions.length];
+            Arrays.fill(grantResults, PERMISSION_GRANTED);
+            onRequestPermissionsResult(PERMISSION_REQUEST_CODE, permissions, grantResults);
         }
     }
 

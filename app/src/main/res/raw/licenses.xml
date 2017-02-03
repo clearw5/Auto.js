@@ -12,4 +12,23 @@
         <copyright>Copyright 2008 Google Inc.</copyright>
         <license>Apache Software License 2.0</license>
     </notice>
+    <notice>
+        <name>DuktapeJava</name>
+        <url>https://github.com/gubaojian/DuktapeJava</url>
+        <copyright/>
+        <license>MIT License</license>
+    </notice>
+    <notice>
+        <name>920 Text Editor</name>
+        <url>https://github.com/jecelyin/920-text-editor-v2</url>
+        <copyright/>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>MarkDown</name>
+        <url>https://github.com/zzhoujay/Markdown</url>
+        <copyright>Copyright (c) 2015 zzhoujay</copyright>
+        <license>MIT License</license>
+    </notice>
+
 </notices>

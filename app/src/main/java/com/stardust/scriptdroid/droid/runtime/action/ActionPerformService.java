@@ -3,6 +3,7 @@ package com.stardust.scriptdroid.droid.runtime.action;
 import android.accessibilityservice.AccessibilityService;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -26,6 +27,10 @@ import java.util.List;
  */
 
 public class ActionPerformService extends AccessibilityService {
+
+
+    public static final String ACTION_CHANGE_ASSIST_MODE = App.getApp().getPackageName() + ".ACTION_CHANGE_ASSIST_MODE";
+
 
     private static final String TAG = "ActionPerformService";
     private static final String KEY_ASSIST_MODE_ENABLE = "ASSIST_MODE_ENABLE";
@@ -65,6 +70,7 @@ public class ActionPerformService extends AccessibilityService {
     public static void setAssistModeEnable(boolean assistModeEnable) {
         ActionPerformService.assistModeEnable = assistModeEnable;
         PreferenceManager.getDefaultSharedPreferences(App.getApp()).edit().putBoolean(KEY_ASSIST_MODE_ENABLE, assistModeEnable).apply();
+        App.getApp().sendBroadcast(new Intent(ACTION_CHANGE_ASSIST_MODE).putExtra("enable", assistModeEnable));
     }
 
     @Override

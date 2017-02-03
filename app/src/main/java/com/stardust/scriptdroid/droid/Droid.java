@@ -1,7 +1,7 @@
 package com.stardust.scriptdroid.droid;
 
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
-import com.stardust.scriptdroid.droid.script.GBJDuktapeJavaScriptEngine;
+import com.stardust.scriptdroid.droid.script.DuktapeJavaScriptEngine;
 import com.stardust.scriptdroid.droid.script.JavaScriptEngine;
 import com.stardust.scriptdroid.file.FileUtils;
 
@@ -19,7 +19,7 @@ public class Droid {
     }
 
     private static final DroidRuntime RUNTIME = DroidRuntime.getRuntime();
-    private static final JavaScriptEngine JAVA_SCRIPT_ENGINE = new GBJDuktapeJavaScriptEngine(RUNTIME);
+    private static final JavaScriptEngine JAVA_SCRIPT_ENGINE = new DuktapeJavaScriptEngine(RUNTIME);
     private static final OnRunFinishedListener DEFAULT_LISTENER = new OnRunFinishedListener() {
         @Override
         public void onRunFinished(Object result, Exception e) {
