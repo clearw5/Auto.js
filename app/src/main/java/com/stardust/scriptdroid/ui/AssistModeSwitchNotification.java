@@ -10,6 +10,9 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.AssistModeSwitchService;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
+import com.stardust.util.StateObserver;
+
+import static com.stardust.scriptdroid.droid.runtime.action.ActionPerformService.KEY_ASSIST_MODE_ENABLE;
 
 /**
  * Created by Stardust on 2017/2/2.
@@ -18,17 +21,44 @@ import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
 public class AssistModeSwitchNotification {
 
     private static final int NOTIFY_ID = 11126;
-    private static final String KEY_ASSIST_MODE_NOTIFICATION = "KEY_ASSIST_MODE_NOTIFICATION";
+    public static final String KEY_ASSIST_MODE_NOTIFICATION = "KEY_ASSIST_MODE_NOTIFICATION";
 
     private static boolean enable = false;
     private static Notification notification;
 
-    static {
-        readPreference();
-    }
-
     public static boolean isEnable() {
         return enable;
+    }
+
+    static {
+        App.getStateObserver().register(KEY_ASSIST_MODE_NOTIFICATION, new StateObserver.OnBooleanStateChangedListener() {
+            @Override
+            public void onStateChanged(Boolean newState) {
+                setEnable(newState);
+            }
+
+            @Override
+            public void initState(Boolean state) {
+                enable = state;
+                if (enable) {
+                    showNotification();
+                }
+            }
+        });
+        App.getStateObserver().register(KEY_ASSIST_MODE_ENABLE, new StateObserver.OnBooleanStateChangedListener() {
+            @Override
+            public void onStateChanged(Boolean newState) {
+                if (enable) {
+                    setEnable(false);
+                    setEnable(true);
+                }
+            }
+
+            @Override
+            public void initState(Boolean state) {
+
+            }
+        });
     }
 
     public static void setEnable(boolean enable) {
@@ -40,13 +70,6 @@ public class AssistModeSwitchNotification {
             showNotification();
         } else {
             hideNotification();
-        }
-    }
-
-    public static void notifyAssistModeChanged() {
-        if (enable) {
-            setEnable(false);
-            setEnable(true);
         }
     }
 
@@ -72,12 +95,6 @@ public class AssistModeSwitchNotification {
     private static void hideNotification() {
         NotificationManager notificationManager = (NotificationManager) App.getApp().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(NOTIFY_ID);
-    }
-
-
-    private static void readPreference() {
-        enable = PreferenceManager.getDefaultSharedPreferences(App.getApp()).getBoolean(KEY_ASSIST_MODE_NOTIFICATION, false);
-        setEnable(enable);
     }
 
 }

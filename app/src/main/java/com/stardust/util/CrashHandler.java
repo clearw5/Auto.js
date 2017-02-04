@@ -41,6 +41,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
     public static String throwableToString(Throwable throwable) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
+        throwable.printStackTrace();
         throwable.printStackTrace(pw);
         return sw.toString();
     }

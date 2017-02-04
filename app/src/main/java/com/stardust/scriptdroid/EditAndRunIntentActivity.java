@@ -1,4 +1,4 @@
-package com.stardust;
+package com.stardust.scriptdroid;
 
 import android.content.Intent;
 import android.os.Bundle;

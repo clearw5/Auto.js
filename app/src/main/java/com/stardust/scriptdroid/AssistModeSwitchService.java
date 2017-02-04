@@ -7,7 +7,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
-import com.stardust.scriptdroid.ui.AssistModeSwitchNotification;
+
+import static com.stardust.scriptdroid.ui.AssistModeSwitchNotification.KEY_ASSIST_MODE_NOTIFICATION;
 
 /**
  * Created by Stardust on 2017/2/2.
@@ -18,19 +19,19 @@ public class AssistModeSwitchService extends Service {
         Intent intent = new Intent(App.getApp(), AssistModeSwitchService.class)
                 .putExtra("intentValid", true)
                 .putExtra("switch", "assistMode");
-        return PendingIntent.getService(App.getApp(), 0, intent, 0);
+        return PendingIntent.getService(App.getApp(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         boolean intentValid = intent.getBooleanExtra("intentValid", false);
         if (intentValid) {
-            String action = intent.getStringExtra("action");
+            String action = intent.getStringExtra("switch");
             if (action != null) {
                 if (action.equals("assistMode")) {
                     ActionPerformService.setAssistModeEnable(!ActionPerformService.isAssistModeEnable());
                 } else {
-                    AssistModeSwitchNotification.setEnable(false);
+                    App.getStateObserver().setState(KEY_ASSIST_MODE_NOTIFICATION, false);
                 }
             }
         }
@@ -48,6 +49,6 @@ public class AssistModeSwitchService extends Service {
         Intent deleteIntent = new Intent(App.getApp(), AssistModeSwitchService.class)
                 .putExtra("intentValid", true)
                 .putExtra("switch", "assistModeNotification");
-        return PendingIntent.getService(App.getApp(), 0, deleteIntent, 0);
+        return PendingIntent.getService(App.getApp(), 0, deleteIntent, PendingIntent.FLAG_ONE_SHOT);
     }
 }

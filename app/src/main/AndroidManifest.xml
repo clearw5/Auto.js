@@ -80,7 +80,7 @@
         <service android:name=".AssistModeSwitchService"/>
 
         <activity
-            android:name="com.stardust.EditAndRunIntentActivity"
+            android:name=".EditAndRunIntentActivity"
             android:icon="@drawable/ic_edit_green_48dp"
             android:label="编辑与运行脚本">
 
