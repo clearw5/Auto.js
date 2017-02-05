@@ -30,5 +30,11 @@
         <copyright>Copyright (c) 2015 zzhoujay</copyright>
         <license>MIT License</license>
     </notice>
+    <notice>
+        <name>Alipay ZeroSdk</name>
+        <copyright>Copyright 2016 Fung Go (fython)</copyright>
+        <url>https://github.com/fython/AlipayZeroSdk</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
 
 </notices>

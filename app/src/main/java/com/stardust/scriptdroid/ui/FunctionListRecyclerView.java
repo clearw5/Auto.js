@@ -15,7 +15,10 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.file.FileUtils;
 import com.stardust.scriptdroid.widget.ExpandableRecyclerView;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -91,7 +94,7 @@ public class FunctionListRecyclerView extends ExpandableRecyclerView {
 
         Adapter() {
             setIcon(R.drawable.ic_function_mathematical_green);
-            setTitle(R.string.text_function);
+            setTitle(R.string.text_common_function);
         }
 
         @Override
@@ -136,6 +139,12 @@ public class FunctionListRecyclerView extends ExpandableRecyclerView {
             String[] str = f.split(" ");
             FUNCTION_LIST.add(new Function(str[0], str[1]));
         }
-
+        final Comparator cmp = Collator.getInstance();
+        Collections.sort(FUNCTION_LIST, new Comparator<Function>() {
+            @Override
+            public int compare(Function f1, Function f2) {
+                return cmp.compare(f1.description, f2.description);
+            }
+        });
     }
 }

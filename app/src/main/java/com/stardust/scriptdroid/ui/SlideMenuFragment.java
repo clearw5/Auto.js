@@ -15,7 +15,7 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.DocumentActivity;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.Droid;
-import com.stardust.scriptdroid.droid.assist.Assistant;
+import com.stardust.scriptdroid.droid.assist.BoundsAssistant;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
@@ -60,7 +60,7 @@ public class SlideMenuFragment extends Fragment {
                 mAutoOperateServiceSwitch.setChecked(ActionPerformService.isEnable());
             }
         }, 450);
-        mAssistServiceSwitch.setChecked(Assistant.isAssistModeEnable());
+        mAssistServiceSwitch.setChecked(BoundsAssistant.isAssistModeEnable());
         mAssistServiceNotificationSwitch.setChecked(AssistModeSwitchNotification.isEnable());
     }
 
@@ -68,7 +68,7 @@ public class SlideMenuFragment extends Fragment {
         mAutoOperateServiceSwitch = $(R.id.sw_auto_operate_service);
         mAssistServiceSwitch = $(R.id.sw_assist_service);
         mAssistServiceNotificationSwitch = $(R.id.sw_assist_service_notification);
-        App.getStateObserver().register(Assistant.KEY_ASSIST_MODE_ENABLE, mAssistServiceSwitch);
+        App.getStateObserver().register(BoundsAssistant.KEY_ASSIST_MODE_ENABLE, mAssistServiceSwitch);
         App.getStateObserver().register(KEY_ASSIST_MODE_NOTIFICATION, mAssistServiceNotificationSwitch);
     }
 
@@ -85,7 +85,7 @@ public class SlideMenuFragment extends Fragment {
     @ViewBinding.Check(R.id.sw_auto_operate_service)
     private void setAutoOperateServiceEnable(boolean enable) {
         if (enable && !ActionPerformService.isEnable()) {
-            AccessibilityServiceUtils.goToPermissionSetting(getContext());
+            AccessibilityServiceUtils.goToAccessibilitySetting(getContext());
         } else if (!enable && ActionPerformService.isEnable()) {
             ActionPerformService.disable();
         }
@@ -93,7 +93,7 @@ public class SlideMenuFragment extends Fragment {
 
     @ViewBinding.Check(R.id.sw_assist_service)
     private void setAssistServiceEnable(boolean enable) {
-        Assistant.setAssistModeEnable(enable);
+        BoundsAssistant.setAssistModeEnable(enable);
     }
 
     @ViewBinding.Click(R.id.assist_service)

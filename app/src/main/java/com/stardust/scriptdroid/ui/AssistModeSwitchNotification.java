@@ -9,7 +9,7 @@ import android.support.v4.app.NotificationCompat;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.AssistModeSwitchService;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.assist.Assistant;
+import com.stardust.scriptdroid.droid.assist.BoundsAssistant;
 import com.stardust.util.StateObserver;
 
 
@@ -44,7 +44,7 @@ public class AssistModeSwitchNotification {
                 }
             }
         });
-        App.getStateObserver().register(Assistant.KEY_ASSIST_MODE_ENABLE, new StateObserver.OnBooleanStateChangedListener() {
+        App.getStateObserver().register(BoundsAssistant.KEY_ASSIST_MODE_ENABLE, new StateObserver.OnBooleanStateChangedListener() {
             @Override
             public void onStateChanged(Boolean newState) {
                 if (enable) {
@@ -78,7 +78,7 @@ public class AssistModeSwitchNotification {
                 .setAutoCancel(false)
                 .setSmallIcon(R.drawable.ic_robot_head)
                 .setDeleteIntent(AssistModeSwitchService.getDeletePendingIntent())
-                .setContentText(Assistant.isAssistModeEnable() ?
+                .setContentText(BoundsAssistant.isAssistModeEnable() ?
                         App.getApp().getString(R.string.text_assist_mode_enabled) :
                         App.getApp().getString(R.string.text_assist_mode_disabled))
                 .setContentIntent(AssistModeSwitchService.getStartIntent())

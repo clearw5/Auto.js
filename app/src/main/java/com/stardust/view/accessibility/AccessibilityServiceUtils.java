@@ -5,6 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.widget.Toast;
+
+import com.stardust.scriptdroid.Pref;
+import com.stardust.scriptdroid.R;
 
 /**
  * Created by Stardust on 2017/1/26.
@@ -12,7 +16,10 @@ import android.text.TextUtils;
 
 public class AccessibilityServiceUtils {
 
-    public static void goToPermissionSetting(Context context) {
+    public static void goToAccessibilitySetting(Context context) {
+        if (Pref.isFirstGoToAccessibilitySetting()) {
+            Toast.makeText(context, context.getString(R.string.text_please_choose) + context.getString(R.string.app_name), Toast.LENGTH_LONG).show();
+        }
         context.startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
     }
 

@@ -18,7 +18,9 @@ public class NonUiInitializer {
     private static final Map<String, Integer> SAMPLES = new MapEntries<String, Integer>()
             .entry("sample_open_wechat_moment.js", R.string.text_sample_open_what_moment)
             .entry("sample_open_running_services.js", R.string.text_sample_open_running_services)
-            .entry("sample_hello_big_sister.js", R.string.text_sample_hello_big_sister)
+            .entry("sample_qq_hongbao.js", R.string.text_sample_qq_hongbao)
+            .entry("sample_simple_calculator.js", R.string.text_sample_simple_calculator)
+            .entry("sample_force_qq_chat.js", R.string.text_sample_for_qq_chat)
             .map();
 
     private static NonUiInitializer instance = new NonUiInitializer();
@@ -41,21 +43,25 @@ public class NonUiInitializer {
         }
     }
 
-    private void copySampleScriptFile() {
+    public int copySampleScriptFile() {
         ScriptFileList list = SharedPrefScriptFileList.getInstance();
-        int succeedCount = 0;
+        int failCount = 0;
         for (Map.Entry<String, Integer> entry : SAMPLES.entrySet()) {
             String assetFile = entry.getKey();
             String name = getContext().getString(entry.getValue());
             String path = ScriptFile.DEFAULT_FOLDER + name + ".js";
-            if (FileUtils.copyAsset(assetFile, path)) {
-                list.add(new ScriptFile(name, path));
-                succeedCount++;
+            if (!list.containsPath(path)) {
+                if (FileUtils.copyAsset(assetFile, path)) {
+                    list.add(new ScriptFile(name, path));
+                } else {
+                    failCount++;
+                }
             }
         }
-        if (succeedCount > 0) {
+        if (failCount > 0) {
             Pref.def().edit().putBoolean(Pref.SAMPLE_SCRIPTS_COPIED, true).apply();
         }
+        return failCount;
     }
 
 }

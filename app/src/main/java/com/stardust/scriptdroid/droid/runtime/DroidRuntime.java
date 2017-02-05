@@ -1,6 +1,5 @@
 package com.stardust.scriptdroid.droid.runtime;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -12,7 +11,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.droid.runtime.action.Action;
 import com.stardust.scriptdroid.droid.runtime.action.ActionFactory;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
@@ -20,6 +18,8 @@ import com.stardust.scriptdroid.droid.runtime.action.ActionTarget;
 import com.stardust.scriptdroid.droid.runtime.api.IDroidRuntime;
 
 import java.util.List;
+
+;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -29,19 +29,13 @@ public class DroidRuntime implements IDroidRuntime {
 
     private static final String TAG = "DroidRuntime";
     private static DroidRuntime runtime = new DroidRuntime();
-    private static Context context;
 
     private final Object mLock = new Object();
     private boolean mActionPerformResult;
-    private boolean mActionPerformResultUpToDate;
     private Handler mUIHandler;
 
     public static DroidRuntime getRuntime() {
         return runtime;
-    }
-
-    public static void setContext(Context context) {
-        DroidRuntime.context = context;
     }
 
     protected DroidRuntime() {
@@ -143,24 +137,19 @@ public class DroidRuntime implements IDroidRuntime {
     private boolean performAction(Action action) {
         if (ActionPerformService.getInstance() == null) {
             toast(App.getApp().getString(R.string.text_no_accessibility_permission));
-            throw new PermissionDeniedException(App.getApp().getString(R.string.text_no_accessibility_permission));
+            throw new ScriptStopException(App.getApp().getString(R.string.text_no_accessibility_permission));
         }
-        ensureNotStopped();
         ActionPerformService.setAction(action);
         synchronized (mLock) {
             try {
                 mLock.wait();
             } catch (InterruptedException e) {
-                throw new PermissionDeniedException("已停止运行");
+                ActionPerformService.setActions(ActionPerformService.NO_ACTION);
+                throw new ScriptStopException(App.getApp().getString(R.string.text_script_stopped), e);
             }
         }
         return mActionPerformResult;
     }
-
-    private void ensureNotStopped() {
-        Droid.getInstance().ensureNotStopped();
-    }
-
 
     @Override
     public void toast(final String text) {
@@ -172,36 +161,54 @@ public class DroidRuntime implements IDroidRuntime {
         });
     }
 
+
     @Override
     public void sleep(long millis) {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            throw new ScriptStopException(e);
         }
     }
 
     @Override
+    public boolean isStopped() {
+        return Thread.currentThread().isInterrupted();
+    }
+
+    @Override
+    public void stop() {
+        Thread.interrupted();
+    }
+
+    @Override
     public MaterialDialog.Builder dialog() {
-        return new Builder();
+        if (App.currentActivity() == null) {
+            Toast.makeText(App.getApp(), R.string.text_cannot_create_dialog_when_app_invisible, Toast.LENGTH_SHORT).show();
+            throw new ScriptStopException(App.getApp().getString(R.string.text_cannot_create_dialog_when_app_invisible));
+        }
+        return new MaterialDialog.Builder(App.currentActivity()) {
+
+            public MaterialDialog show() {
+                mUIHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        superShow();
+                    }
+                });
+                return null;
+            }
+
+            private void superShow() {
+                super.show();
+            }
+        };
     }
 
     public void notifyActionPerformed(boolean succeed) {
         mActionPerformResult = succeed;
         synchronized (mLock) {
             mLock.notify();
-        }
-    }
-
-    public class Builder extends MaterialDialog.Builder {
-
-        public Builder() {
-            super(DroidRuntime.context);
-        }
-
-        public MaterialDialog show(final MaterialDialog.Builder dialog) {
-
-            return null;
         }
     }
 

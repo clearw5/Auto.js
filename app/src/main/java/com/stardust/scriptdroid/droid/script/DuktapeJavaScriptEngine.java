@@ -3,7 +3,7 @@ package com.stardust.scriptdroid.droid.script;
 import com.efurture.script.JSTransformer;
 import com.furture.react.DuktapeEngine;
 import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.droid.runtime.api.IDroidRuntime;
 
 import java.io.IOException;
@@ -34,7 +34,6 @@ public class DuktapeJavaScriptEngine implements JavaScriptEngine {
 
     public DuktapeJavaScriptEngine(IDroidRuntime runtime) {
         setRuntime(runtime);
-
     }
 
     private void setRuntime(IDroidRuntime runtime) {
@@ -50,12 +49,14 @@ public class DuktapeJavaScriptEngine implements JavaScriptEngine {
         try {
             result = duktapeEngine.execute(JSTransformer.parse(new StringReader(script)));
         } catch (IOException e) {
-            remove(Thread.currentThread());
+            removeAndStop(Thread.currentThread());
             throw e;
         }
-        remove(Thread.currentThread());
+        if (!script.startsWith(Droid.UI))
+            removeAndDestroy(Thread.currentThread());
         return result;
     }
+
 
     private void init(DuktapeEngine duktapeEngine) {
         duktapeEngine.put("context", App.getApp());
@@ -66,10 +67,20 @@ public class DuktapeJavaScriptEngine implements JavaScriptEngine {
 
     }
 
-    private void remove(Thread thread) {
+    public void removeAndStop(Thread thread) {
         synchronized (mThreadDuktapeEngineMap) {
             DuktapeEngine engine = mThreadDuktapeEngineMap.remove(thread);
             stop(engine, thread);
+        }
+    }
+
+
+    @Override
+    public void removeAndDestroy(Thread thread) {
+        synchronized (mThreadDuktapeEngineMap) {
+            DuktapeEngine engine = mThreadDuktapeEngineMap.remove(thread);
+            if (engine != null)
+                engine.destory();
         }
     }
 
@@ -107,10 +118,4 @@ public class DuktapeJavaScriptEngine implements JavaScriptEngine {
         return n;
     }
 
-    @Override
-    public void ensureNotStopped() {
-        if (!mThreadDuktapeEngineMap.containsKey(Thread.currentThread())) {
-            throw new RuntimeException(App.getApp().getString(R.string.text_script_stopped));
-        }
-    }
 }

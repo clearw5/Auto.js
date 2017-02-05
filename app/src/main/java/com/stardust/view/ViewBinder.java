@@ -40,8 +40,10 @@ public class ViewBinder {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     try {
                         method.invoke(o, isChecked);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
+                    } catch (IllegalAccessException e) {
                         e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             });

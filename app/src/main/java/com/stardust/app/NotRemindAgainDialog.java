@@ -28,7 +28,12 @@ public class NotRemindAgainDialog extends MaterialDialog {
         private boolean mRemind;
 
         public Builder(@NonNull Context context) {
+            this(context, null);
+        }
+
+        public Builder(Context context, String key) {
             super(context);
+            mKeyRemind = key;
             readRemindStatus();
             checkBoxPrompt(context.getString(R.string.text_do_not_remind_again), false, new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -52,12 +57,13 @@ public class NotRemindAgainDialog extends MaterialDialog {
         }
 
         private void readRemindStatus() {
-            generatePreferenceKey();
+            generatePreferenceKeyIfNeeded();
             mRemind = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(mKeyRemind, true);
         }
 
-        private void generatePreferenceKey() {
-            mKeyRemind = md5(TextUtils.join("", Thread.currentThread().getStackTrace()));
+        private void generatePreferenceKeyIfNeeded() {
+            if (mKeyRemind == null)
+                mKeyRemind = md5(TextUtils.join("", Thread.currentThread().getStackTrace()));
         }
     }
 }

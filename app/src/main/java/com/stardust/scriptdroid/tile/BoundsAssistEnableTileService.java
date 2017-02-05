@@ -5,7 +5,7 @@ import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.support.annotation.RequiresApi;
 
-import com.stardust.scriptdroid.droid.assist.Assistant;
+import com.stardust.scriptdroid.droid.assist.BoundsAssistant;
 
 /**
  * Created by Stardust on 2017/1/26.
@@ -15,12 +15,12 @@ import com.stardust.scriptdroid.droid.assist.Assistant;
 public class BoundsAssistEnableTileService extends TileService {
 
     public void onClick() {
-        Assistant.setAssistModeEnable(!Assistant.isAssistModeEnable());
+        BoundsAssistant.setAssistModeEnable(!BoundsAssistant.isAssistModeEnable());
         updateTile();
     }
 
     private void updateTile() {
-        getQsTile().setState(Assistant.isAssistModeEnable() ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
+        getQsTile().setState(BoundsAssistant.isAssistModeEnable() ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
         getQsTile().updateTile();
     }
 

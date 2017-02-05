@@ -74,7 +74,7 @@
             android:layout_height="20dp"
             android:layout_alignParentLeft="true"
             android:layout_margin="16dp"
-            android:src="@drawable/ic_service_green"/>
+            android:src="@drawable/ic_robot_head_green"/>
 
         <TextView
             android:layout_width="wrap_content"

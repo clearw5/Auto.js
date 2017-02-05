@@ -19,7 +19,6 @@ import com.jecelyin.editor.v2.ui.EditorDelegate;
 import com.jecelyin.editor.v2.view.EditorView;
 import com.jecelyin.editor.v2.view.menu.MenuDef;
 import com.stardust.scriptdroid.droid.Droid;
-import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.scriptdroid.editor920.Editor920Activity;
 import com.stardust.scriptdroid.ui.AssistClipListRecyclerView;
 import com.stardust.scriptdroid.ui.EditSideMenuFragment;
@@ -58,7 +57,6 @@ public class EditActivity extends Editor920Activity {
 
     public void onCreate(Bundle b) {
         super.onCreate(b);
-        DroidRuntime.setContext(this);
         handleIntent();
         setUpUI();
         setUpEditor();

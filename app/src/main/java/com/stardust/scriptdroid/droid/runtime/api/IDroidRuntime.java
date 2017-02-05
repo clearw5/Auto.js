@@ -42,5 +42,9 @@ public interface IDroidRuntime {
 
     void sleep(long millis);
 
+    boolean isStopped();
+
+    void stop();
+
     MaterialDialog.Builder dialog();
 }

@@ -80,11 +80,15 @@ public class ExpandableRecyclerView extends RecyclerView {
     }
 
     public void expand() {
+        if (mExpanded)
+            return;
         mExpanded = true;
         ((Adapter) getAdapter()).notifyExpanded();
     }
 
     public void collapse() {
+        if (!mExpanded)
+            return;
         mExpanded = false;
         ((Adapter) getAdapter()).notifyCollapsed();
     }
@@ -95,17 +99,11 @@ public class ExpandableRecyclerView extends RecyclerView {
 
         public void notifyExpanded() {
             notifyItemChanged(0);
-            int n = getItemCount();
-            for (int i = 1; i < n; i++) {
-                notifyItemInserted(i);
-            }
+            notifyItemRangeInserted(1, getChildItemCount());
         }
 
         public void notifyCollapsed() {
-            int n = getChildItemCount();
-            for (int i = 0; i < n; i++) {
-                notifyItemRemoved(1);
-            }
+            notifyItemRangeRemoved(1, getChildItemCount());
             notifyItemChanged(0);
         }
 

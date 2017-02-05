@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.DocumentActivity;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.assist.Assistant;
+import com.stardust.scriptdroid.droid.assist.BoundsAssistant;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 
@@ -70,14 +70,14 @@ public class EditSideMenuFragment extends com.stardust.app.Fragment {
     }
 
     private void syncSwitchState() {
-        mAssistServiceSwitch.setChecked(Assistant.isAssistModeEnable());
+        mAssistServiceSwitch.setChecked(BoundsAssistant.isAssistModeEnable());
         mAssistServiceNotificationSwitch.setChecked(AssistModeSwitchNotification.isEnable());
     }
 
     private void setUpSwitchCompat() {
         mAssistServiceSwitch = $(R.id.sw_assist_service);
         mAssistServiceNotificationSwitch = $(R.id.sw_assist_service_notification);
-        App.getStateObserver().register(Assistant.KEY_ASSIST_MODE_ENABLE, mAssistServiceSwitch);
+        App.getStateObserver().register(BoundsAssistant.KEY_ASSIST_MODE_ENABLE, mAssistServiceSwitch);
         App.getStateObserver().register(KEY_ASSIST_MODE_NOTIFICATION, mAssistServiceNotificationSwitch);
     }
 
@@ -88,7 +88,7 @@ public class EditSideMenuFragment extends com.stardust.app.Fragment {
 
     @ViewBinding.Check(R.id.sw_assist_service)
     private void setAssistServiceEnable(boolean enable) {
-        Assistant.setAssistModeEnable(enable);
+        BoundsAssistant.setAssistModeEnable(enable);
     }
 
     @ViewBinding.Click(R.id.assist_service)

@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.assist.AssistClipList;
-import com.stardust.scriptdroid.droid.assist.SharedPrefAssistClipList;
+import com.stardust.scriptdroid.droid.assist.BoundsAssistClipList;
+import com.stardust.scriptdroid.droid.assist.SharedPrefBoundsAssistClipList;
 import com.stardust.scriptdroid.widget.ExpandableRecyclerView;
 
 /**
@@ -25,7 +25,7 @@ public class AssistClipListRecyclerView extends ExpandableRecyclerView {
         void onClick(String clip, int position);
     }
 
-    private AssistClipList mAssistClipList = SharedPrefAssistClipList.getInstance();
+    private BoundsAssistClipList mBoundsAssistClipList = SharedPrefBoundsAssistClipList.getInstance();
     private OnClipClickListener mOnClipClickListener;
 
     public AssistClipListRecyclerView(Context context) {
@@ -55,7 +55,7 @@ public class AssistClipListRecyclerView extends ExpandableRecyclerView {
                 }
             }
         });
-        mAssistClipList.setOnClipChangedListener(new AssistClipList.OnClipChangedListener() {
+        mBoundsAssistClipList.setOnClipChangedListener(new BoundsAssistClipList.OnClipChangedListener() {
             @Override
             public void onClipRemove(int position) {
                 getAdapter().notifyItemRemoved(position);
@@ -82,7 +82,7 @@ public class AssistClipListRecyclerView extends ExpandableRecyclerView {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         //防止因mAssistClipList持有OnClipChangedListener引用从而导致这个RecyclerView及其Context被引用，内存泄漏
-        mAssistClipList.setOnClipChangedListener(null);
+        mBoundsAssistClipList.setOnClipChangedListener(null);
     }
 
     private class Adapter extends ExpandableRecyclerView.DefaultTitleAdapter {
@@ -100,12 +100,12 @@ public class AssistClipListRecyclerView extends ExpandableRecyclerView {
         @Override
         protected void onBindChildViewHolder(RecyclerView.ViewHolder holder, int position) {
             ChildViewHolder viewHolder = (ChildViewHolder) holder;
-            viewHolder.mTextView.setText(mAssistClipList.get(position));
+            viewHolder.mTextView.setText(mBoundsAssistClipList.get(position));
         }
 
         @Override
         protected int getChildItemCount() {
-            return mAssistClipList.size();
+            return mBoundsAssistClipList.size();
         }
 
         @Override

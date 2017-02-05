@@ -17,7 +17,7 @@ public interface JavaScriptEngine {
 
     int stopAll();
 
-    void ensureNotStopped();
+    void removeAndDestroy(Thread thread);
 
     class Init {
         public static final String INIT_SCRIPT = readInitScript();

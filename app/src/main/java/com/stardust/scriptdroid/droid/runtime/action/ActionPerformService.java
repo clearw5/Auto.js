@@ -7,7 +7,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.droid.assist.Assistant;
+import com.stardust.scriptdroid.droid.assist.BoundsAssistant;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
@@ -53,7 +53,7 @@ public class ActionPerformService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         Log.v(TAG, "onAccessibilityEvent: state=" + state + " event=" + event);
-        Assistant.performAssistance(event);
+        BoundsAssistant.performAssistance(event);
         if (state == STATE_INACTIVE)
             return;
         AccessibilityNodeInfo root = getRootInActiveWindow();
@@ -103,8 +103,12 @@ public class ActionPerformService extends AccessibilityService {
     }
 
     public static void disable() {
-        if (instance != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            instance.disableSelf();
+        if (instance != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                instance.disableSelf();
+            } else {
+                AccessibilityServiceUtils.goToAccessibilitySetting(App.getApp());
+            }
         }
     }
 

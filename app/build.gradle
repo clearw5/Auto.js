@@ -6,8 +6,6 @@ android {
     defaultConfig {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 19
-        //由于不知道在API24以上如何调起其他文件编辑器应用编辑文件，只能改到API23。FileProvider貌似只能查看编辑后不能保存？
-        //参照ScriptFileOperation.Edit
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"

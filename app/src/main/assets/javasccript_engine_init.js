@@ -19,21 +19,11 @@ var launchApp = function(appName){
     droid.launchApp(appName);
 }
 
-
-var text = function(str){
-    return droid.text(str);
-}
-
-var bounds = function(left, top, right, bottom){
-    return droid.bounds(left, top, right, bottom);
-}
-
-
 function performAction(action, args){
     if(args.length == 4){
-        return action(bounds(args[0], args[1], args[2], args[3]));
+        return action(droid.bounds(args[0], args[1], args[2], args[3]));
     }else{
-        return action(text(args[0]));
+        return action(droid.text(args[0]));
     }
 }
 
@@ -49,17 +39,9 @@ var longClick = function(a, b, c, d){
     }, arguments);
 }
 
-var scrollAllUp = function(){
-    droid.scrollAllUp();
-}
-
-var scrollAllDown = function(){
-    droid.scrollAllDown();
-}
-
 var scrollUp = function(a, b, c, d){
     if(arguments.length == 0)
-        return scrollAllUp();
+        return droid.scrollAllUp();
     return performAction(function(target){
         return droid.scrollUp(target);
     }, arguments);
@@ -67,7 +49,7 @@ var scrollUp = function(a, b, c, d){
 
 var scrollDown = function(a, b, c, d){
      if(arguments.length == 0)
-            return scrollAllDown();
+            return droid.scrollAllDown();
        return performAction(function(target){
         return droid.scrollDown(target);
     }, arguments);
@@ -95,10 +77,6 @@ var editable = function(i){
     return droid.editable(i);
 }
 
-var setText = function(target, str){
-    return droid.setText(target, str);
-}
-
 var input = function(a, b){
     if(arguments.length == 1){
         return droid.setText(editable(-1), a);
@@ -111,9 +89,11 @@ var sleep = function(millis){
     droid.sleep(millis);
 }
 
-
-importClass("java.lang.Runnable");
-
-var ui = function(action){
-    droid.ui(new Runnable(action));
+var isStopped = function(){
+    return droid.isStopped();
 }
+
+var notStopped = function(){
+    return !isStopped();
+}
+

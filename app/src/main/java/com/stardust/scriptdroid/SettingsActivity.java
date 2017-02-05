@@ -7,6 +7,7 @@ import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import com.stardust.util.MapEntries;
 
@@ -61,6 +62,16 @@ public class SettingsActivity extends BaseActivity {
         public void onStart() {
             super.onStart();
             ACTION_MAP = new MapEntries<String, Runnable>()
+                    .entry(getString(R.string.text_re_import_samples), new Runnable() {
+                        @Override
+                        public void run() {
+                            int failCount = NonUiInitializer.getInstance().copySampleScriptFile();
+                            if (failCount <= 0) {
+                                Toast.makeText(getActivity(), R.string.text_re_import_succeed, Toast.LENGTH_SHORT).show();
+                            } else
+                                Toast.makeText(getActivity(), R.string.text_fail, Toast.LENGTH_SHORT).show();
+                        }
+                    })
                     .entry(getString(R.string.text_about), new Runnable() {
                         @Override
                         public void run() {

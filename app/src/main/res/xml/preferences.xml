@@ -2,6 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
+        android:title="@string/text_others">
+
+        <Preference
+            android:title="@string/text_re_import_samples"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/text_about">
 
         <Preference

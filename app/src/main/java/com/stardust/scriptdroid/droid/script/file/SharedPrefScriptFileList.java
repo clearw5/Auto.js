@@ -89,6 +89,11 @@ public class SharedPrefScriptFileList extends ScriptFileList {
         return mScriptPath.size();
     }
 
+    @Override
+    public boolean containsPath(String path) {
+        return mScriptPath.contains(path);
+    }
+
     protected void syncWithSharedPref() {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(SP_KEY_SCRIPT_NAME, GSON.toJson(mScriptName));

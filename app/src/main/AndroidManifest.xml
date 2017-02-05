@@ -76,6 +76,7 @@
         <activity android:name=".AboutActivity"/>
         <activity android:name=".SettingsActivity"/>
         <activity android:name=".ErrorReportActivity"/>
+        <activity android:name=".droid.script.ScriptExecuteActivity"/>
 
         <service android:name=".AssistModeSwitchService"/>
 

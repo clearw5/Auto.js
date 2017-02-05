@@ -54,7 +54,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     private void goToAccessibilityPermissionSettingIfDisabled() {
         if (!AccessibilityServiceUtils.isAccessibilityServiceEnabled(this, ActionPerformService.class)) {
-            new NotRemindAgainDialog.Builder(this)
+            new NotRemindAgainDialog.Builder(this, "goToAccessibilityPermissionSettingIfDisabled")
                     .title(R.string.text_alert)
                     .content(R.string.explain_accessibility_permission)
                     .positiveText(R.string.text_go_to_setting)
@@ -62,7 +62,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            AccessibilityServiceUtils.goToPermissionSetting(MainActivity.this);
+                            AccessibilityServiceUtils.goToAccessibilitySetting(MainActivity.this);
                         }
                     }).show();
         }

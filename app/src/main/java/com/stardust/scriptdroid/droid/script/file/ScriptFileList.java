@@ -25,4 +25,5 @@ public abstract class ScriptFileList {
     }
 
 
+    public abstract boolean containsPath(String path);
 }
