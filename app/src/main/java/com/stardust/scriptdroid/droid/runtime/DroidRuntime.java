@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.droid.runtime.action.Action;
 import com.stardust.scriptdroid.droid.runtime.action.ActionFactory;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
@@ -32,6 +33,7 @@ public class DroidRuntime implements IDroidRuntime {
 
     private final Object mLock = new Object();
     private boolean mActionPerformResult;
+    private boolean mActionPerformResultUpToDate;
     private Handler mUIHandler;
 
     public static DroidRuntime getRuntime() {
@@ -143,15 +145,20 @@ public class DroidRuntime implements IDroidRuntime {
             toast(App.getApp().getString(R.string.text_no_accessibility_permission));
             throw new PermissionDeniedException(App.getApp().getString(R.string.text_no_accessibility_permission));
         }
+        ensureNotStopped();
         ActionPerformService.setAction(action);
         synchronized (mLock) {
             try {
                 mLock.wait();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw new PermissionDeniedException("已停止运行");
             }
         }
         return mActionPerformResult;
+    }
+
+    private void ensureNotStopped() {
+        Droid.getInstance().ensureNotStopped();
     }
 
 

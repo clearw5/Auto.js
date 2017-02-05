@@ -1,5 +1,7 @@
 package com.stardust.scriptdroid.droid;
 
+import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.scriptdroid.droid.script.DuktapeJavaScriptEngine;
 import com.stardust.scriptdroid.droid.script.JavaScriptEngine;
@@ -24,7 +26,7 @@ public class Droid {
         @Override
         public void onRunFinished(Object result, Exception e) {
             if (e != null) {
-                RUNTIME.toast("错误: " + e.getMessage());
+                RUNTIME.toast(App.getApp().getString(R.string.text_error) + ": " + e.getMessage());
             }
         }
     };
@@ -59,7 +61,7 @@ public class Droid {
     public void runScript(final String script, OnRunFinishedListener listener, RunningConfig config) {
         if (config.runInNewThread) {
             new Thread(new RunScriptRunnable(script, listener, config)).start();
-        }else {
+        } else {
             new RunScriptRunnable(script, listener, config).run();
         }
 
@@ -68,6 +70,11 @@ public class Droid {
 
     public int stopAll() {
         return JAVA_SCRIPT_ENGINE.stopAll();
+    }
+
+
+    public void ensureNotStopped() {
+        JAVA_SCRIPT_ENGINE.ensureNotStopped();
     }
 
     private void checkFile(File file) {

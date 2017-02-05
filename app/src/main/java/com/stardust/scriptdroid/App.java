@@ -26,7 +26,7 @@ public class App extends Application {
 
     public void onCreate() {
         super.onCreate();
-        Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
+        Thread.currentThread().setUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
         instance = this;
         stateObserver = new StateObserver(PreferenceManager.getDefaultSharedPreferences(this));
     }

@@ -31,7 +31,7 @@ public class DocumentActivity extends BaseActivity {
             markdownView.loadMarkdown(FileUtils.readString(getResources().openRawResource(R.raw.document)));
         } catch (Exception e) {
             e.printStackTrace();
-            markdownView.setText("文档加载失败/(ㄒoㄒ)/~~");
+            markdownView.setText(R.string.text_load_failed);
         }
     }
 

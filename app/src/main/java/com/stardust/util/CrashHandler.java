@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.R;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -26,7 +27,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
         try {
             Log.e("CrashHandler", "Uncaught Exception!!!");
             ex.printStackTrace();
-            String t = "很抱歉，程序遇到未知错误，即将停止运行\n错误代码：" + ex.toString();
+            String t = App.getApp().getString(R.string.sorry_for_crash) + ex.toString();
             Intent intent = new Intent(App.getApp(), this.mErrorReportClass);
             intent.putExtra("message", t);
             intent.putExtra("error", throwableToString(ex));

@@ -1,18 +1,15 @@
 package com.stardust.scriptdroid.droid.script;
 
-import android.util.Pair;
-
 import com.efurture.script.JSTransformer;
 import com.furture.react.DuktapeEngine;
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.runtime.api.IDroidRuntime;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -22,7 +19,7 @@ import java.util.Map;
 public class DuktapeJavaScriptEngine implements JavaScriptEngine {
 
 
-    private final List<Pair<DuktapeEngine, Thread>> mDuktapeEngineList = new ArrayList<>();
+    private final Map<Thread, DuktapeEngine> mThreadDuktapeEngineMap = new Hashtable<>();
     private static final String INIT_SCRIPT;
     private Map<String, Object> mVariableMap = new HashMap<>();
 
@@ -53,10 +50,10 @@ public class DuktapeJavaScriptEngine implements JavaScriptEngine {
         try {
             result = duktapeEngine.execute(JSTransformer.parse(new StringReader(script)));
         } catch (IOException e) {
-            remove(duktapeEngine);
+            remove(Thread.currentThread());
             throw e;
         }
-        remove(duktapeEngine);
+        remove(Thread.currentThread());
         return result;
     }
 
@@ -69,33 +66,26 @@ public class DuktapeJavaScriptEngine implements JavaScriptEngine {
 
     }
 
-    private void remove(DuktapeEngine duktapeEngine) {
-        duktapeEngine.destory();
-        synchronized (mDuktapeEngineList) {
-            Iterator<Pair<DuktapeEngine, Thread>> iterator = mDuktapeEngineList.iterator();
-            while (iterator.hasNext()) {
-                Pair<DuktapeEngine, Thread> pair = iterator.next();
-                if (pair.first == duktapeEngine) {
-                    stop(pair.first, pair.second);
-                }
-                iterator.remove();
-                break;
-            }
+    private void remove(Thread thread) {
+        synchronized (mThreadDuktapeEngineMap) {
+            DuktapeEngine engine = mThreadDuktapeEngineMap.remove(thread);
+            stop(engine, thread);
         }
     }
 
     private void stop(DuktapeEngine engine, Thread thread) {
+        if (engine != null)
+            engine.destory();
         try {
             thread.interrupt();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        engine.destory();
     }
 
     private void add(DuktapeEngine duktapeEngine, Thread thread) {
-        synchronized (mDuktapeEngineList) {
-            mDuktapeEngineList.add(0, new Pair<>(duktapeEngine, thread));
+        synchronized (mThreadDuktapeEngineMap) {
+            mThreadDuktapeEngineMap.put(thread, duktapeEngine);
         }
     }
 
@@ -107,14 +97,20 @@ public class DuktapeJavaScriptEngine implements JavaScriptEngine {
     @Override
     public int stopAll() {
         int n;
-        synchronized (mDuktapeEngineList) {
-            for (Pair<DuktapeEngine, Thread> pair : mDuktapeEngineList) {
-                stop(pair.first, pair.second);
+        synchronized (mThreadDuktapeEngineMap) {
+            for (Map.Entry<Thread, DuktapeEngine> entry : mThreadDuktapeEngineMap.entrySet()) {
+                stop(entry.getValue(), entry.getKey());
             }
-            n = mDuktapeEngineList.size();
-            mDuktapeEngineList.clear();
+            n = mThreadDuktapeEngineMap.size();
+            mThreadDuktapeEngineMap.clear();
         }
         return n;
     }
 
+    @Override
+    public void ensureNotStopped() {
+        if (!mThreadDuktapeEngineMap.containsKey(Thread.currentThread())) {
+            throw new RuntimeException(App.getApp().getString(R.string.text_script_stopped));
+        }
+    }
 }

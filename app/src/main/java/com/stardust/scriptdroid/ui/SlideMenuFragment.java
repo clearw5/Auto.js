@@ -15,12 +15,12 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.DocumentActivity;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.Droid;
+import com.stardust.scriptdroid.droid.assist.Assistant;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
-import static com.stardust.scriptdroid.droid.runtime.action.ActionPerformService.KEY_ASSIST_MODE_ENABLE;
 import static com.stardust.scriptdroid.ui.AssistModeSwitchNotification.KEY_ASSIST_MODE_NOTIFICATION;
 
 /**
@@ -30,7 +30,7 @@ import static com.stardust.scriptdroid.ui.AssistModeSwitchNotification.KEY_ASSIS
 public class SlideMenuFragment extends Fragment {
 
 
-    public static void init(AppCompatActivity activity, int viewId) {
+    public static void setFragment(AppCompatActivity activity, int viewId) {
         SlideMenuFragment fragment = new SlideMenuFragment();
         activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).commit();
     }
@@ -60,7 +60,7 @@ public class SlideMenuFragment extends Fragment {
                 mAutoOperateServiceSwitch.setChecked(ActionPerformService.isEnable());
             }
         }, 450);
-        mAssistServiceSwitch.setChecked(ActionPerformService.isAssistModeEnable());
+        mAssistServiceSwitch.setChecked(Assistant.isAssistModeEnable());
         mAssistServiceNotificationSwitch.setChecked(AssistModeSwitchNotification.isEnable());
     }
 
@@ -68,7 +68,7 @@ public class SlideMenuFragment extends Fragment {
         mAutoOperateServiceSwitch = $(R.id.sw_auto_operate_service);
         mAssistServiceSwitch = $(R.id.sw_assist_service);
         mAssistServiceNotificationSwitch = $(R.id.sw_assist_service_notification);
-        App.getStateObserver().register(KEY_ASSIST_MODE_ENABLE, mAssistServiceSwitch);
+        App.getStateObserver().register(Assistant.KEY_ASSIST_MODE_ENABLE, mAssistServiceSwitch);
         App.getStateObserver().register(KEY_ASSIST_MODE_NOTIFICATION, mAssistServiceNotificationSwitch);
     }
 
@@ -93,7 +93,7 @@ public class SlideMenuFragment extends Fragment {
 
     @ViewBinding.Check(R.id.sw_assist_service)
     private void setAssistServiceEnable(boolean enable) {
-        ActionPerformService.setAssistModeEnable(enable);
+        Assistant.setAssistModeEnable(enable);
     }
 
     @ViewBinding.Click(R.id.assist_service)
@@ -115,9 +115,9 @@ public class SlideMenuFragment extends Fragment {
     private void stopAllRunningScripts() {
         int n = Droid.getInstance().stopAll();
         if (n > 0)
-            Snackbar.make(getActivityContentView(), "已停止" + n + "个正在运行的脚本", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(getActivityContentView(), String.format(getString(R.string.text_already_stop_n_scripts), n), Snackbar.LENGTH_SHORT).show();
         else
-            Snackbar.make(getActivityContentView(), "没有正在运行的脚本", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(getActivityContentView(), R.string.text_no_running_script, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

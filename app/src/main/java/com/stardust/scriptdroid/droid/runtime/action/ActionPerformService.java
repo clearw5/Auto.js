@@ -1,17 +1,13 @@
 package com.stardust.scriptdroid.droid.runtime.action;
 
 import android.accessibilityservice.AccessibilityService;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.graphics.Rect;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.Toast;
 
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.droid.assist.Assistant;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
@@ -28,7 +24,6 @@ import java.util.List;
 public class ActionPerformService extends AccessibilityService {
 
     private static final String TAG = "ActionPerformService";
-    public static final String KEY_ASSIST_MODE_ENABLE = "ASSIST_MODE_ENABLE";
     private static ActionPerformService instance;
 
     @SuppressWarnings("unchecked")
@@ -38,9 +33,6 @@ public class ActionPerformService extends AccessibilityService {
 
     public static final List<Action> actions = new ArrayList<>();
     private static int state = STATE_INACTIVE;
-
-    private static boolean assistModeEnable = false;
-
 
     public static void setActions(Collection<Action> collection) {
         synchronized (actions) {
@@ -58,19 +50,10 @@ public class ActionPerformService extends AccessibilityService {
         return instance;
     }
 
-    public static boolean isAssistModeEnable() {
-        return assistModeEnable;
-    }
-
-    public static void setAssistModeEnable(boolean assistModeEnable) {
-        ActionPerformService.assistModeEnable = assistModeEnable;
-        App.getStateObserver().setState(KEY_ASSIST_MODE_ENABLE, assistModeEnable);
-    }
-
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         Log.v(TAG, "onAccessibilityEvent: state=" + state + " event=" + event);
-        performAssistance(event);
+        Assistant.performAssistance(event);
         if (state == STATE_INACTIVE)
             return;
         AccessibilityNodeInfo root = getRootInActiveWindow();
@@ -108,27 +91,6 @@ public class ActionPerformService extends AccessibilityService {
         }
     }
 
-    private void performAssistance(AccessibilityEvent event) {
-        if (!assistModeEnable) {
-            return;
-        }
-        if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED || event.getEventType() == AccessibilityEvent.TYPE_VIEW_LONG_CLICKED) {
-            AccessibilityNodeInfo nodeInfo = event.getSource();
-            if (nodeInfo == null) {
-                return;
-            }
-            nodeInfo.refresh();
-            Log.v(TAG, "click: " + nodeInfo);
-            Rect rect = new Rect();
-            nodeInfo.getBoundsInScreen(rect);
-            String str = rect.toString().replace('-', ',').replace(" ", "").substring(4);
-            ClipboardManager manager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-            manager.setPrimaryClip(ClipData.newPlainText("", str));
-            Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
-            nodeInfo.recycle();
-        }
-    }
-
     @Override
     public void onInterrupt() {
 
@@ -138,10 +100,6 @@ public class ActionPerformService extends AccessibilityService {
     public void onServiceConnected() {
         Log.v(TAG, "onServiceConnected");
         instance = this;
-    }
-
-    static {
-        assistModeEnable = PreferenceManager.getDefaultSharedPreferences(App.getApp()).getBoolean(KEY_ASSIST_MODE_ENABLE, false);
     }
 
     public static void disable() {

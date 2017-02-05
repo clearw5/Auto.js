@@ -2,6 +2,8 @@ package com.stardust.scriptdroid.droid.script.file;
 
 import android.os.Environment;
 
+import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.Droid;
 
 import java.io.File;
@@ -12,7 +14,7 @@ import java.io.File;
 
 public class ScriptFile {
 
-    public static final String DEFAULT_FOLDER = Environment.getExternalStorageDirectory() + "/脚本/";
+    public static final String DEFAULT_FOLDER = Environment.getExternalStorageDirectory() + App.getApp().getString(R.string.folder_name);
     public String name;
 
     public String path;

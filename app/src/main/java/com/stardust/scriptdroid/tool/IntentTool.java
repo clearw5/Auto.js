@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
+import com.stardust.scriptdroid.R;
+
 /**
  * Intent工具，用于Activity之间的跳转，调起其他应用程序等
  */
@@ -28,7 +30,7 @@ public class IntentTool {
             intent.putExtra(Intent.EXTRA_SUBJECT, title);
         if (content != null)
             intent.putExtra(Intent.EXTRA_TEXT, content);
-        context.startActivity(Intent.createChooser(intent, "请选择邮件应用"));
+        context.startActivity(Intent.createChooser(intent, context.getString(R.string.text_choose_email_app)));
     }
 
     public static void goToMail(Context context, String sendTo) {

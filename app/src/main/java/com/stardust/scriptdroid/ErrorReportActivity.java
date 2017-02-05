@@ -36,8 +36,8 @@ public class ErrorReportActivity extends BaseActivity {
         final String errorDetail = getIntent().getStringExtra("error");
         new MaterialDialog.Builder(this)
                 .content(message)
-                .positiveText("退出")
-                .negativeText("复制调试信息")
+                .positiveText(R.string.text_exit)
+                .negativeText(R.string.text_copy_debug_info)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {

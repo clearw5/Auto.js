@@ -4,10 +4,10 @@ import android.content.SharedPreferences;
 import android.support.v7.widget.SwitchCompat;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 /**
  * Created by Stardust on 2017/2/3.
@@ -115,7 +115,7 @@ public class StateObserver {
     private List<OnStateChangedListener> getListenerListOrCreateIfNotExists(String key) {
         List<OnStateChangedListener> listeners = mKeyStateListenersMap.get(key);
         if (listeners == null) {
-            listeners = new ArrayList<>();
+            listeners = new Vector<>();
             mKeyStateListenersMap.put(key, listeners);
         }
         return listeners;

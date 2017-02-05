@@ -6,6 +6,8 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.stardust.scriptdroid.R;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -44,7 +46,7 @@ public class FileChooser {
         intent.setType(mimeType);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         try {
-            mActivity.startActivityForResult(Intent.createChooser(intent, "选择一个文件"), FILE_CHOOSE);
+            mActivity.startActivityForResult(Intent.createChooser(intent, mActivity.getString(R.string.text_choose_file)), FILE_CHOOSE);
         } catch (ActivityNotFoundException ex) {
             handler.handle(ex, mimeType);
         }

@@ -5,13 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.View;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.jecelyin.editor.v2.Pref;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.common.SaveListener;
 import com.jecelyin.editor.v2.ui.EditorDelegate;
@@ -20,6 +21,9 @@ import com.jecelyin.editor.v2.view.menu.MenuDef;
 import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.scriptdroid.editor920.Editor920Activity;
+import com.stardust.scriptdroid.ui.AssistClipListRecyclerView;
+import com.stardust.scriptdroid.ui.EditSideMenuFragment;
+import com.stardust.scriptdroid.ui.FunctionListRecyclerView;
 import com.stardust.scriptdroid.widget.ToolbarMenuItem;
 import com.stardust.util.SparseArrayEntries;
 import com.stardust.view.ViewBinder;
@@ -32,6 +36,8 @@ import java.io.File;
  */
 
 public class EditActivity extends Editor920Activity {
+
+    private static final String KEY_EDIT_ACTIVITY_FIRST_USE = "KEY_EDIT_ACTIVITY_FIRST_USE";
 
     public static void editFile(Context context, String path) {
         editFile(context, null, path);
@@ -46,6 +52,7 @@ public class EditActivity extends Editor920Activity {
     private String mName;
     private File mFile;
     private View mView;
+    private DrawerLayout mDrawerLayout;
     private EditorDelegate mEditorDelegate;
     private SparseArray<ToolbarMenuItem> mMenuMap;
 
@@ -55,6 +62,24 @@ public class EditActivity extends Editor920Activity {
         handleIntent();
         setUpUI();
         setUpEditor();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        openDrawerIfFirstUse();
+    }
+
+    private void openDrawerIfFirstUse() {
+        if (Pref.def().getBoolean(KEY_EDIT_ACTIVITY_FIRST_USE, true)) {
+            mDrawerLayout.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mDrawerLayout.openDrawer(GravityCompat.END);
+                }
+            }, 1000);
+            Pref.def().edit().putBoolean(KEY_EDIT_ACTIVITY_FIRST_USE, false).apply();
+        }
     }
 
     private void handleIntent() {
@@ -73,15 +98,35 @@ public class EditActivity extends Editor920Activity {
     private void setUpUI() {
         setTheme(R.style.EditorTheme);
         mView = View.inflate(this, R.layout.activity_edit, null);
+        mDrawerLayout = (DrawerLayout) mView.findViewById(R.id.drawer_layout);
         setContentView(mView);
-        initMenuItem();
+        initSideMenuFragment();
         setUpToolbar();
+        initMenuItem();
         ViewBinder.bind(this);
+    }
+
+    private void initSideMenuFragment() {
+        EditSideMenuFragment.setFragment(EditActivity.this, R.id.fragment_edit_side_menu)
+                .setOnFunctionClickListener(new FunctionListRecyclerView.OnFunctionClickListener() {
+                    @Override
+                    public void onClick(FunctionListRecyclerView.Function function, int position) {
+                        insertText(function.name);
+                        mDrawerLayout.closeDrawer(GravityCompat.END);
+                    }
+                })
+                .setOnClipClickListener(new AssistClipListRecyclerView.OnClipClickListener() {
+                    @Override
+                    public void onClick(String clip, int position) {
+                        insertText(clip);
+                        mDrawerLayout.closeDrawer(GravityCompat.END);
+                    }
+                });
+
     }
 
     private void setUpEditor() {
         if (mFile != null) {
-            Pref.getInstance(this).setReadOnly(false);
             mEditorDelegate = new EditorDelegate(0, mFile, 0, null);
             EditorView editorView = (EditorView) findViewById(R.id.editor);
             mEditorDelegate.setEditorView(editorView);
@@ -127,7 +172,7 @@ public class EditActivity extends Editor920Activity {
     }
 
     private void run() {
-        Snackbar.make(mView, "开始运行", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(mView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         setMenuStatus(R.id.run, MenuDef.STATUS_DISABLED);
         Droid.getInstance().runScriptFile(mFile, new Droid.OnRunFinishedListener() {
             @Override
@@ -137,7 +182,7 @@ public class EditActivity extends Editor920Activity {
                     public void run() {
                         setMenuStatus(R.id.run, MenuDef.STATUS_NORMAL);
                         if (e != null)
-                            Snackbar.make(mView, "错误: " + e.getMessage(), Snackbar.LENGTH_INDEFINITE).show();
+                            Snackbar.make(mView, getString(R.string.text_error) + ": " + e.getMessage(), Snackbar.LENGTH_INDEFINITE).show();
                     }
                 });
             }
@@ -211,4 +256,8 @@ public class EditActivity extends Editor920Activity {
                 .show();
     }
 
+    @Override
+    public void doCommand(Command command) {
+        mEditorDelegate.doCommand(command);
+    }
 }

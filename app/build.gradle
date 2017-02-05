@@ -47,6 +47,7 @@ dependencies {
     compile('de.psdev.licensesdialog:licensesdialog:1.8.1')
     compile 'com.furture.react:DuktapeJava:1.1.0'
     compile 'com.zzhoujay.markdown:markdown:1.0.2'
+    compile 'moe.feng:AlipayZeroSdk:1.1'
 
     compile files('libs/JSTransformer.jar')
 

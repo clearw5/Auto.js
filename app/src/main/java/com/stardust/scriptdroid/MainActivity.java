@@ -88,7 +88,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     private void setUpUI() {
         mDrawerLayout = (DrawerLayout) View.inflate(this, R.layout.activity_main, null);
         setContentView(mDrawerLayout);
-        SlideMenuFragment.init(this, R.id.fragment_slide_menu);
+        SlideMenuFragment.setFragment(this, R.id.fragment_slide_menu);
         mAddFilePanel = $(R.id.bottom_menu);
 
         setUpToolbar();

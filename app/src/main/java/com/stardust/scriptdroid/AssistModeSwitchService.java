@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
+import com.stardust.scriptdroid.droid.assist.Assistant;
 
 import static com.stardust.scriptdroid.ui.AssistModeSwitchNotification.KEY_ASSIST_MODE_NOTIFICATION;
 
@@ -29,7 +29,7 @@ public class AssistModeSwitchService extends Service {
             String action = intent.getStringExtra("switch");
             if (action != null) {
                 if (action.equals("assistMode")) {
-                    ActionPerformService.setAssistModeEnable(!ActionPerformService.isAssistModeEnable());
+                    Assistant.setAssistModeEnable(!Assistant.isAssistModeEnable());
                 } else {
                     App.getStateObserver().setState(KEY_ASSIST_MODE_NOTIFICATION, false);
                 }

@@ -37,7 +37,6 @@ public class Editor920Activity extends IActivity {
     public void doCommand(Command command) {
 
     }
-
     @Override
     public void openFile(String s, String s1, int i) {
 
@@ -54,8 +53,10 @@ public class Editor920Activity extends IActivity {
     }
 
     @Override
-    public void insertText(CharSequence charSequence) {
-
+    public void insertText(CharSequence text) {
+        Command c = new Command(Command.CommandEnum.INSERT_TEXT);
+        c.object = text;
+        doCommand(c);
     }
 
     @Override

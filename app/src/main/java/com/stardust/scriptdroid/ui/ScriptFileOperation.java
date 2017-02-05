@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.EditActivity;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ShortcutActivity;
@@ -57,12 +58,12 @@ public abstract class ScriptFileOperation {
     public static class Run extends ScriptFileOperation {
 
         static {
-            addOperation("运行", R.drawable.ic_play_green, new Run());
+            addOperation(App.getApp().getString(R.string.text_run), R.drawable.ic_play_green, new Run());
         }
 
         @Override
         public void operate(ScriptListRecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
-            Snackbar.make(recyclerView, "开始运行", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(recyclerView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
             ScriptFile scriptFile = scriptFileList.get(position);
             scriptFile.run();
         }
@@ -71,7 +72,7 @@ public abstract class ScriptFileOperation {
     public static class Edit extends ScriptFileOperation {
 
         static {
-            //addOperation("编辑", R.drawable.ic_edit_green_48dp, new Edit());
+            //addOperation(App.getApp().getString(R.string.text_edit)", R.drawable.ic_edit_green_48dp, new Edit());
         }
 
         @Override
@@ -85,7 +86,7 @@ public abstract class ScriptFileOperation {
     public static class OpenByOtherApp extends ScriptFileOperation {
 
         static {
-            addOperation("用其他应用打开", R.drawable.ic_open_in_new_green_48dp, new OpenByOtherApp());
+            addOperation(App.getApp().getString(R.string.text_open_by_other_apps), R.drawable.ic_open_in_new_green_48dp, new OpenByOtherApp());
         }
 
         @Override
@@ -100,16 +101,16 @@ public abstract class ScriptFileOperation {
     public static class Rename extends ScriptFileOperation {
 
         static {
-            addOperation("重命名", R.drawable.ic_rename_green, new Rename());
+            addOperation(App.getApp().getString(R.string.text_rename), R.drawable.ic_rename_green, new Rename());
         }
 
         @Override
         public void operate(final ScriptListRecyclerView recyclerView, final ScriptFileList scriptFileList, final int position) {
             String oldName = scriptFileList.get(position).name;
             new MaterialDialog.Builder(recyclerView.getContext())
-                    .title("重命名")
-                    .checkBoxPrompt("同时重命名原文件", false, null)
-                    .input("输入新名称", oldName, new MaterialDialog.InputCallback() {
+                    .title(R.string.text_rename)
+                    .checkBoxPrompt(App.getApp().getString(R.string.text_rename_file_meanwhile), false, null)
+                    .input(App.getApp().getString(R.string.text_please_input_new_name), oldName, new MaterialDialog.InputCallback() {
                         @Override
                         public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                             scriptFileList.rename(position, input.toString(), dialog.isPromptCheckBoxChecked());
@@ -123,7 +124,7 @@ public abstract class ScriptFileOperation {
     public static class CreateShortcut extends ScriptFileOperation {
 
         static {
-            addOperation("创建桌面快捷方式", R.drawable.ic_shortcut_green, new CreateShortcut());
+            addOperation(App.getApp().getString(R.string.text_send_shortcut), R.drawable.ic_shortcut_green, new CreateShortcut());
         }
 
 
@@ -136,14 +137,14 @@ public abstract class ScriptFileOperation {
                     .icon(R.drawable.script_droid)
                     .extras(new Intent().putExtra("path", scriptFile.path))
                     .send();
-            Snackbar.make(recyclerView, "已创建", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(recyclerView, R.string.text_already_create, Snackbar.LENGTH_SHORT).show();
         }
     }
 
     public static class Remove extends ScriptFileOperation {
 
         static {
-            addOperation("删除", R.drawable.ic_delete_green_48dp, new Remove());
+            addOperation(App.getApp().getString(R.string.text_delete), R.drawable.ic_delete_green_48dp, new Remove());
         }
 
         @Override
@@ -156,13 +157,13 @@ public abstract class ScriptFileOperation {
     public static class Delete extends ScriptFileOperation {
 
         static {
-            addOperation("彻底删除", R.drawable.ic_delete_forever_green_48dp, new Delete());
+            addOperation(App.getApp().getString(R.string.text_delete_absolutly), R.drawable.ic_delete_forever_green_48dp, new Delete());
         }
 
         @Override
         public void operate(ScriptListRecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
             boolean succeed = scriptFileList.deleteFromFileSystem(position);
-            Snackbar.make(recyclerView, succeed ? "已删除" : "文件删除失败", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(recyclerView, succeed ? R.string.text_already_delete : R.string.text_delete_failed, Snackbar.LENGTH_SHORT).show();
             recyclerView.getAdapter().notifyItemRemoved(position);
         }
     }

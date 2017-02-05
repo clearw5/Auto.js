@@ -9,10 +9,9 @@ import android.support.v4.app.NotificationCompat;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.AssistModeSwitchService;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
+import com.stardust.scriptdroid.droid.assist.Assistant;
 import com.stardust.util.StateObserver;
 
-import static com.stardust.scriptdroid.droid.runtime.action.ActionPerformService.KEY_ASSIST_MODE_ENABLE;
 
 /**
  * Created by Stardust on 2017/2/2.
@@ -45,7 +44,7 @@ public class AssistModeSwitchNotification {
                 }
             }
         });
-        App.getStateObserver().register(KEY_ASSIST_MODE_ENABLE, new StateObserver.OnBooleanStateChangedListener() {
+        App.getStateObserver().register(Assistant.KEY_ASSIST_MODE_ENABLE, new StateObserver.OnBooleanStateChangedListener() {
             @Override
             public void onStateChanged(Boolean newState) {
                 if (enable) {
@@ -79,7 +78,7 @@ public class AssistModeSwitchNotification {
                 .setAutoCancel(false)
                 .setSmallIcon(R.drawable.ic_robot_head)
                 .setDeleteIntent(AssistModeSwitchService.getDeletePendingIntent())
-                .setContentText(ActionPerformService.isAssistModeEnable() ?
+                .setContentText(Assistant.isAssistModeEnable() ?
                         App.getApp().getString(R.string.text_assist_mode_enabled) :
                         App.getApp().getString(R.string.text_assist_mode_disabled))
                 .setContentIntent(AssistModeSwitchService.getStartIntent())

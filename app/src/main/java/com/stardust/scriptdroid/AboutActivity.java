@@ -8,9 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
+
+import moe.feng.alipay.zerosdk.AlipayZeroSdk;
 
 /**
  * Created by Stardust on 2017/2/2.
@@ -62,7 +65,22 @@ public class AboutActivity extends BaseActivity {
 
     @ViewBinding.Click(R.id.donate)
     private void showDonateMeDialog() {
-
+        new MaterialDialog.Builder(this)
+                .title(R.string.donate)
+                .items("支付宝")
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
+                        if (position == 0) {
+                            if (AlipayZeroSdk.hasInstalledAlipayClient(AboutActivity.this)) {
+                                AlipayZeroSdk.startAlipayClient(AboutActivity.this, "aex04370fwjf8angrv1te9e");
+                            } else {
+                                Toast.makeText(AboutActivity.this, "未安装支付宝", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                })
+                .show();
     }
 
     @ViewBinding.Click(R.id.share)
@@ -72,12 +90,12 @@ public class AboutActivity extends BaseActivity {
 
     @ViewBinding.Click(R.id.icon)
     private void lol() {
-        Toast.makeText(this, "略略略", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.text_lll, Toast.LENGTH_LONG).show();
     }
 
     @ViewBinding.Click(R.id.developer)
     private void hhh() {
-        Toast.makeText(this, "这是软件开发者(。・・)ノ", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.text_it_is_the_developer_of_app, Toast.LENGTH_LONG).show();
     }
 
     private void setClipText(CharSequence label, CharSequence text) {
