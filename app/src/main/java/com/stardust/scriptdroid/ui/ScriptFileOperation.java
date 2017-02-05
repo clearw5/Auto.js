@@ -134,7 +134,7 @@ public abstract class ScriptFileOperation {
             ScriptFile scriptFile = scriptFileList.get(position);
             new Shortcut(context).name(scriptFile.name)
                     .targetClass(ShortcutActivity.class)
-                    .icon(R.drawable.script_droid)
+                    .icon(R.drawable.ic_robot_green)
                     .extras(new Intent().putExtra("path", scriptFile.path))
                     .send();
             Snackbar.make(recyclerView, R.string.text_already_create, Snackbar.LENGTH_SHORT).show();

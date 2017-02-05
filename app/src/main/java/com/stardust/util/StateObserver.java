@@ -4,10 +4,10 @@ import android.content.SharedPreferences;
 import android.support.v7.widget.SwitchCompat;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by Stardust on 2017/2/3.
@@ -71,9 +71,7 @@ public class StateObserver {
             listener.initState(initialState);
         synchronized (mKeyStateListenersMap) {
             List<OnStateChangedListener> listeners = getListenerListOrCreateIfNotExists(key);
-            synchronized (listener) {
-                listeners.add(listener);
-            }
+            listeners.add(listener);
         }
     }
 
@@ -84,25 +82,18 @@ public class StateObserver {
             if (listeners == null) {
                 return;
             }
-            synchronized (listeners) {
-                listeners.remove(stateChangedListener);
-            }
+            listeners.remove(stateChangedListener);
         }
     }
 
     public <T> void setState(String key, T state) {
         synchronized (mKeyStateListenersMap) {
             List<OnStateChangedListener> listeners = mKeyStateListenersMap.get(key);
-            if (listeners == null)
+            if (listeners == null || listeners.isEmpty())
                 return;
-            synchronized (listeners) {
-                if (listeners.isEmpty()) {
-                    return;
-                }
-                if (listeners.get(0) instanceof OnBooleanStateChangedListener) {
-                    mSharedPreferences.edit().putBoolean(key, (Boolean) state).apply();
-                    notifyBooleanStateChanged(listeners, (Boolean) state);
-                }
+            if (listeners.get(0) instanceof OnBooleanStateChangedListener) {
+                mSharedPreferences.edit().putBoolean(key, (Boolean) state).apply();
+                notifyBooleanStateChanged(listeners, (Boolean) state);
             }
         }
     }
@@ -124,7 +115,7 @@ public class StateObserver {
     private List<OnStateChangedListener> getListenerListOrCreateIfNotExists(String key) {
         List<OnStateChangedListener> listeners = mKeyStateListenersMap.get(key);
         if (listeners == null) {
-            listeners = new ArrayList<>();
+            listeners = new CopyOnWriteArrayList<>();
             mKeyStateListenersMap.put(key, listeners);
         }
         return listeners;

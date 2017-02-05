@@ -10,7 +10,7 @@
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:icon="@drawable/script_droid"
+        android:icon="@drawable/ic_android_eat_js"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
