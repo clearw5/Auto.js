@@ -44,6 +44,7 @@
 * `launchApp(appName)` 运存应用名称为appName的应用。例如launchApp("QQ")。不同应用名称可能相同，这时只运行其中某一个应用。
 * `notStopped` 若当前脚本处于运行状态时返回`true`, 否则返回`false`。对于某些循环, 例如`while(true)`，请用`while(notStopped())`代替，以免死循环造成的脚本无法正常停止。
 * `isStoppd` 若当前脚本处于停止状态时返回`true`, 否则返回`false`。
+
 ###四、全局变量
 * `context` ApplicationContext，参见安卓[android.content.Context](https://developer.android.com/reference/android/content/Context.html)
 
