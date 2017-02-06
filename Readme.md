@@ -4,6 +4,14 @@
 #基本语法与API
 目前支持的自动操作函数还比较少，未来会逐渐增加。
 
+![screen-capture1](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss1.png)
+
+![screen-capture2](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss2.png)
+
+![screen-capture3](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss3.png)
+
+![screen-capture4](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss4.png)
+
 ###一、语法
 本软件使用JavaScript语言([ECMAscript E5/E5.1](http://www.ecma-international.org/ecma-262/5.1/))，基于[Duktape](http://www.duktape.org/)引擎拓展一些自动操作(点击、长按、滑动等)函数。因而语法参见JavaScript(例如[w3cschool教程](http://www.w3school.com.cn/js/))。
 
