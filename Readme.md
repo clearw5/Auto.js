@@ -64,4 +64,6 @@ view2.setOnClickListener(new OnClickListener({
 
 #License
 [CC-BY-NC-SA](https://github.com/hyb1996/NoRootScriptDroid/blob/master/LICENSE.md)
-**不要能用于商业、盈利与非法用途**
+* 署名 — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+* **非商业性使用** — 您不得将本作品用于商业与盈利目的。
+* 相同方式共享 — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
