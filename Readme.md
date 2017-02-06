@@ -12,6 +12,7 @@
 * `click(text)` 点击文本text所在的区域，并返回是否点击成功。当前界面没有出现该文本或者该文本所在区域不可点击时返回false。例如`click("发现")`，是点击"发现"。如果要点击"发现"直至点击成功可以用`while(!click("发现"))`。
 
 > 文本所在区域指的是，从文本处向其父视图寻找，直至发现一个可点击的部件为止。
+
 * `click(left, top, bottom, right)`
 
 >  有些按钮或者部件是图标而不是文字（例如发送朋友圈的照相机图标以及QQ下方的消息、联系人、动态图标），这时不能通过`click(text)`来点击，只能通过描述图标所在的区域来点击。left, bottom, top, right描述的就是点击的区域。至于要定位点击的区域，可以在侧拉菜单开启"点击区域辅助"（或者安卓7.0以上在通知栏点击"修改"添加点击区域辅助快捷设定图标)，之后每次点击或长按都会提示这次点击或长按的区域并自动保存，可以在编辑器的右侧拉菜单中插入。
@@ -19,6 +20,7 @@
   点击与长方形范围严格匹配的区域，并返回是否点击成功。其中left为长方形左边与屏幕左边的像素距离，top为上边与屏幕上边的像素距离，right为右边与**屏幕左边**的像素距离, bottom为下边与**屏幕上边**的距离。区域严格匹配。
 
 > 以下的longClick、select、scrollUp、scrollDown的参数均与click类似，不再赘述。
+
 * `longClick` 长按
 * `select` 选择
 * `scrollUp` 上滑。不加参数时会寻找"最大"的可滑动的控件上滑，例如微信消息列表等。
@@ -38,6 +40,7 @@
 * `context` ApplicationContext，参见安卓[android.content.Context](https://developer.android.com/reference/android/content/Context.html)
 
 > 这里的context由于是ApplicationContext，是不可见的，不能用于dialog和其他UI相关。如果要显示弹窗或者视图，请启动UI模式（代码的第一行为`"ui";`既可）并使用activity代替。
+
 * `activity` UI模式下会启动一个Activity来运行脚本，并在UI线程下运行。可通过该变量来获取该activity。
 
 ###五、在脚本中调用Java
