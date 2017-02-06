@@ -1,8 +1,6 @@
 # 免Root脚本机器人
 #简介
 一个**不需要**root权限的类似脚本精灵、按键精灵的自动操作的软件。可以实现自动点击、滑动、输入文字、打开应用等，例如QQ自动抢红包。当然了你也可以把它当做js的IDE来写JavaScript（作为IDE而言目前还比较弱，没有自动补全和包列表等）。另外由于不使用root权限，要点击屏幕上的精确位置是不能实现的，像游戏刷副本自动签到什么的基本上不能做到，这些还是用root权限的脚本精灵吧~~
-#基本语法与API
-目前支持的自动操作函数还比较少，未来会逐渐增加。
 
 ![screen-capture1](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss1.png)
 
@@ -12,6 +10,8 @@
 
 ![screen-capture4](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss4.png)
 
+#基本语法与API
+目前支持的自动操作函数还比较少，未来会逐渐增加。
 ###一、语法
 本软件使用JavaScript语言([ECMAscript E5/E5.1](http://www.ecma-international.org/ecma-262/5.1/))，基于[Duktape](http://www.duktape.org/)引擎拓展一些自动操作(点击、长按、滑动等)函数。因而语法参见JavaScript(例如[w3cschool教程](http://www.w3school.com.cn/js/))。
 
