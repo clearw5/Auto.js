@@ -1,9 +1,13 @@
 package com.stardust.scriptdroid;
 
 import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,8 +22,12 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class BaseActivity extends AppCompatActivity {
 
-
     protected static final int PERMISSION_REQUEST_CODE = 11186;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @SuppressWarnings("unchecked")
     public <T extends View> T $(int resId) {
@@ -49,4 +57,18 @@ public class BaseActivity extends AppCompatActivity {
         return list.toArray(new String[list.size()]);
     }
 
+    public void setToolbarAsBack(String title) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(title);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
 }

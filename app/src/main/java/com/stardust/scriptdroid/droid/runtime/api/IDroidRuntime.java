@@ -30,6 +30,10 @@ public interface IDroidRuntime {
 
     boolean scrollDown(ActionTarget target);
 
+    boolean scrollUp(int i);
+
+    boolean scrollDown(int i);
+
     boolean focus(ActionTarget target);
 
     boolean select(ActionTarget target);

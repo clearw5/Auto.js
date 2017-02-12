@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">免Root脚本机器人</string>
-    <string name="version">Version 0.17.0205</string>
+    <string name="version">Version 1.17.0212</string>
     <string name="action_settings">设置</string>
     <string name="action_disable_service">关闭服务</string>
     <string name="text_accessibility_service_description">使脚本自动操作(点击、长按、滑动等)所需，若关闭则只能执行不涉及自动操作的脚本。</string>
@@ -93,4 +93,6 @@
     <string name="text_re_import_samples">重新导入示例脚本文件</string>
     <string name="text_re_import_succeed">导入成功，重新打开应用生效</string>
     <string name="text_fail">失败</string>
+    <string name="text_clear">清空</string>
+    <string name="text_console">控制台</string>
 </resources>

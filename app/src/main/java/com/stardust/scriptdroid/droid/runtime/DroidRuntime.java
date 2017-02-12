@@ -5,12 +5,15 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.jraska.console.Console;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.droid.ConsoleActivity;
 import com.stardust.scriptdroid.droid.runtime.action.Action;
 import com.stardust.scriptdroid.droid.runtime.action.ActionFactory;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
@@ -18,6 +21,8 @@ import com.stardust.scriptdroid.droid.runtime.action.ActionTarget;
 import com.stardust.scriptdroid.droid.runtime.api.IDroidRuntime;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 ;
 
@@ -30,7 +35,7 @@ public class DroidRuntime implements IDroidRuntime {
     private static final String TAG = "DroidRuntime";
     private static DroidRuntime runtime = new DroidRuntime();
 
-    private final Object mLock = new Object();
+    private final Object mActionPerformLock = new Object();
     private boolean mActionPerformResult;
     private Handler mUIHandler;
 
@@ -105,12 +110,22 @@ public class DroidRuntime implements IDroidRuntime {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD));
     }
 
+    @Override
+    public boolean scrollUp(int i) {
+        return performAction(ActionFactory.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, i));
+    }
+
+    @Override
+    public boolean scrollDown(int i) {
+        return performAction(ActionFactory.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, i));
+    }
+
     public boolean scrollAllUp() {
-        return performAction(ActionFactory.createScrollAllAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD));
+        return performAction(ActionFactory.createScrollMaxAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD));
     }
 
     public boolean scrollAllDown() {
-        return performAction(ActionFactory.createScrollAllAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD));
+        return performAction(ActionFactory.createScrollMaxAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD));
     }
 
     @Override
@@ -133,6 +148,21 @@ public class DroidRuntime implements IDroidRuntime {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_PASTE));
     }
 
+    public void log(@Nullable Object str) {
+        Timber.i("" + str);
+    }
+
+    public void err(@Nullable Object o) {
+        Timber.e("" + o);
+    }
+
+    public void console() {
+        App.getApp().startActivity(new Intent(App.getApp(), ConsoleActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    public void clearConsole(){
+        Console.clear();
+    }
 
     private boolean performAction(Action action) {
         if (ActionPerformService.getInstance() == null) {
@@ -140,9 +170,9 @@ public class DroidRuntime implements IDroidRuntime {
             throw new ScriptStopException(App.getApp().getString(R.string.text_no_accessibility_permission));
         }
         ActionPerformService.setAction(action);
-        synchronized (mLock) {
+        synchronized (mActionPerformLock) {
             try {
-                mLock.wait();
+                mActionPerformLock.wait();
             } catch (InterruptedException e) {
                 ActionPerformService.setActions(ActionPerformService.NO_ACTION);
                 throw new ScriptStopException(App.getApp().getString(R.string.text_script_stopped), e);
@@ -160,7 +190,6 @@ public class DroidRuntime implements IDroidRuntime {
             }
         });
     }
-
 
     @Override
     public void sleep(long millis) {
@@ -207,8 +236,8 @@ public class DroidRuntime implements IDroidRuntime {
 
     public void notifyActionPerformed(boolean succeed) {
         mActionPerformResult = succeed;
-        synchronized (mLock) {
-            mLock.notify();
+        synchronized (mActionPerformLock) {
+            mActionPerformLock.notify();
         }
     }
 

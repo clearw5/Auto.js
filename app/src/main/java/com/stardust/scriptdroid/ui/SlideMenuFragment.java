@@ -14,6 +14,7 @@ import com.stardust.app.Fragment;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.DocumentActivity;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.droid.ConsoleActivity;
 import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.droid.assist.BoundsAssistant;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
@@ -70,6 +71,12 @@ public class SlideMenuFragment extends Fragment {
         mAssistServiceNotificationSwitch = $(R.id.sw_assist_service_notification);
         App.getStateObserver().register(BoundsAssistant.KEY_ASSIST_MODE_ENABLE, mAssistServiceSwitch);
         App.getStateObserver().register(KEY_ASSIST_MODE_NOTIFICATION, mAssistServiceNotificationSwitch);
+    }
+
+
+    @ViewBinding.Click(R.id.console)
+    private void startConsoleActivity() {
+        startActivity(new Intent(getContext(), ConsoleActivity.class));
     }
 
     @ViewBinding.Click(R.id.syntax_and_api)

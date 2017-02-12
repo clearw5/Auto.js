@@ -7,8 +7,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 10
-        versionName "0.17.02050预览版"
+        versionCode 20
+        versionName "1.17.0212"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -46,6 +46,8 @@ dependencies {
     compile 'com.furture.react:DuktapeJava:1.1.0'
     compile 'com.zzhoujay.markdown:markdown:1.0.2'
     compile 'moe.feng:AlipayZeroSdk:1.1'
+    compile 'com.jraska:console:0.4.3'
+    compile 'com.jraska:console-timber-tree:0.4.3'
 
     compile files('libs/JSTransformer.jar')
 
@@ -56,6 +58,5 @@ dependencies {
     compile(name:'920-styles-debug', ext:'aar')
     compile(name:'920-file_explorer-release', ext:'aar')
     compile(name:'920-app-debug', ext:'aar')
-
 
 }

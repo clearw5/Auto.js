@@ -50,7 +50,11 @@ public class ActionFactory {
         };
     }
 
-    public static Action createScrollAllAction(int action) {
-        return new ScrollAllAction(action);
+    public static Action createScrollMaxAction(int action) {
+        return new ScrollMaxAction(action);
+    }
+
+    public static Action createScrollAction(int action, int i){
+        return new ScrollAction(action, i);
     }
 }

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.DocumentActivity;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.droid.ConsoleActivity;
 import com.stardust.scriptdroid.droid.assist.BoundsAssistant;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
@@ -84,6 +85,11 @@ public class EditSideMenuFragment extends com.stardust.app.Fragment {
     @ViewBinding.Click(R.id.syntax_and_api)
     private void startSyntaxHelpActivity() {
         startActivity(new Intent(getContext(), DocumentActivity.class));
+    }
+
+    @ViewBinding.Click(R.id.console)
+    private void startConsoleActivity() {
+        startActivity(new Intent(getContext(), ConsoleActivity.class));
     }
 
     @ViewBinding.Check(R.id.sw_assist_service)

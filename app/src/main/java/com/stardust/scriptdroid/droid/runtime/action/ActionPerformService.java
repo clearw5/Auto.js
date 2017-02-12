@@ -24,7 +24,7 @@ import java.util.List;
 public class ActionPerformService extends AccessibilityService {
 
     private static final String TAG = "ActionPerformService";
-    private static ActionPerformService instance;
+    private static volatile ActionPerformService instance;
 
     @SuppressWarnings("unchecked")
     public static final List<Action> NO_ACTION = Collections.EMPTY_LIST;
@@ -98,17 +98,22 @@ public class ActionPerformService extends AccessibilityService {
 
     @Override
     public void onServiceConnected() {
+        // FIXME: 2017/2/12 有时在无障碍中开启服务后这里不会调用服务也不会运行，安卓的BUG???
         Log.v(TAG, "onServiceConnected");
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.v(TAG, "onCreate");
         instance = this;
     }
 
     public static void disable() {
-        if (instance != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                instance.disableSelf();
-            } else {
-                AccessibilityServiceUtils.goToAccessibilitySetting(App.getApp());
-            }
+        if (instance != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            instance.disableSelf();
+        } else {
+            AccessibilityServiceUtils.goToAccessibilitySetting(App.getApp());
         }
     }
 

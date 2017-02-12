@@ -1,9 +1,8 @@
 package com.stardust.scriptdroid.droid;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 
-import com.afollestad.materialdialogs.MaterialDialog;
+import com.jraska.console.timber.ConsoleTree;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
@@ -15,11 +14,19 @@ import com.stardust.scriptdroid.file.FileUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import timber.log.Timber;
+
 /**
  * Created by Stardust on 2017/1/23.
  */
 
 public class Droid {
+
+    static {
+        Timber.plant(new ConsoleTree.Builder()
+                .infoColor(0xcc000000)
+                .build());
+    }
 
     public static final String UI = "\"ui\";";
 
@@ -34,6 +41,7 @@ public class Droid {
         public void onRunFinished(Object result, Exception e) {
             if (e != null) {
                 RUNTIME.toast(App.getApp().getString(R.string.text_error) + ": " + e.getMessage());
+                Timber.e(App.getApp().getString(R.string.text_error), e);
             }
         }
     };

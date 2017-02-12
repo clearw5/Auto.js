@@ -26,7 +26,7 @@ public class ScriptExecuteActivity extends Activity {
         ScriptExecuteActivity.script = script;
         ScriptExecuteActivity.onRunFinishedListener = listener;
         ScriptExecuteActivity.runningConfig = config;
-        App.getApp().startActivity(new Intent(App.getApp(), ScriptExecuteActivity.class));
+        App.getApp().startActivity(new Intent(App.getApp(), ScriptExecuteActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     @Override

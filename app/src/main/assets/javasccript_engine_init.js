@@ -42,6 +42,8 @@ var longClick = function(a, b, c, d){
 var scrollUp = function(a, b, c, d){
     if(arguments.length == 0)
         return droid.scrollAllUp();
+    if(arguments.length == 1 && typeof a === 'number')
+        return droid.scrollUp(a);
     return performAction(function(target){
         return droid.scrollUp(target);
     }, arguments);
@@ -49,8 +51,10 @@ var scrollUp = function(a, b, c, d){
 
 var scrollDown = function(a, b, c, d){
      if(arguments.length == 0)
-            return droid.scrollAllDown();
-       return performAction(function(target){
+        return droid.scrollAllDown();
+     if(arguments.length == 1 && typeof a === 'number')
+        return droid.scrollDown(a);
+      return performAction(function(target){
         return droid.scrollDown(target);
     }, arguments);
 }
@@ -97,3 +101,18 @@ var notStopped = function(){
     return !isStopped();
 }
 
+var log = function(str){
+    droid.log(str);
+}
+
+var err = function(e){
+   droid.err(e);
+}
+
+var openConsole = function(){
+    droid.console();
+}
+
+var clearConsole = function(){
+    droid.clearConsole();
+}

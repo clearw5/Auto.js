@@ -12,7 +12,7 @@
 > 以下的longClick、select、scrollUp、scrollDown的参数均与click类似，不再赘述。
 * `longClick` 长按
 * `select` 选择
-* `scrollUp` 上滑。不加参数时会寻找"最大"的可滑动的控件上滑，例如微信消息列表等。
+* `scrollUp` 上滑。不加参数时会寻找"最大"的可滑动的控件上滑，例如微信消息列表等; 参数为一个整数i时会找到第i个可滑动控件滑动。
 * `scrollDown` 下滑。不加参数时与scrollUp类似。
 * `input(text)` 把所有输入框的文本都置为text。例如input("测试")。
 * `input(i, text)` 把第i个输入框的文本设为text。i从0开始。
@@ -28,7 +28,23 @@
 * `context` ApplicationContext，参见安卓[android.content.Context](https://developer.android.com/reference/android/content/Context.html)
 > 这里的context由于是ApplicationContext，是不可见的，不能用于dialog和其他UI相关。如果要显示弹窗或者视图，请启动UI模式（代码的第一行为`"ui";`既可）并使用activity代替。
 * `activity` UI模式下会启动一个Activity来运行脚本，并在UI线程下运行。可通过该变量来获取该activity。
-###五、在脚本中调用Java
+###五、控制台
+* `openConsole()` 打开控制台。
+* `clearConsole()` 清空控制台。
+* `log(text)` 在控制台中输出日志，以例如`log("Hello world");`。
+* `err(text)` 在控制台中输出错误信息，以红色字体显示，例如：
+
+```
+try{
+    //do something
+}catch(e){
+    err("错误);
+    err(e);
+    openConsole();
+}
+```
+
+###六、在脚本中调用Java
 使用importClass来引入要使用的库，例如:
 ```javascript
 importClass("android.view.View.OnClickListener")

@@ -94,6 +94,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         setUpToolbar();
         setUpScriptList();
         ViewBinder.bind(this);
+
     }
 
     private void setUpToolbar() {

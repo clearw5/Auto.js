@@ -6,6 +6,28 @@
               android:textSize="16sp">
 
     <LinearLayout
+        android:id="@+id/console"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="?selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_console_green"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/text_console"
+            android:textColor="@android:color/primary_text_light"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/syntax_and_api"
         android:layout_width="match_parent"
         android:layout_height="52dp"
@@ -26,6 +48,7 @@
             android:text="@string/text_syntax_and_api"
             android:textColor="@android:color/primary_text_light"/>
     </LinearLayout>
+
 
     <RelativeLayout
         android:id="@+id/assist_service"
