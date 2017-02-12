@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">免Root脚本机器人</string>
+    <string name="app_name">免Root脚本精灵</string>
     <string name="version">Version 1.17.0212</string>
     <string name="action_settings">设置</string>
     <string name="action_disable_service">关闭服务</string>
@@ -13,7 +13,7 @@
     <string name="text_please_input_name">请输入名称</string>
     <string name="text_name">名称</string>
     <string name="text_go_to_setting">去设置</string>
-    <string name="explain_accessibility_permission">软件需要打开\"自动操作服务\"才能运行，请在随后的设置中选择\"免Root脚本机器人\"并开启服务。\n您也可以稍后在侧拉菜单中设置。</string>
+    <string name="explain_accessibility_permission">软件需要打开\"自动操作服务\"才能运行，请在随后的设置中选择\"免Root脚本精灵\"并开启服务。\n您也可以稍后在侧拉菜单中设置。</string>
     <string name="text_cancel">取消</string>
     <string name="text_path_is_empty">路径为空</string>
     <string name="text_file_not_exists">文件不存在</string>
@@ -50,7 +50,7 @@
     <string name="donate_developer">打赏作者</string>
     <string name="text_email">邮箱</string>
     <string name="my_github">https://github.com/hyb1996/NoRootScriptDroid</string>
-    <string name="share_app">[免Root脚本机器人]下载地址：https://github.com/hyb1996/NoRootScriptDroid/releases</string>
+    <string name="share_app">[免Root脚本精灵]下载地址：https://github.com/hyb1996/NoRootScriptDroid/releases</string>
     <string name="text_assist_service">点击区域辅助服务</string>
     <string name="text_assist_service_notification">通知栏点击区域辅助开关</string>
     <string name="text_others">其他</string>
