@@ -1,7 +1,11 @@
 package com.stardust.scriptdroid;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -21,6 +26,7 @@ import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
 import com.stardust.scriptdroid.file.FileUtils;
+import com.stardust.scriptdroid.file.SampleFileTool;
 import com.stardust.scriptdroid.tool.BackPressedHandler;
 import com.stardust.scriptdroid.ui.ScriptFileOperation;
 import com.stardust.scriptdroid.ui.ScriptListRecyclerView;
@@ -35,16 +41,25 @@ import java.io.File;
 
 public class MainActivity extends BaseActivity implements FileChooserDialog.FileCallback {
 
+    public static final String ACTION_NOTIFY_SCRIPT_LIST_CHANGE = "ACTION_NOTIFY_SCRIPT_LIST_CHANGE";
+
     private SlidingUpPanel mAddFilePanel;
     private ScriptListRecyclerView mScriptListRecyclerView;
     private ScriptFileList mScriptFileList;
     private DrawerLayout mDrawerLayout;
+    private Receiver mReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setUpUI();
         checkPermissions();
+        registerReceivers();
+    }
+
+    private void registerReceivers() {
+        mReceiver = new Receiver();
+        registerReceiver(mReceiver, new IntentFilter(ACTION_NOTIFY_SCRIPT_LIST_CHANGE));
     }
 
     private void checkPermissions() {
@@ -84,7 +99,6 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         mScriptListRecyclerView.getAdapter().notifyItemInserted(mScriptFileList.size() - 1);
     }
 
-
     private void setUpUI() {
         mDrawerLayout = (DrawerLayout) View.inflate(this, R.layout.activity_main, null);
         setContentView(mDrawerLayout);
@@ -92,15 +106,22 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         mAddFilePanel = $(R.id.bottom_menu);
 
         setUpToolbar();
+        setVersionName();
         setUpScriptList();
         ViewBinder.bind(this);
 
     }
 
+    @SuppressLint("SetTextI18n")
+    private void setVersionName() {
+        TextView version = $(R.id.version);
+        version.setText("Version " + BuildConfig.VERSION_NAME);
+    }
+
     private void setUpToolbar() {
         Toolbar toolbar = $(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string.app_name);
+        toolbar.setTitle(R.string._app_name);
 
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.text_drawer_open,
                 R.string.text_drawer_close);
@@ -114,7 +135,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         mScriptListRecyclerView.setScriptFileList(mScriptFileList);
     }
 
-    @ViewBinding.Click(R.id.fab)
+    @ViewBinding.Click(R.id.add)
     private void showAddFilePanel() {
         mAddFilePanel.show();
     }
@@ -144,6 +165,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     @ViewBinding.Click(R.id.import_from_file)
     private void showFileChooser() {
         new FileChooserDialog.Builder(this)
+                .initialPath(ScriptFile.DEFAULT_FOLDER)
                 .extensionsFilter(".js", ".txt")
                 .show();
     }
@@ -162,7 +184,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            NonUiInitializer.getInstance().copySampleScriptFileIfNeeded();
+            SampleFileTool.getInstance().copySampleScriptFileIfNeeded();
             mScriptListRecyclerView.getAdapter().notifyDataSetChanged();
         }
     }
@@ -174,8 +196,31 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
 
     private BackPressedHandler mBackPressedHandler = new BackPressedHandler.DoublePressExit(this);
+
     @Override
     public void onBackPressed() {
-        mBackPressedHandler.onBackPressed();
+        if (mScriptListRecyclerView.getScriptFileOperationPopupMenu().isShowing()) {
+            mScriptListRecyclerView.getScriptFileOperationPopupMenu().dismiss();
+        } else if (mAddFilePanel.isShowing()) {
+            mAddFilePanel.dismiss();
+        } else {
+            mBackPressedHandler.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
+    }
+
+    private class Receiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(ACTION_NOTIFY_SCRIPT_LIST_CHANGE)) {
+                mScriptListRecyclerView.getAdapter().notifyDataSetChanged();
+            }
+        }
     }
 }

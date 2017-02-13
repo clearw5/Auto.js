@@ -10,6 +10,7 @@ import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
 import com.stardust.util.MapEntries;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -17,13 +18,13 @@ import java.util.Map;
  */
 public class SampleFileTool {
 
-    private static final Map<String, Integer> SAMPLES = new MapEntries<String, Integer>()
-            .entry("sample_alipay_scan.js", R.string.text_sample_alipay_scan)
-            .entry("sample_wechat_scan.js", R.string.text_sample_wechat_scan)
+    private static final Map<String, Integer> SAMPLES = new MapEntries<>(new LinkedHashMap<String, Integer>())
             .entry("sample_open_running_services.js", R.string.text_sample_open_running_services)
             .entry("sample_qq_hongbao.js", R.string.text_sample_qq_hongbao)
             .entry("sample_simple_calculator.js", R.string.text_sample_simple_calculator)
             .entry("sample_force_qq_chat.js", R.string.text_sample_for_qq_chat)
+            .entry("sample_wechat_scan.js", R.string.text_sample_wechat_scan)
+            .entry("sample_alipay_scan.js", R.string.text_sample_alipay_scan)
             .map();
 
     private static SampleFileTool instance = new SampleFileTool();

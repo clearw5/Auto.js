@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.1"
     defaultConfig {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 20
-        versionName "1.17.0212"
+        versionCode 22
+        versionName "1.17.0213"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -25,6 +25,12 @@ android {
     dataBinding {
         enabled = true
     }
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def file = output.outputFile
+            output.outputFile = new File(file.parent, file.name.replace(".apk", "-" + defaultConfig.versionName + ".apk"))
+        }
+    }
 }
 
 repositories {
@@ -37,8 +43,8 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
 
-    compile 'com.android.support:appcompat-v7:25.0.0'
-    compile 'com.android.support:design:25.0.0'
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:design:25.1.0'
 
     compile 'com.afollestad.material-dialogs:core:0.9.2.3'
     compile 'com.google.code.gson:gson:2.8.0'
@@ -48,15 +54,16 @@ dependencies {
     compile 'moe.feng:AlipayZeroSdk:1.1'
     compile 'com.jraska:console:0.4.3'
     compile 'com.jraska:console-timber-tree:0.4.3'
+    compile 'com.heinrichreimersoftware:android-issue-reporter:eae4c73cbeb91e98da83fe79a3dea088a8b97448'
 
     compile files('libs/JSTransformer.jar')
 
     compile 'com.afollestad.material-dialogs:commons:0.9.2.3'
     compile 'com.makeramen:roundedimageview:2.2.1'
     compile 'com.rengwuxian.materialedittext:library:2.0.3'
-    compile(name:'920-common-release', ext:'aar')
-    compile(name:'920-styles-debug', ext:'aar')
-    compile(name:'920-file_explorer-release', ext:'aar')
-    compile(name:'920-app-debug', ext:'aar')
+    compile(name: '920-common-release', ext: 'aar')
+    compile(name: '920-styles-debug', ext: 'aar')
+    compile(name: '920-file_explorer-release', ext: 'aar')
+    compile(name: '920-app-debug', ext: 'aar')
 
 }

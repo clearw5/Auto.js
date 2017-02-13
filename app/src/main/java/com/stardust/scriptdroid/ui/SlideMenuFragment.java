@@ -54,6 +54,7 @@ public class SlideMenuFragment extends Fragment {
         syncSwitchState();
     }
 
+
     private void syncSwitchState() {
         mAutoOperateServiceSwitch.postDelayed(new Runnable() {
             @Override

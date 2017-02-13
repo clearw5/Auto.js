@@ -77,6 +77,10 @@ public class ScriptListRecyclerView extends RecyclerView {
         init();
     }
 
+    public ScriptFileOperationPopupMenu getScriptFileOperationPopupMenu() {
+        return mScriptFileOperationPopupMenu;
+    }
+
     private void init() {
         setAdapter(new Adapter());
         setLayoutManager(new LinearLayoutManager(getContext()));

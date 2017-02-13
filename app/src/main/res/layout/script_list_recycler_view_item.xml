@@ -15,7 +15,7 @@
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:contentDescription="@string/app_name"
+        android:contentDescription="@string/_app_name"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_robot_green"/>
 
@@ -62,7 +62,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"
-            android:contentDescription="@string/app_name"
+            android:contentDescription="@string/_app_name"
             android:src="@drawable/ic_edit_gray_48dp"/>
 
     </FrameLayout>
@@ -80,7 +80,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"
-            android:contentDescription="@string/app_name"
+            android:contentDescription="@string/_app_name"
             android:src="@drawable/ic_navigation_show_more_vertical_512"/>
     </FrameLayout>
 

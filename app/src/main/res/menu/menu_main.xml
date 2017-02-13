@@ -2,27 +2,5 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.stardust.scriptdroid.MainActivity">
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>
 
-    <item
-        android:id="@+id/action_disable_service"
-        android:orderInCategory="200"
-        android:title="@string/action_disable_service"
-        app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/action_test"
-        android:orderInCategory="300"
-        android:title="@string/action_test"
-        app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/action_exit"
-        android:orderInCategory="400"
-        android:title="@string/action_exit"
-        app:showAsAction="never"/>
 </menu>

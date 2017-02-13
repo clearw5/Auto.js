@@ -23,8 +23,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                android:title="@string/app_name"
-                app:popupTheme="@style/AppTheme.PopupOverlay"/>
+                android:title="@string/_app_name"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                <ImageView
+                    android:id="@+id/add"
+                    android:layout_width="?android:attr/actionBarSize"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:foreground="?selectableItemBackgroundBorderless"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_add_white_48dp"/>
+
+            </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.AppBarLayout>
 

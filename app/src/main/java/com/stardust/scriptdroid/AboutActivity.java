@@ -1,11 +1,13 @@
 package com.stardust.scriptdroid;
 
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -29,8 +31,15 @@ public class AboutActivity extends BaseActivity {
 
     private void setUpUI() {
         setContentView(R.layout.activity_about);
+        setVersionName();
         setUpToolbar();
         ViewBinder.bind(this);
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void setVersionName() {
+        TextView version = $(R.id.version);
+        version.setText("Version " + BuildConfig.VERSION_NAME);
     }
 
     private void setUpToolbar() {

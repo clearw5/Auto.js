@@ -24,6 +24,7 @@
 * `launchApp(appName)` 运存应用名称为appName的应用。例如launchApp("QQ")。不同应用名称可能相同，这时只运行其中某一个应用。
 * `notStopped` 若当前脚本处于运行状态时返回`true`, 否则返回`false`。对于某些循环, 例如`while(true)`，请用`while(notStopped())`代替，以免死循环造成的脚本无法正常停止。
 * `isStoppd` 若当前脚本处于停止状态时返回`true`, 否则返回`false`。
+* `shell(cmd, root=false)` 执行shell命令cmd, 其中参数root表示是否以root权限执行，默认为false。例如`shell("input keyevent 26", true); //锁屏`。
 ###四、全局变量
 * `context` ApplicationContext，参见安卓[android.content.Context](https://developer.android.com/reference/android/content/Context.html)
 > 这里的context由于是ApplicationContext，是不可见的，不能用于dialog和其他UI相关。如果要显示弹窗或者视图，请启动UI模式（代码的第一行为`"ui";`既可）并使用activity代替。

@@ -116,3 +116,8 @@ var openConsole = function(){
 var clearConsole = function(){
     droid.clearConsole();
 }
+
+var shell = function(cmd, root){
+    root = root ? 1 : 0;
+    droid.shell(cmd, root);
+}

@@ -41,7 +41,7 @@ public class Droid {
         public void onRunFinished(Object result, Exception e) {
             if (e != null) {
                 RUNTIME.toast(App.getApp().getString(R.string.text_error) + ": " + e.getMessage());
-                Timber.e(App.getApp().getString(R.string.text_error), e);
+                Timber.e(e, App.getApp().getString(R.string.text_error));
             }
         }
     };
@@ -55,12 +55,18 @@ public class Droid {
     }
 
     public void runScriptFile(File file) {
-        checkFile(file);
-        runScript(FileUtils.readString(file));
+        runScriptFile(file, null);
     }
 
     public void runScriptFile(File file, OnRunFinishedListener listener) {
-        checkFile(file);
+        Timber.v("开始运行脚本文件: " + file);
+        listener = listener == null ? DEFAULT_LISTENER : listener;
+        try {
+            checkFile(file);
+        } catch (Exception e) {
+            listener.onRunFinished(null, e);
+            return;
+        }
         runScript(FileUtils.readString(file), listener, RunningConfig.getDefault());
     }
 

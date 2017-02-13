@@ -12,7 +12,7 @@
         android:layout_height="20dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:contentDescription="@string/app_name"/>
+        android:contentDescription="@string/_app_name"/>
 
     <TextView
         android:id="@+id/name"

@@ -50,13 +50,13 @@
                     android:src="@drawable/ic_android_eat_js"/>
 
                 <TextView
+                    android:id="@+id/version"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/icon"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="16dp"
                     android:gravity="center"
-                    android:text="@string/version"
                     android:textColor="#777777"
                     android:textSize="14sp"/>
 

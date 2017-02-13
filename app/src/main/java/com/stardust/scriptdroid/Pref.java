@@ -10,9 +10,7 @@ import android.preference.PreferenceManager;
 public class Pref {
 
     private static final SharedPreferences DISPOSABLE_BOOLEAN = App.getApp().getSharedPreferences("DISPOSABLE_BOOLEAN", Context.MODE_PRIVATE);
-
     public static final String SAMPLE_SCRIPTS_COPIED = "SAMPLE_SCRIPTS_COPIED";
-
 
     public static SharedPreferences def() {
         return PreferenceManager.getDefaultSharedPreferences(App.getApp());
@@ -32,5 +30,9 @@ public class Pref {
 
     public static boolean isFirstGoToAccessibilitySetting() {
         return getDisposableBoolean("isFirstGoToAccessibilitySetting", true);
+    }
+
+    public static int oldVersion(){
+        return 0;
     }
 }

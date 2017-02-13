@@ -19,6 +19,7 @@ import com.stardust.scriptdroid.droid.runtime.action.ActionFactory;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
 import com.stardust.scriptdroid.droid.runtime.action.ActionTarget;
 import com.stardust.scriptdroid.droid.runtime.api.IDroidRuntime;
+import com.stardust.scriptdroid.tool.Shell;
 
 import java.util.List;
 
@@ -160,7 +161,7 @@ public class DroidRuntime implements IDroidRuntime {
         App.getApp().startActivity(new Intent(App.getApp(), ConsoleActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
-    public void clearConsole(){
+    public void clearConsole() {
         Console.clear();
     }
 
@@ -198,6 +199,10 @@ public class DroidRuntime implements IDroidRuntime {
         } catch (InterruptedException e) {
             throw new ScriptStopException(e);
         }
+    }
+
+    public void shell(String cmd, int root) {
+        Shell.execCommand(cmd, root != 0);
     }
 
     @Override

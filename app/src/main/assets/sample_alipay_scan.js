@@ -1,3 +1,2 @@
-launchApp("微信");
-while(!click("发现"));
-while(!click("朋友圈"));
+launchApp("支付宝");
+while(!click("扫一扫"));

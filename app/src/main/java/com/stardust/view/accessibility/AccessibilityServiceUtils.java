@@ -18,7 +18,7 @@ public class AccessibilityServiceUtils {
 
     public static void goToAccessibilitySetting(Context context) {
         if (Pref.isFirstGoToAccessibilitySetting()) {
-            Toast.makeText(context, context.getString(R.string.text_please_choose) + context.getString(R.string.app_name), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, context.getString(R.string.text_please_choose) + context.getString(R.string._app_name), Toast.LENGTH_LONG).show();
         }
         context.startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }

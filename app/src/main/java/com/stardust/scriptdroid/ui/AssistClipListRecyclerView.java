@@ -1,8 +1,8 @@
 package com.stardust.scriptdroid.ui;
 
+import android.bug.WrapContentLinearLayoutManager;
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -44,7 +44,7 @@ public class AssistClipListRecyclerView extends ExpandableRecyclerView {
     }
 
     private void init() {
-        setLayoutManager(new LinearLayoutManager(getContext()));
+        setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
         setAdapter(new Adapter());
         setOnChildClickListener(new OnChildClickListener() {
             @Override
@@ -58,12 +58,14 @@ public class AssistClipListRecyclerView extends ExpandableRecyclerView {
         mBoundsAssistClipList.setOnClipChangedListener(new BoundsAssistClipList.OnClipChangedListener() {
             @Override
             public void onClipRemove(int position) {
-                getAdapter().notifyItemRemoved(position);
+                if (isExpanded())
+                    getAdapter().notifyItemRemoved(position);
             }
 
             @Override
             public void onClipInsert(int position) {
-                getAdapter().notifyItemInserted(position);
+                if (isExpanded())
+                    getAdapter().notifyItemInserted(position);
             }
 
             @Override

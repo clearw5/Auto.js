@@ -36,5 +36,16 @@
         <url>https://github.com/fython/AlipayZeroSdk</url>
         <license>Apache Software License 2.0</license>
     </notice>
-
+    <notice>
+        <name>Console</name>
+        <copyright>Copyright 2015 Josef Raska</copyright>
+        <url>https://github.com/jraska/Console</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>android-issue-reporter</name>
+        <copyright/>
+        <url>https://github.com/HeinrichReimer/android-issue-reporter</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
 </notices>

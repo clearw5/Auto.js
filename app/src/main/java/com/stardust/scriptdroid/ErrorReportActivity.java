@@ -2,6 +2,7 @@ package com.stardust.scriptdroid;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -31,14 +32,16 @@ public class ErrorReportActivity extends BaseActivity {
             handleIntent();
         } catch (Throwable throwable) {
             Log.e(TAG, "", throwable);
+            exit();
         }
     }
+
 
     private void handleIntent() {
         String message = getIntent().getStringExtra("message");
         final String errorDetail = getIntent().getStringExtra("error");
-        //showErrorMessage(message, errorDetail);
         showErrorMessageByDialog(message, errorDetail);
+        //showErrorMessage(message, errorDetail);
     }
 
     private void showErrorMessageByDialog(String message, final String errorDetail) {
@@ -46,22 +49,37 @@ public class ErrorReportActivity extends BaseActivity {
                 .title(R.string.text_crash)
                 .content(R.string.crash_feedback)
                 .positiveText(R.string.text_exit)
-                .negativeText(R.string.text_copy_debug_info)
+                .neutralText(R.string.text_copy_debug_info)
+                .negativeText(R.string.text_report_bug)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         exit();
                     }
                 })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         copyToClip(getDeviceMessage() + errorDetail);
                         exitAfter(1000);
                     }
                 })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        startIssueReportActivity();
+                        finish();
+                    }
+                })
                 .cancelable(false)
                 .show();
+    }
+
+    private void startIssueReportActivity() {
+        Intent intent = new Intent(this, IssueReportActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtras(getIntent());
+        startActivity(intent);
     }
 
     private void showErrorMessage(String message, String errorDetail) {
@@ -93,7 +111,8 @@ public class ErrorReportActivity extends BaseActivity {
     }
 
     private void setUpToolbar() {
-        Toolbar toolbar = $(R.id.toolbar);
+        Toolbar toolbar;
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.text_error_report));
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(false);

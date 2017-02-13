@@ -1,8 +1,8 @@
 package com.stardust.scriptdroid.ui;
 
+import android.bug.WrapContentLinearLayoutManager;
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -68,7 +68,7 @@ public class FunctionListRecyclerView extends ExpandableRecyclerView {
     }
 
     private void init() {
-        setLayoutManager(new LinearLayoutManager(getContext()));
+        setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
         setAdapter(new Adapter());
         setFunctionList(FUNCTION_LIST);
         setOnChildClickListener(new OnChildClickListener() {

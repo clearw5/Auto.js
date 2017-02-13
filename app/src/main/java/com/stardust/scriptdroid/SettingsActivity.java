@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
+import com.stardust.scriptdroid.file.SampleFileTool;
 import com.stardust.util.MapEntries;
 
 import java.util.Map;
@@ -65,9 +66,10 @@ public class SettingsActivity extends BaseActivity {
                     .entry(getString(R.string.text_re_import_samples), new Runnable() {
                         @Override
                         public void run() {
-                            int failCount = NonUiInitializer.getInstance().copySampleScriptFile();
+                            int failCount = SampleFileTool.getInstance().copySampleScriptFile();
                             if (failCount <= 0) {
                                 Toast.makeText(getActivity(), R.string.text_re_import_succeed, Toast.LENGTH_SHORT).show();
+                                notifyScriptListChanged();
                             } else
                                 Toast.makeText(getActivity(), R.string.text_fail, Toast.LENGTH_SHORT).show();
                         }
@@ -85,6 +87,10 @@ public class SettingsActivity extends BaseActivity {
                         }
                     })
                     .map();
+        }
+
+        private void notifyScriptListChanged() {
+            getActivity().sendBroadcast(new Intent(MainActivity.ACTION_NOTIFY_SCRIPT_LIST_CHANGE));
         }
 
         @Override
