@@ -76,12 +76,12 @@ public class SlideMenuFragment extends Fragment {
 
     @ViewBinding.Click(R.id.console)
     private void startConsoleActivity() {
-        startActivity(new Intent(getContext(), ConsoleActivity.class));
+        startActivity(new Intent(getContext(), ConsoleActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     @ViewBinding.Click(R.id.syntax_and_api)
     private void startSyntaxHelpActivity() {
-        startActivity(new Intent(getContext(), DocumentActivity.class));
+        startActivity(new Intent(getContext(), DocumentActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     @ViewBinding.Click(R.id.auto_operate_service)

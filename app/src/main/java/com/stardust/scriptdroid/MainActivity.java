@@ -150,7 +150,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     @ViewBinding.Click(R.id.setting)
     private void startSettingActivity() {
-        startActivity(new Intent(this, SettingsActivity.class));
+        startActivity(new Intent(this, SettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     @ViewBinding.Click(R.id.exit)

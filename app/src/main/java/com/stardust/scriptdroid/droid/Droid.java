@@ -47,7 +47,7 @@ public class Droid {
     };
     private static Droid instance = new Droid();
 
-    protected Droid() {
+    private Droid() {
     }
 
     public static Droid getInstance() {
@@ -64,12 +64,13 @@ public class Droid {
         runScript(FileUtils.readString(file), listener, RunningConfig.getDefault());
     }
 
-    private void runScript(String script) {
-        runScript(script, null, RunningConfig.getDefault());
-    }
 
     public void runScriptFile(String path) {
         runScriptFile(new File(path));
+    }
+
+    private void runScript(String script) {
+        runScript(script, null, RunningConfig.getDefault());
     }
 
     public void runScript(final String script, OnRunFinishedListener listener, RunningConfig config) {

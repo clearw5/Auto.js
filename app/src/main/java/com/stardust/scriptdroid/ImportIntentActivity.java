@@ -43,6 +43,6 @@ public class ImportIntentActivity extends BaseActivity {
 
     private void startMainActivity() {
         startActivity(new Intent(this, MainActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 }

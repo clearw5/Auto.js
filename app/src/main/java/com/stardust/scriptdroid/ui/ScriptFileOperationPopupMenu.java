@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.ui;
 
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -59,6 +60,7 @@ public class ScriptFileOperationPopupMenu extends PopupWindow {
     private void init() {
         setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
         setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        setBackgroundDrawable(new BitmapDrawable());
         setOutsideTouchable(true);
         setAnimationStyle(-1);
         initContentView();

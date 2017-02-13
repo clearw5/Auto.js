@@ -55,7 +55,7 @@ public class DroidRuntime implements IDroidRuntime {
 
     @Override
     public void launch(String packageName, String className) {
-        App.getApp().startActivity(new Intent().setClassName(packageName, className));
+        App.getApp().startActivity(new Intent().setClassName(packageName, className).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     @Override

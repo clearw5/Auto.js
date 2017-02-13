@@ -20,7 +20,7 @@ public class AccessibilityServiceUtils {
         if (Pref.isFirstGoToAccessibilitySetting()) {
             Toast.makeText(context, context.getString(R.string.text_please_choose) + context.getString(R.string.app_name), Toast.LENGTH_LONG).show();
         }
-        context.startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+        context.startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     public static boolean isAccessibilityServiceEnabled(Context context, Class<?> accessibilityService) {

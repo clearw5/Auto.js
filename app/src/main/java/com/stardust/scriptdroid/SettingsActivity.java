@@ -75,7 +75,7 @@ public class SettingsActivity extends BaseActivity {
                     .entry(getString(R.string.text_about), new Runnable() {
                         @Override
                         public void run() {
-                            startActivity(new Intent(getActivity(), AboutActivity.class));
+                            startActivity(new Intent(getActivity(), AboutActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                         }
                     })
                     .entry(getString(R.string.text_licenses), new Runnable() {

@@ -44,6 +44,7 @@ public class EditActivity extends Editor920Activity {
 
     public static void editFile(Context context, String name, String path) {
         context.startActivity(new Intent(context, EditActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra("path", path)
                 .putExtra("name", name));
     }
