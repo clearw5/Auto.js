@@ -17,8 +17,9 @@
         android:theme="@style/AppTheme"
         tools:replace="android:label">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:label="@string/_app_name"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -28,7 +29,7 @@
         </activity>
 
         <activity
-            android:name=".ShortcutActivity"
+            android:name=".external.shortcut.ShortcutActivity"
             android:theme="@style/AppTheme.NoActionBar">
 
             <intent-filter>
@@ -38,7 +39,7 @@
         </activity>
 
         <service
-            android:name=".droid.runtime.action.ActionPerformService"
+            android:name=".service.AccessibilityWatchDogService"
             android:enabled="true"
             android:exported="true"
             android:label="@string/_app_name"
@@ -53,7 +54,7 @@
         </service>
 
         <service
-            android:name="com.stardust.scriptdroid.tile.BoundsAssistEnableTileService"
+            android:name=".external.tile.BoundsAssistEnableTileService"
             android:icon="@drawable/ic_robot_head"
             android:label="脚本辅助"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
@@ -73,21 +74,22 @@
                 android:resource="@xml/provider_paths"/>
         </provider>
 
-        <activity android:name=".EditActivity"/>
-        <activity android:name=".DocumentActivity"/>
-        <activity android:name=".AboutActivity"/>
-        <activity android:name=".SettingsActivity"/>
-        <activity android:name=".droid.ConsoleActivity"/>
-        <activity android:name=".ErrorReportActivity"/>
+        <activity android:name=".ui.edit.EditActivity"/>
+        <activity android:name=".ui.help.DocumentActivity"/>
+        <activity android:name=".ui.settings.AboutActivity"/>
+        <activity android:name=".ui.settings.SettingsActivity"/>
+        <activity android:name=".ui.console.ConsoleActivity"/>
+        <activity android:name=".ui.error.ErrorReportActivity"/>
         <activity
-            android:name=".IssueReportActivity"
+            android:name=".ui.error.IssueReportActivity"
             android:theme="@style/IssueReportTheme"/>
         <activity android:name=".droid.script.ScriptExecuteActivity"/>
 
-        <service android:name=".AssistModeSwitchService"/>
+        <service android:name=".external.notification.bounds_assist.BoundsAssistSwitchNotificationHandleService"/>
+        <service android:name=".external.notification.record.ActionRecordNotificationHandleService"/>
 
         <activity
-            android:name=".EditAndRunIntentActivity"
+            android:name=".ui.edit.EditAndRunIntentActivity"
             android:icon="@drawable/ic_edit_green_48dp"
             android:label="编辑与运行脚本">
 
@@ -126,7 +128,7 @@
         </activity>
 
         <activity
-            android:name=".ImportIntentActivity"
+            android:name=".ui.edit.ImportIntentActivity"
             android:icon="@drawable/ic_folder_open_outline_green"
             android:label="导入脚本文件">
 

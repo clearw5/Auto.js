@@ -1,0 +1,36 @@
+<resources>
+    <string name="air_title_report_issue">错误报告</string>
+
+    <string name="air_title_issue">问题</string>
+    <string name="air_title_login">登录</string>
+
+    <string name="air_label_issue_title">标题</string>
+    <string name="air_label_issue_description">描述</string>
+    <string name="air_label_device_info">设备信息</string>
+
+    <string name="air_label_use_account">使用Github账号发送</string>
+    <string name="air_label_use_email">使用Email发送</string>
+    <string name="air_label_use_guest">匿名发送</string>
+    <string name="air_label_username">用户名</string>
+    <string name="air_label_password">密码</string>
+    <string name="air_label_email">邮箱</string>
+    <string name="air_label_email_optional">联系邮箱 (选填)</string>
+
+    <string name="air_error_no_title">请输入问题</string>
+    <string name="air_error_no_description">请输入详细描述</string>
+    <string name="air_error_no_username">请输入有效的Github用户名</string>
+    <string name="air_error_no_password">请输入正确的密码</string>
+    <string name="air_error_no_email">请输入邮箱</string>
+
+    <string name="air_dialog_title_loading">正在上传到GitHub…</string>
+    <string name="air_dialog_title_failed">无法发送错误报告</string>
+    <string name="air_dialog_description_failed_wrong_credentials">错误的用户名或密码</string>
+    <string name="air_dialog_description_failed_invalid_token">无效的access token. 请联系软件开发者.</string>
+    <string name="air_dialog_description_failed_issues_not_available">Issues不可用，请联系软件开发者.</string>
+    <string name="air_dialog_description_failed_unknown">未知错误</string>
+    <string name="air_dialog_action_failed">OK</string>
+    <plurals name="air_error_short_description">
+        <item quantity="one">描述至少要 %d 个字.</item>
+        <item quantity="other">描述至少要 %d 个字.</item>
+    </plurals>
+</resources>

@@ -121,3 +121,7 @@ var shell = function(cmd, root){
     root = root ? 1 : 0;
     droid.shell(cmd, root);
 }
+
+var getTexts = function(){
+    return droid.getTexts();
+}

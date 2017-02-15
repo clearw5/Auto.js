@@ -116,12 +116,12 @@
 
     </RelativeLayout>
 
-    <com.stardust.scriptdroid.ui.FunctionListRecyclerView
+    <com.stardust.scriptdroid.ui.edit.sidemenu.FunctionListRecyclerView
         android:id="@+id/function_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <com.stardust.scriptdroid.ui.AssistClipListRecyclerView
+    <com.stardust.scriptdroid.ui.edit.sidemenu.AssistClipListRecyclerView
         android:id="@+id/assist_clip_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

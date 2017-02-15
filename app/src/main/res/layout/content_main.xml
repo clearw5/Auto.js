@@ -7,11 +7,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.stardust.scriptdroid.MainActivity"
+    tools:context=".ui.main.MainActivity"
     tools:showIn="@layout/activity_main">
 
 
-    <com.stardust.scriptdroid.ui.ScriptListRecyclerView
+    <com.stardust.scriptdroid.ui.main.ScriptListRecyclerView
         android:id="@+id/script_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

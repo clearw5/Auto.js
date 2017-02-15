@@ -26,7 +26,7 @@
         </android.support.design.widget.AppBarLayout>
     </android.support.design.widget.CoordinatorLayout>
 
-    <com.stardust.view.MarkdownView
+    <com.stardust.widget.MarkdownView
         android:id="@+id/markdown"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

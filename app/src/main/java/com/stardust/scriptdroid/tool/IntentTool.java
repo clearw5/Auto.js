@@ -47,4 +47,5 @@ public class IntentTool {
                 .putExtra(Intent.EXTRA_TEXT, text)
                 .setType("text/plain"));
     }
+
 }

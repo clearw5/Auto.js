@@ -11,6 +11,8 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -70,7 +72,7 @@ public class DuktapeJavaScriptEngine implements JavaScriptEngine {
     public void removeAndStop(Thread thread) {
         synchronized (mThreadDuktapeEngineMap) {
             DuktapeEngine engine = mThreadDuktapeEngineMap.remove(thread);
-            stop(engine, thread);
+            forceStop(engine, thread);
         }
     }
 
@@ -84,13 +86,20 @@ public class DuktapeJavaScriptEngine implements JavaScriptEngine {
         }
     }
 
-    private void stop(DuktapeEngine engine, Thread thread) {
-        if (engine != null)
-            engine.destory();
+
+    private void forceStop(final DuktapeEngine engine, Thread thread) {
         try {
             thread.interrupt();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if (engine != null) {
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    engine.destory();
+                }
+            }, 1000);
         }
     }
 
@@ -110,7 +119,7 @@ public class DuktapeJavaScriptEngine implements JavaScriptEngine {
         int n;
         synchronized (mThreadDuktapeEngineMap) {
             for (Map.Entry<Thread, DuktapeEngine> entry : mThreadDuktapeEngineMap.entrySet()) {
-                stop(entry.getValue(), entry.getKey());
+                forceStop(entry.getValue(), entry.getKey());
             }
             n = mThreadDuktapeEngineMap.size();
             mThreadDuktapeEngineMap.clear();

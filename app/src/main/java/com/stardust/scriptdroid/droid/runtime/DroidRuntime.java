@@ -13,14 +13,17 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.jraska.console.Console;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.ConsoleActivity;
+import com.stardust.scriptdroid.ui.console.ConsoleActivity;
 import com.stardust.scriptdroid.droid.runtime.action.Action;
 import com.stardust.scriptdroid.droid.runtime.action.ActionFactory;
-import com.stardust.scriptdroid.droid.runtime.action.ActionPerformService;
+import com.stardust.scriptdroid.droid.runtime.action.ActionPerformAccessibilityDelegate;
 import com.stardust.scriptdroid.droid.runtime.action.ActionTarget;
+import com.stardust.scriptdroid.droid.runtime.action.GetTextAction;
 import com.stardust.scriptdroid.droid.runtime.api.IDroidRuntime;
+import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.Shell;
 
+import java.util.Collections;
 import java.util.List;
 
 import timber.log.Timber;
@@ -166,20 +169,38 @@ public class DroidRuntime implements IDroidRuntime {
     }
 
     private boolean performAction(Action action) {
-        if (ActionPerformService.getInstance() == null) {
+        if (AccessibilityWatchDogService.getInstance() == null) {
             toast(App.getApp().getString(R.string.text_no_accessibility_permission));
             throw new ScriptStopException(App.getApp().getString(R.string.text_no_accessibility_permission));
         }
-        ActionPerformService.setAction(action);
+        ActionPerformAccessibilityDelegate.setAction(action);
         synchronized (mActionPerformLock) {
             try {
                 mActionPerformLock.wait();
             } catch (InterruptedException e) {
-                ActionPerformService.setActions(ActionPerformService.NO_ACTION);
+                ActionPerformAccessibilityDelegate.setAction(ActionPerformAccessibilityDelegate.NO_ACTION);
                 throw new ScriptStopException(App.getApp().getString(R.string.text_script_stopped), e);
             }
         }
         return mActionPerformResult;
+    }
+
+    public List<String> getTexts() {
+        if (AccessibilityWatchDogService.getInstance() == null) {
+            toast(App.getApp().getString(R.string.text_no_accessibility_permission));
+            throw new ScriptStopException(App.getApp().getString(R.string.text_no_accessibility_permission));
+        }
+        GetTextAction.result = Collections.EMPTY_LIST;
+        ActionPerformAccessibilityDelegate.setAction(new GetTextAction());
+        synchronized (mActionPerformLock) {
+            try {
+                mActionPerformLock.wait();
+                return GetTextAction.result;
+            } catch (InterruptedException e) {
+                ActionPerformAccessibilityDelegate.setAction(ActionPerformAccessibilityDelegate.NO_ACTION);
+                throw new ScriptStopException(App.getApp().getString(R.string.text_script_stopped), e);
+            }
+        }
     }
 
     @Override

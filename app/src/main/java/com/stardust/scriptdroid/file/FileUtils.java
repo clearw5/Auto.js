@@ -176,4 +176,26 @@ public class FileUtils {
     }
 
 
+    public static boolean writeString(String path, String text) {
+        return writeString(new File(path), text);
+    }
+
+    public static boolean writeString(File file, String text) {
+        try {
+            return writeString(new FileOutputStream(file), text);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean writeString(OutputStream outputStream, String text) {
+        try {
+            outputStream.write(text.getBytes());
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

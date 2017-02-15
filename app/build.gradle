@@ -7,8 +7,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 22
-        versionName "1.17.0213"
+        versionCode 25
+        versionName "1.17.0215"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -24,6 +24,10 @@ android {
     }
     dataBinding {
         enabled = true
+    }
+    lintOptions {
+        disable 'MissingTranslation'
+        disable 'ExtraTranslation'
     }
     android.applicationVariants.all { variant ->
         variant.outputs.each { output ->

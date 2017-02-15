@@ -99,4 +99,20 @@
     <string name="text_bug_report">Bug Report</string>
     <string name="text_report_fail">提交失败</string>
     <string name="text_report_succeed">提交成功</string>
+    <string name="edit_and_run_handle_intent_error">无法处理文件</string>
+    <string name="text_crash_en">Crash</string>
+    <string name="text_issue_report">问题反馈</string>
+    <string name="text_script_record">录制脚本</string>
+    <string name="hint_start_record">在通知栏中开始录制</string>
+    <string name="text_start_record">开始录制</string>
+    <string name="text_stop_record">停止录制</string>
+    <string name="text_not_recording">录制未开始</string>
+    <string name="text_pause_record">暂停录制</string>
+    <string name="text_resume_record">继续录制</string>
+    <string name="text_recorded">录制结束</string>
+    <string name="text_copy_to_clip">复制到剪贴板</string>
+    <string name="text_file_write_fail">文件写入失败</string>
+    <string name="text_need_enable_accessibility_service">需要打开\"自动操作服务“才能录制脚本</string>
+    <string name="text_join_qq_group">加入QQ交流群</string>
+    <string name="text_qq_group_id_copied">已复制群号到剪贴板</string>
 </resources>

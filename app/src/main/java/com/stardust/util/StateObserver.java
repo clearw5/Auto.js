@@ -15,30 +15,18 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class StateObserver {
 
-    public interface OnStateChangedListener<T> {
+    public interface OnStateChangedListener {
 
-        void onStateChanged(T newState);
+        void onStateChanged(boolean newState);
 
-        void initState(T state);
+        void initState(boolean state);
     }
 
 
-    public static abstract class SimpleOnStateChangedListener<T> implements OnStateChangedListener<T> {
+    public static abstract class SimpleOnStateChangedListener<T> implements OnStateChangedListener {
 
         @Override
-        public void initState(T state) {
-            onStateChanged(state);
-        }
-    }
-
-    public interface OnBooleanStateChangedListener extends OnStateChangedListener<Boolean> {
-
-    }
-
-    public static abstract class SimpleOnBooleanStateChangedListener implements OnBooleanStateChangedListener {
-
-        @Override
-        public void initState(Boolean state) {
+        public void initState(boolean state) {
             onStateChanged(state);
         }
     }
@@ -53,9 +41,9 @@ public class StateObserver {
 
     public void register(final String key, SwitchCompat switchCompat) {
         final WeakReference<SwitchCompat> switchCompatWeakReference = new WeakReference<>(switchCompat);
-        register(key, new SimpleOnBooleanStateChangedListener() {
+        register(key, new SimpleOnStateChangedListener() {
             @Override
-            public void onStateChanged(Boolean newState) {
+            public void onStateChanged(boolean newState) {
                 if (switchCompatWeakReference.get() != null) {
                     switchCompatWeakReference.get().setChecked(newState);
                 } else {
@@ -65,10 +53,8 @@ public class StateObserver {
         });
     }
 
-    public <T> void register(String key, OnStateChangedListener<T> listener) {
-        T initialState = readState(key, listener);
-        if (initialState != null)
-            listener.initState(initialState);
+    public void register(String key, OnStateChangedListener listener) {
+        initState(key, listener);
         synchronized (mKeyStateListenersMap) {
             List<OnStateChangedListener> listeners = getListenerListOrCreateIfNotExists(key);
             listeners.add(listener);
@@ -76,7 +62,7 @@ public class StateObserver {
     }
 
 
-    private <T> void unregister(String key, OnStateChangedListener<T> stateChangedListener) {
+    private void unregister(String key, OnStateChangedListener stateChangedListener) {
         synchronized (mKeyStateListenersMap) {
             List<OnStateChangedListener> listeners = mKeyStateListenersMap.get(key);
             if (listeners == null) {
@@ -86,15 +72,13 @@ public class StateObserver {
         }
     }
 
-    public <T> void setState(String key, T state) {
+    public void setState(String key, boolean state) {
         synchronized (mKeyStateListenersMap) {
             List<OnStateChangedListener> listeners = mKeyStateListenersMap.get(key);
             if (listeners == null || listeners.isEmpty())
                 return;
-            if (listeners.get(0) instanceof OnBooleanStateChangedListener) {
-                mSharedPreferences.edit().putBoolean(key, (Boolean) state).apply();
-                notifyBooleanStateChanged(listeners, (Boolean) state);
-            }
+            mSharedPreferences.edit().putBoolean(key, state).apply();
+            notifyBooleanStateChanged(listeners, state);
         }
     }
 
@@ -104,12 +88,10 @@ public class StateObserver {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    protected <T> T readState(String key, OnStateChangedListener<T> listener) {
-        if (listener instanceof OnBooleanStateChangedListener) {
-            return mSharedPreferences.contains(key) ? (T) Boolean.valueOf(mSharedPreferences.getBoolean(key, false)) : null;
+    private void initState(String key, OnStateChangedListener listener) {
+        if (mSharedPreferences.contains(key)) {
+            listener.initState(mSharedPreferences.getBoolean(key, false));
         }
-        return null;
     }
 
     private List<OnStateChangedListener> getListenerListOrCreateIfNotExists(String key) {

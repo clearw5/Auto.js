@@ -5,8 +5,14 @@ import android.app.Application;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
+import com.stardust.scriptdroid.droid.runtime.action.ActionPerformAccessibilityDelegate;
+import com.stardust.scriptdroid.record.AccessibilityRecorderDelegate;
+import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
 import com.stardust.util.CrashHandler;
 import com.stardust.util.StateObserver;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -14,12 +20,12 @@ import com.stardust.util.StateObserver;
 
 public class App extends Application {
 
-    private static App instance;
+    private static WeakReference<App> instance;
     private static StateObserver stateObserver;
-    private static Activity currentActivity;
+    private static WeakReference<Activity> currentActivity;
 
     public static App getApp() {
-        return instance;
+        return instance.get();
     }
 
     public static StateObserver getStateObserver() {
@@ -29,13 +35,24 @@ public class App extends Application {
 
     public void onCreate() {
         super.onCreate();
-        Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
-        instance = this;
+        if (!BuildConfig.DEBUG)
+            Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
+        instance = new WeakReference<>(this);
         stateObserver = new StateObserver(PreferenceManager.getDefaultSharedPreferences(this));
+        registerActivityLifecycleCallback();
+        initAccessibilityServiceDelegates();
+    }
+
+    private void initAccessibilityServiceDelegates() {
+        AccessibilityWatchDogService.addDelegateIfNeeded(100, ActionPerformAccessibilityDelegate.class);
+        AccessibilityWatchDogService.addDelegateIfNeeded(200, AccessibilityRecorderDelegate.getInstance());
+    }
+
+    private void registerActivityLifecycleCallback() {
         registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                currentActivity = activity;
+                currentActivity = new WeakReference<>(activity);
             }
 
 
@@ -46,14 +63,14 @@ public class App extends Application {
 
             @Override
             public void onActivityResumed(Activity activity) {
-                currentActivity = activity;
+                currentActivity = new WeakReference<>(activity);
             }
 
         });
     }
 
     public static Activity currentActivity() {
-        return currentActivity;
+        return currentActivity.get();
     }
 
 

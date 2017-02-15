@@ -5,7 +5,7 @@
                                         android:id="@+id/drawer_layout"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        tools:context="com.stardust.scriptdroid.MainActivity">
+                                        tools:context=".ui.main.MainActivity">
 
 
     <android.support.design.widget.CoordinatorLayout
@@ -41,7 +41,7 @@
 
         <include layout="@layout/content_main"/>
 
-        <com.stardust.scriptdroid.ui.SlidingUpPanel
+        <com.stardust.widget.SlidingUpPanel
             android:id="@+id/bottom_menu"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -107,9 +107,35 @@
 
                 </LinearLayout>
 
+
+                <LinearLayout
+                    android:id="@+id/record"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_video_record"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/text_script_record"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp"/>
+
+                </LinearLayout>
+
             </LinearLayout>
 
-        </com.stardust.scriptdroid.ui.SlidingUpPanel>
+        </com.stardust.widget.SlidingUpPanel>
 
     </android.support.design.widget.CoordinatorLayout>
 

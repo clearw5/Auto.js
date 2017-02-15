@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".EditActivity">
+    tools:context=".ui.edit.EditActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -27,7 +27,7 @@
                 android:layout_gravity="right"
                 android:orientation="horizontal">
 
-                <com.stardust.scriptdroid.widget.ToolbarMenuItem
+                <com.stardust.widget.ToolbarMenuItem
                     android:id="@+id/run"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
@@ -35,21 +35,21 @@
                     app:icon_color="@android:color/white"
                     app:text="@string/text_run"/>
 
-                <com.stardust.scriptdroid.widget.ToolbarMenuItem
+                <com.stardust.widget.ToolbarMenuItem
                     android:id="@+id/undo"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
                     app:icon="@drawable/ic_undo_white_48dp"
                     app:text="@string/text_undo"/>
 
-                <com.stardust.scriptdroid.widget.ToolbarMenuItem
+                <com.stardust.widget.ToolbarMenuItem
                     android:id="@+id/redo"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
                     app:icon="@drawable/ic_redo_white_48dp"
                     app:text="@string/text_redo"/>
 
-                <com.stardust.scriptdroid.widget.ToolbarMenuItem
+                <com.stardust.widget.ToolbarMenuItem
                     android:id="@+id/save"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
