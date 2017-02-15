@@ -7,8 +7,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 27
-        versionName "1.17.0215(2)"
+        versionCode 28
+        versionName "1.17.0216"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -49,6 +49,7 @@ public class App extends Application {
         stateObserver = new StateObserver(PreferenceManager.getDefaultSharedPreferences(this));
         registerActivityLifecycleCallback();
         initAccessibilityServiceDelegates();
+
     }
 
 

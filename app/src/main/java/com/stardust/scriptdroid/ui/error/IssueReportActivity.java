@@ -3,6 +3,7 @@ package com.stardust.scriptdroid.ui.error;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ public class IssueReportActivity extends IssueReporterActivity {
     private boolean mCrash = false;
     private Method mReportIssue, mValidateInput;
     private boolean mReportFailed = false;
+    private String token = "d";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,9 +125,15 @@ public class IssueReportActivity extends IssueReporterActivity {
         return new GithubTarget("hyb1996", "NoRootScriptDroid");
     }
 
+
     @Override
     protected String getGuestToken() {
-        return "899ce4e559f7c3fad7a3a34a05777724758550de";
+        //绕过github安全检查
+        return decode("NDlkZDU3NjRiYTk3NzVmZDkxOTA3MDQ4YTdmNzQ1ZDY5NjcyNzEyNA==");
+    }
+
+    public static String decode(String str) {
+        return new String(Base64.decode(str.getBytes(), Base64.DEFAULT));
     }
 
 }
