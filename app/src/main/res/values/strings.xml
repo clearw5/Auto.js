@@ -115,4 +115,6 @@
     <string name="text_need_enable_accessibility_service">需要打开\"自动操作服务“才能录制脚本</string>
     <string name="text_join_qq_group">加入QQ交流群</string>
     <string name="text_qq_group_id_copied">已复制群号到剪贴板</string>
+    <string name="text_close">关闭</string>
+    <string name="text_re_record">重新录制</string>
 </resources>

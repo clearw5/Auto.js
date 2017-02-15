@@ -125,7 +125,7 @@ public class IssueReportActivity extends IssueReporterActivity {
 
     @Override
     protected String getGuestToken() {
-        return "f32d789662645640ff22e240b80f5d76117181a1";
+        return "899ce4e559f7c3fad7a3a34a05777724758550de";
     }
 
 }

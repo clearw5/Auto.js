@@ -8,6 +8,7 @@ import android.view.accessibility.AccessibilityEvent;
 import com.stardust.scriptdroid.App;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -21,7 +22,7 @@ public class AccessibilityWatchDogService extends AccessibilityService {
     private static final String TAG = "AccessibilityWatchDog";
 
     private static final SortedMap<Integer, AccessibilityDelegate> mDelegates = new TreeMap<>();
-    private static AccessibilityWatchDogService instance;
+    private static WeakReference<AccessibilityWatchDogService> instance;
 
     public static void addDelegate(AccessibilityDelegate delegate, int uniquePriority) {
         synchronized (mDelegates) {
@@ -62,7 +63,9 @@ public class AccessibilityWatchDogService extends AccessibilityService {
     }
 
     public static AccessibilityWatchDogService getInstance() {
-        return instance;
+        if (instance == null)
+            return null;
+        return instance.get();
     }
 
     @Override
@@ -85,12 +88,12 @@ public class AccessibilityWatchDogService extends AccessibilityService {
         super.onServiceConnected();
         // FIXME: 2017/2/12 有时在无障碍中开启服务后这里不会调用服务也不会运行，安卓的BUG???
         Log.v(TAG, "onServiceConnected");
-        instance = this;
+        instance = new WeakReference<>(this);
     }
 
     public static void disable() {
-        if (instance != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            instance.disableSelf();
+        if (instance != null && instance.get() != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            instance.get().disableSelf();
         } else {
             AccessibilityServiceUtils.goToAccessibilitySetting(App.getApp());
         }

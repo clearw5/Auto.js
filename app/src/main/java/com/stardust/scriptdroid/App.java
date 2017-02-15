@@ -5,6 +5,8 @@ import android.app.Application;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
+import com.squareup.leakcanary.LeakCanary;
+import com.stardust.scriptdroid.bounds_assist.BoundsAssistant;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformAccessibilityDelegate;
 import com.stardust.scriptdroid.record.AccessibilityRecorderDelegate;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
@@ -35,6 +37,12 @@ public class App extends Application {
 
     public void onCreate() {
         super.onCreate();
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
         if (!BuildConfig.DEBUG)
             Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
         instance = new WeakReference<>(this);
@@ -43,9 +51,12 @@ public class App extends Application {
         initAccessibilityServiceDelegates();
     }
 
+
     private void initAccessibilityServiceDelegates() {
         AccessibilityWatchDogService.addDelegateIfNeeded(100, ActionPerformAccessibilityDelegate.class);
         AccessibilityWatchDogService.addDelegateIfNeeded(200, AccessibilityRecorderDelegate.getInstance());
+        AccessibilityWatchDogService.addDelegateIfNeeded(300, BoundsAssistant.class);
+
     }
 
     private void registerActivityLifecycleCallback() {

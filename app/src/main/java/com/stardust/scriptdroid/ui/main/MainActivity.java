@@ -284,7 +284,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     public static void onActionRecordStopped(Context context, String script) {
         Intent intent = new Intent(context, MainActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(EXTRA_ACTION, ACTION_ON_ACTION_RECORD_STOPPED)
                 .putExtra(ARGUMENT_SCRIPT, script);
         context.startActivity(intent);

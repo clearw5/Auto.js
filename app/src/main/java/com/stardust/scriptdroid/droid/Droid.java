@@ -13,6 +13,7 @@ import com.stardust.scriptdroid.file.FileUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 
 import timber.log.Timber;
 
@@ -30,7 +31,7 @@ public class Droid {
 
     public static final String UI = "\"ui\";";
 
-    public interface OnRunFinishedListener {
+    public interface OnRunFinishedListener extends Serializable {
         void onRunFinished(Object result, Exception e);
     }
 

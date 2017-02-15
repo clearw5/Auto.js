@@ -29,6 +29,7 @@ public class ActionRecordNotificationHandleService extends Service {
     private static final int ACTION_STOP = 17771;
     private static final int ACTION_START_OR_PAUSE = 17772;
     private static final int ACTION_DELETE = 17773;
+    private static final int ACTION_REDO = 17774;
 
     public static PendingIntent getStartOrPauseIntent() {
         Intent intent = new Intent(App.getApp(), ActionRecordNotificationHandleService.class)
@@ -51,6 +52,15 @@ public class ActionRecordNotificationHandleService extends Service {
         return PendingIntent.getService(App.getApp(), ACTION_DELETE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
+
+    public static PendingIntent getRedoIntent() {
+        Intent intent = new Intent(App.getApp(), ActionRecordNotificationHandleService.class)
+                .putExtra(EXTRA_INTENT_VALID, true)
+                .putExtra(EXTRA_ACTION, ACTION_REDO);
+        return PendingIntent.getService(App.getApp(), ACTION_REDO, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         boolean intentValid = intent.getBooleanExtra(EXTRA_INTENT_VALID, false);
@@ -65,15 +75,22 @@ public class ActionRecordNotificationHandleService extends Service {
         switch (action) {
             case ACTION_STOP:
                 stopRecord();
+                collapseNotificationBar();
                 break;
             case ACTION_START_OR_PAUSE:
                 startOrPauseRecord();
+                collapseNotificationBar();
                 break;
             case ACTION_DELETE:
+                ActionRecordSwitchNotification.cancelNotification();
                 stopRecordIfNeeded();
+                break;
+            case ACTION_REDO:
+                redoRecord();
+                break;
         }
-        collapseNotificationBar();
     }
+
 
     private void collapseNotificationBar() {
         sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
@@ -115,9 +132,18 @@ public class ActionRecordNotificationHandleService extends Service {
         }
     }
 
+    private void redoRecord() {
+        if (AccessibilityRecorderDelegate.getInstance().getState() != STOPPED) {
+            AccessibilityRecorderDelegate.getInstance().stopRecord();
+            ActionRecordSwitchView.getInstance().setState(STOPPED);
+        }
+    }
+
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
+
 }

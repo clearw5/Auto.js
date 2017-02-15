@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
-            android:src="@drawable/slide_menu_img"/>
+            android:src="@drawable/slide_menu_img_200px"/>
 
         <TextView
             android:id="@+id/version"

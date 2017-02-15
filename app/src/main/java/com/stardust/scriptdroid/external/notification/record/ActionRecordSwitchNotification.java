@@ -33,4 +33,9 @@ public class ActionRecordSwitchNotification {
         NotificationManager notificationManager = (NotificationManager) App.getApp().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(NOTIFY_ID, notification);
     }
+
+    public static void cancelNotification() {
+        NotificationManager notificationManager = (NotificationManager) App.getApp().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(NOTIFY_ID);
+    }
 }

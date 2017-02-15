@@ -16,44 +16,52 @@ import static com.stardust.scriptdroid.droid.Droid.JAVA_SCRIPT_ENGINE;
 
 public class ScriptExecuteActivity extends Activity {
 
-    private static String script;
-    private static Droid.OnRunFinishedListener onRunFinishedListener;
-    private static RunningConfig runningConfig;
+    private static final String EXTRA_SCRIPT = "EXTRA_SCRIPT";
+    private static final String EXTRA_ON_RUN_FINISHED_LISTENER = "EXTRA_ON_RUN_FINISHED_LISTENER";
     private Object mResult;
+    private String mScript;
+    private Droid.OnRunFinishedListener mOnRunFinishedListener;
 
 
     public static void runScript(String script, Droid.OnRunFinishedListener listener, RunningConfig config) {
-        ScriptExecuteActivity.script = script;
-        ScriptExecuteActivity.onRunFinishedListener = listener;
-        ScriptExecuteActivity.runningConfig = config;
-        App.getApp().startActivity(new Intent(App.getApp(), ScriptExecuteActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        App.getApp().startActivity(new Intent(App.getApp(), ScriptExecuteActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(EXTRA_SCRIPT, script)
+                .putExtra(EXTRA_ON_RUN_FINISHED_LISTENER, listener));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        handleIntent(getIntent());
         runScript();
+    }
+
+    private void handleIntent(Intent intent) {
+        mScript = intent.getStringExtra(EXTRA_SCRIPT);
+        mOnRunFinishedListener = (Droid.OnRunFinishedListener) intent.getSerializableExtra(EXTRA_ON_RUN_FINISHED_LISTENER);
     }
 
     private void runScript() {
         JAVA_SCRIPT_ENGINE.set("activity", Activity.class, this);
         try {
-            mResult = JAVA_SCRIPT_ENGINE.execute(script);
+            mResult = JAVA_SCRIPT_ENGINE.execute(mScript);
         } catch (Exception e) {
-            onRunFinishedListener.onRunFinished(null, e);
+            mOnRunFinishedListener.onRunFinished(null, e);
             finish();
         }
     }
 
     @Override
     public void finish() {
-        onRunFinishedListener.onRunFinished(mResult, null);
+        mOnRunFinishedListener.onRunFinished(mResult, null);
         super.finish();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        JAVA_SCRIPT_ENGINE.set("activity", Activity.class, null);
         JAVA_SCRIPT_ENGINE.removeAndDestroy(Thread.currentThread());
     }
 }

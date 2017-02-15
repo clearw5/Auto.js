@@ -1,7 +1,9 @@
 package com.stardust.scriptdroid.ui.edit;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -18,6 +20,7 @@ import com.jecelyin.editor.v2.common.SaveListener;
 import com.jecelyin.editor.v2.ui.EditorDelegate;
 import com.jecelyin.editor.v2.view.EditorView;
 import com.jecelyin.editor.v2.view.menu.MenuDef;
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.Droid;
@@ -40,6 +43,18 @@ public class EditActivity extends Editor920Activity {
 
     private static final String KEY_EDIT_ACTIVITY_FIRST_USE = "KEY_EDIT_ACTIVITY_FIRST_USE";
 
+    private static final String ACTION_ON_RUN_FINISHED = "ACTION_ON_RUN_FINISHED";
+    private static final String EXTRA_EXCEPTION = "EXTRA_EXCEPTION";
+
+    private static final Droid.OnRunFinishedListener ON_RUN_FINISHED_LISTENER = new Droid.OnRunFinishedListener() {
+
+        @Override
+        public void onRunFinished(Object result, Exception e) {
+            App.getApp().sendBroadcast(new Intent(ACTION_ON_RUN_FINISHED)
+                    .putExtra(EXTRA_EXCEPTION, e));
+        }
+    };
+
     public static void editFile(Context context, String path) {
         editFile(context, null, path);
     }
@@ -57,12 +72,24 @@ public class EditActivity extends Editor920Activity {
     private DrawerLayout mDrawerLayout;
     private EditorDelegate mEditorDelegate;
     private SparseArray<ToolbarMenuItem> mMenuMap;
+    private BroadcastReceiver mOnRunFinishedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(ACTION_ON_RUN_FINISHED)) {
+                setMenuStatus(R.id.run, MenuDef.STATUS_NORMAL);
+                Exception e = (Exception) intent.getSerializableExtra(EXTRA_EXCEPTION);
+                if (e != null)
+                    Snackbar.make(mView, getString(R.string.text_error) + ": " + e.getMessage(), Snackbar.LENGTH_INDEFINITE).show();
+            }
+        }
+    };
 
     public void onCreate(Bundle b) {
         super.onCreate(b);
         handleIntent();
         setUpUI();
         setUpEditor();
+        registerReceiver(mOnRunFinishedReceiver, new IntentFilter(ACTION_ON_RUN_FINISHED));
     }
 
     @Override
@@ -175,19 +202,7 @@ public class EditActivity extends Editor920Activity {
     private void run() {
         Snackbar.make(mView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         setMenuStatus(R.id.run, MenuDef.STATUS_DISABLED);
-        Droid.getInstance().runScriptFile(mFile, new Droid.OnRunFinishedListener() {
-            @Override
-            public void onRunFinished(Object result, final Exception e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setMenuStatus(R.id.run, MenuDef.STATUS_NORMAL);
-                        if (e != null)
-                            Snackbar.make(mView, getString(R.string.text_error) + ": " + e.getMessage(), Snackbar.LENGTH_INDEFINITE).show();
-                    }
-                });
-            }
-        });
+        Droid.getInstance().runScriptFile(mFile, ON_RUN_FINISHED_LISTENER);
     }
 
     @ViewBinding.Click(R.id.undo)
@@ -260,5 +275,11 @@ public class EditActivity extends Editor920Activity {
     @Override
     public void doCommand(Command command) {
         mEditorDelegate.doCommand(command);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mOnRunFinishedReceiver);
     }
 }

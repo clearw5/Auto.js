@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.bounds_assist;
 
+import android.accessibilityservice.AccessibilityService;
 import android.graphics.Rect;
 import android.preference.PreferenceManager;
 import android.view.accessibility.AccessibilityEvent;
@@ -10,15 +11,16 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.service.AccessibilityDelegate;
 
 
 /**
  * Created by Stardust on 2017/2/4.
  */
 
-public class BoundsAssistant {
-    public static final String KEY_BOUNDS_ASSIST_ENABLE = "ASSIST_MODE_ENABLE";
+public class BoundsAssistant implements AccessibilityDelegate {
 
+    public static final String KEY_BOUNDS_ASSIST_ENABLE = "ASSIST_MODE_ENABLE";
 
     private static boolean assistModeEnable;
     private static BoundsAssistClipList boundsAssistClipList = SharedPrefBoundsAssistClipList.getInstance();
@@ -43,7 +45,7 @@ public class BoundsAssistant {
                 .show();
     }
 
-    public static void performAssistance(AccessibilityEvent event) {
+    private static void performAssistance(AccessibilityEvent event) {
         if (!assistModeEnable) {
             return;
         }
@@ -57,6 +59,12 @@ public class BoundsAssistant {
             saveAndAlertBounds(rect);
             nodeInfo.recycle();
         }
+    }
+
+    @Override
+    public boolean onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event) {
+        performAssistance(event);
+        return false;
     }
 
     public static Rect getBoundsInScreen(AccessibilityNodeInfo nodeInfo) {
@@ -79,5 +87,6 @@ public class BoundsAssistant {
     static {
         assistModeEnable = PreferenceManager.getDefaultSharedPreferences(App.getApp()).getBoolean(KEY_BOUNDS_ASSIST_ENABLE, false);
     }
+
 
 }

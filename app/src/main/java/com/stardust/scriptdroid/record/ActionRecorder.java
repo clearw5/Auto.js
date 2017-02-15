@@ -62,6 +62,8 @@ public class ActionRecorder {
         @Override
         public void onAccessibilityEvent(AccessibilityEvent event, StringBuilder sb) {
             AccessibilityNodeInfo source = event.getSource();
+            if (source == null)
+                return;
             String bounds = boundsToString(getBoundsInScreen(source));
             source.recycle();
             onAccessibilityEvent(event, bounds, sb);
