@@ -117,4 +117,8 @@
     <string name="text_qq_group_id_copied">已复制群号到剪贴板</string>
     <string name="text_close">关闭</string>
     <string name="text_re_record">重新录制</string>
+    <string name="text_use_volume_control_record">使用音量键控制</string>
+    <string name="summary_use_volume_control_record">开启后每次音量变化会开始或停止脚本录制</string>
+    <string name="key_use_volume_control_record">key_use_volume_control_record</string>
+    <string name="text_mobile_qq_not_installed">未安装手机QQ</string>
 </resources>

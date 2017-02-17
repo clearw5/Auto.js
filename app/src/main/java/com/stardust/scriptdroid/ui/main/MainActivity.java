@@ -26,7 +26,6 @@ import com.afollestad.materialdialogs.folderselector.FileChooserDialog;
 import com.stardust.app.NotRemindAgainDialog;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.runtime.action.ActionPerformAccessibilityDelegate;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
@@ -80,7 +79,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     }
 
     private void goToAccessibilityPermissionSettingIfDisabled() {
-        if (!AccessibilityServiceUtils.isAccessibilityServiceEnabled(this, ActionPerformAccessibilityDelegate.class)) {
+        if (!AccessibilityServiceUtils.isAccessibilityServiceEnabled(this, AccessibilityWatchDogService.class)) {
             new NotRemindAgainDialog.Builder(this, "goToAccessibilityPermissionSettingIfDisabled")
                     .title(R.string.text_alert)
                     .content(R.string.explain_accessibility_permission)

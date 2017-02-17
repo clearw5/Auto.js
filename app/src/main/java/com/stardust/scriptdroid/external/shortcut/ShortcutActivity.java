@@ -97,8 +97,11 @@ public class ShortcutActivity extends Activity {
     }
 
     private boolean hasStorageReadPermission() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                checkSelfPermission(READ_EXTERNAL_STORAGE) == PERMISSION_GRANTED;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
+                    checkSelfPermission(READ_EXTERNAL_STORAGE) == PERMISSION_GRANTED;
+        }
+        return true;
     }
 
     interface Tile {

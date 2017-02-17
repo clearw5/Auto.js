@@ -14,13 +14,12 @@
         android:background="?selectableItemBackground"
         android:clickable="true"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginRight="16dp"
+            android:layout_margin="16dp"
             android:src="@drawable/ic_developer_512"/>
 
         <TextView
@@ -40,13 +39,12 @@
         android:clickable="true"
         android:foreground="?selectableItemBackground"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginRight="16dp"
+            android:layout_margin="16dp"
             android:src="@drawable/ic_github_mark"/>
 
         <TextView
@@ -67,13 +65,12 @@
         android:background="?selectableItemBackground"
         android:clickable="true"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginRight="16dp"
+            android:layout_margin="16dp"
             android:src="@drawable/ic_email_black_48dp"/>
 
         <TextView
@@ -94,13 +91,12 @@
         android:background="?selectableItemBackground"
         android:clickable="true"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginRight="16dp"
+            android:layout_margin="16dp"
             android:src="@drawable/ic_qq_black"/>
 
         <TextView
@@ -122,13 +118,12 @@
         android:background="?selectableItemBackground"
         android:clickable="true"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginRight="16dp"
+            android:layout_margin="16dp"
             android:src="@drawable/ic_money_black"/>
 
         <TextView

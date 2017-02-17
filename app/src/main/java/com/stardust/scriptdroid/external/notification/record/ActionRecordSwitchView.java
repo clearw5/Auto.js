@@ -48,9 +48,9 @@ public class ActionRecordSwitchView extends RemoteViews {
     }
 
     private void setUpOnClick() {
-        setOnClickPendingIntent(R.id.stop, ActionRecordNotificationHandleService.getStopIntent());
-        setOnClickPendingIntent(R.id.start_or_pause, ActionRecordNotificationHandleService.getStartOrPauseIntent());
-        setOnClickPendingIntent(R.id.close, ActionRecordNotificationHandleService.getDeleteIntent());
-        setOnClickPendingIntent(R.id.redo, ActionRecordNotificationHandleService.getRedoIntent());
+        setOnClickPendingIntent(R.id.stop, ActionRecordSwitchHandleService.getStopIntent());
+        setOnClickPendingIntent(R.id.start_or_pause, ActionRecordSwitchHandleService.getStartOrPauseIntent());
+        setOnClickPendingIntent(R.id.close, ActionRecordSwitchHandleService.getDeleteIntent());
+        setOnClickPendingIntent(R.id.redo, ActionRecordSwitchHandleService.getRedoIntent());
     }
 }

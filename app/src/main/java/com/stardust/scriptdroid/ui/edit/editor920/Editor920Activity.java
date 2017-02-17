@@ -1,8 +1,11 @@
 package com.stardust.scriptdroid.ui.edit.editor920;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
+import com.jecelyin.editor.v2.Pref;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.ui.IActivity;
 import com.jecelyin.editor.v2.ui.TabManager;
@@ -13,6 +16,13 @@ import java.io.File;
  * Created by Stardust on 2017/1/30.
  */
 public class Editor920Activity extends IActivity {
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Pref.getInstance(this).setReadOnly(false);
+    }
+
     @Override
     public void startPickPathActivity(String s, String s1) {
 
@@ -29,14 +39,10 @@ public class Editor920Activity extends IActivity {
     }
 
     @Override
-    public void onDocumentChanged(int i) {
-
-    }
-
-    @Override
     public void doCommand(Command command) {
 
     }
+
     @Override
     public void openFile(String s, String s1, int i) {
 
@@ -57,6 +63,16 @@ public class Editor920Activity extends IActivity {
         Command c = new Command(Command.CommandEnum.INSERT_TEXT);
         c.object = text;
         doCommand(c);
+    }
+
+    @Override
+    public String getCurrentLang() {
+        return null;
+    }
+
+    @Override
+    public void onDocumentChanged(int i) {
+
     }
 
     @Override

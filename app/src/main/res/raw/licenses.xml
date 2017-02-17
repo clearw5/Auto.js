@@ -48,4 +48,10 @@
         <url>https://github.com/HeinrichReimer/android-issue-reporter</url>
         <license>Apache Software License 2.0</license>
     </notice>
+    <notice>
+        <name>LeakCanary</name>
+        <copyright>Copyright 2015 Square, Inc.</copyright>
+        <url>https://github.com/square/leakcanary</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
 </notices>

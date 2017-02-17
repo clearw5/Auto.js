@@ -2,6 +2,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
+        android:title="@string/text_script_record">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_use_volume_control_record"
+            android:summary="@string/summary_use_volume_control_record"
+            android:title="@string/text_use_volume_control_record"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/text_others">
 
         <Preference

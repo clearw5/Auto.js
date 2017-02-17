@@ -7,6 +7,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.service.VolumeChangeListenService;
 
 /**
  * Created by Stardust on 2017/2/14.
@@ -23,10 +24,11 @@ public class ActionRecordSwitchNotification {
             builder = new NotificationCompat.Builder(App.getApp())
                     .setAutoCancel(false)
                     .setSmallIcon(R.drawable.ic_robot_head)
-                    .setDeleteIntent(ActionRecordNotificationHandleService.getDeleteIntent())
+                    .setDeleteIntent(ActionRecordSwitchHandleService.getDeleteIntent())
                     .setCustomContentView(ActionRecordSwitchView.getInstance());
         }
         showNotification(builder.build());
+        VolumeChangeListenService.startServiceIfNeeded(App.getApp());
     }
 
     private static void showNotification(Notification notification) {

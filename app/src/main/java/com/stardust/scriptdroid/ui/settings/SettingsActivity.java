@@ -1,7 +1,5 @@
 package com.stardust.scriptdroid.ui.settings;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -13,6 +11,7 @@ import android.widget.Toast;
 
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.file.SampleFileManager;
+import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.error.IssueReportActivity;
 import com.stardust.scriptdroid.ui.main.MainActivity;
@@ -89,8 +88,9 @@ public class SettingsActivity extends BaseActivity {
                     .entry(getString(R.string.text_join_qq_group), new Runnable() {
                         @Override
                         public void run() {
-                            ((ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("qq", "556928653"));
-                            Toast.makeText(getActivity(), R.string.text_qq_group_id_copied, Toast.LENGTH_SHORT).show();
+                            if (!IntentTool.joinQQGroup(getActivity(), "vjHXzZlpGcXNe-YEWzQ85mm_z8y-curC")) {
+                                Toast.makeText(getActivity(), R.string.text_mobile_qq_not_installed, Toast.LENGTH_SHORT).show();
+                            }
                         }
                     })
                     .entry(getString(R.string.text_about), new Runnable() {

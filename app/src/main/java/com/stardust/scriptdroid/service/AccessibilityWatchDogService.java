@@ -69,7 +69,7 @@ public class AccessibilityWatchDogService extends AccessibilityService {
     }
 
     @Override
-    public synchronized void onAccessibilityEvent(AccessibilityEvent event) {
+    public void onAccessibilityEvent(AccessibilityEvent event) {
         Log.v(TAG, "onAccessibilityEvent: " + event);
         synchronized (mDelegates) {
             for (Map.Entry<Integer, AccessibilityDelegate> entry : mDelegates.entrySet()) {

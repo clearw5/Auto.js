@@ -80,7 +80,7 @@ public class AccessibilityRecorderDelegate implements AccessibilityDelegate {
     @Override
     public boolean onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event) {
         if (mState == RECORDING) {
-            mRecorder.record(event);
+            mRecorder.record(service, event);
             checkTimeOut();
         }
         return false;

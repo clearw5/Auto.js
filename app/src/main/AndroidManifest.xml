@@ -86,7 +86,8 @@
         <activity android:name=".droid.script.ScriptExecuteActivity"/>
 
         <service android:name=".external.notification.bounds_assist.BoundsAssistSwitchNotificationHandleService"/>
-        <service android:name=".external.notification.record.ActionRecordNotificationHandleService"/>
+        <service android:name=".external.notification.record.ActionRecordSwitchHandleService"/>
+        <service android:name=".service.VolumeChangeListenService"/>
 
         <activity
             android:name=".ui.edit.EditAndRunIntentActivity"

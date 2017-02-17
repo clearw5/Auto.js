@@ -1,11 +1,15 @@
 package com.stardust.scriptdroid.ui.main.operation;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.PopupWindowCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +58,27 @@ public class ScriptFileOperationPopupMenu extends PopupWindow {
     }
 
     public void show(View anchor) {
-        super.showAsDropDown(anchor, 0, -anchor.getWidth());
+        int y = (int) (getScreenHeight() - anchor.getHeight() - getYInScreen(anchor) - getContentHeight());
+        y = Math.min(y, -anchor.getHeight());
+        PopupWindowCompat.showAsDropDown(this, anchor, 0, y, Gravity.LEFT | Gravity.BOTTOM);
+    }
+
+    private int getContentHeight() {
+        getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        return getContentView().getMeasuredHeight();
+    }
+
+    private int getYInScreen(View anchor) {
+        int[] location = new int[2];
+        anchor.getLocationInWindow(location);
+        return location[1];
+    }
+
+
+    private float getScreenHeight() {
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        return displaymetrics.heightPixels;
     }
 
     private void init() {

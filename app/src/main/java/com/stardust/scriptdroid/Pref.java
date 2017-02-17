@@ -32,7 +32,15 @@ public class Pref {
         return getDisposableBoolean("isFirstGoToAccessibilitySetting", true);
     }
 
-    public static int oldVersion(){
+    public static int oldVersion() {
         return 0;
+    }
+
+    public static boolean isRecordVolumeControlEnable() {
+        return def().getBoolean(getString(R.string.key_use_volume_control_record), false);
+    }
+
+    private static String getString(int id) {
+        return App.getApp().getString(id);
     }
 }

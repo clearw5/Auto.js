@@ -68,9 +68,10 @@ public class AboutActivity extends BaseActivity {
 
     @ViewBinding.Click(R.id.qq)
     private void openQQToChatWithMe() {
-        Toast.makeText(this, R.string.text_qq_group_id_copied, Toast.LENGTH_SHORT).show();
         String qq = getString(R.string.qq);
-        IntentTool.goToQQ(this, qq);
+        if (!IntentTool.goToQQ(this, qq)) {
+            Toast.makeText(this, R.string.text_mobile_qq_not_installed, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @ViewBinding.Click(R.id.email)

@@ -1,11 +1,15 @@
 package com.stardust.scriptdroid.record;
 
+import android.accessibilityservice.AccessibilityService;
 import android.os.Build;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.stardust.scriptdroid.droid.runtime.action.FilterAction;
 import com.stardust.util.SparseArrayEntries;
+
+import java.util.List;
 
 import static com.stardust.scriptdroid.bounds_assist.BoundsAssistant.boundsToString;
 import static com.stardust.scriptdroid.bounds_assist.BoundsAssistant.getBoundsInScreen;
@@ -21,6 +25,7 @@ public class ActionRecorder {
             .entry(AccessibilityEvent.TYPE_VIEW_CLICKED, new DoUtilSucceedConverter("click"))
             .entry(AccessibilityEvent.TYPE_VIEW_LONG_CLICKED, new DoUtilSucceedConverter("longClick"))
             .entry(AccessibilityEvent.TYPE_VIEW_SCROLLED, new DoOnceConverter("//scroll???"))
+            .entry(AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED, new SetTextEventConverter())
             .sparseArray();
 
     static {
@@ -32,14 +37,14 @@ public class ActionRecorder {
     private StringBuilder mScript = new StringBuilder();
     private boolean mFirstAction = true;
 
-    public void record(AccessibilityEvent event) {
+    public void record(AccessibilityService service, AccessibilityEvent event) {
         EventToScriptConverter converter = CONVERTER_MAP.get(event.getEventType());
         if (converter != null) {
             if (mFirstAction) {
                 mFirstAction = false;
                 return;
             }
-            converter.onAccessibilityEvent(event, mScript);
+            converter.onAccessibilityEvent(service, event, mScript);
             mScript.append("\n");
         }
     }
@@ -54,13 +59,13 @@ public class ActionRecorder {
 
     interface EventToScriptConverter {
 
-        void onAccessibilityEvent(AccessibilityEvent event, StringBuilder sb);
+        void onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event, StringBuilder sb);
     }
 
     private static abstract class BoundsEventConverter implements EventToScriptConverter {
 
         @Override
-        public void onAccessibilityEvent(AccessibilityEvent event, StringBuilder sb) {
+        public void onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event, StringBuilder sb) {
             AccessibilityNodeInfo source = event.getSource();
             if (source == null)
                 return;
@@ -98,6 +103,39 @@ public class ActionRecorder {
         @Override
         protected void onAccessibilityEvent(AccessibilityEvent event, String bounds, StringBuilder sb) {
             sb.append("while(!").append(mActionFunction).append(bounds).append(");");
+        }
+    }
+
+    private static class SetTextEventConverter implements EventToScriptConverter {
+
+        @Override
+        public void onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event, StringBuilder sb) {
+            AccessibilityNodeInfo source = event.getSource();
+            if (source == null)
+                return;
+            List<AccessibilityNodeInfo> editableList = FilterAction.EditableFilter.findEditable(service.getRootInActiveWindow());
+            int i = findInEditableList(editableList, source);
+            recycle(editableList);
+            sb.append("while(!input(").append(i).append(", \"").append(source.getText()).append("\"));");
+            source.recycle();
+        }
+
+        private void recycle(List<AccessibilityNodeInfo> list) {
+            for (AccessibilityNodeInfo nodeInfo : list) {
+                nodeInfo.recycle();
+            }
+        }
+
+
+        private static int findInEditableList(List<AccessibilityNodeInfo> editableList, AccessibilityNodeInfo editable) {
+            int i = 0;
+            for (AccessibilityNodeInfo nodeInfo : editableList) {
+                if (getBoundsInScreen(nodeInfo).equals(getBoundsInScreen(editable))) {
+                    return i;
+                }
+                i++;
+            }
+            return -1;
         }
     }
 

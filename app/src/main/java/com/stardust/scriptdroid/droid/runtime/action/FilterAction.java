@@ -96,11 +96,13 @@ public abstract class FilterAction extends Action {
             List<AccessibilityNodeInfo> editableList = findEditable(root);
             if (mIndex == -1)
                 return editableList;
+            if (mIndex >= editableList.size())
+                return Collections.EMPTY_LIST;
             return Collections.singletonList(editableList.get(mIndex));
         }
 
         @SuppressWarnings("unchecked")
-        private List<AccessibilityNodeInfo> findEditable(AccessibilityNodeInfo root) {
+        public static List<AccessibilityNodeInfo> findEditable(AccessibilityNodeInfo root) {
             if (root == null) {
                 return Collections.EMPTY_LIST;
             }
