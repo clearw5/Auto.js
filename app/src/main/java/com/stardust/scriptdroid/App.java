@@ -41,8 +41,8 @@ public class App extends Application {
             return;
         }
         LeakCanary.install(this);
-        // if (!BuildConfig.DEBUG)
-        Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
+        if (!BuildConfig.DEBUG)
+            Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
         instance = new WeakReference<>(this);
         stateObserver = new StateObserver(PreferenceManager.getDefaultSharedPreferences(this));
         registerActivityLifecycleCallback();

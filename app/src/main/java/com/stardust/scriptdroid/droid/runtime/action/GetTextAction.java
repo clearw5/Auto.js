@@ -11,13 +11,12 @@ import java.util.List;
 
 public class GetTextAction extends Action {
 
-    public static List<String> result;
 
     @Override
     public boolean perform(AccessibilityNodeInfo root) {
         List<String> texts = new ArrayList<>();
         getText(root, texts);
-        result = texts;
+        super.setResult(texts);
         return true;
     }
 
@@ -33,5 +32,11 @@ public class GetTextAction extends Action {
                 child.recycle();
             }
         }
+    }
+
+    @Override
+    public void setResult(Object result) {
+        if (result instanceof List)
+            super.setResult(result);
     }
 }

@@ -8,8 +8,8 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 public abstract class Action {
 
-
     private boolean mPerformUtilSucceed = false;
+    private Object mResult;
 
     public Action(boolean performUtilSucceed) {
         mPerformUtilSucceed = performUtilSucceed;
@@ -30,5 +30,11 @@ public abstract class Action {
         return this;
     }
 
+    public Object getResult() {
+        return mResult;
+    }
 
+    public void setResult(Object result) {
+        mResult = result;
+    }
 }

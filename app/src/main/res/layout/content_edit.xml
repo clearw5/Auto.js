@@ -10,7 +10,8 @@
     <com.jecelyin.editor.v2.view.EditorView xmlns:android="http://schemas.android.com/apk/res/android"
                                             android:id="@+id/editor"
                                             android:layout_width="match_parent"
-                                            android:layout_height="match_parent">
+                                            android:layout_height="0dp"
+                                            android:layout_weight="1">
 
 
         <com.jecelyin.editor.v2.core.widget.JecEditText
@@ -34,6 +35,13 @@
             android:layout_marginTop="90dp"
             android:indeterminate="true"
             android:visibility="gone"/>
+
+        <com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhanceBar
+            android:id="@+id/input_method_enhance_bar"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_alignParentBottom="true"
+            android:background="#e7ebec"/>
 
     </com.jecelyin.editor.v2.view.EditorView>
 

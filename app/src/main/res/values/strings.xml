@@ -121,4 +121,7 @@
     <string name="summary_use_volume_control_record">开启后每次音量变化会开始或停止脚本录制</string>
     <string name="key_use_volume_control_record">key_use_volume_control_record</string>
     <string name="text_mobile_qq_not_installed">未安装手机QQ</string>
+    <string name="text_edit">编辑</string>
+    <string name="key_max_length_for_code_completion">key_max_length_for_code_completion</string>
+    <string name="text_max_length_for_code_completion">代码补全最大文件长度</string>
 </resources>

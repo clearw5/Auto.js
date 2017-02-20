@@ -13,7 +13,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.jraska.console.Console;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.ui.console.ConsoleActivity;
 import com.stardust.scriptdroid.droid.runtime.action.Action;
 import com.stardust.scriptdroid.droid.runtime.action.ActionFactory;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformAccessibilityDelegate;
@@ -22,8 +21,8 @@ import com.stardust.scriptdroid.droid.runtime.action.GetTextAction;
 import com.stardust.scriptdroid.droid.runtime.api.IDroidRuntime;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.Shell;
+import com.stardust.scriptdroid.ui.console.ConsoleActivity;
 
-import java.util.Collections;
 import java.util.List;
 
 import timber.log.Timber;
@@ -40,7 +39,6 @@ public class DroidRuntime implements IDroidRuntime {
     private static DroidRuntime runtime = new DroidRuntime();
 
     private final Object mActionPerformLock = new Object();
-    private boolean mActionPerformResult;
     private Handler mUIHandler;
 
     public static DroidRuntime getRuntime() {
@@ -168,7 +166,7 @@ public class DroidRuntime implements IDroidRuntime {
         Console.clear();
     }
 
-    private boolean performAction(Action action) {
+    private <T> T performAction(Action action) {
         if (AccessibilityWatchDogService.getInstance() == null) {
             toast(App.getApp().getString(R.string.text_no_accessibility_permission));
             throw new ScriptStopException(App.getApp().getString(R.string.text_no_accessibility_permission));
@@ -182,25 +180,11 @@ public class DroidRuntime implements IDroidRuntime {
                 throw new ScriptStopException(App.getApp().getString(R.string.text_script_stopped), e);
             }
         }
-        return mActionPerformResult;
+        return (T) action.getResult();
     }
 
     public List<String> getTexts() {
-        if (AccessibilityWatchDogService.getInstance() == null) {
-            toast(App.getApp().getString(R.string.text_no_accessibility_permission));
-            throw new ScriptStopException(App.getApp().getString(R.string.text_no_accessibility_permission));
-        }
-        GetTextAction.result = Collections.EMPTY_LIST;
-        ActionPerformAccessibilityDelegate.setAction(new GetTextAction());
-        synchronized (mActionPerformLock) {
-            try {
-                mActionPerformLock.wait();
-                return GetTextAction.result;
-            } catch (InterruptedException e) {
-                ActionPerformAccessibilityDelegate.setAction(ActionPerformAccessibilityDelegate.NO_ACTION);
-                throw new ScriptStopException(App.getApp().getString(R.string.text_script_stopped), e);
-            }
-        }
+        return performAction(new GetTextAction());
     }
 
     @Override
@@ -260,8 +244,7 @@ public class DroidRuntime implements IDroidRuntime {
         };
     }
 
-    public void notifyActionPerformed(boolean succeed) {
-        mActionPerformResult = succeed;
+    public void notifyActionPerformed() {
         synchronized (mActionPerformLock) {
             mActionPerformLock.notify();
         }

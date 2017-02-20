@@ -17,6 +17,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.common.SaveListener;
+import com.jecelyin.editor.v2.core.widget.TextView;
 import com.jecelyin.editor.v2.ui.EditorDelegate;
 import com.jecelyin.editor.v2.view.EditorView;
 import com.jecelyin.editor.v2.view.menu.MenuDef;
@@ -24,6 +25,7 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.Droid;
+import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhanceBar;
 import com.stardust.scriptdroid.ui.edit.sidemenu.AssistClipListRecyclerView;
 import com.stardust.scriptdroid.ui.edit.sidemenu.EditSideMenuFragment;
 import com.stardust.scriptdroid.ui.edit.sidemenu.FunctionListRecyclerView;
@@ -156,8 +158,27 @@ public class EditActivity extends Editor920Activity {
     private void setUpEditor() {
         if (mFile != null) {
             mEditorDelegate = new EditorDelegate(0, mFile, 0, null);
-            EditorView editorView = (EditorView) findViewById(R.id.editor);
+            final EditorView editorView = (EditorView) findViewById(R.id.editor);
             mEditorDelegate.setEditorView(editorView);
+            InputMethodEnhanceBar inputMethodEnhanceBar = (InputMethodEnhanceBar) findViewById(R.id.input_method_enhance_bar);
+            inputMethodEnhanceBar.setEditTextBridge(new InputMethodEnhanceBar.EditTextBridge() {
+                @Override
+                public void appendText(CharSequence text) {
+                    insertText(text);
+                }
+
+                @Override
+                public void backspace(int count) {
+
+                }
+
+                @Override
+                public TextView getEditText() {
+                    return editorView.getEditText();
+                }
+
+
+            });
         }
     }
 

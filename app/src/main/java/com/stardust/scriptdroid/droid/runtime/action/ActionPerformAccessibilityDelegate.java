@@ -37,18 +37,20 @@ public class ActionPerformAccessibilityDelegate implements AccessibilityDelegate
         }
         Log.i(TAG, "perform action:" + action);
         if (action.perform(root)) {
-            onActionPerformed(true);
+            action.setResult(true);
+            onActionPerformed();
         } else if (!action.performUtilSucceed()) {
-            onActionPerformed(false);
+            action.setResult(false);
+            onActionPerformed();
         }
         return false;
     }
 
 
-    private void onActionPerformed(boolean succeed) {
+    private void onActionPerformed() {
         synchronized (ActionPerformAccessibilityDelegate.class) {
             action = NO_ACTION;
-            DroidRuntime.getRuntime().notifyActionPerformed(succeed);
+            DroidRuntime.getRuntime().notifyActionPerformed();
         }
     }
 

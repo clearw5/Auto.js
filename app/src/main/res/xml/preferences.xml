@@ -12,6 +12,15 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:title="@string/text_edit">
+
+        <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
+            android:defaultValue="2000"
+            android:inputType="number"
+            android:key="@string/key_max_length_for_code_completion"
+            android:title="@string/text_max_length_for_code_completion"/>
+    </PreferenceCategory>
+    <PreferenceCategory
         android:title="@string/text_others">
 
         <Preference
