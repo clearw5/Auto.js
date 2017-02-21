@@ -26,7 +26,8 @@
 * `isStoppd` 若当前脚本处于停止状态时返回`true`, 否则返回`false`。
 * `shell(cmd, root=false)` 执行shell命令cmd, 其中参数root表示是否以root权限执行，默认为false。例如`shell("input keyevent 26", true); //锁屏`。
 * `getTexts()` 获取屏幕上的文字列表, 返回一个java.util.List<String>。例如：
-
+* `getPackageName` 获取正在运行的应用包名
+* `getActivityName` 获取正在运行的Activity名称
 ```
 launchApp("微信");
 while(!click("通讯录"));

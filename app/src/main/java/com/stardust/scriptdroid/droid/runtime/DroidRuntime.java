@@ -167,10 +167,7 @@ public class DroidRuntime implements IDroidRuntime {
     }
 
     private <T> T performAction(Action action) {
-        if (AccessibilityWatchDogService.getInstance() == null) {
-            toast(App.getApp().getString(R.string.text_no_accessibility_permission));
-            throw new ScriptStopException(App.getApp().getString(R.string.text_no_accessibility_permission));
-        }
+        ensureAccessibilityServiceEnable();
         ActionPerformAccessibilityDelegate.setAction(action);
         synchronized (mActionPerformLock) {
             try {
@@ -181,6 +178,13 @@ public class DroidRuntime implements IDroidRuntime {
             }
         }
         return (T) action.getResult();
+    }
+
+    private void ensureAccessibilityServiceEnable() {
+        if (AccessibilityWatchDogService.getInstance() == null) {
+            toast(App.getApp().getString(R.string.text_no_accessibility_permission));
+            throw new ScriptStopException(App.getApp().getString(R.string.text_no_accessibility_permission));
+        }
     }
 
     public List<String> getTexts() {
@@ -206,8 +210,18 @@ public class DroidRuntime implements IDroidRuntime {
         }
     }
 
-    public void shell(String cmd, int root) {
-        Shell.execCommand(cmd, root != 0);
+    public String shell(String cmd, int root) {
+        return Shell.execCommand(cmd, root != 0).toString();
+    }
+
+    public String getPackageName() {
+        ensureAccessibilityServiceEnable();
+        return ActionPerformAccessibilityDelegate.getLatestPackage();
+    }
+
+    public String getActivityName() {
+        ensureAccessibilityServiceEnable();
+        return ActionPerformAccessibilityDelegate.getLatestActivity();
     }
 
     @Override
@@ -219,6 +233,7 @@ public class DroidRuntime implements IDroidRuntime {
     public void stop() {
         Thread.interrupted();
     }
+
 
     @Override
     public MaterialDialog.Builder dialog() {

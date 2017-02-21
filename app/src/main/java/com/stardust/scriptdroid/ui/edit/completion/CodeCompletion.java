@@ -3,7 +3,6 @@ package com.stardust.scriptdroid.ui.edit.completion;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 
 import com.jecelyin.editor.v2.core.widget.TextView;
 import com.stardust.scriptdroid.Pref;
@@ -67,12 +66,10 @@ public class CodeCompletion implements TextWatcher {
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        Log.v(TAG, "beforeTextChanged: s=" + s + " start=" + start + " count=" + count + " after=" + after);
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        Log.v(TAG, "onTextChanged: s=" + s + " start=" + start + " count=" + count);
     }
 
     @Override
@@ -104,7 +101,7 @@ public class CodeCompletion implements TextWatcher {
 
     private static final String[] KEYWORDS = {"arguments", "break", "case", "catch", "class", "continue", "default", "do", "else", "eval", "export", "false", "for", "function", "if", "import", "in", "int", "new", "null", "package", "return", "switch", "this", "throw", "throws", "true", "try", "typeof", "var", "volatile", "while", "with", "Array", "Date", "hasOwnProperty", "Infinity", "isFinite", "isNaN", "isPrototypeOf", "length", "Math", "NaN", "name", "Number", "Object", "prototype", "String", "toString", "undefined", "valueOf"};
     private static final int KEY_WORD_LENGTH_MAX = 15;
-    private static final String[] FUNCTIONS = {"launchApp", "click", "longClick", "scrollUp", "scrollDown", "toast", "launch", "input", "notStopped", "shell", "importClass"};
+    private static final String[] FUNCTIONS = {"toast", "launchPackage", "launch", "launchApp", "click", "longClick", "scrollUp", "scrollDown", "select", "focus", "paste", "input", "sleep", "isStopped", "notStopped", "log", "err", "openConsole", "clearConsole", "shell", "getTexts", "getPackageName", "getActivityName"};
 
     private boolean searchCodeCompletion(String str) {
         Collection<CodeCompletionItem> c = searchWordCompletion(str);
@@ -147,7 +144,7 @@ public class CodeCompletion implements TextWatcher {
     }
 
 
-    private static final String[] DEFAULT_CODE_COMPLETIONS = new String[]{"=", "(", ")", ";", "{", "}", "\"", "!", "[", "]", ".", ","};
+    private static final String[] DEFAULT_CODE_COMPLETIONS = new String[]{"=", "(", ")", ";", "{", "}", "\"", "!", "[", "]", "\\", ".", ", "};
     private static final List<CodeCompletionItem> DEFAULT_CODE_COMPLETION_LIST = new ArrayList<>();
 
     static {

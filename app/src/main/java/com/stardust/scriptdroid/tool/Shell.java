@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 
 /**
  * Created by Stardust on 2017/1/20.
- *
+ * <p>
  * 来自网络~~
  */
 
@@ -32,6 +32,12 @@ public class Shell {
         public int result = -1;
         public String errorMsg;
         public String successMsg;
+
+        @Override
+        public String toString() {
+            return result + " | " + successMsg
+                    + " | " + errorMsg;
+        }
     }
 
     /**
@@ -42,7 +48,7 @@ public class Shell {
      * @return
      */
     public static CommandResult execCommand(String command, boolean isRoot) {
-        String[] commands = {command};
+        String[] commands = command.split("\n");
         return execCommand(commands, isRoot);
     }
 
@@ -85,8 +91,7 @@ public class Shell {
             while ((s = errorResult.readLine()) != null) errorMsg.append(s);
             commandResult.successMsg = successMsg.toString();
             commandResult.errorMsg = errorMsg.toString();
-            Log.i(TAG, commandResult.result + " | " + commandResult.successMsg
-                    + " | " + commandResult.errorMsg);
+            Log.i(TAG, commandResult.toString());
         } catch (Exception e) {
             String errmsg = e.getMessage();
             if (errmsg != null) {

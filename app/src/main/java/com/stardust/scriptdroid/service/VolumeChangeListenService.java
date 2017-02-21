@@ -28,7 +28,7 @@ public class VolumeChangeListenService extends Service {
     private static WeakReference<VolumeChangeListenService> instance;
 
     public static void stopServiceIfNeeded() {
-        if (instance != null || instance.get() != null) {
+        if (instance != null && instance.get() != null) {
             instance.get().stopSelf();
         }
     }

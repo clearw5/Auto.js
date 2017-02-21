@@ -1,10 +1,14 @@
 package com.stardust.scriptdroid.droid.runtime.action;
 
 import android.accessibilityservice.AccessibilityService;
+import android.content.ComponentName;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.scriptdroid.service.AccessibilityDelegate;
 
@@ -20,6 +24,8 @@ public class ActionPerformAccessibilityDelegate implements AccessibilityDelegate
     public static final Action NO_ACTION = null;
 
     private static Action action;
+    private static String latestPackage, latestActivity;
+
 
     public static void setAction(Action action) {
         synchronized (ActionPerformAccessibilityDelegate.class) {
@@ -27,8 +33,17 @@ public class ActionPerformAccessibilityDelegate implements AccessibilityDelegate
         }
     }
 
+    public synchronized static String getLatestPackage() {
+        return latestPackage;
+    }
+
+    public synchronized static String getLatestActivity() {
+        return latestActivity;
+    }
+
     @Override
     public boolean onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event) {
+        setLatestComponent(event.getPackageName(), event.getClassName());
         if (action == NO_ACTION)
             return false;
         AccessibilityNodeInfo root = service.getRootInActiveWindow();
@@ -54,4 +69,18 @@ public class ActionPerformAccessibilityDelegate implements AccessibilityDelegate
         }
     }
 
+    private synchronized static void setLatestComponent(CharSequence latestPackage, CharSequence latestClass) {
+        if (latestPackage == null)
+            return;
+        ActionPerformAccessibilityDelegate.latestPackage = latestPackage.toString();
+        ComponentName componentName = new ComponentName(latestPackage.toString(), latestClass == null ? null : latestClass.toString());
+        try {
+            ActivityInfo activityInfo = App.getApp().getPackageManager().getActivityInfo(componentName, 0);
+            ActionPerformAccessibilityDelegate.latestActivity = activityInfo.name;
+        } catch (PackageManager.NameNotFoundException ignored) {
+
+        }
+    }
+
 }
+

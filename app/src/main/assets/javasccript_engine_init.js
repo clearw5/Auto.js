@@ -119,9 +119,17 @@ var clearConsole = function(){
 
 var shell = function(cmd, root){
     root = root ? 1 : 0;
-    droid.shell(cmd, root);
+    return droid.shell(cmd, root);
 }
 
 var getTexts = function(){
     return droid.getTexts();
+}
+
+var getPackageName = function(){
+    return droid.getPackageName();
+}
+
+var getActivityName = function(){
+    return droid.getActivityName();
 }
