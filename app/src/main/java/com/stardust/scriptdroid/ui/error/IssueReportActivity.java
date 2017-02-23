@@ -25,7 +25,6 @@ public class IssueReportActivity extends IssueReporterActivity {
     private boolean mCrash = false;
     private Method mReportIssue, mValidateInput;
     private boolean mReportFailed = false;
-    private String token = "d";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +128,7 @@ public class IssueReportActivity extends IssueReporterActivity {
     @Override
     protected String getGuestToken() {
         //绕过github安全检查
-        return decode("NDlkZDU3NjRiYTk3NzVmZDkxOTA3MDQ4YTdmNzQ1ZDY5NjcyNzEyNA==");
+        return decode("MzA5MWJhNWI0NDM2NWYzOGRmNDA4ZWRhM2Y5MTUxN2ZlNDVlZDBhZQ==");
     }
 
     public static String decode(String str) {

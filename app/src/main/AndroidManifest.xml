@@ -90,9 +90,9 @@
         <service android:name=".service.VolumeChangeListenService"/>
 
         <activity
-            android:name=".ui.edit.EditAndRunIntentActivity"
+            android:name=".external.open.EditIntentActivity"
             android:icon="@drawable/ic_edit_green_48dp"
-            android:label="编辑与运行脚本">
+            android:label="编辑脚本">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -129,7 +129,47 @@
         </activity>
 
         <activity
-            android:name=".ui.edit.ImportIntentActivity"
+            android:name=".external.open.RunIntentActivity"
+            android:icon="@drawable/ic_play_green"
+            android:label="运行脚本">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.EDIT"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:scheme="file"/>
+                <data android:scheme="content"/>
+                <data android:mimeType="application/x-*"/>
+                <data android:mimeType="application/postscript"/>
+                <data android:mimeType="application/plain"/>
+                <data android:mimeType="application/x-javascript"/>
+                <data android:mimeType="text/*"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="text/*"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.googlecode.android_scripting.action.EDIT_SCRIPT"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+
+        <activity
+            android:name=".external.open.ImportIntentActivity"
             android:icon="@drawable/ic_folder_open_outline_green"
             android:label="导入脚本文件">
 

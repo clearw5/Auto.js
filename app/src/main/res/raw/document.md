@@ -28,6 +28,7 @@
 * `getTexts()` 获取屏幕上的文字列表, 返回一个java.util.List<String>。例如：
 * `getPackageName` 获取正在运行的应用包名
 * `getActivityName` 获取正在运行的Activity名称
+* `setClip(text)` 设置剪贴板文本
 ```
 launchApp("微信");
 while(!click("通讯录"));

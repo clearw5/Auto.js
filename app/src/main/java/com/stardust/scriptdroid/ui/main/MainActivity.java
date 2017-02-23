@@ -163,10 +163,11 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                 .input(getString(R.string.text_please_input_name), "", new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                        String path = ScriptFile.DEFAULT_FOLDER + input + ".js";
+                        String path = FileUtils.generateNotExistingPath(ScriptFile.DEFAULT_FOLDER + input, ".js");
                         MainActivity.this.createScriptFile(input.toString(), path, script);
                     }
-                }).show();
+                })
+                .show();
     }
 
     private void createScriptFile(String name, String path, String script) {

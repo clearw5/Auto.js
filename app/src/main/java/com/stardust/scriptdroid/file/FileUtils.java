@@ -198,4 +198,17 @@ public class FileUtils {
             return false;
         }
     }
+
+    public static String generateNotExistingPath(String path, String extension) {
+        if (!new File(path + extension).exists())
+            return path + extension;
+        int i = 0;
+        while (true) {
+            String pathI = path + "(" + i + ")" + extension;
+            if (!new File(pathI).exists())
+                return pathI;
+            i++;
+        }
+
+    }
 }

@@ -14,26 +14,6 @@ public class ExampleUnitTest {
     @Test
     public void testSync() throws Exception {
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    synchronized (this) {
-                        i++;
-                    }
-                }
-            }
-        }).start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    synchronized (this) {
-                        System.out.println(i);
-                    }
-                }
-            }
-        }).start();
     }
 
 

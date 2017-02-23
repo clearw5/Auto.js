@@ -133,3 +133,7 @@ var getPackageName = function(){
 var getActivityName = function(){
     return droid.getActivityName();
 }
+
+var setClip = function(text){
+    droid.setClip(text);
+}

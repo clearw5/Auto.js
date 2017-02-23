@@ -124,4 +124,5 @@
     <string name="text_edit">编辑</string>
     <string name="key_max_length_for_code_completion">key_max_length_for_code_completion</string>
     <string name="text_max_length_for_code_completion">代码补全最大文件长度</string>
+    <string name="text_file_exists">文件已存在</string>
 </resources>

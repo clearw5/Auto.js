@@ -68,9 +68,11 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
     }
 
     @Override
-    public void OnCodeCompletionChange(Collection<CodeCompletion.CodeCompletionItem> list) {
+    public void OnCodeCompletionChange(Collection<CodeCompletion.CodeCompletionItem>... lists) {
         mCodeCompletionList.clear();
-        mCodeCompletionList.addAll(list);
+        for (Collection<CodeCompletion.CodeCompletionItem> list : lists) {
+            mCodeCompletionList.addAll(list);
+        }
         getAdapter().notifyDataSetChanged();
     }
 

@@ -73,12 +73,14 @@ public class ActionPerformAccessibilityDelegate implements AccessibilityDelegate
         if (latestPackage == null)
             return;
         ActionPerformAccessibilityDelegate.latestPackage = latestPackage.toString();
-        ComponentName componentName = new ComponentName(latestPackage.toString(), latestClass == null ? null : latestClass.toString());
+        if(latestClass == null)
+            return;
         try {
+            ComponentName componentName = new ComponentName(latestPackage.toString(), latestClass.toString());
             ActivityInfo activityInfo = App.getApp().getPackageManager().getActivityInfo(componentName, 0);
             ActionPerformAccessibilityDelegate.latestActivity = activityInfo.name;
-        } catch (PackageManager.NameNotFoundException ignored) {
-
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

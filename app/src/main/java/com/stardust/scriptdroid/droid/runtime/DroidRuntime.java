@@ -1,5 +1,8 @@
 package com.stardust.scriptdroid.droid.runtime;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -143,6 +146,15 @@ public class DroidRuntime implements IDroidRuntime {
     @Override
     public boolean setText(ActionTarget target, String text) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SET_TEXT, text));
+    }
+
+    public void setClip(final String text) {
+        mUIHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                ((ClipboardManager) App.getApp().getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText(TAG, text));
+            }
+        });
     }
 
     @Override
