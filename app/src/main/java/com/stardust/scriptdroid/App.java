@@ -11,8 +11,12 @@ import com.stardust.scriptdroid.droid.runtime.action.ActionPerformAccessibilityD
 import com.stardust.scriptdroid.record.AccessibilityRecorderDelegate;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
+import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.CrashHandler;
 import com.stardust.util.StateObserver;
+
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
 
 import java.lang.ref.WeakReference;
 
@@ -37,6 +41,7 @@ public class App extends Application {
 
     public void onCreate() {
         super.onCreate();
+        ThemeColorManager.init(this);
         if (LeakCanary.isInAnalyzerProcess(this)) {
             return;
         }

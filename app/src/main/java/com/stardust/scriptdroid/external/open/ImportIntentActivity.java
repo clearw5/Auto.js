@@ -13,6 +13,7 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
 import com.stardust.scriptdroid.ui.main.MainActivity;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import java.io.File;
 
@@ -38,7 +39,7 @@ public class ImportIntentActivity extends BaseActivity {
         Intent intent = getIntent();
         final String path = intent.getData().getPath();
         if (!TextUtils.isEmpty(path)) {
-            new MaterialDialog.Builder(this)
+            new ThemeColorMaterialDialogBuilder(this)
                     .title(R.string.text_please_input_name)
                     .input(getString(R.string.text_name), new File(path).getName(), new MaterialDialog.InputCallback() {
                         @Override

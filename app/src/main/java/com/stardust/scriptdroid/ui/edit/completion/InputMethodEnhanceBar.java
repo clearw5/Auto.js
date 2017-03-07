@@ -1,5 +1,7 @@
 package com.stardust.scriptdroid.ui.edit.completion;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.stardust.scriptdroid.R;
 
@@ -49,11 +52,21 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
     EditTextBridge mEditTextBridge;
     private CodeCompletion mCodeCompletion = new CodeCompletion(this);
     private List<CodeCompletion.CodeCompletionItem> mCodeCompletionList = new ArrayList<>();
-    private OnClickListener mOnCodeCompletionItemClickListener = new OnClickListener() {
+    private final OnClickListener mOnCodeCompletionItemClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             int position = getChildViewHolder(v).getAdapterPosition();
             mEditTextBridge.appendText(mCodeCompletionList.get(position).getAppendText());
+        }
+    };
+
+    private final OnLongClickListener mOnCodeCompletionItemLongClickListener = new OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            int position = getChildViewHolder(v).getAdapterPosition();
+            ((ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("", mCodeCompletionList.get(position).getDisplayText()));
+            Toast.makeText(getContext(), R.string.text_copied, Toast.LENGTH_SHORT).show();
+            return true;
         }
     };
 
@@ -74,6 +87,7 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
             mCodeCompletionList.addAll(list);
         }
         getAdapter().notifyDataSetChanged();
+
     }
 
 
@@ -100,6 +114,7 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
         ViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(mOnCodeCompletionItemClickListener);
+            itemView.setOnLongClickListener(mOnCodeCompletionItemLongClickListener);
         }
     }
 }

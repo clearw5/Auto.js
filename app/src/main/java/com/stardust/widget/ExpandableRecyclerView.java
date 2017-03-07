@@ -3,6 +3,7 @@ package com.stardust.widget;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ThemeColorRecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,7 @@ import com.stardust.scriptdroid.R;
  * Created by Stardust on 2017/2/4.
  */
 
-public class ExpandableRecyclerView extends RecyclerView {
+public class ExpandableRecyclerView extends ThemeColorRecyclerView {
 
     public void setOnChildClickListener(OnChildClickListener onChildClickListener) {
         mOnChildClickListener = onChildClickListener;

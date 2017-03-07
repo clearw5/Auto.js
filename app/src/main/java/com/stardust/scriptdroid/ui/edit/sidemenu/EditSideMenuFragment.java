@@ -10,11 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.ui.help.DocumentActivity;
+import com.stardust.scriptdroid.ui.help.DocumentationActivity;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.console.ConsoleActivity;
 import com.stardust.scriptdroid.bounds_assist.BoundsAssistant;
 import com.stardust.scriptdroid.external.notification.bounds_assist.BoundsAssistSwitchNotification;
+import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 
@@ -85,7 +86,7 @@ public class EditSideMenuFragment extends com.stardust.app.Fragment {
 
     @ViewBinding.Click(R.id.syntax_and_api)
     private void startSyntaxHelpActivity() {
-        startActivity(new Intent(getContext(), DocumentActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        HelpCatalogueActivity.showCatalogue(getActivity());
     }
 
     @ViewBinding.Click(R.id.console)

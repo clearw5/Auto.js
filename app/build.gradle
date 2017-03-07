@@ -7,9 +7,12 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 34
-        versionName "1.17.0223"
+        versionCode 38
+        versionName "1.17.0306内测"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+
+
     }
     buildTypes {
         release {
@@ -44,7 +47,7 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(include: ['*.jar', '*.so'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
@@ -53,17 +56,16 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:design:25.1.0'
 
+    compile 'com.github.hyb1996:MutableTheme:0.2.2'
     compile 'com.afollestad.material-dialogs:core:0.9.2.3'
     compile 'com.google.code.gson:gson:2.8.0'
     compile('de.psdev.licensesdialog:licensesdialog:1.8.1')
-    compile 'com.furture.react:DuktapeJava:1.1.0'
-    compile 'com.zzhoujay.markdown:markdown:1.0.2'
+    compile 'com.github.atlassian:commonmark-java:commonmark-parent-0.9.0'
     compile 'moe.feng:AlipayZeroSdk:1.1'
     compile 'com.jraska:console:0.4.3'
     compile 'com.jraska:console-timber-tree:0.4.3'
     compile 'com.heinrichreimersoftware:android-issue-reporter:eae4c73cbeb91e98da83fe79a3dea088a8b97448'
-
-    compile files('libs/JSTransformer.jar')
+    compile group: 'org.mozilla', name: 'rhino', version: '1.7'
 
     compile 'com.afollestad.material-dialogs:commons:0.9.2.3'
     compile 'com.makeramen:roundedimageview:2.2.1'
@@ -74,4 +76,8 @@ dependencies {
     compile(name: '920-file_explorer-release', ext: 'aar')
     compile(name: '920-app-debug', ext: 'aar')
 
+}
+
+configurations {
+    all*.exclude group: 'org.mozilla', module: 'rhino'
 }

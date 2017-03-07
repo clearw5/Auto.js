@@ -58,6 +58,12 @@ public class AccessibilityWatchDogService extends AccessibilityService {
         }
     }
 
+    public static boolean removeDelegate(int priority) {
+        synchronized (mDelegates) {
+            return mDelegates.remove(priority) != null;
+        }
+    }
+
     public static boolean isEnable() {
         return AccessibilityServiceUtils.isAccessibilityServiceEnabled(App.getApp(), AccessibilityWatchDogService.class);
     }

@@ -13,10 +13,10 @@
         <license>Apache Software License 2.0</license>
     </notice>
     <notice>
-        <name>DuktapeJava</name>
-        <url>https://github.com/gubaojian/DuktapeJava</url>
+        <name>Rhino: JavaScript in Java</name>
+        <url>https://github.com/mozilla/rhino</url>
         <copyright/>
-        <license>MIT License</license>
+        <license>Mozilla Public License 2.0</license>
     </notice>
     <notice>
         <name>920 Text Editor</name>
@@ -25,10 +25,10 @@
         <license>Apache Software License 2.0</license>
     </notice>
     <notice>
-        <name>MarkDown</name>
-        <url>https://github.com/zzhoujay/Markdown</url>
-        <copyright>Copyright (c) 2015 zzhoujay</copyright>
-        <license>MIT License</license>
+        <name>commonmark-java</name>
+        <url>https://github.com/atlassian/commonmark-java</url>
+        <copyright>Copyright (c) 2015-2016 Atlassian and others.</copyright>
+        <license>BSD 2-Clause License</license>
     </notice>
     <notice>
         <name>Alipay ZeroSdk</name>

@@ -1,13 +1,13 @@
 package com.stardust.scriptdroid.droid.script;
 
 import com.efurture.script.JSTransformer;
-import com.furture.react.DuktapeEngine;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.droid.runtime.api.IDroidRuntime;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -17,46 +17,40 @@ import java.util.TimerTask;
 /**
  * Created by Stardust on 2017/1/27.
  */
-
-public class DuktapeJavaScriptEngine implements JavaScriptEngine {
+/*
+public class DuktapeJavaScriptEngine extends JavaScriptEngine {
 
 
     private final Map<Thread, DuktapeEngine> mThreadDuktapeEngineMap = new Hashtable<>();
-    private static final String INIT_SCRIPT;
+    private static final String INIT_SCRIPT = parse(Init.getInitScript());
     private Map<String, Object> mVariableMap = new HashMap<>();
-
-    static {
-        try {
-            INIT_SCRIPT = JSTransformer.parse(new StringReader(Init.INIT_SCRIPT));
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
 
     public DuktapeJavaScriptEngine(IDroidRuntime runtime) {
         setRuntime(runtime);
     }
 
     private void setRuntime(IDroidRuntime runtime) {
-        set("droid", IDroidRuntime.class, runtime);
+        set("droid", runtime);
     }
 
     @Override
-    public Object execute(String script) throws IOException {
+    public Object execute(String script) {
         DuktapeEngine duktapeEngine = new DuktapeEngine();
         init(duktapeEngine);
         add(duktapeEngine, Thread.currentThread());
-        Object result;
+        Object code = duktapeEngine.execute(parse(script));
+        if (!script.startsWith(Droid.UI) && !script.startsWith(Droid.STAY))
+            removeAndDestroy();
+        return code;
+    }
+
+    private static String parse(String script) {
         try {
-            result = duktapeEngine.execute(JSTransformer.parse(new StringReader(script)));
+            return JSTransformer.parse(new StringReader(script));
         } catch (IOException e) {
-            removeAndStop(Thread.currentThread());
-            throw e;
+            //Should not happen
+            throw new RuntimeException(e);
         }
-        if (!script.startsWith(Droid.UI))
-            removeAndDestroy(Thread.currentThread());
-        return result;
     }
 
 
@@ -69,18 +63,11 @@ public class DuktapeJavaScriptEngine implements JavaScriptEngine {
 
     }
 
-    public void removeAndStop(Thread thread) {
-        synchronized (mThreadDuktapeEngineMap) {
-            DuktapeEngine engine = mThreadDuktapeEngineMap.remove(thread);
-            forceStop(engine, thread);
-        }
-    }
-
 
     @Override
-    public void removeAndDestroy(Thread thread) {
+    public void removeAndDestroy() {
         synchronized (mThreadDuktapeEngineMap) {
-            DuktapeEngine engine = mThreadDuktapeEngineMap.remove(thread);
+            DuktapeEngine engine = mThreadDuktapeEngineMap.remove(Thread.currentThread());
             if (engine != null)
                 engine.destory();
         }
@@ -109,10 +96,6 @@ public class DuktapeJavaScriptEngine implements JavaScriptEngine {
         }
     }
 
-    @Override
-    public <T> void set(String varName, Class<T> c, T value) {
-        mVariableMap.put(varName, value);
-    }
 
     @Override
     public int stopAll() {
@@ -127,4 +110,25 @@ public class DuktapeJavaScriptEngine implements JavaScriptEngine {
         return n;
     }
 
+    private static final Field ptrField;
+
+    static {
+        Field field = null;
+        try {
+            field = DuktapeEngine.class.getDeclaredField("ptr");
+            field.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        ptrField = field;
+    }
+
+    public static boolean isDestroyed(DuktapeEngine engine) {
+        try {
+            return ((long) ptrField.get(engine)) == 0;
+        } catch (IllegalAccessException e) {
+            return true;
+        }
+    }
 }
+*/

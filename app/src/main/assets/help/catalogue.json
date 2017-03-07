@@ -1,0 +1,13 @@
+{
+  "main" : [
+    {"title":"语法"},
+    {"title":"JavaScript教程"},
+    {"title":"自动操作函数"},
+    {"title":"一般常用函数"},
+    {"title":"控制台"},
+    {"title":"UI(用户界面)"},
+    {"title":"驻留模式与无障碍服务委托"},
+    {"title":"shell命令"},
+    {"title":"需要Root权限的自动操作函数"}
+  ]
+}

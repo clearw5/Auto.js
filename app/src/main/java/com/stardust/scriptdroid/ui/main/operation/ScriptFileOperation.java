@@ -15,6 +15,7 @@ import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.external.shortcut.Shortcut;
 import com.stardust.scriptdroid.ui.main.ScriptListRecyclerView;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +109,7 @@ public abstract class ScriptFileOperation {
         @Override
         public void operate(final ScriptListRecyclerView recyclerView, final ScriptFileList scriptFileList, final int position) {
             String oldName = scriptFileList.get(position).name;
-            new MaterialDialog.Builder(recyclerView.getContext())
+            new ThemeColorMaterialDialogBuilder(recyclerView.getContext())
                     .title(R.string.text_rename)
                     .checkBoxPrompt(App.getApp().getString(R.string.text_rename_file_meanwhile), false, null)
                     .input(App.getApp().getString(R.string.text_please_input_new_name), oldName, new MaterialDialog.InputCallback() {

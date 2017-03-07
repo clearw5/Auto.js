@@ -17,8 +17,9 @@ import com.stardust.scriptdroid.bounds_assist.BoundsAssistant;
 import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.external.notification.bounds_assist.BoundsAssistSwitchNotification;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.console.ConsoleActivity;
-import com.stardust.scriptdroid.ui.help.DocumentActivity;
+import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
@@ -83,7 +84,7 @@ public class SlideMenuFragment extends Fragment {
 
     @ViewBinding.Click(R.id.syntax_and_api)
     private void startSyntaxHelpActivity() {
-        startActivity(new Intent(getContext(), DocumentActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        HelpCatalogueActivity.showCatalogue(getActivity());
     }
 
     @ViewBinding.Click(R.id.auto_operate_service)
@@ -94,7 +95,7 @@ public class SlideMenuFragment extends Fragment {
     @ViewBinding.Check(R.id.sw_auto_operate_service)
     private void setAutoOperateServiceEnable(boolean enable) {
         if (enable && !AccessibilityWatchDogService.isEnable()) {
-            AccessibilityServiceUtils.goToAccessibilitySetting(getContext());
+            AccessibilityServiceTool.enableAccessibilityService();
         } else if (!enable && AccessibilityWatchDogService.isEnable()) {
             AccessibilityWatchDogService.disable();
         }

@@ -6,7 +6,7 @@
                 android:orientation="horizontal"
                 android:padding="16dp">
 
-    <ImageView
+    <com.stardust.theme.widget.ThemeColorImageView
         android:id="@+id/icon"
         android:layout_width="20dp"
         android:layout_height="20dp"

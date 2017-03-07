@@ -12,6 +12,7 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.service.AccessibilityDelegate;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 
 /**
@@ -38,7 +39,7 @@ public class BoundsAssistant implements AccessibilityDelegate {
     }
 
     private static void showAssistModeInfoDialog() {
-        new MaterialDialog.Builder(App.currentActivity())
+        new ThemeColorMaterialDialogBuilder(App.currentActivity())
                 .title(R.string.text_alert)
                 .content(R.string.assist_mode_notice)
                 .positiveText(R.string.ok)

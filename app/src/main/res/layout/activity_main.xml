@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-            <android.support.v7.widget.Toolbar
+            <com.stardust.theme.widget.ThemeColorToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -35,7 +35,7 @@
                     android:padding="12dp"
                     android:src="@drawable/ic_add_white_48dp"/>
 
-            </android.support.v7.widget.Toolbar>
+            </com.stardust.theme.widget.ThemeColorToolbar>
 
         </android.support.design.widget.AppBarLayout>
 
@@ -65,13 +65,13 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <ImageView
+                    <com.stardust.theme.widget.ThemeColorImageView
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:padding="10dp"
                         android:src="@drawable/ic_add_file_green"/>
 
-                    <TextView
+                    <com.stardust.theme.widget.ThemeColorTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -91,13 +91,13 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <ImageView
+                    <com.stardust.theme.widget.ThemeColorImageView
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:padding="10dp"
                         android:src="@drawable/ic_folder_open_outline_green"/>
 
-                    <TextView
+                    <com.stardust.theme.widget.ThemeColorTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -117,13 +117,13 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <ImageView
+                    <com.stardust.theme.widget.ThemeColorImageView
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:padding="10dp"
                         android:src="@drawable/ic_video_record"/>
 
-                    <TextView
+                    <com.stardust.theme.widget.ThemeColorTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -140,6 +140,7 @@
     </android.support.design.widget.CoordinatorLayout>
 
     <include
+        android:id="@+id/drawer"
         layout="@layout/drawer"
         android:layout_width="304dp"
         android:layout_height="match_parent"

@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.droid.runtime;
 
+import android.accessibilityservice.AccessibilityService;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -7,14 +8,17 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jraska.console.Console;
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.runtime.action.Action;
 import com.stardust.scriptdroid.droid.runtime.action.ActionFactory;
@@ -22,10 +26,15 @@ import com.stardust.scriptdroid.droid.runtime.action.ActionPerformAccessibilityD
 import com.stardust.scriptdroid.droid.runtime.action.ActionTarget;
 import com.stardust.scriptdroid.droid.runtime.action.GetTextAction;
 import com.stardust.scriptdroid.droid.runtime.api.IDroidRuntime;
+import com.stardust.scriptdroid.file.FileUtils;
+import com.stardust.scriptdroid.service.AccessibilityDelegate;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.Shell;
 import com.stardust.scriptdroid.ui.console.ConsoleActivity;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
+import java.io.File;
 import java.util.List;
 
 import timber.log.Timber;
@@ -81,8 +90,8 @@ public class DroidRuntime implements IDroidRuntime {
     }
 
     @Override
-    public ActionTarget text(String text) {
-        return new ActionTarget.TextActionTarget(text);
+    public ActionTarget text(String text, int i) {
+        return new ActionTarget.TextActionTarget(text, i);
     }
 
     @Override
@@ -93,6 +102,10 @@ public class DroidRuntime implements IDroidRuntime {
     @Override
     public ActionTarget editable(int i) {
         return new ActionTarget.EditableActionTarget(i);
+    }
+
+    public ActionTarget id(String id) {
+        return new ActionTarget.IdActionTarget(id);
     }
 
     @Override
@@ -194,8 +207,22 @@ public class DroidRuntime implements IDroidRuntime {
 
     private void ensureAccessibilityServiceEnable() {
         if (AccessibilityWatchDogService.getInstance() == null) {
-            toast(App.getApp().getString(R.string.text_no_accessibility_permission));
-            throw new ScriptStopException(App.getApp().getString(R.string.text_no_accessibility_permission));
+            String errorMessage = null;
+            if (AccessibilityServiceUtils.isAccessibilityServiceEnabled(App.getApp(), AccessibilityWatchDogService.class)) {
+                errorMessage = App.getApp().getString(R.string.text_auto_operate_service_enabled_but_not_running);
+            } else {
+                if (Pref.def().getBoolean(App.getApp().getString(R.string.key_enable_accessibility_service_by_root), false)) {
+                    if (!AccessibilityServiceUtils.enableAccessibilityServiceByRootAndWaitFor(App.getApp(), AccessibilityWatchDogService.class, 3000)) {
+                        errorMessage = App.getApp().getString(R.string.text_enable_accessibility_service_by_root_timeout);
+                    }
+                } else {
+                    errorMessage = App.getApp().getString(R.string.text_no_accessibility_permission);
+                }
+            }
+            if (errorMessage != null) {
+                toast(errorMessage);
+                throw new ScriptStopException(errorMessage);
+            }
         }
     }
 
@@ -222,8 +249,20 @@ public class DroidRuntime implements IDroidRuntime {
         }
     }
 
-    public String shell(String cmd, int root) {
-        return Shell.execCommand(cmd, root != 0).toString();
+    public void addAccessibilityDelegate(final Object delegate) {
+        if (delegate == null)
+            return;
+        AccessibilityWatchDogService.addDelegate(new AccessibilityDelegate() {
+            @Override
+            public boolean onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event) {
+
+                return false;
+            }
+        }, 500);
+    }
+
+    public Shell.CommandResult shell(String cmd, int root) {
+        return Shell.execCommand(cmd, root != 0);
     }
 
     public String getPackageName() {
@@ -246,14 +285,17 @@ public class DroidRuntime implements IDroidRuntime {
         Thread.interrupted();
     }
 
+    public String readFile(String path) {
+        return FileUtils.readString(new File(Environment.getExternalStorageDirectory() + "/" + path));
+    }
 
     @Override
-    public MaterialDialog.Builder dialog() {
+    public ThemeColorMaterialDialogBuilder dialog() {
         if (App.currentActivity() == null) {
             Toast.makeText(App.getApp(), R.string.text_cannot_create_dialog_when_app_invisible, Toast.LENGTH_SHORT).show();
             throw new ScriptStopException(App.getApp().getString(R.string.text_cannot_create_dialog_when_app_invisible));
         }
-        return new MaterialDialog.Builder(App.currentActivity()) {
+        return new ThemeColorMaterialDialogBuilder(App.currentActivity()) {
 
             public MaterialDialog show() {
                 mUIHandler.post(new Runnable() {

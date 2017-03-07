@@ -1,5 +1,6 @@
 package com.stardust.view.accessibility;
 
+import android.accessibilityservice.AccessibilityService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -7,8 +8,11 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.stardust.scriptdroid.tool.Shell;
 
 /**
  * Created by Stardust on 2017/1/26.
@@ -23,7 +27,7 @@ public class AccessibilityServiceUtils {
         context.startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
-    public static boolean isAccessibilityServiceEnabled(Context context, Class<?> accessibilityService) {
+    public static boolean isAccessibilityServiceEnabled(Context context, Class<? extends AccessibilityService> accessibilityService) {
         ComponentName expectedComponentName = new ComponentName(context, accessibilityService);
 
         String enabledServicesSetting = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
@@ -42,5 +46,24 @@ public class AccessibilityServiceUtils {
         }
 
         return false;
+    }
+
+    public static boolean enableAccessibilityServiceByRootAndWaitFor(Context context, Class<? extends AccessibilityService> accessibilityService, long timeout) {
+        Shell.execCommand("settings put secure enabled_accessibility_services %accessibility:"
+                + context.getPackageName() + "/" + accessibilityService.getName(), true);
+        long millis = System.currentTimeMillis();
+        while (true) {
+            if (isAccessibilityServiceEnabled(context, accessibilityService))
+                return true;
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (System.currentTimeMillis() - millis >= timeout) {
+                return false;
+            }
+
+        }
     }
 }

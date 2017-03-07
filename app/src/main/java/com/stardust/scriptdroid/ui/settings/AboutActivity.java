@@ -17,6 +17,7 @@ import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.tool.IntentTool;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 
@@ -39,7 +40,7 @@ public class AboutActivity extends BaseActivity {
     private void setUpUI() {
         setContentView(R.layout.activity_about);
         setVersionName();
-        setUpToolbar();
+        setToolbarAsBack(getString(R.string.text_about));
         ViewBinder.bind(this);
     }
 
@@ -47,18 +48,6 @@ public class AboutActivity extends BaseActivity {
     private void setVersionName() {
         TextView version = $(R.id.version);
         version.setText("Version " + BuildConfig.VERSION_NAME);
-    }
-
-    private void setUpToolbar() {
-        Toolbar toolbar = $(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
 
     @ViewBinding.Click(R.id.github)
@@ -83,7 +72,7 @@ public class AboutActivity extends BaseActivity {
 
     @ViewBinding.Click(R.id.donate)
     private void showDonateMeDialog() {
-        new MaterialDialog.Builder(this)
+        new ThemeColorMaterialDialogBuilder(this)
                 .title(R.string.donate)
                 .items("支付宝")
                 .itemsCallback(new MaterialDialog.ListCallback() {
@@ -111,7 +100,7 @@ public class AboutActivity extends BaseActivity {
         mLolClickCount++;
         Toast.makeText(this, R.string.text_lll, Toast.LENGTH_LONG).show();
         if (mLolClickCount >= 5) {
-            new MaterialDialog.Builder(this)
+            new ThemeColorMaterialDialogBuilder(this)
                     .title("Crash Test")
                     .positiveText("Crash")
                     .onPositive(new MaterialDialog.SingleButtonCallback() {

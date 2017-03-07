@@ -2,6 +2,8 @@ package com.stardust.scriptdroid.tool;
 
 import android.util.Log;
 
+import com.stardust.scriptdroid.record.root.InputEventConverter;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -23,20 +25,127 @@ public class Shell {
     private final static String COMMAND_EXIT = "exit\n";
     private final static String COMMAND_LINE_END = "\n";
 
+    private Process mProcess;
+    private DataOutputStream mCommandOutputStream;
+    private BufferedReader mSucceedReader;
+    private BufferedReader mErrorReader;
+
+    private StringBuilder mSucceedOutput = new StringBuilder();
+    private StringBuilder mErrorOutput = new StringBuilder();
+
+    public Shell() {
+        this(false);
+    }
+
+    public Shell(boolean root) {
+        try {
+            mProcess = Runtime.getRuntime().exec(root ? COMMAND_SU : COMMAND_SH);
+            mCommandOutputStream = new DataOutputStream(mProcess.getOutputStream());
+            mSucceedReader = new BufferedReader(new InputStreamReader(mProcess.getInputStream()));
+            mErrorReader = new BufferedReader(new InputStreamReader(mProcess.getErrorStream()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Shell execute(String command) {
+        try {
+            mCommandOutputStream.writeBytes(command);
+            if (!command.endsWith(COMMAND_LINE_END)) {
+                mCommandOutputStream.writeBytes(COMMAND_LINE_END);
+            }
+            mCommandOutputStream.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return this;
+    }
+
+    public Shell exitAndWaitFor() {
+        exit();
+        try {
+            mProcess.waitFor();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return this;
+    }
+
+    public Shell readAll() {
+        return readSucceedOutput().readErrorOutput();
+    }
+
+    public Shell readSucceedOutput() {
+        String line;
+        try {
+            while ((line = mSucceedReader.readLine()) != null) {
+                mSucceedOutput.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return this;
+    }
+
+    public Shell readErrorOutput() {
+        String line;
+        try {
+            while ((line = mErrorReader.readLine()) != null) {
+                mErrorOutput.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return this;
+    }
+
+    public StringBuilder getSucceedOutput() {
+        return mSucceedOutput;
+    }
+
+    public StringBuilder getErrorOutput() {
+        return mErrorOutput;
+    }
+
+    public Shell exit() {
+        execute(COMMAND_EXIT);
+        return this;
+    }
+
+    public Shell destroy() {
+        mProcess.destroy();
+        return this;
+    }
+
+    public Process getProcess() {
+        return mProcess;
+    }
+
+    public BufferedReader getSucceedReader() {
+        return mSucceedReader;
+    }
+
+    public BufferedReader getErrorReader() {
+        return mErrorReader;
+    }
+
     /**
      * Command执行结果
      *
      * @author Mountain
      */
     public static class CommandResult {
-        public int result = -1;
-        public String errorMsg;
-        public String successMsg;
+        public int code = -1;
+        public String error;
+        public String result;
 
         @Override
         public String toString() {
-            return result + " | " + successMsg
-                    + " | " + errorMsg;
+            return "ShellResult{" +
+                    "code=" + code +
+                    ", error='" + error + '\'' +
+                    ", result='" + result + '\'' +
+                    '}';
         }
     }
 
@@ -80,7 +189,7 @@ public class Shell {
             }
             os.writeBytes(COMMAND_EXIT);
             os.flush();
-            commandResult.result = process.waitFor();
+            commandResult.code = process.waitFor();
             //获取错误信息
             successMsg = new StringBuilder();
             errorMsg = new StringBuilder();
@@ -89,8 +198,8 @@ public class Shell {
             String s;
             while ((s = successResult.readLine()) != null) successMsg.append(s);
             while ((s = errorResult.readLine()) != null) errorMsg.append(s);
-            commandResult.successMsg = successMsg.toString();
-            commandResult.errorMsg = errorMsg.toString();
+            commandResult.result = successMsg.toString();
+            commandResult.error = errorMsg.toString();
             Log.i(TAG, commandResult.toString());
         } catch (Exception e) {
             String errmsg = e.getMessage();
@@ -117,4 +226,28 @@ public class Shell {
         return commandResult;
     }
 
+    public static Process exec(String[] commands, boolean isRoot) {
+        try {
+            Process process = Runtime.getRuntime().exec(isRoot ? COMMAND_SU : COMMAND_SH);
+            DataOutputStream os = new DataOutputStream(process.getOutputStream());
+            for (String command : commands) {
+                if (command != null) {
+                    os.write(command.getBytes());
+                    os.writeBytes(COMMAND_LINE_END);
+                    os.flush();
+                }
+            }
+            os.writeBytes(COMMAND_EXIT);
+            os.flush();
+            os.close();
+            return process;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Process exec(String command, boolean isRoot) {
+        return exec(command.split("\n"), isRoot);
+    }
 }

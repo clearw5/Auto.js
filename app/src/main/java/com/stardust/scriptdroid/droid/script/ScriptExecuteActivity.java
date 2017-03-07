@@ -43,25 +43,25 @@ public class ScriptExecuteActivity extends Activity {
     }
 
     private void runScript() {
-        JAVA_SCRIPT_ENGINE.set("activity", Activity.class, this);
+        JAVA_SCRIPT_ENGINE.set("activity", this);
         try {
             mResult = JAVA_SCRIPT_ENGINE.execute(mScript);
         } catch (Exception e) {
-            mOnRunFinishedListener.onRunFinished(null, e);
+            mOnRunFinishedListener.onException(e);
             finish();
         }
     }
 
     @Override
     public void finish() {
-        mOnRunFinishedListener.onRunFinished(mResult, null);
+        mOnRunFinishedListener.onRunFinished(mResult);
         super.finish();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        JAVA_SCRIPT_ENGINE.set("activity", Activity.class, null);
-        JAVA_SCRIPT_ENGINE.removeAndDestroy(Thread.currentThread());
+        JAVA_SCRIPT_ENGINE.set("activity", null);
+        JAVA_SCRIPT_ENGINE.removeAndDestroy();
     }
 }

@@ -26,14 +26,16 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhanceBar;
+import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
 import com.stardust.scriptdroid.ui.edit.sidemenu.AssistClipListRecyclerView;
 import com.stardust.scriptdroid.ui.edit.sidemenu.EditSideMenuFragment;
 import com.stardust.scriptdroid.ui.edit.sidemenu.FunctionListRecyclerView;
-import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
-import com.stardust.widget.ToolbarMenuItem;
+import com.stardust.theme.ThemeColorManager;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.SparseArrayEntries;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
+import com.stardust.widget.ToolbarMenuItem;
 
 import java.io.File;
 
@@ -46,14 +48,20 @@ public class EditActivity extends Editor920Activity {
     private static final String KEY_EDIT_ACTIVITY_FIRST_USE = "KEY_EDIT_ACTIVITY_FIRST_USE";
 
     private static final String ACTION_ON_RUN_FINISHED = "ACTION_ON_RUN_FINISHED";
-    private static final String EXTRA_EXCEPTION = "EXTRA_EXCEPTION";
+    private static final String EXTRA_EXCEPTION_MESSAGE = "EXTRA_EXCEPTION_MESSAGE";
 
     private static final Droid.OnRunFinishedListener ON_RUN_FINISHED_LISTENER = new Droid.OnRunFinishedListener() {
 
         @Override
-        public void onRunFinished(Object result, Exception e) {
+        public void onRunFinished(Object result) {
+            App.getApp().sendBroadcast(new Intent(ACTION_ON_RUN_FINISHED));
+        }
+
+        @Override
+        public void onException(@NonNull Exception e) {
             App.getApp().sendBroadcast(new Intent(ACTION_ON_RUN_FINISHED)
-                    .putExtra(EXTRA_EXCEPTION, e));
+                    .putExtra(EXTRA_EXCEPTION_MESSAGE, e.getMessage()));
+            e.printStackTrace();
         }
     };
 
@@ -79,9 +87,9 @@ public class EditActivity extends Editor920Activity {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(ACTION_ON_RUN_FINISHED)) {
                 setMenuStatus(R.id.run, MenuDef.STATUS_NORMAL);
-                Exception e = (Exception) intent.getSerializableExtra(EXTRA_EXCEPTION);
-                if (e != null)
-                    Snackbar.make(mView, getString(R.string.text_error) + ": " + e.getMessage(), Snackbar.LENGTH_INDEFINITE).show();
+                String msg = intent.getStringExtra(EXTRA_EXCEPTION_MESSAGE);
+                if (msg != null)
+                    Snackbar.make(mView, getString(R.string.text_error) + ": " + msg, Snackbar.LENGTH_LONG).show();
             }
         }
     };
@@ -123,10 +131,12 @@ public class EditActivity extends Editor920Activity {
                 mName = mFile.getName();
             }
         }
+
     }
 
     private void setUpUI() {
         setTheme(R.style.EditorTheme);
+        ThemeColorManager.addActivityStatusBar(this);
         mView = View.inflate(this, R.layout.activity_edit, null);
         mDrawerLayout = (DrawerLayout) mView.findViewById(R.id.drawer_layout);
         setContentView(mView);
@@ -271,7 +281,7 @@ public class EditActivity extends Editor920Activity {
     }
 
     private void showExitConfirmDialog() {
-        new MaterialDialog.Builder(this)
+        new ThemeColorMaterialDialogBuilder(this)
                 .title(R.string.text_alert)
                 .content(R.string.edit_exit_without_save_warn)
                 .positiveText(R.string.text_cancel)

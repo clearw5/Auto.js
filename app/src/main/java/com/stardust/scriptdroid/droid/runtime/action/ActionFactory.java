@@ -24,11 +24,11 @@ public class ActionFactory {
             .entry(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, null)
             .map();
 
-    public static Action createActionWithTextFilter(int action, String text) {
+    public static Action createActionWithTextFilter(int action, String text, int index) {
         if (searchUpAction.containsKey(action))
-            return new SearchUpTargetAction(action, new FilterAction.TextFilter(text));
+            return new SearchUpTargetAction(action, new FilterAction.TextFilter(text, index));
         else
-            return new DepthFirstSearchTargetAction(action, new FilterAction.TextFilter(text));
+            return new DepthFirstSearchTargetAction(action, new FilterAction.TextFilter(text, index));
     }
 
     public static Action createActionWithBoundsFilter(int action, Rect rect) {
@@ -54,7 +54,11 @@ public class ActionFactory {
         return new ScrollMaxAction(action);
     }
 
-    public static Action createScrollAction(int action, int i){
+    public static Action createScrollAction(int action, int i) {
         return new ScrollAction(action, i);
+    }
+
+    public static Action createActionWithIdFilter(int action, String id) {
+        return new FilterAction.SimpleFilterAction(action, new FilterAction.IdFilter(id));
     }
 }

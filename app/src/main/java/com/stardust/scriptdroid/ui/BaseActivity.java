@@ -10,6 +10,7 @@ import android.view.View;
 
 
 import com.stardust.scriptdroid.R;
+import com.stardust.theme.app.ThemeColorAppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +23,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
  * Created by Stardust on 2017/1/23.
  */
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends ThemeColorAppCompatActivity {
 
     protected static final int PERMISSION_REQUEST_CODE = 11186;
 

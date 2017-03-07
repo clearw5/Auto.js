@@ -14,9 +14,9 @@ function openRunningServices(){
 }
 
 
-importClass("android.os.Build.VERSION");
+importClass("android.os.Build");
 
-if(VERSION.SDK_INT < 23){
+if(Build.VERSION.SDK_INT < 23){
     toast("本代码只适用于Android6.0以上");
 }else{
     openRunningServices();

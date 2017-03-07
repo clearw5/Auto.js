@@ -12,6 +12,7 @@ public class Pref {
     private static final SharedPreferences DISPOSABLE_BOOLEAN = App.getApp().getSharedPreferences("DISPOSABLE_BOOLEAN", Context.MODE_PRIVATE);
     public static final String SAMPLE_SCRIPTS_COPIED = "SAMPLE_SCRIPTS_COPIED";
     private static final String KEY_MAX_TEXT_LENGTH_FOR_CODE_COMPLETION = "KEY_MAX_TEXT_LENGTH_FOR_CODE_COMPLETION";
+    public static final String KEY_DRAWER_HEADER_IMAGE_PATH = "KEY_DRAWER_HEADER_IMAGE_PATH";
 
     public static SharedPreferences def() {
         return PreferenceManager.getDefaultSharedPreferences(App.getApp());

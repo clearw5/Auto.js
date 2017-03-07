@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.ui.settings;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -15,17 +16,49 @@ import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.error.IssueReportActivity;
 import com.stardust.scriptdroid.ui.main.MainActivity;
+import com.stardust.theme.app.ColorSelectActivity;
+import com.stardust.theme.util.ListBuilder;
 import com.stardust.util.MapEntries;
 
+import java.util.List;
 import java.util.Map;
 
+import de.psdev.licensesdialog.LicenseResolver;
 import de.psdev.licensesdialog.LicensesDialog;
+import de.psdev.licensesdialog.licenses.License;
+import de.psdev.licensesdialog.licenses.MozillaPublicLicense11;
 
 /**
  * Created by Stardust on 2017/2/2.
  */
 
 public class SettingsActivity extends BaseActivity {
+
+    private static final List<ColorSelectActivity.ColorItem> COLOR_ITEMS;
+
+    static {
+        COLOR_ITEMS = new ListBuilder<ColorSelectActivity.ColorItem>()
+                .add(new ColorSelectActivity.ColorItem("基佬红", 0xFFF44336))
+                .add(new ColorSelectActivity.ColorItem("基佬粉", 0xFFE91E63))
+                .add(new ColorSelectActivity.ColorItem("基佬紫", 0xFF9C27B0))
+                .add(new ColorSelectActivity.ColorItem("基深紫", 0xFF673AB7))
+                .add(new ColorSelectActivity.ColorItem("基靛蓝", 0xFF3F51B5))
+                .add(new ColorSelectActivity.ColorItem("基佬蓝", 0xFF2196F3))
+                .add(new ColorSelectActivity.ColorItem("基亮蓝", 0xFF03A9F4))
+                .add(new ColorSelectActivity.ColorItem("基蓝绿", 0xFF00BCD4))
+                .add(new ColorSelectActivity.ColorItem("基佬青", 0xFF009688))
+                .add(new ColorSelectActivity.ColorItem("基佬绿", 0xFF4CAF50))
+                .add(new ColorSelectActivity.ColorItem("基亮绿", 0xFF8BC34A))
+                .add(new ColorSelectActivity.ColorItem("基黄绿", 0xFFCDDC39))
+                .add(new ColorSelectActivity.ColorItem("基佬黄", 0xFFFFEB3B))
+                .add(new ColorSelectActivity.ColorItem("基琥珀", 0xFFFFC107))
+                .add(new ColorSelectActivity.ColorItem("基佬橙", 0xFFFF9800))
+                .add(new ColorSelectActivity.ColorItem("基深橙", 0xFFFF5722))
+                .add(new ColorSelectActivity.ColorItem("基佬棕", 0xFF795548))
+                .add(new ColorSelectActivity.ColorItem("基佬灰", 0xFF9E9E9E))
+                .add(new ColorSelectActivity.ColorItem("基南灰", 0xFF607D8B))
+                .list();
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +101,12 @@ public class SettingsActivity extends BaseActivity {
         public void onStart() {
             super.onStart();
             ACTION_MAP = new MapEntries<String, Runnable>()
+                    .entry(getString(R.string.text_theme_color), new Runnable() {
+                        @Override
+                        public void run() {
+                            ColorSelectActivity.startColorSelect(getActivity(), getString(R.string.mt_color_picker_title), COLOR_ITEMS);
+                        }
+                    })
                     .entry(getString(R.string.text_re_import_samples), new Runnable() {
                         @Override
                         public void run() {
@@ -124,11 +163,42 @@ public class SettingsActivity extends BaseActivity {
         }
 
         private void showLicenseDialog() {
+            LicenseResolver.registerLicense(MozillaPublicLicense20.instance);
             new LicensesDialog.Builder(getActivity())
                     .setNotices(R.raw.licenses)
                     .setIncludeOwnLicense(true)
                     .build()
                     .showAppCompat();
+        }
+
+        public static class MozillaPublicLicense20 extends License {
+
+            public static MozillaPublicLicense20 instance = new MozillaPublicLicense20();
+
+            @Override
+            public String getName() {
+                return "Mozilla Public License 2.0";
+            }
+
+            @Override
+            public String readSummaryTextFromResources(Context context) {
+                return getContent(context, R.raw.mpl_20_summary);
+            }
+
+            @Override
+            public String readFullTextFromResources(Context context) {
+                return getContent(context, R.raw.mpl_20_full);
+            }
+
+            @Override
+            public String getVersion() {
+                return "2.0";
+            }
+
+            @Override
+            public String getUrl() {
+                return "https://www.mozilla.org/en-US/MPL/2.0/";
+            }
         }
 
     }

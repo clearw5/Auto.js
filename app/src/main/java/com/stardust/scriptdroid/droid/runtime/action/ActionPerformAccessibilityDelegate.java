@@ -43,22 +43,24 @@ public class ActionPerformAccessibilityDelegate implements AccessibilityDelegate
 
     @Override
     public boolean onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event) {
-        setLatestComponent(event.getPackageName(), event.getClassName());
-        if (action == NO_ACTION)
+        synchronized (ActionPerformAccessibilityDelegate.class) {
+            setLatestComponent(event.getPackageName(), event.getClassName());
+            if (action == NO_ACTION)
+                return false;
+            AccessibilityNodeInfo root = service.getRootInActiveWindow();
+            if (root == null) {
+                Log.v(TAG, "root = null");
+            }
+            Log.i(TAG, "perform action:" + action);
+            if (action.perform(root)) {
+                action.setResult(true);
+                onActionPerformed();
+            } else if (!action.performUtilSucceed()) {
+                action.setResult(false);
+                onActionPerformed();
+            }
             return false;
-        AccessibilityNodeInfo root = service.getRootInActiveWindow();
-        if (root == null) {
-            Log.v(TAG, "root = null");
         }
-        Log.i(TAG, "perform action:" + action);
-        if (action.perform(root)) {
-            action.setResult(true);
-            onActionPerformed();
-        } else if (!action.performUtilSucceed()) {
-            action.setResult(false);
-            onActionPerformed();
-        }
-        return false;
     }
 
 
@@ -69,18 +71,18 @@ public class ActionPerformAccessibilityDelegate implements AccessibilityDelegate
         }
     }
 
-    private synchronized static void setLatestComponent(CharSequence latestPackage, CharSequence latestClass) {
+    private static void setLatestComponent(CharSequence latestPackage, CharSequence latestClass) {
         if (latestPackage == null)
             return;
         ActionPerformAccessibilityDelegate.latestPackage = latestPackage.toString();
-        if(latestClass == null)
+        if (latestClass == null)
             return;
         try {
             ComponentName componentName = new ComponentName(latestPackage.toString(), latestClass.toString());
             ActivityInfo activityInfo = App.getApp().getPackageManager().getActivityInfo(componentName, 0);
             ActionPerformAccessibilityDelegate.latestActivity = activityInfo.name;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+        } catch (PackageManager.NameNotFoundException ignored) {
+
         }
     }
 

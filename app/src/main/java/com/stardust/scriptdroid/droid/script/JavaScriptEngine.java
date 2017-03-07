@@ -1,29 +1,47 @@
 package com.stardust.scriptdroid.droid.script;
 
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.droid.script.file.AssetScript;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Stardust on 2017/1/27.
  */
 
-public interface JavaScriptEngine {
+public abstract class JavaScriptEngine {
 
-    Object execute(String script) throws IOException;
+    Map<String, Object> mVariableMap = new HashMap<>();
 
-    <T> void set(String varName, Class<T> c, T value);
+    protected String preprocess(String script) {
+        return script;
+    }
 
-    int stopAll();
+    public abstract Object execute(String script);
 
-    void removeAndDestroy(Thread thread);
+    public void set(String varName, Object value) {
+        mVariableMap.put(varName, value);
+    }
 
-    class Init {
-        public static final String INIT_SCRIPT = readInitScript();
+    public abstract void removeAndDestroy();
 
-        static String readInitScript() {
+    public abstract int stopAll();
+
+    static class Init {
+        private static final String INIT_SCRIPT = readInitScript();
+
+        private static String readInitScript() {
             return AssetScript.read(App.getApp(), "javasccript_engine_init.js");
+        }
+
+        static String getInitScript() {
+            if (BuildConfig.DEBUG) {
+                return readInitScript();
+            } else {
+                return INIT_SCRIPT;
+            }
         }
     }
 }

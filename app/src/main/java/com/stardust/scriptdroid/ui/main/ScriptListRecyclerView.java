@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ThemeColorRecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperationPopupMenu;
 import com.stardust.scriptdroid.tool.ClassTool;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import static com.stardust.scriptdroid.tool.ViewTool.$;
 
@@ -28,7 +30,7 @@ import static com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation.*;
  * Created by Stardust on 2017/1/23.
  */
 
-public class ScriptListRecyclerView extends RecyclerView {
+public class ScriptListRecyclerView extends ThemeColorRecyclerView {
 
     private ScriptFileList mScriptFileList;
 
@@ -107,7 +109,7 @@ public class ScriptListRecyclerView extends RecyclerView {
     }
 
     private void showOperationDialog(final int position) {
-        new MaterialDialog.Builder(getContext()).items(ScriptFileOperation.getOperationNames())
+        new ThemeColorMaterialDialogBuilder(getContext()).items(ScriptFileOperation.getOperationNames())
                 .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(MaterialDialog dialog, View itemView, int operation, CharSequence text) {

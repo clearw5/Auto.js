@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.heinrichreimersoftware.androidissuereporter.IssueReporterActivity;
 import com.heinrichreimersoftware.androidissuereporter.model.github.GithubTarget;
 import com.stardust.scriptdroid.R;
+import com.stardust.theme.ThemeColorManager;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

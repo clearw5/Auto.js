@@ -1,17 +1,15 @@
 "ui";
 
-importClass("com.afollestad.materialdialogs.MaterialDialog.Builder");
-importClass("com.afollestad.materialdialogs.MaterialDialog.InputCallback");
-importClass("android.content.DialogInterface.OnDismissListener");
+importClass("com.afollestad.materialdialogs.MaterialDialog");
 
-new Builder(activity)
+new ThemeColorMaterialDialogBuilder(activity)
     .title("简单计算器")
-    .input("请输入算式", "1+1", new InputCallback(function(dialog, input){
+    .input("请输入算式", "1+1", function(dialog, input){
         eval("var ans = (" + input + ")");
         toast(ans);
-    }))
+    })
     .positiveText("计算")
-    .dismissListener(new OnDismissListener(function(dialog){
+    .dismissListener(function(dialog){
         activity.finish();
-    }))
+    })
     .show();

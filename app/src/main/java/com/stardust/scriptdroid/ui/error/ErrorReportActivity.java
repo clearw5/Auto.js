@@ -15,6 +15,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.R;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -47,7 +48,7 @@ public class ErrorReportActivity extends BaseActivity {
     }
 
     private void showErrorMessageByDialog(String message, final String errorDetail) {
-        new MaterialDialog.Builder(this)
+        new ThemeColorMaterialDialogBuilder(this)
                 .title(R.string.text_crash)
                 .content(R.string.crash_feedback)
                 .positiveText(R.string.text_exit)

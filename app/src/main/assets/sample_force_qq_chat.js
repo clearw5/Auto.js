@@ -3,7 +3,6 @@
 importClass("android.widget.EditText");
 importClass("android.widget.Button");
 importClass("android.widget.LinearLayout");
-importClass("android.view.View.OnClickListener");
 importClass("android.content.Intent");
 importClass("android.net.Uri");
 
@@ -16,7 +15,7 @@ container.addView(qq);
 container.addView(btnOk);
 activity.setContentView(container);
 
-btnOk.setOnClickListener(new OnClickListener(function(view){
+btnOk.setOnClickListener(function(view){
     activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("mqqwpa://im/chat?chat_type=wpa&uin=" + qq.getText())));
     activity.finish();
-}));
+});

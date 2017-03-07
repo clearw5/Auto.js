@@ -1,46 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-        android:title="@string/text_script_record">
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_script_record">
 
-        <SwitchPreference
+        <com.stardust.theme.preference.ThemeColorSwitchPreference
             android:defaultValue="false"
             android:key="@string/key_use_volume_control_record"
             android:summary="@string/summary_use_volume_control_record"
             android:title="@string/text_use_volume_control_record"/>
-    </PreferenceCategory>
+    </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/text_edit">
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_edit">
 
         <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
             android:defaultValue="2000"
             android:inputType="number"
             android:key="@string/key_max_length_for_code_completion"
             android:title="@string/text_max_length_for_code_completion"/>
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:title="@string/text_others">
+    </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
-        <Preference
-            android:title="@string/text_re_import_samples"/>
-    </PreferenceCategory>
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_accessibility_service">
 
-    <PreferenceCategory
-        android:title="@string/text_about">
+        <com.stardust.theme.preference.ThemeColorSwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_enable_accessibility_service_by_root"
+            android:summary="@string/summary_enable_accessibility_service_by_root"
+            android:title="@string/text_enable_accessibility_service_by_root"/>
+    </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
-        <Preference
-            android:title="@string/text_issue_report"/>
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_appearance">
+        <Preference android:title="@string/text_theme_color"/>
+    </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
-        <Preference
-            android:title="@string/text_join_qq_group"/>
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_others">
 
-        <Preference
-            android:title="@string/text_about"/>
+        <Preference android:title="@string/text_re_import_samples"/>
+    </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
-        <Preference
-            android:title="@string/text_licenses"/>
-    </PreferenceCategory>
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_about">
+
+        <Preference android:title="@string/text_issue_report"/>
+
+        <Preference android:title="@string/text_join_qq_group"/>
+
+        <Preference android:title="@string/text_about"/>
+
+        <Preference android:title="@string/text_licenses"/>
+    </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
 </PreferenceScreen>

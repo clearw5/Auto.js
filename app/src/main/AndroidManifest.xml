@@ -75,7 +75,8 @@
         </provider>
 
         <activity android:name=".ui.edit.EditActivity"/>
-        <activity android:name=".ui.help.DocumentActivity"/>
+        <activity android:name=".ui.help.DocumentationActivity"/>
+        <activity android:name=".ui.help.HelpCatalogueActivity"/>
         <activity android:name=".ui.settings.AboutActivity"/>
         <activity android:name=".ui.settings.SettingsActivity"/>
         <activity android:name=".ui.console.ConsoleActivity"/>

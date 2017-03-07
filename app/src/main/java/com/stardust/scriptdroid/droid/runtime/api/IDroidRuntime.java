@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.droid.runtime.api;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.droid.runtime.action.ActionTarget;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -16,7 +17,7 @@ public interface IDroidRuntime {
 
     String[] getPackageName(String appName);
 
-    ActionTarget text(String text);
+    ActionTarget text(String text, int i);
 
     ActionTarget bounds(int left, int top, int right, int bottom);
 
@@ -50,5 +51,5 @@ public interface IDroidRuntime {
 
     void stop();
 
-    MaterialDialog.Builder dialog();
+    ThemeColorMaterialDialogBuilder dialog();
 }

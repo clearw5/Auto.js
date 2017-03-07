@@ -13,14 +13,16 @@ public interface ActionTarget {
     class TextActionTarget implements ActionTarget {
 
         String mText;
+        int mIndex;
 
-        public TextActionTarget(String text) {
+        public TextActionTarget(String text, int i) {
             mText = text;
+            mIndex = i;
         }
 
         @Override
         public Action createAction(int action, Object... params) {
-            return ActionFactory.createActionWithTextFilter(action, mText);
+            return ActionFactory.createActionWithTextFilter(action, mText, mIndex);
         }
     }
 
@@ -48,6 +50,19 @@ public interface ActionTarget {
         @Override
         public Action createAction(int action, Object... params) {
             return ActionFactory.createActionWithEditableFilter(action, mIndex, params[0].toString());
+        }
+    }
+
+    class IdActionTarget implements ActionTarget {
+        private String mId;
+
+        public IdActionTarget(String id) {
+            mId = id;
+        }
+
+        @Override
+        public Action createAction(int action, Object... params) {
+            return ActionFactory.createActionWithIdFilter(action, mId);
         }
     }
 }

@@ -22,14 +22,22 @@ public abstract class FilterAction extends Action {
     public static class TextFilter implements Filter {
 
         String mText;
+        int mIndex;
 
-        public TextFilter(String text) {
+        public TextFilter(String text, int index) {
             mText = text;
+            mIndex = index;
         }
 
         @Override
         public List<AccessibilityNodeInfo> filter(AccessibilityNodeInfo root) {
-            return root.findAccessibilityNodeInfosByText(mText);
+
+            List<AccessibilityNodeInfo> list = root.findAccessibilityNodeInfosByText(mText);
+            if (mIndex == -1)
+                return list;
+            if (mIndex >= list.size())
+                return Collections.EMPTY_LIST;
+            return Collections.singletonList(list.get(mIndex));
         }
     }
 
@@ -68,21 +76,6 @@ public abstract class FilterAction extends Action {
         }
     }
 
-
-    private Filter mFilter;
-
-    public FilterAction(Filter filter) {
-        mFilter = filter;
-    }
-
-    public boolean perform(AccessibilityNodeInfo root) {
-        if (root == null)
-            return false;
-        return perform(mFilter.filter(root));
-    }
-
-    public abstract boolean perform(List<AccessibilityNodeInfo> nodes);
-
     public static class EditableFilter implements Filter {
 
         private int mIndex;
@@ -116,4 +109,57 @@ public abstract class FilterAction extends Action {
             return list;
         }
     }
+
+    public static class IdFilter implements Filter {
+
+        private final String mId;
+
+        public IdFilter(String id) {
+            this.mId = id;
+        }
+
+        @Override
+        public List<AccessibilityNodeInfo> filter(AccessibilityNodeInfo root) {
+            return root.findAccessibilityNodeInfosByViewId(mId);
+        }
+    }
+
+
+    private Filter mFilter;
+
+    public FilterAction(Filter filter) {
+        mFilter = filter;
+    }
+
+    public boolean perform(AccessibilityNodeInfo root) {
+        if (root == null)
+            return false;
+        return perform(mFilter.filter(root));
+    }
+
+    public abstract boolean perform(List<AccessibilityNodeInfo> nodes);
+
+    public static class SimpleFilterAction extends FilterAction {
+
+        private int mAction;
+
+        public SimpleFilterAction(int action, Filter filter) {
+            super(filter);
+            mAction = action;
+        }
+
+        @Override
+        public boolean perform(List<AccessibilityNodeInfo> nodes) {
+            if(nodes == null || nodes.isEmpty())
+                return false;
+            boolean succeed = true;
+            for(AccessibilityNodeInfo nodeInfo : nodes){
+                if(!nodeInfo.performAction(mAction)){
+                    succeed = false;
+                }
+            }
+            return succeed;
+        }
+    }
+
 }

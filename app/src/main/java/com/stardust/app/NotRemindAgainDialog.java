@@ -8,6 +8,7 @@ import android.widget.CompoundButton;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.R;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import static com.jecelyin.common.utils.StringUtils.md5;
 
@@ -22,7 +23,7 @@ public class NotRemindAgainDialog extends MaterialDialog {
     }
 
 
-    public static class Builder extends MaterialDialog.Builder {
+    public static class Builder extends ThemeColorMaterialDialogBuilder {
 
         private String mKeyRemind;
         private boolean mRemind;
