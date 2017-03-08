@@ -135,4 +135,6 @@
     <string name="text_theme_color">主题色</string>
     <string name="text_select_image">选择图片</string>
     <string name="text_help">帮助</string>
+    <string name="text_root_script_record">录制脚本(root)</string>
+    <string name="hint_start_root_record">使用音量上键，音量下键结束录制</string>
 </resources>

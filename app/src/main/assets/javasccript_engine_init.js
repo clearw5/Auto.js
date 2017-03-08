@@ -159,7 +159,10 @@ var Tap = function(x, y){
     return shell("input tap " + x + " " + y, true).code == 1;
 }
 
-var Swipe = function(x1, y1, x2, y2){
+var Swipe = function(x1, y1, x2, y2, duration){
+    if(arguments.length == 5){
+        return shell("input swipe " + x1 + " " + y1 + " " + x2 + " " + y2 + " " + duration, true).code == 1;
+    }
     return shell("input swipe " + x1 + " " + y1 + " " + x2 + " " + y2, true).code == 1;
 }
 
@@ -218,6 +221,8 @@ var Camera = function(){
 var Text = function(text){
      return shell("input text " + text, true).code == 1;
 }
+
+__importClassOld__(com.stardust.scriptdroid.droid.runtime.Shell);
 
 /*
 importClass("com.stardust.scriptdroid.service.AccessibilityDelegate");

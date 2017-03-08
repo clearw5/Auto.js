@@ -15,9 +15,6 @@ import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.CrashHandler;
 import com.stardust.util.StateObserver;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
-
 import java.lang.ref.WeakReference;
 
 /**

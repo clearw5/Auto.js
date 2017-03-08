@@ -29,20 +29,25 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FileChooserDialog;
 import com.stardust.app.NotRemindAgainDialog;
 import com.stardust.app.OnActivityResultDelegate;
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
 import com.stardust.scriptdroid.external.notification.record.ActionRecordSwitchNotification;
 import com.stardust.scriptdroid.file.FileUtils;
 import com.stardust.scriptdroid.file.SampleFileManager;
-import com.stardust.scriptdroid.record.root.InputEventRecorder;
+import com.stardust.scriptdroid.record.inputevent.InputEventRecorder;
+import com.stardust.scriptdroid.record.inputevent.InputEventToJsConverter;
+import com.stardust.scriptdroid.record.inputevent.InputEventToJsRecorder;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.BackPressedHandler;
 import com.stardust.scriptdroid.tool.ImageSelector;
+import com.stardust.scriptdroid.tool.Shell;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity;
@@ -64,6 +69,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     public static final String ACTION_NOTIFY_SCRIPT_LIST_CHANGE = "ACTION_NOTIFY_SCRIPT_LIST_CHANGE";
     private static final String ACTION_ON_ACTION_RECORD_STOPPED = "ACTION_ON_ACTION_RECORD_STOPPED";
     private static final String ARGUMENT_SCRIPT = "ARGUMENT_SCRIPT";
+    private static final String ACTION_ON_ROOT_RECORD_STOPPED = "ACTION_ON_ROOT_RECORD_STOPPED";
 
     private SlidingUpPanel mAddFilePanel;
     private ScriptListRecyclerView mScriptListRecyclerView;
@@ -79,6 +85,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         checkPermissions();
         registerReceivers();
         handleIntent(getIntent());
+        //Shell.test(this);
     }
 
     private void registerReceivers() {
@@ -226,6 +233,17 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         Snackbar.make(mDrawerLayout, R.string.hint_start_record, Snackbar.LENGTH_SHORT).show();
     }
 
+    private InputEventRecorder mInputEventRecorder;
+
+    @ViewBinding.Click(R.id.root_record)
+    private void startRootRecord() {
+        if (mInputEventRecorder == null) {
+            mInputEventRecorder = new InputEventToJsRecorder();
+            mInputEventRecorder.listen();
+        }
+        Snackbar.make(mDrawerLayout, R.string.hint_start_root_record, Snackbar.LENGTH_SHORT).show();
+    }
+
     @ViewBinding.Click(R.id.setting)
     private void startSettingActivity() {
         startActivity(new Intent(this, SettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -275,6 +293,13 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
             case ACTION_ON_ACTION_RECORD_STOPPED:
                 handleRecordedScript(intent.getStringExtra(ARGUMENT_SCRIPT));
                 break;
+            case ACTION_ON_ROOT_RECORD_STOPPED:
+                if (mInputEventRecorder != null) {
+                    mInputEventRecorder.stop();
+                    handleRecordedScript(mInputEventRecorder.getCode());
+                    mInputEventRecorder = null;
+                }
+                break;
         }
     }
 
@@ -294,6 +319,14 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                         }
                     }
                 })
+                .negativeText(R.string.text_cancel)
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .canceledOnTouchOutside(false)
                 .show();
 
     }
@@ -327,6 +360,14 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(EXTRA_ACTION, ACTION_ON_ACTION_RECORD_STOPPED)
                 .putExtra(ARGUMENT_SCRIPT, script);
+        context.startActivity(intent);
+    }
+
+
+    public static void onRootRecordStopped(Context context) {
+        Intent intent = new Intent(context, MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(EXTRA_ACTION, ACTION_ON_ROOT_RECORD_STOPPED);
         context.startActivity(intent);
     }
 

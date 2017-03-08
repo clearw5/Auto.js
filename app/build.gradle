@@ -7,11 +7,10 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 38
-        versionName "1.17.0306内测"
+        versionCode 39
+        versionName "1.17.0308内测"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-
 
     }
     buildTypes {
@@ -65,7 +64,11 @@ dependencies {
     compile 'com.jraska:console:0.4.3'
     compile 'com.jraska:console-timber-tree:0.4.3'
     compile 'com.heinrichreimersoftware:android-issue-reporter:eae4c73cbeb91e98da83fe79a3dea088a8b97448'
-    compile group: 'org.mozilla', name: 'rhino', version: '1.7'
+    //compile 'com.github.jackpal.Android-Terminal-Emulator:emulatorview:v1.0.70'
+    //compile 'com.github.jackpal.Android-Terminal-Emulator:libtermexec:v1.0.70'
+    compile(name: 'libtermexec-release', ext: 'aar')
+    compile(name: 'emulatorview-release', ext: 'aar')
+    compile(name: 'term-debug', ext: 'aar')
 
     compile 'com.afollestad.material-dialogs:commons:0.9.2.3'
     compile 'com.makeramen:roundedimageview:2.2.1'

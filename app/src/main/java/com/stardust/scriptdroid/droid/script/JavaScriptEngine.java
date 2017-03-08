@@ -2,8 +2,9 @@ package com.stardust.scriptdroid.droid.script;
 
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.BuildConfig;
-import com.stardust.scriptdroid.droid.script.file.AssetScript;
+import com.stardust.scriptdroid.file.FileUtils;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,10 +15,6 @@ import java.util.Map;
 public abstract class JavaScriptEngine {
 
     Map<String, Object> mVariableMap = new HashMap<>();
-
-    protected String preprocess(String script) {
-        return script;
-    }
 
     public abstract Object execute(String script);
 
@@ -33,11 +30,17 @@ public abstract class JavaScriptEngine {
         private static final String INIT_SCRIPT = readInitScript();
 
         private static String readInitScript() {
-            return AssetScript.read(App.getApp(), "javasccript_engine_init.js");
+            try {
+                return FileUtils.readString(App.getApp().getAssets().open("javasccript_engine_init.js"));
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "Error: Unable to read init script.";
+            }
         }
 
         static String getInitScript() {
             if (BuildConfig.DEBUG) {
+                // 调试时不缓存INIT_SCRIPT否则修改javasccript_engine_init.js后不会更新
                 return readInitScript();
             } else {
                 return INIT_SCRIPT;

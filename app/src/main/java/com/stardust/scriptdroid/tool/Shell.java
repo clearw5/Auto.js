@@ -1,13 +1,28 @@
 package com.stardust.scriptdroid.tool;
 
+import android.app.Activity;
+import android.content.res.AssetFileDescriptor;
+import android.os.ParcelFileDescriptor;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.stardust.scriptdroid.record.root.InputEventConverter;
+import com.stardust.scriptdroid.App;
+import com.stericson.RootShell.RootShell;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+import jackpal.androidterm.ShellTermSession;
+import jackpal.androidterm.Term;
+import jackpal.androidterm.emulatorview.TermSession;
+import jackpal.androidterm.util.TermSettings;
 
 /**
  * Created by Stardust on 2017/1/20.
@@ -33,13 +48,56 @@ public class Shell {
     private StringBuilder mSucceedOutput = new StringBuilder();
     private StringBuilder mErrorOutput = new StringBuilder();
 
+    public static String bytesToString(byte[] data, int base, int length) {
+        StringBuilder buf = new StringBuilder();
+
+        for(int i = 0; i < length; ++i) {
+            byte b = data[base + i];
+            if(b >= 32 && b <= 126) {
+                buf.append((char)b);
+            } else {
+                buf.append(String.format("\\x%02x", new Object[]{Byte.valueOf(b)}));
+            }
+        }
+
+        return buf.toString();
+    }
+
+
+    public static void test(final Activity activity) {
+        TermSettings settings = new TermSettings(App.getApp().getResources(), PreferenceManager.getDefaultSharedPreferences(App.getApp()));
+        try {
+            final ShellTermSession termSession = new ShellTermSession(settings, "");
+            termSession.initializeEmulator(80, 40);
+            termSession.write("su\r");
+            termSession.write("getevent\r");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(termSession.getTermIn()));
+                    try {
+                        while (reader.ready()){
+                            String line = reader.readLine();
+                            System.out.println(line);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public Shell() {
         this(false);
     }
 
     public Shell(boolean root) {
         try {
-            mProcess = Runtime.getRuntime().exec(root ? COMMAND_SU : COMMAND_SH);
+            mProcess = new ProcessBuilder(root ? COMMAND_SU : COMMAND_SH).redirectErrorStream(true).start();
             mCommandOutputStream = new DataOutputStream(mProcess.getOutputStream());
             mSucceedReader = new BufferedReader(new InputStreamReader(mProcess.getInputStream()));
             mErrorReader = new BufferedReader(new InputStreamReader(mProcess.getErrorStream()));
@@ -49,6 +107,7 @@ public class Shell {
     }
 
     public Shell execute(String command) {
+
         try {
             mCommandOutputStream.writeBytes(command);
             if (!command.endsWith(COMMAND_LINE_END)) {
@@ -76,9 +135,9 @@ public class Shell {
     }
 
     public Shell readSucceedOutput() {
-        String line;
         try {
-            while ((line = mSucceedReader.readLine()) != null) {
+            while (mSucceedReader.ready()) {
+                String line = mSucceedReader.readLine();
                 mSucceedOutput.append(line).append("\n");
             }
         } catch (IOException e) {
@@ -127,6 +186,14 @@ public class Shell {
 
     public BufferedReader getErrorReader() {
         return mErrorReader;
+    }
+
+    public int waitFor() {
+        try {
+            return mProcess.waitFor();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

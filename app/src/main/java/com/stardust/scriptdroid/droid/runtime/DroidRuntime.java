@@ -25,7 +25,6 @@ import com.stardust.scriptdroid.droid.runtime.action.ActionFactory;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformAccessibilityDelegate;
 import com.stardust.scriptdroid.droid.runtime.action.ActionTarget;
 import com.stardust.scriptdroid.droid.runtime.action.GetTextAction;
-import com.stardust.scriptdroid.droid.runtime.api.IDroidRuntime;
 import com.stardust.scriptdroid.file.FileUtils;
 import com.stardust.scriptdroid.service.AccessibilityDelegate;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
@@ -45,7 +44,7 @@ import timber.log.Timber;
  * Created by Stardust on 2017/1/27.
  */
 
-public class DroidRuntime implements IDroidRuntime {
+public class DroidRuntime {
 
     private static final String TAG = "DroidRuntime";
     private static DroidRuntime runtime = new DroidRuntime();
@@ -61,18 +60,15 @@ public class DroidRuntime implements IDroidRuntime {
         mUIHandler = new Handler(App.getApp().getMainLooper());
     }
 
-    @Override
     public void launchPackage(String packageName) {
         PackageManager packageManager = App.getApp().getPackageManager();
         App.getApp().startActivity(packageManager.getLaunchIntentForPackage(packageName));
     }
 
-    @Override
     public void launch(String packageName, String className) {
         App.getApp().startActivity(new Intent().setClassName(packageName, className).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
-    @Override
     public void launchApp(String appName) {
         PackageManager packageManager = App.getApp().getPackageManager();
         List<ApplicationInfo> installedApplications = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
@@ -84,22 +80,18 @@ public class DroidRuntime implements IDroidRuntime {
         }
     }
 
-    @Override
     public String[] getPackageName(String appName) {
         return new String[0];
     }
 
-    @Override
     public ActionTarget text(String text, int i) {
         return new ActionTarget.TextActionTarget(text, i);
     }
 
-    @Override
     public ActionTarget bounds(int left, int top, int right, int bottom) {
         return new ActionTarget.BoundsActionTarget(new Rect(left, top, right, bottom));
     }
 
-    @Override
     public ActionTarget editable(int i) {
         return new ActionTarget.EditableActionTarget(i);
     }
@@ -108,32 +100,26 @@ public class DroidRuntime implements IDroidRuntime {
         return new ActionTarget.IdActionTarget(id);
     }
 
-    @Override
     public boolean click(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_CLICK));
     }
 
-    @Override
     public boolean longClick(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_LONG_CLICK));
     }
 
-    @Override
     public boolean scrollUp(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD));
     }
 
-    @Override
     public boolean scrollDown(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD));
     }
 
-    @Override
     public boolean scrollUp(int i) {
         return performAction(ActionFactory.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, i));
     }
 
-    @Override
     public boolean scrollDown(int i) {
         return performAction(ActionFactory.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, i));
     }
@@ -146,17 +132,14 @@ public class DroidRuntime implements IDroidRuntime {
         return performAction(ActionFactory.createScrollMaxAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD));
     }
 
-    @Override
     public boolean focus(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_FOCUS));
     }
 
-    @Override
     public boolean select(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SELECT));
     }
 
-    @Override
     public boolean setText(ActionTarget target, String text) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SET_TEXT, text));
     }
@@ -170,7 +153,6 @@ public class DroidRuntime implements IDroidRuntime {
         });
     }
 
-    @Override
     public boolean paste(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_PASTE));
     }
@@ -230,7 +212,6 @@ public class DroidRuntime implements IDroidRuntime {
         return performAction(new GetTextAction());
     }
 
-    @Override
     public void toast(final String text) {
         mUIHandler.post(new Runnable() {
             @Override
@@ -240,7 +221,6 @@ public class DroidRuntime implements IDroidRuntime {
         });
     }
 
-    @Override
     public void sleep(long millis) {
         try {
             Thread.sleep(millis);
@@ -275,12 +255,10 @@ public class DroidRuntime implements IDroidRuntime {
         return ActionPerformAccessibilityDelegate.getLatestActivity();
     }
 
-    @Override
     public boolean isStopped() {
         return Thread.currentThread().isInterrupted();
     }
 
-    @Override
     public void stop() {
         Thread.interrupted();
     }
@@ -289,7 +267,6 @@ public class DroidRuntime implements IDroidRuntime {
         return FileUtils.readString(new File(Environment.getExternalStorageDirectory() + "/" + path));
     }
 
-    @Override
     public ThemeColorMaterialDialogBuilder dialog() {
         if (App.currentActivity() == null) {
             Toast.makeText(App.getApp(), R.string.text_cannot_create_dialog_when_app_invisible, Toast.LENGTH_SHORT).show();

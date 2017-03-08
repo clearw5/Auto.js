@@ -1,0 +1,49 @@
+package com.stardust.scriptdroid.record.inputevent;
+
+import android.support.annotation.NonNull;
+
+import java.text.DecimalFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
+/**
+ * Created by Stardust on 2017/3/7.
+ */
+
+public class InputEventToSendEventConverter extends InputEventConverter {
+
+    private static final DecimalFormat DELAY_FORMAT = new DecimalFormat("#.###");
+
+    private double mLastEventTime;
+    private StringBuilder mSendEventCommands = new StringBuilder();
+
+    @Override
+    public void addEvent(@NonNull Event event) {
+        if (mLastEventTime == 0) {
+            mLastEventTime = event.time;
+        } else if (event.time - mLastEventTime > 0.1) {
+            mSendEventCommands.append("sleep ").append(DELAY_FORMAT.format(event.time - mLastEventTime)).append("\n");
+            mLastEventTime = event.time;
+        }
+        mSendEventCommands.append("sendevent ")
+                .append(event.device).append(" ")
+                .append(hex2dec(event.type)).append(" ")
+                .append(hex2dec(event.code)).append(" ")
+                .append(hex2dec(event.value)).append("\n");
+
+    }
+
+    public String getCode() {
+        return mSendEventCommands.toString();
+    }
+
+    private static String hex2dec(String hex) {
+        try {
+            return String.valueOf((int) Long.parseLong(hex, 16));
+        } catch (NumberFormatException e) {
+            throw new EventFormatException(e);
+        }
+    }
+
+}

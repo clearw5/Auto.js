@@ -2,8 +2,8 @@ package com.stardust.scriptdroid.droid.script;
 
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.droid.Droid;
+import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.scriptdroid.droid.runtime.ScriptStopException;
-import com.stardust.scriptdroid.droid.runtime.api.IDroidRuntime;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
@@ -27,7 +27,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private final Set<Thread> mThreads = new HashSet<>();
 
-    public RhinoJavaScriptEngine(IDroidRuntime runtime) {
+    public RhinoJavaScriptEngine(DroidRuntime runtime) {
         set("droid", runtime);
     }
 

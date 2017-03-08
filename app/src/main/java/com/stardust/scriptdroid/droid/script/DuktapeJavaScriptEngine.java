@@ -1,19 +1,5 @@
 package com.stardust.scriptdroid.droid.script;
 
-import com.efurture.script.JSTransformer;
-import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.droid.Droid;
-import com.stardust.scriptdroid.droid.runtime.api.IDroidRuntime;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
 /**
  * Created by Stardust on 2017/1/27.
  */

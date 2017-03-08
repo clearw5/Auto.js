@@ -1,28 +1,9 @@
 package com.stardust.scriptdroid;
 
-import android.text.TextUtils;
-import android.util.Pair;
+import com.stardust.scriptdroid.record.inputevent.InputEventToJsConverter;
+import com.stardust.scriptdroid.record.inputevent.InputEventToSendEventConverter;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.stardust.scriptdroid.record.root.InputEventConverter;
-import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
-
-import org.json.JSONObject;
 import org.junit.Test;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.ImporterTopLevel;
-import org.mozilla.javascript.Scriptable;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -38,6 +19,8 @@ public class ExampleUnitTest {
 
     @Test
     public void test() {
-        System.out.println(new SingleEvent("[  109722.085815] /dev/input/event1: EV_SYN       SYN_REPORT           00000000"));
+        InputEventToJsConverter converter = new InputEventToJsConverter();
+        converter.parseAndAddEventIfFormatCorrect("[  140123.672100] /dev/input/event3: EV_ABS       ABS_MT_POSITION_X    0000005f");
+        System.out.println(converter.getCode());
     }
 }

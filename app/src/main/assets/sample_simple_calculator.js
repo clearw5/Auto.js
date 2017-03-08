@@ -2,7 +2,7 @@
 
 importClass("com.afollestad.materialdialogs.MaterialDialog");
 
-new ThemeColorMaterialDialogBuilder(activity)
+new MaterialDialog.Builder(activity)
     .title("简单计算器")
     .input("请输入算式", "1+1", function(dialog, input){
         eval("var ans = (" + input + ")");
