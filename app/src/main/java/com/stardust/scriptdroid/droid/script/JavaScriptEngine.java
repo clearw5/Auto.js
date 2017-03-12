@@ -33,8 +33,7 @@ public abstract class JavaScriptEngine {
             try {
                 return FileUtils.readString(App.getApp().getAssets().open("javasccript_engine_init.js"));
             } catch (IOException e) {
-                e.printStackTrace();
-                return "Error: Unable to read init script.";
+                throw new RuntimeException(e);
             }
         }
 

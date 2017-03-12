@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="40dp"
+              android:layout_height="40dp"
+              android:background="@android:color/transparent"
+              android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/circle"
+        android:padding="5dp"
+        android:src="@drawable/ic_android_eat_js"/>
+</LinearLayout>

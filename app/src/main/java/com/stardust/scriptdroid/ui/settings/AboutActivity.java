@@ -6,20 +6,19 @@ import android.content.ClipboardManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.scriptdroid.ui.BaseActivity;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.view.ViewBinding;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.tool.IntentTool;
-import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.view.ViewBinder;
-import com.stardust.view.ViewBinding;
 
 import moe.feng.alipay.zerosdk.AlipayZeroSdk;
 

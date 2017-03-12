@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.edit.EditActivity">
+    tools:context="com.stardust.scriptdroid.ui.edit.EditActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

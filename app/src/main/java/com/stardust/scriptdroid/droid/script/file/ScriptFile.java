@@ -2,9 +2,9 @@ package com.stardust.scriptdroid.droid.script.file;
 
 import android.os.Environment;
 
+import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.Droid;
 
 import java.io.File;
 

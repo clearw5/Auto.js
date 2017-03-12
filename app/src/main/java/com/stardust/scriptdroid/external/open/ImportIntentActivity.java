@@ -8,12 +8,12 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
+import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.scriptdroid.R;
 
 import java.io.File;
 

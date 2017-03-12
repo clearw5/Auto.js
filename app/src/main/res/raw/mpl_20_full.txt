@@ -39,7 +39,7 @@ means any of the following:
 
 any file in Source Code Form that results from an addition to, deletion from, or modification of the contents of Covered Software; or
 
-any new file in Source Code Form that contains any Covered Software.
+any new file in Source Code Form that regex any Covered Software.
 
 1.11. “Patent Claims” of a Contributor
 means any patent claim(s), including without limitation, method, process, and apparatus claims, in any patent Licensable by such Contributor that would be infringed, but for the grant of the License, by the making, using, selling, offering for sale, having made, import, or transfer of either its Contributions or its Contributor Version.
@@ -161,7 +161,7 @@ You may distribute the Covered Software under the terms of the version of the Li
 
 10.3. Modified Versions
 
-If you create software not governed by this License, and you want to create a new license for such software, you may create and use a modified version of this License if you rename the license and remove any references to the name of the license steward (except to note that such modified license differs from this License).
+If you create software not governed by this License, and you want to create a new license for such software, you may create and use a modified version of this License if you rename the license and remove any references to the key of the license steward (except to note that such modified license differs from this License).
 
 10.4. Distributing Source Code Form that is Incompatible With Secondary Licenses
 

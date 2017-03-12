@@ -9,8 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.jraska.console.Console;
 import com.stardust.scriptdroid.ui.BaseActivity;
+import com.jraska.console.Console;
 import com.stardust.scriptdroid.R;
 
 /**

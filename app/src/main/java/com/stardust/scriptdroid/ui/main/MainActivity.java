@@ -12,7 +12,6 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
@@ -29,37 +28,31 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FileChooserDialog;
 import com.stardust.app.NotRemindAgainDialog;
 import com.stardust.app.OnActivityResultDelegate;
-import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.Pref;
-import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
 import com.stardust.scriptdroid.external.notification.record.ActionRecordSwitchNotification;
-import com.stardust.scriptdroid.file.FileUtils;
 import com.stardust.scriptdroid.file.SampleFileManager;
 import com.stardust.scriptdroid.record.inputevent.InputEventRecorder;
-import com.stardust.scriptdroid.record.inputevent.InputEventToJsConverter;
 import com.stardust.scriptdroid.record.inputevent.InputEventToJsRecorder;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
-import com.stardust.scriptdroid.tool.BackPressedHandler;
 import com.stardust.scriptdroid.tool.ImageSelector;
-import com.stardust.scriptdroid.tool.Shell;
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
-import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
-import com.stardust.view.accessibility.AccessibilityServiceUtils;
 import com.stardust.widget.SlidingUpPanel;
+import com.stardust.scriptdroid.BuildConfig;
+import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.file.FileUtils;
+import com.stardust.scriptdroid.tool.BackPressedHandler;
+import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
+import com.stardust.view.ViewBinder;
+import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
 import java.io.File;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class MainActivity extends BaseActivity implements FileChooserDialog.FileCallback {
@@ -85,7 +78,6 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         checkPermissions();
         registerReceivers();
         handleIntent(getIntent());
-        //Shell.test(this);
     }
 
     private void registerReceivers() {

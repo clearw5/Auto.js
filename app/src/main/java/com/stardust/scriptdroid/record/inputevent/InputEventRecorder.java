@@ -1,20 +1,12 @@
 package com.stardust.scriptdroid.record.inputevent;
 
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
-import android.util.Pair;
 
 import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.tool.Shell;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import jackpal.androidterm.ShellTermSession;
 import jackpal.androidterm.emulatorview.TermSession;

@@ -52,9 +52,7 @@ var longClick = function(a, b, c, d){
     }, arguments);
 }
 
-var clickId = function(id){
-    return droid.click(droid.id(id));
-}
+
 
 var scrollUp = function(a, b, c, d){
     if(arguments.length == 0)
@@ -220,6 +218,34 @@ var Camera = function(){
 
 var Text = function(text){
      return shell("input text " + text, true).code == 1;
+}
+
+
+var __selector__ = droid.selector();
+var __obj__ = new java.lang.Object();
+
+for(var x in __selector__){
+    if(!__obj__[x] && !this[x]){
+        this[x] = (function(method) {
+            return function(){
+                var s = droid.selector();
+                if(arguments.length == 0){
+                   return s[method]();
+                }else if(arguments.length == 1){
+                   return s[method](arguments[0]);
+                }else if(arguments.length == 2){
+                   return s[method](arguments[0], arguments[1]);
+                }else{
+                   return s[method].call(s, Array.prototype.slice.call(arguments));
+                }
+            };
+        })(x);
+    }
+
+}
+
+var $ = function(){
+    return droid.selector();
 }
 
 __importClassOld__(com.stardust.scriptdroid.droid.runtime.Shell);

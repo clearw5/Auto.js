@@ -1,27 +1,17 @@
 package com.stardust.scriptdroid.tool;
 
 import android.app.Activity;
-import android.content.res.AssetFileDescriptor;
-import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.stardust.scriptdroid.App;
-import com.stericson.RootShell.RootShell;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 import jackpal.androidterm.ShellTermSession;
-import jackpal.androidterm.Term;
-import jackpal.androidterm.emulatorview.TermSession;
 import jackpal.androidterm.util.TermSettings;
 
 /**

@@ -8,9 +8,9 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.external.notification.record.ActionRecordSwitchHandleService;
 import com.stardust.scriptdroid.record.AccessibilityRecorderDelegate;
+import com.stardust.scriptdroid.Pref;
 
 import java.lang.ref.WeakReference;
 

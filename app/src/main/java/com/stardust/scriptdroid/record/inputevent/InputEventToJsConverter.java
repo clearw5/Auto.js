@@ -2,7 +2,6 @@ package com.stardust.scriptdroid.record.inputevent;
 
 import android.support.annotation.NonNull;
 
-import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.util.MapEntries;
 
 import java.util.HashMap;

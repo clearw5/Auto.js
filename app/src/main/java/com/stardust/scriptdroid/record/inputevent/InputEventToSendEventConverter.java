@@ -3,8 +3,6 @@ package com.stardust.scriptdroid.record.inputevent;
 import android.support.annotation.NonNull;
 
 import java.text.DecimalFormat;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**

@@ -7,12 +7,11 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.scriptdroid.droid.runtime.action.FilterAction;
+import com.stardust.scriptdroid.layout_inspector.NodeInfo;
 import com.stardust.util.SparseArrayEntries;
+import com.stardust.view.accessibility.AccessibilityNodeInfoHelper;
 
 import java.util.List;
-
-import static com.stardust.scriptdroid.bounds_assist.BoundsAssistant.boundsToString;
-import static com.stardust.scriptdroid.bounds_assist.BoundsAssistant.getBoundsInScreen;
 
 
 /**
@@ -69,7 +68,7 @@ public class ActionRecorder {
             AccessibilityNodeInfo source = event.getSource();
             if (source == null)
                 return;
-            String bounds = boundsToString(getBoundsInScreen(source));
+            String bounds = NodeInfo.boundsToString(AccessibilityNodeInfoHelper.getBoundsInScreen(source));
             source.recycle();
             onAccessibilityEvent(event, bounds, sb);
         }
@@ -130,7 +129,7 @@ public class ActionRecorder {
         private static int findInEditableList(List<AccessibilityNodeInfo> editableList, AccessibilityNodeInfo editable) {
             int i = 0;
             for (AccessibilityNodeInfo nodeInfo : editableList) {
-                if (getBoundsInScreen(nodeInfo).equals(getBoundsInScreen(editable))) {
+                if (AccessibilityNodeInfoHelper.getBoundsInScreen(nodeInfo).equals(AccessibilityNodeInfoHelper.getBoundsInScreen(editable))) {
                     return i;
                 }
                 i++;

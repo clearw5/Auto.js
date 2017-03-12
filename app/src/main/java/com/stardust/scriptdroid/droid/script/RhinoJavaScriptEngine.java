@@ -1,7 +1,7 @@
 package com.stardust.scriptdroid.droid.script;
 
-import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.droid.Droid;
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.scriptdroid.droid.runtime.ScriptStopException;
 
@@ -58,10 +58,10 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     private void init(Context context, Scriptable scope) {
         ScriptableObject.putProperty(scope, "context", App.getApp());
         ScriptableObject.putProperty(scope, "__engine__", "rhino");
-        context.evaluateString(scope, Init.getInitScript(), "<init>", 1, null);
         for (Map.Entry<String, Object> variable : mVariableMap.entrySet()) {
             ScriptableObject.putProperty(scope, variable.getKey(), variable.getValue());
         }
+        context.evaluateString(scope, Init.getInitScript(), "<init>", 1, null);
         mThreads.add(Thread.currentThread());
 
     }

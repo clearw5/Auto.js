@@ -10,15 +10,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
-import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.file.SampleFileManager;
 import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.error.IssueReportActivity;
+import com.stardust.util.MapEntries;
+import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.theme.app.ColorSelectActivity;
 import com.stardust.theme.util.ListBuilder;
-import com.stardust.util.MapEntries;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +26,6 @@ import java.util.Map;
 import de.psdev.licensesdialog.LicenseResolver;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.License;
-import de.psdev.licensesdialog.licenses.MozillaPublicLicense11;
 
 /**
  * Created by Stardust on 2017/2/2.

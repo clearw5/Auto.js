@@ -1,0 +1,51 @@
+package com.stardust.scriptdroid.accessibility;
+
+import android.accessibilityservice.AccessibilityService;
+import android.content.ComponentName;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.view.accessibility.AccessibilityEvent;
+
+import com.stardust.scriptdroid.App;
+import com.stardust.view.accessibility.AccessibilityDelegate;
+
+/**
+ * Created by Stardust on 2017/3/9.
+ */
+
+public class AccessibilityInfoProvider implements AccessibilityDelegate {
+
+    public static AccessibilityInfoProvider instance = new AccessibilityInfoProvider();
+
+    private String mLatestPackage = "";
+    private String mLatestActivity = "";
+
+    public synchronized String getLatestPackage() {
+        return mLatestPackage;
+    }
+
+    public synchronized String getLatestActivity() {
+        return mLatestActivity;
+    }
+
+    @Override
+    public boolean onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event) {
+        setLatestComponent(event.getPackageName(), event.getClassName());
+        return false;
+    }
+
+    private synchronized void setLatestComponent(CharSequence latestPackage, CharSequence latestClass) {
+        if (latestPackage == null)
+            return;
+        mLatestPackage = latestPackage.toString();
+        if (latestClass == null)
+            return;
+        try {
+            ComponentName componentName = new ComponentName(latestPackage.toString(), latestClass.toString());
+            ActivityInfo activityInfo = App.getApp().getPackageManager().getActivityInfo(componentName, 0);
+            mLatestActivity = activityInfo.name;
+        } catch (PackageManager.NameNotFoundException ignored) {
+
+        }
+    }
+}

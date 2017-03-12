@@ -9,7 +9,6 @@ import com.stardust.util.SparseArrayEntries;
  * Created by Stardust on 2017/1/27.
  */
 
-@FunctionalInterface
 public interface Able {
 
     SparseArray<Able> ABLE_MAP = new SparseArrayEntries<Able>()

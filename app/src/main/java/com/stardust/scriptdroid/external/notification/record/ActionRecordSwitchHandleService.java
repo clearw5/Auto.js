@@ -8,9 +8,9 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.stardust.scriptdroid.record.AccessibilityRecorderDelegate;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.record.AccessibilityRecorderDelegate;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.service.VolumeChangeListenService;
 import com.stardust.scriptdroid.ui.main.MainActivity;

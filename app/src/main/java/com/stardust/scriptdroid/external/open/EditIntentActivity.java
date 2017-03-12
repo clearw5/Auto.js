@@ -7,8 +7,8 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
+import com.stardust.scriptdroid.R;
 
 /**
  * Created by Stardust on 2017/2/2.

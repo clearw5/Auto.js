@@ -3,7 +3,7 @@ package com.stardust.scriptdroid.record;
 import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.stardust.scriptdroid.service.AccessibilityDelegate;
+import com.stardust.view.accessibility.AccessibilityDelegate;
 
 import static com.stardust.scriptdroid.external.notification.record.ActionRecordSwitchView.PAUSED;
 import static com.stardust.scriptdroid.external.notification.record.ActionRecordSwitchView.RECORDING;

@@ -1,7 +1,6 @@
 package com.stardust.scriptdroid;
 
 import com.stardust.scriptdroid.record.inputevent.InputEventToJsConverter;
-import com.stardust.scriptdroid.record.inputevent.InputEventToSendEventConverter;
 
 import org.junit.Test;
 

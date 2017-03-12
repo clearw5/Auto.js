@@ -1,6 +1,5 @@
 package com.stardust.app;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.util.SparseArray;
 

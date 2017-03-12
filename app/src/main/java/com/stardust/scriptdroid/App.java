@@ -2,26 +2,36 @@ package com.stardust.scriptdroid;
 
 import android.app.Activity;
 import android.app.Application;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextPaint;
+import android.util.Log;
 
-import com.squareup.leakcanary.LeakCanary;
-import com.stardust.scriptdroid.bounds_assist.BoundsAssistant;
-import com.stardust.scriptdroid.droid.runtime.action.ActionPerformAccessibilityDelegate;
+import com.stardust.automator.AccessibilityEventCommandHost;
+import com.stardust.scriptdroid.accessibility.AccessibilityInfoProvider;
+import com.stardust.scriptdroid.layout_inspector.LayoutInspector;
 import com.stardust.scriptdroid.record.AccessibilityRecorderDelegate;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.squareup.leakcanary.LeakCanary;
+import com.stardust.scriptdroid.droid.runtime.action.ActionPerformAccessibilityDelegate;
+import com.stardust.scriptdroid.tool.ViewTool;
 import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.CrashHandler;
 import com.stardust.util.StateObserver;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * Created by Stardust on 2017/1/27.
  */
 
 public class App extends Application {
+
+    private static final String TAG = "App";
 
     private static WeakReference<App> instance;
     private static StateObserver stateObserver;
@@ -49,14 +59,15 @@ public class App extends Application {
         stateObserver = new StateObserver(PreferenceManager.getDefaultSharedPreferences(this));
         registerActivityLifecycleCallback();
         initAccessibilityServiceDelegates();
-
     }
 
 
     private void initAccessibilityServiceDelegates() {
         AccessibilityWatchDogService.addDelegateIfNeeded(100, ActionPerformAccessibilityDelegate.class);
         AccessibilityWatchDogService.addDelegateIfNeeded(200, AccessibilityRecorderDelegate.getInstance());
-        AccessibilityWatchDogService.addDelegateIfNeeded(300, BoundsAssistant.class);
+        AccessibilityWatchDogService.addDelegateIfNeeded(300, AccessibilityEventCommandHost.instance);
+        AccessibilityWatchDogService.addDelegateIfNeeded(400, AccessibilityInfoProvider.instance);
+        AccessibilityWatchDogService.addDelegateIfNeeded(500, LayoutInspector.getInstance());
 
     }
 
@@ -83,6 +94,10 @@ public class App extends Application {
 
     public static Activity currentActivity() {
         return currentActivity.get();
+    }
+
+    public static String getResString(int id) {
+        return getApp().getString(id);
     }
 
 

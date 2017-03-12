@@ -5,7 +5,9 @@ import android.os.Build;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
+import com.stardust.view.accessibility.AccessibilityDelegate;
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
 import java.lang.ref.WeakReference;
@@ -79,6 +81,7 @@ public class AccessibilityWatchDogService extends AccessibilityService {
         Log.v(TAG, "onAccessibilityEvent: " + event);
         synchronized (mDelegates) {
             for (Map.Entry<Integer, AccessibilityDelegate> entry : mDelegates.entrySet()) {
+                Log.v(TAG, "delegate: " + entry.getValue().getClass().getName());
                 if (entry.getValue().onAccessibilityEvent(this, event))
                     break;
             }
@@ -101,7 +104,7 @@ public class AccessibilityWatchDogService extends AccessibilityService {
         if (instance != null && instance.get() != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             instance.get().disableSelf();
         } else {
-            AccessibilityServiceUtils.goToAccessibilitySetting(App.getApp());
+            AccessibilityServiceTool.goToAccessibilitySetting();
         }
     }
 

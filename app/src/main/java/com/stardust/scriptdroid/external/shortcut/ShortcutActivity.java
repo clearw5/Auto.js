@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.Droid;
+import com.stardust.scriptdroid.R;
 
 import java.io.File;
 import java.util.LinkedList;

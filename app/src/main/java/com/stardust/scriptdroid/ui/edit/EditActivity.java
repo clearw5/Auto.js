@@ -15,6 +15,15 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.scriptdroid.Pref;
+import com.stardust.scriptdroid.droid.Droid;
+import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
+import com.stardust.scriptdroid.ui.edit.sidemenu.EditSideMenuFragment;
+import com.stardust.scriptdroid.ui.edit.sidemenu.FunctionListRecyclerView;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.util.SparseArrayEntries;
+import com.stardust.view.ViewBinding;
+import com.stardust.widget.ToolbarMenuItem;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.common.SaveListener;
 import com.jecelyin.editor.v2.core.widget.TextView;
@@ -22,20 +31,10 @@ import com.jecelyin.editor.v2.ui.EditorDelegate;
 import com.jecelyin.editor.v2.view.EditorView;
 import com.jecelyin.editor.v2.view.menu.MenuDef;
 import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhanceBar;
-import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
-import com.stardust.scriptdroid.ui.edit.sidemenu.AssistClipListRecyclerView;
-import com.stardust.scriptdroid.ui.edit.sidemenu.EditSideMenuFragment;
-import com.stardust.scriptdroid.ui.edit.sidemenu.FunctionListRecyclerView;
 import com.stardust.theme.ThemeColorManager;
-import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
-import com.stardust.util.SparseArrayEntries;
 import com.stardust.view.ViewBinder;
-import com.stardust.view.ViewBinding;
-import com.stardust.widget.ToolbarMenuItem;
 
 import java.io.File;
 
@@ -154,15 +153,7 @@ public class EditActivity extends Editor920Activity {
                         insertText(function.name);
                         mDrawerLayout.closeDrawer(GravityCompat.END);
                     }
-                })
-                .setOnClipClickListener(new AssistClipListRecyclerView.OnClipClickListener() {
-                    @Override
-                    public void onClick(String clip, int position) {
-                        insertText(clip);
-                        mDrawerLayout.closeDrawer(GravityCompat.END);
-                    }
                 });
-
     }
 
     private void setUpEditor() {

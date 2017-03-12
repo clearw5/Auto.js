@@ -7,8 +7,8 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.shortcut.ShortcutActivity;
+import com.stardust.scriptdroid.R;
 
 /**
  * Created by Stardust on 2017/2/22.

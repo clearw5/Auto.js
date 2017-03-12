@@ -50,7 +50,7 @@
     <string name="text_email">邮箱</string>
     <string name="my_github">https://github.com/hyb1996/NoRootScriptDroid</string>
     <string name="share_app">[免Root脚本精灵]下载地址：http://www.coolapk.com/apk/com.stardust.scriptdroid </string>
-    <string name="text_assist_service">点击区域辅助服务</string>
+    <string name="text_floating_window">悬浮窗</string>
     <string name="text_assist_service_notification">通知栏点击区域辅助开关</string>
     <string name="text_others">其他</string>
     <string name="text_assist_mode_enabled">点击区域辅助服务已开启(点击关闭)</string>
@@ -137,4 +137,9 @@
     <string name="text_help">帮助</string>
     <string name="text_root_script_record">录制脚本(root)</string>
     <string name="hint_start_root_record">使用音量上键，音量下键结束录制</string>
+    <string name="text_no_floating_window_permission">没有悬浮窗权限</string>
+    <string name="text_node_info">节点信息</string>
+    <string name="text_layout_hierarchy">布局层次分析</string>
+    <string name="text_layout_bounds">布局范围查看</string>
+    <string name="text_no_accessibility_permission_to_capture">无障碍服务未启动</string>
 </resources>

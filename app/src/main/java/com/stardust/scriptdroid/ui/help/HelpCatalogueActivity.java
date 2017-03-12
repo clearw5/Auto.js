@@ -12,12 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.ui.BaseActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.file.FileUtils;
-import com.stardust.scriptdroid.ui.BaseActivity;
 
 import org.json.JSONObject;
 

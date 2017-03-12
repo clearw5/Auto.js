@@ -16,7 +16,7 @@
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            app:theme="@style/AppTheme.AppBarOverlay">
 
             <com.stardust.theme.widget.ThemeColorToolbar
                 android:id="@+id/toolbar"

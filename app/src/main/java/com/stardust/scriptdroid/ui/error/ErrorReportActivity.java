@@ -14,8 +14,8 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.R;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.scriptdroid.R;
 
 import java.util.Timer;
 import java.util.TimerTask;

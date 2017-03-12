@@ -10,7 +10,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
-import com.stardust.scriptdroid.service.AccessibilityDelegate;
+import com.stardust.view.accessibility.AccessibilityDelegate;
 
 
 /**
@@ -50,6 +50,7 @@ public class ActionPerformAccessibilityDelegate implements AccessibilityDelegate
             AccessibilityNodeInfo root = service.getRootInActiveWindow();
             if (root == null) {
                 Log.v(TAG, "root = null");
+                return false;
             }
             Log.i(TAG, "perform action:" + action);
             if (action.perform(root)) {

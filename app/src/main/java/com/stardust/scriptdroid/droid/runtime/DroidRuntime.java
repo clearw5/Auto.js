@@ -16,21 +16,21 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.automator.AccessibilityEventCommandHost;
+import com.stardust.scriptdroid.Pref;
+import com.stardust.scriptdroid.droid.runtime.action.ActionTarget;
+import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
+import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.jraska.console.Console;
 import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.runtime.action.Action;
 import com.stardust.scriptdroid.droid.runtime.action.ActionFactory;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformAccessibilityDelegate;
-import com.stardust.scriptdroid.droid.runtime.action.ActionTarget;
-import com.stardust.scriptdroid.droid.runtime.action.GetTextAction;
 import com.stardust.scriptdroid.file.FileUtils;
-import com.stardust.scriptdroid.service.AccessibilityDelegate;
-import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.Shell;
 import com.stardust.scriptdroid.ui.console.ConsoleActivity;
-import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
 import java.io.File;
@@ -194,7 +194,7 @@ public class DroidRuntime {
                 errorMessage = App.getApp().getString(R.string.text_auto_operate_service_enabled_but_not_running);
             } else {
                 if (Pref.def().getBoolean(App.getApp().getString(R.string.key_enable_accessibility_service_by_root), false)) {
-                    if (!AccessibilityServiceUtils.enableAccessibilityServiceByRootAndWaitFor(App.getApp(), AccessibilityWatchDogService.class, 3000)) {
+                    if (!AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(AccessibilityWatchDogService.class, 3000)) {
                         errorMessage = App.getApp().getString(R.string.text_enable_accessibility_service_by_root_timeout);
                     }
                 } else {
@@ -206,10 +206,6 @@ public class DroidRuntime {
                 throw new ScriptStopException(errorMessage);
             }
         }
-    }
-
-    public List<String> getTexts() {
-        return performAction(new GetTextAction());
     }
 
     public void toast(final String text) {
@@ -229,16 +225,10 @@ public class DroidRuntime {
         }
     }
 
-    public void addAccessibilityDelegate(final Object delegate) {
+    public void addAccessibilityEventListener(final Object delegate) {
         if (delegate == null)
             return;
-        AccessibilityWatchDogService.addDelegate(new AccessibilityDelegate() {
-            @Override
-            public boolean onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event) {
 
-                return false;
-            }
-        }, 500);
     }
 
     public Shell.CommandResult shell(String cmd, int root) {
@@ -253,6 +243,10 @@ public class DroidRuntime {
     public String getActivityName() {
         ensureAccessibilityServiceEnable();
         return ActionPerformAccessibilityDelegate.getLatestActivity();
+    }
+
+    public UiSelector selector() {
+        return new UiSelector();
     }
 
     public boolean isStopped() {

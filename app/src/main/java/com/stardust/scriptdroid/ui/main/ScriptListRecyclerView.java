@@ -3,6 +3,7 @@ package com.stardust.scriptdroid.ui.main;
 import android.content.Context;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,17 +15,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
+import com.stardust.scriptdroid.tool.ViewTool;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperationPopupMenu;
 import com.stardust.scriptdroid.tool.ClassTool;
-import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
-import static com.stardust.scriptdroid.tool.ViewTool.$;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
-import static com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Stardust on 2017/1/23.
@@ -38,16 +42,15 @@ public class ScriptListRecyclerView extends ThemeColorRecyclerView {
         @Override
         public void onClick(View v) {
             int position = getChildViewHolder(v).getAdapterPosition();
-            new ScriptFileOperation.Run().operate(ScriptListRecyclerView.this, mScriptFileList, position);
+            onItemClicked(v, position);
         }
     };
-
 
     private final OnClickListener mOnEditIconClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             int position = getChildViewHolder((View) v.getParent()).getAdapterPosition();
-            new ScriptFileOperation.Edit().operate(ScriptListRecyclerView.this, mScriptFileList, position);
+            onEditIconClick(v, position);
         }
     };
 
@@ -55,7 +58,6 @@ public class ScriptListRecyclerView extends ThemeColorRecyclerView {
         @Override
         public void onClick(View v) {
             mOperateFileIndex = getChildViewHolder((View) v.getParent()).getAdapterPosition();
-            //showOperationDialog(position);
             showOrDismissOperationPopupMenu(v);
         }
 
@@ -93,29 +95,38 @@ public class ScriptListRecyclerView extends ThemeColorRecyclerView {
     }
 
     private void initScriptFileOperationPopupMenu() {
-        mScriptFileOperationPopupMenu = new ScriptFileOperationPopupMenu(getContext());
+        mScriptFileOperationPopupMenu = new ScriptFileOperationPopupMenu(getContext(), getScriptFileOperations());
         mScriptFileOperationPopupMenu.setOnItemClickListener(new ScriptFileOperationPopupMenu.OnItemClickListener() {
             @Override
-            public void onClick(View view, int position) {
-                ScriptFileOperation.getOperation(position).operate(ScriptListRecyclerView.this, mScriptFileList, mOperateFileIndex);
+            public void onClick(View view, int position, ScriptFileOperation operation) {
+                operation.operate(ScriptListRecyclerView.this, mScriptFileList, mOperateFileIndex);
                 mScriptFileOperationPopupMenu.dismiss();
             }
         });
     }
 
+    protected List<ScriptFileOperation> getScriptFileOperations() {
+        List<ScriptFileOperation> scriptFileOperations = new ArrayList<>();
+        scriptFileOperations.add(new ScriptFileOperation.Run());
+        scriptFileOperations.add(new ScriptFileOperation.Rename());
+        scriptFileOperations.add(new ScriptFileOperation.OpenByOtherApp());
+        scriptFileOperations.add(new ScriptFileOperation.CreateShortcut());
+        scriptFileOperations.add(new ScriptFileOperation.Remove());
+        scriptFileOperations.add(new ScriptFileOperation.Delete());
+        return scriptFileOperations;
+    }
+
+    protected void onItemClicked(View v, int position) {
+        new ScriptFileOperation.Run().operate(ScriptListRecyclerView.this, mScriptFileList, position);
+    }
+
+    protected void onEditIconClick(View v, int position) {
+        new ScriptFileOperation.Edit().operate(ScriptListRecyclerView.this, mScriptFileList, position);
+    }
+
     public void setScriptFileList(ScriptFileList scriptFileList) {
         mScriptFileList = scriptFileList;
         getAdapter().notifyDataSetChanged();
-    }
-
-    private void showOperationDialog(final int position) {
-        new ThemeColorMaterialDialogBuilder(getContext()).items(ScriptFileOperation.getOperationNames())
-                .itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog dialog, View itemView, int operation, CharSequence text) {
-                        ScriptFileOperation.getOperation(operation).operate(ScriptListRecyclerView.this, mScriptFileList, position);
-                    }
-                }).show();
     }
 
     private void showOrDismissOperationPopupMenu(View v) {
@@ -124,6 +135,23 @@ public class ScriptListRecyclerView extends ThemeColorRecyclerView {
         } else {
             mScriptFileOperationPopupMenu.show(v);
         }
+    }
+
+    @Subscribe
+    public void showMessage(ScriptFileOperation.ShowMessageEvent event) {
+        Snackbar.make(this, event.messageResId, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        EventBus.getDefault().unregister(this);
     }
 
     private class Adapter extends RecyclerView.Adapter<ViewHolder> {
@@ -164,18 +192,10 @@ public class ScriptListRecyclerView extends ThemeColorRecyclerView {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.name);
             path = (TextView) itemView.findViewById(R.id.path);
-            $(itemView, R.id.edit).setOnClickListener(mOnEditIconClickListener);
-            $(itemView, R.id.more).setOnClickListener(mOnMoreIconClickListener);
+            ViewTool.$(itemView, R.id.edit).setOnClickListener(mOnEditIconClickListener);
+            ViewTool.$(itemView, R.id.more).setOnClickListener(mOnMoreIconClickListener);
             itemView.setOnClickListener(mOnItemClickListener);
         }
-    }
-
-    static {
-        loadScriptFileOperations();
-    }
-
-    private static void loadScriptFileOperations() {
-        ClassTool.loadClasses(Run.class, Rename.class, OpenByOtherApp.class, CreateShortcut.class, Remove.class, Delete.class);
     }
 
 }

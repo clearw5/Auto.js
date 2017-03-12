@@ -3,13 +3,11 @@ package com.stardust.scriptdroid.ui.help;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.stardust.scriptdroid.ui.BaseActivity;
+import com.stardust.widget.CommonMarkdownView;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.file.FileUtils;
-import com.stardust.widget.CommonMarkdownView;
 
 import java.io.IOException;
 

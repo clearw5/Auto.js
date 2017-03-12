@@ -5,17 +5,20 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.ui.edit.EditActivity;
-import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.external.shortcut.ShortcutActivity;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.external.shortcut.Shortcut;
+import com.stardust.scriptdroid.external.shortcut.ShortcutActivity;
+import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.scriptdroid.ui.main.ScriptListRecyclerView;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.R;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,27 +29,23 @@ import java.util.List;
 
 public abstract class ScriptFileOperation {
 
-    private static List<String> operationNames = new ArrayList<>();
-    private static List<ScriptFileOperation> operations = new ArrayList<>();
+    public static class ShowMessageEvent {
+        public int messageResId;
 
-    public static ScriptFileOperation getOperation(int index) {
-        return operations.get(index);
+        public ShowMessageEvent(int message) {
+            this.messageResId = message;
+        }
     }
 
-    public static List<String> getOperationNames() {
-        return operationNames;
-    }
-
-    public abstract void operate(ScriptListRecyclerView recyclerView, ScriptFileList scriptFileList, int position);
-
-    private static void addOperation(String name, int iconResId, ScriptFileOperation operation) {
-        operation.mName = name;
-        operation.mIconResId = iconResId;
-        operationNames.add(name);
-        operations.add(operation);
-    }
+    public abstract void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position);
 
     private String mName;
+
+    public ScriptFileOperation(String name, int iconResId) {
+        mName = name;
+        mIconResId = iconResId;
+    }
+
     private int mIconResId;
 
     public String getName() {
@@ -59,13 +58,13 @@ public abstract class ScriptFileOperation {
 
     public static class Run extends ScriptFileOperation {
 
-        static {
-            addOperation(App.getApp().getString(R.string.text_run), R.drawable.ic_play_green, new Run());
+        public Run() {
+            super(App.getApp().getString(R.string.text_run), R.drawable.ic_play_green);
         }
 
         @Override
-        public void operate(ScriptListRecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
-            Snackbar.make(recyclerView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
+        public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
+            EventBus.getDefault().post(new ShowMessageEvent(R.string.text_start_running));
             ScriptFile scriptFile = scriptFileList.get(position);
             scriptFile.run();
         }
@@ -73,12 +72,12 @@ public abstract class ScriptFileOperation {
 
     public static class Edit extends ScriptFileOperation {
 
-        static {
-            //addOperation(App.getApp().getString(R.string.text_edit)", R.drawable.ic_edit_green_48dp, new Edit());
+        public Edit() {
+            super(App.getApp().getString(R.string.text_edit), R.drawable.ic_edit_green_48dp);
         }
 
         @Override
-        public void operate(ScriptListRecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
+        public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
             Context context = recyclerView.getContext();
             ScriptFile scriptFile = scriptFileList.get(position);
             EditActivity.editFile(context, scriptFile.name, scriptFile.path);
@@ -87,12 +86,12 @@ public abstract class ScriptFileOperation {
 
     public static class OpenByOtherApp extends ScriptFileOperation {
 
-        static {
-            addOperation(App.getApp().getString(R.string.text_open_by_other_apps), R.drawable.ic_open_in_new_green_48dp, new OpenByOtherApp());
+        public OpenByOtherApp() {
+            super(App.getApp().getString(R.string.text_open_by_other_apps), R.drawable.ic_open_in_new_green_48dp);
         }
 
         @Override
-        public void operate(ScriptListRecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
+        public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
             Context context = recyclerView.getContext();
             ScriptFile scriptFile = scriptFileList.get(position);
             Uri uri = Uri.parse("file://" + scriptFile.path);
@@ -102,12 +101,12 @@ public abstract class ScriptFileOperation {
 
     public static class Rename extends ScriptFileOperation {
 
-        static {
-            addOperation(App.getApp().getString(R.string.text_rename), R.drawable.ic_rename_green, new Rename());
+        public Rename() {
+            super(App.getApp().getString(R.string.text_rename), R.drawable.ic_rename_green);
         }
 
         @Override
-        public void operate(final ScriptListRecyclerView recyclerView, final ScriptFileList scriptFileList, final int position) {
+        public void operate(final RecyclerView recyclerView, final ScriptFileList scriptFileList, final int position) {
             String oldName = scriptFileList.get(position).name;
             new ThemeColorMaterialDialogBuilder(recyclerView.getContext())
                     .title(R.string.text_rename)
@@ -125,13 +124,12 @@ public abstract class ScriptFileOperation {
 
     public static class CreateShortcut extends ScriptFileOperation {
 
-        static {
-            addOperation(App.getApp().getString(R.string.text_send_shortcut), R.drawable.ic_shortcut_green, new CreateShortcut());
+        public CreateShortcut() {
+            super(App.getApp().getString(R.string.text_send_shortcut), R.drawable.ic_shortcut_green);
         }
 
-
         @Override
-        public void operate(ScriptListRecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
+        public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
             Context context = recyclerView.getContext();
             ScriptFile scriptFile = scriptFileList.get(position);
             new Shortcut(context).name(scriptFile.name)
@@ -139,18 +137,18 @@ public abstract class ScriptFileOperation {
                     .icon(R.drawable.ic_robot_green)
                     .extras(new Intent().putExtra("path", scriptFile.path))
                     .send();
-            Snackbar.make(recyclerView, R.string.text_already_create, Snackbar.LENGTH_SHORT).show();
+            EventBus.getDefault().post(R.string.text_already_create);
         }
     }
 
     public static class Remove extends ScriptFileOperation {
 
-        static {
-            addOperation(App.getApp().getString(R.string.text_delete), R.drawable.ic_delete_green_48dp, new Remove());
+        public Remove() {
+            super(App.getApp().getString(R.string.text_delete), R.drawable.ic_delete_green_48dp);
         }
 
         @Override
-        public void operate(ScriptListRecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
+        public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
             scriptFileList.remove(position);
             recyclerView.getAdapter().notifyItemRemoved(position);
         }
@@ -158,14 +156,14 @@ public abstract class ScriptFileOperation {
 
     public static class Delete extends ScriptFileOperation {
 
-        static {
-            addOperation(App.getApp().getString(R.string.text_delete_absolutly), R.drawable.ic_delete_forever_green_48dp, new Delete());
+        public Delete() {
+            super(App.getApp().getString(R.string.text_delete_absolutly), R.drawable.ic_delete_forever_green_48dp);
         }
 
         @Override
-        public void operate(ScriptListRecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
+        public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
             boolean succeed = scriptFileList.deleteFromFileSystem(position);
-            Snackbar.make(recyclerView, succeed ? R.string.text_already_delete : R.string.text_delete_failed, Snackbar.LENGTH_SHORT).show();
+            EventBus.getDefault().post(new ShowMessageEvent(succeed ? R.string.text_already_delete : R.string.text_delete_failed));
             recyclerView.getAdapter().notifyItemRemoved(position);
         }
     }

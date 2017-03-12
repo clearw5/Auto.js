@@ -6,16 +6,17 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
     <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <application
         xmlns:tools="http://schemas.android.com/tools"
         android:name=".App"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@drawable/ic_android_eat_js"
         android:label="@string/_app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:label">
+        tools:replace="android:label, android:icon, android:allowBackup">
         <activity
             android:name=".ui.main.MainActivity"
             android:label="@string/_app_name"
@@ -53,17 +54,6 @@
 
         </service>
 
-        <service
-            android:name=".external.tile.BoundsAssistEnableTileService"
-            android:icon="@drawable/ic_robot_head"
-            android:label="脚本辅助"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
-            <intent-filter>
-                <action
-                    android:name="android.service.quicksettings.action.QS_TILE"/>
-            </intent-filter>
-        </service>
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.stardust.scriptdroid.fileprovider"
@@ -89,6 +79,9 @@
         <service android:name=".external.notification.bounds_assist.BoundsAssistSwitchNotificationHandleService"/>
         <service android:name=".external.notification.record.ActionRecordSwitchHandleService"/>
         <service android:name=".service.VolumeChangeListenService"/>
+        <service android:name="com.stardust.view.Floaty$FloatHeadService"/>
+        <service android:name="com.stardust.view.ResizableFloaty$FloatingWindowService"/>
+        <service android:name="com.stardust.scriptdroid.external.floating_window.HoverMenuService"/>
 
         <activity
             android:name=".external.open.EditIntentActivity"

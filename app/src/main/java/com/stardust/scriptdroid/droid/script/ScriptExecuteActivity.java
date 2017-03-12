@@ -8,8 +8,6 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.droid.RunningConfig;
 
-import static com.stardust.scriptdroid.droid.Droid.JAVA_SCRIPT_ENGINE;
-
 /**
  * Created by Stardust on 2017/2/5.
  */
@@ -43,9 +41,9 @@ public class ScriptExecuteActivity extends Activity {
     }
 
     private void runScript() {
-        JAVA_SCRIPT_ENGINE.set("activity", this);
+        Droid.JAVA_SCRIPT_ENGINE.set("activity", this);
         try {
-            mResult = JAVA_SCRIPT_ENGINE.execute(mScript);
+            mResult = Droid.JAVA_SCRIPT_ENGINE.execute(mScript);
         } catch (Exception e) {
             mOnRunFinishedListener.onException(e);
             finish();
@@ -61,7 +59,7 @@ public class ScriptExecuteActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        JAVA_SCRIPT_ENGINE.set("activity", null);
-        JAVA_SCRIPT_ENGINE.removeAndDestroy();
+        Droid.JAVA_SCRIPT_ENGINE.set("activity", null);
+        Droid.JAVA_SCRIPT_ENGINE.removeAndDestroy();
     }
 }

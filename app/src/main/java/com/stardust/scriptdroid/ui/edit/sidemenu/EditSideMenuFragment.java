@@ -9,27 +9,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.stardust.app.Fragment;
+import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
+import com.stardust.view.ViewBinding;
 import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.ui.help.DocumentationActivity;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.console.ConsoleActivity;
-import com.stardust.scriptdroid.bounds_assist.BoundsAssistant;
-import com.stardust.scriptdroid.external.notification.bounds_assist.BoundsAssistSwitchNotification;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.view.ViewBinder;
-import com.stardust.view.ViewBinding;
-
-import static com.stardust.scriptdroid.external.notification.bounds_assist.BoundsAssistSwitchNotification.KEY_BOUNDS_ASSIST_SWITCH_NOTIFICATION_ENABLE;
 
 /**
  * Created by Stardust on 2017/2/4.
  */
 
-public class EditSideMenuFragment extends com.stardust.app.Fragment {
+public class EditSideMenuFragment extends Fragment {
 
 
     private FunctionListRecyclerView.OnFunctionClickListener mOnFunctionClickListener;
-    private AssistClipListRecyclerView.OnClipClickListener mOnClipClickListener;
 
     public static EditSideMenuFragment setFragment(AppCompatActivity activity, int viewId) {
         EditSideMenuFragment fragment = new EditSideMenuFragment();
@@ -37,7 +33,7 @@ public class EditSideMenuFragment extends com.stardust.app.Fragment {
         return fragment;
     }
 
-    private SwitchCompat mAssistServiceSwitch, mAssistServiceNotificationSwitch;
+    private SwitchCompat mFloatingWindowSwitch;
 
     @Nullable
     @Override
@@ -48,7 +44,7 @@ public class EditSideMenuFragment extends com.stardust.app.Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (mAssistServiceSwitch == null) {
+        if (mFloatingWindowSwitch == null) {
             setUpUI();
         }
         syncSwitchState();
@@ -57,14 +53,9 @@ public class EditSideMenuFragment extends com.stardust.app.Fragment {
     private void setUpUI() {
         setUpSwitchCompat();
         setUpFunctionList();
-        setUpClipList();
         ViewBinder.bind(this);
     }
 
-    private void setUpClipList() {
-        AssistClipListRecyclerView assistClipListRecyclerView = $(R.id.assist_clip_list);
-        assistClipListRecyclerView.setOnClipClickListener(mOnClipClickListener);
-    }
 
     private void setUpFunctionList() {
         FunctionListRecyclerView functionListRecyclerView = $(R.id.function_list);
@@ -73,15 +64,11 @@ public class EditSideMenuFragment extends com.stardust.app.Fragment {
     }
 
     private void syncSwitchState() {
-        mAssistServiceSwitch.setChecked(BoundsAssistant.isAssistModeEnable());
-        mAssistServiceNotificationSwitch.setChecked(BoundsAssistSwitchNotification.isEnable());
+        mFloatingWindowSwitch.setChecked(FloatingWindowManger.isFloatingWindowShowing());
     }
 
     private void setUpSwitchCompat() {
-        mAssistServiceSwitch = $(R.id.sw_assist_service);
-        mAssistServiceNotificationSwitch = $(R.id.sw_assist_service_notification);
-        App.getStateObserver().register(BoundsAssistant.KEY_BOUNDS_ASSIST_ENABLE, mAssistServiceSwitch);
-        App.getStateObserver().register(KEY_BOUNDS_ASSIST_SWITCH_NOTIFICATION_ENABLE, mAssistServiceNotificationSwitch);
+        mFloatingWindowSwitch = $(R.id.sw_floating_window);
     }
 
     @ViewBinding.Click(R.id.syntax_and_api)
@@ -94,24 +81,18 @@ public class EditSideMenuFragment extends com.stardust.app.Fragment {
         startActivity(new Intent(getContext(), ConsoleActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
-    @ViewBinding.Check(R.id.sw_assist_service)
-    private void setAssistServiceEnable(boolean enable) {
-        BoundsAssistant.setAssistModeEnable(enable);
+    @ViewBinding.Check(R.id.sw_floating_window)
+    private void setFloatingWindowEnable(boolean enable) {
+        if (enable && !FloatingWindowManger.isFloatingWindowShowing()) {
+            FloatingWindowManger.showFloatingWindow();
+        } else if (!enable && FloatingWindowManger.isFloatingWindowShowing()) {
+            FloatingWindowManger.hideFloatingWindow();
+        }
     }
 
-    @ViewBinding.Click(R.id.assist_service)
+    @ViewBinding.Click(R.id.floating_window)
     private void toggleAssistServiceSwitch() {
-        mAssistServiceSwitch.toggle();
-    }
-
-    @ViewBinding.Check(R.id.sw_assist_service_notification)
-    private void setAssistServiceNotificationEnable(boolean enable) {
-        BoundsAssistSwitchNotification.setEnable(enable);
-    }
-
-    @ViewBinding.Click(R.id.assist_service_notification)
-    private void toggleAssistServiceNotificationSwitch() {
-        mAssistServiceNotificationSwitch.toggle();
+        mFloatingWindowSwitch.toggle();
     }
 
     public EditSideMenuFragment setOnFunctionClickListener(FunctionListRecyclerView.OnFunctionClickListener onFunctionClickListener) {
@@ -119,8 +100,4 @@ public class EditSideMenuFragment extends com.stardust.app.Fragment {
         return this;
     }
 
-    public EditSideMenuFragment setOnClipClickListener(AssistClipListRecyclerView.OnClipClickListener onClipClickListener) {
-        mOnClipClickListener = onClipClickListener;
-        return this;
-    }
 }

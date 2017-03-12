@@ -2,13 +2,13 @@ package com.stardust.scriptdroid.file;
 
 import android.content.Context;
 
-import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
-import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
 import com.stardust.util.MapEntries;
+import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.R;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

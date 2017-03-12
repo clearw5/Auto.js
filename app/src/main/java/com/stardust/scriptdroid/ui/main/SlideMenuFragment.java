@@ -13,18 +13,15 @@ import android.view.ViewGroup;
 import com.stardust.app.Fragment;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.bounds_assist.BoundsAssistant;
 import com.stardust.scriptdroid.droid.Droid;
-import com.stardust.scriptdroid.external.notification.bounds_assist.BoundsAssistSwitchNotification;
+import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.console.ConsoleActivity;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
-import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
-import static com.stardust.scriptdroid.external.notification.bounds_assist.BoundsAssistSwitchNotification.KEY_BOUNDS_ASSIST_SWITCH_NOTIFICATION_ENABLE;
 
 /**
  * Created by Stardust on 2017/1/30.
@@ -38,7 +35,7 @@ public class SlideMenuFragment extends Fragment {
         activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).commit();
     }
 
-    private SwitchCompat mAutoOperateServiceSwitch, mAssistServiceSwitch, mAssistServiceNotificationSwitch;
+    private SwitchCompat mAutoOperateServiceSwitch, mAssistServiceSwitch;
 
     @Nullable
     @Override
@@ -64,16 +61,12 @@ public class SlideMenuFragment extends Fragment {
                 mAutoOperateServiceSwitch.setChecked(AccessibilityWatchDogService.isEnable());
             }
         }, 450);
-        mAssistServiceSwitch.setChecked(BoundsAssistant.isAssistModeEnable());
-        mAssistServiceNotificationSwitch.setChecked(BoundsAssistSwitchNotification.isEnable());
+        mAssistServiceSwitch.setChecked(FloatingWindowManger.isFloatingWindowShowing());
     }
 
     private void setUpSwitchCompat() {
         mAutoOperateServiceSwitch = $(R.id.sw_auto_operate_service);
-        mAssistServiceSwitch = $(R.id.sw_assist_service);
-        mAssistServiceNotificationSwitch = $(R.id.sw_assist_service_notification);
-        App.getStateObserver().register(BoundsAssistant.KEY_BOUNDS_ASSIST_ENABLE, mAssistServiceSwitch);
-        App.getStateObserver().register(KEY_BOUNDS_ASSIST_SWITCH_NOTIFICATION_ENABLE, mAssistServiceNotificationSwitch);
+        mAssistServiceSwitch = $(R.id.sw_floating_window);
     }
 
 
@@ -101,25 +94,20 @@ public class SlideMenuFragment extends Fragment {
         }
     }
 
-    @ViewBinding.Check(R.id.sw_assist_service)
-    private void setAssistServiceEnable(boolean enable) {
-        BoundsAssistant.setAssistModeEnable(enable);
+    @ViewBinding.Check(R.id.sw_floating_window)
+    private void setFloatingWindowEnable(boolean enable) {
+        if (enable && !FloatingWindowManger.isFloatingWindowShowing()) {
+            FloatingWindowManger.showFloatingWindow();
+        } else if (!enable && FloatingWindowManger.isFloatingWindowShowing()) {
+            FloatingWindowManger.hideFloatingWindow();
+        }
     }
 
-    @ViewBinding.Click(R.id.assist_service)
+    @ViewBinding.Click(R.id.floating_window)
     private void toggleAssistServiceSwitch() {
         mAssistServiceSwitch.toggle();
     }
 
-    @ViewBinding.Check(R.id.sw_assist_service_notification)
-    private void setAssistServiceNotificationEnable(boolean enable) {
-        BoundsAssistSwitchNotification.setEnable(enable);
-    }
-
-    @ViewBinding.Click(R.id.assist_service_notification)
-    private void toggleAssistServiceNotificationSwitch() {
-        mAssistServiceNotificationSwitch.toggle();
-    }
 
     @ViewBinding.Click(R.id.stop_all_running_scripts)
     private void stopAllRunningScripts() {

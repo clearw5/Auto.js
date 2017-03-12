@@ -18,9 +18,10 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.stardust.scriptdroid.tool.ViewTool;
 import com.stardust.scriptdroid.R;
 
-import static com.stardust.scriptdroid.tool.ViewTool.$;
+import java.util.List;
 
 /**
  * Created by Stardust on 2017/1/24.
@@ -30,26 +31,31 @@ public class ScriptFileOperationPopupMenu extends PopupWindow {
 
 
     public interface OnItemClickListener {
-        void onClick(View view, int position);
+        void onClick(View view, int position, ScriptFileOperation operation);
     }
 
     private Context mContext;
     private ScriptFileOperationListRecyclerView mOperationListRecyclerView;
     private OnItemClickListener mOnItemClickListener;
 
+
+    private List<ScriptFileOperation> mScriptFileOperationList;
+
     private final View.OnClickListener mOnItemClickRealListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (mOnItemClickListener != null) {
                 int position = mOperationListRecyclerView.getChildViewHolder(v).getAdapterPosition();
-                mOnItemClickListener.onClick(v, position);
+                mOnItemClickListener.onClick(v, position, mScriptFileOperationList.get(position));
             }
         }
     };
 
-    public ScriptFileOperationPopupMenu(Context context) {
-        super();
+
+    public ScriptFileOperationPopupMenu(Context context, List<ScriptFileOperation> scriptFileOperationList) {
+        super(context);
         mContext = context;
+        mScriptFileOperationList = scriptFileOperationList;
         init();
     }
 
@@ -77,7 +83,7 @@ public class ScriptFileOperationPopupMenu extends PopupWindow {
 
     private float getScreenHeight() {
         DisplayMetrics displaymetrics = new DisplayMetrics();
-        ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        ((WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displaymetrics);
         return displaymetrics.heightPixels;
     }
 
@@ -93,14 +99,17 @@ public class ScriptFileOperationPopupMenu extends PopupWindow {
     private void initContentView() {
         View contentView = View.inflate(mContext, R.layout.script_file_operation_popup_menu_content, null);
         setContentView(contentView);
-        mOperationListRecyclerView = $(contentView, R.id.operation_list);
+        mOperationListRecyclerView = ViewTool.$(contentView, R.id.operation_list);
         mOperationListRecyclerView.setOnItemClickListener(mOnItemClickRealListener);
+        mOperationListRecyclerView.setScriptFileOperationList(mScriptFileOperationList);
     }
 
 
     public static class ScriptFileOperationListRecyclerView extends RecyclerView {
 
         private OnClickListener mOnItemClickListener;
+
+        private List<ScriptFileOperation> mScriptFileOperationList;
 
         public ScriptFileOperationListRecyclerView(Context context) {
             super(context);
@@ -117,6 +126,10 @@ public class ScriptFileOperationPopupMenu extends PopupWindow {
             init();
         }
 
+        public void setScriptFileOperationList(List<ScriptFileOperation> scriptFileOperationList) {
+            mScriptFileOperationList = scriptFileOperationList;
+        }
+
         private void init() {
             setLayoutManager(new LinearLayoutManager(getContext()));
             setAdapter(new Adapter<ViewHolder>() {
@@ -128,14 +141,14 @@ public class ScriptFileOperationPopupMenu extends PopupWindow {
 
                 @Override
                 public void onBindViewHolder(ViewHolder holder, int position) {
-                    ScriptFileOperation operation = ScriptFileOperation.getOperation(position);
+                    ScriptFileOperation operation = mScriptFileOperationList.get(position);
                     holder.operationName.setText(operation.getName());
                     holder.icon.setImageResource(operation.getIconResId());
                 }
 
                 @Override
                 public int getItemCount() {
-                    return ScriptFileOperation.getOperationNames().size();
+                    return mScriptFileOperationList.size();
                 }
             });
         }
@@ -152,8 +165,8 @@ public class ScriptFileOperationPopupMenu extends PopupWindow {
             ViewHolder(View itemView) {
                 super(itemView);
                 itemView.setOnClickListener(mOnItemClickListener);
-                operationName = $(itemView, R.id.name);
-                icon = $(itemView, R.id.icon);
+                operationName = ViewTool.$(itemView, R.id.name);
+                icon = ViewTool.$(itemView, R.id.icon);
             }
         }
     }

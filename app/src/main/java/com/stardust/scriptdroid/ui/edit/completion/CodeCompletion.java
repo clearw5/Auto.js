@@ -4,8 +4,8 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 
-import com.jecelyin.editor.v2.core.widget.TextView;
 import com.stardust.scriptdroid.Pref;
+import com.jecelyin.editor.v2.core.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collection;
