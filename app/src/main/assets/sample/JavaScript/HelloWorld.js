@@ -1,0 +1,2 @@
+log("Hello world!!!");
+openConsole();

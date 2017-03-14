@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.layout_inspector.NodeInfo;
 import com.stardust.scriptdroid.tool.ViewTool;
+import com.stardust.widget.LevelBeamView;
 
 import java.util.Collections;
 import java.util.List;

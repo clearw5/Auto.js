@@ -13,7 +13,7 @@ public class BoundsFilter extends DfsFilter {
 
     public static final int TYPE_EQUALS = 0;
     public static final int TYPE_INSIDE = 1;
-    public static final int TYPE_PARENT = 2;
+    public static final int TYPE_CONTAINS = 2;
 
     private Rect mBounds;
     private int mType;
@@ -25,8 +25,8 @@ public class BoundsFilter extends DfsFilter {
 
     @Override
     protected boolean isIncluded(AccessibilityNodeInfo nodeInfo) {
-        if (mType == TYPE_PARENT) {
-            return AccessibilityNodeInfoHelper.getBoundsInParent(nodeInfo).equals(mBounds);
+        if (mType == TYPE_CONTAINS) {
+            return AccessibilityNodeInfoHelper.getBoundsInScreen(nodeInfo).contains(mBounds);
         }
         Rect boundsInScreen = AccessibilityNodeInfoHelper.getBoundsInScreen(nodeInfo);
         if (mType == TYPE_EQUALS)

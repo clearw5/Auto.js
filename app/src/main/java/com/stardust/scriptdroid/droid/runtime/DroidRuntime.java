@@ -1,6 +1,5 @@
 package com.stardust.scriptdroid.droid.runtime;
 
-import android.accessibilityservice.AccessibilityService;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -11,12 +10,10 @@ import android.graphics.Rect;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.droid.runtime.action.ActionTarget;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
@@ -28,7 +25,7 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.runtime.action.Action;
 import com.stardust.scriptdroid.droid.runtime.action.ActionFactory;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformAccessibilityDelegate;
-import com.stardust.scriptdroid.file.FileUtils;
+import com.stardust.scriptdroid.tool.FileUtils;
 import com.stardust.scriptdroid.tool.Shell;
 import com.stardust.scriptdroid.ui.console.ConsoleActivity;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;

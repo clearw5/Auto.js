@@ -3,15 +3,14 @@ shell命令是通过shell函数运行的命令。等同于"adb shell"。shell函
 * cmd \<String\> 要执行的命令
 * root \<Boolean\> 是否以root权限运行，默认为false。
 返回运行一个执行结果。该返回值一般不会用到，其属性如下:
-    * code \<Number\> 错误码。执行成功时为1，失败时为0。
+    * code \<Number\> 返回码。执行成功时为1，失败时为非1的数字，一般为0。
     * result \<String\> 运行结果。
     * error \<String\> 运行的错误信息。例如执行需要root权限的命令但没有授予root权限会返回错误信息"Permission denied"。
     
-例如``。(强制停止微信)  
-示例:
+示例(强制停止微信) ： 
 ```
 var result = shell("am force-stop com.tencent.mm", true);
-if(result.succeed){
+if(result.code == 1){
   toast("执行成功");
 }else{
   toast("执行失败！请到控制台查看错误信息");
@@ -20,16 +19,16 @@ if(result.succeed){
 }
 ```
 
-以下关于shell命令的资料来自[AndroidStudio用户指南: 发出shell命令](https://developer.android.com/studio/command-line/adb.html#shellcommands)。
+以下关于shell命令的资料来自[AndroidStudio用户指南：Sehll命令](https://developer.android.com/studio/command-line/adb.html#shellcommands)。
 
 目录：
-* [am命令](#am)
-* [intent 参数的规范](#IntentSpec)
-* [应用包名](#PackageName)
-* [pm命令](#pm)
-* [其他命令](#others)
+* [am命令](#am命令)
+* [intent参数的规范](#intent参数的规范)
+* [应用包名](#应用包名)
+* [pm命令](#pm命令)
+* [其他命令](#其他命令)
 
-<h2 id="am">am命令</h2>
+## am命令
 
 am命令即Activity Manager命令，用于管理应用程序活动、服务等。
 
@@ -37,7 +36,7 @@ am命令即Activity Manager命令，用于管理应用程序活动、服务等�
 
 ### start [options] intent  
 启动 intent 指定的 Activity(应用程序活动)。  
-请参阅 [intent 参数的规范](#IntentSpec)。    
+请参阅 [intent 参数的规范](#intent参数的规范)。    
 
 选项包括：
 
@@ -52,24 +51,26 @@ am命令即Activity Manager命令，用于管理应用程序活动、服务等�
 
 ### startservice [options] intent
 启动 intent 指定的 Service(服务)。  
-请参阅 [intent 参数的规范](#IntentSpec)。  
+请参阅 [intent 参数的规范](#intent参数的规范)。  
 选项包括：
 
 * --user user_id | current：指定要作为哪个用户运行；如果未指定，则作为当前用户运行。
 
 ### force-stop package	
-强行停止与 package（[应用包名](#PackageName)）关联的所有应用。  
+强行停止与 package（[应用包名](#应用包名)）关联的所有应用。  
 
 ### kill [options] package	
-终止与 package（[应用包名](#PackageName)）关联的所有进程。此命令仅终止可安全终止且不会影响用户体验的进程。  
+终止与 package（[应用包名](#应用包名)）关联的所有进程。此命令仅终止可安全终止且不会影响用户体验的进程。  
 选项包括：
 
 * --user user_id | all | current：指定将终止其进程的用户；如果未指定，则终止所有用户的进程。
-* kill-all	终止所有后台进程。
+
+### kill-all
+终止所有后台进程。
 
 ### broadcast [options] intent	
 发出广播 intent。
-请参阅 [intent 参数的规范](#IntentSpec)。     
+请参阅 [intent 参数的规范](#intent参数的规范)。     
 
 选项包括：
 
@@ -125,13 +126,13 @@ shell("am display-density 480", true);
 ```
 ### to-uri intent	
 将给定的 intent 规范以 URI 的形式输出。
-请参阅  [intent 参数的规范](#IntentSpec)。
+请参阅  [intent 参数的规范](#intent参数的规范)。
 
 ### to-intent-uri intent	
 将给定的 intent 规范以 intent:URI 的形式输出。
 请参阅 intent 参数的规范。
 
-<h2 id="IntentSpec"> intent 参数的规范 </h2>
+### intent参数的规范
 对于采用 intent 参数的 am 命令，您可以使用以下选项指定 intent：
 
 * -a action  
@@ -217,12 +218,12 @@ shell("am display-density 480", true);
 #### URI component package
 如果不受上述某一选项的限制，您可以直接指定 URI、软件包名称和组件名称。当参数不受限制时，如果参数包含一个“:”（冒号），则此工具假定参数是一个 URI；如果参数包含一个“/”（正斜杠），则此工具假定参数是一个组件名称；否则，此工具假定参数是一个软件包名称。
 
-<h2 id="PackageName"> 应用包名 </h2>
+## 应用包名
 所谓应用包名，是唯一确定应用的标识。例如微信的包名是"com.tencent.mm", QQ的包名是"com.tencent.mobileqq"。  
 要获取一个应用的包名，可以通过函数`getPackageName(appName)`获取。参见帮助->其他一般函数。
 
 
-<h2 id="pm">pm命令</h2>
+## pm命令
 
 pm命令用于管理应用程序，例如卸载应用、冻结应用等。  
 **以下命令均以"pm "开头，例如"shell(\"pm disable com.tencent.mm\");"(冻结微信)**
@@ -335,7 +336,7 @@ pm命令用于管理应用程序，例如卸载应用、冻结应用等。
 ### get-max-users	
 输出设备支持的最大用户数。
 
-<h2 id="others">其他命令</h2>
+## 其他命令
 
 ### 进行屏幕截图
 screencap 命令是一个用于对设备显示屏进行屏幕截图的 shell 实用程序。在 shell 中，此语法为：

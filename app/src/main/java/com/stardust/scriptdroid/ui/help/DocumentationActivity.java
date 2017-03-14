@@ -7,7 +7,7 @@ import android.os.Bundle;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.widget.CommonMarkdownView;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.file.FileUtils;
+import com.stardust.scriptdroid.tool.FileUtils;
 
 import java.io.IOException;
 
@@ -16,6 +16,8 @@ import java.io.IOException;
  */
 
 public class DocumentationActivity extends BaseActivity {
+
+    private CommonMarkdownView mCommonMarkdownView;
 
     public static void openDocumentation(Context context, String title, String assetPath) {
         context.startActivity(new Intent(context, DocumentationActivity.class)
@@ -37,22 +39,22 @@ public class DocumentationActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        handleIntent();
+        handleIntent(getIntent());
         setUpUI();
     }
 
-    private void handleIntent() {
-        mTitle = getIntent().getStringExtra("title");
-        String path = getIntent().getStringExtra("path");
-        if (path == null) {
-            int rawId = getIntent().getIntExtra("resId", 0);
-            mDocumentation = FileUtils.readString(getResources().openRawResource(rawId));
-        } else {
+    private void handleIntent(Intent intent) {
+        mTitle = intent.getStringExtra("title");
+        String path = intent.getStringExtra("path");
+        int rawId = intent.getIntExtra("resId", 0);
+        if (path != null) {
             try {
-                mDocumentation = FileUtils.readString(getAssets().open("help/documentation/" + path + ".md"));
+                mDocumentation = FileUtils.readString(getAssets().open("help/" + path));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else if (rawId != 0) {
+            mDocumentation = FileUtils.readString(getResources().openRawResource(rawId));
         }
     }
 
@@ -63,12 +65,21 @@ public class DocumentationActivity extends BaseActivity {
     }
 
     private void loadDocument() {
-        CommonMarkdownView markdownView = $(R.id.markdown);
+        mCommonMarkdownView = $(R.id.markdown);
         try {
-            markdownView.loadMarkdown(mDocumentation);
+            mCommonMarkdownView.loadMarkdown(mDocumentation);
         } catch (Exception e) {
             e.printStackTrace();
-            markdownView.setText(R.string.text_load_failed);
+            mCommonMarkdownView.setText(R.string.text_load_failed);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mCommonMarkdownView.canGoBack()) {
+            mCommonMarkdownView.goBack();
+        } else {
+            super.onBackPressed();
         }
     }
 

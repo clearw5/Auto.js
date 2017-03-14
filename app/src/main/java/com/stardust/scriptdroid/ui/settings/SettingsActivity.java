@@ -10,7 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
-import com.stardust.scriptdroid.file.SampleFileManager;
+import com.stardust.scriptdroid.Pref;
+import com.stardust.scriptdroid.sample.SampleFileManager;
 import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.error.IssueReportActivity;
@@ -106,15 +107,13 @@ public class SettingsActivity extends BaseActivity {
                             ColorSelectActivity.startColorSelect(getActivity(), getString(R.string.mt_color_picker_title), COLOR_ITEMS);
                         }
                     })
-                    .entry(getString(R.string.text_re_import_samples), new Runnable() {
+                    .entry(getString(R.string.text_reset_background), new Runnable() {
                         @Override
                         public void run() {
-                            int failCount = SampleFileManager.getInstance().copySampleScriptFile();
-                            if (failCount <= 0) {
-                                Toast.makeText(getActivity(), R.string.text_re_import_succeed, Toast.LENGTH_SHORT).show();
-                                notifyScriptListChanged();
-                            } else
-                                Toast.makeText(getActivity(), R.string.text_fail, Toast.LENGTH_SHORT).show();
+                            Pref.def().edit().putString(Pref.KEY_APP_BAR_IMAGE_PATH, null)
+                                    .putString(Pref.KEY_DRAWER_HEADER_IMAGE_PATH, null)
+                                    .apply();
+                            Toast.makeText(getActivity(), R.string.text_restart_app_to_apply, Toast.LENGTH_SHORT).show();
                         }
                     })
                     .entry(getString(R.string.text_issue_report), new Runnable() {
@@ -144,10 +143,6 @@ public class SettingsActivity extends BaseActivity {
                         }
                     })
                     .map();
-        }
-
-        private void notifyScriptListChanged() {
-            getActivity().sendBroadcast(new Intent(MainActivity.ACTION_NOTIFY_SCRIPT_LIST_CHANGE));
         }
 
         @Override

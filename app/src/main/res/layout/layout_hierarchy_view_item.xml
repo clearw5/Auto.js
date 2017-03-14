@@ -6,7 +6,7 @@
     android:layout_height="32dp"
     android:padding="5dp">
 
-    <com.stardust.scriptdroid.layout_inspector.view.LevelBeamView
+    <com.stardust.widget.LevelBeamView
         android:id="@+id/dataItemLevelBeam"
         android:layout_width="wrap_content"
         android:layout_height="32dp"/>

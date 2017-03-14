@@ -17,6 +17,7 @@ import com.squareup.leakcanary.LeakCanary;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformAccessibilityDelegate;
 import com.stardust.scriptdroid.tool.ViewTool;
 import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
+import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.CrashHandler;
 import com.stardust.util.StateObserver;
@@ -48,6 +49,7 @@ public class App extends Application {
 
     public void onCreate() {
         super.onCreate();
+        ThemeColorManager.setDefaultThemeColor(new ThemeColor(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorPrimaryDark), getResources().getColor(R.color.colorAccent)));
         ThemeColorManager.init(this);
         if (LeakCanary.isInAnalyzerProcess(this)) {
             return;

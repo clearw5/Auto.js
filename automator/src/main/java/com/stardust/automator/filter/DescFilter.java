@@ -17,22 +17,22 @@ public class DescFilter {
     };
 
     public static ListFilter equals(String text) {
-        return new EqualsFilter(text, DESC_GETTER);
+        return new StringEqualsFilter(text, DESC_GETTER);
     }
 
     public static ListFilter contains(String str) {
-        return new ContainsFilter(str, DESC_GETTER);
+        return new StringContainsFilter(str, DESC_GETTER);
     }
 
     public static ListFilter startsWith(String prefix) {
-        return new StartsWithFilter(prefix, DESC_GETTER);
+        return new StringStartsWithFilter(prefix, DESC_GETTER);
     }
 
     public static ListFilter endsWith(String suffix) {
-        return new EndsWithFilter(suffix, DESC_GETTER);
+        return new StringEndsWithFilter(suffix, DESC_GETTER);
     }
     public static ListFilter matches(String regex) {
-        return new MatchesFilter(regex, DESC_GETTER);
+        return new StringMatchesFilter(regex, DESC_GETTER);
     }
 
     private DescFilter(){

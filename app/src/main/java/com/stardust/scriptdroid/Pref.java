@@ -13,6 +13,7 @@ public class Pref {
     public static final String SAMPLE_SCRIPTS_COPIED = "SAMPLE_SCRIPTS_COPIED";
     private static final String KEY_MAX_TEXT_LENGTH_FOR_CODE_COMPLETION = "KEY_MAX_TEXT_LENGTH_FOR_CODE_COMPLETION";
     public static final String KEY_DRAWER_HEADER_IMAGE_PATH = "KEY_DRAWER_HEADER_IMAGE_PATH";
+    public static final String KEY_APP_BAR_IMAGE_PATH = "KEY_APP_BAR_IMAGE_PATH";
 
     public static SharedPreferences def() {
         return PreferenceManager.getDefaultSharedPreferences(App.getApp());
@@ -52,5 +53,9 @@ public class Pref {
         } catch (NumberFormatException e) {
             return 2000;
         }
+    }
+
+    public static boolean isFirstUsing() {
+        return getDisposableBoolean("isFirstUsing", true);
     }
 }

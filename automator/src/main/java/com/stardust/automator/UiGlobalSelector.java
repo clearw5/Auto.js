@@ -1,11 +1,12 @@
 package com.stardust.automator;
 
 import android.graphics.Rect;
-import android.os.Bundle;
+import android.os.Build;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.automator.filter.BooleanFilter;
 import com.stardust.automator.filter.BoundsFilter;
+import com.stardust.automator.filter.DfsFilter;
 import com.stardust.automator.filter.IdFilter;
 import com.stardust.automator.filter.PackageNameFilter;
 import com.stardust.automator.filter.TextFilter;
@@ -17,16 +18,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.*;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CONTEXT_CLICK;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_DOWN;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_LEFT;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_RIGHT;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_TO_POSITION;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_UP;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SET_PROGRESS;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SHOW_ON_SCREEN;
 
 /**
  * Created by Stardust on 2017/3/8.
@@ -173,8 +164,18 @@ public class UiGlobalSelector {
         return this;
     }
 
-    public UiGlobalSelector boundsInParent(int l, int t, int r, int b) {
-        mFilters.add(new BoundsFilter(new Rect(l, t, r, b), BoundsFilter.TYPE_PARENT));
+    public UiGlobalSelector boundsContains(int l, int t, int r, int b) {
+        mFilters.add(new BoundsFilter(new Rect(l, t, r, b), BoundsFilter.TYPE_CONTAINS));
+        return this;
+    }
+
+    public UiGlobalSelector drawingOrder(final int order) {
+        mFilters.add(new DfsFilter() {
+            @Override
+            protected boolean isIncluded(AccessibilityNodeInfo nodeInfo) {
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && nodeInfo.getDrawingOrder() == order;
+            }
+        });
         return this;
     }
 
@@ -265,6 +266,91 @@ public class UiGlobalSelector {
         return this;
     }
 
+    public UiGlobalSelector checkable() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.CHECKABLE, true));
+        return this;
+    }
+
+    public UiGlobalSelector checked() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.CHECKED, true));
+        return this;
+    }
+
+    public UiGlobalSelector focusable() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.FOCUSABLE, true));
+        return this;
+    }
+
+    public UiGlobalSelector focused() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.FOCUSED, true));
+        return this;
+    }
+
+    public UiGlobalSelector visibleToUser() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.VISIBLE_TO_USER, true));
+        return this;
+    }
+
+    public UiGlobalSelector accessibilityFocused() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.ACCESSIBILITY_FOCUSED, true));
+        return this;
+    }
+
+    public UiGlobalSelector selected() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.SELECTED, true));
+        return this;
+    }
+
+    public UiGlobalSelector clickable() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.CLICKABLE, true));
+        return this;
+    }
+
+    public UiGlobalSelector longClickable() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.LONG_CLICKABLE, true));
+        return this;
+    }
+
+    public UiGlobalSelector enabled() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.ENABLED, true));
+        return this;
+    }
+
+    public UiGlobalSelector password() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.PASSWORD, true));
+        return this;
+    }
+
+    public UiGlobalSelector scrollable() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.SCROLLABLE, true));
+        return this;
+    }
+
+    public UiGlobalSelector editable() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.EDITABLE, true));
+        return this;
+    }
+
+    public UiGlobalSelector contentInvalid() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.CONTENT_INVALID, true));
+        return this;
+    }
+
+    public UiGlobalSelector contextClickable() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.CONTEXT_CLICKABLE, true));
+        return this;
+    }
+
+    public UiGlobalSelector multiLine() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.MULTI_LINE, true));
+        return this;
+    }
+
+    public UiGlobalSelector dismissable() {
+        mFilters.add(BooleanFilter.get(BooleanFilter.DISMISSABLE, true));
+        return this;
+    }
+
     public UiObjectCollection findOf(AccessibilityNodeInfo node) {
         List<AccessibilityNodeInfo> list = new ArrayList<>();
         list.add(node);
@@ -283,7 +369,6 @@ public class UiGlobalSelector {
         mFilters.add(filter);
         return this;
     }
-
 
 
 }

@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.file.FileUtils;
+import com.stardust.scriptdroid.tool.FileUtils;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

@@ -30,11 +30,7 @@
 
     <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_appearance">
         <Preference android:title="@string/text_theme_color"/>
-    </com.stardust.theme.preference.ThemeColorPreferenceCategory>
-
-    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_others">
-
-        <Preference android:title="@string/text_re_import_samples"/>
+        <Preference android:title="@string/text_reset_background"/>
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
     <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_about">

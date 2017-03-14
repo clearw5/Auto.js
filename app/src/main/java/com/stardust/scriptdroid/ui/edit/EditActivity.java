@@ -17,6 +17,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.droid.Droid;
+import com.stardust.scriptdroid.tool.FileUtils;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
 import com.stardust.scriptdroid.ui.edit.sidemenu.EditSideMenuFragment;
 import com.stardust.scriptdroid.ui.edit.sidemenu.FunctionListRecyclerView;
@@ -68,6 +69,15 @@ public class EditActivity extends Editor920Activity {
         editFile(context, null, path);
     }
 
+
+    public static void editAssetFile(Context context, String name, String path) {
+        context.startActivity(new Intent(context, EditActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra("fromAssets", true)
+                .putExtra("path", path)
+                .putExtra("name", name));
+    }
+
     public static void editFile(Context context, String name, String path) {
         context.startActivity(new Intent(context, EditActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -81,6 +91,7 @@ public class EditActivity extends Editor920Activity {
     private DrawerLayout mDrawerLayout;
     private EditorDelegate mEditorDelegate;
     private SparseArray<ToolbarMenuItem> mMenuMap;
+    private boolean mReadOnly = false;
     private BroadcastReceiver mOnRunFinishedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -125,7 +136,13 @@ public class EditActivity extends Editor920Activity {
         if (path == null) {
             finish();
         } else {
-            mFile = new File(path);
+            if (getIntent().getBooleanExtra("fromAssets", false)) {
+                mReadOnly = true;
+                //TODO 优化
+                mFile = FileUtils.copyAssetToTmpFile(this, path);
+            } else {
+                mFile = new File(path);
+            }
             if (mName == null) {
                 mName = mFile.getName();
             }
@@ -150,7 +167,8 @@ public class EditActivity extends Editor920Activity {
                 .setOnFunctionClickListener(new FunctionListRecyclerView.OnFunctionClickListener() {
                     @Override
                     public void onClick(FunctionListRecyclerView.Function function, int position) {
-                        insertText(function.name);
+                        if (!mReadOnly)
+                            insertText(function.name);
                         mDrawerLayout.closeDrawer(GravityCompat.END);
                     }
                 });
@@ -161,25 +179,30 @@ public class EditActivity extends Editor920Activity {
             mEditorDelegate = new EditorDelegate(0, mFile, 0, null);
             final EditorView editorView = (EditorView) findViewById(R.id.editor);
             mEditorDelegate.setEditorView(editorView);
+            editorView.getEditText().setReadOnly(mReadOnly);
             InputMethodEnhanceBar inputMethodEnhanceBar = (InputMethodEnhanceBar) findViewById(R.id.input_method_enhance_bar);
-            inputMethodEnhanceBar.setEditTextBridge(new InputMethodEnhanceBar.EditTextBridge() {
-                @Override
-                public void appendText(CharSequence text) {
-                    insertText(text);
-                }
+            if (mReadOnly) {
+                inputMethodEnhanceBar.setVisibility(View.GONE);
+            } else {
+                inputMethodEnhanceBar.setEditTextBridge(new InputMethodEnhanceBar.EditTextBridge() {
+                    @Override
+                    public void appendText(CharSequence text) {
+                        insertText(text);
+                    }
 
-                @Override
-                public void backspace(int count) {
+                    @Override
+                    public void backspace(int count) {
 
-                }
+                    }
 
-                @Override
-                public TextView getEditText() {
-                    return editorView.getEditText();
-                }
+                    @Override
+                    public TextView getEditText() {
+                        return editorView.getEditText();
+                    }
 
 
-            });
+                });
+            }
         }
     }
 
@@ -264,7 +287,7 @@ public class EditActivity extends Editor920Activity {
 
     @Override
     public void finish() {
-        if (mEditorDelegate.isChanged()) {
+        if (!mReadOnly && mEditorDelegate.isChanged()) {
             showExitConfirmDialog();
         } else {
             super.finish();
@@ -304,4 +327,5 @@ public class EditActivity extends Editor920Activity {
         super.onDestroy();
         unregisterReceiver(mOnRunFinishedReceiver);
     }
+
 }

@@ -17,23 +17,23 @@ public class PackageNameFilter {
     };
 
     public static ListFilter equals(String text) {
-        return new EqualsFilter(text, PACKAGE_NAME_GETTER);
+        return new StringEqualsFilter(text, PACKAGE_NAME_GETTER);
     }
 
     public static ListFilter contains(String str) {
-        return new ContainsFilter(str, PACKAGE_NAME_GETTER);
+        return new StringContainsFilter(str, PACKAGE_NAME_GETTER);
     }
 
     public static ListFilter startsWith(String prefix) {
-        return new StartsWithFilter(prefix, PACKAGE_NAME_GETTER);
+        return new StringStartsWithFilter(prefix, PACKAGE_NAME_GETTER);
     }
 
     public static ListFilter endsWith(String suffix) {
-        return new EndsWithFilter(suffix, PACKAGE_NAME_GETTER);
+        return new StringEndsWithFilter(suffix, PACKAGE_NAME_GETTER);
     }
 
     public static ListFilter matches(String regex) {
-        return new MatchesFilter(regex, PACKAGE_NAME_GETTER);
+        return new StringMatchesFilter(regex, PACKAGE_NAME_GETTER);
     }
 
     private PackageNameFilter() {

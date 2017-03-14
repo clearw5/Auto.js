@@ -7,8 +7,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 40
-        versionName "1.17.0312内测"
+        versionCode 41
+        versionName "1.17.0314内测"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
@@ -46,7 +46,6 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.0'
     compile fileTree(include: ['*.jar', '*.so'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
@@ -62,12 +61,12 @@ dependencies {
     compile 'com.jraska:console:0.4.3'
     compile 'com.jraska:console-timber-tree:0.4.3'
     compile 'com.heinrichreimersoftware:android-issue-reporter:eae4c73cbeb91e98da83fe79a3dea088a8b97448'
-    compile 'com.bezyapps.floatieslibrary:floaties:1.0.1'
     compile 'de.codecrafters.tableview:tableview:2.5.0'
     compile group: "pl.openrnd.android", name: "multi-level-listview", version: "1.0.1"
     compile 'de.psdev.licensesdialog:licensesdialog:1.8.1'
     compile 'io.mattcarroll.hover:hover:0.9.7'
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
 
     compile(name: 'libtermexec-release', ext: 'aar')
     compile(name: 'emulatorview-release', ext: 'aar')

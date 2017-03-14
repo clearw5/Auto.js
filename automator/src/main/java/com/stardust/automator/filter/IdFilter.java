@@ -22,20 +22,20 @@ public class IdFilter extends ListFilter.Default {
         return new IdFilter(id);
     }
 
-    public static StartsWithFilter startsWith(String prefix) {
-        return new StartsWithFilter(prefix, ID_GETTER);
+    public static StringStartsWithFilter startsWith(String prefix) {
+        return new StringStartsWithFilter(prefix, ID_GETTER);
     }
 
     public static ListFilter endsWith(String suffix) {
-        return new EndsWithFilter(suffix, ID_GETTER);
+        return new StringEndsWithFilter(suffix, ID_GETTER);
     }
 
-    public static ContainsFilter contains(String contains) {
-        return new ContainsFilter(contains, ID_GETTER);
+    public static StringContainsFilter contains(String contains) {
+        return new StringContainsFilter(contains, ID_GETTER);
     }
 
-    public static MatchesFilter matches(String regex) {
-        return new MatchesFilter(regex, ID_GETTER);
+    public static StringMatchesFilter matches(String regex) {
+        return new StringMatchesFilter(regex, ID_GETTER);
     }
 
     private String mId;

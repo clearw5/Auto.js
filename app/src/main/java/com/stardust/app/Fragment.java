@@ -36,7 +36,12 @@ public abstract class Fragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = createView(inflater, container, savedInstanceState);
+        afterCreateView();
         return mView;
+    }
+
+    protected void afterCreateView() {
+
     }
 
     @Nullable

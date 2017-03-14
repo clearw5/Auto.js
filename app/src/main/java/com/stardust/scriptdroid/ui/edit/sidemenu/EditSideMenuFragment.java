@@ -11,12 +11,15 @@ import android.view.ViewGroup;
 
 import com.stardust.app.Fragment;
 import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
+import com.stardust.scriptdroid.external.floating_window.HoverMenuService;
 import com.stardust.view.ViewBinding;
-import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.console.ConsoleActivity;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.view.ViewBinder;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 /**
  * Created by Stardust on 2017/2/4.
@@ -34,6 +37,12 @@ public class EditSideMenuFragment extends Fragment {
     }
 
     private SwitchCompat mFloatingWindowSwitch;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
 
     @Nullable
     @Override
@@ -73,7 +82,7 @@ public class EditSideMenuFragment extends Fragment {
 
     @ViewBinding.Click(R.id.syntax_and_api)
     private void startSyntaxHelpActivity() {
-        HelpCatalogueActivity.showCatalogue(getActivity());
+        HelpCatalogueActivity.showMainCatalogue(getActivity());
     }
 
     @ViewBinding.Click(R.id.console)
@@ -100,4 +109,15 @@ public class EditSideMenuFragment extends Fragment {
         return this;
     }
 
+
+    @Subscribe
+    public void onHoverMenuServiceStateChanged(HoverMenuService.ServiceStateChangedEvent event) {
+        mFloatingWindowSwitch.setChecked(event.state);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

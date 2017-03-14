@@ -2,22 +2,23 @@ package com.stardust.scriptdroid.ui.main;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,24 +34,28 @@ import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
 import com.stardust.scriptdroid.external.notification.record.ActionRecordSwitchNotification;
-import com.stardust.scriptdroid.file.SampleFileManager;
 import com.stardust.scriptdroid.record.inputevent.InputEventRecorder;
 import com.stardust.scriptdroid.record.inputevent.InputEventToJsRecorder;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.ImageSelector;
 import com.stardust.scriptdroid.ui.BaseActivity;
+import com.stardust.scriptdroid.ui.main.my_script_list.MyScriptListFragment;
+import com.stardust.scriptdroid.ui.main.sample_list.SampleScriptListFragment;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.util.MessageEvent;
 import com.stardust.view.ViewBinding;
 import com.stardust.widget.SlidingUpPanel;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.file.FileUtils;
+import com.stardust.scriptdroid.tool.FileUtils;
 import com.stardust.scriptdroid.tool.BackPressedHandler;
 import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 
@@ -59,30 +64,29 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     private static final String EXTRA_ACTION = "EXTRA_ACTION";
 
-    public static final String ACTION_NOTIFY_SCRIPT_LIST_CHANGE = "ACTION_NOTIFY_SCRIPT_LIST_CHANGE";
     private static final String ACTION_ON_ACTION_RECORD_STOPPED = "ACTION_ON_ACTION_RECORD_STOPPED";
     private static final String ARGUMENT_SCRIPT = "ARGUMENT_SCRIPT";
     private static final String ACTION_ON_ROOT_RECORD_STOPPED = "ACTION_ON_ROOT_RECORD_STOPPED";
 
     private SlidingUpPanel mAddFilePanel;
-    private ScriptListRecyclerView mScriptListRecyclerView;
     private ScriptFileList mScriptFileList;
+    private MyScriptListFragment mMyScriptListFragment;
+    private SampleScriptListFragment mSampleScriptListFragment;
     private DrawerLayout mDrawerLayout;
-    private Receiver mReceiver;
     private OnActivityResultDelegate.Manager mManager = new OnActivityResultDelegate.Manager();
+    private BackPressedHandler.Observer mBackPressObserver = new BackPressedHandler.Observer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setUpUI();
         checkPermissions();
-        registerReceivers();
+        registerBackPressHandler();
         handleIntent(getIntent());
     }
 
-    private void registerReceivers() {
-        mReceiver = new Receiver();
-        registerReceiver(mReceiver, new IntentFilter(ACTION_NOTIFY_SCRIPT_LIST_CHANGE));
+    private void registerBackPressHandler() {
+        mBackPressObserver.registerHandler(new BackPressedHandler.DoublePressExit(this));
     }
 
     private void checkPermissions() {
@@ -119,20 +123,33 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     private void addScriptFile(String name, String path) {
         mScriptFileList.add(new ScriptFile(name, path));
-        mScriptListRecyclerView.getAdapter().notifyItemInserted(mScriptFileList.size() - 1);
+        EventBus.getDefault().post(new MessageEvent(MyScriptListFragment.MESSAGE_SCRIPT_FILE_ADDED));
     }
 
     private void setUpUI() {
         mDrawerLayout = (DrawerLayout) View.inflate(this, R.layout.activity_main, null);
         setContentView(mDrawerLayout);
-        SlideMenuFragment.setFragment(this, R.id.fragment_slide_menu);
+        setUpFragment();
         mAddFilePanel = $(R.id.bottom_menu);
-
         setUpToolbar();
+        setUpTabLayout();
         setUpDrawerHeader();
-        setUpScriptList();
         ViewBinder.bind(this);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+    }
 
+    private void setUpFragment() {
+        SlideMenuFragment.setFragment(this, R.id.fragment_slide_menu);
+        mMyScriptListFragment = new MyScriptListFragment();
+        mScriptFileList = SharedPrefScriptFileList.getInstance();
+        mSampleScriptListFragment = new SampleScriptListFragment();
+    }
+
+    private void setUpTabLayout() {
+        TabLayout tabLayout = $(R.id.tab);
+        ViewPager viewPager = $(R.id.viewpager);
+        viewPager.setAdapter(new FragmentPagerAdapter());
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @SuppressLint("SetTextI18n")
@@ -143,13 +160,18 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         if (path != null) {
             setDrawerHeaderImage(path);
         }
+        path = Pref.def().getString(Pref.KEY_APP_BAR_IMAGE_PATH, null);
+        if (path != null) {
+            setAppBarImage(path);
+        }
         $(R.id.drawer).setFitsSystemWindows(false);
     }
 
     private void setDrawerHeaderImage(String path) {
         Drawable d = BitmapDrawable.createFromPath(path);
-        if (d != null)
+        if (d != null) {
             ((ImageView) $(R.id.drawer_header_img)).setImageDrawable(d);
+        }
     }
 
     private void setUpToolbar() {
@@ -163,11 +185,6 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         mDrawerLayout.addDrawerListener(drawerToggle);
     }
 
-    private void setUpScriptList() {
-        mScriptListRecyclerView = $(R.id.script_list);
-        mScriptFileList = SharedPrefScriptFileList.getInstance();
-        mScriptListRecyclerView.setScriptFileList(mScriptFileList);
-    }
 
     @ViewBinding.Click(R.id.add)
     private void showAddFilePanel() {
@@ -201,7 +218,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                 }
             }
             addScriptFile(name, path);
-            new ScriptFileOperation.Edit().operate(mScriptListRecyclerView, mScriptFileList, mScriptFileList.size() - 1);
+            new ScriptFileOperation.Edit().operate(mMyScriptListFragment.getScriptListRecyclerView(), mScriptFileList, mScriptFileList.size() - 1);
         } else {
             Snackbar.make(mDrawerLayout, R.string.text_file_create_fail, Snackbar.LENGTH_LONG).show();
         }
@@ -255,15 +272,6 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                 Pref.def().edit().putString(Pref.KEY_DRAWER_HEADER_IMAGE_PATH, path).apply();
             }
         }).select();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            SampleFileManager.getInstance().copySampleScriptFileIfNeeded();
-            mScriptListRecyclerView.getAdapter().notifyDataSetChanged();
-        }
     }
 
     @Override
@@ -323,23 +331,21 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     }
 
-    private BackPressedHandler mBackPressedHandler = new BackPressedHandler.DoublePressExit(this);
 
     @Override
     public void onBackPressed() {
-        if (mScriptListRecyclerView.getScriptFileOperationPopupMenu().isShowing()) {
-            mScriptListRecyclerView.getScriptFileOperationPopupMenu().dismiss();
-        } else if (mAddFilePanel.isShowing()) {
+        if (mAddFilePanel.isShowing()) {
             mAddFilePanel.dismiss();
+        } else if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+            mDrawerLayout.closeDrawer(Gravity.START);
         } else {
-            mBackPressedHandler.onBackPressed();
+            mBackPressObserver.onBackPressed();
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -363,14 +369,43 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         context.startActivity(intent);
     }
 
-
-    private class Receiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(ACTION_NOTIFY_SCRIPT_LIST_CHANGE)) {
-                mScriptListRecyclerView.getAdapter().notifyDataSetChanged();
+    public void OnAppBarClick(View view) {
+        new ImageSelector(this, mManager, new ImageSelector.ImageSelectorCallback() {
+            @Override
+            public void onImageSelected(String path) {
+                Pref.def().edit().putString(Pref.KEY_APP_BAR_IMAGE_PATH, path).apply();
+                setAppBarImage(path);
             }
+        }).select();
+    }
+
+    private void setAppBarImage(String path) {
+        Drawable d = BitmapDrawable.createFromPath(path);
+        if (d != null) {
+            $(R.id.app_bar).setBackground(d);
         }
     }
+
+    private class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAdapter {
+
+        FragmentPagerAdapter() {
+            super(MainActivity.this.getSupportFragmentManager());
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return position == 0 ? mMyScriptListFragment : mSampleScriptListFragment;
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return getString(position == 0 ? R.string.text_my_script : R.string.text_sample_script);
+        }
+    }
+
 }

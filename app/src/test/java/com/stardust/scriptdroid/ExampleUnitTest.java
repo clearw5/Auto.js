@@ -18,8 +18,8 @@ public class ExampleUnitTest {
 
     @Test
     public void test() {
-        InputEventToJsConverter converter = new InputEventToJsConverter();
-        converter.parseAndAddEventIfFormatCorrect("[  140123.672100] /dev/input/event3: EV_ABS       ABS_MT_POSITION_X    0000005f");
-        System.out.println(converter.getCode());
+        int i = 0xffffffff;
+        long l = i & 0xffffffffL;
+        System.out.println(l);
     }
 }

@@ -2,11 +2,13 @@ package com.stardust.scriptdroid.external.floating_window.content;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.external.floating_window.HoverMenuService;
 import com.stardust.scriptdroid.layout_inspector.LayoutInspector;
 import com.stardust.util.MessageEvent;
@@ -57,6 +59,15 @@ public class MainMenuNavigatorContent implements NavigatorContent {
         } else {
             EventBus.getDefault().post(new MessageEvent(HoverMenuService.MESSAGE_SHOW_LAYOUT_BOUNDS));
         }
+    }
+
+    @ViewBinding.Click(R.id.stop_all_running_scripts)
+    private void stopAllRunningScripts() {
+        int n = Droid.getInstance().stopAll();
+        if (n > 0)
+            Toast.makeText(mView.getContext(), String.format(mView.getContext().getString(R.string.text_already_stop_n_scripts), n), Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(mView.getContext(), R.string.text_no_running_script, Toast.LENGTH_SHORT).show();
     }
 
     @NonNull

@@ -1,6 +1,9 @@
 package com.stardust.scriptdroid.external.floating_window;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
 import android.view.View;
 
 import com.stardust.scriptdroid.App;
@@ -16,8 +19,32 @@ import com.stardust.view.ResizableFloaty;
 public class FloatingWindowManger {
 
     public static void showFloatingWindow() {
-        if (!HoverMenuService.isServiceRunning())
-            App.getApp().startService(new Intent(App.getApp(), HoverMenuService.class));
+        if (!HoverMenuService.isServiceRunning()) {
+            if (!hasFloatingWindowPermission()) {
+                goToFloatingWindowPermissionSetting();
+            } else {
+                HoverMenuService.startService(App.getApp());
+            }
+        }
+    }
+
+    public static void goToFloatingWindowPermissionSetting() {
+        String packageName = App.getApp().getPackageName();
+        Intent intent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + packageName));
+        } else {
+            intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + packageName));
+        }
+        App.getApp().startActivity(intent);
+    }
+
+    private static boolean hasFloatingWindowPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return Settings.canDrawOverlays(App.getApp());
+        }
+        return true;
     }
 
     public static boolean isFloatingWindowShowing() {

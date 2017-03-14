@@ -8,6 +8,26 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.FullScreen" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="windowNoTitle">true</item>
+
+        <item name="windowActionBar">false</item>
+    </style>
+
+    <style name="AppTheme.Splash" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="windowNoTitle">true</item>
+
+        <item name="windowActionBar">false</item>
+
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
+
+    <style name="MainToolbarTheme" parent="AppTheme">
+        <item name="android:textColorSecondary">#c4c4c4</item>
+    </style>
+
     <style name="IssueReportTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="cardBackgroundColor">#FFFFFF</item>
         <item name="colorButtonNormal">?colorAccent</item>

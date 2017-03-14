@@ -55,12 +55,6 @@
         <license>Apache Software License 2.0</license>
     </notice>
     <notice>
-        <name>Floaties</name>
-        <copyright/>
-        <url>https://github.com/ericbhatti/floaties</url>
-        <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
         <name>SortableTableView</name>
         <copyright>Copyright 2015 Ingo Schwarz</copyright>
         <url>https://github.com/ISchwarz23/SortableTableView</url>
@@ -77,5 +71,23 @@
         <copyright>2016 (C) Copyright Open-RnD Sp. z o.o.</copyright>
         <url>https://github.com/open-rnd/android-multi-level-listview</url>
         <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>hover</name>
+        <copyright>2016 (C) Copyright Open-RnD Sp. z o.o.</copyright>
+        <url>https://github.com/open-rnd/android-multi-level-listview</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>event-bus</name>
+        <copyright>2016 (C) Copyright Open-RnD Sp. z o.o.</copyright>
+        <url>https://github.com/open-rnd/android-multi-level-listview</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>Expandable RecyclerView</name>
+        <copyright>Copyright (c) 2014 Big Nerd Ranch</copyright>
+        <url>https://github.com/bignerdranch/expandable-recycler-view</url>
+        <license>MIT License</license>
     </notice>
 </notices>

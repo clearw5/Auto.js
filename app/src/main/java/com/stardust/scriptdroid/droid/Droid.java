@@ -10,7 +10,7 @@ import com.stardust.scriptdroid.droid.runtime.ScriptStopException;
 import com.stardust.scriptdroid.droid.script.JavaScriptEngine;
 import com.stardust.scriptdroid.droid.script.RhinoJavaScriptEngine;
 import com.stardust.scriptdroid.droid.script.ScriptExecuteActivity;
-import com.stardust.scriptdroid.file.FileUtils;
+import com.stardust.scriptdroid.tool.FileUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;

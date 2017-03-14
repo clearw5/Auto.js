@@ -142,4 +142,9 @@
     <string name="text_layout_hierarchy">布局层次分析</string>
     <string name="text_layout_bounds">布局范围查看</string>
     <string name="text_no_accessibility_permission_to_capture">无障碍服务未启动</string>
+    <string name="text_sample_script">示例脚本</string>
+    <string name="text_my_script">我的脚本</string>
+    <string name="hint_no_script">点击右上角新建第一个脚本吧~(。・・)ノ</string>
+    <string name="text_reset_background">重置背景图片设置</string>
+    <string name="text_restart_app_to_apply">重启软件生效</string>
 </resources>

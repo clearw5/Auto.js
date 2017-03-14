@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#8ea22a</color>
-    <color name="colorPrimaryDark">#5e6b1e</color>
-    <color name="colorAccent">#8ea22a</color>
+    <color name="colorPrimary">#009688</color>
+    <color name="colorPrimaryOld">#8ea22a</color>
+    <color name="colorPrimaryDark">#00796B</color>
+    <color name="colorAccent">#FF4081</color>
     <color name="sliding_up_panel_shadow_color">#99444444</color>
 </resources>

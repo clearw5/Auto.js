@@ -2,7 +2,7 @@ package com.stardust.scriptdroid.droid.script;
 
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.BuildConfig;
-import com.stardust.scriptdroid.file.FileUtils;
+import com.stardust.scriptdroid.tool.FileUtils;
 
 import java.io.IOException;
 import java.util.HashMap;

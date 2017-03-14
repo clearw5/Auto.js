@@ -235,6 +235,10 @@ for(var x in __selector__){
                    return s[method](arguments[0]);
                 }else if(arguments.length == 2){
                    return s[method](arguments[0], arguments[1]);
+                }else if(arguments.length == 3){
+                   return s[method](arguments[0], arguments[1], arguments[2]);
+                }else if(arguments.length == 4){
+                   return s[method](arguments[0], arguments[1], arguments[2], arguments[3]);
                 }else{
                    return s[method].call(s, Array.prototype.slice.call(arguments));
                 }

@@ -77,7 +77,7 @@ public class HoverMenuAdapter implements io.mattcarroll.hover.HoverMenuAdapter {
     private View getTabViewInner(int index) {
         String menuItemId = mTabIds.get(index);
         if (ID_MAIN.equals(menuItemId)) {
-            return createTabView(R.drawable.ic_android_eat_js);
+            return createTabView(R.drawable.ic_android_eat_js_100);
         } else if (ID_RECORD.equals(menuItemId)) {
             return createTabView(R.drawable.ic_video_record);
         } else if (ID_SCRIPT_LIST.equals(menuItemId)) {

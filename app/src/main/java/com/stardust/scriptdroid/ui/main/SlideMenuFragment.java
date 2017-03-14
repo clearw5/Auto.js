@@ -11,16 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.stardust.app.Fragment;
-import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
+import com.stardust.scriptdroid.external.floating_window.HoverMenuService;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.console.ConsoleActivity;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 
 /**
@@ -35,7 +38,13 @@ public class SlideMenuFragment extends Fragment {
         activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).commit();
     }
 
-    private SwitchCompat mAutoOperateServiceSwitch, mAssistServiceSwitch;
+    private SwitchCompat mAutoOperateServiceSwitch, mFloatingWindowSwitch;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
 
     @Nullable
     @Override
@@ -61,12 +70,12 @@ public class SlideMenuFragment extends Fragment {
                 mAutoOperateServiceSwitch.setChecked(AccessibilityWatchDogService.isEnable());
             }
         }, 450);
-        mAssistServiceSwitch.setChecked(FloatingWindowManger.isFloatingWindowShowing());
+        mFloatingWindowSwitch.setChecked(FloatingWindowManger.isFloatingWindowShowing());
     }
 
     private void setUpSwitchCompat() {
         mAutoOperateServiceSwitch = $(R.id.sw_auto_operate_service);
-        mAssistServiceSwitch = $(R.id.sw_floating_window);
+        mFloatingWindowSwitch = $(R.id.sw_floating_window);
     }
 
 
@@ -77,7 +86,7 @@ public class SlideMenuFragment extends Fragment {
 
     @ViewBinding.Click(R.id.syntax_and_api)
     private void startSyntaxHelpActivity() {
-        HelpCatalogueActivity.showCatalogue(getActivity());
+        HelpCatalogueActivity.showMainCatalogue(getActivity());
     }
 
     @ViewBinding.Click(R.id.auto_operate_service)
@@ -105,7 +114,7 @@ public class SlideMenuFragment extends Fragment {
 
     @ViewBinding.Click(R.id.floating_window)
     private void toggleAssistServiceSwitch() {
-        mAssistServiceSwitch.toggle();
+        mFloatingWindowSwitch.toggle();
     }
 
 
@@ -121,6 +130,12 @@ public class SlideMenuFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onHoverMenuServiceStateChanged(HoverMenuService.ServiceStateChangedEvent event) {
+        mFloatingWindowSwitch.setChecked(event.state);
     }
 
 }

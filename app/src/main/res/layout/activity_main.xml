@@ -10,19 +10,21 @@
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:layout_height="match_parent">
 
         <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="128.5dp"
+            android:background="@drawable/toolbar_bg"
+            android:paddingTop="24dp"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-            <com.stardust.theme.widget.ThemeColorToolbar
+            <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
+                android:onClick="OnAppBarClick"
                 android:title="@string/_app_name"
                 app:popupTheme="@style/AppTheme.PopupOverlay">
 
@@ -35,7 +37,16 @@
                     android:padding="12dp"
                     android:src="@drawable/ic_add_white_48dp"/>
 
-            </com.stardust.theme.widget.ThemeColorToolbar>
+            </android.support.v7.widget.Toolbar>
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabGravity="fill"
+                app:tabIndicatorColor="#E91E63"
+                app:tabMode="fixed"
+                app:tabTextColor="@android:color/primary_text_dark"/>
 
         </android.support.design.widget.AppBarLayout>
 

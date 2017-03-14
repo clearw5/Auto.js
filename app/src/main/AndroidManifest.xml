@@ -21,11 +21,11 @@
             android:name=".ui.main.MainActivity"
             android:label="@string/_app_name"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+            android:theme="@style/AppTheme.FullScreen">
 
+            <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
 
@@ -71,12 +71,13 @@
         <activity android:name=".ui.settings.SettingsActivity"/>
         <activity android:name=".ui.console.ConsoleActivity"/>
         <activity android:name=".ui.error.ErrorReportActivity"/>
+        <activity android:name=".ui.help.LocalWebViewActivity"/>
+
         <activity
             android:name=".ui.error.IssueReportActivity"
             android:theme="@style/IssueReportTheme"/>
         <activity android:name=".droid.script.ScriptExecuteActivity"/>
 
-        <service android:name=".external.notification.bounds_assist.BoundsAssistSwitchNotificationHandleService"/>
         <service android:name=".external.notification.record.ActionRecordSwitchHandleService"/>
         <service android:name=".service.VolumeChangeListenService"/>
         <service android:name="com.stardust.view.Floaty$FloatHeadService"/>

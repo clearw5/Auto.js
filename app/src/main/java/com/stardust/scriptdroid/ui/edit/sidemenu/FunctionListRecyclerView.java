@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.file.FileUtils;
+import com.stardust.scriptdroid.tool.FileUtils;
 import com.stardust.widget.ExpandableRecyclerView;
 
 import java.text.Collator;

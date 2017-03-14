@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:drawable="@android:color/white"/>
+
+    <item
+        android:bottom="214dp"
+        android:drawable="@drawable/ic_android_eat_js"
+        android:gravity="center"
+        android:left="100dp"
+        android:right="100dp"
+        android:tileMode="repeat"
+        android:top="214dp">
+    </item>
+
+</layer-list>

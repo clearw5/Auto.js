@@ -19,7 +19,7 @@ public class TextFilter extends ListFilter.Default {
     };
 
     public static ListFilter equals(String text) {
-        return new EqualsFilter(text, TEXT_GETTER);
+        return new StringEqualsFilter(text, TEXT_GETTER);
     }
 
     public static ListFilter contains(String str) {
@@ -27,15 +27,15 @@ public class TextFilter extends ListFilter.Default {
     }
 
     public static ListFilter startsWith(String prefix) {
-        return new StartsWithFilter(prefix, TEXT_GETTER);
+        return new StringStartsWithFilter(prefix, TEXT_GETTER);
     }
 
     public static ListFilter endsWith(String suffix) {
-        return new EndsWithFilter(suffix, TEXT_GETTER);
+        return new StringEndsWithFilter(suffix, TEXT_GETTER);
     }
 
     public static ListFilter matches(String regex) {
-        return new MatchesFilter(regex, TEXT_GETTER);
+        return new StringMatchesFilter(regex, TEXT_GETTER);
     }
 
     private String mText;

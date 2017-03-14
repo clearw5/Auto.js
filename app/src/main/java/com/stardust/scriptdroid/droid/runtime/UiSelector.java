@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.bezyapps.floatieslibrary.Floaty;
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.automator.ActionArgument;
 import com.stardust.automator.UiGlobalSelector;

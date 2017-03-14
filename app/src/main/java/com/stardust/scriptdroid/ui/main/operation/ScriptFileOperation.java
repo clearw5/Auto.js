@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -13,15 +12,11 @@ import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.external.shortcut.Shortcut;
 import com.stardust.scriptdroid.external.shortcut.ShortcutActivity;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
-import com.stardust.scriptdroid.ui.main.ScriptListRecyclerView;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 
 import org.greenrobot.eventbus.EventBus;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Stardust on 2017/1/23.

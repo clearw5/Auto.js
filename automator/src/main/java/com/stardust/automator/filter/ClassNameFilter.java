@@ -20,23 +20,23 @@ public class ClassNameFilter {
         if (!text.contains(".")) {
             text = "android.widget." + text;
         }
-        return new EqualsFilter(text, CLASS_NAME_GETTER);
+        return new StringEqualsFilter(text, CLASS_NAME_GETTER);
     }
 
     public static ListFilter contains(String str) {
-        return new ContainsFilter(str, CLASS_NAME_GETTER);
+        return new StringContainsFilter(str, CLASS_NAME_GETTER);
     }
 
     public static ListFilter startsWith(String prefix) {
-        return new StartsWithFilter(prefix, CLASS_NAME_GETTER);
+        return new StringStartsWithFilter(prefix, CLASS_NAME_GETTER);
     }
 
     public static ListFilter endsWith(String suffix) {
-        return new EndsWithFilter(suffix, CLASS_NAME_GETTER);
+        return new StringEndsWithFilter(suffix, CLASS_NAME_GETTER);
     }
 
     public static ListFilter matches(String regex) {
-        return new MatchesFilter(regex, CLASS_NAME_GETTER);
+        return new StringMatchesFilter(regex, CLASS_NAME_GETTER);
     }
 
     private ClassNameFilter() {

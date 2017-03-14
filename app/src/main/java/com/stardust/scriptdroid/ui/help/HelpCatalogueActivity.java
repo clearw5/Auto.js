@@ -17,11 +17,12 @@ import com.stardust.scriptdroid.ui.BaseActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.file.FileUtils;
+import com.stardust.scriptdroid.tool.FileUtils;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
@@ -33,14 +34,17 @@ import java.util.Map;
 
 public class HelpCatalogueActivity extends BaseActivity {
 
-    public static void showCatalogue(Context context, String catalogue) {
+
+    public static void showCatalogue(Context context, String title, String catalogue) {
         context.startActivity(new Intent(context, HelpCatalogueActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra("title", title)
                 .putExtra("catalogue", catalogue));
     }
 
-    public static void showCatalogue(Context context) {
-        showCatalogue(context, "main");
+    public static void showMainCatalogue(Context context) {
+        context.startActivity(new Intent(context, HelpCatalogueActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     private static final Map<String, List<Item>> CATALOGUES;
@@ -49,8 +53,8 @@ public class HelpCatalogueActivity extends BaseActivity {
 
         String title;
         String summary;
-        private String catalogue;
-        private String documentation;
+        private String type;
+        private String path;
 
         Item(String title, String summary) {
             this.title = title;
@@ -61,29 +65,25 @@ public class HelpCatalogueActivity extends BaseActivity {
             this(title, null);
         }
 
-        Item catalogue(String catalogue) {
-            this.catalogue = catalogue;
-            return this;
-        }
-
-        Item documentation(String documentation) {
-            this.documentation = documentation;
-            return this;
-        }
-
         void redirect(Context context) {
-            if (documentation != null) {
-                DocumentationActivity.openDocumentation(context, title, documentation);
-            } else if (catalogue != null) {
-                showCatalogue(context, catalogue);
-            } else {
-                DocumentationActivity.openDocumentation(context, title, title);
+            switch (type) {
+                case "markdown":
+                    DocumentationActivity.openDocumentation(context, title, path + "/" + title + ".md");
+                    break;
+                case "catalogue":
+                    showCatalogue(context, title, title);
+                    break;
+                case "html":
+                    LocalWebViewActivity.openAssetsHtml(context, title, path + "/" + title + ".html");
+                    break;
             }
+
         }
     }
 
     List<Item> mItems;
     private RecyclerView mRecyclerView;
+    private String mTitle;
     private View.OnClickListener mOnItemClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -105,12 +105,15 @@ public class HelpCatalogueActivity extends BaseActivity {
         String catalogue = getIntent().getStringExtra("catalogue");
         if (catalogue == null)
             catalogue = "main";
+        mTitle = getIntent().getStringExtra("title");
+        if (mTitle == null)
+            mTitle = getString(R.string.text_help);
         mItems = CATALOGUES.get(catalogue);
     }
 
     private void setUpUI() {
         setContentView(R.layout.activity_help);
-        setToolbarAsBack(getString(R.string.text_help));
+        setToolbarAsBack(mTitle);
         setUpRecyclerView();
     }
 
