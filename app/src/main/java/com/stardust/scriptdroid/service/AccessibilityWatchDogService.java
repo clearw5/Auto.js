@@ -81,7 +81,7 @@ public class AccessibilityWatchDogService extends AccessibilityService {
         Log.v(TAG, "onAccessibilityEvent: " + event);
         synchronized (mDelegates) {
             for (Map.Entry<Integer, AccessibilityDelegate> entry : mDelegates.entrySet()) {
-                Log.v(TAG, "delegate: " + entry.getValue().getClass().getName());
+                //Log.v(TAG, "delegate: " + entry.getValue().getClass().getName());
                 if (entry.getValue().onAccessibilityEvent(this, event))
                     break;
             }

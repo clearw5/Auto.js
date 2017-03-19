@@ -53,6 +53,11 @@
       "title": "需要Root权限的自动操作函数",
       "type": "markdown",
       "path":"documentation"
+    },
+    {
+      "title": "调用Java API",
+      "type": "markdown",
+      "path":"documentation"
     }
   ],
   "EMCAScript教程": [

@@ -139,18 +139,6 @@ public class ScriptListRecyclerView extends ThemeColorRecyclerView {
         Snackbar.make(this, event.messageResId, Snackbar.LENGTH_SHORT).show();
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        EventBus.getDefault().unregister(this);
-    }
-
     private class Adapter extends RecyclerView.Adapter<ViewHolder> {
 
         @Override

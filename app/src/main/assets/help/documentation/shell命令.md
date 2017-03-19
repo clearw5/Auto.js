@@ -27,6 +27,7 @@ if(result.code == 1){
 * [应用包名](#应用包名)
 * [pm命令](#pm命令)
 * [其他命令](#其他命令)
+* [Shell类](#Shell类)
 
 ## am命令
 
@@ -357,3 +358,40 @@ ls filepath
 ```
 log(shell("ls /system/bin"));
 ```
+
+## Shell类
+
+当需要连续执行很多命令时，每条命令都需要申请Root权限，执行时间会大大增加。这时可以使用Shell类。
+### new Shell(root = false)
+* root \<Boolean\> 是否以root权限执行。默认为false。
+
+Shell类的构造函数。
+
+### Shell.execute(cmd)
+* cmd \<String\> 要执行的命令
+
+执行命令cmd，例如：
+```
+var sh = Shell(true);
+sh.execute("rm /sdcard/1.txt"); //删除SD卡上的1.txt文件
+```
+
+### Shell.exitAndWaitFor()
+退出Shell，并等待所有命令执行完成。
+一个完整的例子如下：
+```
+var sh = Shell(true);
+sh.execute("rm /sdcard/1.txt"); 
+sh.execute("input keyevent 26");
+sh.exitAndWaitFor();
+```
+
+### Shell.waitFor()
+等待当前所有命令执行完成。返回一个整数作为返回码，1为执行成功，其他数字为错误。
+
+### Shell.exit()
+退出Shell。调用该函数后再执行的命令无效。
+
+
+
+除以上命令之外, Shell也包含自动操作的命令，例如Shell.Tap，参见《需要Root权限的自动操作函数》。

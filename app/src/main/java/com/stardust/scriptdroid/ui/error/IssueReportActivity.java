@@ -66,9 +66,17 @@ public class IssueReportActivity extends IssueReporterActivity {
         final String errorDetail = getIntent().getStringExtra("error");
         if (errorDetail != null) {
             ((EditText) findViewById(R.id.air_inputDescription)).setText(errorDetail);
-            ((EditText) findViewById(R.id.air_inputTitle)).setText(R.string.text_crash_en);
+            String title = getFirstLine(errorDetail);
+            ((EditText) findViewById(R.id.air_inputTitle)).setText(title);
             mCrash = true;
         }
+    }
+
+    private String getFirstLine(String str) {
+        int i = str.indexOf('\n');
+        if(i < 0)
+            return str;
+        return str.substring(0, i);
     }
 
     private boolean validateInput() {

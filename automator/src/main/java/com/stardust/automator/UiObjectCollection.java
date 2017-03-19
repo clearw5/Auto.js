@@ -7,6 +7,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.stardust.util.Consumer;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.*;
@@ -24,7 +25,6 @@ import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.
  */
 
 public class UiObjectCollection {
-
 
     public static UiObjectCollection ofCompat(List<AccessibilityNodeInfoCompat> list) {
         return new UiObjectCollection(list);
@@ -186,6 +186,7 @@ public class UiObjectCollection {
         ensureUiObjectAt(i);
         return mUiObjects[i];
     }
+
 
     private void ensureUiObjectAt(int i) {
         if (mUiObjects == null) {

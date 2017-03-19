@@ -16,15 +16,15 @@ import com.stardust.scriptdroid.R;
 public class ImageSelector implements OnActivityResultDelegate {
 
     public interface ImageSelectorCallback {
-        void onImageSelected(String path);
+        void onImageSelected(ImageSelector selector, String path);
     }
 
     private static final int REQUEST_CODE = "LOVE EATING".hashCode() >> 16;
     private Activity mActivity;
     private ImageSelectorCallback mCallback;
 
-    public ImageSelector(Activity activity, Manager manager, ImageSelectorCallback callback) {
-        manager.addDelegate(REQUEST_CODE, this);
+    public ImageSelector(Activity activity, Intermediary intermediary, ImageSelectorCallback callback) {
+        intermediary.addDelegate(REQUEST_CODE, this);
         mActivity = activity;
         mCallback = callback;
     }
@@ -48,7 +48,7 @@ public class ImageSelector implements OnActivityResultDelegate {
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             String filePath = cursor.getString(columnIndex);
             cursor.close();
-            mCallback.onImageSelected(filePath);
+            mCallback.onImageSelected(this, filePath);
         }
 
 

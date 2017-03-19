@@ -15,10 +15,14 @@ import com.stardust.view.accessibility.AccessibilityDelegate;
 
 public class AccessibilityInfoProvider implements AccessibilityDelegate {
 
-    public static AccessibilityInfoProvider instance = new AccessibilityInfoProvider();
+    private static AccessibilityInfoProvider instance = new AccessibilityInfoProvider();
 
     private String mLatestPackage = "";
     private String mLatestActivity = "";
+
+    public static AccessibilityInfoProvider getInstance() {
+        return instance;
+    }
 
     public synchronized String getLatestPackage() {
         return mLatestPackage;

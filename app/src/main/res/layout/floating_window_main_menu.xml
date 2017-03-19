@@ -49,4 +49,47 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#c4c4c4"/>
+
+    <TextView
+        android:id="@+id/open_launcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:padding="16dp"
+        android:text="@string/text_open_launcher"
+        android:textColor="@android:color/primary_text_dark"
+        android:textSize="16sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#c4c4c4"/>
+
+    <TextView
+        android:id="@+id/current_package"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:padding="16dp"
+        android:textColor="@android:color/primary_text_dark"
+        android:textSize="16sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#c4c4c4"/>
+
+    <TextView
+        android:id="@+id/current_activity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:padding="16dp"
+        android:textColor="@android:color/primary_text_dark"
+        android:textSize="16sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#c4c4c4"/>
 </LinearLayout>

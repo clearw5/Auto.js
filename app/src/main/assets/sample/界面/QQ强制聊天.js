@@ -1,10 +1,10 @@
 "ui";
 
-importClass("android.widget.EditText");
-importClass("android.widget.Button");
-importClass("android.widget.LinearLayout");
-importClass("android.content.Intent");
-importClass("android.net.Uri");
+importClass(android.widget.EditText);
+importClass(android.widget.Button);
+importClass(android.widget.LinearLayout);
+importClass(android.content.Intent);
+importClass(android.net.Uri);
 
 var qq = new EditText(activity);
 qq.setHint("请输入QQ号");

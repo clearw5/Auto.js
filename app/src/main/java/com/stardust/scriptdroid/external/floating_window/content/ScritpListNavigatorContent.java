@@ -6,6 +6,7 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
 import com.stardust.scriptdroid.external.floating_window.view.FloatingScriptFileListView;
 
@@ -22,7 +23,7 @@ public class ScritpListNavigatorContent implements NavigatorContent {
 
     public ScritpListNavigatorContent(Context context) {
         mFloatingScriptFileListView = new FloatingScriptFileListView(new ContextThemeWrapper(context, R.style.AppTheme));
-        mFloatingScriptFileListView.setScriptFileList(SharedPrefScriptFileList.getInstance());
+        mFloatingScriptFileListView.setScriptFileList(ScriptFileList.getImpl());
     }
 
     @NonNull

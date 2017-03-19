@@ -69,8 +69,9 @@ public class UiSelector extends UiGlobalSelector {
     private static final String TAG = "UiSelector";
 
     public UiObjectCollection find() {
+        DroidRuntime.getRuntime().ensureAccessibilityServiceEnable();
         FindCommand command = new FindCommand();
-        AccessibilityEventCommandHost.instance.executeAndWaitForEvent(command);
+        AccessibilityEventCommandHost.getInstance().executeAndWaitForEvent(command);
         return command.result;
     }
 
@@ -85,11 +86,7 @@ public class UiSelector extends UiGlobalSelector {
     }
 
     public UiObject findOne() {
-        UiObjectCollection collection = find();
-        if (collection == null || collection.size() == 0) {
-            return null;
-        }
-        return new UiObject(collection.get(0).getInfo());
+        return untilFindOne();
     }
 
     @NonNull
@@ -103,7 +100,7 @@ public class UiSelector extends UiGlobalSelector {
             addFilter(new DfsFilter() {
                 @Override
                 protected boolean isIncluded(AccessibilityNodeInfo nodeInfo) {
-                    String fullId = AccessibilityInfoProvider.instance.getLatestPackage() + ":id/" + id;
+                    String fullId = AccessibilityInfoProvider.getInstance().getLatestPackage() + ":id/" + id;
                     return fullId.equals(nodeInfo.getViewIdResourceName());
                 }
             });

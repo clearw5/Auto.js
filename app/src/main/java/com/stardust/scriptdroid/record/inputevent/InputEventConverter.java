@@ -7,6 +7,8 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.scriptdroid.ui.main.MainActivity;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +18,21 @@ import java.util.regex.Pattern;
 
 public abstract class InputEventConverter {
 
+
+    public static class RecordStateChangeEvent {
+
+        private boolean mIsRecording;
+
+        public RecordStateChangeEvent(boolean isRecording) {
+            this.mIsRecording = isRecording;
+        }
+
+
+        public boolean isRecording() {
+            return mIsRecording;
+        }
+
+    }
 
     static class Event {
 
@@ -100,11 +117,11 @@ public abstract class InputEventConverter {
     }
 
     public void notifyRecordStopped() {
-        MainActivity.onRootRecordStopped(App.getApp());
+        EventBus.getDefault().post(new RecordStateChangeEvent(false));
     }
 
     public void notifyRecordStarted() {
-        DroidRuntime.getRuntime().toast(App.getApp().getString(R.string.text_start_record));
+        EventBus.getDefault().post(new RecordStateChangeEvent(true));
     }
 
 }

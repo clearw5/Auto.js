@@ -29,14 +29,36 @@ import java.util.List;
 
 public class SampleScriptListRecyclerView extends RecyclerView {
 
+    public interface OnItemLongClickListener {
+        void onItemLongClick(Sample sample);
+    }
 
-    private OnClickListener mOnItemClickListener = new OnClickListener() {
+    public interface OnItemClickListener {
+        void onItemClick(Sample sample);
+    }
+
+    private OnClickListener mOnItemClickListenerProxy = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            SampleViewHolder viewHolder = (SampleViewHolder) getChildViewHolder(v);
-            viewSample(viewHolder.getChild());
+            if (mOnItemClickListener != null) {
+                SampleViewHolder viewHolder = (SampleViewHolder) getChildViewHolder(v);
+                mOnItemClickListener.onItemClick(viewHolder.getChild());
+            }
         }
     };
+    private OnLongClickListener mOnLongClickListenerProxy = new OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            if (mOnItemLongClickListener != null) {
+                SampleViewHolder viewHolder = (SampleViewHolder) getChildViewHolder(v);
+                mOnItemLongClickListener.onItemLongClick(viewHolder.getChild());
+                return true;
+            }
+            return false;
+        }
+    };
+    private OnItemLongClickListener mOnItemLongClickListener;
+    private OnItemClickListener mOnItemClickListener;
 
 
     private Adapter mAdapter;
@@ -57,6 +79,14 @@ public class SampleScriptListRecyclerView extends RecyclerView {
         init();
     }
 
+    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        mOnItemLongClickListener = onItemLongClickListener;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
     public void setSamples(List<com.stardust.scriptdroid.sample.SampleGroup> samples) {
         mSampleGroups.clear();
         for (com.stardust.scriptdroid.sample.SampleGroup sampleGroup : samples) {
@@ -69,12 +99,6 @@ public class SampleScriptListRecyclerView extends RecyclerView {
     private void init() {
         setLayoutManager(new LinearLayoutManager(getContext()));
         addItemDecoration(new DividerItemDecoration(getContext(), VERTICAL));
-    }
-
-
-
-    private void viewSample(Sample sample) {
-        EditActivity.editAssetFile(getContext(), sample.name, sample.path);
     }
 
     private class SampleGroup implements Parent<Sample> {
@@ -108,7 +132,8 @@ public class SampleScriptListRecyclerView extends RecyclerView {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.name);
             ((LevelBeamView) itemView.findViewById(R.id.level)).setLevel(2);
-            itemView.setOnClickListener(mOnItemClickListener);
+            itemView.setOnClickListener(mOnItemClickListenerProxy);
+            itemView.setOnLongClickListener(mOnLongClickListenerProxy);
         }
 
         void bind(Sample sample) {

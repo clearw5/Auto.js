@@ -6,9 +6,11 @@ package com.stardust.scriptdroid.record.inputevent;
 
 public class InputEventToJsRecorder extends InputEventRecorder {
 
+    private InputEventToJsConverter mInputEventToJsConverter;
 
     public InputEventToJsRecorder() {
         super("getevent -t -l", new InputEventToJsConverter());
+        mInputEventToJsConverter = (InputEventToJsConverter) mInputEventConverter;
     }
 
     @Override
@@ -19,5 +21,13 @@ public class InputEventToJsRecorder extends InputEventRecorder {
     @Override
     public String getCode() {
         return mInputEventConverter.getCode();
+    }
+
+    public void setStartTriggerKey(String startTriggerKey) {
+        mInputEventToJsConverter.setStartTriggerKey(startTriggerKey);
+    }
+
+    public void setStopTriggerKey(String stopTriggerKey) {
+        mInputEventToJsConverter.setStopTriggerKey(stopTriggerKey);
     }
 }

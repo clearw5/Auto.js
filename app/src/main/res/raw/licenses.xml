@@ -75,13 +75,13 @@
     <notice>
         <name>hover</name>
         <copyright>2016 (C) Copyright Open-RnD Sp. z o.o.</copyright>
-        <url>https://github.com/open-rnd/android-multi-level-listview</url>
+        <url>https://github.com/google/hover</url>
         <license>Apache Software License 2.0</license>
     </notice>
     <notice>
         <name>event-bus</name>
         <copyright>2016 (C) Copyright Open-RnD Sp. z o.o.</copyright>
-        <url>https://github.com/open-rnd/android-multi-level-listview</url>
+        <url>https://github.com/greenrobot/EventBus</url>
         <license>Apache Software License 2.0</license>
     </notice>
     <notice>

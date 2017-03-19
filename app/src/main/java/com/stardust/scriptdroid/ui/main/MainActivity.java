@@ -33,7 +33,7 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
-import com.stardust.scriptdroid.external.notification.record.ActionRecordSwitchNotification;
+import com.stardust.scriptdroid.external.notification.record.AccessibilityActionRecordNotification;
 import com.stardust.scriptdroid.record.inputevent.InputEventRecorder;
 import com.stardust.scriptdroid.record.inputevent.InputEventToJsRecorder;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
@@ -68,12 +68,14 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     private static final String ARGUMENT_SCRIPT = "ARGUMENT_SCRIPT";
     private static final String ACTION_ON_ROOT_RECORD_STOPPED = "ACTION_ON_ROOT_RECORD_STOPPED";
 
-    private SlidingUpPanel mAddFilePanel;
     private ScriptFileList mScriptFileList;
+    private DrawerLayout mDrawerLayout;
+    @ViewBinding.Id(R.id.bottom_menu)
+    private SlidingUpPanel mAddBottomMenuPanel;
+
     private MyScriptListFragment mMyScriptListFragment;
     private SampleScriptListFragment mSampleScriptListFragment;
-    private DrawerLayout mDrawerLayout;
-    private OnActivityResultDelegate.Manager mManager = new OnActivityResultDelegate.Manager();
+    private OnActivityResultDelegate.Intermediary mActivityResultIntermediary = new OnActivityResultDelegate.Intermediary();
     private BackPressedHandler.Observer mBackPressObserver = new BackPressedHandler.Observer();
 
     @Override
@@ -113,7 +115,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     private void addScriptFile(final String path) {
         new ThemeColorMaterialDialogBuilder(this).title(R.string.text_name)
                 .inputType(InputType.TYPE_CLASS_TEXT)
-                .input(getString(R.string.text_please_input_name), new File(path).getName(), new MaterialDialog.InputCallback() {
+                .input(getString(R.string.text_please_input_name), FileUtils.getNameWithoutExtension(path), new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                         MainActivity.this.addScriptFile(input.toString(), path);
@@ -130,7 +132,6 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         mDrawerLayout = (DrawerLayout) View.inflate(this, R.layout.activity_main, null);
         setContentView(mDrawerLayout);
         setUpFragment();
-        mAddFilePanel = $(R.id.bottom_menu);
         setUpToolbar();
         setUpTabLayout();
         setUpDrawerHeader();
@@ -141,7 +142,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     private void setUpFragment() {
         SlideMenuFragment.setFragment(this, R.id.fragment_slide_menu);
         mMyScriptListFragment = new MyScriptListFragment();
-        mScriptFileList = SharedPrefScriptFileList.getInstance();
+        mScriptFileList = ScriptFileList.getImpl();
         mSampleScriptListFragment = new SampleScriptListFragment();
     }
 
@@ -188,7 +189,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     @ViewBinding.Click(R.id.add)
     private void showAddFilePanel() {
-        mAddFilePanel.show();
+        mAddBottomMenuPanel.show();
     }
 
     @ViewBinding.Click(R.id.create_new_file)
@@ -238,7 +239,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
             Snackbar.make(mDrawerLayout, R.string.text_need_enable_accessibility_service, Snackbar.LENGTH_SHORT).show();
             return;
         }
-        ActionRecordSwitchNotification.showOrUpdateNotification();
+        AccessibilityActionRecordNotification.showOrUpdateNotification();
         Snackbar.make(mDrawerLayout, R.string.hint_start_record, Snackbar.LENGTH_SHORT).show();
     }
 
@@ -265,11 +266,12 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     @ViewBinding.Click(R.id.drawer_header_img)
     public void selectHeaderImage() {
-        new ImageSelector(this, mManager, new ImageSelector.ImageSelectorCallback() {
+        new ImageSelector(this, mActivityResultIntermediary, new ImageSelector.ImageSelectorCallback() {
             @Override
-            public void onImageSelected(String path) {
+            public void onImageSelected(ImageSelector selector, String path) {
                 setDrawerHeaderImage(path);
                 Pref.def().edit().putString(Pref.KEY_DRAWER_HEADER_IMAGE_PATH, path).apply();
+                mActivityResultIntermediary.removeDelegate(selector);
             }
         }).select();
     }
@@ -334,8 +336,8 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     @Override
     public void onBackPressed() {
-        if (mAddFilePanel.isShowing()) {
-            mAddFilePanel.dismiss();
+        if (mAddBottomMenuPanel.isShowing()) {
+            mAddBottomMenuPanel.dismiss();
         } else if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
             mDrawerLayout.closeDrawer(Gravity.START);
         } else {
@@ -350,7 +352,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mManager.onActivityResult(requestCode, resultCode, data);
+        mActivityResultIntermediary.onActivityResult(requestCode, resultCode, data);
     }
 
     public static void onActionRecordStopped(Context context, String script) {
@@ -370,11 +372,12 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     }
 
     public void OnAppBarClick(View view) {
-        new ImageSelector(this, mManager, new ImageSelector.ImageSelectorCallback() {
+        new ImageSelector(this, mActivityResultIntermediary, new ImageSelector.ImageSelectorCallback() {
             @Override
-            public void onImageSelected(String path) {
+            public void onImageSelected(ImageSelector selector, String path) {
                 Pref.def().edit().putString(Pref.KEY_APP_BAR_IMAGE_PATH, path).apply();
                 setAppBarImage(path);
+                mActivityResultIntermediary.removeDelegate(selector);
             }
         }).select();
     }

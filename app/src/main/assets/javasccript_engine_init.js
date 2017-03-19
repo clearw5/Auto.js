@@ -80,27 +80,11 @@ var select = function(a, b, c, d){
     }, arguments);
 }
 
-var focus = function(a, b, c, d){
-    return performAction(function(target){
-        return droid.focus(target);
-    }, arguments);
-}
-
-var paste = function(a, b, c, d){
-    return performAction(function(target){
-        return droid.paste(target);
-    }, arguments);
-}
-
-var editable = function(i){
-    return droid.editable(i);
-}
-
 var input = function(a, b){
     if(arguments.length == 1){
-        return droid.setText(editable(-1), a);
+        return droid.setText(droid.editable(-1), a);
     }else{
-        return droid.setText(editable(a), b);
+        return droid.setText(droid.editable(a), b);
     }
 }
 
@@ -120,6 +104,8 @@ var log = function(str){
     droid.log(str);
 }
 
+var print = log;
+
 var err = function(e){
    droid.err(e);
 }
@@ -137,16 +123,12 @@ var shell = function(cmd, root){
     return droid.shell(cmd, root);
 }
 
-var getTexts = function(){
-    return droid.getTexts();
+var currentPackage = function(){
+    return droid.currentPackage();
 }
 
-var getPackageName = function(){
-    return droid.getPackageName();
-}
-
-var getActivityName = function(){
-    return droid.getActivityName();
+var currentActivity = function(){
+    return droid.currentActivity();
 }
 
 var setClip = function(text){
@@ -229,6 +211,7 @@ for(var x in __selector__){
         this[x] = (function(method) {
             return function(){
                 var s = droid.selector();
+                //这里不知道怎么写。尴尬。只能写成这样。
                 if(arguments.length == 0){
                    return s[method]();
                 }else if(arguments.length == 1){

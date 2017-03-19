@@ -9,7 +9,9 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
+import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
+import com.stardust.scriptdroid.tool.FileUtils;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
@@ -31,8 +33,8 @@ public class ImportIntentActivity extends BaseActivity {
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, R.string.edit_and_run_handle_intent_error, Toast.LENGTH_LONG).show();
+            finish();
         }
-        finish();
     }
 
     private void handleIntent() {
@@ -41,19 +43,22 @@ public class ImportIntentActivity extends BaseActivity {
         if (!TextUtils.isEmpty(path)) {
             new ThemeColorMaterialDialogBuilder(this)
                     .title(R.string.text_please_input_name)
-                    .input(getString(R.string.text_name), new File(path).getName(), new MaterialDialog.InputCallback() {
+                    .input(getString(R.string.text_name), FileUtils.getNameWithoutExtension(path), new MaterialDialog.InputCallback() {
                         @Override
                         public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                            SharedPrefScriptFileList.getInstance().add(new ScriptFile(input.toString(), path));
+                            ScriptFileList.getImpl().add(new ScriptFile(input.toString(), path));
                             startMainActivity();
                         }
                     })
                     .show();
+        } else {
+            finish();
         }
     }
 
     private void startMainActivity() {
         startActivity(new Intent(this, MainActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+        finish();
     }
 }

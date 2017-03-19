@@ -32,4 +32,10 @@ public @interface ViewBinding {
     @interface Check {
         int value();
     }
+
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Id {
+        int value();
+    }
 }

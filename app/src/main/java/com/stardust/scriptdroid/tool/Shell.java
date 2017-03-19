@@ -38,49 +38,6 @@ public class Shell {
     private StringBuilder mSucceedOutput = new StringBuilder();
     private StringBuilder mErrorOutput = new StringBuilder();
 
-    public static String bytesToString(byte[] data, int base, int length) {
-        StringBuilder buf = new StringBuilder();
-
-        for(int i = 0; i < length; ++i) {
-            byte b = data[base + i];
-            if(b >= 32 && b <= 126) {
-                buf.append((char)b);
-            } else {
-                buf.append(String.format("\\x%02x", new Object[]{Byte.valueOf(b)}));
-            }
-        }
-
-        return buf.toString();
-    }
-
-
-    public static void test(final Activity activity) {
-        TermSettings settings = new TermSettings(App.getApp().getResources(), PreferenceManager.getDefaultSharedPreferences(App.getApp()));
-        try {
-            final ShellTermSession termSession = new ShellTermSession(settings, "");
-            termSession.initializeEmulator(80, 40);
-            termSession.write("su\r");
-            termSession.write("getevent\r");
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(termSession.getTermIn()));
-                    try {
-                        while (reader.ready()){
-                            String line = reader.readLine();
-                            System.out.println(line);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
     public Shell() {
         this(false);
     }
@@ -97,7 +54,6 @@ public class Shell {
     }
 
     public Shell execute(String command) {
-
         try {
             mCommandOutputStream.writeBytes(command);
             if (!command.endsWith(COMMAND_LINE_END)) {

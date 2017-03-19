@@ -14,6 +14,16 @@ import java.util.Map;
 
 public abstract class JavaScriptEngine {
 
+    private static JavaScriptEngine defaultEngine;
+
+    public static JavaScriptEngine getDefault() {
+        return defaultEngine;
+    }
+
+    public static void setDefault(JavaScriptEngine engine) {
+        defaultEngine = engine;
+    }
+
     Map<String, Object> mVariableMap = new HashMap<>();
 
     public abstract Object execute(String script);
@@ -25,6 +35,8 @@ public abstract class JavaScriptEngine {
     public abstract void removeAndDestroy();
 
     public abstract int stopAll();
+
+    public abstract String[] getGlobalFunctions();
 
     static class Init {
         private static final String INIT_SCRIPT = readInitScript();

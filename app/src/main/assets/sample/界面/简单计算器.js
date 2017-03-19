@@ -1,6 +1,6 @@
 "ui";
 
-importClass("com.afollestad.materialdialogs.MaterialDialog");
+importClass(com.afollestad.materialdialogs.MaterialDialog);
 
 new MaterialDialog.Builder(activity)
     .title("简单计算器")

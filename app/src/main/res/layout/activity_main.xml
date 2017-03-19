@@ -124,6 +124,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:visibility="gone"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:gravity="center"
                     android:orientation="vertical">
@@ -148,6 +149,7 @@
                     android:id="@+id/root_record"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_weight="1"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:gravity="center"

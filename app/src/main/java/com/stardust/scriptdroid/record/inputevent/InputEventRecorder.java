@@ -3,10 +3,9 @@ package com.stardust.scriptdroid.record.inputevent;
 import android.preference.PreferenceManager;
 
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.record.Recorder;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import jackpal.androidterm.ShellTermSession;
 import jackpal.androidterm.emulatorview.TermSession;
@@ -16,9 +15,8 @@ import jackpal.androidterm.util.TermSettings;
  * Created by Stardust on 2017/3/6.
  */
 
-public abstract class InputEventRecorder {
+public abstract class InputEventRecorder extends Recorder.DefaultIMPL {
 
-    private Thread mRecordThread;
     private TermSession mTermSession;
     private String mGetEventCommand;
     protected InputEventConverter mInputEventConverter;
@@ -31,78 +29,61 @@ public abstract class InputEventRecorder {
     public void listen() {
         TermSettings settings = new TermSettings(App.getApp().getResources(), PreferenceManager.getDefaultSharedPreferences(App.getApp()));
         try {
-            mTermSession = new ShellTermSession(settings, "su\r") {
-                boolean enter = false;
-
-                @Override
-                protected void processInput(byte[] data, int offset, int count) {
-                    String[] lines = new String(data, offset, count).split("\n");
-                    for (String line : lines) {
-                        System.out.println(line);
-                        if (!enter && line.endsWith("data # ")) {
-                            mTermSession.write(mGetEventCommand + "\r");
-                            enter = true;
-                        } else if (enter) {
-                            parseAndRecordEvent(line);
-                        }
-                    }
-                    appendToEmulator(data, offset, count);
-                }
-            };
+            mTermSession = new MyShellTermSession(settings, "su\r");
             mTermSession.initializeEmulator(80, 40);
             mTermSession.write("su\r");
-            mRecordThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        //readOutput(mTermSession);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            mRecordThread.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
     }
 
-    public void start() {
+    @Override
+    protected void startImpl() {
         mInputEventConverter.start();
     }
 
-    public void pause() {
+    @Override
+    protected void pauseImpl() {
         mInputEventConverter.pause();
     }
 
-    private void readOutput(TermSession shell) {
-        boolean enter = false;
-        String line;
-        try {
-            BufferedReader succeedReader = new BufferedReader(new InputStreamReader(mTermSession.getTermIn()));
-            while ((line = succeedReader.readLine()) != null) {
-                System.out.println(line);
-                if (!enter && line.endsWith("data # ")) {
-                    mTermSession.write(mGetEventCommand + "\r");
-                    enter = true;
-                } else if (enter) {
-                    parseAndRecordEvent(line);
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    @Override
+    protected void resumeImpl() {
+        mInputEventConverter.start();
     }
 
-    protected abstract void parseAndRecordEvent(String eventStr);
-
-    public abstract String getCode();
-
-    public void stop() {
-        mRecordThread.interrupt();
+    @Override
+    protected void stopImpl() {
         mTermSession.finish();
         mInputEventConverter.stop();
     }
 
+
+    protected abstract void parseAndRecordEvent(String eventStr);
+
+    private class MyShellTermSession extends ShellTermSession {
+
+        private boolean mGettingEvents = false;
+
+        public MyShellTermSession(TermSettings settings, String initialCommand) throws IOException {
+            super(settings, initialCommand);
+        }
+
+
+        @Override
+        protected void processInput(byte[] data, int offset, int count) {
+            String[] lines = new String(data, offset, count).split("\n");
+            for (String line : lines) {
+                System.out.println(line);
+                if (!mGettingEvents && line.endsWith("data # ")) {
+                    mTermSession.write(mGetEventCommand + "\r");
+                    mGettingEvents = true;
+                } else if (mGettingEvents) {
+                    parseAndRecordEvent(line);
+                }
+            }
+            appendToEmulator(data, offset, count);
+        }
+    }
 }

@@ -11,6 +11,8 @@ import com.jecelyin.editor.v2.ui.IActivity;
 import com.jecelyin.editor.v2.ui.TabManager;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.util.Map;
 
 /**
  * Created by Stardust on 2017/1/30.
@@ -21,6 +23,18 @@ public class Editor920Activity extends IActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Pref.getInstance(this).setReadOnly(false);
+        setPref(Pref.KEY_PREF_KEEP_BACKUP_FILE, false);
+
+    }
+
+    private void setPref(String key, Object value) {
+        try {
+            Field field = Pref.class.getDeclaredField("map");
+            field.setAccessible(true);
+            ((Map) field.get(Pref.getInstance(this))).put(key, value);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

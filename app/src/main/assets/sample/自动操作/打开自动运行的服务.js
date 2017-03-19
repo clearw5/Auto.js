@@ -1,5 +1,5 @@
 
-function openRunningServices(){
+function 打开正在运行的服务(){
     launch("com.android.settings");
     var i = 0;
     while(!click("开发者选项")){
@@ -14,10 +14,10 @@ function openRunningServices(){
 }
 
 
-importClass("android.os.Build");
+importClass(android.os.Build);
 
 if(Build.VERSION.SDK_INT < 23){
     toast("本代码只适用于Android6.0以上");
 }else{
-    openRunningServices();
+    打开正在运行的服务();
 }

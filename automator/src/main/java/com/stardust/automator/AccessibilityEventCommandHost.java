@@ -15,12 +15,18 @@ import java.util.Queue;
 
 public class AccessibilityEventCommandHost implements AccessibilityDelegate {
 
+
+
     public interface Command {
 
         void execute(AccessibilityService service, AccessibilityEvent event);
     }
 
-    public static final AccessibilityEventCommandHost instance = new AccessibilityEventCommandHost();
+    private static final AccessibilityEventCommandHost instance = new AccessibilityEventCommandHost();
+
+    public static AccessibilityEventCommandHost getInstance() {
+        return instance;
+    }
 
     private static final String TAG = "CommandHostDelegate";
 

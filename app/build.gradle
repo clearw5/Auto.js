@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+def AAVersion = '4.2.0'
 
 android {
     compileSdkVersion 25
@@ -7,8 +8,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 41
-        versionName "1.17.0314内测"
+        versionCode 103
+        versionName "2.0.1 Beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
@@ -51,6 +52,8 @@ dependencies {
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    annotationProcessor "org.androidannotations:androidannotations:$AAVersion"
+    compile "org.androidannotations:androidannotations-api:$AAVersion"
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:design:25.1.0'
     compile 'com.github.hyb1996:MutableTheme:0.2.2'
@@ -67,7 +70,6 @@ dependencies {
     compile 'io.mattcarroll.hover:hover:0.9.7'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
-
     compile(name: 'libtermexec-release', ext: 'aar')
     compile(name: 'emulatorview-release', ext: 'aar')
     compile(name: 'term-debug', ext: 'aar')
@@ -80,8 +82,4 @@ dependencies {
     compile(name: '920-file_explorer-release', ext: 'aar')
     compile(name: '920-app-debug', ext: 'aar')
     compile project(':automator')
-}
-
-configurations {
-    all*.exclude group: 'org.mozilla', module: 'rhino'
 }

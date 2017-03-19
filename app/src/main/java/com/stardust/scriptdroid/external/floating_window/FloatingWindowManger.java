@@ -33,9 +33,11 @@ public class FloatingWindowManger {
         Intent intent;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:" + packageName));
+                    Uri.parse("package:" + packageName))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         } else {
-            intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + packageName));
+            intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + packageName))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
         App.getApp().startActivity(intent);
     }

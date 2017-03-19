@@ -38,6 +38,9 @@ import com.stardust.theme.ThemeColorManager;
 import com.stardust.view.ViewBinder;
 
 import java.io.File;
+import java.util.Timer;
+
+import timber.log.Timber;
 
 /**
  * Created by Stardust on 2017/1/29.
@@ -98,8 +101,10 @@ public class EditActivity extends Editor920Activity {
             if (intent.getAction().equals(ACTION_ON_RUN_FINISHED)) {
                 setMenuStatus(R.id.run, MenuDef.STATUS_NORMAL);
                 String msg = intent.getStringExtra(EXTRA_EXCEPTION_MESSAGE);
-                if (msg != null)
+                if (msg != null) {
                     Snackbar.make(mView, getString(R.string.text_error) + ": " + msg, Snackbar.LENGTH_LONG).show();
+                    Timber.e(msg);
+                }
             }
         }
     };

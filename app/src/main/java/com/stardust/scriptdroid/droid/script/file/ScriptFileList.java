@@ -8,6 +8,16 @@ import java.io.File;
 
 public abstract class ScriptFileList {
 
+    private static ScriptFileList impl;
+
+    public static void setImpl(ScriptFileList list) {
+        impl = list;
+    }
+
+    public static ScriptFileList getImpl() {
+        return impl;
+    }
+
     public abstract void add(ScriptFile scriptFile);
 
     public abstract ScriptFile get(int i);
@@ -24,6 +34,6 @@ public abstract class ScriptFileList {
         return file.delete();
     }
 
-
     public abstract boolean containsPath(String path);
+
 }

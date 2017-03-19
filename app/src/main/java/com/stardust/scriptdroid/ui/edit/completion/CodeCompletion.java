@@ -101,11 +101,16 @@ public class CodeCompletion implements TextWatcher {
 
     private static final String[] KEYWORDS = {"arguments", "break", "case", "catch", "class", "continue", "default", "do", "else", "eval", "export", "false", "for", "function", "if", "import", "in", "int", "new", "null", "package", "return", "switch", "this", "throw", "throws", "true", "try", "typeof", "var", "volatile", "while", "with", "Array", "Date", "hasOwnProperty", "Infinity", "isFinite", "isNaN", "isPrototypeOf", "length", "Math", "NaN", "name", "Number", "Object", "prototype", "String", "toString", "undefined", "valueOf"};
     private static final int KEY_WORD_LENGTH_MAX = 15;
-    private static final String[] FUNCTIONS = {"toast", "launchPackage", "launch", "launchApp", "click", "longClick", "scrollUp", "scrollDown", "select", "focus", "paste", "input", "sleep", "isStopped", "notStopped", "log", "err", "openConsole", "clearConsole", "shell", "getTexts", "getPackageName", "getActivityName", "setClip", "addAccessibilityDelegate"};
+
+    public void setFunctions(String[] functions) {
+        mFunctions = functions;
+    }
+
+    private String[] mFunctions = {"toast", "launchPackage", "launch", "launchApp", "click", "longClick", "scrollUp", "scrollDown", "select", "focus", "paste", "input", "sleep", "isStopped", "notStopped", "log", "err", "openConsole", "clearConsole", "shell", "getTexts", "getPackageName", "getActivityName", "setClip", "addAccessibilityDelegate"};
 
     private boolean searchCodeCompletion(String str) {
         Collection<CodeCompletionItem> c = searchWordCompletion(str);
-        c.addAll(searchCodeCompletion(str, FUNCTIONS));
+        c.addAll(searchCodeCompletion(str, mFunctions));
         c.addAll(searchKeyWordCompletion(str));
         if (c.size() > 0) {
             mOnCodeCompletionChangeListener.OnCodeCompletionChange(c, DEFAULT_CODE_COMPLETION_LIST);

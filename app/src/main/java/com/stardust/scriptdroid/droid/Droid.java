@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.droid;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.jraska.console.timber.ConsoleTree;
 import com.stardust.scriptdroid.App;
@@ -15,6 +16,9 @@ import com.stardust.scriptdroid.tool.FileUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import timber.log.Timber;
 
@@ -25,12 +29,6 @@ import timber.log.Timber;
 public class Droid {
 
     public static final java.lang.String STAY = "\"stay\";";
-
-    static {
-        Timber.plant(new ConsoleTree.Builder()
-                .infoColor(0xcc000000)
-                .build());
-    }
 
     public static final String UI = "\"ui\";";
 
@@ -54,13 +52,13 @@ public class Droid {
     }
 
     private static final DroidRuntime RUNTIME = DroidRuntime.getRuntime();
-    public static final JavaScriptEngine JAVA_SCRIPT_ENGINE = new RhinoJavaScriptEngine(RUNTIME);
+    public static final JavaScriptEngine JAVA_SCRIPT_ENGINE = JavaScriptEngine.getDefault();
     private static final OnRunFinishedListener DEFAULT_LISTENER = new SimpleOnRunFinishedListener() {
         @Override
         public void onException(@NonNull Exception e) {
-            if (!(e instanceof ScriptStopException)) {
+            if (!causedByInterruptedException(e)) {
                 RUNTIME.toast(App.getApp().getString(R.string.text_error) + ": " + e.getMessage());
-                Timber.e(e, App.getApp().getString(R.string.text_error));
+                Timber.e(e.getMessage());
             }
         }
     };
@@ -73,12 +71,22 @@ public class Droid {
         return instance;
     }
 
+    public static boolean causedByInterruptedException(Throwable e) {
+        while (e != null) {
+            if (e instanceof InterruptedException) {
+                return true;
+            }
+            e = e.getCause();
+        }
+        return false;
+    }
+
     public void runScriptFile(File file) {
         runScriptFile(file, null);
     }
 
     public void runScriptFile(File file, OnRunFinishedListener listener) {
-        Timber.v("开始运行脚本文件: " + file);
+        Timber.v(DateFormat.getTimeInstance().format(new Date()) + "/" + App.getResString(R.string.text_start_running) + file);
         listener = listener == null ? DEFAULT_LISTENER : listener;
         try {
             checkFile(file);

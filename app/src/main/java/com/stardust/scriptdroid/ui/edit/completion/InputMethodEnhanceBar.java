@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.droid.script.JavaScriptEngine;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,6 +74,7 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
     private void init() {
         setAdapter(new CodeCompletionAdapter());
         setLayoutManager(new LinearLayoutManager(getContext(), HORIZONTAL, false));
+        mCodeCompletion.setFunctions(JavaScriptEngine.getDefault().getGlobalFunctions());
     }
 
     public void setEditTextBridge(EditTextBridge editTextBridge) {

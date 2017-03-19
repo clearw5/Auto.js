@@ -37,11 +37,9 @@ import io.mattcarroll.hover.NavigatorContent;
 public class HoverMenuAdapter implements io.mattcarroll.hover.HoverMenuAdapter {
 
 
-    public static final String ID_MAIN = "intro";
+    public static final String ID_MAIN = "main";
     public static final String ID_RECORD = "record";
     public static final String ID_SCRIPT_LIST = "script_list";
-    public static final String MENU_ID = "menu";
-    public static final String PLACEHOLDER_ID = "placeholder";
 
     private final Context mContext;
     private final List<String> mTabIds;

@@ -23,28 +23,19 @@ public class ActionPerformAccessibilityDelegate implements AccessibilityDelegate
 
     public static final Action NO_ACTION = null;
 
+    private static final Object ACTION_LOCK = new Object();
+
     private static Action action;
-    private static String latestPackage, latestActivity;
 
 
     public static void setAction(Action action) {
-        synchronized (ActionPerformAccessibilityDelegate.class) {
+        synchronized (ACTION_LOCK) {
             ActionPerformAccessibilityDelegate.action = action;
         }
     }
-
-    public synchronized static String getLatestPackage() {
-        return latestPackage;
-    }
-
-    public synchronized static String getLatestActivity() {
-        return latestActivity;
-    }
-
     @Override
     public boolean onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event) {
-        synchronized (ActionPerformAccessibilityDelegate.class) {
-            setLatestComponent(event.getPackageName(), event.getClassName());
+        synchronized (ACTION_LOCK) {
             if (action == NO_ACTION)
                 return false;
             AccessibilityNodeInfo root = service.getRootInActiveWindow();
@@ -66,26 +57,12 @@ public class ActionPerformAccessibilityDelegate implements AccessibilityDelegate
 
 
     private void onActionPerformed() {
-        synchronized (ActionPerformAccessibilityDelegate.class) {
+        synchronized (ACTION_LOCK) {
             action = NO_ACTION;
             DroidRuntime.getRuntime().notifyActionPerformed();
         }
     }
 
-    private static void setLatestComponent(CharSequence latestPackage, CharSequence latestClass) {
-        if (latestPackage == null)
-            return;
-        ActionPerformAccessibilityDelegate.latestPackage = latestPackage.toString();
-        if (latestClass == null)
-            return;
-        try {
-            ComponentName componentName = new ComponentName(latestPackage.toString(), latestClass.toString());
-            ActivityInfo activityInfo = App.getApp().getPackageManager().getActivityInfo(componentName, 0);
-            ActionPerformAccessibilityDelegate.latestActivity = activityInfo.name;
-        } catch (PackageManager.NameNotFoundException ignored) {
-
-        }
-    }
 
 }
 

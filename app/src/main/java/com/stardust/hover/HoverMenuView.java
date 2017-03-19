@@ -183,7 +183,6 @@ public class HoverMenuView extends RelativeLayout {
             MagnetPositioner magnetPositioner = new MagnetPositioner(getResources().getDisplayMetrics(), mSidePullerPositioner, new MagnetPositioner.OnCompletionListener() {
                 @Override
                 public void onPullToSideCompleted() {
-                    // TODO: this collapsed logic is duplicated
                     mVisualState = COLLAPSED;
                     enableDragging();
                     mTransitionListener.onCollapsed();
@@ -257,7 +256,6 @@ public class HoverMenuView extends RelativeLayout {
             removeAllTabs();
             addAllTabs();
 
-            // TODO: need null check in case selected tab is gone.
             Log.d(TAG, "Content change. Active id: " + mActiveTabId);
             Log.d(TAG, "Active tab view: " + findViewById(mActiveTabId.hashCode()));
             mActiveTab = findViewById(mActiveTabId.hashCode());
@@ -270,7 +268,7 @@ public class HoverMenuView extends RelativeLayout {
         super(context);
         mWindowDragWatcher = windowDragWatcher;
         mMenuAnchor = new CollapsedMenuAnchor(getResources().getDisplayMetrics(), 10);
-        mMenuAnchor.setAnchorAt((int) savedAnchor.x, savedAnchor.y); // TODO: savedAnchor isn't really a position, its a tuple of values (side, y-pos)
+        mMenuAnchor.setAnchorAt((int) savedAnchor.x, savedAnchor.y);
         mNavigator = null == navigator ? new DefaultNavigator(context) : navigator;
         init();
     }
@@ -335,7 +333,6 @@ public class HoverMenuView extends RelativeLayout {
         mExitRequestListener = null == exitRequestListener ? new NoOpHoverMenuExitRequestListener() : exitRequestListener;
     }
 
-    // TODO: create custom object to hold anchor state
     public PointF getAnchorState() {
         return new PointF(mMenuAnchor.getAnchorSide(), mMenuAnchor.getAnchorNormalizedY());
     }
@@ -493,7 +490,6 @@ public class HoverMenuView extends RelativeLayout {
         Log.d(TAG, "Enabling dragging - x: " + anchorPosition.x + ", y: " + anchorPosition.y);
         Log.d(TAG, "Drag width: " + mTabSizeInPx + ", height: " + mTabSizeInPx);
 
-        // TODO: should create a method specifically for placing the drag bounds.
         mWindowDragWatcher.deactivate();
         mWindowDragWatcher.activate(mDragListener, new Rect(
                 anchorPosition.x,
@@ -548,7 +544,6 @@ public class HoverMenuView extends RelativeLayout {
             // Select the first tab.
             setActiveTab(mTabIds.get(0));
 
-            // TODO: we might set an adapter while expanded - track down the need for this and change it.
             // We force a collapse because at this point we're in a weird initial state.
             doCollapse(true);
         }
@@ -605,7 +600,6 @@ public class HoverMenuView extends RelativeLayout {
             return;
         }
 
-        // TODO: how can we avoid this null check?
         if (null != mActiveTab) {
             Log.d(TAG, "Adjusting tab position due to layout change.");
             getCollapsedMenuViewController().onDragTo(new Point(

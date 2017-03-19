@@ -16,16 +16,16 @@ public interface OnActivityResultDelegate {
     void onActivityResult(int requestCode, int resultCode, Intent data);
 
     interface DelegateHost {
-        Manager getDelegateManger();
+        Intermediary getDelegateManger();
     }
 
-    class Manager implements OnActivityResultDelegate {
+    class Intermediary implements OnActivityResultDelegate {
 
-        private SparseArray<OnActivityResultDelegate> specialDelegate = new SparseArray<>();
+        private SparseArray<OnActivityResultDelegate> mSpecialDelegate = new SparseArray<>();
         private List<OnActivityResultDelegate> mDelegates = new ArrayList<>();
 
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            OnActivityResultDelegate delegate = specialDelegate.get(requestCode);
+            OnActivityResultDelegate delegate = mSpecialDelegate.get(requestCode);
             if (delegate != null) {
                 delegate.onActivityResult(requestCode, resultCode, data);
             }
@@ -39,7 +39,14 @@ public interface OnActivityResultDelegate {
         }
 
         public void addDelegate(int requestCode, OnActivityResultDelegate delegate) {
-            specialDelegate.put(requestCode, delegate);
+            mSpecialDelegate.put(requestCode, delegate);
+        }
+
+        public void removeDelegate(OnActivityResultDelegate delegate) {
+            if (mDelegates.remove(delegate)) {
+                // TODO: 2017/3/16 优化
+                mSpecialDelegate.removeAt(mSpecialDelegate.indexOfValue(delegate));
+            }
         }
     }
 

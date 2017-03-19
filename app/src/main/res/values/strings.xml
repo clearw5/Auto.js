@@ -76,7 +76,7 @@
     <string name="text_choose_file">选择一个文件</string>
     <string name="folder_name">/脚本/</string>
     <string name="text_error">错误</string>
-    <string name="text_load_failed">文档加载失败/(ㄒoㄒ)/~~</string>
+    <string name="text_load_failed">还没有文档/(ㄒoㄒ)/~~</string>
     <string name="text_copy_debug_info">复制调试信息</string>
     <string name="text_it_is_the_developer_of_app">这是软件开发者(。・・)ノ</string>
     <string name="text_lll">略略略</string>
@@ -114,7 +114,7 @@
     <string name="text_file_write_fail">文件写入失败</string>
     <string name="text_need_enable_accessibility_service">需要打开\"自动操作服务“才能录制脚本</string>
     <string name="text_join_qq_group">加入QQ交流群</string>
-    <string name="text_copied">已复制剪贴板</string>
+    <string name="text_copied">已复制到剪贴板</string>
     <string name="text_close">关闭</string>
     <string name="text_re_record">重新录制</string>
     <string name="text_use_volume_control_record">使用音量键控制</string>
@@ -147,4 +147,36 @@
     <string name="hint_no_script">点击右上角新建第一个脚本吧~(。・・)ノ</string>
     <string name="text_reset_background">重置背景图片设置</string>
     <string name="text_restart_app_to_apply">重启软件生效</string>
+    <string name="text_record_with_root">使用root权限录制</string>
+    <string name="text_record_msg">录制提示</string>
+    <string name="text_text_changed">文字改变</string>
+    <string name="text_scrolled">滑动</string>
+    <string name="text_long_clicked">长按</string>
+    <string name="text_clicked">点击</string>
+    <string name="text_open_launcher">打开主界面</string>
+    <string name="text_copy_to_my_scripts">导入到我的脚本</string>
+    <string name="text_import_succeed">导入成功</string>
+    <string name="text_no_root_script_record">免Root脚本录制</string>
+    <string name="text_script_record_with_root">Root脚本录制</string>
+    <string name="text_use_key_to_start_record">开始录制按键</string>
+    <string name="text_use_key_to_stop_record">结束录制按键</string>
+    <string name="text_none">NONE</string>
+    <string name="key_start_record_trigger">key_start_record_trigger</string>
+    <string name="key_stop_record_trigger">key_stop_record_trigger</string>
+    <string name="text_current_activity">当前活动:</string>
+    <string name="text_current_package">当前应用包名:</string>
+
+    <string-array name="record_control_keys">
+        <item>无</item>
+        <item>音量上键</item>
+        <item>音量下键</item>
+        <item>照相键</item>
+    </string-array>
+
+    <string-array name="record_control_values">
+        <item>NONE</item>
+        <item>KEY_VOLUMEUP</item>
+        <item>KEY_VOLUMEDOWN</item>
+        <item>KEY_CAMERA</item>
+    </string-array>
 </resources>

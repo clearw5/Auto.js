@@ -26,6 +26,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     }
 
     private final Set<Thread> mThreads = new HashSet<>();
+    private String[] mFunctions;
 
     public RhinoJavaScriptEngine(DroidRuntime runtime) {
         set("droid", runtime);
@@ -51,6 +52,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     private Context createContext() {
         Context context = Context.enter();
         context.setOptimizationLevel(-1);
+        context.setLanguageVersion(Context.VERSION_1_7);
         context.setInstructionObserverThreshold(10000);
         return context;
     }
@@ -80,12 +82,31 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         return n;
     }
 
+
+    @Override
+    public String[] getGlobalFunctions() {
+        if (mFunctions == null)
+            mFunctions = getGlobalFunctionsInner();
+        return mFunctions;
+    }
+
+    private String[] getGlobalFunctionsInner() {
+        Scriptable scriptable = (Scriptable) execute("this");
+        Object[] ids = scriptable.getIds();
+        String[] functions = new String[ids.length];
+        for (int i = 0; i < ids.length; i++) {
+            functions[i] = ids[i].toString();
+        }
+        return functions;
+    }
+
     @Override
     public void removeAndDestroy() {
         synchronized (mThreads) {
             mThreads.remove(Thread.currentThread());
         }
     }
+
 
     public static class InterruptibleContextFactory extends ContextFactory {
 

@@ -13,7 +13,6 @@ import java.util.Map;
 
 public class InputEventToJsConverter extends InputEventConverter {
 
-
     interface EventHandler {
         void handle(Event event);
     }
@@ -21,10 +20,6 @@ public class InputEventToJsConverter extends InputEventConverter {
     abstract static class Router implements EventHandler {
 
         private Map<String, EventHandler> mEventHandlerMap = new HashMap<>();
-
-        EventHandler getHandler(String key) {
-            return mEventHandlerMap.get(key);
-        }
 
         Router put(String key, EventHandler handler) {
             mEventHandlerMap.put(key, handler);
@@ -112,6 +107,7 @@ public class InputEventToJsConverter extends InputEventConverter {
                 .entry("KEY_VOLUMEDOWN", "VolumeDown")
                 .entry("KEY_VOLUMEUP", "VolumeUp")
                 .entry("KEY_BACK", "Back")
+                .entry("KEY_CAMERA", "Camera")
                 .map();
 
         @Override
@@ -124,10 +120,10 @@ public class InputEventToJsConverter extends InputEventConverter {
                     mSwipe = false;
                 }
             } else if (event.value.equals("UP")) {
-                if (!mStarted && event.code.equals("KEY_VOLUMEUP")) {
+                if (!mStarted && event.code.equals(mStartTriggerKey)) {
                     mStarted = true;
                     notifyRecordStarted();
-                } else if (mStarted && event.code.equals("KEY_VOLUMEDOWN")) {
+                } else if (mStarted && event.code.equals(mStopTriggerKey)) {
                     mStarted = false;
                     notifyRecordStopped();
                 } else {
@@ -145,6 +141,7 @@ public class InputEventToJsConverter extends InputEventConverter {
     }
 
     private EventHandler mEventHandler = new TypeRouter();
+    private String mStartTriggerKey, mStopTriggerKey;
     private StringBuilder mCode = new StringBuilder().append("var sh = new Shell(true);\n");
     private Point mTouchPoint = new Point(), mLastTouchPoint = new Point();
     private boolean mTouchDown = false, mSwipe = false;
@@ -164,6 +161,14 @@ public class InputEventToJsConverter extends InputEventConverter {
 
     public String getCode() {
         return mCode.toString();
+    }
+
+    public void setStartTriggerKey(String startTriggerKey) {
+        mStartTriggerKey = startTriggerKey;
+    }
+
+    public void setStopTriggerKey(String stopTriggerKey) {
+        mStopTriggerKey = stopTriggerKey;
     }
 
 

@@ -6,15 +6,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.jraska.console.timber.ConsoleTree;
 import com.stardust.scriptdroid.Pref;
+import com.stardust.scriptdroid.accessibility.AccessibilityInfoProvider;
 import com.stardust.scriptdroid.droid.runtime.action.ActionTarget;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
@@ -42,6 +50,18 @@ import timber.log.Timber;
  */
 
 public class DroidRuntime {
+
+    static {
+        Timber.plant(new ConsoleTree.Builder()
+                .minPriority(Log.VERBOSE)
+                .verboseColor(0xff909090)
+                .debugColor(0xffc88b48)
+                .infoColor(0xffc9c9c9)
+                .warnColor(0xffa97db6)
+                .errorColor(0xffff534e)
+                .assertColor(0xffff5540)
+                .build());
+    }
 
     private static final String TAG = "DroidRuntime";
     private static DroidRuntime runtime = new DroidRuntime();
@@ -154,8 +174,11 @@ public class DroidRuntime {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_PASTE));
     }
 
-    public void log(@Nullable Object str) {
-        Timber.i("" + str);
+    public void log(@Nullable Object o) {
+        String str = o + "";
+        SpannableString spannableString = new SpannableString(str);
+        spannableString.setSpan(new ForegroundColorSpan(Color.BLACK), 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        Console.writeLine(spannableString);
     }
 
     public void err(@Nullable Object o) {
@@ -184,7 +207,7 @@ public class DroidRuntime {
         return (T) action.getResult();
     }
 
-    private void ensureAccessibilityServiceEnable() {
+    public void ensureAccessibilityServiceEnable() {
         if (AccessibilityWatchDogService.getInstance() == null) {
             String errorMessage = null;
             if (AccessibilityServiceUtils.isAccessibilityServiceEnabled(App.getApp(), AccessibilityWatchDogService.class)) {
@@ -232,14 +255,14 @@ public class DroidRuntime {
         return Shell.execCommand(cmd, root != 0);
     }
 
-    public String getPackageName() {
+    public String currentPackage() {
         ensureAccessibilityServiceEnable();
-        return ActionPerformAccessibilityDelegate.getLatestPackage();
+        return AccessibilityInfoProvider.getInstance().getLatestPackage();
     }
 
-    public String getActivityName() {
+    public String currentActivity() {
         ensureAccessibilityServiceEnable();
-        return ActionPerformAccessibilityDelegate.getLatestActivity();
+        return AccessibilityInfoProvider.getInstance().getLatestActivity();
     }
 
     public UiSelector selector() {

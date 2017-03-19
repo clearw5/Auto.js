@@ -25,7 +25,7 @@ public interface BackPressedHandler {
             mActivity = activity;
         }
 
-        public DoublePressExit setDoublePressInterval(long doublePressInterval) {
+        public DoublePressExit doublePressInterval(long doublePressInterval) {
             mDoublePressInterval = doublePressInterval;
             return this;
         }

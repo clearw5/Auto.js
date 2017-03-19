@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -50,8 +51,10 @@ public class HoverMenuService extends Service {
     public static final String MESSAGE_SHOW_LAYOUT_BOUNDS = "MESSAGE_SHOW_LAYOUT_BOUNDS";
     public static final String MESSAGE_COLLAPSE_MENU = "MESSAGE_COLLAPSE_MENU";
     public static final String MESSAGE_MENU_COLLAPSING = "MESSAGE_MENU_COLLAPSING";
+    public static final String MESSAGE_MENU_EXPANDING = "MESSAGE_MENU_EXPANDING";
+    public static final String MESSAGE_MENU_EXIT = "MESSAGE_MENU_EXIT";
 
-    private static WeakReference<HoverMenuService> service = new WeakReference<>(null);
+    private static HoverMenuService service = null;
     private static boolean sIsRunning;
 
     public static void startService(Context context) {
@@ -64,8 +67,8 @@ public class HoverMenuService extends Service {
     }
 
     public static void stopService() {
-        if (isServiceRunning() && service.get() != null) {
-            service.get().stopSelf();
+        if (isServiceRunning() && service != null) {
+            service.stopSelf();
             setIsRunning(false);
         }
     }
@@ -92,6 +95,7 @@ public class HoverMenuService extends Service {
     private HoverMenu.OnExitListener mWindowHoverMenuMenuExitListener = new HoverMenu.OnExitListener() {
         @Override
         public void onExitByUserRequest() {
+            EventBus.getDefault().post(new MessageEvent(MESSAGE_MENU_EXIT));
             savePreferredLocation();
             mWindowHoverMenu.hide();
             stopSelf();
@@ -101,11 +105,11 @@ public class HoverMenuService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (service.get() != null) {
+        if (service != null) {
             stopSelf();
             return;
         }
-        service = new WeakReference<>(this);
+        service = this;
         EventBus.getDefault().register(this);
         mPrefs = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         try {
@@ -127,7 +131,7 @@ public class HoverMenuService extends Service {
     }
 
     private void initWindowMenu() {
-        mWindowHoverMenu = (WindowHoverMenu) new HoverMenuBuilder(this)
+        mWindowHoverMenu = (WindowHoverMenu) new HoverMenuBuilder(new ContextThemeWrapper(this, R.style.AppTheme))
                 .displayWithinWindow()
                 .useAdapter(new HoverMenuAdapter(this))
                 .restoreVisualState(loadPreferredLocation())
@@ -138,6 +142,7 @@ public class HoverMenuService extends Service {
         mWindowHoverMenu.setHoverMenuTransitionListener(new SimpleHoverMenuTransitionListener() {
             @Override
             public void onExpanding() {
+                EventBus.getDefault().post(new MessageEvent(MESSAGE_MENU_EXPANDING));
                 captureCurrentWindow();
             }
 
@@ -166,17 +171,20 @@ public class HoverMenuService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mWindowHoverMenu.show();
+        if (mWindowHoverMenu != null)
+            mWindowHoverMenu.show();
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
-        mWindowHoverMenu.hide();
-        EventBus.getDefault().unregister(this);
+        if (mWindowHoverMenu != null)
+            mWindowHoverMenu.hide();
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
         setIsRunning(false);
-        if (service.get() == this)
-            service.clear();
+        if (service == this)
+            service = null;
     }
 
 

@@ -78,8 +78,7 @@
             android:theme="@style/IssueReportTheme"/>
         <activity android:name=".droid.script.ScriptExecuteActivity"/>
 
-        <service android:name=".external.notification.record.ActionRecordSwitchHandleService"/>
-        <service android:name=".service.VolumeChangeListenService"/>
+        <service android:name=".service.VolumeChangeObverseService"/>
         <service android:name="com.stardust.view.Floaty$FloatHeadService"/>
         <service android:name="com.stardust.view.ResizableFloaty$FloatingWindowService"/>
         <service android:name="com.stardust.scriptdroid.external.floating_window.HoverMenuService"/>

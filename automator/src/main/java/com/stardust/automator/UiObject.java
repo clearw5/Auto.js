@@ -33,6 +33,14 @@ public class UiObject extends AccessibilityNodeInfoCompat {
         return new UiObject(getChild(i).getInfo());
     }
 
+    public UiObjectCollection find(UiGlobalSelector selector) {
+        return selector.findOf((AccessibilityNodeInfo) getInfo());
+    }
+
+    public UiObject findOne(UiGlobalSelector selector) {
+        return selector.findOneOf((AccessibilityNodeInfo) getInfo());
+    }
+
     public UiObjectCollection children() {
         ArrayList<AccessibilityNodeInfoCompat> list = new ArrayList<>(getChildCount());
         for (int i = 0; i < getChildCount(); i++) {
@@ -58,7 +66,6 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     }
 
     public CharSequence packageName() {
-
         return getPackageName();
     }
 

@@ -39,8 +39,7 @@ public class MyScriptListFragment extends Fragment implements BackPressedHandler
     @Nullable
     @Override
     public View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_my_script_list, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_my_script_list, container, false);
     }
 
     @Override
@@ -55,7 +54,7 @@ public class MyScriptListFragment extends Fragment implements BackPressedHandler
 
     private void setUpScriptList() {
         mScriptListRecyclerView = $(R.id.script_list);
-        mScriptFileList = SharedPrefScriptFileList.getInstance();
+        mScriptFileList = ScriptFileList.getImpl();
         mNoScriptHint = $(R.id.hint_no_script);
         mScriptListRecyclerView.getAdapter().registerAdapterDataObserver(new SimpleAdapterDataObserver() {
             @Override
@@ -89,6 +88,18 @@ public class MyScriptListFragment extends Fragment implements BackPressedHandler
         if (event.message.equals(MESSAGE_SCRIPT_FILE_ADDED)) {
             mScriptListRecyclerView.getAdapter().notifyItemInserted(mScriptFileList.size() - 1);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(mScriptListRecyclerView);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(mScriptListRecyclerView);
     }
 
     @Override

@@ -2,29 +2,26 @@ package com.stardust.scriptdroid;
 
 import android.app.Activity;
 import android.app.Application;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.TextPaint;
-import android.util.Log;
 
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.scriptdroid.accessibility.AccessibilityInfoProvider;
+import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
+import com.stardust.scriptdroid.droid.script.JavaScriptEngine;
+import com.stardust.scriptdroid.droid.script.RhinoJavaScriptEngine;
+import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
+import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
 import com.stardust.scriptdroid.layout_inspector.LayoutInspector;
-import com.stardust.scriptdroid.record.AccessibilityRecorderDelegate;
+import com.stardust.scriptdroid.record.accessibility.AccessibilityActionRecorder;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.squareup.leakcanary.LeakCanary;
 import com.stardust.scriptdroid.droid.runtime.action.ActionPerformAccessibilityDelegate;
-import com.stardust.scriptdroid.tool.ViewTool;
 import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
 import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.CrashHandler;
 import com.stardust.util.StateObserver;
-
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Method;
-import java.util.Arrays;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -34,12 +31,12 @@ public class App extends Application {
 
     private static final String TAG = "App";
 
-    private static WeakReference<App> instance;
+    private static App instance;
     private static StateObserver stateObserver;
-    private static WeakReference<Activity> currentActivity;
+    private static Activity currentActivity;
 
     public static App getApp() {
-        return instance.get();
+        return instance;
     }
 
     public static StateObserver getStateObserver() {
@@ -49,26 +46,40 @@ public class App extends Application {
 
     public void onCreate() {
         super.onCreate();
-        ThemeColorManager.setDefaultThemeColor(new ThemeColor(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorPrimaryDark), getResources().getColor(R.color.colorAccent)));
-        ThemeColorManager.init(this);
+        setUpDebugEnvironment();
+        init();
+        configApp();
+        registerActivityLifecycleCallback();
+        initAccessibilityServiceDelegates();
+    }
+
+    private void setUpDebugEnvironment() {
         if (LeakCanary.isInAnalyzerProcess(this)) {
             return;
         }
         LeakCanary.install(this);
         if (!BuildConfig.DEBUG)
             Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
-        instance = new WeakReference<>(this);
+    }
+
+    private void init() {
+        ThemeColorManager.setDefaultThemeColor(new ThemeColor(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorPrimaryDark), getResources().getColor(R.color.colorAccent)));
+        ThemeColorManager.init(this);
+        instance = this;
         stateObserver = new StateObserver(PreferenceManager.getDefaultSharedPreferences(this));
-        registerActivityLifecycleCallback();
-        initAccessibilityServiceDelegates();
+    }
+
+    private void configApp() {
+        ScriptFileList.setImpl(SharedPrefScriptFileList.getInstance());
+        JavaScriptEngine.setDefault(new RhinoJavaScriptEngine(DroidRuntime.getRuntime()));
     }
 
 
     private void initAccessibilityServiceDelegates() {
         AccessibilityWatchDogService.addDelegateIfNeeded(100, ActionPerformAccessibilityDelegate.class);
-        AccessibilityWatchDogService.addDelegateIfNeeded(200, AccessibilityRecorderDelegate.getInstance());
-        AccessibilityWatchDogService.addDelegateIfNeeded(300, AccessibilityEventCommandHost.instance);
-        AccessibilityWatchDogService.addDelegateIfNeeded(400, AccessibilityInfoProvider.instance);
+        AccessibilityWatchDogService.addDelegateIfNeeded(200, AccessibilityActionRecorder.getInstance());
+        AccessibilityWatchDogService.addDelegateIfNeeded(300, AccessibilityEventCommandHost.getInstance());
+        AccessibilityWatchDogService.addDelegateIfNeeded(400, AccessibilityInfoProvider.getInstance());
         AccessibilityWatchDogService.addDelegateIfNeeded(500, LayoutInspector.getInstance());
 
     }
@@ -77,7 +88,7 @@ public class App extends Application {
         registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                currentActivity = new WeakReference<>(activity);
+                currentActivity = activity;
             }
 
 
@@ -88,14 +99,19 @@ public class App extends Application {
 
             @Override
             public void onActivityResumed(Activity activity) {
-                currentActivity = new WeakReference<>(activity);
+                currentActivity = activity;
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+                currentActivity = null;
             }
 
         });
     }
 
     public static Activity currentActivity() {
-        return currentActivity.get();
+        return currentActivity;
     }
 
     public static String getResString(int id) {
