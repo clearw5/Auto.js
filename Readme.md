@@ -12,15 +12,17 @@
 * 带有界面分析工具，类似Android Studio的LayoutInspector，可以分析界面层次和范围、获取界面上的控件信息
 * 支持使用Root权限以提供更强大的屏幕点击、滑动、录制功能和运行shell命令
 
-![screen-capture1](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss1.png)
+![screen-capture1](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss01.png)
 
-![screen-capture2](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss2.png)
+![screen-capture2](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss02.png)
 
-![screen-capture3](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss3.png)
+![screen-capture3](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss03.png)
 
-![screen-capture4](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss4.png)
+![screen-capture4](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss04.png)
 
-![screen-capture5](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss5.png)
+![screen-capture5](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss05.png)
+
+![screen-capture5](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss06.png)
 
 ## License
 [CC-BY-NC-SA](https://github.com/hyb1996/NoRootScriptDroid/blob/master/LICENSE.md)
