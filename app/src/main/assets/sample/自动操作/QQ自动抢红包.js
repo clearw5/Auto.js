@@ -1,3 +1,4 @@
+"auto";
 launch("com.tencent.mobileqq");
 toast("请打开一个聊天窗口");
 toast("出现红包时将会自动拆开并关闭");

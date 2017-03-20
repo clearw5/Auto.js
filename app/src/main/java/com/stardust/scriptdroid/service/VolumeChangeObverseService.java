@@ -14,6 +14,8 @@ import com.stardust.scriptdroid.record.accessibility.AccessibilityActionRecorder
 import com.stardust.scriptdroid.Pref;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -22,32 +24,27 @@ import java.lang.ref.WeakReference;
 
 public class VolumeChangeObverseService extends Service {
 
+    public interface OnVolumeChangeListener {
+
+        void onVolumeChange();
+    }
+
     private static final String ACTION_VOLUME_CHANGE = "android.media.VOLUME_CHANGED_ACTION";
+    private static List<OnVolumeChangeListener> mOnVolumeChangeListenerList = new ArrayList<>();
+
+    public static void addOnVolumeChangeListener(OnVolumeChangeListener listener) {
+        mOnVolumeChangeListenerList.add(listener);
+    }
+
+    public static void removeOnVolumeChangeListener(OnVolumeChangeListener listener) {
+        mOnVolumeChangeListenerList.remove(listener);
+    }
 
     private VolumeChangeReceiver mVolumeChangeReceiver;
-    private static VolumeChangeObverseService instance;
-
-    public static void stopServiceIfNeeded() {
-        if (instance != null) {
-            instance.stopSelf();
-            instance = null;
-        }
-    }
-
-    public static void startServiceIfNeeded(Context context) {
-        if (Pref.isRecordVolumeControlEnable() && instance == null) {
-            context.startService(new Intent(context, VolumeChangeObverseService.class));
-        }
-    }
-
 
     @Override
     public void onCreate() {
         super.onCreate();
-        if (instance != null) {
-            instance.stopSelf();
-        }
-        instance = this;
         mVolumeChangeReceiver = new VolumeChangeReceiver();
         registerReceiver(mVolumeChangeReceiver, new IntentFilter(ACTION_VOLUME_CHANGE));
     }
@@ -61,7 +58,6 @@ public class VolumeChangeObverseService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        instance = null;
         unregisterReceiver(mVolumeChangeReceiver);
     }
 
@@ -76,10 +72,8 @@ public class VolumeChangeObverseService extends Service {
                     return;
                 }
                 mLastChangeMillis = System.currentTimeMillis();
-                if (AccessibilityActionRecorder.getInstance().getState() == Recorder.STATE_STOPPED) {
-                    AccessibilityActionRecordNotification.startRecord(VolumeChangeObverseService.this);
-                } else {
-                    AccessibilityActionRecordNotification.stopRecord(VolumeChangeObverseService.this);
+                for (OnVolumeChangeListener listener : mOnVolumeChangeListenerList) {
+                    listener.onVolumeChange();
                 }
             }
         }

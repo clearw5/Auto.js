@@ -135,6 +135,14 @@ var setClip = function(text){
     droid.setClip(text);
 }
 
+var getPackageName = function(appName){
+    return droid.getPackageName(appName);
+}
+
+var openAppSetting = function(packageName){
+    return droid.openAppSetting(packageName);
+}
+
 var Tap = function(x, y){
     return shell("input tap " + x + " " + y, true).code == 1;
 }
@@ -201,7 +209,6 @@ var Camera = function(){
 var Text = function(text){
      return shell("input text " + text, true).code == 1;
 }
-
 
 var __selector__ = droid.selector();
 var __obj__ = new java.lang.Object();

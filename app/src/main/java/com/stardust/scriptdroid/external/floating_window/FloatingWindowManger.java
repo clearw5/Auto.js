@@ -9,6 +9,7 @@ import android.view.View;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.layout_inspector.view.LayoutInspectView;
+import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.view.Floaty;
 import com.stardust.view.ResizableFloaty;
 
@@ -30,16 +31,17 @@ public class FloatingWindowManger {
 
     public static void goToFloatingWindowPermissionSetting() {
         String packageName = App.getApp().getPackageName();
-        Intent intent;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:" + packageName))
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            try {
+                App.getApp().startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + packageName))
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            } catch (Exception e) {
+                IntentTool.goToAppSetting(App.getApp());
+            }
         } else {
-            intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + packageName))
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            IntentTool.goToAppSetting(App.getApp());
         }
-        App.getApp().startActivity(intent);
     }
 
     private static boolean hasFloatingWindowPermission() {
@@ -56,6 +58,6 @@ public class FloatingWindowManger {
 
     public static void hideFloatingWindow() {
         if (HoverMenuService.isServiceRunning())
-            HoverMenuService.stopService();
+            App.getApp().stopService(new Intent(App.getApp(), HoverMenuService.class));
     }
 }

@@ -1,10 +1,12 @@
 package com.stardust.scriptdroid.tool;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 
 /**
@@ -70,4 +72,20 @@ public class IntentTool {
                 .setType("text/plain"));
     }
 
+    public static boolean goToAppSetting(Context context, String packageName) {
+        try {
+            Intent i = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            i.addCategory(Intent.CATEGORY_DEFAULT);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.setData(Uri.parse("package:" + packageName));
+            context.startActivity(i);
+            return true;
+        } catch (ActivityNotFoundException ignored) {
+            return false;
+        }
+    }
+
+    public static boolean goToAppSetting(Context context) {
+        return goToAppSetting(context, context.getPackageName());
+    }
 }

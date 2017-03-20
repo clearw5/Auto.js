@@ -14,19 +14,27 @@
     <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_script_record_with_root">
 
         <com.afollestad.materialdialogs.prefs.MaterialListPreference
-            android:key="@string/key_start_record_trigger"
             android:defaultValue="@string/text_none"
             android:entries="@array/record_control_keys"
             android:entryValues="@array/record_control_values"
+            android:key="@string/key_start_record_trigger"
             android:title="@string/text_use_key_to_start_record"
             />
         <com.afollestad.materialdialogs.prefs.MaterialListPreference
-            android:key="@string/key_stop_record_trigger"
             android:defaultValue="@string/text_none"
             android:entries="@array/record_control_keys"
             android:entryValues="@array/record_control_values"
+            android:key="@string/key_stop_record_trigger"
             android:title="@string/text_use_key_to_stop_record"
             />
+    </com.stardust.theme.preference.ThemeColorPreferenceCategory>
+
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_script_running">
+
+        <com.stardust.theme.preference.ThemeColorSwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_use_volume_control_running"
+            android:title="@string/text_use_volume_to_stop_running"/>
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
     <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_edit">

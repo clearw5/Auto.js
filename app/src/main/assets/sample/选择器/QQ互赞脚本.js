@@ -1,3 +1,5 @@
+"auto";
+
 function 下滑(){
   className("AbsListView").scrollable().scrollForward();
 }

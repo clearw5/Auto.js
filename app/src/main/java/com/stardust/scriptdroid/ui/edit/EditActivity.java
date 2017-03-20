@@ -333,4 +333,13 @@ public class EditActivity extends Editor920Activity {
         unregisterReceiver(mOnRunFinishedReceiver);
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        try{
+            super.onRestoreInstanceState(savedInstanceState);
+        }catch (RuntimeException e){
+            // FIXME: 2017/3/20
+            e.printStackTrace();
+        }
+    }
 }

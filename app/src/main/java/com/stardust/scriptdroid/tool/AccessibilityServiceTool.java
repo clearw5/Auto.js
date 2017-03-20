@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.tool;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -32,7 +33,11 @@ public class AccessibilityServiceTool {
         if (Pref.isFirstGoToAccessibilitySetting()) {
             Toast.makeText(context, context.getString(R.string.text_please_choose) + context.getString(R.string._app_name), Toast.LENGTH_LONG).show();
         }
-        AccessibilityServiceUtils.goToAccessibilitySetting(context);
+        try {
+            AccessibilityServiceUtils.goToAccessibilitySetting(context);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(context, context.getString(R.string.go_to_accessibility_settings) + context.getString(R.string._app_name), Toast.LENGTH_LONG).show();
+        }
     }
 
     public static boolean enableAccessibilityServiceByRootAndWaitFor(Class<AccessibilityWatchDogService> accessibilityService, int timeout) {

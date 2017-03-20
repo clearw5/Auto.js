@@ -54,7 +54,6 @@ public class HoverMenuService extends Service {
     public static final String MESSAGE_MENU_EXPANDING = "MESSAGE_MENU_EXPANDING";
     public static final String MESSAGE_MENU_EXIT = "MESSAGE_MENU_EXIT";
 
-    private static HoverMenuService service = null;
     private static boolean sIsRunning;
 
     public static void startService(Context context) {
@@ -64,13 +63,6 @@ public class HoverMenuService extends Service {
 
     public static boolean isServiceRunning() {
         return sIsRunning;
-    }
-
-    public static void stopService() {
-        if (isServiceRunning() && service != null) {
-            service.stopSelf();
-            setIsRunning(false);
-        }
     }
 
     private static void setIsRunning(boolean isRunning) {
@@ -105,20 +97,18 @@ public class HoverMenuService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (service != null) {
-            stopSelf();
-            return;
-        }
-        service = this;
         EventBus.getDefault().register(this);
         mPrefs = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        tryInitViews();
+    }
+
+    private void tryInitViews() {
         try {
             initViews();
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
             FloatingWindowManger.goToFloatingWindowPermissionSetting();
-            stopService();
         }
     }
 
@@ -171,6 +161,8 @@ public class HoverMenuService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (mWindowHoverMenu == null)
+            tryInitViews();
         if (mWindowHoverMenu != null)
             mWindowHoverMenu.show();
         return START_STICKY;
@@ -183,8 +175,6 @@ public class HoverMenuService extends Service {
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);
         setIsRunning(false);
-        if (service == this)
-            service = null;
     }
 
 

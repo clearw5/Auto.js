@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.widget.Toast;
 
+import static com.stardust.scriptdroid.tool.IntentTool.goToAppSetting;
+
 /**
  * Created by Stardust on 2017/3/10.
  */
@@ -17,21 +19,10 @@ public class FloatingWindowUtils {
     public static boolean checkFloatingWindowPermission(Context context, int messageResId) {
         if (!isFloatingWindowPermitted(context)) {
             Toast.makeText(context, messageResId, Toast.LENGTH_SHORT).show();
-            goToAppSetting(context);
+            goToAppSetting(context, context.getPackageName());
             return false;
         }
         return true;
-    }
-
-    private static void goToAppSetting(Context context) {
-        try {
-            Intent i = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            i.addCategory(Intent.CATEGORY_DEFAULT);
-            i.setData(Uri.parse("package:" + context.getPackageName()));
-            context.startActivity(i);
-        } catch (ActivityNotFoundException ignored) {
-
-        }
     }
 
     public static boolean isFloatingWindowPermitted(Context context) {

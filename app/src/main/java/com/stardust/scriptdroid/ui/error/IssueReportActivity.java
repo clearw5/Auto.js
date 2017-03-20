@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 
 public class IssueReportActivity extends IssueReporterActivity {
 
-
     private boolean mCrash = false;
     private Method mReportIssue, mValidateInput;
     private boolean mReportFailed = false;

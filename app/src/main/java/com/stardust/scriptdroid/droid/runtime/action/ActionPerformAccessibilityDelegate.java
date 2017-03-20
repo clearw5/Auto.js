@@ -12,6 +12,9 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.view.accessibility.AccessibilityDelegate;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 
 /**
  * Created by Stardust on 2017/1/21.
@@ -27,12 +30,14 @@ public class ActionPerformAccessibilityDelegate implements AccessibilityDelegate
 
     private static Action action;
 
+    private Executor mExecutor = Executors.newFixedThreadPool(5);
 
     public static void setAction(Action action) {
         synchronized (ACTION_LOCK) {
             ActionPerformAccessibilityDelegate.action = action;
         }
     }
+
     @Override
     public boolean onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event) {
         synchronized (ACTION_LOCK) {
@@ -43,16 +48,25 @@ public class ActionPerformAccessibilityDelegate implements AccessibilityDelegate
                 Log.v(TAG, "root = null");
                 return false;
             }
-            Log.i(TAG, "perform action:" + action);
-            if (action.perform(root)) {
-                action.setResult(true);
-                onActionPerformed();
-            } else if (!action.performUtilSucceed()) {
-                action.setResult(false);
-                onActionPerformed();
-            }
+            performAction(root, action);
             return false;
         }
+    }
+
+    private void performAction(final AccessibilityNodeInfo root, final Action action) {
+        mExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "perform action:" + action);
+                if (action.perform(root)) {
+                    action.setResult(true);
+                    onActionPerformed();
+                } else if (!action.performUtilSucceed()) {
+                    action.setResult(false);
+                    onActionPerformed();
+                }
+            }
+        });
     }
 
 

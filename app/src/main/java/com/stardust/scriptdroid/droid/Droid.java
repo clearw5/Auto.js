@@ -1,16 +1,20 @@
 package com.stardust.scriptdroid.droid;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.jraska.console.timber.ConsoleTree;
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.scriptdroid.droid.runtime.ScriptStopException;
 import com.stardust.scriptdroid.droid.script.JavaScriptEngine;
 import com.stardust.scriptdroid.droid.script.RhinoJavaScriptEngine;
 import com.stardust.scriptdroid.droid.script.ScriptExecuteActivity;
+import com.stardust.scriptdroid.service.VolumeChangeObverseService;
 import com.stardust.scriptdroid.tool.FileUtils;
 
 import java.io.File;
@@ -31,6 +35,8 @@ public class Droid {
     public static final java.lang.String STAY = "\"stay\";";
 
     public static final String UI = "\"ui\";";
+
+    public static final String AUTO = "\"auto\";";
 
     public interface OnRunFinishedListener extends Serializable {
         void onRunFinished(Object result);
@@ -63,8 +69,18 @@ public class Droid {
         }
     };
     private static Droid instance = new Droid();
+    private VolumeChangeObverseService.OnVolumeChangeListener mOnVolumeChangeListener = new VolumeChangeObverseService.OnVolumeChangeListener() {
+        @Override
+        public void onVolumeChange() {
+            if (Pref.isRunningVolumeControlEnable()) {
+                stopAllAndToast();
+            }
+        }
+    };
+
 
     private Droid() {
+        VolumeChangeObverseService.addOnVolumeChangeListener(mOnVolumeChangeListener);
     }
 
     public static Droid getInstance() {
@@ -107,6 +123,7 @@ public class Droid {
     }
 
     public void runScript(final String script, OnRunFinishedListener listener, RunningConfig config) {
+        App.getApp().startService(new Intent(App.getApp(), VolumeChangeObverseService.class));
         listener = listener == null ? DEFAULT_LISTENER : listener;
         if (config.runInNewThread) {
             if (script.startsWith(UI)) {
@@ -123,6 +140,15 @@ public class Droid {
 
     public int stopAll() {
         return JAVA_SCRIPT_ENGINE.stopAll();
+    }
+
+
+    public void stopAllAndToast() {
+        int n = stopAll();
+        if (n > 0)
+            RUNTIME.toast(String.format(App.getResString(R.string.text_already_stop_n_scripts), n));
+        else
+            RUNTIME.toast(App.getResString(R.string.text_no_running_script));
     }
 
     private void checkFile(File file) {
@@ -151,6 +177,8 @@ public class Droid {
         @Override
         public void run() {
             try {
+                if (mScript.startsWith(AUTO))
+                    DroidRuntime.getRuntime().ensureAccessibilityServiceEnable();
                 mOnRunFinishedListener.onRunFinished(JAVA_SCRIPT_ENGINE.execute(mScript));
             } catch (Exception e) {
                 mOnRunFinishedListener.onException(e);

@@ -1,3 +1,4 @@
+"auto";
 
 function 打开正在运行的服务(){
     launch("com.android.settings");

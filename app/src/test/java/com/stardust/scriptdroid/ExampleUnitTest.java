@@ -11,6 +11,8 @@ import org.mozilla.javascript.ImporterTopLevel;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
@@ -18,10 +20,14 @@ import java.util.Arrays;
  */
 public class ExampleUnitTest {
     // TODO: 2017/3/3 自定义函数
+    // TODO: 2017/3/19 翻译
+    // FIXME: 2017/3/19 开始运行的提示覆盖问题
+    // TODO: 2017/3/19  
 
 
     @Test
     public void test() {
+        assertEquals(1, 1);
         Context context = Context.enter();
         context.setOptimizationLevel(-1);
         context.setLanguageVersion(Context.VERSION_1_7);

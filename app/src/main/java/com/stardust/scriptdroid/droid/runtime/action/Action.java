@@ -9,7 +9,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 public abstract class Action {
 
     private boolean mPerformUtilSucceed = false;
-    private Object mResult;
+    private volatile Object mResult = false;
 
     public Action(boolean performUtilSucceed) {
         mPerformUtilSucceed = performUtilSucceed;

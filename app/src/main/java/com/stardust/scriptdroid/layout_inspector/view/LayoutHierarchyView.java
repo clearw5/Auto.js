@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,8 +51,11 @@ public class LayoutHierarchyView extends MultiLevelListView {
     private Paint mPaint;
     private int mStatusBarHeight;
     private NodeInfo mClickedNodeInfo;
+    private View mClickedView;
+    private Drawable mOriginalBackground;
 
     private boolean mShowClickedNodeBounds;
+    private int mClickedColor = 0x77c4c4c4;
 
     public LayoutHierarchyView(Context context) {
         super(context);
@@ -72,6 +76,11 @@ public class LayoutHierarchyView extends MultiLevelListView {
         mShowClickedNodeBounds = showClickedNodeBounds;
     }
 
+    public void setClickedColor(int clickedColor) {
+        mClickedColor = clickedColor;
+    }
+
+
 
     private void init() {
         mAdapter = new Adapter();
@@ -83,16 +92,26 @@ public class LayoutHierarchyView extends MultiLevelListView {
         setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClicked(MultiLevelListView parent, View view, Object item, ItemInfo itemInfo) {
-                mClickedNodeInfo = (NodeInfo) item;
-                invalidate();
+                setClickedItem(view, (NodeInfo) item);
             }
 
             @Override
             public void onGroupItemClicked(MultiLevelListView parent, View view, Object item, ItemInfo itemInfo) {
-                mClickedNodeInfo = (NodeInfo) item;
-                invalidate();
+                setClickedItem(view, (NodeInfo) item);
             }
         });
+    }
+
+    private void setClickedItem(View view, NodeInfo item) {
+        mClickedNodeInfo = item;
+        if (mClickedView == null) {
+            mOriginalBackground = view.getBackground();
+        } else {
+            mClickedView.setBackground(mOriginalBackground);
+        }
+        view.setBackgroundColor(mClickedColor);
+        mClickedView = view;
+        invalidate();
     }
 
     private void initPaint() {

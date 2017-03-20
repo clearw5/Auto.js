@@ -51,11 +51,13 @@ public class EditSideMenuFragment extends Fragment {
     }
 
     @Override
+    protected void afterCreateView() {
+        setUpUI();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-        if (mFloatingWindowSwitch == null) {
-            setUpUI();
-        }
         syncSwitchState();
     }
 

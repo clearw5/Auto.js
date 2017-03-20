@@ -371,7 +371,8 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         context.startActivity(intent);
     }
 
-    public void OnAppBarClick(View view) {
+    @ViewBinding.Click(R.id.toolbar)
+    public void OnToolbarClick() {
         new ImageSelector(this, mActivityResultIntermediary, new ImageSelector.ImageSelectorCallback() {
             @Override
             public void onImageSelected(ImageSelector selector, String path) {

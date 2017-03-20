@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.external.floating_window.content;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
@@ -8,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.accessibility.AccessibilityEventHelper;
 import com.stardust.scriptdroid.external.floating_window.HoverMenuService;
@@ -15,6 +18,7 @@ import com.stardust.scriptdroid.record.Recorder;
 import com.stardust.scriptdroid.record.accessibility.AccessibilityActionRecorder;
 import com.stardust.scriptdroid.record.inputevent.InputEventConverter;
 import com.stardust.scriptdroid.record.inputevent.TouchRecorder;
+import com.stardust.scriptdroid.service.VolumeChangeObverseService;
 import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.util.MessageEvent;
 import com.stardust.view.ViewBinder;
@@ -53,10 +57,26 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     private Recorder mRecorder;
     private Context mContext;
 
+    private VolumeChangeObverseService.OnVolumeChangeListener mOnVolumeChangeListener = new VolumeChangeObverseService.OnVolumeChangeListener() {
+        @Override
+        public void onVolumeChange() {
+            if (Pref.isRecordVolumeControlEnable()) {
+                if (mRecorder == null) {
+                    startRecord();
+                } else if (mRecorder.getState() == Recorder.STATE_RECORDING) {
+                    stopRecord();
+                }
+            }
+        }
+    };
+
     public RecordNavigatorContent(Context context) {
         mContext = context;
         mView = View.inflate(context, R.layout.floating_window_record, null);
         ViewBinder.bind(this);
+        EventBus.getDefault().register(this);
+        App.getApp().startService(new Intent(App.getApp(), VolumeChangeObverseService.class));
+        VolumeChangeObverseService.addOnVolumeChangeListener(mOnVolumeChangeListener);
     }
 
     @NonNull
@@ -67,16 +87,12 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
     @Override
     public void onShown(@NonNull Navigator navigator) {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
+
     }
 
     @Override
     public void onHidden() {
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
+
     }
 
     @ViewBinding.Click(R.id.sw_root_container)
@@ -145,6 +161,9 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     public void onMessageEvent(MessageEvent event) {
         if (event.message.equals(HoverMenuService.MESSAGE_MENU_EXPANDING)) {
             pauseRecord();
+        } else if (event.message.equals(HoverMenuService.MESSAGE_MENU_EXIT)) {
+            EventBus.getDefault().unregister(this);
+            VolumeChangeObverseService.removeOnVolumeChangeListener(mOnVolumeChangeListener);
         }
     }
 

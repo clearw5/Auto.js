@@ -43,6 +43,11 @@ public class Pref {
         return def().getBoolean(getString(R.string.key_use_volume_control_record), false);
     }
 
+    public static boolean isRunningVolumeControlEnable() {
+        return def().getBoolean(getString(R.string.key_use_volume_control_running), false);
+    }
+
+
     private static String getString(int id) {
         return App.getApp().getString(id);
     }
@@ -58,4 +63,5 @@ public class Pref {
     public static boolean isFirstUsing() {
         return getDisposableBoolean("isFirstUsing", true);
     }
+
 }

@@ -49,7 +49,6 @@ public class AccessibilityActionRecordNotification {
                 case ACTION_DELETE:
                     AccessibilityActionRecordNotification.cancelNotification();
                     stopRecordIfNeeded(context);
-                    VolumeChangeObverseService.stopServiceIfNeeded();
                     break;
                 case ACTION_REDO:
                     redoRecord(context);
@@ -93,7 +92,7 @@ public class AccessibilityActionRecordNotification {
                     .setCustomContentView(AccessibilityActionRecordSwitchView.getInstance());
         }
         showNotification(builder.build());
-        VolumeChangeObverseService.startServiceIfNeeded(App.getApp());
+        App.getApp().startService(new Intent(App.getApp(), VolumeChangeObverseService.class));
     }
 
     private static void showNotification(Notification notification) {

@@ -26,6 +26,7 @@ import com.stardust.scriptdroid.accessibility.AccessibilityInfoProvider;
 import com.stardust.scriptdroid.droid.runtime.action.ActionTarget;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.jraska.console.Console;
 import com.stardust.scriptdroid.App;
@@ -77,28 +78,34 @@ public class DroidRuntime {
         mUIHandler = new Handler(App.getApp().getMainLooper());
     }
 
-    public void launchPackage(String packageName) {
-        PackageManager packageManager = App.getApp().getPackageManager();
-        App.getApp().startActivity(packageManager.getLaunchIntentForPackage(packageName));
+    public boolean launchPackage(String packageName) {
+        try {
+            PackageManager packageManager = App.getApp().getPackageManager();
+            App.getApp().startActivity(packageManager.getLaunchIntentForPackage(packageName));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
-    public void launch(String packageName, String className) {
-        App.getApp().startActivity(new Intent().setClassName(packageName, className).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    public boolean launchApp(String appName) {
+        return launchPackage(getPackageName(appName));
     }
 
-    public void launchApp(String appName) {
+    public String getPackageName(String appName) {
         PackageManager packageManager = App.getApp().getPackageManager();
         List<ApplicationInfo> installedApplications = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
         for (ApplicationInfo applicationInfo : installedApplications) {
             if (packageManager.getApplicationLabel(applicationInfo).toString().equals(appName)) {
-                launchPackage(applicationInfo.packageName);
-                break;
+                return applicationInfo.processName;
             }
         }
+        return "";
     }
 
-    public String[] getPackageName(String appName) {
-        return new String[0];
+    public boolean openAppSetting(String packageName){
+        return IntentTool.goToAppSetting(App.getApp(), packageName);
     }
 
     public ActionTarget text(String text, int i) {

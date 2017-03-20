@@ -78,11 +78,7 @@ public class MainMenuNavigatorContent implements NavigatorContent {
 
     @ViewBinding.Click(R.id.stop_all_running_scripts)
     private void stopAllRunningScripts() {
-        int n = Droid.getInstance().stopAll();
-        if (n > 0)
-            Toast.makeText(mView.getContext(), String.format(mView.getContext().getString(R.string.text_already_stop_n_scripts), n), Toast.LENGTH_SHORT).show();
-        else
-            Toast.makeText(mView.getContext(), R.string.text_no_running_script, Toast.LENGTH_SHORT).show();
+        Droid.getInstance().stopAllAndToast();
     }
 
     @ViewBinding.Click(R.id.open_launcher)

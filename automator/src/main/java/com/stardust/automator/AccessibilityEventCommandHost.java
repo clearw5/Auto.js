@@ -8,13 +8,14 @@ import com.stardust.view.accessibility.AccessibilityDelegate;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Stardust on 2017/3/9.
  */
 
 public class AccessibilityEventCommandHost implements AccessibilityDelegate {
-
 
 
     public interface Command {
@@ -31,19 +32,25 @@ public class AccessibilityEventCommandHost implements AccessibilityDelegate {
     private static final String TAG = "CommandHostDelegate";
 
     private final Queue<Command> mCommands = new LinkedList<>();
+    private Executor mExecutor = Executors.newFixedThreadPool(5);
 
     @Override
-    public boolean onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event) {
+    public boolean onAccessibilityEvent(final AccessibilityService service, final AccessibilityEvent event) {
         synchronized (mCommands) {
             if (!mCommands.isEmpty()) {
                 Log.v(TAG, "execute " + mCommands.size() + " commands");
             }
             while (!mCommands.isEmpty()) {
-                Command command = mCommands.poll();
-                command.execute(service, event);
-                synchronized (command) {
-                    command.notify();
-                }
+                final Command command = mCommands.poll();
+                mExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        command.execute(service, event);
+                        synchronized (command) {
+                            command.notify();
+                        }
+                    }
+                });
             }
         }
         return false;

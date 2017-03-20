@@ -53,12 +53,14 @@ public class SlideMenuFragment extends Fragment {
     }
 
     @Override
+    protected void afterCreateView() {
+        setUpSwitchCompat();
+        ViewBinder.bind(this);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-        if (mAutoOperateServiceSwitch == null) {
-            setUpSwitchCompat();
-            ViewBinder.bind(this);
-        }
         syncSwitchState();
     }
 
