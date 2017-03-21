@@ -110,9 +110,8 @@ public class SettingsActivity extends BaseActivity {
                     .entry(getString(R.string.text_reset_background), new Runnable() {
                         @Override
                         public void run() {
-                            Pref.def().edit().putString(Pref.KEY_APP_BAR_IMAGE_PATH, null)
-                                    .putString(Pref.KEY_DRAWER_HEADER_IMAGE_PATH, null)
-                                    .apply();
+                            Pref.setAppBarImagePath(null);
+                            Pref.setDrawerHeaderImagePath(null);
                             Toast.makeText(getActivity(), R.string.text_restart_app_to_apply, Toast.LENGTH_SHORT).show();
                         }
                     })

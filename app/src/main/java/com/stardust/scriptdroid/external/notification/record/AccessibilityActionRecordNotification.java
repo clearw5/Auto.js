@@ -132,7 +132,7 @@ public class AccessibilityActionRecordNotification {
 
     public static void startRecord(Context context) {
         if (AccessibilityWatchDogService.getInstance() == null) {
-            Toast.makeText(context, R.string.text_need_enable_accessibility_service, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.text_need_enable_accessibility_service_to_record, Toast.LENGTH_SHORT).show();
             return;
         }
         AccessibilityActionRecorder.getInstance().start();

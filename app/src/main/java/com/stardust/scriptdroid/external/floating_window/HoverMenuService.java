@@ -17,10 +17,12 @@ import com.stardust.hover.SimpleHoverMenuTransitionListener;
 import com.stardust.hover.WindowHoverMenu;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.scriptdroid.external.floating_window.view.FloatingLayoutBoundsView;
 import com.stardust.scriptdroid.external.floating_window.view.FloatingLayoutHierarchyView;
 import com.stardust.scriptdroid.layout_inspector.LayoutInspector;
 import com.stardust.scriptdroid.layout_inspector.NodeInfo;
+import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.theme.ThemeColorManagerCompat;
 import com.stardust.util.MessageEvent;
 
@@ -165,6 +167,7 @@ public class HoverMenuService extends Service {
             tryInitViews();
         if (mWindowHoverMenu != null)
             mWindowHoverMenu.show();
+        AccessibilityServiceTool.enableAccessibilityServiceByRootIfNeeded();
         return START_STICKY;
     }
 

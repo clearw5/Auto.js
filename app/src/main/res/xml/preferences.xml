@@ -60,6 +60,18 @@
         <Preference android:title="@string/text_reset_background"/>
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_advanced">
+
+        <com.afollestad.materialdialogs.prefs.MaterialListPreference
+            android:defaultValue="@string/key_single_thread"
+            android:entries="@array/run_mode_keys"
+            android:entryValues="@array/run_mode_values"
+            android:key="@string/key_run_mode"
+            android:title="@string/text_command_run_mode"
+            android:summary="@string/summary_command_run_mode"
+            />
+    </com.stardust.theme.preference.ThemeColorPreferenceCategory>
+
     <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_about">
 
         <Preference android:title="@string/text_issue_report"/>

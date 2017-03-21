@@ -57,4 +57,11 @@ public class AccessibilityServiceTool {
             }
         }
     }
+
+    public static void enableAccessibilityServiceByRootIfNeeded() {
+        if (AccessibilityWatchDogService.getInstance() == null)
+            if (Pref.def().getBoolean(App.getApp().getString(R.string.key_enable_accessibility_service_by_root), false)) {
+                AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(AccessibilityWatchDogService.class, 3000);
+            }
+    }
 }

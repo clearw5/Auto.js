@@ -30,7 +30,7 @@ public class ActionPerformAccessibilityDelegate implements AccessibilityDelegate
 
     private static Action action;
 
-    private Executor mExecutor = Executors.newFixedThreadPool(5);
+    //private Executor mExecutor = Executors.newFixedThreadPool(5);
 
     public static void setAction(Action action) {
         synchronized (ACTION_LOCK) {
@@ -54,7 +54,7 @@ public class ActionPerformAccessibilityDelegate implements AccessibilityDelegate
     }
 
     private void performAction(final AccessibilityNodeInfo root, final Action action) {
-        mExecutor.execute(new Runnable() {
+        new Runnable() {
             @Override
             public void run() {
                 Log.i(TAG, "perform action:" + action);
@@ -66,7 +66,7 @@ public class ActionPerformAccessibilityDelegate implements AccessibilityDelegate
                     onActionPerformed();
                 }
             }
-        });
+        }.run();
     }
 
 

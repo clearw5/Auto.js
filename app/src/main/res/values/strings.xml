@@ -112,7 +112,7 @@
     <string name="text_recorded">录制结束</string>
     <string name="text_copy_to_clip">复制到剪贴板</string>
     <string name="text_file_write_fail">文件写入失败</string>
-    <string name="text_need_enable_accessibility_service">需要打开\"自动操作服务“才能录制脚本</string>
+    <string name="text_need_enable_accessibility_service_to_record">需要打开\"自动操作服务“才能录制脚本</string>
     <string name="text_join_qq_group">加入QQ交流群</string>
     <string name="text_copied">已复制到剪贴板</string>
     <string name="text_close">关闭</string>
@@ -169,6 +169,14 @@
     <string name="text_script_running">脚本运行</string>
     <string name="key_use_volume_control_running">key_use_volume_control_running</string>
     <string name="text_use_volume_to_stop_running">每次音量键变化停止所有脚本</string>
+    <string name="text_need_to_enable_accessibility_service">需要启用无障碍服务</string>
+    <string name="text_advanced">高级</string>
+    <string name="key_run_mode">运行方式</string>
+    <string name="text_command_run_mode">自动操作函数执行方式</string>
+    <string name="summary_command_run_mode">如果运行脚本后界面卡顿请尝试多线程或线程池，但这可能导致设备重启</string>
+    <string name="key_single_thread">KEY_SINGLE_THREAD</string>
+    <string name="text_on">已开启</string>
+    <string name="text_off">已关闭</string>
 
     <string-array name="record_control_keys">
         <item>无</item>
@@ -182,5 +190,17 @@
         <item>KEY_VOLUMEUP</item>
         <item>KEY_VOLUMEDOWN</item>
         <item>KEY_CAMERA</item>
+    </string-array>
+
+    <string-array name="run_mode_keys">
+        <item>单线程</item>
+        <item>每次都创建新线程</item>
+        <item>线程池</item>
+    </string-array>
+
+    <string-array name="run_mode_values">
+        <item>KEY_SINGLE_THREAD</item>
+        <item>KEY_NEW_THREAD_EVERY_TIME</item>
+        <item>KEY_THREAD_POOL</item>
     </string-array>
 </resources>

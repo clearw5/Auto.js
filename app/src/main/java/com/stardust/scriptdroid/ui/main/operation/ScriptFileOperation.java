@@ -73,9 +73,8 @@ public abstract class ScriptFileOperation {
 
         @Override
         public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
-            Context context = recyclerView.getContext();
             ScriptFile scriptFile = scriptFileList.get(position);
-            EditActivity.editFile(context, scriptFile.name, scriptFile.path);
+            EditActivity.editFile(App.getApp(), scriptFile.name, scriptFile.path);
         }
     }
 
@@ -87,10 +86,9 @@ public abstract class ScriptFileOperation {
 
         @Override
         public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
-            Context context = recyclerView.getContext();
             ScriptFile scriptFile = scriptFileList.get(position);
             Uri uri = Uri.parse("file://" + scriptFile.path);
-            context.startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(uri, "text/plain"));
+            App.getApp().startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(uri, "text/plain"));
         }
     }
 
@@ -125,9 +123,8 @@ public abstract class ScriptFileOperation {
 
         @Override
         public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
-            Context context = recyclerView.getContext();
             ScriptFile scriptFile = scriptFileList.get(position);
-            new Shortcut(context).name(scriptFile.name)
+            new Shortcut(App.getApp()).name(scriptFile.name)
                     .targetClass(ShortcutActivity.class)
                     .icon(R.drawable.ic_robot_green)
                     .extras(new Intent().putExtra("path", scriptFile.path))

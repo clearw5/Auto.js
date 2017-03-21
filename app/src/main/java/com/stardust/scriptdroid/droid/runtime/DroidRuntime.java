@@ -12,7 +12,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -201,7 +200,7 @@ public class DroidRuntime {
     }
 
     private <T> T performAction(Action action) {
-        ensureAccessibilityServiceEnable();
+        ensureAccessibilityServiceEnabled();
         ActionPerformAccessibilityDelegate.setAction(action);
         synchronized (mActionPerformLock) {
             try {
@@ -214,7 +213,7 @@ public class DroidRuntime {
         return (T) action.getResult();
     }
 
-    public void ensureAccessibilityServiceEnable() {
+    public void ensureAccessibilityServiceEnabled() {
         if (AccessibilityWatchDogService.getInstance() == null) {
             String errorMessage = null;
             if (AccessibilityServiceUtils.isAccessibilityServiceEnabled(App.getApp(), AccessibilityWatchDogService.class)) {
@@ -263,12 +262,12 @@ public class DroidRuntime {
     }
 
     public String currentPackage() {
-        ensureAccessibilityServiceEnable();
+        ensureAccessibilityServiceEnabled();
         return AccessibilityInfoProvider.getInstance().getLatestPackage();
     }
 
     public String currentActivity() {
-        ensureAccessibilityServiceEnable();
+        ensureAccessibilityServiceEnabled();
         return AccessibilityInfoProvider.getInstance().getLatestActivity();
     }
 

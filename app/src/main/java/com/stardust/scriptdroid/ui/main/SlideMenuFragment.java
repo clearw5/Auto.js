@@ -52,8 +52,9 @@ public class SlideMenuFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_slide_menu, container, false);
     }
 
+
     @Override
-    protected void afterCreateView() {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         setUpSwitchCompat();
         ViewBinder.bind(this);
     }
@@ -124,9 +125,9 @@ public class SlideMenuFragment extends Fragment {
     private void stopAllRunningScripts() {
         int n = Droid.getInstance().stopAll();
         if (n > 0)
-            Snackbar.make(getActivityContentView(), String.format(getString(R.string.text_already_stop_n_scripts), n), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(getView(), String.format(getString(R.string.text_already_stop_n_scripts), n), Snackbar.LENGTH_SHORT).show();
         else
-            Snackbar.make(getActivityContentView(), R.string.text_no_running_script, Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(getView(), R.string.text_no_running_script, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

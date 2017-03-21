@@ -2,17 +2,12 @@ package com.stardust.scriptdroid.droid;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.jraska.console.timber.ConsoleTree;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
-import com.stardust.scriptdroid.droid.runtime.ScriptStopException;
 import com.stardust.scriptdroid.droid.script.JavaScriptEngine;
-import com.stardust.scriptdroid.droid.script.RhinoJavaScriptEngine;
 import com.stardust.scriptdroid.droid.script.ScriptExecuteActivity;
 import com.stardust.scriptdroid.service.VolumeChangeObverseService;
 import com.stardust.scriptdroid.tool.FileUtils;
@@ -21,7 +16,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import timber.log.Timber;
@@ -102,7 +96,7 @@ public class Droid {
     }
 
     public void runScriptFile(File file, OnRunFinishedListener listener) {
-        Timber.v(DateFormat.getTimeInstance().format(new Date()) + "/" + App.getResString(R.string.text_start_running) + file);
+        Timber.v(DateFormat.getTimeInstance().format(new Date()) + " " + App.getResString(R.string.text_start_running) + " " +  file);
         listener = listener == null ? DEFAULT_LISTENER : listener;
         try {
             checkFile(file);
@@ -178,7 +172,7 @@ public class Droid {
         public void run() {
             try {
                 if (mScript.startsWith(AUTO))
-                    DroidRuntime.getRuntime().ensureAccessibilityServiceEnable();
+                    DroidRuntime.getRuntime().ensureAccessibilityServiceEnabled();
                 mOnRunFinishedListener.onRunFinished(JAVA_SCRIPT_ENGINE.execute(mScript));
             } catch (Exception e) {
                 mOnRunFinishedListener.onException(e);

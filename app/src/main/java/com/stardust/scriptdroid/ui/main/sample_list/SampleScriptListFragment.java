@@ -39,7 +39,8 @@ public class SampleScriptListFragment extends Fragment {
     }
 
     @Override
-    protected void afterCreateView() {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mSampleScriptListRecyclerView = $(R.id.script_list);
         mSampleScriptListRecyclerView.setSamples(SampleFileManager.getInstance().getSamplesFromAssets(getContext().getAssets(), "sample"));
         mSampleScriptListRecyclerView.setOnItemLongClickListener(new SampleScriptListRecyclerView.OnItemLongClickListener() {

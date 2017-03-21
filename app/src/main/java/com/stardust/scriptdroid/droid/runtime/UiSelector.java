@@ -1,9 +1,7 @@
 package com.stardust.scriptdroid.droid.runtime;
 
 import android.accessibilityservice.AccessibilityService;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -69,10 +67,14 @@ public class UiSelector extends UiGlobalSelector {
     private static final String TAG = "UiSelector";
 
     public UiObjectCollection find() {
-        DroidRuntime.getRuntime().ensureAccessibilityServiceEnable();
+        ensureAccessibilityServiceEnabled();
         FindCommand command = new FindCommand();
         AccessibilityEventCommandHost.getInstance().executeAndWaitForEvent(command);
         return command.result;
+    }
+
+    private void ensureAccessibilityServiceEnabled(){
+        DroidRuntime.getRuntime().ensureAccessibilityServiceEnabled();
     }
 
 

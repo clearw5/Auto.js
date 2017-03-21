@@ -50,8 +50,11 @@ public class EditSideMenuFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_edit_side_menu, container, false);
     }
 
+
+
     @Override
-    protected void afterCreateView() {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setUpUI();
     }
 

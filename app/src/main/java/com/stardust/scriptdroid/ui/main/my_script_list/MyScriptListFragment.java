@@ -43,7 +43,8 @@ public class MyScriptListFragment extends Fragment implements BackPressedHandler
     }
 
     @Override
-    protected void afterCreateView() {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mScriptListRecyclerView = $(R.id.script_list);
         mScriptFileList = ScriptFileList.getImpl();
         mNoScriptHint = $(R.id.hint_no_script);
@@ -59,15 +60,6 @@ public class MyScriptListFragment extends Fragment implements BackPressedHandler
         });
         mScriptListRecyclerView.setScriptFileList(mScriptFileList);
     }
-
-    private void init() {
-        setUpScriptList();
-    }
-
-    private void setUpScriptList() {
-
-    }
-
 
     @Override
     public boolean onBackPressed() {

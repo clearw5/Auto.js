@@ -32,7 +32,6 @@ import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
-import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
 import com.stardust.scriptdroid.external.notification.record.AccessibilityActionRecordNotification;
 import com.stardust.scriptdroid.record.inputevent.InputEventRecorder;
 import com.stardust.scriptdroid.record.inputevent.InputEventToJsRecorder;
@@ -99,7 +98,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     private void goToAccessibilityPermissionSettingIfDisabled() {
         if (!AccessibilityServiceUtils.isAccessibilityServiceEnabled(this, AccessibilityWatchDogService.class)) {
             new NotRemindAgainDialog.Builder(this, "goToAccessibilityPermissionSettingIfDisabled")
-                    .title(R.string.text_alert)
+                    .title(R.string.text_need_to_enable_accessibility_service)
                     .content(R.string.explain_accessibility_permission)
                     .positiveText(R.string.text_go_to_setting)
                     .negativeText(R.string.text_cancel)
@@ -157,11 +156,11 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     private void setUpDrawerHeader() {
         TextView version = $(R.id.version);
         version.setText("Version " + BuildConfig.VERSION_NAME);
-        String path = Pref.def().getString(Pref.KEY_DRAWER_HEADER_IMAGE_PATH, null);
+        String path = Pref.getDrawerHeaderImagePath();
         if (path != null) {
             setDrawerHeaderImage(path);
         }
-        path = Pref.def().getString(Pref.KEY_APP_BAR_IMAGE_PATH, null);
+        path = Pref.getAppBarImagePath();
         if (path != null) {
             setAppBarImage(path);
         }
@@ -236,7 +235,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     @ViewBinding.Click(R.id.record)
     private void startScriptRecord() {
         if (AccessibilityWatchDogService.getInstance() == null) {
-            Snackbar.make(mDrawerLayout, R.string.text_need_enable_accessibility_service, Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(mDrawerLayout, R.string.text_need_enable_accessibility_service_to_record, Snackbar.LENGTH_SHORT).show();
             return;
         }
         AccessibilityActionRecordNotification.showOrUpdateNotification();
@@ -270,7 +269,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
             @Override
             public void onImageSelected(ImageSelector selector, String path) {
                 setDrawerHeaderImage(path);
-                Pref.def().edit().putString(Pref.KEY_DRAWER_HEADER_IMAGE_PATH, path).apply();
+                Pref.setDrawerHeaderImagePath(path);
                 mActivityResultIntermediary.removeDelegate(selector);
             }
         }).select();
@@ -376,7 +375,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         new ImageSelector(this, mActivityResultIntermediary, new ImageSelector.ImageSelectorCallback() {
             @Override
             public void onImageSelected(ImageSelector selector, String path) {
-                Pref.def().edit().putString(Pref.KEY_APP_BAR_IMAGE_PATH, path).apply();
+                Pref.setAppBarImagePath(path);
                 setAppBarImage(path);
                 mActivityResultIntermediary.removeDelegate(selector);
             }

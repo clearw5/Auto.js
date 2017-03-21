@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
@@ -24,7 +25,7 @@
         android:id="@+id/sw_root_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
+        android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:padding="16dp">
 
@@ -32,7 +33,9 @@
             android:id="@+id/sw_recorded_by_root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true"
+            android:textOn="@string/text_on"
+            android:textOff="@string/text_off"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -54,7 +57,7 @@
         android:id="@+id/sw_record_toast_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
+        android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:padding="16dp">
 
@@ -62,7 +65,9 @@
             android:id="@+id/sw_record_toast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true"
+            android:textOn="@string/text_on"
+            android:textOff="@string/text_off"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -84,7 +89,7 @@
         android:id="@+id/start_or_pause"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
+        android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:paddingBottom="16dp"
         android:paddingLeft="8dp"
@@ -116,7 +121,7 @@
         android:id="@+id/stop_record"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
+        android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:paddingBottom="16dp"
         android:paddingLeft="8dp"

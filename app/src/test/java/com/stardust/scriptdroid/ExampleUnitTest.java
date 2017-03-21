@@ -9,7 +9,14 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ImporterTopLevel;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.junit.Assert.assertEquals;
 
@@ -20,26 +27,80 @@ import static org.junit.Assert.assertEquals;
  */
 public class ExampleUnitTest {
     // TODO: 2017/3/3 自定义函数
-    // TODO: 2017/3/19 翻译
-    // FIXME: 2017/3/19 开始运行的提示覆盖问题
-    // TODO: 2017/3/19  
+    // TODO: 2017/3/19
 
+    Counter counter = new Counter(5);
+    private List<Integer> mIntegers = new ArrayList<>();
 
     @Test
     public void test() {
-        assertEquals(1, 1);
-        Context context = Context.enter();
-        context.setOptimizationLevel(-1);
-        context.setLanguageVersion(Context.VERSION_1_7);
-        context.setInstructionObserverThreshold(10000);
-        ImporterTopLevel importerTopLevel = new ImporterTopLevel();
-        importerTopLevel.initStandardObjects(context, false);
-        context.evaluateString(importerTopLevel, "var a = 1;var b = function(){};", "<init>", 1, null);
-        String[] ids = (String[]) importerTopLevel.getIds();
-        System.out.println(ids[0].getClass());
-        System.out.println(Arrays.toString(ids));
-        for(Object id : ids){
-            System.out.println(importerTopLevel.get(id));
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        executor.execute(new Task(1, 100));
+        executor.execute(new Task(2, 1000));
+        System.out.println(0);
+        executor.execute(new Task(3, 100));
+        executor.execute(new Task(4, 100));
+        executor.execute(new Task(5, 100));
+        System.out.println(100);
+        counter.lock();
+    }
+
+    private class Task implements Runnable {
+
+        public Task(int i, int delay) {
+            this.i = i;
+            this.delay = delay;
         }
+
+        private final int i, delay;
+
+        @Override
+        public void run() {
+            if (delay > 0)
+                try {
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            System.out.println(i);
+            synchronized (mIntegers) {
+                mIntegers.add(i);
+                for (Integer integer : mIntegers) {
+                    System.out.println(i + ":" + integer);
+                }
+            }
+            counter.minus();
+        }
+    }
+
+    private static class Counter {
+
+        private final Object lock = new Object();
+
+        public Counter(int i) {
+            this.i = i;
+        }
+
+        private volatile int i;
+
+        void minus() {
+            i--;
+            if (i == 0) {
+                synchronized (lock) {
+                    lock.notify();
+                }
+            }
+        }
+
+        void lock() {
+            synchronized (lock) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
     }
 }
