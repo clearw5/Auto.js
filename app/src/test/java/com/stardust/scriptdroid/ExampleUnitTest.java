@@ -70,7 +70,6 @@ public class ExampleUnitTest {
                 .install(scope);
 
 
-        ctx.evaluateString(scope, "require('test.js')()", "<test>", 1, null);
 
         Context.exit();
     }

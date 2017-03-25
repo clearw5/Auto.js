@@ -2,6 +2,9 @@ package com.stardust.scriptdroid.droid.script;
 
 import android.net.Uri;
 
+import com.iwebpp.node.NodeContext;
+import com.iwebpp.node.js.rhino.Host;
+import com.iwebpp.nodeandroid.Toaster;
 import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
@@ -55,13 +58,13 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         return result;
     }
 
-    private Scriptable createScope(Context context) {
+    protected Scriptable createScope(Context context) {
         ImporterTopLevel importerTopLevel = new ImporterTopLevel();
         importerTopLevel.initStandardObjects(context, false);
         return importerTopLevel;
     }
 
-    private Context createContext() {
+    protected Context createContext() {
         Context context = Context.enter();
         context.setOptimizationLevel(-1);
         context.setLanguageVersion(Context.VERSION_1_7);
@@ -69,17 +72,21 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         return context;
     }
 
-    private void init(Context context, Scriptable scope) {
+    protected void init(Context context, Scriptable scope) {
+        putProperties(context, scope);
+        initRequireBuilder(context, scope);
+        context.evaluateString(scope, Init.getInitScript(), "<init>", 1, null);
+        mThreads.add(Thread.currentThread());
+    }
+
+    protected void putProperties(Context context, Scriptable scope) {
         ScriptableObject.putProperty(scope, "context", App.getApp());
         ScriptableObject.putProperty(scope, "__engine__", "rhino");
         for (Map.Entry<String, Object> variable : mVariableMap.entrySet()) {
             ScriptableObject.putProperty(scope, variable.getKey(), variable.getValue());
         }
-        initRequireBuilder(context, scope);
-        context.evaluateString(scope, Init.getInitScript(), "<init>", 1, null);
-        mThreads.add(Thread.currentThread());
-
     }
+
 
     private void initRequireBuilder(Context context, Scriptable scope) {
         List<URI> paths = Collections.singletonList(new File(ScriptFile.DEFAULT_FOLDER).toURI());

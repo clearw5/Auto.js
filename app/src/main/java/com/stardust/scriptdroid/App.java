@@ -9,6 +9,7 @@ import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.scriptdroid.accessibility.AccessibilityInfoProvider;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.scriptdroid.droid.script.JavaScriptEngine;
+import com.stardust.scriptdroid.droid.script.NodeJsJavaScriptEngine;
 import com.stardust.scriptdroid.droid.script.RhinoJavaScriptEngine;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
@@ -71,7 +72,7 @@ public class App extends Application {
 
     private void configApp() {
         ScriptFileList.setImpl(SharedPrefScriptFileList.getInstance());
-        JavaScriptEngine.setDefault(new RhinoJavaScriptEngine(DroidRuntime.getRuntime()));
+        JavaScriptEngine.setDefault(new NodeJsJavaScriptEngine(DroidRuntime.getRuntime()));
     }
 
 

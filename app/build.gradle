@@ -8,8 +8,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 109
-        versionName "2.0.6 Alpha"
+        versionCode 110
+        versionName "2.0.6 Alpha2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
@@ -72,6 +72,7 @@ dependencies {
     compile 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
     compile 'com.github.0xFireball:Enlightened:v31'
     compile 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
+    compile 'com.github.hyb1996:node-android-lib:1.0.13'
     compile(name: 'libtermexec-release', ext: 'aar')
     compile(name: 'emulatorview-release', ext: 'aar')
     compile(name: 'term-debug', ext: 'aar')
