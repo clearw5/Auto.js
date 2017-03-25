@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.ui.main;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -12,7 +13,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,20 +27,19 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FileChooserDialog;
-import com.stardust.app.NotRemindAgainDialog;
+import com.stardust.app.FragmentPagerAdapterBuilder;
+import com.stardust.app.NotAskAgainDialog;
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
-import com.stardust.scriptdroid.external.notification.record.AccessibilityActionRecordNotification;
-import com.stardust.scriptdroid.record.inputevent.InputEventRecorder;
-import com.stardust.scriptdroid.record.inputevent.InputEventToJsRecorder;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.ImageSelector;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.main.my_script_list.MyScriptListFragment;
 import com.stardust.scriptdroid.ui.main.sample_list.SampleScriptListFragment;
+import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.MessageEvent;
@@ -50,7 +49,6 @@ import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.tool.FileUtils;
 import com.stardust.scriptdroid.tool.BackPressedHandler;
-import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
@@ -65,39 +63,46 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     private static final String ACTION_ON_ACTION_RECORD_STOPPED = "ACTION_ON_ACTION_RECORD_STOPPED";
     private static final String ARGUMENT_SCRIPT = "ARGUMENT_SCRIPT";
-    private static final String ACTION_ON_ROOT_RECORD_STOPPED = "ACTION_ON_ROOT_RECORD_STOPPED";
 
-    private ScriptFileList mScriptFileList;
     private DrawerLayout mDrawerLayout;
     @ViewBinding.Id(R.id.bottom_menu)
     private SlidingUpPanel mAddBottomMenuPanel;
+    private FragmentPagerAdapterBuilder.StoredFragmentPagerAdapter mPagerAdapter;
 
-    private MyScriptListFragment mMyScriptListFragment;
-    private SampleScriptListFragment mSampleScriptListFragment;
     private OnActivityResultDelegate.Intermediary mActivityResultIntermediary = new OnActivityResultDelegate.Intermediary();
-    private BackPressedHandler.Observer mBackPressObserver = new BackPressedHandler.Observer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setUpUI();
         checkPermissions();
-        registerBackPressHandler();
+        registerBackPressHandlers();
         handleIntent(getIntent());
     }
 
-    private void registerBackPressHandler() {
-        mBackPressObserver.registerHandler(new BackPressedHandler.DoublePressExit(this));
+    private void registerBackPressHandlers() {
+        registerBackPressedHandler(new BackPressedHandler() {
+            @Override
+            public boolean onBackPressed(Activity activity) {
+                if (mAddBottomMenuPanel.isShowing()) {
+                    mAddBottomMenuPanel.dismiss();
+                    return true;
+                }
+                return false;
+            }
+        });
+        registerBackPressedHandler(new BackPressedHandler.DrawerAutoClose(mDrawerLayout, Gravity.START));
+        registerBackPressedHandler(new BackPressedHandler.DoublePressExit(this));
     }
 
     private void checkPermissions() {
         checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
-        goToAccessibilityPermissionSettingIfDisabled();
+        showAccessibilitySettingPromptIfDisabled();
     }
 
-    private void goToAccessibilityPermissionSettingIfDisabled() {
+    private void showAccessibilitySettingPromptIfDisabled() {
         if (!AccessibilityServiceUtils.isAccessibilityServiceEnabled(this, AccessibilityWatchDogService.class)) {
-            new NotRemindAgainDialog.Builder(this, "goToAccessibilityPermissionSettingIfDisabled")
+            new NotAskAgainDialog.Builder(this, "showAccessibilitySettingPromptIfDisabled")
                     .title(R.string.text_need_to_enable_accessibility_service)
                     .content(R.string.explain_accessibility_permission)
                     .positiveText(R.string.text_go_to_setting)
@@ -123,33 +128,23 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     }
 
     private void addScriptFile(String name, String path) {
-        mScriptFileList.add(new ScriptFile(name, path));
+        ScriptFileList.getImpl().add(new ScriptFile(name, path));
         EventBus.getDefault().post(new MessageEvent(MyScriptListFragment.MESSAGE_SCRIPT_FILE_ADDED));
     }
 
     private void setUpUI() {
         mDrawerLayout = (DrawerLayout) View.inflate(this, R.layout.activity_main, null);
         setContentView(mDrawerLayout);
-        setUpFragment();
         setUpToolbar();
-        setUpTabLayout();
+        setUpTabViewPager();
         setUpDrawerHeader();
+        setUpFragment();
         ViewBinder.bind(this);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
     }
 
     private void setUpFragment() {
         SlideMenuFragment.setFragment(this, R.id.fragment_slide_menu);
-        mMyScriptListFragment = new MyScriptListFragment();
-        mScriptFileList = ScriptFileList.getImpl();
-        mSampleScriptListFragment = new SampleScriptListFragment();
-    }
-
-    private void setUpTabLayout() {
-        TabLayout tabLayout = $(R.id.tab);
-        ViewPager viewPager = $(R.id.viewpager);
-        viewPager.setAdapter(new FragmentPagerAdapter());
-        tabLayout.setupWithViewPager(viewPager);
     }
 
     @SuppressLint("SetTextI18n")
@@ -164,7 +159,6 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         if (path != null) {
             setAppBarImage(path);
         }
-        $(R.id.drawer).setFitsSystemWindows(false);
     }
 
     private void setDrawerHeaderImage(String path) {
@@ -178,13 +172,23 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         Toolbar toolbar = $(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string._app_name);
-
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.text_drawer_open,
                 R.string.text_drawer_close);
         drawerToggle.syncState();
         mDrawerLayout.addDrawerListener(drawerToggle);
     }
 
+    private void setUpTabViewPager() {
+        TabLayout tabLayout = $(R.id.tab);
+        ViewPager viewPager = $(R.id.viewpager);
+        mPagerAdapter = new FragmentPagerAdapterBuilder(this)
+                .add(new MyScriptListFragment(), R.string.text_my_script)
+                .add(new SampleScriptListFragment(), R.string.text_sample_script)
+                .add(new TaskManagerFragment(), R.string.text_task_manage)
+                .build();
+        viewPager.setAdapter(mPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+    }
 
     @ViewBinding.Click(R.id.add)
     private void showAddFilePanel() {
@@ -218,7 +222,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                 }
             }
             addScriptFile(name, path);
-            new ScriptFileOperation.Edit().operate(mMyScriptListFragment.getScriptListRecyclerView(), mScriptFileList, mScriptFileList.size() - 1);
+            ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0)).editLatest();
         } else {
             Snackbar.make(mDrawerLayout, R.string.text_file_create_fail, Snackbar.LENGTH_LONG).show();
         }
@@ -230,27 +234,6 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                 .initialPath(ScriptFile.DEFAULT_FOLDER)
                 .extensionsFilter(".js", ".txt")
                 .show();
-    }
-
-    @ViewBinding.Click(R.id.record)
-    private void startScriptRecord() {
-        if (AccessibilityWatchDogService.getInstance() == null) {
-            Snackbar.make(mDrawerLayout, R.string.text_need_enable_accessibility_service_to_record, Snackbar.LENGTH_SHORT).show();
-            return;
-        }
-        AccessibilityActionRecordNotification.showOrUpdateNotification();
-        Snackbar.make(mDrawerLayout, R.string.hint_start_record, Snackbar.LENGTH_SHORT).show();
-    }
-
-    private InputEventRecorder mInputEventRecorder;
-
-    @ViewBinding.Click(R.id.root_record)
-    private void startRootRecord() {
-        if (mInputEventRecorder == null) {
-            mInputEventRecorder = new InputEventToJsRecorder();
-            mInputEventRecorder.listen();
-        }
-        Snackbar.make(mDrawerLayout, R.string.hint_start_root_record, Snackbar.LENGTH_SHORT).show();
     }
 
     @ViewBinding.Click(R.id.setting)
@@ -294,13 +277,6 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
             case ACTION_ON_ACTION_RECORD_STOPPED:
                 handleRecordedScript(intent.getStringExtra(ARGUMENT_SCRIPT));
                 break;
-            case ACTION_ON_ROOT_RECORD_STOPPED:
-                if (mInputEventRecorder != null) {
-                    mInputEventRecorder.stop();
-                    handleRecordedScript(mInputEventRecorder.getCode());
-                    mInputEventRecorder = null;
-                }
-                break;
         }
     }
 
@@ -329,19 +305,6 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                 })
                 .canceledOnTouchOutside(false)
                 .show();
-
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        if (mAddBottomMenuPanel.isShowing()) {
-            mAddBottomMenuPanel.dismiss();
-        } else if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
-            mDrawerLayout.closeDrawer(Gravity.START);
-        } else {
-            mBackPressObserver.onBackPressed();
-        }
     }
 
     @Override
@@ -362,14 +325,6 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         context.startActivity(intent);
     }
 
-
-    public static void onRootRecordStopped(Context context) {
-        Intent intent = new Intent(context, MainActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(EXTRA_ACTION, ACTION_ON_ROOT_RECORD_STOPPED);
-        context.startActivity(intent);
-    }
-
     @ViewBinding.Click(R.id.toolbar)
     public void OnToolbarClick() {
         new ImageSelector(this, mActivityResultIntermediary, new ImageSelector.ImageSelectorCallback() {
@@ -385,29 +340,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     private void setAppBarImage(String path) {
         Drawable d = BitmapDrawable.createFromPath(path);
         if (d != null) {
-            $(R.id.app_bar).setBackground(d);
-        }
-    }
-
-    private class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAdapter {
-
-        FragmentPagerAdapter() {
-            super(MainActivity.this.getSupportFragmentManager());
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return position == 0 ? mMyScriptListFragment : mSampleScriptListFragment;
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return getString(position == 0 ? R.string.text_my_script : R.string.text_sample_script);
+            ((ImageView) $(R.id.app_bar_bg)).setImageDrawable(d);
         }
     }
 

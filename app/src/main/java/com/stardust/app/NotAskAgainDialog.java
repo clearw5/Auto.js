@@ -16,9 +16,9 @@ import static com.jecelyin.common.utils.StringUtils.md5;
  * Created by Stardust on 2017/1/30.
  */
 
-public class NotRemindAgainDialog extends MaterialDialog {
+public class NotAskAgainDialog extends MaterialDialog {
 
-    protected NotRemindAgainDialog(Builder builder) {
+    protected NotAskAgainDialog(Builder builder) {
         super(builder);
     }
 

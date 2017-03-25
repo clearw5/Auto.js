@@ -129,7 +129,6 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
     private void startRecord() {
         mRecorder = mRecordedByRootSwitch.isChecked() ? new TouchRecorder() : AccessibilityActionRecorder.getInstance();
-        AccessibilityActionRecorder.getInstance().setRecordMessageEnabled(mRecordToastSwitch.isChecked());
         mRecorder.setOnStateChangedListener(this);
         mRecorder.start();
         setState(Recorder.STATE_RECORDING);

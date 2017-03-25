@@ -185,6 +185,7 @@ public class EditActivity extends Editor920Activity {
             final EditorView editorView = (EditorView) findViewById(R.id.editor);
             mEditorDelegate.setEditorView(editorView);
             editorView.getEditText().setReadOnly(mReadOnly);
+            editorView.getEditText().setHorizontallyScrolling(true);
             InputMethodEnhanceBar inputMethodEnhanceBar = (InputMethodEnhanceBar) findViewById(R.id.input_method_enhance_bar);
             if (mReadOnly) {
                 inputMethodEnhanceBar.setVisibility(View.GONE);

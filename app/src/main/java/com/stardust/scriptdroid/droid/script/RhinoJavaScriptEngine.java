@@ -1,17 +1,29 @@
 package com.stardust.scriptdroid.droid.script;
 
+import android.net.Uri;
+
 import com.stardust.scriptdroid.droid.Droid;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
 import com.stardust.scriptdroid.droid.runtime.ScriptStopException;
+import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.commonjs.module.RequireBuilder;
+import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider;
+import org.mozilla.javascript.commonjs.module.provider.UrlModuleSourceProvider;
 
+import java.io.File;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -63,8 +75,20 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         for (Map.Entry<String, Object> variable : mVariableMap.entrySet()) {
             ScriptableObject.putProperty(scope, variable.getKey(), variable.getValue());
         }
+        initRequireBuilder(context, scope);
         context.evaluateString(scope, Init.getInitScript(), "<init>", 1, null);
         mThreads.add(Thread.currentThread());
+
+    }
+
+    private void initRequireBuilder(Context context, Scriptable scope) {
+        List<URI> paths = Collections.singletonList(new File(ScriptFile.DEFAULT_FOLDER).toURI());
+        new RequireBuilder()
+                .setModuleScriptProvider(new SoftCachingModuleScriptProvider(
+                        new UrlModuleSourceProvider(paths, null)))
+                .setSandboxed(true)
+                .createRequire(context, scope)
+                .install(scope);
 
     }
 

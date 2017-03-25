@@ -57,7 +57,8 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
         @Override
         public void onClick(View v) {
             int position = getChildViewHolder(v).getAdapterPosition();
-            mEditTextBridge.appendText(mCodeCompletionList.get(position).getAppendText());
+            if (position >= 0 && position < mCodeCompletionList.size())
+                mEditTextBridge.appendText(mCodeCompletionList.get(position).getAppendText());
         }
     };
 
@@ -65,6 +66,8 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
         @Override
         public boolean onLongClick(View v) {
             int position = getChildViewHolder(v).getAdapterPosition();
+            if (position < 0 || position >= mCodeCompletionList.size())
+                return false;
             ((ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("", mCodeCompletionList.get(position).getDisplayText()));
             Toast.makeText(getContext(), R.string.text_copied, Toast.LENGTH_SHORT).show();
             return true;

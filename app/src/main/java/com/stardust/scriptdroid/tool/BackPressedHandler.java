@@ -1,6 +1,8 @@
 package com.stardust.scriptdroid.tool;
 
 import android.app.Activity;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.R;
@@ -13,7 +15,27 @@ import java.util.List;
  */
 public interface BackPressedHandler {
 
-    boolean onBackPressed();
+    boolean onBackPressed(Activity activity);
+
+    class Observer implements BackPressedHandler {
+
+        private List<BackPressedHandler> mBackPressedHandlers = new ArrayList<>();
+
+        @Override
+        public boolean onBackPressed(Activity activity) {
+            for (BackPressedHandler handler : mBackPressedHandlers) {
+                if (handler.onBackPressed(activity)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void registerHandler(BackPressedHandler handler) {
+            mBackPressedHandlers.add(handler);
+        }
+    }
+
 
     class DoublePressExit implements BackPressedHandler {
 
@@ -31,7 +53,7 @@ public interface BackPressedHandler {
         }
 
         @Override
-        public boolean onBackPressed() {
+        public boolean onBackPressed(Activity activity) {
             if (System.currentTimeMillis() - mLastPressedMillis < mDoublePressInterval) {
                 mActivity.finish();
             } else {
@@ -42,22 +64,23 @@ public interface BackPressedHandler {
         }
     }
 
-    class Observer implements BackPressedHandler {
+    class DrawerAutoClose implements BackPressedHandler {
 
-        private List<BackPressedHandler> mBackPressedHandlers = new ArrayList<>();
+        private DrawerLayout mDrawerLayout;
+        private int mGravity;
 
-        @Override
-        public boolean onBackPressed() {
-            for (BackPressedHandler handler : mBackPressedHandlers) {
-                if (handler.onBackPressed()) {
-                    return true;
-                }
-            }
-            return false;
+        public DrawerAutoClose(DrawerLayout drawerLayout, int gravity){
+            mDrawerLayout = drawerLayout;
+            mGravity = gravity;
         }
 
-        public void registerHandler(BackPressedHandler handler) {
-            mBackPressedHandlers.add(handler);
+        @Override
+        public boolean onBackPressed(Activity activity) {
+            if (mDrawerLayout.isDrawerOpen(mGravity)) {
+                mDrawerLayout.closeDrawer(mGravity);
+                return true;
+            }
+            return false;
         }
     }
 }

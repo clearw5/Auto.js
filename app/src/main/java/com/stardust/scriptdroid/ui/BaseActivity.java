@@ -10,6 +10,7 @@ import android.view.View;
 
 
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.tool.BackPressedHandler;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.theme.app.ThemeColorAppCompatActivity;
 
@@ -27,6 +28,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 public class BaseActivity extends AppCompatActivity {
 
     protected static final int PERMISSION_REQUEST_CODE = 11186;
+    private BackPressedHandler.Observer mBackPressObserver = new BackPressedHandler.Observer();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,6 +83,17 @@ public class BaseActivity extends AppCompatActivity {
                 }
             });
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    public void registerBackPressedHandler(BackPressedHandler handler) {
+        mBackPressObserver.registerHandler(handler);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!mBackPressObserver.onBackPressed(this)) {
+            super.onBackPressed();
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.ui.main.my_script_list;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,8 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
 import com.stardust.scriptdroid.tool.BackPressedHandler;
+import com.stardust.scriptdroid.ui.BaseActivity;
+import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.util.MessageEvent;
 import com.stardust.widget.SimpleAdapterDataObserver;
 
@@ -30,10 +33,14 @@ public class MyScriptListFragment extends Fragment implements BackPressedHandler
     private ScriptFileList mScriptFileList;
     private View mNoScriptHint;
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
+        if(!(getActivity() instanceof BaseActivity)){
+            throw new IllegalArgumentException("The fragment can only be used in BaseActivity");
+        }
     }
 
     @Nullable
@@ -61,8 +68,9 @@ public class MyScriptListFragment extends Fragment implements BackPressedHandler
         mScriptListRecyclerView.setScriptFileList(mScriptFileList);
     }
 
+    //// FIXME: 2017/3/24
     @Override
-    public boolean onBackPressed() {
+    public boolean onBackPressed(Activity activity) {
         if (mScriptListRecyclerView.getScriptFileOperationPopupMenu().isShowing()) {
             mScriptListRecyclerView.getScriptFileOperationPopupMenu().dismiss();
             return true;
@@ -97,5 +105,9 @@ public class MyScriptListFragment extends Fragment implements BackPressedHandler
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    public void editLatest() {
+        ScriptFileOperation.Edit.getInstance().operate(mScriptListRecyclerView, mScriptFileList, mScriptFileList.size() - 1);
     }
 }

@@ -177,6 +177,9 @@
     <string name="key_single_thread">KEY_SINGLE_THREAD</string>
     <string name="text_on">已开启</string>
     <string name="text_off">已关闭</string>
+    <string name="text_script">脚本</string>
+    <string name="text_manage">管理</string>
+    <string name="text_task_manage">任务管理</string>
 
     <string-array name="record_control_keys">
         <item>无</item>

@@ -57,13 +57,13 @@ public class CommonMarkdownView extends WebView {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                getContext().startActivity(new Intent(Intent.ACTION_VIEW).setData(request.getUrl()));
+                getContext().startActivity(new Intent(Intent.ACTION_VIEW).setData(request.getUrl()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 return true;
             }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                getContext().startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url)));
+                getContext().startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 return true;
             }
 

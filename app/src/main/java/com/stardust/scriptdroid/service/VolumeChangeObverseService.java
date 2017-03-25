@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.SwitchCompat;
 
-import com.stardust.scriptdroid.external.notification.record.AccessibilityActionRecordNotification;
 import com.stardust.scriptdroid.record.Recorder;
 import com.stardust.scriptdroid.record.accessibility.AccessibilityActionRecorder;
 import com.stardust.scriptdroid.Pref;

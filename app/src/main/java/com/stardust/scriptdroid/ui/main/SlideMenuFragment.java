@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
@@ -33,7 +34,7 @@ import org.greenrobot.eventbus.Subscribe;
 public class SlideMenuFragment extends Fragment {
 
 
-    public static void setFragment(AppCompatActivity activity, int viewId) {
+    public static void setFragment(FragmentActivity activity, int viewId) {
         SlideMenuFragment fragment = new SlideMenuFragment();
         activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).commit();
     }

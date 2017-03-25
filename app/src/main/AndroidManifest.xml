@@ -72,6 +72,7 @@
         <activity android:name=".ui.console.ConsoleActivity"/>
         <activity android:name=".ui.error.ErrorReportActivity"/>
         <activity android:name=".ui.help.LocalWebViewActivity"/>
+        <activity android:name=".ui.edit.IridiumEditActivity"/>
 
         <activity
             android:name=".ui.error.IssueReportActivity"

@@ -17,7 +17,7 @@ public class IntentTool {
     public static boolean goToQQ(Context context, String qq) {
         try {
             String url = "mqqwpa://im/chat?chat_type=wpa&uin=" + qq;
-            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             return true;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -33,7 +33,7 @@ public class IntentTool {
      * @return 返回true表示呼起手Q成功，返回false表示呼起失败
      ******************/
     public static boolean joinQQGroup(Context context, String key) {
-        Intent intent = new Intent();
+        Intent intent = new Intent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setData(Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D" + key));
         // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         try {
@@ -48,7 +48,7 @@ public class IntentTool {
     public static void goToMail(Context context, String sendTo, @Nullable String title, @Nullable String content) {
         Uri uri = Uri.parse("mailto:" + sendTo);
         String[] email = {sendTo};
-        Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+        Intent intent = new Intent(Intent.ACTION_SENDTO, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Intent.EXTRA_CC, email);
         if (title != null)
             intent.putExtra(Intent.EXTRA_SUBJECT, title);
@@ -62,7 +62,7 @@ public class IntentTool {
     }
 
     public static void goToLink(Context context, String link) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

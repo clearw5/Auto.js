@@ -289,7 +289,6 @@ public class DroidRuntime {
 
     public ThemeColorMaterialDialogBuilder dialog() {
         if (App.currentActivity() == null) {
-            Toast.makeText(App.getApp(), R.string.text_cannot_create_dialog_when_app_invisible, Toast.LENGTH_SHORT).show();
             throw new ScriptStopException(App.getApp().getString(R.string.text_cannot_create_dialog_when_app_invisible));
         }
         return new ThemeColorMaterialDialogBuilder(App.currentActivity()) {

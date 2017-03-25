@@ -25,7 +25,8 @@
             android:background="@android:color/transparent"
             android:clipToPadding="false"
             android:paddingTop="24dp"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:elevation="0dp">
 
 
             <android.support.v7.widget.Toolbar
@@ -46,24 +47,26 @@
 
             </android.support.v7.widget.Toolbar>
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tab"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                app:tabGravity="fill"
-                app:tabIndicatorColor="@android:color/white"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="@android:color/primary_text_dark"
-                app:tabTextColor="@android:color/secondary_text_dark"/>
-
         </android.support.design.widget.AppBarLayout>
 
-        <include
-            android:id="@+id/content_main"
-            layout="@layout/content_main"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <FrameLayout
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <com.ashokvarma.bottomnavigation.BottomNavigationBar
+                android:id="@+id/bottom_navigation_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
 
         <com.stardust.widget.SlidingUpPanel
             android:id="@+id/bottom_menu"
@@ -131,19 +134,64 @@
 
                 </LinearLayout>
 
+
+                <LinearLayout
+                    android:id="@+id/record"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <com.stardust.theme.widget.ThemeColorImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_video_record"/>
+
+                    <com.stardust.theme.widget.ThemeColorTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/text_script_record"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/root_record"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <com.stardust.theme.widget.ThemeColorImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_video_record"/>
+
+                    <com.stardust.theme.widget.ThemeColorTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/text_root_script_record"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp"/>
+
+                </LinearLayout>
+
             </LinearLayout>
 
         </com.stardust.widget.SlidingUpPanel>
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <include
-        android:id="@+id/drawer"
-        layout="@layout/drawer"
-        android:layout_width="304dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="false"
-        />
 </android.support.v4.widget.DrawerLayout>
 

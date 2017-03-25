@@ -87,9 +87,4 @@ public class AccessibilityActionRecorder extends Recorder.DefaultIMPL implements
         mShouldIgnoreFirstAction = shouldIgnoreFirstAction;
     }
 
-
-    public void setRecordMessageEnabled(boolean recordMessageEnabled) {
-        // TODO: 2017/3/16 添加录制提示
-        mRecordMessageEnabled = recordMessageEnabled;
-    }
 }

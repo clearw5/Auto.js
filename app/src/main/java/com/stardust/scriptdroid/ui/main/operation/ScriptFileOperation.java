@@ -12,6 +12,7 @@ import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.external.shortcut.Shortcut;
 import com.stardust.scriptdroid.external.shortcut.ShortcutActivity;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
+import com.stardust.scriptdroid.ui.edit.IridiumEditActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
@@ -67,14 +68,28 @@ public abstract class ScriptFileOperation {
 
     public static class Edit extends ScriptFileOperation {
 
+        private static Edit instance = new Edit();
+
         public Edit() {
             super(App.getApp().getString(R.string.text_edit), R.drawable.ic_edit_green_48dp);
+        }
+
+        public static Edit getInstance() {
+            return instance;
+        }
+
+        public static void setInstance(Edit instance) {
+            Edit.instance = instance;
         }
 
         @Override
         public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
             ScriptFile scriptFile = scriptFileList.get(position);
             EditActivity.editFile(App.getApp(), scriptFile.name, scriptFile.path);
+            //脚本
+            //任务&控制台
+            //教程
+            //
         }
     }
 
@@ -88,7 +103,7 @@ public abstract class ScriptFileOperation {
         public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
             ScriptFile scriptFile = scriptFileList.get(position);
             Uri uri = Uri.parse("file://" + scriptFile.path);
-            App.getApp().startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(uri, "text/plain"));
+            App.getApp().startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(uri, "text/plain").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
     }
 
@@ -156,7 +171,8 @@ public abstract class ScriptFileOperation {
         public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
             boolean succeed = scriptFileList.deleteFromFileSystem(position);
             EventBus.getDefault().post(new ShowMessageEvent(succeed ? R.string.text_already_delete : R.string.text_delete_failed));
-            recyclerView.getAdapter().notifyItemRemoved(position);
+            if (succeed)
+                recyclerView.getAdapter().notifyItemRemoved(position);
         }
     }
 

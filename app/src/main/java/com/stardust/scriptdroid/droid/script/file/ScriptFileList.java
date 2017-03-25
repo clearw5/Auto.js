@@ -29,6 +29,8 @@ public abstract class ScriptFileList {
     public abstract int size();
 
     public boolean deleteFromFileSystem(int i) {
+        if (i < 0 || i >= size())
+            return false;
         File file = new File(get(i).path);
         remove(i);
         return file.delete();
