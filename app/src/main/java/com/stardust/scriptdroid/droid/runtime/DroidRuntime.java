@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.droid.runtime;
 
+import android.accessibilityservice.AccessibilityService;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -15,14 +16,17 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jraska.console.timber.ConsoleTree;
+import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.accessibility.AccessibilityInfoProvider;
 import com.stardust.scriptdroid.droid.runtime.action.ActionTarget;
+import com.stardust.scriptdroid.droid.runtime.api.UiSelector;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.IntentTool;
@@ -61,6 +65,21 @@ public class DroidRuntime {
                 .errorColor(0xffff534e)
                 .assertColor(0xffff5540)
                 .build());
+    }
+
+    private static class PerformGlobalActionCommand implements AccessibilityEventCommandHost.Command {
+
+        boolean result;
+        private int mGlobalAction;
+
+        PerformGlobalActionCommand(int globalAction) {
+            mGlobalAction = globalAction;
+        }
+
+        @Override
+        public void execute(AccessibilityService service, AccessibilityEvent event) {
+            result = service.performGlobalAction(mGlobalAction);
+        }
     }
 
     private static final String TAG = "DroidRuntime";
@@ -103,7 +122,7 @@ public class DroidRuntime {
         return "";
     }
 
-    public boolean openAppSetting(String packageName){
+    public boolean openAppSetting(String packageName) {
         return IntentTool.goToAppSetting(App.getApp(), packageName);
     }
 
@@ -174,6 +193,105 @@ public class DroidRuntime {
                 ((ClipboardManager) App.getApp().getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText(TAG, text));
             }
         });
+    }
+
+    public boolean back() {
+        return performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+    }
+
+    public boolean home() {
+        return performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
+    }
+
+    public boolean powerDialog() {
+        return performGlobalAction(AccessibilityService.GLOBAL_ACTION_POWER_DIALOG);
+    }
+
+    public boolean notifications() {
+        return performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
+    }
+
+    public boolean quickSettings() {
+        return performGlobalAction(AccessibilityService.GLOBAL_ACTION_QUICK_SETTINGS);
+    }
+
+    public boolean recents() {
+        return performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
+    }
+
+    public boolean splitScreen() {
+        return performGlobalAction(AccessibilityService.GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN);
+    }
+
+    public boolean swipeDown() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_DOWN);
+    }
+
+    public boolean swipeDownLeft() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_DOWN_AND_LEFT);
+    }
+
+    public boolean swipeDownRight() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_DOWN_AND_RIGHT);
+    }
+
+    public boolean swipeDownUp() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_DOWN_AND_UP);
+    }
+
+    public boolean swipeUp() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_UP);
+    }
+
+    public boolean swipeUpLeft() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_UP_AND_LEFT);
+    }
+
+    public boolean swipeUpRight() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_UP_AND_RIGHT);
+    }
+
+    public boolean swipeUpDown() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_UP_AND_DOWN);
+    }
+
+    public boolean swipeLeft() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_LEFT);
+    }
+
+    public boolean swipeLeftRight() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_LEFT_AND_RIGHT);
+    }
+
+    public boolean swipeLeftUp() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_LEFT_AND_UP);
+    }
+
+    public boolean swipeLeftDown() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_LEFT_AND_DOWN);
+    }
+
+    public boolean swipeRight() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_RIGHT);
+    }
+
+    public boolean swipeRightLeft() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_RIGHT_AND_LEFT);
+    }
+
+    public boolean swipeRightUp() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_RIGHT_AND_UP);
+    }
+
+    public boolean swipeRightDown() {
+        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_RIGHT_AND_DOWN);
+    }
+
+    private boolean performGlobalAction(final int action) {
+        ensureAccessibilityServiceEnabled();
+        PerformGlobalActionCommand command = new PerformGlobalActionCommand(action);
+        AccessibilityEventCommandHost.getInstance().executeAndWaitForEvent(command);
+        return command.result;
     }
 
     public boolean paste(ActionTarget target) {

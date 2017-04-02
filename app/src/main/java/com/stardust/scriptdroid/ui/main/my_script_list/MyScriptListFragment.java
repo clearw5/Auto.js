@@ -1,47 +1,54 @@
 package com.stardust.scriptdroid.ui.main.my_script_list;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.Snackbar;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.Fragment;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
-import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
-import com.stardust.scriptdroid.tool.BackPressedHandler;
-import com.stardust.scriptdroid.ui.BaseActivity;
+import com.stardust.scriptdroid.droid.script.file.ScriptFile;
+import com.stardust.scriptdroid.scripts.StorageScriptProvider;
+import com.stardust.scriptdroid.tool.FileUtils;
 import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
-import com.stardust.util.MessageEvent;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.view.ViewBinder;
+import com.stardust.view.ViewBinding;
 import com.stardust.widget.SimpleAdapterDataObserver;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
+import java.io.File;
+
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by Stardust on 2017/3/13.
  */
 
-public class MyScriptListFragment extends Fragment implements BackPressedHandler {
+public class MyScriptListFragment extends Fragment {
 
     public static final String MESSAGE_SCRIPT_FILE_ADDED = "MESSAGE_SCRIPT_FILE_ADDED";
 
-    private ScriptListRecyclerView mScriptListRecyclerView;
-    private ScriptFileList mScriptFileList;
+    private ScriptAndFolderListRecyclerView mScriptListRecyclerView;
     private View mNoScriptHint;
-
+    private View mProgressBar;
+    private MaterialDialog mScriptFileOperationDialog;
+    private MaterialDialog mDirectoryOperationDialog;
+    private ScriptFile mSelectedScriptFile;
+    private MaterialDialog.InputCallback mFileNameInputCallback = new InputCallback(false);
+    private MaterialDialog.InputCallback mDirectoryNameInputCallback = new InputCallback(true);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
-        if(!(getActivity() instanceof BaseActivity)){
-            throw new IllegalArgumentException("The fragment can only be used in BaseActivity");
-        }
     }
+
 
     @Nullable
     @Override
@@ -53,8 +60,13 @@ public class MyScriptListFragment extends Fragment implements BackPressedHandler
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mScriptListRecyclerView = $(R.id.script_list);
-        mScriptFileList = ScriptFileList.getImpl();
         mNoScriptHint = $(R.id.hint_no_script);
+        mProgressBar = $(R.id.progressBar);
+        initScriptListRecyclerView();
+        initDialogs();
+    }
+
+    private void initScriptListRecyclerView() {
         mScriptListRecyclerView.getAdapter().registerAdapterDataObserver(new SimpleAdapterDataObserver() {
             @Override
             public void onSomethingChanged() {
@@ -65,49 +77,275 @@ public class MyScriptListFragment extends Fragment implements BackPressedHandler
                 }
             }
         });
-        mScriptListRecyclerView.setScriptFileList(mScriptFileList);
+        mScriptListRecyclerView.setOnItemClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileClickListener() {
+            @Override
+            public void onClick(ScriptFile file) {
+                mSelectedScriptFile = file;
+                mScriptFileOperationDialog.show();
+            }
+        });
+        mScriptListRecyclerView.setOnItemLongClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileLongClickListener() {
+            @Override
+            public void onLongClick(ScriptFile file) {
+                mSelectedScriptFile = file;
+                if (file.isDirectory()) {
+                    mDirectoryOperationDialog.show();
+                } else {
+                    mScriptFileOperationDialog.show();
+                }
+            }
+        });
     }
 
-    //// FIXME: 2017/3/24
-    @Override
-    public boolean onBackPressed(Activity activity) {
-        if (mScriptListRecyclerView.getScriptFileOperationPopupMenu().isShowing()) {
-            mScriptListRecyclerView.getScriptFileOperationPopupMenu().dismiss();
-            return true;
+
+    private void initDialogs() {
+        mScriptFileOperationDialog = buildDialog(R.layout.dialog_script_file_operations);
+        mDirectoryOperationDialog = buildDialog(R.layout.dialog_directory_operations);
+    }
+
+    private MaterialDialog buildDialog(int layout) {
+        View view = View.inflate(getActivity(), layout, null);
+        ViewBinder.bind(this, view);
+        return new MaterialDialog.Builder(getActivity())
+                .customView(view, false)
+                .build();
+    }
+
+    public void newScriptFileForScript(final String script) {
+        showFileNameInputDialog("", new MaterialDialog.InputCallback() {
+            @Override
+            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                createScriptFile(getCurrentDirectoryPath() + input + ".js", script);
+            }
+        });
+    }
+
+    private String getCurrentDirectoryPath() {
+        return getCurrentDirectory().getPath() + "/";
+    }
+
+    public void createScriptFile(String path, String script) {
+        if (FileUtils.createFileIfNotExists(path)) {
+            if (script != null) {
+                if (!FileUtils.writeString(path, script)) {
+                    Snackbar.make(getView(), R.string.text_file_write_fail, Snackbar.LENGTH_LONG).show();
+                }
+            }
+            notifyScriptFileChanged();
+            ScriptFileOperation.edit(new ScriptFile(path));
+        } else {
+            Snackbar.make(getView(), R.string.text_create_fail, Snackbar.LENGTH_LONG).show();
         }
-        return false;
     }
 
-    public ScriptListRecyclerView getScriptListRecyclerView() {
-        return mScriptListRecyclerView;
+    public void newScriptFile() {
+        newScriptFileForScript(null);
     }
 
-    @Subscribe
-    public void onMessageEvent(MessageEvent event) {
-        if (event.message.equals(MESSAGE_SCRIPT_FILE_ADDED)) {
-            mScriptListRecyclerView.getAdapter().notifyItemInserted(mScriptFileList.size() - 1);
+    public void importFile(final String pathFrom) {
+        showFileNameInputDialog(FileUtils.getNameWithoutExtension(pathFrom), new MaterialDialog.InputCallback() {
+            @Override
+            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                final String pathTo = getCurrentDirectoryPath() + input + ".js";
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (FileUtils.copy(pathFrom, pathTo)) {
+                            showMessage(R.string.text_import_succeed);
+                        } else {
+                            showMessage(R.string.text_import_fail);
+                        }
+                        notifyScriptFileChanged();
+                    }
+                }).start();
+
+            }
+        });
+    }
+
+
+    public void newDirectory() {
+        showNameInputDialog("", mDirectoryNameInputCallback, new MaterialDialog.InputCallback() {
+            @Override
+            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                if (new ScriptFile(getCurrentDirectory(), input.toString()).mkdirs()) {
+                    showMessage(R.string.text_already_create);
+                    notifyScriptFileChanged();
+                } else {
+                    showMessage(R.string.text_create_fail);
+                }
+            }
+        });
+    }
+
+    private ScriptFile getCurrentDirectory() {
+        return mScriptListRecyclerView.getCurrentDirectory();
+    }
+
+    private void showFileNameInputDialog(String prefix, final MaterialDialog.InputCallback callback) {
+        showNameInputDialog(prefix, mFileNameInputCallback, callback);
+    }
+
+    private void showNameInputDialog(String prefix, MaterialDialog.InputCallback textWatcher, final MaterialDialog.InputCallback callback) {
+        new ThemeColorMaterialDialogBuilder(getActivity()).title(R.string.text_name)
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .alwaysCallInputCallback()
+                .input(getString(R.string.text_please_input_name), prefix, false, textWatcher)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        callback.onInput(dialog, dialog.getInputEditText().getText());
+                    }
+                })
+                .show();
+    }
+
+    private void notifyScriptFileChanged() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                StorageScriptProvider.getInstance().notifyDirectoryChanged(getCurrentDirectory());
+            }
+        });
+    }
+
+    @ViewBinding.Click(R.id.rename)
+    private void renameScriptFile() {
+        dismissDialogs();
+        String originalName = mSelectedScriptFile.getSimplifiedName();
+        showNameInputDialog(originalName, new InputCallback(mSelectedScriptFile.isDirectory(), originalName), new MaterialDialog.InputCallback() {
+            @Override
+            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                mSelectedScriptFile.renameTo(input.toString());
+                onScriptFileOperated();
+            }
+        });
+    }
+
+    private void dismissDialogs() {
+        if (mDirectoryOperationDialog.isShowing())
+            mDirectoryOperationDialog.dismiss();
+        if (mScriptFileOperationDialog.isShowing())
+            mScriptFileOperationDialog.dismiss();
+    }
+
+
+    @ViewBinding.Click(R.id.open_by_other_apps)
+    private void openByOtherApps() {
+        dismissDialogs();
+        ScriptFileOperation.openByOtherApps(mSelectedScriptFile);
+        onScriptFileOperated();
+    }
+
+    private void onScriptFileOperated() {
+        mSelectedScriptFile = null;
+        mProgressBar.post(new Runnable() {
+            @Override
+            public void run() {
+                mProgressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    @ViewBinding.Click(R.id.create_shortcut)
+    private void createShortcut() {
+        dismissDialogs();
+        ScriptFileOperation.createShortcut(mSelectedScriptFile);
+        Snackbar.make(getView(), R.string.text_already_create, Snackbar.LENGTH_SHORT).show();
+        onScriptFileOperated();
+    }
+
+    @ViewBinding.Click(R.id.delete)
+    private void deleteScriptFile() {
+        dismissDialogs();
+        if (mSelectedScriptFile.isDirectory()) {
+            new MaterialDialog.Builder(getActivity())
+                    .title(R.string.delete_confirm)
+                    .positiveText(R.string.cancel)
+                    .negativeText(R.string.ok)
+                    .onNegative(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            doDeletingScriptFile();
+                        }
+                    })
+                    .show();
+        } else {
+            doDeletingScriptFile();
         }
+
+
     }
+
+    private void doDeletingScriptFile() {
+        mProgressBar.setVisibility(View.VISIBLE);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (FileUtils.deleteAll(mSelectedScriptFile)) {
+                    showMessage(R.string.text_already_delete);
+                    notifyScriptFileChanged();
+                } else {
+                    showMessage(R.string.text_already_delete);
+                }
+                onScriptFileOperated();
+            }
+        }).start();
+    }
+
+    private void showMessage(final int resId) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Snackbar.make(getView(), resId, Snackbar.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     @Override
     public void onResume() {
         super.onResume();
-        EventBus.getDefault().register(mScriptListRecyclerView);
+        mScriptListRecyclerView.setFocusableInTouchMode(true);
+        mScriptListRecyclerView.requestFocus();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        EventBus.getDefault().unregister(mScriptListRecyclerView);
+    private class InputCallback implements MaterialDialog.InputCallback {
+
+        private boolean mIsDirectory = false;
+        private String mExcluded;
+
+        InputCallback(boolean isDirectory, String excluded) {
+            mIsDirectory = isDirectory;
+            mExcluded = excluded;
+        }
+
+        InputCallback(boolean isDirectory) {
+            mIsDirectory = isDirectory;
+        }
+
+        @Override
+        public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+            EditText editText = dialog.getInputEditText();
+            if (editText == null)
+                return;
+            int errorResId = 0;
+            if (input == null || input.length() == 0) {
+                errorResId = R.string.text_name_should_not_be_empty;
+            } else if (!input.equals(mExcluded)) {
+                if (new File(getCurrentDirectory(), mIsDirectory ? input.toString() : input.toString() + ".js").exists()) {
+                    errorResId = R.string.text_file_exists;
+                }
+            }
+            if (errorResId == 0) {
+                editText.setError(null);
+                dialog.getActionButton(DialogAction.POSITIVE).setEnabled(true);
+            } else {
+                editText.setError(getString(errorResId));
+                dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+            }
+
+        }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
-
-    public void editLatest() {
-        ScriptFileOperation.Edit.getInstance().operate(mScriptListRecyclerView, mScriptFileList, mScriptFileList.size() - 1);
-    }
 }

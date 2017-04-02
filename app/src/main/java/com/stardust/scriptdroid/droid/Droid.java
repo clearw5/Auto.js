@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.droid;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
@@ -14,6 +15,7 @@ import com.stardust.scriptdroid.tool.FileUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Date;
@@ -66,7 +68,7 @@ public class Droid {
     private VolumeChangeObverseService.OnVolumeChangeListener mOnVolumeChangeListener = new VolumeChangeObverseService.OnVolumeChangeListener() {
         @Override
         public void onVolumeChange() {
-            if (Pref.isRunningVolumeControlEnable()) {
+            if (Pref.isRunningVolumeControlEnabled()) {
                 stopAllAndToast();
             }
         }
@@ -92,19 +94,17 @@ public class Droid {
     }
 
     public void runScriptFile(File file) {
-        runScriptFile(file, null);
+        runScriptFile(file, null, new RunningConfig());
     }
 
-    public void runScriptFile(File file, OnRunFinishedListener listener) {
-        Timber.v(DateFormat.getTimeInstance().format(new Date()) + " " + App.getResString(R.string.text_start_running) + " " +  file);
+    public void runScriptFile(File file, OnRunFinishedListener listener, RunningConfig config) {
+        Timber.v(DateFormat.getTimeInstance().format(new Date()) + " " + App.getResString(R.string.text_start_running) + " " + file);
         listener = listener == null ? DEFAULT_LISTENER : listener;
-        try {
-            checkFile(file);
-        } catch (Exception e) {
-            listener.onException(e);
-            return;
+        int errorMsgId = PathChecker.check(file.getPath());
+        if(errorMsgId != PathChecker.CHECK_RESULT_OK){
+            listener.onException(new IOException(App.getResString(errorMsgId)));
         }
-        runScript(FileUtils.readString(file), listener, RunningConfig.getDefault());
+        runScript(FileUtils.readString(file), listener, config.path(file.getPath()));
     }
 
 
@@ -112,13 +112,15 @@ public class Droid {
         runScriptFile(new File(path));
     }
 
-    private void runScript(String script) {
+    public void runScript(String script) {
         runScript(script, null, RunningConfig.getDefault());
     }
 
-    public void runScript(final String script, OnRunFinishedListener listener, RunningConfig config) {
+    public void runScript(String script, OnRunFinishedListener listener, RunningConfig config) {
         App.getApp().startService(new Intent(App.getApp(), VolumeChangeObverseService.class));
         listener = listener == null ? DEFAULT_LISTENER : listener;
+        if (!TextUtils.isEmpty(config.prepareScript))
+            script = config.prepareScript + "\n" + script;
         if (config.runInNewThread) {
             if (script.startsWith(UI)) {
                 ScriptExecuteActivity.runScript(script, listener, config);
@@ -144,19 +146,6 @@ public class Droid {
         else
             RUNTIME.toast(App.getResString(R.string.text_no_running_script));
     }
-
-    private void checkFile(File file) {
-        if (file == null) {
-            throw new NullPointerException("file = null");
-        }
-        if (!file.exists()) {
-            throw new RuntimeException(new FileNotFoundException(file.getAbsolutePath()));
-        }
-        if (!file.canRead()) {
-            throw new RuntimeException("file is not readable: path=" + file.getAbsolutePath());
-        }
-    }
-
 
     private static class RunScriptRunnable implements Runnable {
 

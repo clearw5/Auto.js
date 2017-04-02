@@ -9,30 +9,27 @@ import android.content.Context;
 public class RunningConfig {
 
     private static final RunningConfig RUNNING_CONFIG = new RunningConfig();
+    public String path;
+    public String prepareScript = "";
 
     public static RunningConfig getDefault() {
         return RUNNING_CONFIG;
     }
 
     public boolean runInNewThread = true;
-    public Activity activity;
-    public Context context;
 
     public RunningConfig runInNewThread(boolean runInNewThread) {
         this.runInNewThread = runInNewThread;
         return this;
     }
 
-    public RunningConfig activity(Activity activity) {
-        this.activity = activity;
-        this.context = activity;
+    public RunningConfig path(String path) {
+        this.path = path;
         return this;
     }
 
-    public RunningConfig context(Context context) {
-        this.context = context;
+    public RunningConfig prepareScript(String script) {
+        this.prepareScript = script;
         return this;
     }
-
-
 }

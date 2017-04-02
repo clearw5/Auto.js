@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
@@ -21,7 +22,6 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperationPopupMenu;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
@@ -33,13 +33,23 @@ import java.util.List;
 
 public class ScriptListRecyclerView extends ThemeColorRecyclerView {
 
+    public interface OnItemClickListener {
+
+        void OnItemClick(View v, int position);
+
+    }
+
     private ScriptFileList mScriptFileList;
 
-    private final OnClickListener mOnItemClickListener = new OnClickListener() {
+    private OnItemClickListener mOnItemClickListener;
+
+    private final OnClickListener mOnItemClickListenerProxy = new OnClickListener() {
         @Override
         public void onClick(View v) {
             int position = getChildViewHolder(v).getAdapterPosition();
-            onItemClicked(v, position);
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.OnItemClick(v, position);
+            }
         }
     };
 
@@ -51,17 +61,14 @@ public class ScriptListRecyclerView extends ThemeColorRecyclerView {
         }
     };
 
-    private final OnClickListener mOnMoreIconClickListener = new OnClickListener() {
+    private final OnClickListener mOnRunIconClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            mOperateFileIndex = getChildViewHolder((View) v.getParent()).getAdapterPosition();
-            showOrDismissOperationPopupMenu(v);
+            int position = getChildViewHolder((View) v.getParent()).getAdapterPosition();
+            //onRunIconClick(v, position);
         }
 
     };
-
-    private ScriptFileOperationPopupMenu mScriptFileOperationPopupMenu;
-    private int mOperateFileIndex;
 
 
     public ScriptListRecyclerView(Context context) {
@@ -80,58 +87,24 @@ public class ScriptListRecyclerView extends ThemeColorRecyclerView {
         init();
     }
 
-    public ScriptFileOperationPopupMenu getScriptFileOperationPopupMenu() {
-        return mScriptFileOperationPopupMenu;
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
     }
 
     private void init() {
         setAdapter(new Adapter());
         setLayoutManager(new LinearLayoutManager(getContext()));
         addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        initScriptFileOperationPopupMenu();
     }
 
-    private void initScriptFileOperationPopupMenu() {
-        mScriptFileOperationPopupMenu = new ScriptFileOperationPopupMenu(getContext(), getScriptFileOperations());
-        mScriptFileOperationPopupMenu.setOnItemClickListener(new ScriptFileOperationPopupMenu.OnItemClickListener() {
-            @Override
-            public void onClick(View view, int position, ScriptFileOperation operation) {
-                operation.operate(ScriptListRecyclerView.this, mScriptFileList, mOperateFileIndex);
-                mScriptFileOperationPopupMenu.dismiss();
-            }
-        });
-    }
-
-    protected List<ScriptFileOperation> getScriptFileOperations() {
-        List<ScriptFileOperation> scriptFileOperations = new ArrayList<>();
-        scriptFileOperations.add(new ScriptFileOperation.Run());
-        scriptFileOperations.add(new ScriptFileOperation.Rename());
-        scriptFileOperations.add(new ScriptFileOperation.OpenByOtherApp());
-        scriptFileOperations.add(new ScriptFileOperation.CreateShortcut());
-        scriptFileOperations.add(new ScriptFileOperation.Remove());
-        scriptFileOperations.add(new ScriptFileOperation.Delete());
-        return scriptFileOperations;
-    }
-
-    protected void onItemClicked(View v, int position) {
-        new ScriptFileOperation.Run().operate(ScriptListRecyclerView.this, mScriptFileList, position);
-    }
 
     protected void onEditIconClick(View v, int position) {
-        new ScriptFileOperation.Edit().operate(ScriptListRecyclerView.this, mScriptFileList, position);
+        ScriptFileOperation.Edit.getInstance().operate(ScriptListRecyclerView.this, mScriptFileList, position);
     }
 
     public void setScriptFileList(ScriptFileList scriptFileList) {
         mScriptFileList = scriptFileList;
         getAdapter().notifyDataSetChanged();
-    }
-
-    private void showOrDismissOperationPopupMenu(View v) {
-        if (mScriptFileOperationPopupMenu.isShowing()) {
-            mScriptFileOperationPopupMenu.dismiss();
-        } else {
-            mScriptFileOperationPopupMenu.show(v);
-        }
     }
 
     @Subscribe
@@ -150,18 +123,10 @@ public class ScriptListRecyclerView extends ThemeColorRecyclerView {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             ScriptFile scriptFile = mScriptFileList.get(position);
-            holder.name.setText(scriptFile.name);
-            holder.path.setText(trimFilePath(scriptFile.path));
+            holder.name.setText(scriptFile.getSimplifiedName());
+            holder.path.setText(scriptFile.getSimplifiedPath());
         }
 
-        private final String SD_CARD_PATH = Environment.getExternalStorageDirectory().toString();
-
-        private String trimFilePath(String path) {
-            if (path.startsWith(SD_CARD_PATH)) {
-                path = path.substring(SD_CARD_PATH.length());
-            }
-            return path;
-        }
 
         @Override
         public int getItemCount() {
@@ -183,8 +148,8 @@ public class ScriptListRecyclerView extends ThemeColorRecyclerView {
             name = (TextView) itemView.findViewById(R.id.name);
             path = (TextView) itemView.findViewById(R.id.path);
             ViewTool.$(itemView, R.id.edit).setOnClickListener(mOnEditIconClickListener);
-            ViewTool.$(itemView, R.id.more).setOnClickListener(mOnMoreIconClickListener);
-            itemView.setOnClickListener(mOnItemClickListener);
+            ViewTool.$(itemView, R.id.run).setOnClickListener(mOnRunIconClickListener);
+            itemView.setOnClickListener(mOnItemClickListenerProxy);
         }
     }
 

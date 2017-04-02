@@ -31,11 +31,12 @@ public abstract class ScriptFileList {
     public boolean deleteFromFileSystem(int i) {
         if (i < 0 || i >= size())
             return false;
-        File file = new File(get(i).path);
+        File file = get(i);
         remove(i);
         return file.delete();
     }
 
     public abstract boolean containsPath(String path);
+
 
 }

@@ -51,7 +51,9 @@ public class AboutActivity extends BaseActivity {
 
     @ViewBinding.Click(R.id.github)
     private void openGitHub() {
-        IntentTool.goToLink(this, getString(R.string.my_github));
+        if (!IntentTool.goToLink(this, getString(R.string.my_github))) {
+            Toast.makeText(this, R.string.text_no_brower, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @ViewBinding.Click(R.id.qq)

@@ -13,6 +13,7 @@ import com.stardust.scriptdroid.droid.script.NodeJsJavaScriptEngine;
 import com.stardust.scriptdroid.droid.script.RhinoJavaScriptEngine;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
+import com.stardust.scriptdroid.droid.script.file.StorageScriptFileList;
 import com.stardust.scriptdroid.layout_inspector.LayoutInspector;
 import com.stardust.scriptdroid.record.accessibility.AccessibilityActionRecorder;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;

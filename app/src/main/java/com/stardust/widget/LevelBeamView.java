@@ -78,7 +78,6 @@ public class LevelBeamView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.i(TAG, "onDraw");
         super.onDraw(canvas);
         for (int lvl = 0; lvl <= mLevel; lvl++) {
             float LINE_X = mPaddingLeft + lvl * mLinesWidth;

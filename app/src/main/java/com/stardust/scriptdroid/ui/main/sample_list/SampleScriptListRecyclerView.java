@@ -16,8 +16,7 @@ import com.bignerdranch.expandablerecyclerview.ExpandableRecyclerAdapter;
 import com.bignerdranch.expandablerecyclerview.ParentViewHolder;
 import com.bignerdranch.expandablerecyclerview.model.Parent;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.sample.Sample;
-import com.stardust.scriptdroid.ui.edit.EditActivity;
+import com.stardust.scriptdroid.scripts.sample.Sample;
 import com.stardust.widget.LevelBeamView;
 
 import java.util.ArrayList;
@@ -87,9 +86,9 @@ public class SampleScriptListRecyclerView extends RecyclerView {
         mOnItemClickListener = onItemClickListener;
     }
 
-    public void setSamples(List<com.stardust.scriptdroid.sample.SampleGroup> samples) {
+    public void setSamples(List<com.stardust.scriptdroid.scripts.sample.SampleGroup> samples) {
         mSampleGroups.clear();
-        for (com.stardust.scriptdroid.sample.SampleGroup sampleGroup : samples) {
+        for (com.stardust.scriptdroid.scripts.sample.SampleGroup sampleGroup : samples) {
             mSampleGroups.add(new SampleGroup(sampleGroup));
         }
         mAdapter = new Adapter(mSampleGroups);
@@ -103,9 +102,9 @@ public class SampleScriptListRecyclerView extends RecyclerView {
 
     private class SampleGroup implements Parent<Sample> {
 
-        private com.stardust.scriptdroid.sample.SampleGroup mSampleGroup;
+        private com.stardust.scriptdroid.scripts.sample.SampleGroup mSampleGroup;
 
-        SampleGroup(com.stardust.scriptdroid.sample.SampleGroup sampleGroup) {
+        SampleGroup(com.stardust.scriptdroid.scripts.sample.SampleGroup sampleGroup) {
             mSampleGroup = sampleGroup;
         }
 

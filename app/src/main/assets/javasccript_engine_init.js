@@ -30,6 +30,37 @@ var launchApp = function(appName){
     droid.launchApp(appName);
 }
 
+var __this__ = this;
+
+var back = function(){
+    return droid.back();
+}
+
+var home = function(){
+    return droid.home();
+}
+
+var powerDialog = function(){
+    return droid.powerDialog();
+}
+
+var notifications = function(){
+    return droid.notifications();
+}
+
+var quickSettings = function(){
+    return droid.quickSettings();
+}
+
+var recents = function(){
+    return droid.recents();
+}
+
+var splitScreen = function(){
+    return droid.splitScreen();
+}
+
+
 function performAction(action, args){
     if(args.length == 4){
         return action(droid.bounds(args[0], args[1], args[2], args[3]));
@@ -238,11 +269,19 @@ for(var x in __selector__){
 
 }
 
-var $ = function(){
-    return droid.selector();
+var open = function(path, mode){
+    return com.stardust.pio.PFile.open(path, mode);
 }
 
-__importClassOld__(com.stardust.scriptdroid.droid.runtime.Shell);
+__importClassOld__(com.stardust.scriptdroid.droid.runtime.api.Shell);
+
+var newInjectableWebClient = function(){
+    return new com.stardust.scriptdroid.droid.runtime.api.InjectableWebClient(org.mozilla.javascript.Context.getCurrentContext(), __this__);
+}
+
+var newInjectableWebView = function(activity){
+    return new com.stardust.scriptdroid.droid.runtime.api.InjectableWebView(activity, org.mozilla.javascript.Context.getCurrentContext(), __this__);
+}
 
 /*
 importClass("com.stardust.scriptdroid.service.AccessibilityDelegate");

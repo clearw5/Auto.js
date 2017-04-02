@@ -4,6 +4,7 @@ import com.stardust.scriptdroid.droid.script.JavaScriptEngine;
 import com.stardust.scriptdroid.droid.script.RhinoJavaScriptEngine;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.record.inputevent.InputEventToJsConverter;
+import com.stardust.util.LimitedHashMap;
 
 import org.junit.Test;
 import org.mozilla.javascript.Context;
@@ -27,6 +28,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -45,6 +48,9 @@ public class ExampleUnitTest {
     // TODO: 2017/3/24 ui。E4x
     // TODO: 2017/3/24  编辑界面文档和自动补全
     // TODO: 2017/3/24 驻留模式
+    //// TODO: 2017/3/26 NODEJS
+    // TODO: 2017/3/26 加密
+    // TODO: 2017/3/31 自定义快捷方式图标
 
 
     // FIXME: 2017/3/23 死机重启问题
@@ -53,44 +59,30 @@ public class ExampleUnitTest {
 
     @Test
     public void test() {
-
-        List<URI> paths = Collections.singletonList(new File("D:/js/").toURI());
-        Context ctx = Context.enter();
-        ctx.setOptimizationLevel(-1);
-        ctx.setLanguageVersion(Context.VERSION_1_7);
-        ctx.setInstructionObserverThreshold(10000);
-        ImporterTopLevel scope = new ImporterTopLevel();
-        scope.initStandardObjects(ctx, false);
-
-        new RequireBuilder()
-                .setModuleScriptProvider(new SoftCachingModuleScriptProvider(
-                        new UrlModuleSourceProvider(paths, null)))
-                .setSandboxed(true)
-                .createRequire(ctx, scope)
-                .install(scope);
-
-
-
-        Context.exit();
+        LimitedHashMap<String, Integer> hashMap = new LimitedHashMap<>(5);
+        hashMap.put("a", 1);
+        hashMap.put("b", 1);
+        hashMap.put("c", 1);
+        hashMap.put("d", 1);
+        hashMap.put("e", 1);
+        hashMap.get("a");
+        hashMap.put("f", 1);
+        assertFalse(hashMap.containsKey("a"));
     }
 
     @Test
-    public void test2(){
-        Context context = Context.enter();
-        context.setOptimizationLevel(-1);
-        context.setLanguageVersion(Context.VERSION_1_7);
-        context.setInstructionObserverThreshold(10000);
-        ImporterTopLevel scope = new ImporterTopLevel();
-        scope.initStandardObjects(context, false);
-        List<URI> paths = Collections.singletonList(new File("D:/js/").toURI());
-        new RequireBuilder()
-                .setModuleScriptProvider(new SoftCachingModuleScriptProvider(
-                        new UrlModuleSourceProvider(paths, null)))
-                .setSandboxed(true)
-                .createRequire(context, scope)
-                .install(scope);
-        context.evaluateString(scope, "require('test.js')()", "<test>", 1, null);
-
-        Context.exit();
+    public void testAutoReorder() {
+        LimitedHashMap<String, Integer> hashMap = new LimitedHashMap<>(5);
+        hashMap.put("a", 1);
+        hashMap.put("b", 2);
+        hashMap.put("c", 3);
+        hashMap.put("d", 4);
+        hashMap.put("e", 5);
+        hashMap.get("a");
+        hashMap.put("f", 6);
+        assertTrue(hashMap.containsKey("a"));
+        assertFalse(hashMap.containsKey("b"));
     }
+
+
 }

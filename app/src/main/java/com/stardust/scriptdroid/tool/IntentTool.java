@@ -61,9 +61,15 @@ public class IntentTool {
         goToMail(context, sendTo, null, null);
     }
 
-    public static void goToLink(Context context, String link) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+    public static boolean goToLink(Context context, String link) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+            return true;
+        } catch (ActivityNotFoundException ignored) {
+            return false;
+        }
+
     }
 
     public static void shareText(Context context, String text) {

@@ -62,7 +62,7 @@ public class Pref {
         return def().getBoolean(getString(R.string.key_use_volume_control_record), false);
     }
 
-    public static boolean isRunningVolumeControlEnable() {
+    public static boolean isRunningVolumeControlEnabled() {
         return def().getBoolean(getString(R.string.key_use_volume_control_running), false);
     }
 

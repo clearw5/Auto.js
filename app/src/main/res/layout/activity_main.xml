@@ -105,6 +105,31 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/create_new_directory"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <com.stardust.theme.widget.ThemeColorImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_new_directory"/>
+
+                    <com.stardust.theme.widget.ThemeColorTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/text_new_directory"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp"/>
+
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/import_from_file"

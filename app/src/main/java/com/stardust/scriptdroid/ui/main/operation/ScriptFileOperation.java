@@ -9,10 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
+import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.external.shortcut.Shortcut;
 import com.stardust.scriptdroid.external.shortcut.ShortcutActivity;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
-import com.stardust.scriptdroid.ui.edit.IridiumEditActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
@@ -25,6 +25,7 @@ import org.greenrobot.eventbus.EventBus;
 
 public abstract class ScriptFileOperation {
 
+
     public static class ShowMessageEvent {
         public int messageResId;
 
@@ -32,6 +33,25 @@ public abstract class ScriptFileOperation {
             this.messageResId = message;
         }
     }
+
+    public static void openByOtherApps(ScriptFile scriptFile) {
+        Uri uri = Uri.parse("file://" + scriptFile.getPath());
+        App.getApp().startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(uri, "text/plain").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    public static void createShortcut(ScriptFile scriptFile){
+        new Shortcut(App.getApp()).name(scriptFile.getSimplifiedName())
+                .targetClass(ShortcutActivity.class)
+                .icon(R.drawable.ic_robot_green)
+                .extras(new Intent().putExtra(CommonUtils.EXTRA_KEY_PATH, scriptFile.getPath()))
+                .send();
+    }
+
+
+    public static void edit(ScriptFile file) {
+        EditActivity.editFile(App.getApp(), file.getSimplifiedName(), file.getPath());
+    }
+
 
     public abstract void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position);
 
@@ -85,7 +105,7 @@ public abstract class ScriptFileOperation {
         @Override
         public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
             ScriptFile scriptFile = scriptFileList.get(position);
-            EditActivity.editFile(App.getApp(), scriptFile.name, scriptFile.path);
+            EditActivity.editFile(App.getApp(), scriptFile.getSimplifiedName(), scriptFile.getPath());
             //脚本
             //任务&控制台
             //教程
@@ -102,7 +122,7 @@ public abstract class ScriptFileOperation {
         @Override
         public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
             ScriptFile scriptFile = scriptFileList.get(position);
-            Uri uri = Uri.parse("file://" + scriptFile.path);
+            Uri uri = Uri.parse("file://" + scriptFile.getPath());
             App.getApp().startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(uri, "text/plain").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
     }
@@ -115,7 +135,7 @@ public abstract class ScriptFileOperation {
 
         @Override
         public void operate(final RecyclerView recyclerView, final ScriptFileList scriptFileList, final int position) {
-            String oldName = scriptFileList.get(position).name;
+            String oldName = scriptFileList.get(position).getSimplifiedName();
             new ThemeColorMaterialDialogBuilder(recyclerView.getContext())
                     .title(R.string.text_rename)
                     .checkBoxPrompt(App.getApp().getString(R.string.text_rename_file_meanwhile), false, null)
@@ -139,10 +159,10 @@ public abstract class ScriptFileOperation {
         @Override
         public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
             ScriptFile scriptFile = scriptFileList.get(position);
-            new Shortcut(App.getApp()).name(scriptFile.name)
+            new Shortcut(App.getApp()).name(scriptFile.getSimplifiedName())
                     .targetClass(ShortcutActivity.class)
                     .icon(R.drawable.ic_robot_green)
-                    .extras(new Intent().putExtra("path", scriptFile.path))
+                    .extras(new Intent().putExtra("path", scriptFile.getPath()))
                     .send();
             EventBus.getDefault().post(R.string.text_already_create);
         }

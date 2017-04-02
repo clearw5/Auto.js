@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:orientation="vertical">
 
-    <com.stardust.scriptdroid.ui.main.my_script_list.ScriptListRecyclerView
+    <com.stardust.scriptdroid.ui.main.my_script_list.ScriptAndFolderListRecyclerView
         android:id="@+id/script_list"
+        android:background="#fafafa"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
@@ -17,5 +19,22 @@
         android:gravity="center"
         android:text="@string/hint_no_script"
         android:textColor="#adadad"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        android:visibility="gone"/>
+
+    <FrameLayout
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:clickable="true"
+        android:visibility="gone">
+
+        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"/>
+    </FrameLayout>
+
 </FrameLayout>

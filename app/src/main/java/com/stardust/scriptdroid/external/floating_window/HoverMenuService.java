@@ -40,6 +40,7 @@ import io.mattcarroll.hover.defaulthovermenu.window.WindowViewController;
 
 public class HoverMenuService extends Service {
 
+
     public static class ServiceStateChangedEvent {
         ServiceStateChangedEvent(boolean state) {
             this.state = state;
@@ -57,6 +58,7 @@ public class HoverMenuService extends Service {
     public static final String MESSAGE_MENU_EXIT = "MESSAGE_MENU_EXIT";
 
     private static boolean sIsRunning;
+    private static EventBus eventBus = new EventBus();
 
     public static void startService(Context context) {
         context.startService(new Intent(context, HoverMenuService.class));
@@ -72,6 +74,14 @@ public class HoverMenuService extends Service {
         EventBus.getDefault().post(new ServiceStateChangedEvent(sIsRunning));
     }
 
+    public static void postEvent(MessageEvent event) {
+        eventBus.post(event);
+    }
+
+
+    public static EventBus getEventBus() {
+        return eventBus;
+    }
 
     private static final String TAG = "HoverMenuService";
 
@@ -194,21 +204,34 @@ public class HoverMenuService extends Service {
     public void onMessageEvent(MessageEvent event) {
         switch (event.message) {
             case MESSAGE_SHOW_AND_EXPAND_MENU:
-                showView(mWindowHoverMenu.getHoverMenuView());
+                showAndExpandMenu();
                 break;
             case MESSAGE_SHOW_LAYOUT_HIERARCHY:
-                mWindowHoverMenu.getHoverMenuView().setVisibility(View.GONE);
-                showView(mFloatingLayoutHierarchyView);
+                showLayoutHierarchy();
                 break;
             case MESSAGE_SHOW_LAYOUT_BOUNDS:
-                mWindowHoverMenu.getHoverMenuView().setVisibility(View.GONE);
-                showView(mFloatingLayoutBoundsView);
+                showLayoutBounds();
                 break;
             case MESSAGE_COLLAPSE_MENU:
                 mWindowHoverMenu.collapseMenu();
                 break;
         }
     }
+
+    private void showLayoutBounds() {
+        mWindowHoverMenu.getHoverMenuView().setVisibility(View.GONE);
+        showView(mFloatingLayoutBoundsView);
+    }
+
+    public void showLayoutHierarchy() {
+        mWindowHoverMenu.getHoverMenuView().setVisibility(View.GONE);
+        showView(mFloatingLayoutHierarchyView);
+    }
+
+    public void showAndExpandMenu() {
+        showView(mWindowHoverMenu.getHoverMenuView());
+    }
+
 
     private void showView(View view) {
         view.setVisibility(View.VISIBLE);

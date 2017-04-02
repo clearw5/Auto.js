@@ -5,11 +5,11 @@
                 android:layout_height="wrap_content"
                 android:foreground="?android:selectableItemBackground"
                 android:orientation="vertical"
-                android:paddingBottom="12dp"
-                android:paddingLeft="16dp"
-                android:paddingTop="12dp">
+                android:paddingBottom="8dp"
+                android:paddingLeft="12dp"
+                android:paddingTop="8dp">
 
-    <com.stardust.theme.widget.ThemeColorImageView
+    <ImageView
         android:id="@+id/icon"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -17,7 +17,7 @@
         android:layout_centerVertical="true"
         android:contentDescription="@string/_app_name"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_robot_green"/>
+        android:src="@drawable/ic_node_js_black"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -49,39 +49,40 @@
 
     </LinearLayout>
 
+
+    <FrameLayout
+        android:id="@+id/run"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="52dp"
+        android:background="?attr/selectableItemBackgroundBorderless">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/_app_name"
+            android:src="@drawable/ic_ali_run"/>
+    </FrameLayout>
+
     <FrameLayout
         android:id="@+id/edit"
         android:layout_width="42dp"
         android:layout_height="42dp"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="42dp"
-        android:background="?attr/selectableItemBackgroundBorderless">
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center"
-            android:contentDescription="@string/_app_name"
-            android:src="@drawable/ic_edit_gray_48dp"/>
-
-    </FrameLayout>
-
-
-    <FrameLayout
-        android:id="@+id/more"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_alignParentRight="true"
+        android:layout_marginRight="8dp"
         android:layout_centerVertical="true"
         android:background="?attr/selectableItemBackgroundBorderless">
 
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center"
             android:contentDescription="@string/_app_name"
-            android:src="@drawable/ic_navigation_show_more_vertical_512"/>
+            android:src="@drawable/ic_ali_edit"/>
+
     </FrameLayout>
 
 

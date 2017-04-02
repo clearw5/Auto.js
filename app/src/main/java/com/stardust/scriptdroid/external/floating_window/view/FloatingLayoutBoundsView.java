@@ -64,7 +64,7 @@ public class FloatingLayoutBoundsView extends LayoutBoundsView {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
-            EventBus.getDefault().post(new MessageEvent(HoverMenuService.MESSAGE_SHOW_AND_EXPAND_MENU));
+            HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_SHOW_AND_EXPAND_MENU));
             setVisibility(GONE);
             return true;
         }

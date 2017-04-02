@@ -104,7 +104,7 @@ public class FloatingScriptFileListView extends RecyclerView {
         scriptFileOperations.add(new ScriptFileOperation.Rename() {
             @Override
             public void operate(final RecyclerView recyclerView, final ScriptFileList scriptFileList, final int position) {
-                String oldName = scriptFileList.get(position).name;
+                String oldName = scriptFileList.get(position).getSimplifiedName();
                 MaterialDialog dialog = new ThemeColorMaterialDialogBuilder(recyclerView.getContext())
                         .title(R.string.text_rename)
                         .checkBoxPrompt(App.getApp().getString(R.string.text_rename_file_meanwhile), false, null)
@@ -180,17 +180,8 @@ public class FloatingScriptFileListView extends RecyclerView {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             ScriptFile scriptFile = mScriptFileList.get(position);
-            holder.name.setText(scriptFile.name);
-            holder.path.setText(trimFilePath(scriptFile.path));
-        }
-
-        private final String SD_CARD_PATH = Environment.getExternalStorageDirectory().toString();
-
-        private String trimFilePath(String path) {
-            if (path.startsWith(SD_CARD_PATH)) {
-                path = path.substring(SD_CARD_PATH.length());
-            }
-            return path;
+            holder.name.setText(scriptFile.getSimplifiedName());
+            holder.path.setText(scriptFile.getSimplifiedPath());
         }
 
         @Override

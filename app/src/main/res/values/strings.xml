@@ -8,7 +8,7 @@
     <string name="action_exit">退出</string>
     <string name="text_service_disabled">服务已关闭</string>
     <string name="text_file_manager_not_found">找不到文件管理器T.T</string>
-    <string name="text_file_create_fail">文件创建失败</string>
+    <string name="text_create_fail">创建失败</string>
     <string name="text_please_input_name">请输入名称</string>
     <string name="text_name">名称</string>
     <string name="text_go_to_setting">去设置</string>
@@ -180,6 +180,11 @@
     <string name="text_script">脚本</string>
     <string name="text_manage">管理</string>
     <string name="text_task_manage">任务管理</string>
+    <string name="text_name_should_not_be_empty">名称不能为空</string>
+    <string name="text_new_directory">新文件夹</string>
+    <string name="text_import_fail">导入失败</string>
+    <string name="delete_confirm">确定要删除吗</string>
+    <string name="text_no_brower">没有浏览器耶o(╯□╰)o快去安装一个吧</string>
 
     <string-array name="record_control_keys">
         <item>无</item>

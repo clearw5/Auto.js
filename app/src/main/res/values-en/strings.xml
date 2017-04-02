@@ -8,7 +8,7 @@
     <string name="action_exit">Exit</string>
     <string name="text_service_disabled">Service disabled.</string>
     <string name="text_file_manager_not_found">No file explorer T.T</string>
-    <string name="text_file_create_fail">File creation failed</string>
+    <string name="text_create_fail">Creation failed</string>
     <string name="text_please_input_name">Input name</string>
     <string name="text_name">Name</string>
     <string name="text_go_to_setting">Go to setting</string>

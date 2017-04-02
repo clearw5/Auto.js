@@ -50,12 +50,11 @@ public class MainMenuNavigatorContent implements NavigatorContent {
     private String mCurrentPackage, mCurrentActivity;
     private Context mContext;
 
-
     public MainMenuNavigatorContent(Context context) {
         mContext = context;
         mView = View.inflate(context, R.layout.floating_window_main_menu, null);
         ViewBinder.bind(this);
-        EventBus.getDefault().register(this);
+        HoverMenuService.getEventBus().register(this);
     }
 
     @ViewBinding.Click(R.id.layout_hierarchy)
@@ -63,7 +62,7 @@ public class MainMenuNavigatorContent implements NavigatorContent {
         if (LayoutInspector.getInstance().getCapture() == null) {
             Toast.makeText(mView.getContext(), R.string.text_no_accessibility_permission_to_capture, Toast.LENGTH_SHORT).show();
         } else {
-            EventBus.getDefault().post(new MessageEvent(HoverMenuService.MESSAGE_SHOW_LAYOUT_HIERARCHY));
+            HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_SHOW_LAYOUT_HIERARCHY));
         }
     }
 
@@ -72,7 +71,7 @@ public class MainMenuNavigatorContent implements NavigatorContent {
         if (LayoutInspector.getInstance().getCapture() == null) {
             Toast.makeText(mView.getContext(), R.string.text_no_accessibility_permission_to_capture, Toast.LENGTH_SHORT).show();
         } else {
-            EventBus.getDefault().post(new MessageEvent(HoverMenuService.MESSAGE_SHOW_LAYOUT_BOUNDS));
+            HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_SHOW_LAYOUT_BOUNDS));
         }
     }
 
@@ -85,7 +84,7 @@ public class MainMenuNavigatorContent implements NavigatorContent {
     private void openMainActivity() {
         App.getApp().startActivity(new Intent(App.getApp(), MainActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY | Intent.FLAG_ACTIVITY_NEW_TASK));
-        EventBus.getDefault().post(new MessageEvent(HoverMenuService.MESSAGE_COLLAPSE_MENU));
+        HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_COLLAPSE_MENU));
     }
 
     @NonNull
@@ -129,7 +128,7 @@ public class MainMenuNavigatorContent implements NavigatorContent {
         if (event.message.equals(HoverMenuService.MESSAGE_MENU_EXPANDING)) {
             syncCurrentInfo();
         } else if (event.message.equals(HoverMenuService.MESSAGE_MENU_EXIT)) {
-            EventBus.getDefault().unregister(this);
+            HoverMenuService.getEventBus().unregister(this);
         }
     }
 

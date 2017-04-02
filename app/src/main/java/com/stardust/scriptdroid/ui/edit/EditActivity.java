@@ -17,6 +17,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.droid.Droid;
+import com.stardust.scriptdroid.droid.RunningConfig;
 import com.stardust.scriptdroid.tool.FileUtils;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
 import com.stardust.scriptdroid.ui.edit.sidemenu.EditSideMenuFragment;
@@ -253,7 +254,7 @@ public class EditActivity extends Editor920Activity {
     private void run() {
         Snackbar.make(mView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         setMenuStatus(R.id.run, MenuDef.STATUS_DISABLED);
-        Droid.getInstance().runScriptFile(mFile, ON_RUN_FINISHED_LISTENER);
+        Droid.getInstance().runScriptFile(mFile, ON_RUN_FINISHED_LISTENER, RunningConfig.getDefault());
     }
 
     @ViewBinding.Click(R.id.undo)

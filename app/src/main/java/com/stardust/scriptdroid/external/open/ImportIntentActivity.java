@@ -40,25 +40,13 @@ public class ImportIntentActivity extends BaseActivity {
     private void handleIntent() {
         Intent intent = getIntent();
         final String path = intent.getData().getPath();
-        if (!TextUtils.isEmpty(path)) {
-            new ThemeColorMaterialDialogBuilder(this)
-                    .title(R.string.text_please_input_name)
-                    .input(getString(R.string.text_name), FileUtils.getNameWithoutExtension(path), new MaterialDialog.InputCallback() {
-                        @Override
-                        public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                            ScriptFileList.getImpl().add(new ScriptFile(input.toString(), path));
-                            startMainActivity();
-                        }
-                    })
-                    .show();
-        } else {
-            finish();
-        }
+        if (!TextUtils.isEmpty(path))
+            MainActivity.importScriptFile(this, path);
+        finish();
     }
 
     private void startMainActivity() {
-        startActivity(new Intent(this, MainActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+
         finish();
     }
 }

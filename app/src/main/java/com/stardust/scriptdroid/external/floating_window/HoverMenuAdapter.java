@@ -47,7 +47,7 @@ public class HoverMenuAdapter implements io.mattcarroll.hover.HoverMenuAdapter {
     private final Set<ContentChangeListener> mContentChangeListeners = new HashSet<>();
     private View[] mViews;
 
-    public HoverMenuAdapter(@NonNull Context context) {
+    public HoverMenuAdapter(@NonNull HoverMenuService context) {
         mContext = context;
 
         mData.put(HoverMenuAdapter.ID_MAIN, new MainMenuNavigatorContent(context));

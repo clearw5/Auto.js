@@ -11,13 +11,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.Pref;
-import com.stardust.scriptdroid.sample.SampleFileManager;
 import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.error.IssueReportActivity;
 import com.stardust.util.MapEntries;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.theme.app.ColorSelectActivity;
 import com.stardust.theme.util.ListBuilder;
 

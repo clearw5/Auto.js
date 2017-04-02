@@ -57,14 +57,14 @@ public class SharedPrefScriptFileList extends ScriptFileList {
 
     @Override
     public void add(ScriptFile scriptFile) {
-        mScriptName.add(scriptFile.name);
-        mScriptPath.add(scriptFile.path);
+        mScriptName.add(scriptFile.getSimplifiedName());
+        mScriptPath.add(scriptFile.getSimplifiedPath());
         syncWithSharedPref();
     }
 
     @Override
     public ScriptFile get(int i) {
-        return new ScriptFile(mScriptName.get(i), mScriptPath.get(i));
+        return new ScriptFile(mScriptPath.get(i));
     }
 
     @Override

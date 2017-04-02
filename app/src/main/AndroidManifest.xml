@@ -75,7 +75,6 @@
         <activity android:name=".ui.console.ConsoleActivity"/>
         <activity android:name=".ui.error.ErrorReportActivity"/>
         <activity android:name=".ui.help.LocalWebViewActivity"/>
-        <activity android:name=".ui.edit.IridiumEditActivity"/>
 
         <activity
             android:name=".ui.error.IssueReportActivity"
@@ -86,6 +85,34 @@
         <service android:name="com.stardust.view.Floaty$FloatHeadService"/>
         <service android:name="com.stardust.view.ResizableFloaty$FloatingWindowService"/>
         <service android:name="com.stardust.scriptdroid.external.floating_window.HoverMenuService"/>
+
+        <activity android:name=".external.tasker.TaskPrefEditActivity"/>
+
+        <activity-alias
+            android:name="com.stardust.scriptdroid.external.tasker.PluginActivity"
+            android:exported="true"
+            android:icon="@drawable/ic_android_eat_js"
+            android:label="@string/_app_name"
+            android:targetActivity="com.stardust.scriptdroid.external.tasker.TaskPrefEditActivity"
+            tools:ignore="ExportedActivity">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING"/>
+            </intent-filter>
+        </activity-alias>
+
+
+        <receiver
+            android:name="com.stardust.scriptdroid.external.tasker.FireSettingReceiver"
+            android:exported="true"
+            android:process=":background"
+            tools:ignore="ExportedReceiver">
+
+            <!-- this Intent filter allows the plug-in to discovered by the host. -->
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING"/>
+            </intent-filter>
+        </receiver>
+
 
         <activity
             android:name=".external.open.EditIntentActivity"

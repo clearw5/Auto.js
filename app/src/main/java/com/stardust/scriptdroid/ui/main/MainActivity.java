@@ -10,8 +10,8 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -33,6 +33,8 @@ import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
+import com.stardust.scriptdroid.external.open.ImportIntentActivity;
+import com.stardust.scriptdroid.scripts.StorageScriptProvider;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.ImageSelector;
@@ -62,7 +64,9 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     private static final String EXTRA_ACTION = "EXTRA_ACTION";
 
     private static final String ACTION_ON_ACTION_RECORD_STOPPED = "ACTION_ON_ACTION_RECORD_STOPPED";
+    private static final String ACTION_IMPORT_SCRIPT = "ACTION_IMPORT_SCRIPT";
     private static final String ARGUMENT_SCRIPT = "ARGUMENT_SCRIPT";
+    private static final String ARGUMENT_PATH = "ARGUMENT_PATH";
 
     private DrawerLayout mDrawerLayout;
     @ViewBinding.Id(R.id.bottom_menu)
@@ -114,22 +118,6 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                         }
                     }).show();
         }
-    }
-
-    private void addScriptFile(final String path) {
-        new ThemeColorMaterialDialogBuilder(this).title(R.string.text_name)
-                .inputType(InputType.TYPE_CLASS_TEXT)
-                .input(getString(R.string.text_please_input_name), FileUtils.getNameWithoutExtension(path), new MaterialDialog.InputCallback() {
-                    @Override
-                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                        MainActivity.this.addScriptFile(input.toString(), path);
-                    }
-                }).show();
-    }
-
-    private void addScriptFile(String name, String path) {
-        ScriptFileList.getImpl().add(new ScriptFile(name, path));
-        EventBus.getDefault().post(new MessageEvent(MyScriptListFragment.MESSAGE_SCRIPT_FILE_ADDED));
     }
 
     private void setUpUI() {
@@ -197,41 +185,18 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     @ViewBinding.Click(R.id.create_new_file)
     private void createScriptFile() {
-        createScriptFileForScript(null);
+        getMyScriptListFragment().newScriptFile();
     }
 
-
-    private void createScriptFileForScript(final String script) {
-        new ThemeColorMaterialDialogBuilder(this).title(R.string.text_name)
-                .inputType(InputType.TYPE_CLASS_TEXT)
-                .input(getString(R.string.text_please_input_name), "", new MaterialDialog.InputCallback() {
-                    @Override
-                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                        String path = FileUtils.generateNotExistingPath(ScriptFile.DEFAULT_FOLDER + input, ".js");
-                        MainActivity.this.createScriptFile(input.toString(), path, script);
-                    }
-                })
-                .show();
-    }
-
-    private void createScriptFile(String name, String path, String script) {
-        if (FileUtils.createFileIfNotExists(path)) {
-            if (script != null) {
-                if (!FileUtils.writeString(path, script)) {
-                    Snackbar.make(mDrawerLayout, R.string.text_file_write_fail, Snackbar.LENGTH_LONG).show();
-                }
-            }
-            addScriptFile(name, path);
-            ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0)).editLatest();
-        } else {
-            Snackbar.make(mDrawerLayout, R.string.text_file_create_fail, Snackbar.LENGTH_LONG).show();
-        }
+    @ViewBinding.Click(R.id.create_new_directory)
+    private void createNewDirectory() {
+        getMyScriptListFragment().newDirectory();
     }
 
     @ViewBinding.Click(R.id.import_from_file)
     private void showFileChooser() {
         new FileChooserDialog.Builder(this)
-                .initialPath(ScriptFile.DEFAULT_FOLDER)
+                .initialPath(Environment.getExternalStorageDirectory().getPath())
                 .extensionsFilter(".js", ".txt")
                 .show();
     }
@@ -260,7 +225,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     @Override
     public void onFileSelection(@NonNull FileChooserDialog dialog, @NonNull File file) {
-        addScriptFile(file.getPath());
+        getMyScriptListFragment().importFile(file.getPath());
     }
 
     @Override
@@ -277,6 +242,9 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
             case ACTION_ON_ACTION_RECORD_STOPPED:
                 handleRecordedScript(intent.getStringExtra(ARGUMENT_SCRIPT));
                 break;
+            case ACTION_IMPORT_SCRIPT:
+                getMyScriptListFragment().importFile(intent.getStringExtra(ARGUMENT_PATH));
+                break;
         }
     }
 
@@ -288,7 +256,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                     @Override
                     public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
                         if (position == 0) {
-                            createScriptFileForScript(script);
+                            getMyScriptListFragment().newScriptFileForScript(script);
                         } else {
                             ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE))
                                     .setPrimaryClip(ClipData.newPlainText("script", script));
@@ -307,9 +275,16 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                 .show();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+
+    public static void importScriptFile(Context context, String path) {
+        context.startActivity(new Intent(context, MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra(EXTRA_ACTION, ACTION_IMPORT_SCRIPT)
+                .putExtra(ARGUMENT_PATH, path));
+    }
+
+    private MyScriptListFragment getMyScriptListFragment() {
+        return ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0));
     }
 
     @Override
@@ -323,6 +298,11 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                 .putExtra(EXTRA_ACTION, ACTION_ON_ACTION_RECORD_STOPPED)
                 .putExtra(ARGUMENT_SCRIPT, script);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        StorageScriptProvider.getInstance().notifyStoragePermissionGranted();
     }
 
     @ViewBinding.Click(R.id.toolbar)

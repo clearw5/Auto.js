@@ -52,7 +52,6 @@
             android:layout_height="wrap_content"
             android:text="@string/github"
             android:textColor="@android:color/secondary_text_light"
-            android:textIsSelectable="true"
             android:textSize="16sp"/>
     </LinearLayout>
 
@@ -74,7 +73,7 @@
             android:src="@drawable/ic_email_black_48dp"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/email"
             android:textColor="@android:color/secondary_text_light"
@@ -100,7 +99,7 @@
             android:src="@drawable/ic_qq_black"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/qq"
             android:textColor="@android:color/secondary_text_light"

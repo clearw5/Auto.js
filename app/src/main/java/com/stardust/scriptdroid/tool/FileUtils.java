@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -152,6 +153,16 @@ public class FileUtils {
         }
     }
 
+
+    public static boolean copy(String pathFrom, String pathTo) {
+        try {
+            return copy(new FileInputStream(pathFrom), pathTo);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static boolean copyAsset(String assetFile, String path) {
         try {
             return copy(App.getApp().getAssets().open(assetFile), path);
@@ -228,7 +239,7 @@ public class FileUtils {
     public static File copyAssetToTmpFile(Context context, String path) {
         String extension = getExtension(path);
         String name = getNameWithoutExtension(path);
-        if(name.length() < 5){
+        if (name.length() < 5) {
             name += name.hashCode();
         }
         try {
@@ -238,5 +249,15 @@ public class FileUtils {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static boolean deleteAll(File file) {
+        if (file.isFile())
+            return file.delete();
+        for (File child : file.listFiles()) {
+            if (!deleteAll(child))
+                return false;
+        }
+        return file.delete();
     }
 }

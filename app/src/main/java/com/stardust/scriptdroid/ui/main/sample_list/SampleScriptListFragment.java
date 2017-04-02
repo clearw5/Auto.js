@@ -3,20 +3,17 @@ package com.stardust.scriptdroid.ui.main.sample_list;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.Fragment;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
-import com.stardust.scriptdroid.sample.Sample;
-import com.stardust.scriptdroid.sample.SampleFileManager;
+import com.stardust.scriptdroid.scripts.sample.Sample;
+import com.stardust.scriptdroid.scripts.sample.SampleFileManager;
 import com.stardust.scriptdroid.tool.FileUtils;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.scriptdroid.ui.main.my_script_list.MyScriptListFragment;
@@ -72,9 +69,9 @@ public class SampleScriptListFragment extends Fragment {
     }
 
     private void copySampleToMyScripts(Sample sample) {
-        String path = ScriptFile.DEFAULT_FOLDER + sample.name + ".js";
+        String path = ScriptFile.DEFAULT_DIRECTORY_PATH + sample.name + ".js";
         if (!ScriptFileList.getImpl().containsPath(path) && FileUtils.copyAsset(sample.path, path)) {
-            ScriptFileList.getImpl().add(new ScriptFile(sample.name, path));
+            ScriptFileList.getImpl().add(new ScriptFile(path));
             EventBus.getDefault().post(new MessageEvent(MyScriptListFragment.MESSAGE_SCRIPT_FILE_ADDED));
             Snackbar.make(mSampleScriptListRecyclerView, R.string.text_import_succeed, Snackbar.LENGTH_SHORT).show();
         } else {
