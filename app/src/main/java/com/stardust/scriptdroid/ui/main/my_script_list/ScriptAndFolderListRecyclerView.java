@@ -14,8 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.stardust.autojs.script.FileScriptSource;
+import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.scripts.ScriptFile;
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.scripts.StorageScriptProvider;
 import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 
@@ -71,7 +74,8 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         @Override
         public void onClick(View v) {
             int position = getChildViewHolder((View) v.getParent()).getAdapterPosition();
-            mScriptFileList[getActualPosition(position)].run();
+            ScriptFile file = mScriptFileList[getActualPosition(position)];
+            AutoJs.getInstance().getScriptEngineService().execute(new FileScriptSource(file));
         }
     };
     private OnClickListener mOnEditClickListener = new OnClickListener() {
@@ -88,6 +92,7 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
     private ScriptFile mRootFolder;
     private Adapter mAdapter;
     private boolean mCanGoBack;
+    private StorageScriptProvider mStorageScriptProvider = StorageScriptProvider.getDefault();
 
     public ScriptAndFolderListRecyclerView(Context context) {
         super(context);
@@ -106,14 +111,18 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
 
     private void setCurrentFolder(ScriptFile folder, boolean canGoBack) {
         mCurrentFolder = folder;
-        mScriptFileList = StorageScriptProvider.getInstance().getDirectoryScriptFiles(folder);
+        mScriptFileList = mStorageScriptProvider.getDirectoryScriptFiles(folder);
         mCanGoBack = canGoBack;
         mAdapter.notifyDataSetChanged();
     }
 
-    public void setRootFolder(ScriptFile folder) {
+    private void setRootFolder(ScriptFile folder) {
         mRootFolder = folder;
         setCurrentFolder(mRootFolder, false);
+    }
+
+    public void setStorageScriptProvider(StorageScriptProvider storageScriptProvider) {
+        mStorageScriptProvider = storageScriptProvider;
     }
 
     public void setOnItemClickListener(OnScriptFileClickListener onItemClickListener) {
@@ -138,7 +147,7 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         addItemDecoration(new DividerItemDecoration(getContext(), VERTICAL));
         mAdapter = new Adapter();
         setAdapter(mAdapter);
-        setRootFolder(ScriptFile.DEFAULT_DIRECTORY);
+        setRootFolder(mStorageScriptProvider.getInitialDirectory());
     }
 
     @Override
@@ -162,13 +171,13 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        StorageScriptProvider.getInstance().registerDirectoryChangeListener(this);
+        mStorageScriptProvider.registerDirectoryChangeListener(this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        StorageScriptProvider.getInstance().unregisterDirectoryChangeListener(this);
+        mStorageScriptProvider.unregisterDirectoryChangeListener(this);
     }
 
     @Override

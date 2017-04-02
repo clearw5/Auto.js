@@ -1,31 +1,8 @@
 package com.stardust.scriptdroid;
 
-import com.stardust.scriptdroid.droid.script.JavaScriptEngine;
-import com.stardust.scriptdroid.droid.script.RhinoJavaScriptEngine;
-import com.stardust.scriptdroid.droid.script.file.ScriptFile;
-import com.stardust.scriptdroid.record.inputevent.InputEventToJsConverter;
 import com.stardust.util.LimitedHashMap;
 
 import org.junit.Test;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ImporterTopLevel;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.commonjs.module.RequireBuilder;
-import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider;
-import org.mozilla.javascript.commonjs.module.provider.UrlModuleSourceProvider;
-
-import java.io.File;
-import java.lang.reflect.Array;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

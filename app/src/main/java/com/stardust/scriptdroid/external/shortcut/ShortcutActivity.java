@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.stardust.scriptdroid.droid.Droid;
-import com.stardust.scriptdroid.droid.PathChecker;
+import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.scripts.PathChecker;
+import com.stardust.autojs.script.FileScriptSource;
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.external.CommonUtils;
 
 /**
@@ -17,7 +19,7 @@ public class ShortcutActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final String path = getIntent().getStringExtra(CommonUtils.EXTRA_KEY_PATH);
-        if(new PathChecker(this).checkAndToastError(path)){
+        if (new PathChecker(this).checkAndToastError(path)) {
             runScriptFile(path);
         }
     }
@@ -29,7 +31,7 @@ public class ShortcutActivity extends Activity {
 
     private void runScriptFile(String path) {
         try {
-            Droid.getInstance().runScriptFile(path);
+            AutoJs.getInstance().getScriptEngineService().execute(new FileScriptSource(path));
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();

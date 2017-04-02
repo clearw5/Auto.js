@@ -13,7 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.stardust.scriptdroid.layout_inspector.NodeInfo;
-import com.stardust.scriptdroid.tool.ViewTool;
+import com.stardust.util.ViewUtil;
 
 /**
  * Created by Stardust on 2017/3/10.
@@ -63,7 +63,7 @@ public class LayoutBoundsView extends View {
         mPaint = new Paint();
         mPaint.setColor(Color.GREEN);
         mPaint.setStyle(Paint.Style.STROKE);
-        mStatusBarHeight = ViewTool.getStatusBarHeight(getContext());
+        mStatusBarHeight = ViewUtil.getStatusBarHeight(getContext());
         setWillNotDraw(false);
     }
 

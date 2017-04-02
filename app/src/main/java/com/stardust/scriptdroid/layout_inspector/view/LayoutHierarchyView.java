@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.layout_inspector.NodeInfo;
-import com.stardust.scriptdroid.tool.ViewTool;
+import com.stardust.util.ViewUtil;
 import com.stardust.widget.LevelBeamView;
 
 import java.util.Collections;
@@ -120,7 +120,7 @@ public class LayoutHierarchyView extends MultiLevelListView {
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setAntiAlias(true);
         mPaint.setStrokeWidth(3);
-        mStatusBarHeight = ViewTool.getStatusBarHeight(getContext());
+        mStatusBarHeight = ViewUtil.getStatusBarHeight(getContext());
     }
 
     public Paint getBoundsPaint() {

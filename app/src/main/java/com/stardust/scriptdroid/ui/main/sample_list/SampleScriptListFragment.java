@@ -9,12 +9,13 @@ import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.Fragment;
+import com.stardust.scriptdroid.scripts.ScriptFile;
+import com.stardust.scriptdroid.scripts.ScriptFileList;
+import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.script.file.ScriptFile;
-import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
+import com.stardust.scriptdroid.scripts.StorageScriptProvider;
 import com.stardust.scriptdroid.scripts.sample.Sample;
 import com.stardust.scriptdroid.scripts.sample.SampleFileManager;
-import com.stardust.scriptdroid.tool.FileUtils;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.scriptdroid.ui.main.my_script_list.MyScriptListFragment;
 import com.stardust.util.MessageEvent;
@@ -69,8 +70,8 @@ public class SampleScriptListFragment extends Fragment {
     }
 
     private void copySampleToMyScripts(Sample sample) {
-        String path = ScriptFile.DEFAULT_DIRECTORY_PATH + sample.name + ".js";
-        if (!ScriptFileList.getImpl().containsPath(path) && FileUtils.copyAsset(sample.path, path)) {
+        String path = StorageScriptProvider.DEFAULT_DIRECTORY_PATH + sample.name + ".js";
+        if (!ScriptFileList.getImpl().containsPath(path) && PFile.copyAsset(getActivity(), sample.path, path)) {
             ScriptFileList.getImpl().add(new ScriptFile(path));
             EventBus.getDefault().post(new MessageEvent(MyScriptListFragment.MESSAGE_SCRIPT_FILE_ADDED));
             Snackbar.make(mSampleScriptListRecyclerView, R.string.text_import_succeed, Snackbar.LENGTH_SHORT).show();

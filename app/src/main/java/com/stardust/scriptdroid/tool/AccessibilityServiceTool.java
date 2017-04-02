@@ -8,6 +8,7 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
+import com.stardust.util.Shell;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
 import static com.stardust.view.accessibility.AccessibilityServiceUtils.isAccessibilityServiceEnabled;

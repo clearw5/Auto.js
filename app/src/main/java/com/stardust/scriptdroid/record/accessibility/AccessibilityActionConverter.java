@@ -6,7 +6,7 @@ import android.util.SparseArray;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.stardust.scriptdroid.droid.runtime.action.FilterAction;
+import com.stardust.autojs.runtime.action.FilterAction;
 import com.stardust.scriptdroid.layout_inspector.NodeInfo;
 import com.stardust.util.SparseArrayEntries;
 import com.stardust.view.accessibility.AccessibilityNodeInfoHelper;

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.stardust.automator.AccessibilityEventCommandHost;
+import com.stardust.scriptdroid.autojs.AutoJs;
 
 /**
  * Created by Stardust on 2017/1/31.
@@ -18,7 +19,7 @@ public class Pref {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equals(App.getResString(R.string.key_run_mode))) {
-                AccessibilityEventCommandHost.getInstance().setRunMode(getRunModeFromValue(sharedPreferences.getString(key, null)));
+                AutoJs.getInstance().getCommandHost().setRunMode(getRunModeFromValue(sharedPreferences.getString(key, null)));
             }
         }
     };

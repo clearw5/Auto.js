@@ -1,6 +1,6 @@
 package com.stardust.scriptdroid.ui.edit.sidemenu;
 
-import android.bug.WrapContentLinearLayoutManager;
+import android.workground.WrapContentLinearLayoutManager;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.tool.FileUtils;
 import com.stardust.widget.ExpandableRecyclerView;
 
 import java.text.Collator;
@@ -134,7 +134,7 @@ public class FunctionListRecyclerView extends ExpandableRecyclerView {
     }
 
     private static void initFunctionList() {
-        String[] functions = FileUtils.readString(App.getApp().getResources().openRawResource(R.raw.edit_side_menu_functions)).split("\n");
+        String[] functions = PFile.read(App.getApp().getResources().openRawResource(R.raw.edit_side_menu_functions)).split("\n");
         for (String f : functions) {
             String[] str = f.split(" ");
             FUNCTION_LIST.add(new Function(str[0], str[1]));

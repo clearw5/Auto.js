@@ -150,7 +150,7 @@ public class Floaty {
      */
     public static synchronized Floaty getInstance() {
         if (floaty == null) {
-            throw new NullPointerException("Floaty not initialized! First call createInstance method, then to access Floaty in any other class call getInstance()");
+            throw new NullPointerException("Floaty not initialized! First call createInstance method, then to access Floaty in any other class call getDefault()");
         }
         return floaty;
     }

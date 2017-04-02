@@ -4,36 +4,26 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.accessibility.AccessibilityInfoProvider;
-import com.stardust.scriptdroid.droid.Droid;
+import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.view.accessibility.AccessibilityInfoProvider;
 import com.stardust.scriptdroid.external.floating_window.HoverMenuService;
 import com.stardust.scriptdroid.layout_inspector.LayoutInspector;
-import com.stardust.scriptdroid.tool.ClipboardTool;
+import com.stardust.util.ClipboardUtil;
 import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.util.MessageEvent;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import io.mattcarroll.hover.Navigator;
 import io.mattcarroll.hover.NavigatorContent;
-import io.mattcarroll.hover.defaulthovermenu.menus.Menu;
-import io.mattcarroll.hover.defaulthovermenu.menus.MenuAction;
-import io.mattcarroll.hover.defaulthovermenu.menus.MenuItem;
-import io.mattcarroll.hover.defaulthovermenu.menus.MenuListNavigatorContent;
 
 /**
  * Created by Stardust on 2017/3/12.
@@ -59,7 +49,7 @@ public class MainMenuNavigatorContent implements NavigatorContent {
 
     @ViewBinding.Click(R.id.layout_hierarchy)
     private void showLayoutHierarchy() {
-        if (LayoutInspector.getInstance().getCapture() == null) {
+        if (AutoJs.getInstance().getLayoutInspector().getCapture() == null) {
             Toast.makeText(mView.getContext(), R.string.text_no_accessibility_permission_to_capture, Toast.LENGTH_SHORT).show();
         } else {
             HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_SHOW_LAYOUT_HIERARCHY));
@@ -68,7 +58,7 @@ public class MainMenuNavigatorContent implements NavigatorContent {
 
     @ViewBinding.Click(R.id.layout_bounds)
     private void showLayoutBounds() {
-        if (LayoutInspector.getInstance().getCapture() == null) {
+        if (AutoJs.getInstance().getLayoutInspector().getCapture() == null) {
             Toast.makeText(mView.getContext(), R.string.text_no_accessibility_permission_to_capture, Toast.LENGTH_SHORT).show();
         } else {
             HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_SHOW_LAYOUT_BOUNDS));
@@ -77,7 +67,7 @@ public class MainMenuNavigatorContent implements NavigatorContent {
 
     @ViewBinding.Click(R.id.stop_all_running_scripts)
     private void stopAllRunningScripts() {
-        Droid.getInstance().stopAllAndToast();
+        AutoJs.getInstance().getScriptEngineService().stopAllAndToast();
     }
 
     @ViewBinding.Click(R.id.open_launcher)
@@ -100,21 +90,21 @@ public class MainMenuNavigatorContent implements NavigatorContent {
 
     @SuppressLint("SetTextI18n")
     private void syncCurrentInfo() {
-        mCurrentPackage = AccessibilityInfoProvider.getInstance().getLatestPackage();
-        mCurrentActivity = AccessibilityInfoProvider.getInstance().getLatestActivity();
+        mCurrentPackage = AutoJs.getInstance().getInfoProvider().getLatestPackage();
+        mCurrentActivity = AutoJs.getInstance().getInfoProvider().getLatestActivity();
         mCurrentActivityTextView.setText(mContext.getString(R.string.text_current_activity) + mCurrentActivity);
         mCurrentPackageTextView.setText(mContext.getString(R.string.text_current_package) + mCurrentPackage);
     }
 
     @ViewBinding.Click(R.id.current_activity)
     private void copyCurrentActivity() {
-        ClipboardTool.setClip(mCurrentActivity);
+        ClipboardUtil.setClip(mContext, mCurrentActivity);
         Toast.makeText(mContext, R.string.text_copied, Toast.LENGTH_SHORT).show();
     }
 
     @ViewBinding.Click(R.id.current_package)
     private void copyCurrentPackage() {
-        ClipboardTool.setClip(mCurrentPackage);
+        ClipboardUtil.setClip(mContext, mCurrentPackage);
         Toast.makeText(mContext, R.string.text_copied, Toast.LENGTH_SHORT).show();
     }
 

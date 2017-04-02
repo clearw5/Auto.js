@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.ViewSwitcher;
 
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.layout_inspector.LayoutInspector;
 import com.stardust.scriptdroid.layout_inspector.NodeInfo;
 
@@ -71,7 +72,7 @@ public class LayoutInspectView extends FrameLayout {
     }
 
     public void showLayoutBoundsView() {
-        mLayoutBoundsView.setRootNode(LayoutInspector.getInstance().captureCurrentWindow());
+        mLayoutBoundsView.setRootNode(AutoJs.getInstance().getLayoutInspector().captureCurrentWindow());
         backToLayoutBoundsView();
     }
 

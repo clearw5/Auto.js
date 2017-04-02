@@ -4,16 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.widget.CommonMarkdownView;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.tool.FileUtils;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Created by Stardust on 2017/2/1.
@@ -54,12 +50,12 @@ public class DocumentationActivity extends BaseActivity {
         int rawId = intent.getIntExtra("resId", 0);
         if (path != null) {
             try {
-                mDocumentation = FileUtils.readString(getAssets().open("help/" + path));
+                mDocumentation = PFile.read(getAssets().open("help/" + path));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (rawId != 0) {
-            mDocumentation = FileUtils.readString(getResources().openRawResource(rawId));
+            mDocumentation = PFile.read(getResources().openRawResource(rawId));
         }
     }
 

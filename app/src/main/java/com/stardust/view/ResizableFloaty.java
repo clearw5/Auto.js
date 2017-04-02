@@ -18,7 +18,7 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.tool.ViewTool;
+import com.stardust.util.ViewUtil;
 import com.stardust.widget.ViewSwitcher;
 
 /**
@@ -369,7 +369,7 @@ public class ResizableFloaty {
         public ResizeGesture(WindowBridge windowBridge, View resizerView) {
             mWindowBridge = windowBridge;
             mResizerView = resizerView;
-            mStatusBarHeight = ViewTool.getStatusBarHeight(resizerView.getContext());
+            mStatusBarHeight = ViewUtil.getStatusBarHeight(resizerView.getContext());
         }
 
         public void setMinHeight(int minHeight) {

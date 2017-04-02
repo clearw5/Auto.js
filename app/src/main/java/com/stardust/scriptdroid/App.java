@@ -2,28 +2,17 @@ package com.stardust.scriptdroid;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 
-import com.stardust.automator.AccessibilityEventCommandHost;
-import com.stardust.scriptdroid.accessibility.AccessibilityInfoProvider;
-import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
-import com.stardust.scriptdroid.droid.script.JavaScriptEngine;
-import com.stardust.scriptdroid.droid.script.NodeJsJavaScriptEngine;
-import com.stardust.scriptdroid.droid.script.RhinoJavaScriptEngine;
-import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
-import com.stardust.scriptdroid.droid.script.file.SharedPrefScriptFileList;
-import com.stardust.scriptdroid.droid.script.file.StorageScriptFileList;
-import com.stardust.scriptdroid.layout_inspector.LayoutInspector;
-import com.stardust.scriptdroid.record.accessibility.AccessibilityActionRecorder;
-import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.squareup.leakcanary.LeakCanary;
-import com.stardust.scriptdroid.droid.runtime.action.ActionPerformAccessibilityDelegate;
+import com.stardust.app.SimpleActivityLifecycleCallbacks;
+import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.service.VolumeChangeObverseService;
+import com.stardust.scriptdroid.tool.CrashHandler;
 import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
 import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
-import com.stardust.util.CrashHandler;
-import com.stardust.util.StateObserver;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -34,25 +23,18 @@ public class App extends Application {
     private static final String TAG = "App";
 
     private static App instance;
-    private static StateObserver stateObserver;
     private static Activity currentActivity;
 
     public static App getApp() {
         return instance;
     }
 
-    public static StateObserver getStateObserver() {
-        return stateObserver;
-    }
-
-
     public void onCreate() {
         super.onCreate();
+        instance = this;
         setUpDebugEnvironment();
         init();
-        configApp();
         registerActivityLifecycleCallback();
-        initAccessibilityServiceDelegates();
     }
 
     private void setUpDebugEnvironment() {
@@ -67,23 +49,16 @@ public class App extends Application {
     private void init() {
         ThemeColorManager.setDefaultThemeColor(new ThemeColor(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorPrimaryDark), getResources().getColor(R.color.colorAccent)));
         ThemeColorManager.init(this);
-        instance = this;
-        stateObserver = new StateObserver(PreferenceManager.getDefaultSharedPreferences(this));
-    }
-
-    private void configApp() {
-        ScriptFileList.setImpl(SharedPrefScriptFileList.getInstance());
-        JavaScriptEngine.setDefault(new NodeJsJavaScriptEngine(DroidRuntime.getRuntime()));
-    }
-
-
-    private void initAccessibilityServiceDelegates() {
-        AccessibilityWatchDogService.addDelegateIfNeeded(100, ActionPerformAccessibilityDelegate.class);
-        AccessibilityWatchDogService.addDelegateIfNeeded(200, AccessibilityActionRecorder.getInstance());
-        AccessibilityWatchDogService.addDelegateIfNeeded(300, AccessibilityEventCommandHost.getInstance());
-        AccessibilityWatchDogService.addDelegateIfNeeded(400, AccessibilityInfoProvider.getInstance());
-        AccessibilityWatchDogService.addDelegateIfNeeded(500, LayoutInspector.getInstance());
-
+        AutoJs.initInstance(this);
+        VolumeChangeObverseService.addOnVolumeChangeListener(new VolumeChangeObverseService.OnVolumeChangeListener() {
+            @Override
+            public void onVolumeChange() {
+                if (Pref.isRunningVolumeControlEnabled()) {
+                    AutoJs.getInstance().getScriptEngineService().stopAllAndToast();
+                }
+            }
+        });
+        startService(new Intent(this, VolumeChangeObverseService.class));
     }
 
     private void registerActivityLifecycleCallback() {
@@ -92,7 +67,6 @@ public class App extends Application {
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
                 currentActivity = activity;
             }
-
 
             @Override
             public void onActivityPaused(Activity activity) {
@@ -120,42 +94,4 @@ public class App extends Application {
         return getApp().getString(id);
     }
 
-
-    private static class SimpleActivityLifecycleCallbacks implements ActivityLifecycleCallbacks {
-
-        @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
-        }
-
-        @Override
-        public void onActivityStarted(Activity activity) {
-
-        }
-
-        @Override
-        public void onActivityResumed(Activity activity) {
-
-        }
-
-        @Override
-        public void onActivityPaused(Activity activity) {
-
-        }
-
-        @Override
-        public void onActivityStopped(Activity activity) {
-
-        }
-
-        @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
-        }
-
-        @Override
-        public void onActivityDestroyed(Activity activity) {
-
-        }
-    }
 }

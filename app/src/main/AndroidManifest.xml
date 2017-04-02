@@ -79,7 +79,6 @@
         <activity
             android:name=".ui.error.IssueReportActivity"
             android:theme="@style/IssueReportTheme"/>
-        <activity android:name=".droid.script.ScriptExecuteActivity"/>
 
         <service android:name=".service.VolumeChangeObverseService"/>
         <service android:name="com.stardust.view.Floaty$FloatHeadService"/>

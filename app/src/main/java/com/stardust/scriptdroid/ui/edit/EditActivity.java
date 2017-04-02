@@ -15,10 +15,13 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.autojs.engine.JavaScriptEngine;
+import com.stardust.autojs.engine.ScriptExecutionListener;
+import com.stardust.autojs.script.FileScriptSource;
+import com.stardust.autojs.script.ScriptSource;
+import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.Pref;
-import com.stardust.scriptdroid.droid.Droid;
-import com.stardust.scriptdroid.droid.RunningConfig;
-import com.stardust.scriptdroid.tool.FileUtils;
+import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
 import com.stardust.scriptdroid.ui.edit.sidemenu.EditSideMenuFragment;
 import com.stardust.scriptdroid.ui.edit.sidemenu.FunctionListRecyclerView;
@@ -39,7 +42,8 @@ import com.stardust.theme.ThemeColorManager;
 import com.stardust.view.ViewBinder;
 
 import java.io.File;
-import java.util.Timer;
+import java.text.DateFormat;
+import java.util.Date;
 
 import timber.log.Timber;
 
@@ -54,19 +58,25 @@ public class EditActivity extends Editor920Activity {
     private static final String ACTION_ON_RUN_FINISHED = "ACTION_ON_RUN_FINISHED";
     private static final String EXTRA_EXCEPTION_MESSAGE = "EXTRA_EXCEPTION_MESSAGE";
 
-    private static final Droid.OnRunFinishedListener ON_RUN_FINISHED_LISTENER = new Droid.OnRunFinishedListener() {
+    private static final ScriptExecutionListener SCRIPT_EXECUTION_LISTENER = new ScriptExecutionListener() {
 
         @Override
-        public void onRunFinished(Object result) {
+        public void onStart(JavaScriptEngine engine, ScriptSource source) {
+            AutoJs.getInstance().getScriptEngineService().getDefaultListener().onStart(engine, source);
+        }
+
+        @Override
+        public void onSuccess(JavaScriptEngine engine, ScriptSource source, Object result) {
             App.getApp().sendBroadcast(new Intent(ACTION_ON_RUN_FINISHED));
         }
 
         @Override
-        public void onException(@NonNull Exception e) {
+        public void onException(JavaScriptEngine engine, ScriptSource source, Exception e) {
             App.getApp().sendBroadcast(new Intent(ACTION_ON_RUN_FINISHED)
                     .putExtra(EXTRA_EXCEPTION_MESSAGE, e.getMessage()));
             e.printStackTrace();
         }
+
     };
 
     public static void editFile(Context context, String path) {
@@ -145,7 +155,7 @@ public class EditActivity extends Editor920Activity {
             if (getIntent().getBooleanExtra("fromAssets", false)) {
                 mReadOnly = true;
                 //TODO 优化
-                mFile = FileUtils.copyAssetToTmpFile(this, path);
+                mFile = PFile.copyAssetToTmpFile(this, path);
             } else {
                 mFile = new File(path);
             }
@@ -254,7 +264,7 @@ public class EditActivity extends Editor920Activity {
     private void run() {
         Snackbar.make(mView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         setMenuStatus(R.id.run, MenuDef.STATUS_DISABLED);
-        Droid.getInstance().runScriptFile(mFile, ON_RUN_FINISHED_LISTENER, RunningConfig.getDefault());
+        AutoJs.getInstance().getScriptEngineService().execute(new FileScriptSource(mFile), SCRIPT_EXECUTION_LISTENER);
     }
 
     @ViewBinding.Click(R.id.undo)
@@ -337,9 +347,9 @@ public class EditActivity extends Editor920Activity {
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        try{
+        try {
             super.onRestoreInstanceState(savedInstanceState);
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             // FIXME: 2017/3/20
             e.printStackTrace();
         }

@@ -1,14 +1,15 @@
 package com.stardust.scriptdroid.ui.main.operation;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.scriptdroid.droid.script.file.ScriptFile;
-import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
+import com.stardust.autojs.script.FileScriptSource;
+import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.scripts.ScriptFile;
+import com.stardust.scriptdroid.scripts.ScriptFileList;
 import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.external.shortcut.Shortcut;
 import com.stardust.scriptdroid.external.shortcut.ShortcutActivity;
@@ -39,7 +40,7 @@ public abstract class ScriptFileOperation {
         App.getApp().startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(uri, "text/plain").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
-    public static void createShortcut(ScriptFile scriptFile){
+    public static void createShortcut(ScriptFile scriptFile) {
         new Shortcut(App.getApp()).name(scriptFile.getSimplifiedName())
                 .targetClass(ShortcutActivity.class)
                 .icon(R.drawable.ic_robot_green)
@@ -82,7 +83,7 @@ public abstract class ScriptFileOperation {
         public void operate(RecyclerView recyclerView, ScriptFileList scriptFileList, int position) {
             EventBus.getDefault().post(new ShowMessageEvent(R.string.text_start_running));
             ScriptFile scriptFile = scriptFileList.get(position);
-            scriptFile.run();
+            AutoJs.getInstance().getScriptEngineService().execute(new FileScriptSource(scriptFile));
         }
     }
 

@@ -5,15 +5,15 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.stardust.app.Fragment;
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.Droid;
+import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
 import com.stardust.scriptdroid.external.floating_window.HoverMenuService;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
@@ -124,7 +124,7 @@ public class SlideMenuFragment extends Fragment {
 
     @ViewBinding.Click(R.id.stop_all_running_scripts)
     private void stopAllRunningScripts() {
-        int n = Droid.getInstance().stopAll();
+        int n = AutoJs.getInstance().getScriptEngineService().stopAll();
         if (n > 0)
             Snackbar.make(getView(), String.format(getString(R.string.text_already_stop_n_scripts), n), Snackbar.LENGTH_SHORT).show();
         else

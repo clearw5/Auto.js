@@ -1,7 +1,6 @@
 package com.stardust.scriptdroid.external.floating_window.view;
 
 import android.content.Context;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,12 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.scriptdroid.scripts.ScriptFile;
+import com.stardust.scriptdroid.scripts.ScriptFileList;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.script.file.ScriptFile;
-import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
 import com.stardust.scriptdroid.external.floating_window.HoverMenuService;
-import com.stardust.scriptdroid.tool.ViewTool;
+import com.stardust.util.ViewUtil;
 import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperationPopupMenu;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
@@ -198,8 +197,8 @@ public class FloatingScriptFileListView extends RecyclerView {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.name);
             path = (TextView) itemView.findViewById(R.id.path);
-            ViewTool.$(itemView, R.id.edit).setOnClickListener(mOnEditIconClickListener);
-            ViewTool.$(itemView, R.id.more).setOnClickListener(mOnMoreIconClickListener);
+            ViewUtil.$(itemView, R.id.edit).setOnClickListener(mOnEditIconClickListener);
+            ViewUtil.$(itemView, R.id.more).setOnClickListener(mOnMoreIconClickListener);
             itemView.setOnClickListener(mOnItemClickListener);
         }
     }

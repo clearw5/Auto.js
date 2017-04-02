@@ -23,12 +23,6 @@ public class AccessibilityEventCommandHost implements AccessibilityDelegate {
         void execute(AccessibilityService service, AccessibilityEvent event);
     }
 
-    private static final AccessibilityEventCommandHost instance = new AccessibilityEventCommandHost();
-
-    public static AccessibilityEventCommandHost getInstance() {
-        return instance;
-    }
-
     private static final String TAG = "CommandHostDelegate";
 
     public static final int RUN_MODE_SINGLE_THREAD = 0;

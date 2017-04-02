@@ -15,9 +15,8 @@ import android.widget.Toast;
 import com.stardust.hover.HoverMenuBuilder;
 import com.stardust.hover.SimpleHoverMenuTransitionListener;
 import com.stardust.hover.WindowHoverMenu;
-import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
+import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floating_window.view.FloatingLayoutBoundsView;
 import com.stardust.scriptdroid.external.floating_window.view.FloatingLayoutHierarchyView;
 import com.stardust.scriptdroid.layout_inspector.LayoutInspector;
@@ -28,8 +27,6 @@ import com.stardust.util.MessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-
-import java.lang.ref.WeakReference;
 
 import io.mattcarroll.hover.HoverMenu;
 import io.mattcarroll.hover.defaulthovermenu.window.WindowViewController;
@@ -150,14 +147,14 @@ public class HoverMenuService extends Service {
 
             @Override
             public void onCollapsing() {
-                LayoutInspector.getInstance().clearCapture();
+                AutoJs.getInstance().getLayoutInspector().clearCapture();
                 EventBus.getDefault().post(new MessageEvent(MESSAGE_MENU_COLLAPSING));
             }
         });
     }
 
     private void captureCurrentWindow() {
-        NodeInfo nodeInfo = LayoutInspector.getInstance().captureCurrentWindow();
+        NodeInfo nodeInfo = AutoJs.getInstance().getLayoutInspector().captureCurrentWindow();
         if (nodeInfo == null)
             return;
         mFloatingLayoutHierarchyView.setRootNode(nodeInfo);

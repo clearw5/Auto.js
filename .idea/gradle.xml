@@ -9,7 +9,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/autojs" />
             <option value="$PROJECT_DIR$/automator" />
+            <option value="$PROJECT_DIR$/common" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

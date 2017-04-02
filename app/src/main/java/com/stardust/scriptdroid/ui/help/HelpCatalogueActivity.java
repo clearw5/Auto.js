@@ -12,17 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.tool.FileUtils;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
@@ -166,7 +165,7 @@ public class HelpCatalogueActivity extends BaseActivity {
     static {
         Map<String, List<Item>> fromJson;
         try {
-            String json = FileUtils.readString(App.getApp().getAssets().open("help/catalogue.json"));
+            String json = PFile.read(App.getApp().getAssets().open("help/catalogue.json"));
             Gson gson = new Gson();
             Type type = new TypeToken<Map<String, List<Item>>>() {
             }.getType();

@@ -13,6 +13,7 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.accessibility.AccessibilityEventHelper;
+import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floating_window.HoverMenuService;
 import com.stardust.scriptdroid.record.Recorder;
 import com.stardust.scriptdroid.record.accessibility.AccessibilityActionRecorder;
@@ -128,7 +129,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     }
 
     private void startRecord() {
-        mRecorder = mRecordedByRootSwitch.isChecked() ? new TouchRecorder() : AccessibilityActionRecorder.getInstance();
+        mRecorder = mRecordedByRootSwitch.isChecked() ? new TouchRecorder() : AutoJs.getInstance().getAccessibilityActionRecorder();
         mRecorder.setOnStateChangedListener(this);
         mRecorder.start();
         setState(Recorder.STATE_RECORDING);

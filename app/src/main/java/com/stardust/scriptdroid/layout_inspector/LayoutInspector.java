@@ -12,13 +12,6 @@ import com.stardust.view.accessibility.AccessibilityDelegate;
 
 public class LayoutInspector implements AccessibilityDelegate {
 
-
-    private static LayoutInspector instance = new LayoutInspector();
-
-    public static LayoutInspector getInstance() {
-        return instance;
-    }
-
     private AccessibilityNodeInfo mRootInActiveWindow;
     private NodeInfo mCapture;
 

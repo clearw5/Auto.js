@@ -2,11 +2,6 @@ package com.stardust.scriptdroid.record.inputevent;
 
 import android.support.annotation.NonNull;
 
-import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.runtime.DroidRuntime;
-import com.stardust.scriptdroid.ui.main.MainActivity;
-
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.regex.Matcher;

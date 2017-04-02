@@ -28,22 +28,13 @@ public class AccessibilityActionRecorder extends Recorder.DefaultIMPL implements
 
     private static final long RECORD_TIME_OUT = 10 * 60 * 1000;
 
-    private static AccessibilityActionRecorder instance;
-    private boolean mRecordMessageEnabled;
-
     private boolean mShouldIgnoreFirstAction = false;
 
-    public static AccessibilityActionRecorder getInstance() {
-        if (instance == null) {
-            instance = new AccessibilityActionRecorder();
-        }
-        return instance;
-    }
 
     private AccessibilityActionConverter mConverter;
     private long mRecordStartMillis;
 
-    public AccessibilityActionRecorder(){
+    public AccessibilityActionRecorder() {
         super(true);
     }
 

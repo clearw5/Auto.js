@@ -13,10 +13,10 @@ import android.widget.EditText;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.Fragment;
+import com.stardust.scriptdroid.scripts.ScriptFile;
+import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.scripts.StorageScriptProvider;
-import com.stardust.scriptdroid.tool.FileUtils;
 import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.view.ViewBinder;
@@ -24,8 +24,6 @@ import com.stardust.view.ViewBinding;
 import com.stardust.widget.SimpleAdapterDataObserver;
 
 import java.io.File;
-
-import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by Stardust on 2017/3/13.
@@ -125,9 +123,9 @@ public class MyScriptListFragment extends Fragment {
     }
 
     public void createScriptFile(String path, String script) {
-        if (FileUtils.createFileIfNotExists(path)) {
+        if (PFile.createIfNotExists(path)) {
             if (script != null) {
-                if (!FileUtils.writeString(path, script)) {
+                if (!PFile.write(path, script)) {
                     Snackbar.make(getView(), R.string.text_file_write_fail, Snackbar.LENGTH_LONG).show();
                 }
             }
@@ -143,14 +141,14 @@ public class MyScriptListFragment extends Fragment {
     }
 
     public void importFile(final String pathFrom) {
-        showFileNameInputDialog(FileUtils.getNameWithoutExtension(pathFrom), new MaterialDialog.InputCallback() {
+        showFileNameInputDialog(PFile.getNameWithoutExtension(pathFrom), new MaterialDialog.InputCallback() {
             @Override
             public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                 final String pathTo = getCurrentDirectoryPath() + input + ".js";
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (FileUtils.copy(pathFrom, pathTo)) {
+                        if (PFile.copy(pathFrom, pathTo)) {
                             showMessage(R.string.text_import_succeed);
                         } else {
                             showMessage(R.string.text_import_fail);
@@ -204,7 +202,7 @@ public class MyScriptListFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                StorageScriptProvider.getInstance().notifyDirectoryChanged(getCurrentDirectory());
+                StorageScriptProvider.getDefault().notifyDirectoryChanged(getCurrentDirectory());
             }
         });
     }
@@ -282,7 +280,7 @@ public class MyScriptListFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (FileUtils.deleteAll(mSelectedScriptFile)) {
+                if (PFile.deleteRecursively(mSelectedScriptFile)) {
                     showMessage(R.string.text_already_delete);
                     notifyScriptFileChanged();
                 } else {

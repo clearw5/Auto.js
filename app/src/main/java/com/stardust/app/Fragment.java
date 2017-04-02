@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.stardust.scriptdroid.tool.ViewTool;
+import com.stardust.util.ViewUtil;
 
 /**
  * Created by Stardust on 2017/1/30.
@@ -23,7 +23,7 @@ public abstract class Fragment extends android.support.v4.app.Fragment {
     }
 
     public <T extends View> T $(int id) {
-        return ViewTool.$(mView, id);
+        return ViewUtil.$(mView, id);
     }
 
     public View findViewById(int id) {

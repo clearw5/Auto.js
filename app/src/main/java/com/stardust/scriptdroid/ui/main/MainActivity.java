@@ -17,7 +17,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -31,9 +30,6 @@ import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.NotAskAgainDialog;
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.scriptdroid.Pref;
-import com.stardust.scriptdroid.droid.script.file.ScriptFile;
-import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
-import com.stardust.scriptdroid.external.open.ImportIntentActivity;
 import com.stardust.scriptdroid.scripts.StorageScriptProvider;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
@@ -44,17 +40,13 @@ import com.stardust.scriptdroid.ui.main.sample_list.SampleScriptListFragment;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
-import com.stardust.util.MessageEvent;
+import com.stardust.util.BackPressedHandler;
 import com.stardust.view.ViewBinding;
 import com.stardust.widget.SlidingUpPanel;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.tool.FileUtils;
-import com.stardust.scriptdroid.tool.BackPressedHandler;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 
@@ -96,7 +88,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
             }
         });
         registerBackPressedHandler(new BackPressedHandler.DrawerAutoClose(mDrawerLayout, Gravity.START));
-        registerBackPressedHandler(new BackPressedHandler.DoublePressExit(this));
+        registerBackPressedHandler(new BackPressedHandler.DoublePressExit(this, R.string.text_press_again_to_exit));
     }
 
     private void checkPermissions() {
@@ -302,7 +294,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        StorageScriptProvider.getInstance().notifyStoragePermissionGranted();
+        StorageScriptProvider.getDefault().notifyStoragePermissionGranted();
     }
 
     @ViewBinding.Click(R.id.toolbar)

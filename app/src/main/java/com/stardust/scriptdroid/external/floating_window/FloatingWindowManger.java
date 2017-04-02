@@ -4,14 +4,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.view.View;
 
 import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.layout_inspector.view.LayoutInspectView;
-import com.stardust.scriptdroid.tool.IntentTool;
-import com.stardust.view.Floaty;
-import com.stardust.view.ResizableFloaty;
+import com.stardust.util.IntentUtil;
 
 /**
  * Created by Stardust on 2017/3/10.
@@ -37,10 +32,10 @@ public class FloatingWindowManger {
                         Uri.parse("package:" + packageName))
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             } catch (Exception e) {
-                IntentTool.goToAppSetting(App.getApp());
+                IntentUtil.goToAppDetailSettings(App.getApp());
             }
         } else {
-            IntentTool.goToAppSetting(App.getApp());
+            IntentUtil.goToAppDetailSettings(App.getApp());
         }
     }
 

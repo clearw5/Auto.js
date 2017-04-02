@@ -86,4 +86,6 @@ dependencies {
     compile(name: '920-file_explorer-release', ext: 'aar')
     compile(name: '920-app-debug', ext: 'aar')
     compile project(':automator')
+    compile project(':common')
+    compile project(':autojs')
 }

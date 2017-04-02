@@ -10,9 +10,8 @@ import android.view.View;
 
 
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.tool.BackPressedHandler;
 import com.stardust.theme.ThemeColorManager;
-import com.stardust.theme.app.ThemeColorAppCompatActivity;
+import com.stardust.util.BackPressedHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;

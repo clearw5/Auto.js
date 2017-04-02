@@ -11,9 +11,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.Pref;
-import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.error.IssueReportActivity;
+import com.stardust.util.IntentUtil;
 import com.stardust.util.MapEntries;
 import com.stardust.scriptdroid.R;
 import com.stardust.theme.app.ColorSelectActivity;
@@ -122,7 +122,7 @@ public class SettingsActivity extends BaseActivity {
                     .entry(getString(R.string.text_join_qq_group), new Runnable() {
                         @Override
                         public void run() {
-                            if (!IntentTool.joinQQGroup(getActivity(), "vjHXzZlpGcXNe-YEWzQ85mm_z8y-curC")) {
+                            if (!IntentUtil.joinQQGroup(getActivity(), "vjHXzZlpGcXNe-YEWzQ85mm_z8y-curC")) {
                                 Toast.makeText(getActivity(), R.string.text_mobile_qq_not_installed, Toast.LENGTH_SHORT).show();
                             }
                         }

@@ -1,9 +1,7 @@
 package com.stardust.scriptdroid.layout_inspector.view;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -13,7 +11,7 @@ import android.widget.Toast;
 
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.layout_inspector.NodeInfo;
-import com.stardust.scriptdroid.tool.ClipboardTool;
+import com.stardust.util.ClipboardUtil;
 
 import java.lang.reflect.Field;
 
@@ -21,7 +19,6 @@ import de.codecrafters.tableview.TableDataAdapter;
 import de.codecrafters.tableview.TableView;
 import de.codecrafters.tableview.model.TableColumnWeightModel;
 import de.codecrafters.tableview.toolkit.SimpleTableDataAdapter;
-import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
 import de.codecrafters.tableview.toolkit.TableDataRowBackgroundProviders;
 
 /**
@@ -81,7 +78,7 @@ public class NodeInfoView extends TableView {
                 textView.setOnLongClickListener(new OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        ClipboardTool.setClip(textView.getText());
+                        ClipboardUtil.setClip(getContext(), textView.getText());
                         Toast.makeText(getContext(), R.string.text_already_copy_to_clip, Toast.LENGTH_SHORT).show();
                         return true;
                     }

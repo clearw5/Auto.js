@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.webkit.WebView;
 
+import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.tool.FileUtils;
 import com.stardust.scriptdroid.ui.BaseActivity;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class LocalWebViewActivity extends BaseActivity {
         String path = intent.getStringExtra("path");
         if (path != null)
             try {
-                mHtml = FileUtils.readString(getAssets().open("help/" + path));
+                mHtml = PFile.read(getAssets().open("help/" + path));
             } catch (IOException e) {
                 e.printStackTrace();
                 mHtml = getString(R.string.text_load_failed);

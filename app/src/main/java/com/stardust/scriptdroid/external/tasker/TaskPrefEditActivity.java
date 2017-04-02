@@ -6,9 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.scripts.ScriptFile;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.droid.script.file.ScriptFile;
 import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.ui.main.my_script_list.ScriptAndFolderListRecyclerView;
 import com.twofortyfouram.locale.sdk.client.ui.activity.AbstractPluginActivity;

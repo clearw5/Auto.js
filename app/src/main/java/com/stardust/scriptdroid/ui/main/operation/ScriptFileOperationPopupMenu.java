@@ -1,6 +1,5 @@
 package com.stardust.scriptdroid.ui.main.operation;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.Nullable;
@@ -18,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.stardust.scriptdroid.tool.ViewTool;
+import com.stardust.util.ViewUtil;
 import com.stardust.scriptdroid.R;
 
 import java.util.List;
@@ -99,7 +98,7 @@ public class ScriptFileOperationPopupMenu extends PopupWindow {
     private void initContentView() {
         View contentView = View.inflate(mContext, R.layout.script_file_operation_popup_menu_content, null);
         setContentView(contentView);
-        mOperationListRecyclerView = ViewTool.$(contentView, R.id.operation_list);
+        mOperationListRecyclerView = ViewUtil.$(contentView, R.id.operation_list);
         mOperationListRecyclerView.setOnItemClickListener(mOnItemClickRealListener);
         mOperationListRecyclerView.setScriptFileOperationList(mScriptFileOperationList);
     }
@@ -165,8 +164,8 @@ public class ScriptFileOperationPopupMenu extends PopupWindow {
             ViewHolder(View itemView) {
                 super(itemView);
                 itemView.setOnClickListener(mOnItemClickListener);
-                operationName = ViewTool.$(itemView, R.id.name);
-                icon = ViewTool.$(itemView, R.id.icon);
+                operationName = ViewUtil.$(itemView, R.id.name);
+                icon = ViewUtil.$(itemView, R.id.icon);
             }
         }
     }

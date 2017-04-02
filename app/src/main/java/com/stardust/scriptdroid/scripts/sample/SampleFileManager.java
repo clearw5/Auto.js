@@ -3,7 +3,7 @@ package com.stardust.scriptdroid.scripts.sample;
 import android.content.Context;
 import android.content.res.AssetManager;
 
-import com.stardust.scriptdroid.tool.FileUtils;
+import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.App;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class SampleFileManager {
         try {
             String[] samples = assets.list(path);
             for (String sample : samples) {
-                group.add(new Sample(FileUtils.getNameWithoutExtension(sample), path + "/" + sample));
+                group.add(new Sample(PFile.getNameWithoutExtension(sample), path + "/" + sample));
             }
             return group;
         } catch (IOException e) {

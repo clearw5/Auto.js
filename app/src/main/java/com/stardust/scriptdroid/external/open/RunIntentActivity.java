@@ -6,13 +6,15 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
-import com.stardust.scriptdroid.droid.Droid;
-import com.stardust.scriptdroid.droid.PathChecker;
-import com.stardust.scriptdroid.droid.RunningConfig;
+import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.scripts.PathChecker;
+import com.stardust.autojs.script.FileScriptSource;
+import com.stardust.autojs.script.MultiScriptSource;
+import com.stardust.autojs.script.ScriptSource;
+import com.stardust.autojs.script.StringScriptSource;
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.R;
-
-import java.io.File;
 
 /**
  * Created by Stardust on 2017/2/22.
@@ -24,7 +26,7 @@ public class RunIntentActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            handleIntent();
+            handleIntent(getIntent());
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, R.string.edit_and_run_handle_intent_error, Toast.LENGTH_LONG).show();
@@ -32,16 +34,17 @@ public class RunIntentActivity extends Activity {
         finish();
     }
 
-    private void handleIntent() {
-        Intent intent = getIntent();
+    private void handleIntent(Intent intent) {
         String path = getPath(intent);
         String script = intent.getStringExtra(CommonUtils.EXTRA_KEY_PREPARE_SCRIPT);
+        ScriptSource source = null;
         if (path == null && script != null) {
-            Droid.getInstance().runScript(script);
-        } else {
-            if (new PathChecker(this).checkAndToastError(path)) {
-                Droid.getInstance().runScriptFile(new File(path), null, new RunningConfig().prepareScript(script));
-            }
+            source = new StringScriptSource(script);
+        } else if (path != null && new PathChecker(this).checkAndToastError(path)) {
+            source = new MultiScriptSource(new StringScriptSource(script), new FileScriptSource(path));
+        }
+        if (source != null) {
+            AutoJs.getInstance().getScriptEngineService().execute(source);
         }
     }
 

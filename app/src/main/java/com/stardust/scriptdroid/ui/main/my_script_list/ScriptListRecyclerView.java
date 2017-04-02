@@ -1,7 +1,6 @@
 package com.stardust.scriptdroid.ui.main.my_script_list;
 
 import android.content.Context;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DividerItemDecoration;
@@ -12,20 +11,15 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.stardust.scriptdroid.droid.script.file.ScriptFile;
-import com.stardust.scriptdroid.droid.script.file.ScriptFileList;
-import com.stardust.scriptdroid.tool.ViewTool;
+import com.stardust.scriptdroid.scripts.ScriptFile;
+import com.stardust.scriptdroid.scripts.ScriptFileList;
+import com.stardust.util.ViewUtil;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
-import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperationPopupMenu;
 
 import org.greenrobot.eventbus.Subscribe;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Stardust on 2017/1/23.
@@ -147,8 +141,8 @@ public class ScriptListRecyclerView extends ThemeColorRecyclerView {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.name);
             path = (TextView) itemView.findViewById(R.id.path);
-            ViewTool.$(itemView, R.id.edit).setOnClickListener(mOnEditIconClickListener);
-            ViewTool.$(itemView, R.id.run).setOnClickListener(mOnRunIconClickListener);
+            ViewUtil.$(itemView, R.id.edit).setOnClickListener(mOnEditIconClickListener);
+            ViewUtil.$(itemView, R.id.run).setOnClickListener(mOnRunIconClickListener);
             itemView.setOnClickListener(mOnItemClickListenerProxy);
         }
     }

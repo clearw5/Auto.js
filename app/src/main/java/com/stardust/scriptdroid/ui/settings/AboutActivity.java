@@ -12,9 +12,9 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.util.IntentUtil;
 import com.stardust.view.ViewBinding;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
@@ -51,7 +51,7 @@ public class AboutActivity extends BaseActivity {
 
     @ViewBinding.Click(R.id.github)
     private void openGitHub() {
-        if (!IntentTool.goToLink(this, getString(R.string.my_github))) {
+        if (!IntentUtil.browse(this, getString(R.string.my_github))) {
             Toast.makeText(this, R.string.text_no_brower, Toast.LENGTH_SHORT).show();
         }
     }
@@ -59,7 +59,7 @@ public class AboutActivity extends BaseActivity {
     @ViewBinding.Click(R.id.qq)
     private void openQQToChatWithMe() {
         String qq = getString(R.string.qq);
-        if (!IntentTool.goToQQ(this, qq)) {
+        if (!IntentUtil.chatWithQQ(this, qq)) {
             Toast.makeText(this, R.string.text_mobile_qq_not_installed, Toast.LENGTH_SHORT).show();
         }
     }
@@ -67,7 +67,7 @@ public class AboutActivity extends BaseActivity {
     @ViewBinding.Click(R.id.email)
     private void openEmailToSendMe() {
         String email = getString(R.string.email);
-        IntentTool.goToMail(this, email);
+        IntentUtil.sendMailTo(this, email);
     }
 
 
@@ -93,7 +93,7 @@ public class AboutActivity extends BaseActivity {
 
     @ViewBinding.Click(R.id.share)
     private void share() {
-        IntentTool.shareText(this, getString(R.string.share_app));
+        IntentUtil.shareText(this, getString(R.string.share_app));
     }
 
     @ViewBinding.Click(R.id.icon)
