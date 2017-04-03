@@ -26,7 +26,15 @@ public abstract class ScriptSource implements Serializable {
     private static final int EXECUTION_MODE_STRING_MAX_LENGTH = 7;
 
     private int mExecutionMode = -1;
+    private String mName;
 
+    public ScriptSource(String name) {
+        mName = name;
+    }
+
+    public String getName() {
+        return mName;
+    }
 
     public abstract String getScript();
 
@@ -38,7 +46,7 @@ public abstract class ScriptSource implements Serializable {
     }
 
     private int parseExecutionMode(String script) {
-        if (script.charAt(0) != '"')
+        if (script == null || script.length() == 0 || script.charAt(0) != '"')
             return EXECUTION_MODE_NORMAL;
         int i = script.lastIndexOf("\";", EXECUTION_MODE_STRING_MAX_LENGTH + 2);
         if (i == -1)
@@ -58,7 +66,4 @@ public abstract class ScriptSource implements Serializable {
         return mode;
     }
 
-    public static ScriptSource of(String script) {
-        return new StringScriptSource(script);
-    }
 }

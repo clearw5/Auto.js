@@ -1,6 +1,6 @@
-package com.stardust.autojs.engine;
+package com.stardust.autojs;
 
-import com.stardust.autojs.ExecutionConfig;
+import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.script.ScriptSource;
 
@@ -22,15 +22,15 @@ public class ScriptExecutionTask implements Serializable {
         mExecutionConfig = config;
     }
 
-    public ScriptSource getScriptSource() {
+    public ScriptSource getSource() {
         return mScriptSource;
     }
 
-    public ScriptExecutionListener getExecutionListener() {
+    public ScriptExecutionListener getListener() {
         return mExecutionListener;
     }
 
-    public ExecutionConfig getExecutionConfig() {
+    public ExecutionConfig getConfig() {
         return mExecutionConfig;
     }
 
@@ -41,9 +41,10 @@ public class ScriptExecutionTask implements Serializable {
             }
             mExecutionListener.onStart(engine, mScriptSource);
             mExecutionListener.onSuccess(engine, mScriptSource, engine.execute(mScriptSource));
-            engine.stop();
         } catch (Exception e) {
             mExecutionListener.onException(engine, mScriptSource, e);
+        } finally {
+            engine.destroy();
         }
     }
 

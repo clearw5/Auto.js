@@ -1,12 +1,5 @@
 package com.stardust.util;
 
-import android.os.Build;
-
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-
-
 /**
  * Created by Stardust on 2017/4/3.
  */
@@ -27,14 +20,5 @@ public class SdkVersionUtil {
         return SDK_VERSIONS[i - 1];
     }
 
-    public static final class TestSuite {
 
-        @Test
-        public void test() {
-            assertEquals("5.0", sdkIntToString(21));
-            assertEquals("8.0", sdkIntToString(26));
-            assertEquals("Unknown", sdkIntToString(27));
-        }
-
-    }
 }

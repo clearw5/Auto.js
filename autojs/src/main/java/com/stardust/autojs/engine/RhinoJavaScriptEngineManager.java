@@ -3,6 +3,7 @@ package com.stardust.autojs.engine;
 
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.script.ScriptSource;
+import com.stardust.autojs.script.StringScriptSource;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
@@ -64,13 +65,13 @@ public class RhinoJavaScriptEngineManager extends JavaScriptEngineManager {
 
     private String[] getGlobalFunctionsInner() {
         JavaScriptEngine engine = createEngine();
-        Scriptable scriptable = (Scriptable) engine.execute(ScriptSource.of("this"));
+        Scriptable scriptable = (Scriptable) engine.execute(new StringScriptSource("this"));
         Object[] ids = scriptable.getIds();
         String[] functions = new String[ids.length];
         for (int i = 0; i < ids.length; i++) {
             functions[i] = ids[i].toString();
         }
-        engine.stop();
+        engine.destroy();
         return functions;
     }
 

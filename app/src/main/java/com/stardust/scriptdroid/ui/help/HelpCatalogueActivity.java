@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.workground.WrapContentLinearLayoutManager;
 
 import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.App;
@@ -118,7 +119,7 @@ public class HelpCatalogueActivity extends BaseActivity {
 
     private void setUpRecyclerView() {
         mRecyclerView = $(R.id.catalogue);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this));
         mRecyclerView.setAdapter(new Adapter());
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, RecyclerView.VERTICAL));
     }

@@ -1,6 +1,7 @@
 package com.stardust.pio;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,6 +16,8 @@ import java.io.OutputStream;
  */
 
 public class PFile {
+
+    private static final String TAG = "PFile";
 
     private static final int BUFFER_SIZE = 8192;
 
@@ -203,12 +206,11 @@ public class PFile {
         int a = fileName.lastIndexOf('/');
         if (a < 0)
             a = fileName.lastIndexOf('\\');
-        int b = fileName.lastIndexOf('.');
         if (a < 0)
             a = -1;
+        int b = fileName.indexOf('.', a + 1);
         if (b < 0)
             b = fileName.length();
-        // FIXME: 2017/4/3 StringOutOfBoundsException
         fileName = fileName.substring(a + 1, b);
         return fileName;
     }

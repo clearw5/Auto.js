@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.workground.WrapContentLinearLayoutManager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.scripts.ScriptFile;
@@ -74,7 +75,7 @@ public class FloatingScriptFileListView extends RecyclerView {
 
     private void init() {
         setAdapter(new Adapter());
-        setLayoutManager(new LinearLayoutManager(getContext()));
+        setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
         addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         initScriptFileOperationPopupMenu();
     }

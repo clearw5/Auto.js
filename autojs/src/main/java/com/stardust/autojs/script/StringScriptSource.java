@@ -10,6 +10,12 @@ public class StringScriptSource extends ScriptSource {
     private String mScript;
 
     public StringScriptSource(String script) {
+        super("Tmp");
+        mScript = script;
+    }
+
+    public StringScriptSource(String name, String script) {
+        super(name);
         mScript = script;
     }
 

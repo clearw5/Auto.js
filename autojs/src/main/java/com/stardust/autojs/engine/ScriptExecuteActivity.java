@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.stardust.autojs.ScriptEngineService;
+import com.stardust.autojs.ScriptExecutionListener;
+import com.stardust.autojs.ScriptExecutionTask;
 import com.stardust.autojs.script.ScriptSource;
 
 /**
@@ -37,8 +39,8 @@ public class ScriptExecuteActivity extends Activity {
 
     private void handleIntent(Intent intent) {
         ScriptExecutionTask scriptExecutionTask = (ScriptExecutionTask) intent.getSerializableExtra(EXTRA_TASK);
-        mExecutionListener = scriptExecutionTask.getExecutionListener();
-        mScriptSource = scriptExecutionTask.getScriptSource();
+        mExecutionListener = scriptExecutionTask.getListener();
+        mScriptSource = scriptExecutionTask.getSource();
     }
 
     private void runScript() {
@@ -61,7 +63,7 @@ public class ScriptExecuteActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         mJavaScriptEngine.put("activity", null);
-        mJavaScriptEngine.stop();
+        mJavaScriptEngine.destroy();
     }
 
 }

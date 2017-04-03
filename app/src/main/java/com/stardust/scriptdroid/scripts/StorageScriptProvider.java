@@ -67,7 +67,7 @@ public class StorageScriptProvider {
 
     public void notifyDirectoryChanged(ScriptFile directory) {
         if (directory.equals(mInitialDirectory)) {
-            mInitialDirectoryScriptFiles = getInitialDirectoryScriptFiles();
+            mInitialDirectoryScriptFiles = getInitialDirectoryScriptFilesInner();
         } else {
             clearCache(directory);
         }
@@ -80,6 +80,7 @@ public class StorageScriptProvider {
         mDirectoryEventBus.post(new DirectoryChangeEvent(mInitialDirectory));
     }
 
+    @SuppressWarnings("unchecked")
     public void refreshAll() {
         Map<String, ScriptFile> files = (Map<String, ScriptFile>) mScriptFileCache.clone();
         mScriptFileCache.clear();

@@ -1,5 +1,7 @@
-package com.stardust.autojs.engine;
+package com.stardust.autojs;
 
+import com.stardust.autojs.ScriptExecutionListener;
+import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.script.ScriptSource;
 
 /**

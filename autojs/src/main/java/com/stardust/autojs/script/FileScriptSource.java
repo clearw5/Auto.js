@@ -15,11 +15,17 @@ public class FileScriptSource extends ScriptSource {
     private String mScript;
 
     public FileScriptSource(File file) {
+        super(PFile.getNameWithoutExtension(file.getName()));
         mFile = file;
     }
 
     public FileScriptSource(String path) {
         this(new File(path));
+    }
+
+    public FileScriptSource(String name, File file) {
+        super(name);
+        mFile = file;
     }
 
     @Override

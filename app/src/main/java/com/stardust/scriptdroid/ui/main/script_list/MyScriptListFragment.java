@@ -17,6 +17,7 @@ import com.stardust.scriptdroid.scripts.ScriptFile;
 import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.scripts.StorageScriptProvider;
+import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.view.ViewBinder;
@@ -82,8 +83,7 @@ public class MyScriptListFragment extends Fragment {
         mScriptListRecyclerView.setOnItemClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileClickListener() {
             @Override
             public void onClick(ScriptFile file) {
-                mSelectedScriptFile = file;
-                mScriptFileOperationDialog.show();
+                EditActivity.editFile(getContext(), file);
             }
         });
         mScriptListRecyclerView.setOnItemLongClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileLongClickListener() {

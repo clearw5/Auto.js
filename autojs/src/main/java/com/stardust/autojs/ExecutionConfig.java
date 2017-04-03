@@ -7,12 +7,10 @@ import java.io.Serializable;
  */
 public class ExecutionConfig implements Serializable {
 
-    private static final ExecutionConfig RUNNING_CONFIG = new ExecutionConfig();
-    public String path;
-    public String prepareScript = "";
+    private static final ExecutionConfig DEFAULT = new ExecutionConfig();
 
     public static ExecutionConfig getDefault() {
-        return RUNNING_CONFIG;
+        return DEFAULT;
     }
 
     public boolean runInNewThread = true;
@@ -22,13 +20,4 @@ public class ExecutionConfig implements Serializable {
         return this;
     }
 
-    public ExecutionConfig path(String path) {
-        this.path = path;
-        return this;
-    }
-
-    public ExecutionConfig prepareScript(String script) {
-        this.prepareScript = script;
-        return this;
-    }
 }

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.workground.WrapContentLinearLayoutManager;
 
 import com.stardust.scriptdroid.scripts.ScriptFile;
 import com.stardust.scriptdroid.scripts.ScriptFileList;
@@ -87,7 +88,7 @@ public class ScriptListRecyclerView extends ThemeColorRecyclerView {
 
     private void init() {
         setAdapter(new Adapter());
-        setLayoutManager(new LinearLayoutManager(getContext()));
+        setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
         addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
     }
 

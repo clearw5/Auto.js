@@ -16,12 +16,13 @@ import android.view.View;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.engine.JavaScriptEngine;
-import com.stardust.autojs.engine.ScriptExecutionListener;
+import com.stardust.autojs.ScriptExecutionListener;
 import com.stardust.autojs.script.FileScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.scripts.ScriptFile;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
 import com.stardust.scriptdroid.ui.edit.sidemenu.EditSideMenuFragment;
 import com.stardust.scriptdroid.ui.edit.sidemenu.FunctionListRecyclerView;
@@ -42,8 +43,6 @@ import com.stardust.theme.ThemeColorManager;
 import com.stardust.view.ViewBinder;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.util.Date;
 
 import timber.log.Timber;
 
@@ -97,6 +96,10 @@ public class EditActivity extends Editor920Activity {
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra("path", path)
                 .putExtra("name", name));
+    }
+
+    public static void editFile(Context context, ScriptFile file) {
+        editFile(context, file.getSimplifiedName(), file.getPath());
     }
 
     private String mName;
@@ -264,7 +267,7 @@ public class EditActivity extends Editor920Activity {
     private void run() {
         Snackbar.make(mView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         setMenuStatus(R.id.run, MenuDef.STATUS_DISABLED);
-        AutoJs.getInstance().getScriptEngineService().execute(new FileScriptSource(mFile), SCRIPT_EXECUTION_LISTENER);
+        AutoJs.getInstance().getScriptEngineService().execute(new FileScriptSource(mName, mFile), SCRIPT_EXECUTION_LISTENER);
     }
 
     @ViewBinding.Click(R.id.undo)

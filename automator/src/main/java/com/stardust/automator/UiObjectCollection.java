@@ -7,7 +7,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.stardust.util.Consumer;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.*;

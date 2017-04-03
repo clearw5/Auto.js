@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -12,14 +11,16 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.workground.WrapContentLinearLayoutManager;
 
 import com.stardust.autojs.script.FileScriptSource;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.scripts.ScriptFile;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.scripts.StorageScriptProvider;
-import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -58,7 +59,7 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
             }
             ScriptFile file = mScriptFileList[getActualPosition(position)];
             if (file.isDirectory()) {
-                setCurrentFolder(file, true);
+                setCurrentDirectory(file, true);
             } else if (mOnItemClickListener != null) {
                 mOnItemClickListener.onClick(file);
             }
@@ -84,17 +85,10 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
             AutoJs.getInstance().getScriptEngineService().execute(new FileScriptSource(file));
         }
     };
-    private OnClickListener mOnEditClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int position = getChildViewHolder((View) v.getParent()).getAdapterPosition();
-            ScriptFileOperation.edit(mScriptFileList[getActualPosition(position)]);
-        }
-    };
 
     private ScriptFile[] mScriptFileList = new ScriptFile[0];
-    private ScriptFile mCurrentFolder;
-    private ScriptFile mRootFolder;
+    private ScriptFile mCurrentDirectory;
+    private ScriptFile mRootDirectory;
     private Adapter mAdapter;
     private boolean mCanGoBack = false;
     private StorageScriptProvider mStorageScriptProvider;
@@ -116,8 +110,8 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         init();
     }
 
-    private void setCurrentFolder(final ScriptFile folder, boolean canGoBack) {
-        mCurrentFolder = folder;
+    private void setCurrentDirectory(final ScriptFile folder, boolean canGoBack) {
+        mCurrentDirectory = folder;
         mCanGoBack = canGoBack;
         if (mFileProcessListener != null) {
             mFileProcessListener.onFilesListing();
@@ -137,9 +131,9 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         }).start();
     }
 
-    private void setRootFolder(ScriptFile folder) {
-        mRootFolder = folder;
-        setCurrentFolder(mRootFolder, false);
+    private void setRootDirectory(ScriptFile folder) {
+        mRootDirectory = folder;
+        setCurrentDirectory(mRootDirectory, false);
     }
 
     public void setFileProcessListener(FileProcessListener fileProcessListener) {
@@ -151,7 +145,7 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
             mStorageScriptProvider.unregisterDirectoryChangeListener(this);
         mStorageScriptProvider = storageScriptProvider;
         mStorageScriptProvider.registerDirectoryChangeListener(this);
-        setRootFolder(mStorageScriptProvider.getInitialDirectory());
+        setRootDirectory(mStorageScriptProvider.getInitialDirectory());
     }
 
     public void setOnItemClickListener(OnScriptFileClickListener onItemClickListener) {
@@ -163,7 +157,7 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
     }
 
     public ScriptFile getCurrentDirectory() {
-        return mCurrentFolder;
+        return mCurrentDirectory;
     }
 
     public void setScriptFileOperationEnabled(boolean scriptFileOperationEnabled) {
@@ -171,13 +165,18 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
     }
 
     private void goBack() {
-        ScriptFile parent = mCurrentFolder.getParentFile();
-        setCurrentFolder(parent, !parent.equals(mRootFolder));
+        ScriptFile parent = mCurrentDirectory.getParentFile();
+        setCurrentDirectory(parent, !parent.equals(mRootDirectory));
     }
 
     private void init() {
-        setLayoutManager(new LinearLayoutManager(getContext()));
-        addItemDecoration(new DividerItemDecoration(getContext(), VERTICAL));
+        setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
+        addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext())
+                .color(0xffd9d9d9)
+                .size(2)
+                .marginResId(R.dimen.script_and_folder_list_divider_left_margin, R.dimen.script_and_folder_list_divider_right_margin)
+                .showLastDivider()
+                .build());
         mAdapter = new Adapter();
         setAdapter(mAdapter);
     }
@@ -186,17 +185,17 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
     protected Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();
         bundle.putParcelable("superData", super.onSaveInstanceState());
-        bundle.putSerializable("current", mCurrentFolder);
-        bundle.putSerializable("root", mRootFolder);
+        bundle.putSerializable("current", mCurrentDirectory);
+        bundle.putSerializable("root", mRootDirectory);
         return bundle;
     }
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         Bundle bundle = (Bundle) state;
-        mRootFolder = (ScriptFile) bundle.getSerializable("root");
-        mCurrentFolder = (ScriptFile) bundle.getSerializable("current");
-        setCurrentFolder(mCurrentFolder, !mCurrentFolder.equals(mRootFolder));
+        mRootDirectory = (ScriptFile) bundle.getSerializable("root");
+        mCurrentDirectory = (ScriptFile) bundle.getSerializable("current");
+        setCurrentDirectory(mCurrentDirectory, !mCurrentDirectory.equals(mRootDirectory));
         super.onRestoreInstanceState(bundle.getParcelable("superData"));
     }
 
@@ -226,13 +225,13 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
 
     @Subscribe
     public void onDirectoryChange(StorageScriptProvider.DirectoryChangeEvent event) {
-        if (event.directory.equals(mCurrentFolder)) {
-            updateCurrentFolder();
+        if (event.directory.equals(mCurrentDirectory)) {
+            updateCurrentDirectory();
         }
     }
 
-    private void updateCurrentFolder() {
-        setCurrentFolder(mCurrentFolder, mCanGoBack);
+    private void updateCurrentDirectory() {
+        setCurrentDirectory(mCurrentDirectory, mCanGoBack);
     }
 
     private class Adapter extends RecyclerView.Adapter<ViewHolder> {
@@ -244,9 +243,9 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             switch (viewType) {
                 case VIEW_TYPE_FILE:
-                    return new FileViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.script_list_recycler_view_item, parent, false));
+                    return new FileViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.script_and_folder_list_recycler_view_file, parent, false));
                 case VIEW_TYPE_FOLDER:
-                    return new ViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.script_list_recycler_view_folder, parent, false));
+                    return new ViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.script_and_folder_list_recycler_view_directory, parent, false));
             }
             return null;
         }
@@ -255,7 +254,6 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         public void onBindViewHolder(ViewHolder holder, int position) {
             if (mCanGoBack && position == 0) {
                 holder.name.setText("..");
-                holder.path.setText("");
             } else
                 holder.bind(mScriptFileList[getActualPosition(position)]);
         }
@@ -281,19 +279,30 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
 
     private class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView name, path;
+        TextView name;
 
         ViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(mOnItemClickListenerProxy);
             itemView.setOnLongClickListener(mOnItemLongClickListenerProxy);
             name = (TextView) itemView.findViewById(R.id.name);
-            path = (TextView) itemView.findViewById(R.id.path);
+            if (!mScriptFileOperationEnabled) {
+                setMarginRight(name, 0);
+            }
+        }
+
+        private void setMarginRight(View view, int marginRight) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
+            layoutParams.rightMargin = marginRight;
+            view.setLayoutParams(layoutParams);
         }
 
         public void bind(ScriptFile file) {
-            name.setText(file.getSimplifiedName());
-            path.setText(file.getSimplifiedPath());
+            if (file.isDirectory()) {
+                name.setText(file.getName());
+            } else {
+                name.setText(file.getSimplifiedName());
+            }
         }
     }
 
@@ -302,10 +311,8 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         FileViewHolder(View itemView) {
             super(itemView);
             if (mScriptFileOperationEnabled) {
-                itemView.findViewById(R.id.edit).setOnClickListener(mOnEditClickListener);
                 itemView.findViewById(R.id.run).setOnClickListener(mOnRunClickListener);
             } else {
-                itemView.findViewById(R.id.edit).setVisibility(GONE);
                 itemView.findViewById(R.id.run).setVisibility(GONE);
             }
         }

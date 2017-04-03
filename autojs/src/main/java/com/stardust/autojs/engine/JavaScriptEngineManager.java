@@ -1,10 +1,10 @@
 package com.stardust.autojs.engine;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.stardust.autojs.BuildConfig;
 import com.stardust.autojs.script.ScriptSource;
+import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.pio.PFile;
 
 import java.io.IOException;
@@ -19,19 +19,26 @@ import java.util.Set;
 
 public abstract class JavaScriptEngineManager {
 
+    public interface EngineLifecycleCallback {
+
+        void onEngineCreate(JavaScriptEngine engine);
+
+        void onEngineRemove(JavaScriptEngine engine);
+    }
+
     private static final String TAG = "JavaScriptEngineManager";
 
     private Map<String, Object> mGlobalVariableMap = new HashMap<>();
     private final Set<JavaScriptEngine> mEngines = new HashSet<>();
     private boolean mIsStopping = false;
-
+    private EngineLifecycleCallback mEngineLifecycleCallback;
     private final ScriptSource INIT_SCRIPT;
 
     private android.content.Context mContext;
 
     public JavaScriptEngineManager(Context context) {
         mContext = context;
-        INIT_SCRIPT = ScriptSource.of(readInitScript());
+        INIT_SCRIPT = new StringScriptSource(readInitScript());
     }
 
     public JavaScriptEngine createEngine() {
@@ -40,12 +47,23 @@ public abstract class JavaScriptEngineManager {
         engine.init();
         synchronized (mEngines) {
             mEngines.add(engine);
+            if(mEngineLifecycleCallback != null){
+                mEngineLifecycleCallback.onEngineCreate(engine);
+            }
         }
         return engine;
     }
 
     public void put(String varName, Object value) {
         mGlobalVariableMap.put(varName, value);
+    }
+
+    public void setEngineLifecycleCallback(EngineLifecycleCallback engineLifecycleCallback) {
+        mEngineLifecycleCallback = engineLifecycleCallback;
+    }
+
+    public Set<JavaScriptEngine> getEngines() {
+        return mEngines;
     }
 
     protected abstract JavaScriptEngine createEngineInner();
@@ -62,11 +80,14 @@ public abstract class JavaScriptEngineManager {
         }
     }
 
-    void removeEngine(RhinoJavaScriptEngine rhinoJavaScriptEngine) {
+    void removeEngine(JavaScriptEngine engine) {
         synchronized (mEngines) {
             if (mIsStopping)
                 return;
-            mEngines.remove(rhinoJavaScriptEngine);
+            mEngines.remove(engine);
+            if(mEngineLifecycleCallback != null){
+                mEngineLifecycleCallback.onEngineRemove(engine);
+            }
         }
     }
 
@@ -81,7 +102,7 @@ public abstract class JavaScriptEngineManager {
     public ScriptSource getInitScript() {
         if (BuildConfig.DEBUG) {
             // 调试时不缓存INIT_SCRIPT否则修改javascript_engine_init.js后不会更新
-            return ScriptSource.of(readInitScript());
+            return new StringScriptSource(readInitScript());
         } else {
             return INIT_SCRIPT;
         }
@@ -93,7 +114,10 @@ public abstract class JavaScriptEngineManager {
             mIsStopping = true;
             int n = mEngines.size();
             for (JavaScriptEngine engine : mEngines) {
-                engine.stopNotRemoveFromManager();
+                engine.forceStop();
+                if(mEngineLifecycleCallback != null){
+                    mEngineLifecycleCallback.onEngineRemove(engine);
+                }
             }
             mEngines.clear();
             mIsStopping = false;

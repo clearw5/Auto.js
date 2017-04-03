@@ -23,6 +23,7 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
     private Scriptable mScriptable;
     private Thread mThread;
     private RhinoJavaScriptEngineManager mEngineManager;
+    private ScriptSource mScriptSource;
 
     public RhinoJavaScriptEngine(RhinoJavaScriptEngineManager engineManager) {
         mEngineManager = engineManager;
@@ -38,22 +39,17 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
 
     @Override
     public Object execute(ScriptSource source) {
-        try {
-            return mContext.evaluateString(mScriptable, source.getScript(), "<script>", 1, null);
-        } catch (Exception e) {
-            stop();
-            throw e;
-        }
+        mScriptSource = source;
+        return mContext.evaluateString(mScriptable, source.getScript(), "<script>", 1, null);
     }
 
     @Override
-    public void stop() {
-        mEngineManager.removeEngine(this);
-        stopNotRemoveFromManager();
+    public ScriptSource getExecutedScript() {
+        return mScriptSource;
     }
 
     @Override
-    public void stopNotRemoveFromManager() {
+    public void forceStop() {
         mThread.interrupt();
     }
 
@@ -63,7 +59,8 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
 
     @Override
     public void destroy() {
-
+        Context.exit();
+        mEngineManager.removeEngine(this);
     }
 
     @Override
@@ -99,8 +96,7 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
         @Override
         protected void observeInstructionCount(Context cx, int instructionCount) {
             if (Thread.currentThread().isInterrupted()) {
-                Context.exit();
-                throw new ScriptStopException();
+                throw new ScriptStopException(new InterruptedException());
             }
         }
 

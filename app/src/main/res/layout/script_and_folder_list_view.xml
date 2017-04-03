@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
        android:layout_width="match_parent"
-       android:layout_height="match_parent">
+       android:layout_height="match_parent"
+       android:background="#fefefe">
 
     <com.stardust.scriptdroid.ui.main.script_list.ScriptAndFolderListRecyclerView
         android:id="@+id/script_list_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#fafafa"/>
+        android:layout_height="match_parent"/>
 
     <FrameLayout
         android:id="@+id/progressBar"

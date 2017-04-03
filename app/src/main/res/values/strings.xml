@@ -187,6 +187,7 @@
     <string name="text_no_brower">没有浏览器耶o(╯□╰)o快去安装一个吧</string>
     <string name="text_please_choose_file_to_import">请选择要导入的脚本</string>
     <string name="text_refresh">刷新</string>
+    <string name="notice_no_running_script"><![CDATA[没有正在运行的脚本 φ(>ω<*)]]></string>
 
     <string-array name="record_control_keys">
         <item>无</item>

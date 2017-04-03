@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.workground.WrapContentLinearLayoutManager;
 
 import com.stardust.util.ViewUtil;
 import com.stardust.scriptdroid.R;
@@ -130,7 +131,7 @@ public class ScriptFileOperationPopupMenu extends PopupWindow {
         }
 
         private void init() {
-            setLayoutManager(new LinearLayoutManager(getContext()));
+            setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
             setAdapter(new Adapter<ViewHolder>() {
                 @Override
                 public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

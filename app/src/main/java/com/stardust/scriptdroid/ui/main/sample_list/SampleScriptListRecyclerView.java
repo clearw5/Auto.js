@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.workground.WrapContentLinearLayoutManager;
 
 import com.bignerdranch.expandablerecyclerview.ChildViewHolder;
 import com.bignerdranch.expandablerecyclerview.ExpandableRecyclerAdapter;
@@ -96,7 +97,7 @@ public class SampleScriptListRecyclerView extends RecyclerView {
     }
 
     private void init() {
-        setLayoutManager(new LinearLayoutManager(getContext()));
+        setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
         addItemDecoration(new DividerItemDecoration(getContext(), VERTICAL));
     }
 

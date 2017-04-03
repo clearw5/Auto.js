@@ -7,14 +7,16 @@ package com.stardust.autojs.script;
 public class MultiScriptSource extends ScriptSource {
 
     private String mScript;
+    private FileScriptSource mFileScriptSource;
 
-    public MultiScriptSource(ScriptSource... sources) {
+
+    public MultiScriptSource(StringScriptSource stringScriptSource, FileScriptSource fileScriptSource) {
+        super(fileScriptSource.getName());
+        mFileScriptSource = fileScriptSource;
         StringBuilder stringBuilder = new StringBuilder();
-        for (ScriptSource source : sources) {
-            String script = source.getScript();
-            if (script != null)
-                stringBuilder.append(script).append("\n");
-        }
+        if (stringScriptSource.getScript() != null)
+            stringBuilder.append(stringScriptSource.getScript()).append("\n");
+        stringBuilder.append(fileScriptSource.getScript());
         mScript = stringBuilder.toString();
     }
 
@@ -22,4 +24,10 @@ public class MultiScriptSource extends ScriptSource {
     public String getScript() {
         return mScript;
     }
+
+    @Override
+    public String toString() {
+        return mFileScriptSource.toString();
+    }
+
 }

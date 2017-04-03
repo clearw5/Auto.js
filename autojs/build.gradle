@@ -26,8 +26,8 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.0'
     testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'com.github.hyb1996:node-android-lib:1.0.13'
     compile project(path: ':common')
     compile project(path: ':automator')
