@@ -38,13 +38,18 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
 
     @Override
     public Object execute(ScriptSource source) {
-        return mContext.evaluateString(mScriptable, source.getScript(), "<script>", 1, null);
+        try {
+            return mContext.evaluateString(mScriptable, source.getScript(), "<script>", 1, null);
+        } catch (Exception e) {
+            stop();
+            throw e;
+        }
     }
 
     @Override
     public void stop() {
-        stopNotRemoveFromManager();
         mEngineManager.removeEngine(this);
+        stopNotRemoveFromManager();
     }
 
     @Override

@@ -4,7 +4,7 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <com.stardust.scriptdroid.ui.main.my_script_list.ScriptAndFolderListRecyclerView
+    <com.stardust.scriptdroid.ui.main.script_list.ScriptListWithProgressBarView
         android:id="@+id/script_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

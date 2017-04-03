@@ -81,11 +81,11 @@ var shell = function(cmd, root){
 }
 
 var currentPackage = function(){
-    return __runtime__.automator.currentPackage();
+    return __runtime__.info.getLatestPackage();
 }
 
 var currentActivity = function(){
-    return __runtime__.automator.currentActivity();
+    return __runtime__.info.getLatestActivity();
 }
 
 var __this__ = this;

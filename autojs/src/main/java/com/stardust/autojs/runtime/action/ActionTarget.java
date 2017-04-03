@@ -1,6 +1,8 @@
 package com.stardust.autojs.runtime.action;
 
 import android.graphics.Rect;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -40,6 +42,7 @@ public interface ActionTarget {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     class EditableActionTarget implements ActionTarget {
         private int mIndex;
 

@@ -6,8 +6,11 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.util.FileSorter;
 import com.stardust.util.LimitedHashMap;
+import com.stardust.util.MapEntries;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.Map;
 
 /**
  * Created by Stardust on 2017/3/31.
@@ -29,11 +32,19 @@ public class StorageScriptProvider {
     public static final ScriptFile DEFAULT_DIRECTORY = new ScriptFile(DEFAULT_DIRECTORY_PATH);
 
 
-
-    private static StorageScriptProvider instance = new StorageScriptProvider();
+    private static StorageScriptProvider defaultProvider = new StorageScriptProvider();
 
     public static StorageScriptProvider getDefault() {
-        return instance;
+        return defaultProvider;
+    }
+
+    private static StorageScriptProvider externalStorageProvider;
+
+    public static StorageScriptProvider getExternalStorageProvider() {
+        if (externalStorageProvider == null) {
+            externalStorageProvider = new StorageScriptProvider(Environment.getExternalStorageDirectory().getPath(), 5);
+        }
+        return externalStorageProvider;
     }
 
     private EventBus mDirectoryEventBus = new EventBus();
@@ -47,7 +58,6 @@ public class StorageScriptProvider {
 
     public StorageScriptProvider(ScriptFile initialDirectory, int cacheSize) {
         mInitialDirectory = initialDirectory;
-        mInitialDirectoryScriptFiles = getInitialDirectoryScriptFilesInner();
         mScriptFileCache = new LimitedHashMap<>(cacheSize);
     }
 
@@ -57,7 +67,7 @@ public class StorageScriptProvider {
 
     public void notifyDirectoryChanged(ScriptFile directory) {
         if (directory.equals(mInitialDirectory)) {
-            mInitialDirectoryScriptFiles = getInitialDirectoryScriptFilesInner();
+            mInitialDirectoryScriptFiles = getInitialDirectoryScriptFiles();
         } else {
             clearCache(directory);
         }
@@ -66,8 +76,18 @@ public class StorageScriptProvider {
 
     public void notifyStoragePermissionGranted() {
         mScriptFileCache.clear();
-        mInitialDirectoryScriptFiles = getInitialDirectoryScriptFilesInner();
+        mInitialDirectoryScriptFiles = null;
         mDirectoryEventBus.post(new DirectoryChangeEvent(mInitialDirectory));
+    }
+
+    public void refreshAll() {
+        Map<String, ScriptFile> files = (Map<String, ScriptFile>) mScriptFileCache.clone();
+        mScriptFileCache.clear();
+        mInitialDirectoryScriptFiles = null;
+        mDirectoryEventBus.post(new DirectoryChangeEvent(mInitialDirectory));
+        for (Map.Entry<String, ScriptFile> file : files.entrySet()) {
+            mDirectoryEventBus.post(new DirectoryChangeEvent(new ScriptFile(file.getKey())));
+        }
     }
 
     public ScriptFile getInitialDirectory() {
@@ -75,6 +95,9 @@ public class StorageScriptProvider {
     }
 
     public ScriptFile[] getInitialDirectoryScriptFiles() {
+        if (mInitialDirectoryScriptFiles == null) {
+            mInitialDirectoryScriptFiles = getInitialDirectoryScriptFilesInner();
+        }
         return mInitialDirectoryScriptFiles;
     }
 
@@ -84,13 +107,17 @@ public class StorageScriptProvider {
 
     public ScriptFile[] getDirectoryScriptFiles(ScriptFile directory) {
         if (directory.equals(mInitialDirectory)) {
-            return mInitialDirectoryScriptFiles;
+            return getInitialDirectoryScriptFiles();
         }
         ScriptFile[] scriptFiles = getScriptFilesFromCache(directory);
         if (scriptFiles == null) {
             scriptFiles = getScriptFiles(directory);
         }
         return scriptFiles;
+    }
+
+    public void clearCacheExceptInitialDirectory() {
+        mScriptFileCache.clear();
     }
 
     private void clearCache(ScriptFile directory) {
@@ -119,7 +146,8 @@ public class StorageScriptProvider {
 
 
     public void registerDirectoryChangeListener(Object subscriber) {
-        mDirectoryEventBus.register(subscriber);
+        if (!mDirectoryEventBus.isRegistered(subscriber))
+            mDirectoryEventBus.register(subscriber);
     }
 
     public void unregisterDirectoryChangeListener(Object subscriber) {

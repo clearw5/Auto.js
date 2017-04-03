@@ -1,11 +1,10 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
     </style>
 
     <style name="AppTheme.FullScreen" parent="AppTheme">
@@ -16,7 +15,6 @@
     </style>
 
     <style name="AppTheme.Splash" parent="AppTheme">
-        <!-- Customize your theme here. -->
         <item name="windowNoTitle">true</item>
 
         <item name="windowActionBar">false</item>
@@ -28,13 +26,14 @@
         <item name="android:textColorSecondary">#c4c4c4</item>
     </style>
 
-    <style name="IssueReportTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="cardBackgroundColor">#FFFFFF</item>
-        <item name="colorButtonNormal">?colorAccent</item>
-        <!-- Customize your theme here. -->
+    <style name="IssueReporterTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="cardBackgroundColor">#FFFFFF</item>
+        <item name="colorButtonNormal">?colorAccent</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -44,6 +43,6 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
 </resources>

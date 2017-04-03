@@ -9,6 +9,9 @@ import android.provider.MediaStore;
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.scriptdroid.R;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 /**
  * Created by Stardust on 2017/3/5.
  */
@@ -16,7 +19,7 @@ import com.stardust.scriptdroid.R;
 public class ImageSelector implements OnActivityResultDelegate {
 
     public interface ImageSelectorCallback {
-        void onImageSelected(ImageSelector selector, String path);
+        void onImageSelected(ImageSelector selector, InputStream path);
     }
 
     private static final int REQUEST_CODE = "LOVE EATING".hashCode() >> 16;
@@ -38,19 +41,16 @@ public class ImageSelector implements OnActivityResultDelegate {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data == null)
+        if (data == null) {
+            mCallback.onImageSelected(this, null);
             return;
-        Uri selectedImageUri = data.getData();
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        Cursor cursor = mActivity.getContentResolver().query(selectedImageUri, filePathColumn, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String filePath = cursor.getString(columnIndex);
-            cursor.close();
-            mCallback.onImageSelected(this, filePath);
         }
-
+        try {
+            InputStream inputStream = mActivity.getContentResolver().openInputStream(data.getData());
+            mCallback.onImageSelected(this, inputStream);
+        } catch (FileNotFoundException e) {
+            mCallback.onImageSelected(this, null);
+        }
 
     }
 

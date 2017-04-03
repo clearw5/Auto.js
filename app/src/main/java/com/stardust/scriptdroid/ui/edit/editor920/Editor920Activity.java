@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Created by Stardust on 2017/1/30.
  */
-public class Editor920Activity extends IActivity {
+public abstract class Editor920Activity extends IActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

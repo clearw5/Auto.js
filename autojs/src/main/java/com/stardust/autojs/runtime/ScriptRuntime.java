@@ -1,18 +1,20 @@
 package com.stardust.autojs.runtime;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.widget.Toast;
 
+import com.stardust.autojs.R;
 import com.stardust.autojs.runtime.action.ActionAutomator;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.UiSelector;
+import com.stardust.util.ClipboardUtil;
+import com.stardust.util.SdkVersionUtil;
 import com.stardust.util.Shell;
+import com.stardust.view.accessibility.AccessibilityInfoProvider;
 
-;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -35,11 +37,15 @@ public class ScriptRuntime {
     @JavascriptField
     public ActionAutomator automator;
 
+    @JavascriptField
+    public AccessibilityInfoProvider info;
+
     public ScriptRuntime(Context context, Console console, AccessibilityBridge accessibilityBridge) {
         mContext = context;
         mAccessibilityBridge = accessibilityBridge;
         mUIHandler = new Handler(mContext.getMainLooper());
         app = new AppUtils(context);
+        info = accessibilityBridge.getInfoProvider();
         this.console = console;
         automator = new ActionAutomator(accessibilityBridge, this);
     }
@@ -68,7 +74,7 @@ public class ScriptRuntime {
         mUIHandler.post(new Runnable() {
             @Override
             public void run() {
-                ((ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText(TAG, text));
+                ClipboardUtil.setClip(mContext, text);
             }
         });
     }
@@ -86,6 +92,13 @@ public class ScriptRuntime {
     @JavascriptInterface
     public boolean isStopped() {
         return Thread.currentThread().isInterrupted();
+    }
+
+    @JavascriptInterface
+    public void requiresApi(int i) {
+        if (Build.VERSION.SDK_INT < i) {
+            throw new ScriptStopException(mContext.getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
+        }
     }
 
     @JavascriptInterface

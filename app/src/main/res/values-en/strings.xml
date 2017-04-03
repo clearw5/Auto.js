@@ -155,6 +155,8 @@
     <string name="summary_command_run_mode">If the app responses slowly when running script, choose Thread Pool or Create Thread. But it may causes rebooting of the device</string>
     <string name="text_on">ON</string>
     <string name="text_off">OFF</string>
+    <string name="text_please_choose_file_to_import">请选择要导入的脚本</string>
+    <string name="text_refresh">刷新</string>
     <string-array name="record_control_keys">
         <item>None</item>
         <item>Volume Up</item>

@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.ui.main.my_script_list;
+package com.stardust.scriptdroid.ui.main.script_list;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

@@ -185,6 +185,8 @@
     <string name="text_import_fail">导入失败</string>
     <string name="delete_confirm">确定要删除吗</string>
     <string name="text_no_brower">没有浏览器耶o(╯□╰)o快去安装一个吧</string>
+    <string name="text_please_choose_file_to_import">请选择要导入的脚本</string>
+    <string name="text_refresh">刷新</string>
 
     <string-array name="record_control_keys">
         <item>无</item>

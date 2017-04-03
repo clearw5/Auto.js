@@ -9,18 +9,13 @@ import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.Fragment;
-import com.stardust.scriptdroid.scripts.ScriptFile;
-import com.stardust.scriptdroid.scripts.ScriptFileList;
-import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.scripts.StorageScriptProvider;
 import com.stardust.scriptdroid.scripts.sample.Sample;
 import com.stardust.scriptdroid.scripts.sample.SampleFileManager;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
-import com.stardust.scriptdroid.ui.main.my_script_list.MyScriptListFragment;
-import com.stardust.util.MessageEvent;
+import com.stardust.scriptdroid.ui.main.MainActivity;
 
-import org.greenrobot.eventbus.EventBus;
+import java.io.IOException;
 
 /**
  * Created by Stardust on 2017/3/13.
@@ -70,13 +65,12 @@ public class SampleScriptListFragment extends Fragment {
     }
 
     private void copySampleToMyScripts(Sample sample) {
-        String path = StorageScriptProvider.DEFAULT_DIRECTORY_PATH + sample.name + ".js";
-        if (!ScriptFileList.getImpl().containsPath(path) && PFile.copyAsset(getActivity(), sample.path, path)) {
-            ScriptFileList.getImpl().add(new ScriptFile(path));
-            EventBus.getDefault().post(new MessageEvent(MyScriptListFragment.MESSAGE_SCRIPT_FILE_ADDED));
-            Snackbar.make(mSampleScriptListRecyclerView, R.string.text_import_succeed, Snackbar.LENGTH_SHORT).show();
-        } else {
-            Snackbar.make(mSampleScriptListRecyclerView, R.string.text_file_exists, Snackbar.LENGTH_SHORT).show();
+        try {
+            ((MainActivity) getActivity()).getMyScriptListFragment().
+                    importFile(sample.name, getActivity().getAssets().open(sample.path));
+        } catch (IOException e) {
+            e.printStackTrace();
+            Snackbar.make(mSampleScriptListRecyclerView, R.string.text_import_fail, Snackbar.LENGTH_SHORT).show();
         }
     }
 

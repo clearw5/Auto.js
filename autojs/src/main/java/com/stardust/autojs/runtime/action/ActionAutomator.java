@@ -8,8 +8,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.autojs.runtime.AccessibilityBridge;
+import com.stardust.autojs.runtime.JavascriptInterface;
 import com.stardust.autojs.runtime.ScriptRuntime;
-import com.stardust.autojs.runtime.ScriptStopException;
 import com.stardust.automator.AccessibilityEventCommandHost;
 
 /**
@@ -41,167 +41,120 @@ public class ActionAutomator {
         mScriptRuntime = scriptRuntime;
     }
 
+    @JavascriptInterface
     public ActionTarget text(String text, int i) {
         return new ActionTarget.TextActionTarget(text, i);
     }
 
+    @JavascriptInterface
     public ActionTarget bounds(int left, int top, int right, int bottom) {
         return new ActionTarget.BoundsActionTarget(new Rect(left, top, right, bottom));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @JavascriptInterface
     public ActionTarget editable(int i) {
+        mScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
         return new ActionTarget.EditableActionTarget(i);
     }
 
+    @JavascriptInterface
     public ActionTarget id(String id) {
         return new ActionTarget.IdActionTarget(id);
     }
 
+    @JavascriptInterface
     public boolean click(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_CLICK));
     }
 
+    @JavascriptInterface
     public boolean longClick(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_LONG_CLICK));
     }
 
+    @JavascriptInterface
     public boolean scrollUp(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD));
     }
 
+    @JavascriptInterface
     public boolean scrollDown(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD));
     }
 
+    @JavascriptInterface
     public boolean scrollUp(int i) {
         return performAction(ActionFactory.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, i));
     }
 
+    @JavascriptInterface
     public boolean scrollDown(int i) {
         return performAction(ActionFactory.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, i));
     }
 
+    @JavascriptInterface
     public boolean scrollAllUp() {
         return performAction(ActionFactory.createScrollMaxAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD));
     }
 
+    @JavascriptInterface
     public boolean scrollAllDown() {
         return performAction(ActionFactory.createScrollMaxAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD));
     }
 
+    @JavascriptInterface
     public boolean focus(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_FOCUS));
     }
 
+    @JavascriptInterface
     public boolean select(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SELECT));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean setText(ActionTarget target, String text) {
-        ensureApi(Build.VERSION_CODES.LOLLIPOP);
+        mScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SET_TEXT, text));
     }
 
+    @JavascriptInterface
     public boolean back() {
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
     }
 
+    @JavascriptInterface
     public boolean home() {
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
     }
 
+    @JavascriptInterface
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean powerDialog() {
-        ensureApi(Build.VERSION_CODES.LOLLIPOP);
+        mScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_POWER_DIALOG);
     }
 
-    private void ensureApi(int i) {
-        if (Build.VERSION.SDK_INT < i) {
-            throw new ScriptStopException();
-        }
-    }
-
+    @JavascriptInterface
     public boolean notifications() {
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
     }
 
+    @JavascriptInterface
     public boolean quickSettings() {
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_QUICK_SETTINGS);
     }
 
+    @JavascriptInterface
     public boolean recents() {
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
     }
 
+    @JavascriptInterface
     @RequiresApi(api = Build.VERSION_CODES.N)
     public boolean splitScreen() {
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN);
-    }
-
-    public boolean swipeDown() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_DOWN);
-    }
-
-    public boolean swipeDownLeft() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_DOWN_AND_LEFT);
-    }
-
-    public boolean swipeDownRight() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_DOWN_AND_RIGHT);
-    }
-
-    public boolean swipeDownUp() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_DOWN_AND_UP);
-    }
-
-    public boolean swipeUp() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_UP);
-    }
-
-    public boolean swipeUpLeft() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_UP_AND_LEFT);
-    }
-
-    public boolean swipeUpRight() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_UP_AND_RIGHT);
-    }
-
-    public boolean swipeUpDown() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_UP_AND_DOWN);
-    }
-
-    public boolean swipeLeft() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_LEFT);
-    }
-
-    public boolean swipeLeftRight() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_LEFT_AND_RIGHT);
-    }
-
-    public boolean swipeLeftUp() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_LEFT_AND_UP);
-    }
-
-    public boolean swipeLeftDown() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_LEFT_AND_DOWN);
-    }
-
-    public boolean swipeRight() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_RIGHT);
-    }
-
-    public boolean swipeRightLeft() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_RIGHT_AND_LEFT);
-    }
-
-    public boolean swipeRightUp() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_RIGHT_AND_UP);
-    }
-
-    public boolean swipeRightDown() {
-        return performGlobalAction(AccessibilityService.GESTURE_SWIPE_RIGHT_AND_DOWN);
     }
 
     private boolean performGlobalAction(final int action) {
@@ -211,25 +164,16 @@ public class ActionAutomator {
         return command.result;
     }
 
+    @JavascriptInterface
     public boolean paste(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_PASTE));
-    }
-
-
-    public String currentPackage() {
-        ensureAccessibilityServiceEnabled();
-        return mAccessibilityBridge.getInfoProvider().getLatestPackage();
     }
 
     private void ensureAccessibilityServiceEnabled() {
         mAccessibilityBridge.ensureServiceEnabled();
     }
 
-    public String currentActivity() {
-        ensureAccessibilityServiceEnabled();
-        return mAccessibilityBridge.getInfoProvider().getLatestActivity();
-    }
-
+    @SuppressWarnings("unchecked")
     private <T> T performAction(Action action) {
         ensureAccessibilityServiceEnabled();
         mAccessibilityBridge.getActionPerformHost().addAction(action);

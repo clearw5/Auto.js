@@ -79,7 +79,7 @@ public class ErrorReportActivity extends BaseActivity {
     }
 
     private void startIssueReportActivity() {
-        Intent intent = new Intent(this, IssueReportActivity.class);
+        Intent intent = new Intent(this, IssueReporterActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtras(getIntent());
         startActivity(intent);

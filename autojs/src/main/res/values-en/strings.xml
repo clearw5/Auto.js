@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AutoJs</string>
-    <string name="text_error">错误:</string>
+    <string name="text_error">Error: </string>
     <string name="text_start_running">开始运行</string>
     <string name="text_path_is_empty">路径为空</string>
     <string name="text_file_not_exists">文件不存在</string>
@@ -8,5 +9,4 @@
     <string name="text_no_running_script">没有正在运行的脚本</string>
     <string name="text_already_stop_n_scripts">已停止%d个正在运行的脚本</string>
     <string name="text_requires_sdk_version_to_run_the_script">本脚本需要此安卓版本以上才能运行:</string>
-
 </resources>

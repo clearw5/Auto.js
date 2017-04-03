@@ -1,5 +1,7 @@
 package com.stardust.automator.filter;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.HashMap;
@@ -147,6 +149,7 @@ public class BooleanFilter extends DfsFilter {
 
     public static final BooleanSupplier CONTEXT_CLICKABLE = new BooleanSupplier() {
 
+        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public boolean get(AccessibilityNodeInfo node) {
             return node.isContextClickable();
@@ -166,14 +169,6 @@ public class BooleanFilter extends DfsFilter {
         @Override
         public boolean get(AccessibilityNodeInfo node) {
             return node.isDismissable();
-        }
-    };
-
-    public static final BooleanSupplier importantForAccessibility = new BooleanSupplier() {
-
-        @Override
-        public boolean get(AccessibilityNodeInfo node) {
-            return node.isImportantForAccessibility();
         }
     };
 

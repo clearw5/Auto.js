@@ -34,8 +34,10 @@ public class FileUtils {
                 if (cursor.moveToFirst()) {
                     return cursor.getString(column_index);
                 }
-            } catch (Exception e) {
-                // Eat it
+            } catch (Exception ignored) {
+            } finally {
+                if (cursor != null)
+                    cursor.close();
             }
         } else if ("file".equalsIgnoreCase(uri.getScheme())) {
             return uri.getPath();

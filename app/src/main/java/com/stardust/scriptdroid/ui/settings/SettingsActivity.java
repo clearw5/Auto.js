@@ -12,12 +12,16 @@ import android.widget.Toast;
 
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.ui.error.IssueReportActivity;
+import com.stardust.scriptdroid.ui.error.IssueReporterActivity;
+import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.util.IntentUtil;
 import com.stardust.util.MapEntries;
 import com.stardust.scriptdroid.R;
 import com.stardust.theme.app.ColorSelectActivity;
 import com.stardust.theme.util.ListBuilder;
+import com.stardust.util.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 import java.util.Map;
@@ -108,15 +112,13 @@ public class SettingsActivity extends BaseActivity {
                     .entry(getString(R.string.text_reset_background), new Runnable() {
                         @Override
                         public void run() {
-                            Pref.setAppBarImagePath(null);
-                            Pref.setDrawerHeaderImagePath(null);
-                            Toast.makeText(getActivity(), R.string.text_restart_app_to_apply, Toast.LENGTH_SHORT).show();
+                            EventBus.getDefault().post(new MessageEvent(MainActivity.MESSAGE_CLEAR_BACKGROUND_SETTINGS));
                         }
                     })
                     .entry(getString(R.string.text_issue_report), new Runnable() {
                         @Override
                         public void run() {
-                            startActivity(new Intent(getActivity(), IssueReportActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                            startActivity(new Intent(getActivity(), IssueReporterActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                         }
                     })
                     .entry(getString(R.string.text_join_qq_group), new Runnable() {

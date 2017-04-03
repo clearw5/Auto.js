@@ -5,9 +5,8 @@
              android:layout_height="match_parent"
              android:orientation="vertical">
 
-    <com.stardust.scriptdroid.ui.main.my_script_list.ScriptAndFolderListRecyclerView
+    <com.stardust.scriptdroid.ui.main.script_list.ScriptListWithProgressBarView
         android:id="@+id/script_list"
-        android:background="#fafafa"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
@@ -21,20 +20,5 @@
         android:textColor="#adadad"
         android:textSize="16sp"
         android:visibility="gone"/>
-
-    <FrameLayout
-        android:id="@+id/progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        android:clickable="true"
-        android:visibility="gone">
-
-        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminate="true"/>
-    </FrameLayout>
 
 </FrameLayout>

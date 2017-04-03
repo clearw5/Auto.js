@@ -63,7 +63,7 @@ dependencies {
     compile 'moe.feng:AlipayZeroSdk:1.1'
     compile 'com.jraska:console:0.4.3'
     compile 'com.jraska:console-timber-tree:0.4.3'
-    compile 'com.heinrichreimersoftware:android-issue-reporter:eae4c73cbeb91e98da83fe79a3dea088a8b97448'
+    compile 'com.heinrichreimersoftware:android-issue-reporter:1.3.1'
     compile 'de.codecrafters.tableview:tableview:2.5.0'
     compile group: "pl.openrnd.android", name: "multi-level-listview", version: "1.0.1"
     compile 'de.psdev.licensesdialog:licensesdialog:1.8.1'
@@ -72,6 +72,7 @@ dependencies {
     compile 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
      compile 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
     compile 'com.github.hyb1996:node-android-lib:1.0.13'
+    compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     compile 'me.zhanghai.android.materialprogressbar:library:1.3.0'
     compile group:'com.twofortyfouram', name:'android-plugin-client-sdk-for-locale', version:'[4.0.2, 5.0['
     compile(name: 'libtermexec-release', ext: 'aar')

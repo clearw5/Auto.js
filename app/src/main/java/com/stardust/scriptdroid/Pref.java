@@ -13,8 +13,6 @@ import com.stardust.scriptdroid.autojs.AutoJs;
 public class Pref {
 
     private static final SharedPreferences DISPOSABLE_BOOLEAN = App.getApp().getSharedPreferences("DISPOSABLE_BOOLEAN", Context.MODE_PRIVATE);
-    public static final String KEY_DRAWER_HEADER_IMAGE_PATH = "KEY_DRAWER_HEADER_IMAGE_PATH";
-    public static final String KEY_APP_BAR_IMAGE_PATH = "KEY_APP_BAR_IMAGE_PATH";
     private static SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -82,22 +80,6 @@ public class Pref {
 
     public static boolean isFirstUsing() {
         return getDisposableBoolean("isFirstUsing", true);
-    }
-
-    public static String getDrawerHeaderImagePath() {
-        return def().getString(KEY_DRAWER_HEADER_IMAGE_PATH, null);
-    }
-
-    public static void setDrawerHeaderImagePath(String path) {
-        def().edit().putString(KEY_DRAWER_HEADER_IMAGE_PATH, path).apply();
-    }
-
-    public static String getAppBarImagePath() {
-        return def().getString(KEY_APP_BAR_IMAGE_PATH, null);
-    }
-
-    public static void setAppBarImagePath(String path) {
-        def().edit().putString(KEY_APP_BAR_IMAGE_PATH, path).apply();
     }
 
     static {

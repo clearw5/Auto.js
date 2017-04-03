@@ -178,7 +178,7 @@ public class LayoutHierarchyView extends MultiLevelListView {
             NodeInfo nodeInfo = (NodeInfo) object;
             ViewHolder viewHolder;
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.layout_hierarchy_view_item, null);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.layout_hierarchy_view_item, LayoutHierarchyView.this, false);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
             } else {

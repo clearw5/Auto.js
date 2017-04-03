@@ -1,7 +1,9 @@
 package com.stardust.autojs.runtime.action;
 
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.util.MapEntries;
@@ -38,6 +40,7 @@ public class ActionFactory {
             return new DepthFirstSearchTargetAction(action, new FilterAction.BoundsFilter(rect));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static Action createActionWithEditableFilter(int action, int index, final String text) {
         return new SearchTargetAction(action, new FilterAction.EditableFilter(index)) {
 

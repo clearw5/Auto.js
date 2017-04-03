@@ -77,8 +77,8 @@
         <activity android:name=".ui.help.LocalWebViewActivity"/>
 
         <activity
-            android:name=".ui.error.IssueReportActivity"
-            android:theme="@style/IssueReportTheme"/>
+            android:name=".ui.error.IssueReporterActivity"
+            android:theme="@style/IssueReporterTheme"/>
 
         <service android:name=".service.VolumeChangeObverseService"/>
         <service android:name="com.stardust.view.Floaty$FloatHeadService"/>

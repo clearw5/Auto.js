@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.ui.main.my_script_list;
+package com.stardust.scriptdroid.ui.main.script_list;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,6 +24,9 @@ import com.stardust.view.ViewBinding;
 import com.stardust.widget.SimpleAdapterDataObserver;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * Created by Stardust on 2017/3/13.
@@ -34,8 +37,8 @@ public class MyScriptListFragment extends Fragment {
     public static final String MESSAGE_SCRIPT_FILE_ADDED = "MESSAGE_SCRIPT_FILE_ADDED";
 
     private ScriptAndFolderListRecyclerView mScriptListRecyclerView;
+    private ScriptListWithProgressBarView mScriptListWithProgressBarView;
     private View mNoScriptHint;
-    private View mProgressBar;
     private MaterialDialog mScriptFileOperationDialog;
     private MaterialDialog mDirectoryOperationDialog;
     private ScriptFile mSelectedScriptFile;
@@ -57,14 +60,15 @@ public class MyScriptListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mScriptListRecyclerView = $(R.id.script_list);
+        mScriptListWithProgressBarView = $(R.id.script_list);
+        mScriptListRecyclerView = mScriptListWithProgressBarView.getScriptAndFolderListRecyclerView();
         mNoScriptHint = $(R.id.hint_no_script);
-        mProgressBar = $(R.id.progressBar);
         initScriptListRecyclerView();
         initDialogs();
     }
 
     private void initScriptListRecyclerView() {
+        mScriptListWithProgressBarView.setStorageScriptProvider(StorageScriptProvider.getDefault());
         mScriptListRecyclerView.getAdapter().registerAdapterDataObserver(new SimpleAdapterDataObserver() {
             @Override
             public void onSomethingChanged() {
@@ -141,14 +145,22 @@ public class MyScriptListFragment extends Fragment {
     }
 
     public void importFile(final String pathFrom) {
-        showFileNameInputDialog(PFile.getNameWithoutExtension(pathFrom), new MaterialDialog.InputCallback() {
+        try {
+            importFile(PFile.getNameWithoutExtension(pathFrom), new FileInputStream(pathFrom));
+        } catch (FileNotFoundException e) {
+            showMessage(R.string.file_not_exists);
+        }
+    }
+
+    public void importFile(String prefix, final InputStream inputStream) {
+        showFileNameInputDialog(PFile.getNameWithoutExtension(prefix), new MaterialDialog.InputCallback() {
             @Override
             public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                 final String pathTo = getCurrentDirectoryPath() + input + ".js";
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (PFile.copy(pathFrom, pathTo)) {
+                        if (PFile.copyStream(inputStream, pathTo)) {
                             showMessage(R.string.text_import_succeed);
                         } else {
                             showMessage(R.string.text_import_fail);
@@ -156,7 +168,6 @@ public class MyScriptListFragment extends Fragment {
                         notifyScriptFileChanged();
                     }
                 }).start();
-
             }
         });
     }
@@ -237,10 +248,10 @@ public class MyScriptListFragment extends Fragment {
 
     private void onScriptFileOperated() {
         mSelectedScriptFile = null;
-        mProgressBar.post(new Runnable() {
+        getView().post(new Runnable() {
             @Override
             public void run() {
-                mProgressBar.setVisibility(View.GONE);
+                mScriptListWithProgressBarView.hideProgressBar();
             }
         });
     }
@@ -276,7 +287,7 @@ public class MyScriptListFragment extends Fragment {
     }
 
     private void doDeletingScriptFile() {
-        mProgressBar.setVisibility(View.VISIBLE);
+        mScriptListWithProgressBarView.showProgressBar();
         new Thread(new Runnable() {
             @Override
             public void run() {

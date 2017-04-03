@@ -23,19 +23,16 @@ public class FireSettingReceiver extends AbstractPluginSettingReceiver {
 
     @Override
     protected boolean isBundleValid(@NonNull Bundle bundle) {
-        Log.v(TAG, "isBundleValid: " + bundle);
-        return bundle.containsKey(CommonUtils.EXTRA_KEY_PATH);
+        return CommonUtils.isTaskerBundleValid(bundle);
     }
 
     @Override
     protected boolean isAsync() {
-        Log.v(TAG, "isAsync");
         return true;
     }
 
     @Override
     protected void firePluginSetting(@NonNull Context context, @NonNull Bundle bundle) {
-        Log.v(TAG, "firePluginSetting：" + bundle);
         context.startActivity(new Intent(App.getApp(), RunIntentActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(CommonUtils.EXTRA_KEY_PATH, bundle.getString(CommonUtils.EXTRA_KEY_PATH))

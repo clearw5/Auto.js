@@ -7,10 +7,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -25,22 +22,23 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.folderselector.FileChooserDialog;
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.NotAskAgainDialog;
 import com.stardust.app.OnActivityResultDelegate;
-import com.stardust.scriptdroid.Pref;
+import com.stardust.scriptdroid.scripts.ScriptFile;
 import com.stardust.scriptdroid.scripts.StorageScriptProvider;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
-import com.stardust.scriptdroid.tool.ImageSelector;
+import com.stardust.scriptdroid.tool.DrawableSaver;
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.ui.main.my_script_list.MyScriptListFragment;
+import com.stardust.scriptdroid.ui.main.script_list.MyScriptListFragment;
 import com.stardust.scriptdroid.ui.main.sample_list.SampleScriptListFragment;
+import com.stardust.scriptdroid.ui.main.script_list.ScriptFileChooserDialogBuilder;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.BackPressedHandler;
+import com.stardust.util.MessageEvent;
 import com.stardust.view.ViewBinding;
 import com.stardust.widget.SlidingUpPanel;
 import com.stardust.scriptdroid.BuildConfig;
@@ -48,10 +46,13 @@ import com.stardust.scriptdroid.R;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
-import java.io.File;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 
-public class MainActivity extends BaseActivity implements FileChooserDialog.FileCallback {
+public class MainActivity extends BaseActivity {
+
+    public static final String MESSAGE_CLEAR_BACKGROUND_SETTINGS = "MESSAGE_CLEAR_BACKGROUND_SETTINGS";
 
     private static final String EXTRA_ACTION = "EXTRA_ACTION";
 
@@ -66,6 +67,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     private FragmentPagerAdapterBuilder.StoredFragmentPagerAdapter mPagerAdapter;
 
     private OnActivityResultDelegate.Intermediary mActivityResultIntermediary = new OnActivityResultDelegate.Intermediary();
+    private DrawableSaver mDrawerHeaderBackgroundSaver, mAppbarBackgroundSaver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
         checkPermissions();
         registerBackPressHandlers();
         handleIntent(getIntent());
+        EventBus.getDefault().register(this);
     }
 
     private void registerBackPressHandlers() {
@@ -131,21 +134,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
     private void setUpDrawerHeader() {
         TextView version = $(R.id.version);
         version.setText("Version " + BuildConfig.VERSION_NAME);
-        String path = Pref.getDrawerHeaderImagePath();
-        if (path != null) {
-            setDrawerHeaderImage(path);
-        }
-        path = Pref.getAppBarImagePath();
-        if (path != null) {
-            setAppBarImage(path);
-        }
-    }
-
-    private void setDrawerHeaderImage(String path) {
-        Drawable d = BitmapDrawable.createFromPath(path);
-        if (d != null) {
-            ((ImageView) $(R.id.drawer_header_img)).setImageDrawable(d);
-        }
+        mDrawerHeaderBackgroundSaver = new DrawableSaver.ImageSaver(this, "drawer_header_background", (ImageView) $(R.id.drawer_header_img));
     }
 
     private void setUpToolbar() {
@@ -156,6 +145,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                 R.string.text_drawer_close);
         drawerToggle.syncState();
         mDrawerLayout.addDrawerListener(drawerToggle);
+        mAppbarBackgroundSaver = new DrawableSaver.ImageSaver(this, "appbar_background", (ImageView) $(R.id.app_bar_bg));
     }
 
     private void setUpTabViewPager() {
@@ -167,6 +157,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                 .add(new TaskManagerFragment(), R.string.text_task_manage)
                 .build();
         viewPager.setAdapter(mPagerAdapter);
+        viewPager.setOffscreenPageLimit(mPagerAdapter.getCount());
         tabLayout.setupWithViewPager(viewPager);
     }
 
@@ -187,9 +178,30 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     @ViewBinding.Click(R.id.import_from_file)
     private void showFileChooser() {
-        new FileChooserDialog.Builder(this)
-                .initialPath(Environment.getExternalStorageDirectory().getPath())
-                .extensionsFilter(".js", ".txt")
+        new ScriptFileChooserDialogBuilder(this)
+                .scriptProvider(StorageScriptProvider.getExternalStorageProvider())
+                .fileCallback(new ScriptFileChooserDialogBuilder.FileCallback() {
+                    @Override
+                    public void onFileSelection(MaterialDialog dialog, ScriptFile file) {
+                        dialog.dismiss();
+                        StorageScriptProvider.getExternalStorageProvider().clearCacheExceptInitialDirectory();
+                        getMyScriptListFragment().importFile(file.getPath());
+                    }
+                })
+                .title(R.string.text_please_choose_file_to_import)
+                .autoDismiss(false)
+                .positiveText(R.string.cancel)
+                .neutralText(R.string.text_refresh)
+                .onAny(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        if (which == DialogAction.POSITIVE) {
+                            dialog.dismiss();
+                        } else {
+                            StorageScriptProvider.getExternalStorageProvider().refreshAll();
+                        }
+                    }
+                })
                 .show();
     }
 
@@ -205,19 +217,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     @ViewBinding.Click(R.id.drawer_header_img)
     public void selectHeaderImage() {
-        new ImageSelector(this, mActivityResultIntermediary, new ImageSelector.ImageSelectorCallback() {
-            @Override
-            public void onImageSelected(ImageSelector selector, String path) {
-                setDrawerHeaderImage(path);
-                Pref.setDrawerHeaderImagePath(path);
-                mActivityResultIntermediary.removeDelegate(selector);
-            }
-        }).select();
-    }
-
-    @Override
-    public void onFileSelection(@NonNull FileChooserDialog dialog, @NonNull File file) {
-        getMyScriptListFragment().importFile(file.getPath());
+        mDrawerHeaderBackgroundSaver.select(this, mActivityResultIntermediary);
     }
 
     @Override
@@ -275,7 +275,7 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
                 .putExtra(ARGUMENT_PATH, path));
     }
 
-    private MyScriptListFragment getMyScriptListFragment() {
+    public MyScriptListFragment getMyScriptListFragment() {
         return ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0));
     }
 
@@ -299,21 +299,20 @@ public class MainActivity extends BaseActivity implements FileChooserDialog.File
 
     @ViewBinding.Click(R.id.toolbar)
     public void OnToolbarClick() {
-        new ImageSelector(this, mActivityResultIntermediary, new ImageSelector.ImageSelectorCallback() {
-            @Override
-            public void onImageSelected(ImageSelector selector, String path) {
-                Pref.setAppBarImagePath(path);
-                setAppBarImage(path);
-                mActivityResultIntermediary.removeDelegate(selector);
-            }
-        }).select();
+        mAppbarBackgroundSaver.select(this, mActivityResultIntermediary);
     }
 
-    private void setAppBarImage(String path) {
-        Drawable d = BitmapDrawable.createFromPath(path);
-        if (d != null) {
-            ((ImageView) $(R.id.app_bar_bg)).setImageDrawable(d);
+    @Subscribe
+    public void onMessageEvent(MessageEvent event) {
+        if (event.message.equals(MESSAGE_CLEAR_BACKGROUND_SETTINGS)) {
+            mAppbarBackgroundSaver.reset();
+            mDrawerHeaderBackgroundSaver.reset();
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }
