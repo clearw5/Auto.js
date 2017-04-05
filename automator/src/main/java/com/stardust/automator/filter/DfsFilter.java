@@ -2,6 +2,8 @@ package com.stardust.automator.filter;
 
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public abstract class DfsFilter implements ListFilter, Filter {
 
     private void filterChildren(AccessibilityNodeInfo parent, List<AccessibilityNodeInfo> list) {
         for (int i = 0; i < parent.getChildCount(); i++) {
-            AccessibilityNodeInfo child = parent.getChild(i);
+            AccessibilityNodeInfo child = AccessibilityNodeInfoAllocator.getGlobal().getChild(parent, i);
             if (child == null)
                 continue;
             boolean included = isIncluded(child);

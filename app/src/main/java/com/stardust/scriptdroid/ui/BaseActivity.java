@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.ui;
 
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.view.View;
 
 
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.external.tasker.TaskPrefEditActivity;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.BackPressedHandler;
 
@@ -71,18 +73,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void setToolbarAsBack(String title) {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(title);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        setToolbarAsBack(this, R.id.toolbar, title);
     }
 
     public void registerBackPressedHandler(BackPressedHandler handler) {
@@ -93,6 +84,21 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (!mBackPressObserver.onBackPressed(this)) {
             super.onBackPressed();
+        }
+    }
+
+    public static void setToolbarAsBack(final AppCompatActivity activity, int id, String title) {
+        Toolbar toolbar = (Toolbar) activity.findViewById(id);
+        toolbar.setTitle(title);
+        activity.setSupportActionBar(toolbar);
+        if (activity.getSupportActionBar() != null) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    activity.finish();
+                }
+            });
+            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 }

@@ -1,6 +1,8 @@
-package com.stardust.autojs.runtime.action;
+package com.stardust.automator.simple_action;
 
 import android.view.accessibility.AccessibilityNodeInfo;
+
+import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.List;
  * Created by Stardust on 2017/2/14.
  */
 
-public class GetTextAction extends Action {
+public class GetTextAction extends SimpleAction {
 
 
     @Override
@@ -26,7 +28,7 @@ public class GetTextAction extends Action {
             texts.add(text.toString());
         }
         for (int i = 0; i < nodeInfo.getChildCount(); i++) {
-            AccessibilityNodeInfo child = nodeInfo.getChild(i);
+            AccessibilityNodeInfo child = AccessibilityNodeInfoAllocator.getGlobal().getChild(nodeInfo, i);
             if (child != null) {
                 getText(child, texts);
                 child.recycle();

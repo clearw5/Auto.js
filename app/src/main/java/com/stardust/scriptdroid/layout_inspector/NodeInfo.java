@@ -1,9 +1,12 @@
 package com.stardust.scriptdroid.layout_inspector;
 
 import android.graphics.Rect;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.accessibility.AccessibilityNodeInfo;
+
+import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +14,7 @@ import java.util.List;
 /**
  * Created by Stardust on 2017/3/10.
  */
-
+@Keep
 public class NodeInfo {
 
     private List<NodeInfo> children = new ArrayList<>();
@@ -74,7 +77,7 @@ public class NodeInfo {
     public static NodeInfo capture(@NonNull AccessibilityNodeInfo root) {
         NodeInfo nodeInfo = new NodeInfo(root);
         for (int i = 0; i < root.getChildCount(); i++) {
-            AccessibilityNodeInfo child = root.getChild(i);
+            AccessibilityNodeInfo child = AccessibilityNodeInfoAllocator.getGlobal().getChild(root, i);
             if (child != null) {
                 nodeInfo.children.add(capture(child));
             }

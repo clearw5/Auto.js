@@ -1,14 +1,16 @@
-package com.stardust.autojs.runtime.action;
+package com.stardust.automator.simple_action;
 
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+
 /**
  * Created by Stardust on 2017/1/27.
  */
 
-public class ScrollMaxAction extends Action {
+public class ScrollMaxAction extends SimpleAction {
 
     private static final String TAG = ScrollMaxAction.class.getSimpleName();
     private int mScrollAction;
@@ -49,7 +51,7 @@ public class ScrollMaxAction extends Action {
             }
         }
         for (int i = 0; i < nodeInfo.getChildCount(); i++) {
-            AccessibilityNodeInfo child = nodeInfo.getChild(i);
+            AccessibilityNodeInfo child = AccessibilityNodeInfoAllocator.getGlobal().getChild(nodeInfo, i);
             if (child != null) {
                 findMaxScrollableNodeInfo(child);
                 if (mMaxScrollableNode != child) {

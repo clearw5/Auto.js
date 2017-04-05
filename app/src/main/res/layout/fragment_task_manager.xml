@@ -4,6 +4,7 @@
              android:layout_height="match_parent"
              android:background="#f4f4f4">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -12,19 +13,26 @@
         <LinearLayout
             android:id="@+id/close_all"
             android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:background="#e4e4e4"
+            android:layout_height="wrap_content"
+            android:background="#d4d4d4"
             android:foreground="?selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
             android:visibility="gone">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="17dp"
+                android:layout_marginRight="17dp"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/ic_close_gray600_48dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_gravity="center_vertical"
                 android:text="@string/text_close_all_running_scripts"
-                android:textColor="@android:color/secondary_text_light"
+                android:textColor="@android:color/primary_text_light"
                 android:textSize="16sp"/>
         </LinearLayout>
 

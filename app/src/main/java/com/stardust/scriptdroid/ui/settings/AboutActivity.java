@@ -118,10 +118,5 @@ public class AboutActivity extends BaseActivity {
         Toast.makeText(this, R.string.text_it_is_the_developer_of_app, Toast.LENGTH_LONG).show();
     }
 
-    private void setClipText(CharSequence label, CharSequence text) {
-        ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, text));
-        Toast.makeText(this, label + getString(R.string.text_already_copy_to_clip), Toast.LENGTH_SHORT).show();
-    }
 
 }

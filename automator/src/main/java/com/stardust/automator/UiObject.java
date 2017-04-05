@@ -1,10 +1,15 @@
 package com.stardust.automator;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+import com.stardust.view.accessibility.AccessibilityNodeInfoHelper;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CONTEXT_CLICK;
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_DOWN;
@@ -21,8 +26,15 @@ import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.
 
 public class UiObject extends AccessibilityNodeInfoCompat {
 
+    private AccessibilityNodeInfoAllocator mAllocator = null;
+
     public UiObject(Object info) {
         super(info);
+    }
+
+    public UiObject(Object info, AccessibilityNodeInfoAllocator allocator) {
+        super(info);
+        mAllocator = allocator;
     }
 
     public UiObject parent() {
@@ -47,6 +59,22 @@ public class UiObject extends AccessibilityNodeInfoCompat {
             list.add(getChild(i));
         }
         return UiObjectCollection.ofCompat(list);
+    }
+
+    public int childCount() {
+        return getChildCount();
+    }
+
+    public Rect bounds() {
+        return AccessibilityNodeInfoHelper.getBoundsInScreen(this);
+    }
+
+    public Rect boundsInParent() {
+        return AccessibilityNodeInfoHelper.getBoundsInParent(this);
+    }
+
+    public int drawingOrder() {
+        return getDrawingOrder();
     }
 
     public String id() {
@@ -187,5 +215,34 @@ public class UiObject extends AccessibilityNodeInfoCompat {
                 new ActionArgument.IntActionArgument(ACTION_ARGUMENT_ROW_INT, row),
                 new ActionArgument.IntActionArgument(ACTION_ARGUMENT_COLUMN_INT, column));
     }
+
+    @Override
+    public AccessibilityNodeInfoCompat getChild(int index) {
+        if (mAllocator == null)
+            return super.getChild(index);
+        return mAllocator.getChild(this, index);
+    }
+
+    @Override
+    public AccessibilityNodeInfoCompat getParent() {
+        if (mAllocator == null)
+            return super.getParent();
+        return mAllocator.getParent(this);
+    }
+
+    @Override
+    public List<AccessibilityNodeInfoCompat> findAccessibilityNodeInfosByText(String text) {
+        if (mAllocator == null)
+            return super.findAccessibilityNodeInfosByText(text);
+        return mAllocator.findAccessibilityNodeInfosByText(this, text);
+    }
+
+    @Override
+    public List<AccessibilityNodeInfoCompat> findAccessibilityNodeInfosByViewId(String viewId) {
+        if (mAllocator == null)
+            return super.findAccessibilityNodeInfosByViewId(viewId);
+        return mAllocator.findAccessibilityNodeInfosByViewId(this, viewId);
+    }
+
 
 }

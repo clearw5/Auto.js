@@ -66,4 +66,8 @@ public abstract class ScriptSource implements Serializable {
         return mode;
     }
 
+    @Override
+    public String toString() {
+        return mName + ".js";
+    }
 }

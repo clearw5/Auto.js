@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/action_refresh"
+        android:icon="@drawable/ic_refresh_white_24dp"
+        android:orderInCategory="100"
+        android:title="@string/text_refresh"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_clear_file_selection"
+        android:orderInCategory="200"
+        android:title="@string/text_clear_file_selection"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_clear_pre_execute_script"
+        android:orderInCategory="300"
+        android:title="@string/text_clear_pre_execute_script"
+        app:showAsAction="never"/>
+</menu>

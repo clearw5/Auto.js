@@ -1,5 +1,7 @@
 package com.stardust.autojs.engine;
 
+import com.stardust.autojs.rhino_android.AndroidContextFactory;
+import com.stardust.autojs.rhino_android.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.ScriptStopException;
 import com.stardust.autojs.script.ScriptSource;
 
@@ -9,15 +11,13 @@ import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
+import java.io.File;
+
 /**
  * Created by Stardust on 2017/4/2.
  */
 
 public class RhinoJavaScriptEngine implements JavaScriptEngine {
-
-    static {
-        ContextFactory.initGlobal(new InterruptibleContextFactory());
-    }
 
     private Context mContext;
     private Scriptable mScriptable;
@@ -69,7 +69,6 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
         mContext.evaluateString(mScriptable, mEngineManager.getInitScript().getScript(), "<init>", 1, null);
     }
 
-
     public Context getContext() {
         return mContext;
     }
@@ -85,23 +84,32 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
     }
 
     protected Context createContext() {
-        Context context = Context.enter();
+        if (!ContextFactory.hasExplicitGlobal()) {
+            ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mEngineManager.getContext().getCacheDir(), "classes")));
+        }
+        Context context = new RhinoAndroidHelper(mEngineManager.getContext()).enterContext();
         context.setOptimizationLevel(-1);
         context.setLanguageVersion(Context.VERSION_1_7);
         return context;
     }
 
-    private static class InterruptibleContextFactory extends ContextFactory {
+    private static class InterruptibleAndroidContextFactory extends AndroidContextFactory {
+
+        public InterruptibleAndroidContextFactory(File cacheDirectory) {
+            super(cacheDirectory);
+        }
 
         @Override
         protected void observeInstructionCount(Context cx, int instructionCount) {
             if (Thread.currentThread().isInterrupted()) {
+
                 throw new ScriptStopException(new InterruptedException());
             }
         }
 
         @Override
         protected Context makeContext() {
+
             Context cx = super.makeContext();
             cx.setInstructionObserverThreshold(10000);
             return cx;

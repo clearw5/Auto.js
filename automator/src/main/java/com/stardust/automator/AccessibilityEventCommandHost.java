@@ -3,6 +3,7 @@ package com.stardust.automator;
 import android.accessibilityservice.AccessibilityService;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.view.accessibility.AccessibilityDelegate;
 
@@ -21,6 +22,24 @@ public class AccessibilityEventCommandHost implements AccessibilityDelegate {
     public interface Command {
 
         void execute(AccessibilityService service, AccessibilityEvent event);
+
+        boolean isValid();
+
+        void setValid(boolean valid);
+    }
+
+    public abstract static class AbstractCommand implements Command {
+
+        private boolean mValid;
+
+        public synchronized boolean isValid() {
+            return mValid;
+        }
+
+        public synchronized void setValid(boolean valid) {
+            mValid = valid;
+        }
+
     }
 
     private static final String TAG = "CommandHostDelegate";
@@ -31,8 +50,8 @@ public class AccessibilityEventCommandHost implements AccessibilityDelegate {
 
 
     private final Queue<Command> mCommands = new LinkedList<>();
-    private Executor mExecutor = Executors.newFixedThreadPool(5);
-    private int mRunMode = 0;
+    private Executor mExecutor = Executors.newSingleThreadExecutor();
+    private int mRunMode = RUN_MODE_THREAD_POOL;
 
     @Override
     public boolean onAccessibilityEvent(final AccessibilityService service, final AccessibilityEvent event) {
@@ -42,20 +61,24 @@ public class AccessibilityEventCommandHost implements AccessibilityDelegate {
             }
             while (!mCommands.isEmpty()) {
                 final Command command = mCommands.poll();
-                executeCommand(command, service, event);
+                if (command.isValid()) {
+                    executeCommand(command, service, event);
+                }
             }
         }
         return false;
     }
 
     private void executeCommand(final Command command, final AccessibilityService service, final AccessibilityEvent event) {
-        Runnable r = new Runnable() {
+        final Runnable r = new Runnable() {
             @Override
             public void run() {
+                if (!command.isValid()) {
+                    return;
+                }
                 Log.v(TAG, "executing " + command);
                 command.execute(service, event);
                 synchronized (command) {
-                    Log.v(TAG, "notify " + mCommands.size() + " commands");
                     command.notify();
                 }
             }
@@ -78,6 +101,7 @@ public class AccessibilityEventCommandHost implements AccessibilityDelegate {
             try {
                 command.wait();
             } catch (InterruptedException e) {
+                command.setValid(false);
                 throw new RuntimeException(e);
             }
         }

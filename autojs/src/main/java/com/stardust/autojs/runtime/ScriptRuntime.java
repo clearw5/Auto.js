@@ -6,14 +6,21 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import com.stardust.autojs.R;
-import com.stardust.autojs.runtime.action.ActionAutomator;
+import com.stardust.autojs.rhino_android.AndroidClassLoader;
+import com.stardust.autojs.runtime.simple_action.SimpleActionAutomator;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.UiSelector;
+import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.SdkVersionUtil;
 import com.stardust.util.Shell;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
+
+import org.mozilla.javascript.ContextFactory;
+
+import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -35,7 +42,7 @@ public class ScriptRuntime {
     public Console console;
 
     @JavascriptField
-    public ActionAutomator automator;
+    public SimpleActionAutomator automator;
 
     @JavascriptField
     public AccessibilityInfoProvider info;
@@ -47,7 +54,7 @@ public class ScriptRuntime {
         app = new AppUtils(context);
         info = accessibilityBridge.getInfoProvider();
         this.console = console;
-        automator = new ActionAutomator(accessibilityBridge, this);
+        automator = new SimpleActionAutomator(accessibilityBridge, this);
     }
 
     @JavascriptInterface
@@ -98,6 +105,15 @@ public class ScriptRuntime {
     public void requiresApi(int i) {
         if (Build.VERSION.SDK_INT < i) {
             throw new ScriptStopException(mContext.getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
+        }
+    }
+
+    @JavascriptInterface
+    public void loadJar(String path) {
+        try {
+            ((AndroidClassLoader) ContextFactory.getGlobal().getApplicationClassLoader()).loadJar(new File(path));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 

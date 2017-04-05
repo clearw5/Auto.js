@@ -43,7 +43,7 @@ public abstract class ScriptFileOperation {
     public static void createShortcut(ScriptFile scriptFile) {
         new Shortcut(App.getApp()).name(scriptFile.getSimplifiedName())
                 .targetClass(ShortcutActivity.class)
-                .icon(R.drawable.ic_robot_green)
+                .icon(R.drawable.ic_node_js_black)
                 .extras(new Intent().putExtra(CommonUtils.EXTRA_KEY_PATH, scriptFile.getPath()))
                 .send();
     }

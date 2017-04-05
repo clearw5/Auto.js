@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.Fragment;
+import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.scripts.sample.Sample;
 import com.stardust.scriptdroid.scripts.sample.SampleFileManager;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.scriptdroid.ui.main.MainActivity;
+import com.stardust.util.AssetsCache;
 
 import java.io.IOException;
 
@@ -75,7 +77,7 @@ public class SampleScriptListFragment extends Fragment {
     }
 
     private void viewSample(Sample sample) {
-        EditActivity.editAssetFile(getContext(), sample.name, sample.path);
+        EditActivity.view(getContext(), sample.name, AssetsCache.get(getActivity(), sample.path));
     }
 
 }

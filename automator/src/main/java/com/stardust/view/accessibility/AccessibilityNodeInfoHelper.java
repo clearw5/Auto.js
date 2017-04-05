@@ -1,7 +1,10 @@
 package com.stardust.view.accessibility;
 
 import android.graphics.Rect;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.accessibility.AccessibilityNodeInfo;
+
+import com.stardust.automator.UiObject;
 
 /**
  * Created by Stardust on 2017/3/6.
@@ -43,6 +46,18 @@ public class AccessibilityNodeInfoHelper {
     public static Rect getBoundsInScreen(AccessibilityNodeInfo nodeInfo) {
         Rect rect = new Rect();
         nodeInfo.getBoundsInScreen(rect);
+        return rect;
+    }
+
+    public static Rect getBoundsInScreen(AccessibilityNodeInfoCompat nodeInfo) {
+        Rect rect = new Rect();
+        nodeInfo.getBoundsInScreen(rect);
+        return rect;
+    }
+
+    public static Rect getBoundsInParent(AccessibilityNodeInfoCompat nodeInfo) {
+        Rect rect = new Rect();
+        nodeInfo.getBoundsInParent(rect);
         return rect;
     }
 }

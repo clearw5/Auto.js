@@ -1,6 +1,7 @@
 package com.stardust.pio;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.util.Log;
 
 import java.io.File;
@@ -238,5 +239,13 @@ public class PFile {
                 return false;
         }
         return file.delete();
+    }
+
+    public static String readAsset(AssetManager assets, String path) {
+        try {
+            return read(assets.open(path));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

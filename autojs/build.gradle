@@ -19,6 +19,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'org/mozilla/javascript/tools/debugger/build.xml'
+    }
 }
 
 dependencies {
@@ -28,7 +32,7 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.3.0'
-    compile 'com.github.hyb1996:node-android-lib:1.0.13'
+    compile 'com.github.hyb1996:node-android-lib:1.0.14'
     compile project(path: ':common')
     compile project(path: ':automator')
 }

@@ -14,6 +14,8 @@ import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Stardust on 2017/2/14.
@@ -25,45 +27,10 @@ public class AccessibilityWatchDogService extends AccessibilityService {
 
     private static final SortedMap<Integer, AccessibilityDelegate> mDelegates = new TreeMap<>();
     private static WeakReference<AccessibilityWatchDogService> instance;
+    private Executor mExecutor = Executors.newSingleThreadExecutor();
 
-    public static void addDelegate(AccessibilityDelegate delegate, int uniquePriority) {
-        synchronized (mDelegates) {
-            mDelegates.put(uniquePriority, delegate);
-        }
-    }
-
-    public static boolean containsPriority(int priority) {
-        synchronized (mDelegates) {
-            return mDelegates.containsKey(priority);
-        }
-    }
-
-    public static AccessibilityDelegate getDelegate(int priority) {
-        synchronized (mDelegates) {
-            return mDelegates.get(priority);
-        }
-    }
-
-    public static void addDelegateIfNeeded(int priority, Class<? extends AccessibilityDelegate> delegateClass) {
-        try {
-            addDelegateIfNeeded(priority, delegateClass.newInstance());
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void addDelegateIfNeeded(int priority, AccessibilityDelegate delegate) {
-        synchronized (mDelegates) {
-            if (!mDelegates.containsKey(priority)) {
-                mDelegates.put(priority, delegate);
-            }
-        }
-    }
-
-    public static boolean removeDelegate(int priority) {
-        synchronized (mDelegates) {
-            return mDelegates.remove(priority) != null;
-        }
+    public static void addDelegate(int uniquePriority, AccessibilityDelegate delegate) {
+        mDelegates.put(uniquePriority, delegate);
     }
 
     public static boolean isEnable() {
@@ -77,15 +44,18 @@ public class AccessibilityWatchDogService extends AccessibilityService {
     }
 
     @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
+    public void onAccessibilityEvent(final AccessibilityEvent event) {
         Log.v(TAG, "onAccessibilityEvent: " + event);
-        synchronized (mDelegates) {
-            for (Map.Entry<Integer, AccessibilityDelegate> entry : mDelegates.entrySet()) {
-                //Log.v(TAG, "delegate: " + entry.getValue().getClass().getName());
-                if (entry.getValue().onAccessibilityEvent(this, event))
-                    break;
+        mExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                for (Map.Entry<Integer, AccessibilityDelegate> entry : mDelegates.entrySet()) {
+                    Log.v(TAG, "delegate: " + entry.getValue().getClass().getName());
+                    if (entry.getValue().onAccessibilityEvent(AccessibilityWatchDogService.this, event))
+                        break;
+                }
             }
-        }
+        });
     }
 
     @Override

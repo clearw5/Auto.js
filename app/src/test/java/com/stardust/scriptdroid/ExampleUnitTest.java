@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid;
 
+import com.jecelyin.common.http.Base64;
 import com.stardust.util.LimitedHashMap;
 
 import org.junit.Test;

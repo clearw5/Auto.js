@@ -68,7 +68,7 @@ public class HoverMenuService extends Service {
 
     private static void setIsRunning(boolean isRunning) {
         sIsRunning = isRunning;
-        EventBus.getDefault().post(new ServiceStateChangedEvent(sIsRunning));
+        eventBus.post(new ServiceStateChangedEvent(sIsRunning));
     }
 
     public static void postEvent(MessageEvent event) {
@@ -96,7 +96,7 @@ public class HoverMenuService extends Service {
     private HoverMenu.OnExitListener mWindowHoverMenuMenuExitListener = new HoverMenu.OnExitListener() {
         @Override
         public void onExitByUserRequest() {
-            EventBus.getDefault().post(new MessageEvent(MESSAGE_MENU_EXIT));
+            eventBus.post(new MessageEvent(MESSAGE_MENU_EXIT));
             savePreferredLocation();
             mWindowHoverMenu.hide();
             stopSelf();
@@ -106,7 +106,7 @@ public class HoverMenuService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        EventBus.getDefault().register(this);
+        eventBus.register(this);
         mPrefs = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         tryInitViews();
     }
@@ -141,14 +141,14 @@ public class HoverMenuService extends Service {
         mWindowHoverMenu.setHoverMenuTransitionListener(new SimpleHoverMenuTransitionListener() {
             @Override
             public void onExpanding() {
-                EventBus.getDefault().post(new MessageEvent(MESSAGE_MENU_EXPANDING));
+                eventBus.post(new MessageEvent(MESSAGE_MENU_EXPANDING));
                 captureCurrentWindow();
             }
 
             @Override
             public void onCollapsing() {
                 AutoJs.getInstance().getLayoutInspector().clearCapture();
-                EventBus.getDefault().post(new MessageEvent(MESSAGE_MENU_COLLAPSING));
+                eventBus.post(new MessageEvent(MESSAGE_MENU_COLLAPSING));
             }
         });
     }
@@ -182,8 +182,8 @@ public class HoverMenuService extends Service {
     public void onDestroy() {
         if (mWindowHoverMenu != null)
             mWindowHoverMenu.hide();
-        if (EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().unregister(this);
+        if (eventBus.isRegistered(this))
+            eventBus.unregister(this);
         setIsRunning(false);
     }
 

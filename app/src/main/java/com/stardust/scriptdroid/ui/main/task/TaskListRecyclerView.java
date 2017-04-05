@@ -19,6 +19,7 @@ import com.stardust.autojs.script.ScriptSource;
 import com.stardust.scriptdroid.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Java
         }
     };
 
-    private final List<JavaScriptEngine> mScriptEngines = new LinkedList<>();
+    private final List<JavaScriptEngine> mScriptEngines = new ArrayList<>();
     private Adapter mAdapter;
 
     public TaskListRecyclerView(Context context) {

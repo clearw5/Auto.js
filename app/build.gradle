@@ -16,7 +16,8 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            shrinkResources true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -70,7 +71,7 @@ dependencies {
     compile 'io.mattcarroll.hover:hover:0.9.7'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
-     compile 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
+    compile 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     compile 'me.zhanghai.android.materialprogressbar:library:1.3.0'
     compile group:'com.twofortyfouram', name:'android-plugin-client-sdk-for-locale', version:'[4.0.2, 5.0['

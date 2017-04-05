@@ -1,4 +1,4 @@
-package com.stardust.autojs.runtime.action;
+package com.stardust.automator.simple_action;
 
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -26,6 +26,7 @@ public abstract class SearchTargetAction extends FilterAction {
             if (node != null) {
                 performAction(node);
                 performed = true;
+                node.recycle();
             }
         }
         return performed;
@@ -35,7 +36,7 @@ public abstract class SearchTargetAction extends FilterAction {
         node.performAction(mAction);
     }
 
-    public int getAction(){
+    public int getAction() {
         return mAction;
     }
 
@@ -43,5 +44,11 @@ public abstract class SearchTargetAction extends FilterAction {
         return node;
     }
 
-
+    @Override
+    public String toString() {
+        return "SearchTargetAction{" +
+                "mAction=" + mAction + ", " +
+                super.toString() +
+                "}";
+    }
 }

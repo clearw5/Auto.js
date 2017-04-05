@@ -3,6 +3,7 @@ package com.stardust.scriptdroid.scripts;
 import android.os.Environment;
 
 import com.stardust.pio.PFile;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
@@ -56,7 +57,7 @@ public class ScriptFile extends File {
         return listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {
-                return file.isDirectory() || (file.getName().endsWith(".js") && !file.getName().startsWith("."));
+                return (file.isDirectory() || file.getName().endsWith(".js")) && !file.getName().startsWith(".");
             }
         });
     }

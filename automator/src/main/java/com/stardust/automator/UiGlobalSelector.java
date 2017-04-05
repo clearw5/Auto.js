@@ -13,6 +13,7 @@ import com.stardust.automator.filter.TextFilter;
 import com.stardust.automator.filter.ClassNameFilter;
 import com.stardust.automator.filter.DescFilter;
 import com.stardust.automator.filter.ListFilter;
+import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -352,6 +353,15 @@ public class UiGlobalSelector {
     }
 
     public UiObjectCollection findOf(AccessibilityNodeInfo node) {
+        List<AccessibilityNodeInfo> list = new ArrayList<>();
+        list.add(node);
+        for (ListFilter filter : mFilters) {
+            list = filter.filter(list);
+        }
+        return UiObjectCollection.of(list);
+    }
+
+    public UiObjectCollection findOf(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo node) {
         List<AccessibilityNodeInfo> list = new ArrayList<>();
         list.add(node);
         for (ListFilter filter : mFilters) {

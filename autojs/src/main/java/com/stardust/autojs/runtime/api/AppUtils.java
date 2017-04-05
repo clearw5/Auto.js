@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
+import com.stardust.autojs.runtime.JavascriptInterface;
 import com.stardust.util.IntentUtil;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class AppUtils {
     }
 
 
+    @JavascriptInterface
     public boolean launchPackage(String packageName) {
         try {
             PackageManager packageManager = mContext.getPackageManager();
@@ -32,10 +34,12 @@ public class AppUtils {
 
     }
 
+    @JavascriptInterface
     public boolean launchApp(String appName) {
         return launchPackage(getPackageName(appName));
     }
 
+    @JavascriptInterface
     public String getPackageName(String appName) {
         PackageManager packageManager = mContext.getPackageManager();
         List<ApplicationInfo> installedApplications = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
@@ -47,6 +51,7 @@ public class AppUtils {
         return "";
     }
 
+    @JavascriptInterface
     public boolean openAppSetting(String packageName) {
         return IntentUtil.goToAppDetailSettings(mContext, packageName);
     }

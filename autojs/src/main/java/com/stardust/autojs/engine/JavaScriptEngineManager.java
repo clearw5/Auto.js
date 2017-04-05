@@ -30,7 +30,6 @@ public abstract class JavaScriptEngineManager {
 
     private Map<String, Object> mGlobalVariableMap = new HashMap<>();
     private final Set<JavaScriptEngine> mEngines = new HashSet<>();
-    private boolean mIsStopping = false;
     private EngineLifecycleCallback mEngineLifecycleCallback;
     private final ScriptSource INIT_SCRIPT;
 
@@ -82,8 +81,6 @@ public abstract class JavaScriptEngineManager {
 
     void removeEngine(JavaScriptEngine engine) {
         synchronized (mEngines) {
-            if (mIsStopping)
-                return;
             mEngines.remove(engine);
             if(mEngineLifecycleCallback != null){
                 mEngineLifecycleCallback.onEngineRemove(engine);
@@ -111,16 +108,11 @@ public abstract class JavaScriptEngineManager {
 
     public int stopAll() {
         synchronized (mEngines) {
-            mIsStopping = true;
             int n = mEngines.size();
             for (JavaScriptEngine engine : mEngines) {
                 engine.forceStop();
-                if(mEngineLifecycleCallback != null){
-                    mEngineLifecycleCallback.onEngineRemove(engine);
-                }
             }
             mEngines.clear();
-            mIsStopping = false;
             return n;
         }
     }

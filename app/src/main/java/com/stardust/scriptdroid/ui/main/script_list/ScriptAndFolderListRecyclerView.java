@@ -110,8 +110,8 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         init();
     }
 
-    private void setCurrentDirectory(final ScriptFile folder, boolean canGoBack) {
-        mCurrentDirectory = folder;
+    private void setCurrentDirectory(final ScriptFile directory, boolean canGoBack) {
+        mCurrentDirectory = directory;
         mCanGoBack = canGoBack;
         if (mFileProcessListener != null) {
             mFileProcessListener.onFilesListing();
@@ -119,7 +119,7 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                mScriptFileList = mStorageScriptProvider.getDirectoryScriptFiles(folder);
+                mScriptFileList = mStorageScriptProvider.getDirectoryScriptFiles(directory);
                 post(new Runnable() {
                     @Override
                     public void run() {
@@ -129,6 +129,10 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
                 });
             }
         }).start();
+    }
+
+    public void setCurrentDirectory(final ScriptFile directory) {
+        setCurrentDirectory(directory, !directory.equals(mRootDirectory));
     }
 
     private void setRootDirectory(ScriptFile folder) {
@@ -195,7 +199,7 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         Bundle bundle = (Bundle) state;
         mRootDirectory = (ScriptFile) bundle.getSerializable("root");
         mCurrentDirectory = (ScriptFile) bundle.getSerializable("current");
-        setCurrentDirectory(mCurrentDirectory, !mCurrentDirectory.equals(mRootDirectory));
+        setCurrentDirectory(mCurrentDirectory);
         super.onRestoreInstanceState(bundle.getParcelable("superData"));
     }
 

@@ -1,4 +1,4 @@
-package com.stardust.autojs.runtime.action;
+package com.stardust.automator.simple_action;
 
 import android.graphics.Rect;
 import android.os.Build;
@@ -10,7 +10,7 @@ import android.support.annotation.RequiresApi;
 
 public interface ActionTarget {
 
-    Action createAction(int action, Object... params);
+    SimpleAction createAction(int action, Object... params);
 
     class TextActionTarget implements ActionTarget {
 
@@ -23,7 +23,7 @@ public interface ActionTarget {
         }
 
         @Override
-        public Action createAction(int action, Object... params) {
+        public SimpleAction createAction(int action, Object... params) {
             return ActionFactory.createActionWithTextFilter(action, mText, mIndex);
         }
     }
@@ -37,7 +37,7 @@ public interface ActionTarget {
         }
 
         @Override
-        public Action createAction(int action, Object... params) {
+        public SimpleAction createAction(int action, Object... params) {
             return ActionFactory.createActionWithBoundsFilter(action, mBoundsInRect);
         }
     }
@@ -51,7 +51,7 @@ public interface ActionTarget {
         }
 
         @Override
-        public Action createAction(int action, Object... params) {
+        public SimpleAction createAction(int action, Object... params) {
             return ActionFactory.createActionWithEditableFilter(action, mIndex, params[0].toString());
         }
     }
@@ -64,7 +64,7 @@ public interface ActionTarget {
         }
 
         @Override
-        public Action createAction(int action, Object... params) {
+        public SimpleAction createAction(int action, Object... params) {
             return ActionFactory.createActionWithIdFilter(action, mId);
         }
     }

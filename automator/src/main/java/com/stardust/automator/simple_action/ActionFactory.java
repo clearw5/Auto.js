@@ -1,4 +1,4 @@
-package com.stardust.autojs.runtime.action;
+package com.stardust.automator.simple_action;
 
 import android.graphics.Rect;
 import android.os.Build;
@@ -26,14 +26,14 @@ public class ActionFactory {
             .entry(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, null)
             .map();
 
-    public static Action createActionWithTextFilter(int action, String text, int index) {
+    public static SimpleAction createActionWithTextFilter(int action, String text, int index) {
         if (searchUpAction.containsKey(action))
             return new SearchUpTargetAction(action, new FilterAction.TextFilter(text, index));
         else
             return new DepthFirstSearchTargetAction(action, new FilterAction.TextFilter(text, index));
     }
 
-    public static Action createActionWithBoundsFilter(int action, Rect rect) {
+    public static SimpleAction createActionWithBoundsFilter(int action, Rect rect) {
         if (searchUpAction.containsKey(action))
             return new SearchUpTargetAction(action, new FilterAction.BoundsFilter(rect));
         else
@@ -41,7 +41,7 @@ public class ActionFactory {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static Action createActionWithEditableFilter(int action, int index, final String text) {
+    public static SimpleAction createActionWithEditableFilter(int action, int index, final String text) {
         return new SearchTargetAction(action, new FilterAction.EditableFilter(index)) {
 
             @Override
@@ -53,15 +53,15 @@ public class ActionFactory {
         };
     }
 
-    public static Action createScrollMaxAction(int action) {
+    public static SimpleAction createScrollMaxAction(int action) {
         return new ScrollMaxAction(action);
     }
 
-    public static Action createScrollAction(int action, int i) {
+    public static SimpleAction createScrollAction(int action, int i) {
         return new ScrollAction(action, i);
     }
 
-    public static Action createActionWithIdFilter(int action, String id) {
+    public static SimpleAction createActionWithIdFilter(int action, String id) {
         return new FilterAction.SimpleFilterAction(action, new FilterAction.IdFilter(id));
     }
 }

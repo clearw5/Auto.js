@@ -8,6 +8,9 @@ if(__engine__ == "rhino"){
         __importClassOld__(pack);
     }
   }
+  var loadJar = function(path){
+    __runtime__.loadJar(path);
+  }
 }
 
 var toast = function(text){

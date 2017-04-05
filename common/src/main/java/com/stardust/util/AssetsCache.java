@@ -1,7 +1,11 @@
 package com.stardust.util;
 
+import android.app.Activity;
 import android.content.res.AssetManager;
+import android.support.v4.app.FragmentActivity;
 
+
+import com.stardust.pio.PFile;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,15 +17,20 @@ import java.util.Map;
 
 public class AssetsCache {
 
-    private Map<String, String> mCache = new HashMap<>();
+    private static final long PERSIST_TIME = 5 * 60 * 1000;
 
+    private static SimpleCache<String> cache = new SimpleCache<>(PERSIST_TIME, 5, 30 * 1000);
 
-    public String read(AssetManager manager, String path) throws IOException {
-        String str = mCache.get(path);
-        if (str == null) {
-            str = FileUtils.readString(manager.open(path));
-            mCache.put(path, str);
-        }
-        return str;
+    public static String get(final AssetManager assetManager, final String path) {
+        return cache.get(path, new SimpleCache.Supplier<String>() {
+            @Override
+            public String get(String key) {
+                return PFile.readAsset(assetManager, path);
+            }
+        });
+    }
+
+    public static String get(final Activity activity, final String path) {
+        return get(activity.getAssets(), path);
     }
 }

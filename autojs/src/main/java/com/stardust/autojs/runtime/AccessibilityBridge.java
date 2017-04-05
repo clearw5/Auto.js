@@ -1,7 +1,10 @@
 package com.stardust.autojs.runtime;
 
-import com.stardust.autojs.runtime.action.ActionPerformAccessibilityDelegate;
+import android.accessibilityservice.AccessibilityService;
+import android.support.annotation.Nullable;
+
 import com.stardust.automator.AccessibilityEventCommandHost;
+import com.stardust.automator.simple_action.SimpleActionPerformHost;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 
 /**
@@ -16,7 +19,10 @@ public interface AccessibilityBridge {
 
     AccessibilityEventCommandHost getCommandHost();
 
-    ActionPerformAccessibilityDelegate getActionPerformHost();
+    SimpleActionPerformHost getActionPerformHost();
+
+    @Nullable
+    AccessibilityService getService();
 
 
 }

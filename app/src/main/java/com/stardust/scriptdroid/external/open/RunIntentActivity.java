@@ -12,7 +12,6 @@ import com.stardust.autojs.script.FileScriptSource;
 import com.stardust.autojs.script.MultiScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
-import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.R;
 
@@ -36,7 +35,7 @@ public class RunIntentActivity extends Activity {
 
     private void handleIntent(Intent intent) {
         String path = getPath(intent);
-        String script = intent.getStringExtra(CommonUtils.EXTRA_KEY_PREPARE_SCRIPT);
+        String script = intent.getStringExtra(CommonUtils.EXTRA_KEY_PRE_EXECUTE_SCRIPT);
         ScriptSource source = null;
         if (path == null && script != null) {
             source = new StringScriptSource(script);

@@ -1,15 +1,16 @@
 package com.stardust.scriptdroid.autojs;
 
+import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.ScriptEngineServiceBuilder;
-import com.stardust.autojs.engine.NodeJsJavaScriptEngine;
 import com.stardust.autojs.engine.NodeJsJavaScriptEngineManager;
 import com.stardust.autojs.runtime.*;
-import com.stardust.autojs.runtime.action.ActionPerformAccessibilityDelegate;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.automator.AccessibilityEventCommandHost;
+import com.stardust.automator.simple_action.SimpleActionPerformHost;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
@@ -40,7 +41,7 @@ public class AutoJs implements AccessibilityBridge {
     }
 
     private final AccessibilityEventCommandHost mAccessibilityEventCommandHost = new AccessibilityEventCommandHost();
-    private final ActionPerformAccessibilityDelegate mActionPerformAccessibilityDelegate = new ActionPerformAccessibilityDelegate();
+    private final SimpleActionPerformHost mSimpleActionPerformHost = new SimpleActionPerformHost();
     private final AccessibilityActionRecorder mAccessibilityActionRecorder = new AccessibilityActionRecorder();
     private final LayoutInspector mLayoutInspector = new LayoutInspector();
     private final ScriptEngineService mScriptEngineService;
@@ -62,14 +63,24 @@ public class AutoJs implements AccessibilityBridge {
                 .build();
         ScriptEngineService.setInstance(mScriptEngineService);
         addAccessibilityServiceDelegates();
+        getGlobalFunctions();
+    }
+
+    private void getGlobalFunctions() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mScriptEngineService.getGlobalFunctions();
+            }
+        }).start();
     }
 
     private void addAccessibilityServiceDelegates() {
-        AccessibilityWatchDogService.addDelegateIfNeeded(100, mActionPerformAccessibilityDelegate);
-        AccessibilityWatchDogService.addDelegateIfNeeded(200, mAccessibilityActionRecorder);
-        AccessibilityWatchDogService.addDelegateIfNeeded(300, mAccessibilityEventCommandHost);
-        AccessibilityWatchDogService.addDelegateIfNeeded(400, mAccessibilityInfoProvider);
-        AccessibilityWatchDogService.addDelegateIfNeeded(500, mLayoutInspector);
+        AccessibilityWatchDogService.addDelegate(100, mAccessibilityInfoProvider);
+        // AccessibilityWatchDogService.addDelegate(200, mLayoutInspector);
+        AccessibilityWatchDogService.addDelegate(300, mAccessibilityActionRecorder);
+        // AccessibilityWatchDogService.addDelegate(400, mSimpleActionPerformHost);
+        //AccessibilityWatchDogService.addDelegate(500, mAccessibilityEventCommandHost);
     }
 
     public AccessibilityActionRecorder getAccessibilityActionRecorder() {
@@ -86,8 +97,14 @@ public class AutoJs implements AccessibilityBridge {
     }
 
     @Override
-    public ActionPerformAccessibilityDelegate getActionPerformHost() {
-        return mActionPerformAccessibilityDelegate;
+    public SimpleActionPerformHost getActionPerformHost() {
+        return mSimpleActionPerformHost;
+    }
+
+    @Nullable
+    @Override
+    public AccessibilityService getService() {
+        return AccessibilityWatchDogService.getInstance();
     }
 
     @Override

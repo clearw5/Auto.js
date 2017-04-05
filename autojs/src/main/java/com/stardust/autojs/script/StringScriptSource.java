@@ -23,4 +23,5 @@ public class StringScriptSource extends ScriptSource {
     public String getScript() {
         return mScript;
     }
+
 }

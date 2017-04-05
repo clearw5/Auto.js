@@ -15,3 +15,12 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontwarn org.mozilla.javascript.**
+-dontwarn com.jecelyin.editor.**
+-dontwarn com.makeramen.**
+-dontwarn org.junit.**
+-dontwarn junit.**
+-dontwarn jackpal.androidterm.**
+-dontwarn com.iwebpp.nodeandroid.**
+-dontwarn org.msgpack.core.**

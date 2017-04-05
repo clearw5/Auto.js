@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.ui.edit;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,9 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.View;
+import android.view.inputmethod.InputMethod;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -19,11 +20,14 @@ import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.ScriptExecutionListener;
 import com.stardust.autojs.script.FileScriptSource;
 import com.stardust.autojs.script.ScriptSource;
+import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.scripts.ScriptFile;
+import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
+import com.stardust.scriptdroid.ui.edit.editor920.Editor920Utils;
 import com.stardust.scriptdroid.ui.edit.sidemenu.EditSideMenuFragment;
 import com.stardust.scriptdroid.ui.edit.sidemenu.FunctionListRecyclerView;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
@@ -52,10 +56,39 @@ import timber.log.Timber;
 
 public class EditActivity extends Editor920Activity {
 
+    public static class InputMethodEnhanceBarBridge implements InputMethodEnhanceBar.EditTextBridge {
+
+        private Editor920Activity mEditor920Activity;
+        private TextView mTextView;
+
+        public InputMethodEnhanceBarBridge(Editor920Activity editor920Activity, TextView textView) {
+            mEditor920Activity = editor920Activity;
+            mTextView = textView;
+        }
+
+        @Override
+        public void appendText(CharSequence text) {
+            mEditor920Activity.insertText(text);
+        }
+
+        @Override
+        public void backspace(int count) {
+
+        }
+
+        @Override
+        public TextView getEditText() {
+            return mTextView;
+        }
+    }
+
+    public static final String EXTRA_CONTENT = "Still Love Eating 17.4.5";
+
     private static final String KEY_EDIT_ACTIVITY_FIRST_USE = "KEY_EDIT_ACTIVITY_FIRST_USE";
 
     private static final String ACTION_ON_RUN_FINISHED = "ACTION_ON_RUN_FINISHED";
     private static final String EXTRA_EXCEPTION_MESSAGE = "EXTRA_EXCEPTION_MESSAGE";
+
 
     private static final ScriptExecutionListener SCRIPT_EXECUTION_LISTENER = new ScriptExecutionListener() {
 
@@ -82,12 +115,11 @@ public class EditActivity extends Editor920Activity {
         editFile(context, null, path);
     }
 
-
-    public static void editAssetFile(Context context, String name, String path) {
+    public static void view(Context context, String name, String content) {
         context.startActivity(new Intent(context, EditActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra("fromAssets", true)
-                .putExtra("path", path)
+                .putExtra("readOnly", true)
+                .putExtra("content", content)
                 .putExtra("name", name));
     }
 
@@ -125,7 +157,10 @@ public class EditActivity extends Editor920Activity {
 
     public void onCreate(Bundle b) {
         super.onCreate(b);
-        handleIntent();
+        setTheme(R.style.EditorTheme);
+        mView = View.inflate(this, R.layout.activity_edit, null);
+        setContentView(mView);
+        handleIntent(getIntent());
         setUpUI();
         setUpEditor();
         registerReceiver(mOnRunFinishedReceiver, new IntentFilter(ACTION_ON_RUN_FINISHED));
@@ -149,32 +184,29 @@ public class EditActivity extends Editor920Activity {
         }
     }
 
-    private void handleIntent() {
-        String path = getIntent().getStringExtra("path");
-        mName = getIntent().getStringExtra("name");
-        if (path == null) {
-            finish();
+    private void handleIntent(Intent intent) {
+        String path = intent.getStringExtra("path");
+        mName = intent.getStringExtra("name");
+        mReadOnly = intent.getBooleanExtra("readOnly", false);
+        boolean saveEnabled = intent.getBooleanExtra("saveEnabled", true);
+        if (mReadOnly || !saveEnabled) {
+            findViewById(R.id.save).setVisibility(View.GONE);
+        }
+        String content = intent.getStringExtra("content");
+        if (content != null) {
+            mEditorDelegate = new EditorDelegate(0, mName, content);
         } else {
-            if (getIntent().getBooleanExtra("fromAssets", false)) {
-                mReadOnly = true;
-                //TODO 优化
-                mFile = PFile.copyAssetToTmpFile(this, path);
-            } else {
-                mFile = new File(path);
-            }
+            mFile = new File(path);
             if (mName == null) {
                 mName = mFile.getName();
             }
+            mEditorDelegate = new EditorDelegate(0, mFile, 0, "utf-8");
         }
-
     }
 
     private void setUpUI() {
-        setTheme(R.style.EditorTheme);
         ThemeColorManager.addActivityStatusBar(this);
-        mView = View.inflate(this, R.layout.activity_edit, null);
         mDrawerLayout = (DrawerLayout) mView.findViewById(R.id.drawer_layout);
-        setContentView(mView);
         initSideMenuFragment();
         setUpToolbar();
         initMenuItem();
@@ -194,57 +226,33 @@ public class EditActivity extends Editor920Activity {
     }
 
     private void setUpEditor() {
-        if (mFile != null) {
-            mEditorDelegate = new EditorDelegate(0, mFile, 0, null);
-            final EditorView editorView = (EditorView) findViewById(R.id.editor);
-            mEditorDelegate.setEditorView(editorView);
-            editorView.getEditText().setReadOnly(mReadOnly);
-            editorView.getEditText().setHorizontallyScrolling(true);
-            InputMethodEnhanceBar inputMethodEnhanceBar = (InputMethodEnhanceBar) findViewById(R.id.input_method_enhance_bar);
-            if (mReadOnly) {
-                inputMethodEnhanceBar.setVisibility(View.GONE);
-            } else {
-                inputMethodEnhanceBar.setEditTextBridge(new InputMethodEnhanceBar.EditTextBridge() {
-                    @Override
-                    public void appendText(CharSequence text) {
-                        insertText(text);
-                    }
+        final EditorView editorView = (EditorView) findViewById(R.id.editor);
+        mEditorDelegate.setEditorView(editorView);
+        if (mFile == null)
+            Editor920Utils.setLang(mEditorDelegate, "JavaScript");
+        editorView.getEditText().setReadOnly(mReadOnly);
+        editorView.getEditText().setHorizontallyScrolling(true);
+        setUpInputMethodEnhanceBar(editorView);
 
-                    @Override
-                    public void backspace(int count) {
+    }
 
-                    }
-
-                    @Override
-                    public TextView getEditText() {
-                        return editorView.getEditText();
-                    }
-
-
-                });
-            }
+    private void setUpInputMethodEnhanceBar(final EditorView editorView) {
+        InputMethodEnhanceBar inputMethodEnhanceBar = (InputMethodEnhanceBar) findViewById(R.id.input_method_enhance_bar);
+        if (mReadOnly) {
+            inputMethodEnhanceBar.setVisibility(View.GONE);
+        } else {
+            inputMethodEnhanceBar.setEditTextBridge(new InputMethodEnhanceBarBridge(this, editorView.getEditText()));
         }
     }
 
 
     private void setUpToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(mName);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        BaseActivity.setToolbarAsBack(this, R.id.toolbar, mName);
     }
 
     @ViewBinding.Click(R.id.run)
     private void runAndSaveFileIFNeeded() {
-        if (mEditorDelegate.isChanged()) {
+        if (!mReadOnly && mEditorDelegate.isChanged()) {
             saveFile(false, new SaveListener() {
                 @Override
                 public void onSaved() {
@@ -267,7 +275,11 @@ public class EditActivity extends Editor920Activity {
     private void run() {
         Snackbar.make(mView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         setMenuStatus(R.id.run, MenuDef.STATUS_DISABLED);
-        AutoJs.getInstance().getScriptEngineService().execute(new FileScriptSource(mName, mFile), SCRIPT_EXECUTION_LISTENER);
+        if (mFile != null) {
+            AutoJs.getInstance().getScriptEngineService().execute(new FileScriptSource(mName, mFile), SCRIPT_EXECUTION_LISTENER);
+        } else {
+            AutoJs.getInstance().getScriptEngineService().execute(new StringScriptSource(mName, mEditorDelegate.getText()), SCRIPT_EXECUTION_LISTENER);
+        }
     }
 
     @ViewBinding.Click(R.id.undo)
@@ -313,6 +325,7 @@ public class EditActivity extends Editor920Activity {
             super.finish();
         }
     }
+
 
     private void showExitConfirmDialog() {
         new ThemeColorMaterialDialogBuilder(this)

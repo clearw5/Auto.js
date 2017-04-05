@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.scripts.ScriptFile;
 import com.stardust.scriptdroid.scripts.StorageScriptProvider;
 
 /**
@@ -89,4 +90,7 @@ public class ScriptListWithProgressBarView extends FrameLayout {
     }
 
 
+    public void setCurrentDirectory(ScriptFile directory) {
+        mScriptAndFolderListRecyclerView.setCurrentDirectory(directory);
+    }
 }

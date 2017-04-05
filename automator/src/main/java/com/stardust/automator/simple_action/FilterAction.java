@@ -1,7 +1,9 @@
-package com.stardust.autojs.runtime.action;
+package com.stardust.automator.simple_action;
 
 import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
+
+import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -11,7 +13,7 @@ import java.util.List;
  * Created by Stardust on 2017/1/27.
  */
 
-public abstract class FilterAction extends Action {
+public abstract class FilterAction extends SimpleAction {
 
 
     public interface Filter {
@@ -31,13 +33,20 @@ public abstract class FilterAction extends Action {
 
         @Override
         public List<AccessibilityNodeInfo> filter(AccessibilityNodeInfo root) {
-
-            List<AccessibilityNodeInfo> list = root.findAccessibilityNodeInfosByText(mText);
+            List<AccessibilityNodeInfo> list = AccessibilityNodeInfoAllocator.getGlobal().findAccessibilityNodeInfosByText(root, mText);
             if (mIndex == -1)
                 return list;
             if (mIndex >= list.size())
                 return Collections.EMPTY_LIST;
             return Collections.singletonList(list.get(mIndex));
+        }
+
+        @Override
+        public String toString() {
+            return "TextFilter{" +
+                    "mText='" + mText + '\'' +
+                    ", mIndex=" + mIndex +
+                    '}';
         }
     }
 
@@ -63,7 +72,7 @@ public abstract class FilterAction extends Action {
                 return root;
             }
             for (int i = 0; i < root.getChildCount(); i++) {
-                AccessibilityNodeInfo child = root.getChild(i);
+                AccessibilityNodeInfo child = AccessibilityNodeInfoAllocator.getGlobal().getChild(root, i);
                 if (child == null)
                     continue;
                 AccessibilityNodeInfo nodeInfo = findAccessibilityNodeInfosByBounds(child);
@@ -73,6 +82,13 @@ public abstract class FilterAction extends Action {
                     child.recycle();
             }
             return null;
+        }
+
+        @Override
+        public String toString() {
+            return "BoundsFilter{" +
+                    "mBoundsInScreen=" + mBoundsInScreen +
+                    '}';
         }
     }
 
@@ -94,19 +110,25 @@ public abstract class FilterAction extends Action {
             return Collections.singletonList(editableList.get(mIndex));
         }
 
-        @SuppressWarnings("unchecked")
         public static List<AccessibilityNodeInfo> findEditable(AccessibilityNodeInfo root) {
             if (root == null) {
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
             if (root.isEditable()) {
                 return Collections.singletonList(root);
             }
             List<AccessibilityNodeInfo> list = new LinkedList<>();
             for (int i = 0; i < root.getChildCount(); i++) {
-                list.addAll(findEditable(root.getChild(i)));
+                list.addAll(findEditable(AccessibilityNodeInfoAllocator.getGlobal().getChild(root, i)));
             }
             return list;
+        }
+
+        @Override
+        public String toString() {
+            return "EditableFilter{" +
+                    "mIndex=" + mIndex +
+                    '}';
         }
     }
 
@@ -120,7 +142,14 @@ public abstract class FilterAction extends Action {
 
         @Override
         public List<AccessibilityNodeInfo> filter(AccessibilityNodeInfo root) {
-            return root.findAccessibilityNodeInfosByViewId(mId);
+            return AccessibilityNodeInfoAllocator.getGlobal().findAccessibilityNodeInfosByViewId(root, mId);
+        }
+
+        @Override
+        public String toString() {
+            return "IdFilter{" +
+                    "mId='" + mId + '\'' +
+                    '}';
         }
     }
 
@@ -134,7 +163,10 @@ public abstract class FilterAction extends Action {
     public boolean perform(AccessibilityNodeInfo root) {
         if (root == null)
             return false;
-        return perform(mFilter.filter(root));
+        List<AccessibilityNodeInfo> list = mFilter.filter(root);
+        boolean succeed = perform(list);
+        AccessibilityNodeInfoAllocator.recycleList(root, list);
+        return succeed;
     }
 
     public abstract boolean perform(List<AccessibilityNodeInfo> nodes);
@@ -150,11 +182,11 @@ public abstract class FilterAction extends Action {
 
         @Override
         public boolean perform(List<AccessibilityNodeInfo> nodes) {
-            if(nodes == null || nodes.isEmpty())
+            if (nodes == null || nodes.isEmpty())
                 return false;
             boolean succeed = true;
-            for(AccessibilityNodeInfo nodeInfo : nodes){
-                if(!nodeInfo.performAction(mAction)){
+            for (AccessibilityNodeInfo nodeInfo : nodes) {
+                if (!nodeInfo.performAction(mAction)) {
                     succeed = false;
                 }
             }
@@ -162,4 +194,10 @@ public abstract class FilterAction extends Action {
         }
     }
 
+    @Override
+    public String toString() {
+        return "FilterAction{" +
+                "mFilter=" + mFilter +
+                '}';
+    }
 }

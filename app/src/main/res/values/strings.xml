@@ -188,6 +188,12 @@
     <string name="text_please_choose_file_to_import">请选择要导入的脚本</string>
     <string name="text_refresh">刷新</string>
     <string name="notice_no_running_script"><![CDATA[没有正在运行的脚本 φ(>ω<*)]]></string>
+    <string name="text_please_choose_a_script">请选择脚本</string>
+    <string name="text_edit_prepare_script">编辑预执行脚本</string>
+    <string name="text_pre_execute_script">预执行脚本</string>
+    <string name="text_clear_pre_execute_script">清空预执行脚本</string>
+    <string name="text_clear_file_selection">重置脚本文件选择</string>
+    <string name="summary_pre_execute_script">将在脚本文件执行前执行</string>
 
     <string-array name="record_control_keys">
         <item>无</item>

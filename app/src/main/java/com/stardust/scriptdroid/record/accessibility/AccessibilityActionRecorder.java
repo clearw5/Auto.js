@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.record.accessibility;
 
 import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.scriptdroid.record.Recorder;
 import com.stardust.view.accessibility.AccessibilityDelegate;

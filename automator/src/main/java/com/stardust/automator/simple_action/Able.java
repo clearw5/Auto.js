@@ -1,4 +1,4 @@
-package com.stardust.autojs.runtime.action;
+package com.stardust.automator.simple_action;
 
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityNodeInfo;

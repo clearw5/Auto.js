@@ -3,12 +3,15 @@ package com.stardust.scriptdroid;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.Keep;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
+import com.stardust.app.VolumeChangeObserver;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.service.VolumeChangeObverseService;
+import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.CrashHandler;
 import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
 import com.stardust.theme.ThemeColor;
@@ -28,6 +31,8 @@ public class App extends Application {
     public static App getApp() {
         return instance;
     }
+
+    private VolumeChangeObserver mVolumeChangeObserver = new VolumeChangeObserver();
 
     public void onCreate() {
         super.onCreate();
@@ -50,7 +55,13 @@ public class App extends Application {
         ThemeColorManager.setDefaultThemeColor(new ThemeColor(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorPrimaryDark), getResources().getColor(R.color.colorAccent)));
         ThemeColorManager.init(this);
         AutoJs.initInstance(this);
-        VolumeChangeObverseService.addOnVolumeChangeListener(new VolumeChangeObverseService.OnVolumeChangeListener() {
+        initVolumeChangeObserver();
+        startService(new Intent(this, AccessibilityWatchDogService.class));
+    }
+
+    private void initVolumeChangeObserver() {
+        registerReceiver(mVolumeChangeObserver, new IntentFilter(VolumeChangeObserver.ACTION_VOLUME_CHANGE));
+        mVolumeChangeObserver.addOnVolumeChangeListener(new VolumeChangeObserver.OnVolumeChangeListener() {
             @Override
             public void onVolumeChange() {
                 if (Pref.isRunningVolumeControlEnabled()) {
@@ -58,7 +69,6 @@ public class App extends Application {
                 }
             }
         });
-        startService(new Intent(this, VolumeChangeObverseService.class));
     }
 
     private void registerActivityLifecycleCallback() {
@@ -86,6 +96,7 @@ public class App extends Application {
         });
     }
 
+    @Keep
     public static Activity currentActivity() {
         return currentActivity;
     }
@@ -94,4 +105,7 @@ public class App extends Application {
         return getApp().getString(id);
     }
 
+    public VolumeChangeObserver getVolumeChangeObserver() {
+        return mVolumeChangeObserver;
+    }
 }

@@ -1,9 +1,10 @@
-package com.stardust.autojs.runtime.action;
+package com.stardust.autojs.runtime.simple_action;
 
 import android.accessibilityservice.AccessibilityService;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -11,14 +12,17 @@ import com.stardust.autojs.runtime.AccessibilityBridge;
 import com.stardust.autojs.runtime.JavascriptInterface;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.automator.AccessibilityEventCommandHost;
+import com.stardust.automator.simple_action.SimpleAction;
+import com.stardust.automator.simple_action.ActionFactory;
+import com.stardust.automator.simple_action.ActionTarget;
 
 /**
  * Created by Stardust on 2017/4/2.
  */
 
-public class ActionAutomator {
+public class SimpleActionAutomator {
 
-    private static class PerformGlobalActionCommand implements AccessibilityEventCommandHost.Command {
+    private static class PerformGlobalActionCommand extends AccessibilityEventCommandHost.AbstractCommand {
 
         boolean result;
         private int mGlobalAction;
@@ -31,12 +35,13 @@ public class ActionAutomator {
         public void execute(AccessibilityService service, AccessibilityEvent event) {
             result = service.performGlobalAction(mGlobalAction);
         }
+
     }
 
     private AccessibilityBridge mAccessibilityBridge;
     private ScriptRuntime mScriptRuntime;
 
-    public ActionAutomator(AccessibilityBridge accessibilityBridge, ScriptRuntime scriptRuntime) {
+    public SimpleActionAutomator(AccessibilityBridge accessibilityBridge, ScriptRuntime scriptRuntime) {
         mAccessibilityBridge = accessibilityBridge;
         mScriptRuntime = scriptRuntime;
     }
@@ -159,9 +164,10 @@ public class ActionAutomator {
 
     private boolean performGlobalAction(final int action) {
         ensureAccessibilityServiceEnabled();
-        PerformGlobalActionCommand command = new PerformGlobalActionCommand(action);
-        mAccessibilityBridge.getCommandHost().executeAndWaitForEvent(command);
-        return command.result;
+        AccessibilityService service = mAccessibilityBridge.getService();
+        if (service == null)
+            return false;
+        return service.performGlobalAction(action);
     }
 
     @JavascriptInterface
@@ -174,17 +180,16 @@ public class ActionAutomator {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T performAction(Action action) {
+    private <T> T performAction(SimpleAction simpleAction) {
         ensureAccessibilityServiceEnabled();
-        mAccessibilityBridge.getActionPerformHost().addAction(action);
-        synchronized (action) {
-            try {
-                action.wait();
-            } catch (InterruptedException e) {
-                action.setValid(false);
-                mScriptRuntime.stoppedByInterrupted(e);
+        AccessibilityService service = mAccessibilityBridge.getService();
+        if (service != null) {
+            AccessibilityNodeInfo root = service.getRootInActiveWindow();
+            Log.i("Automator", "performAction: " + simpleAction + " root = " + root);
+            if (root != null) {
+                simpleAction.setResult(simpleAction.perform(root));
             }
         }
-        return (T) action.getResult();
+        return (T) simpleAction.getResult();
     }
 }
