@@ -1,25 +1,25 @@
-{
+ï»¿{
   "versionCode": 117,
   "versionName": "2.0.7 Beta",
-  "releaseNotes": "* ĞÂÔö ÈÎÎñ¹ÜÀí\n* ĞÂÔö ´úÂë¸ñÊ½»¯\n* ĞÂÔö ÃârootÄ£Äâhome¼ü, µçÔ´¼ü, ¶àÈÎÎñ¼üµÈ\n* ĞÂÔö ÕæÕıÖ§³ÖTakserµ÷ÓÃ(²å¼ş)\n* ĞÂÔö ĞÂ½¨ÎÄ¼ş¼Ğ\n* ĞÂÔö Ö§³Ö´úÂëÄ£¿é»¯(CommonJS)\n* ĞÂÔö Ö§³ÖNodeJsµÄ²¿·ÖÄ£¿é",
+  "releaseNotes": "* æ–°å¢ ä»»åŠ¡ç®¡ç†\n* æ–°å¢ ä»£ç æ ¼å¼åŒ–\n* æ–°å¢ å…rootæ¨¡æ‹Ÿhomeé”®, ç”µæºé”®, å¤šä»»åŠ¡é”®ç­‰\n* æ–°å¢ çœŸæ­£æ”¯æŒTakserè°ƒç”¨(æ’ä»¶)\n* æ–°å¢ æ–°å»ºæ–‡ä»¶å¤¹\n* æ–°å¢ æ”¯æŒä»£ç æ¨¡å—åŒ–(CommonJS)\n* æ–°å¢ æ”¯æŒNodeJsçš„éƒ¨åˆ†æ¨¡å—",
   "downloads" : [
     {
-	  name: "¿á°²",
-	  url: "http://www.coolapk.com/apk/com.stardust.scriptdroid"
+	  "name": "é…·å®‰",
+	  "url": "http://www.coolapk.com/apk/com.stardust.scriptdroid"
 	},
 	{
-	  name: "Ó¦ÓÃ±¦",
-	  url: "http://a.app.qq.com/o/simple.jsp?pkgname=com.stardust.scriptdroid"
+	  "name": "åº”ç”¨å®",
+	  "url": "http://a.app.qq.com/o/simple.jsp?pkgname=com.stardust.scriptdroid"
 	}
   ],
   "oldVersions": [
     {
 	  "versionCode": 115,
-	  "issues": "[²âÊÔ] µ±Ç°°æ±¾ÎªBeta°æ±¾£¬ÎÊÌâºÜ¶à£¬Çë¾¡¿ì¸üĞÂÕıÊ½°æ"
+	  "issues": "[æµ‹è¯•] å½“å‰ç‰ˆæœ¬ä¸ºBetaç‰ˆæœ¬ï¼Œé—®é¢˜å¾ˆå¤šï¼Œè¯·å°½å¿«æ›´æ–°æ­£å¼ç‰ˆ"
 	},
 	{
 	  "versionCode": "116",
-	  "issues": "[²âÊÔ] µ±Ç°°æ±¾ÎªBeta°æ±¾£¬Çë¾¡¿ì¸üĞÂÕıÊ½°æ"
+	  "issues": "[æµ‹è¯•] å½“å‰ç‰ˆæœ¬ä¸ºBetaç‰ˆæœ¬ï¼Œè¯·å°½å¿«æ›´æ–°æ­£å¼ç‰ˆ"
 	}
   ],
   "deprecated": 116
