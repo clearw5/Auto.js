@@ -12,7 +12,6 @@ public class DepthFirstSearchTargetAction extends SearchTargetAction {
 
 
     private Able mAble;
-    private static final long TIME_LIMIT = 500;
 
     public DepthFirstSearchTargetAction(int action, Filter filter) {
         super(action, filter);
@@ -27,7 +26,7 @@ public class DepthFirstSearchTargetAction extends SearchTargetAction {
         if (mAble.isAble(n))
             return n;
         for (int i = 0; i < n.getChildCount(); i++) {
-            AccessibilityNodeInfo child = AccessibilityNodeInfoAllocator.getGlobal().getChild(n, i);
+            AccessibilityNodeInfo child = getAllocator().getChild(n, i);
             if (child == null)
                 continue;
             AccessibilityNodeInfo node = searchTarget(child);

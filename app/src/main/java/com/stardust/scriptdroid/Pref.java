@@ -16,7 +16,7 @@ public class Pref {
     private static SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if (key.equals(App.getResString(R.string.key_run_mode))) {
+            if (key.equals(getString(R.string.key_run_mode))) {
                 AutoJs.getInstance().getCommandHost().setRunMode(getRunModeFromValue(sharedPreferences.getString(key, null)));
             }
         }
@@ -33,12 +33,8 @@ public class Pref {
         }
     }
 
-    public static SharedPreferences def() {
+    private static SharedPreferences def() {
         return PreferenceManager.getDefaultSharedPreferences(App.getApp());
-    }
-
-    public static boolean isFirstEnableAssistMode() {
-        return getDisposableBoolean("isFirstEnableAssistMode", true);
     }
 
     private static boolean getDisposableBoolean(String key, boolean defaultValue) {
@@ -65,9 +61,20 @@ public class Pref {
         return def().getBoolean(getString(R.string.key_use_volume_control_running), false);
     }
 
+    public static String getStartRecordTrigger() {
+        return def().getString(getString(R.string.key_start_record_trigger), null);
+    }
+
+    public static String getStopRecordTrigger() {
+        return def().getString(getString(R.string.key_stop_record_trigger), null);
+    }
+
+    public static boolean enableAccessibilityServiceByRoot() {
+        return def().getBoolean(getString(R.string.key_enable_accessibility_service_by_root), false);
+    }
 
     private static String getString(int id) {
-        return App.getApp().getString(id);
+        return App.getResString(id);
     }
 
     public static int MaxTextLengthForCodeCompletion() {
@@ -85,4 +92,9 @@ public class Pref {
     static {
         def().registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
     }
+
+    public static boolean isEditActivityFirstUsing() {
+        return getDisposableBoolean("Still Love Eating 17.4.6", true);
+    }
+
 }

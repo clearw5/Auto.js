@@ -63,16 +63,6 @@ public class AutoJs implements AccessibilityBridge {
                 .build();
         ScriptEngineService.setInstance(mScriptEngineService);
         addAccessibilityServiceDelegates();
-        getGlobalFunctions();
-    }
-
-    private void getGlobalFunctions() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mScriptEngineService.getGlobalFunctions();
-            }
-        }).start();
     }
 
     private void addAccessibilityServiceDelegates() {
@@ -114,8 +104,8 @@ public class AutoJs implements AccessibilityBridge {
             if (AccessibilityServiceUtils.isAccessibilityServiceEnabled(App.getApp(), AccessibilityWatchDogService.class)) {
                 errorMessage = App.getApp().getString(R.string.text_auto_operate_service_enabled_but_not_running);
             } else {
-                if (Pref.def().getBoolean(App.getApp().getString(R.string.key_enable_accessibility_service_by_root), false)) {
-                    if (!AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(AccessibilityWatchDogService.class, 3000)) {
+                if (Pref.enableAccessibilityServiceByRoot()) {
+                    if (!AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(2000)) {
                         errorMessage = App.getApp().getString(R.string.text_enable_accessibility_service_by_root_timeout);
                     }
                 } else {

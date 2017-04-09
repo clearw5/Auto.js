@@ -46,6 +46,7 @@ public class ScriptExecuteActivity extends Activity {
     private void runScript() {
         mJavaScriptEngine.put("activity", this);
         try {
+            mJavaScriptEngine.setTag("script", mScriptSource);
             mResult = mJavaScriptEngine.execute(mScriptSource);
         } catch (Exception e) {
             mExecutionListener.onException(mJavaScriptEngine, mScriptSource, e);

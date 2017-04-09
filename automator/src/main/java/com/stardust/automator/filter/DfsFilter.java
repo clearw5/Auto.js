@@ -14,36 +14,36 @@ import java.util.List;
 public abstract class DfsFilter implements ListFilter, Filter {
 
     @Override
-    public List<AccessibilityNodeInfo> filter(List<AccessibilityNodeInfo> nodes) {
+    public List<AccessibilityNodeInfo> filter(AccessibilityNodeInfoAllocator allocator, List<AccessibilityNodeInfo> nodes) {
         ArrayList<AccessibilityNodeInfo> list = new ArrayList<>();
         for (AccessibilityNodeInfo node : nodes) {
             if (isIncluded(node)) {
                 list.add(node);
             }
-            filterChildren(node, list);
+            filterChildren(allocator, node, list);
         }
         return list;
     }
 
-    public List<AccessibilityNodeInfo> filter(AccessibilityNodeInfo node) {
+    public List<AccessibilityNodeInfo> filter(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo node) {
         ArrayList<AccessibilityNodeInfo> list = new ArrayList<>();
         if (isIncluded(node)) {
             list.add(node);
         }
-        filterChildren(node, list);
+        filterChildren(allocator, node, list);
         return list;
     }
 
-    private void filterChildren(AccessibilityNodeInfo parent, List<AccessibilityNodeInfo> list) {
+    private void filterChildren(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo parent, List<AccessibilityNodeInfo> list) {
         for (int i = 0; i < parent.getChildCount(); i++) {
-            AccessibilityNodeInfo child = AccessibilityNodeInfoAllocator.getGlobal().getChild(parent, i);
+            AccessibilityNodeInfo child = allocator.getChild(parent, i);
             if (child == null)
                 continue;
             boolean included = isIncluded(child);
             if (included) {
                 list.add(child);
             }
-            filterChildren(child, list);
+            filterChildren(allocator, child, list);
             if (!included) {
                 child.recycle();
             }

@@ -21,11 +21,13 @@ public interface JavaScriptEngine {
 
     Object execute(ScriptSource scriptSource);
 
-    ScriptSource getExecutedScript();
-
     void forceStop();
 
     void destroy();
+
+    void setTag(String key, Object value);
+
+    Object getTag(String key);
 
     /**
      * @hide

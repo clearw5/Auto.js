@@ -46,7 +46,7 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
         scriptList.setCurrentDirectory(StorageScriptProvider.DEFAULT_DIRECTORY);
         scriptList.setOnItemClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileClickListener() {
             @Override
-            public void onClick(ScriptFile file) {
+            public void onClick(ScriptFile file, int position) {
                 mSelectedScriptFilePath = file.getPath();
                 finish();
             }

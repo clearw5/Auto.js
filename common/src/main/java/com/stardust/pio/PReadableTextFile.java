@@ -1,7 +1,6 @@
 package com.stardust.pio;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,22 +8,22 @@ import java.util.List;
  * Created by Stardust on 2017/4/1.
  */
 
-public class PReadableFile extends PFile {
+public class PReadableTextFile extends PFile {
 
     private BufferedReader mBufferedReader;
     private FileInputStream mFileInputStream;
     private int mBufferingSize;
     private String mEncoding;
 
-    public PReadableFile(String path) {
-        this(path, Charset.defaultCharset().name());
+    public PReadableTextFile(String path) {
+        this(path, PFile.DEFAULT_ENCODING);
     }
 
-    public PReadableFile(String path, String encoding) {
+    public PReadableTextFile(String path, String encoding) {
         this(path, encoding, -1);
     }
 
-    public PReadableFile(String path, String encoding, int bufferingSize) {
+    public PReadableTextFile(String path, String encoding, int bufferingSize) {
         mEncoding = encoding;
         mBufferingSize = bufferingSize;
         try {

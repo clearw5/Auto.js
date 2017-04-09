@@ -84,8 +84,6 @@ public class EditActivity extends Editor920Activity {
 
     public static final String EXTRA_CONTENT = "Still Love Eating 17.4.5";
 
-    private static final String KEY_EDIT_ACTIVITY_FIRST_USE = "KEY_EDIT_ACTIVITY_FIRST_USE";
-
     private static final String ACTION_ON_RUN_FINISHED = "ACTION_ON_RUN_FINISHED";
     private static final String EXTRA_EXCEPTION_MESSAGE = "EXTRA_EXCEPTION_MESSAGE";
 
@@ -173,14 +171,13 @@ public class EditActivity extends Editor920Activity {
     }
 
     private void openDrawerIfFirstUse() {
-        if (Pref.def().getBoolean(KEY_EDIT_ACTIVITY_FIRST_USE, true)) {
+        if (Pref.isEditActivityFirstUsing()) {
             mDrawerLayout.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mDrawerLayout.openDrawer(GravityCompat.END);
                 }
             }, 1000);
-            Pref.def().edit().putBoolean(KEY_EDIT_ACTIVITY_FIRST_USE, false).apply();
         }
     }
 

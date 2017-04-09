@@ -51,7 +51,7 @@ public class ScrollMaxAction extends SimpleAction {
             }
         }
         for (int i = 0; i < nodeInfo.getChildCount(); i++) {
-            AccessibilityNodeInfo child = AccessibilityNodeInfoAllocator.getGlobal().getChild(nodeInfo, i);
+            AccessibilityNodeInfo child = getAllocator().getChild(nodeInfo, i);
             if (child != null) {
                 findMaxScrollableNodeInfo(child);
                 if (mMaxScrollableNode != child) {

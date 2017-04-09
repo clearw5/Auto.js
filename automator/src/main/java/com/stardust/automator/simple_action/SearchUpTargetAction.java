@@ -33,7 +33,7 @@ public class SearchUpTargetAction extends SearchTargetAction {
                 node.recycle();
                 return null;
             }
-            AccessibilityNodeInfo parent = AccessibilityNodeInfoAllocator.getGlobal().getParent(node);
+            AccessibilityNodeInfo parent = getAllocator().getParent(node);
             list.add(node);
             node = parent;
         }

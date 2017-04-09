@@ -1,5 +1,5 @@
 
-if(__engine__ == "rhino"){
+if(__engine_name__ == "rhino"){
   __importClassOld__ = importClass;
   var importClass = function(pack){
     if(typeof(pack) == "string"){
@@ -167,9 +167,9 @@ var scrollDown = function(a, b, c, d){
 
 var input = function(a, b){
     if(arguments.length == 1){
-        return __runtime__.automator.setText(__runtime__.editable(-1), a);
+        return __runtime__.automator.setText(__runtime__.automator.editable(-1), a);
     }else{
-        return __runtime__.automator.setText(__runtime__.editable(a), b);
+        return __runtime__.automator.setText(__runtime__.automator.editable(a), b);
     }
 }
 
@@ -246,14 +246,18 @@ var Text = function(text){
      return shell("input text " + text, true).code == 1;
 }
 
-var __selector__ = __runtime__.selector();
+var selector = function(){
+    return __runtime__.selector(__engine__);
+}
+
+var __selector__ = selector();
 var __obj__ = new java.lang.Object();
 
 for(var x in __selector__){
     if(!__obj__[x] && !this[x]){
         this[x] = (function(method) {
             return function(){
-                var s = __runtime__.selector();
+                var s = selector();
                 //这里不知道怎么写。尴尬。只能写成这样。
                 if(arguments.length == 0){
                    return s[method]();
@@ -274,8 +278,16 @@ for(var x in __selector__){
 
 }
 
-var open = function(path, mode){
-    return com.stardust.pio.PFile.open(path, mode);
+var open = function(path, mode, encoding, bufferSize){
+    if(arguments.length == 1){
+        return com.stardust.pio.PFile.open(path);
+    }else if(arguments.length == 2){
+        return com.stardust.pio.PFile.open(path, mode);
+    }else if(arguments.length == 3){
+        return com.stardust.pio.PFile.open(path, mode, encoding);
+    }else if(arguments.length == 4){
+        return com.stardust.pio.PFile.open(path, mode, encoding, bufferSize);
+    }
 }
 
 __importClassOld__(com.stardust.autojs.runtime.api.Shell);

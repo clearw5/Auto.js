@@ -3,7 +3,6 @@ package com.stardust.scriptdroid.external.floating_window.view;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -173,7 +172,7 @@ public class FloatingScriptFileListView extends RecyclerView {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(getContext()).inflate(R.layout.floating_script_list_recycler_view_item, parent, false);
+            View itemView = LayoutInflater.from(getContext()).inflate(R.layout.floating_script_list_recycler_view_file, parent, false);
             return new ViewHolder(itemView);
         }
 
@@ -199,7 +198,7 @@ public class FloatingScriptFileListView extends RecyclerView {
             name = (TextView) itemView.findViewById(R.id.name);
             path = (TextView) itemView.findViewById(R.id.path);
             ViewUtil.$(itemView, R.id.edit).setOnClickListener(mOnEditIconClickListener);
-            ViewUtil.$(itemView, R.id.more).setOnClickListener(mOnMoreIconClickListener);
+            //ViewUtil.$(itemView, R.id.more).setOnClickListener(mOnMoreIconClickListener);
             itemView.setOnClickListener(mOnItemClickListener);
         }
     }

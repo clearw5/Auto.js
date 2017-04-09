@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import com.stardust.autojs.R;
+import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.rhino_android.AndroidClassLoader;
 import com.stardust.autojs.runtime.simple_action.SimpleActionAutomator;
 import com.stardust.autojs.runtime.api.AppUtils;
@@ -16,6 +17,7 @@ import com.stardust.util.ClipboardUtil;
 import com.stardust.util.SdkVersionUtil;
 import com.stardust.util.Shell;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
+import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
 import org.mozilla.javascript.ContextFactory;
 
@@ -92,8 +94,13 @@ public class ScriptRuntime {
     }
 
     @JavascriptInterface
-    public UiSelector selector() {
-        return new UiSelector(mAccessibilityBridge);
+    public UiSelector selector(JavaScriptEngine engine) {
+        AccessibilityNodeInfoAllocator allocator = (AccessibilityNodeInfoAllocator) engine.getTag("allocator");
+        if(allocator == null){
+            allocator = new AccessibilityNodeInfoAllocator();
+            engine.setTag("allocator", allocator);
+        }
+        return new UiSelector(mAccessibilityBridge, allocator);
     }
 
     @JavascriptInterface

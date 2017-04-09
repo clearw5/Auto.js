@@ -40,6 +40,7 @@ public class ScriptExecutionTask implements Serializable {
                 runtime.ensureAccessibilityServiceEnabled();
             }
             mExecutionListener.onStart(engine, mScriptSource);
+            engine.setTag("script", mScriptSource);
             mExecutionListener.onSuccess(engine, mScriptSource, engine.execute(mScriptSource));
         } catch (Exception e) {
             mExecutionListener.onException(engine, mScriptSource, e);

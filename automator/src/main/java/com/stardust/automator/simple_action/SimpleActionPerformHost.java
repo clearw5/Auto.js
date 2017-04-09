@@ -56,7 +56,6 @@ public class SimpleActionPerformHost implements AccessibilityDelegate {
 
 
     private synchronized void onActionPerformed(SimpleAction simpleAction) {
-        AccessibilityNodeInfoAllocator.getGlobal().recycleAll();
         synchronized (simpleAction) {
             simpleAction.notify();
         }

@@ -9,6 +9,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.stardust.automator.simple_action.FilterAction;
 import com.stardust.scriptdroid.layout_inspector.NodeInfo;
 import com.stardust.util.SparseArrayEntries;
+import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 import com.stardust.view.accessibility.AccessibilityNodeInfoHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -121,11 +122,13 @@ public class AccessibilityActionConverter {
             AccessibilityNodeInfo source = event.getSource();
             if (source == null)
                 return;
-            List<AccessibilityNodeInfo> editableList = FilterAction.EditableFilter.findEditable(service.getRootInActiveWindow());
+            AccessibilityNodeInfoAllocator allocator = new AccessibilityNodeInfoAllocator();
+            List<AccessibilityNodeInfo> editableList = FilterAction.EditableFilter.findEditable(allocator, service.getRootInActiveWindow());
             int i = findInEditableList(editableList, source);
             recycle(editableList);
             sb.append("while(!input(").append(i).append(", \"").append(source.getText()).append("\"));");
             source.recycle();
+            allocator.recycleAll();
         }
 
         private void recycle(List<AccessibilityNodeInfo> list) {

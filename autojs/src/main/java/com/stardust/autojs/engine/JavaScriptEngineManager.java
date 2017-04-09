@@ -44,13 +44,17 @@ public abstract class JavaScriptEngineManager {
         JavaScriptEngine engine = createEngineInner();
         putProperties(engine);
         engine.init();
+        addEngine(engine);
+        return engine;
+    }
+
+    private void addEngine(JavaScriptEngine engine) {
         synchronized (mEngines) {
             mEngines.add(engine);
-            if(mEngineLifecycleCallback != null){
+            if (mEngineLifecycleCallback != null) {
                 mEngineLifecycleCallback.onEngineCreate(engine);
             }
         }
-        return engine;
     }
 
     public void put(String varName, Object value) {
@@ -82,7 +86,7 @@ public abstract class JavaScriptEngineManager {
     void removeEngine(JavaScriptEngine engine) {
         synchronized (mEngines) {
             mEngines.remove(engine);
-            if(mEngineLifecycleCallback != null){
+            if (mEngineLifecycleCallback != null) {
                 mEngineLifecycleCallback.onEngineRemove(engine);
             }
         }

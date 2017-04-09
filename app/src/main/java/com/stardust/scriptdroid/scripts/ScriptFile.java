@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.scripts;
 
 import android.os.Environment;
 
+import com.android.dex.util.FileUtils;
 import com.stardust.pio.PFile;
 
 import java.io.File;
@@ -24,7 +25,7 @@ public class ScriptFile extends File {
     }
 
     private void init() {
-        mSimplifiedName = PFile.getNameWithoutExtension(getPath());
+        mSimplifiedName = PFile.getNameWithoutExtension(getName());
         mSimplifyPath = getPath();
         if (mSimplifyPath.startsWith(Environment.getExternalStorageDirectory().getPath())) {
             mSimplifyPath = mSimplifyPath.substring(Environment.getExternalStorageDirectory().getPath().length());
@@ -37,7 +38,14 @@ public class ScriptFile extends File {
     }
 
     public boolean renameTo(String newName) {
-        return renameTo(new File(getParent(), newName));
+        if (isDirectory())
+            return renameTo(new File(getParent(), newName));
+        else
+            return renameTo(new File(getParent(), newName + getExtension()));
+    }
+
+    private String getExtension() {
+        return PFile.getExtension(getName());
     }
 
     public String getSimplifiedPath() {
@@ -91,4 +99,7 @@ public class ScriptFile extends File {
         return mSimplifiedName;
     }
 
+    public boolean moveTo(ScriptFile to) {
+        return renameTo(new File(to, getName()));
+    }
 }

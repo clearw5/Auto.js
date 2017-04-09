@@ -31,6 +31,7 @@ public class RhinoJavaScriptEngineManager extends JavaScriptEngineManager {
 
     private String mRequirePath = "";
 
+
     public RhinoJavaScriptEngineManager(android.content.Context context, ScriptRuntime runtime) {
         super(context);
         put("__runtime__", runtime);
@@ -65,7 +66,9 @@ public class RhinoJavaScriptEngineManager extends JavaScriptEngineManager {
 
     private String[] getGlobalFunctionsInner() {
         JavaScriptEngine engine = createEngine();
-        Scriptable scriptable = (Scriptable) engine.execute(new StringScriptSource("this"));
+        ScriptSource source = new StringScriptSource("this", "this");
+        engine.setTag("script", source);
+        Scriptable scriptable = (Scriptable) engine.execute(source);
         Object[] ids = scriptable.getIds();
         String[] functions = new String[ids.length];
         for (int i = 0; i < ids.length; i++) {

@@ -2,7 +2,6 @@ package com.stardust.pio;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 /**
  * Created by Stardust on 2017/4/1.
@@ -20,17 +20,33 @@ public class PFile {
 
     private static final String TAG = "PFile";
 
-    private static final int BUFFER_SIZE = 8192;
+    static final int DEFAULT_BUFFER_SIZE = 8192;
+    static final String DEFAULT_ENCODING = Charset.defaultCharset().name();
 
-    public static PFile open(String path, String mode) {
+    public static PFile open(String path, String mode, String encoding, int bufferSize) {
         switch (mode) {
             case "r":
-                return new PReadableFile(path);
+                return new PReadableTextFile(path, encoding, bufferSize);
             case "w":
-                return new PWritableFile();
+                return new PWritableTextFile(path, encoding, bufferSize, false);
+            case "a":
+                return new PWritableTextFile(path, encoding, bufferSize, true);
         }
         return null;
     }
+
+    public static PFile open(String path, String mode, String encoding) {
+        return open(path, mode, encoding, DEFAULT_BUFFER_SIZE);
+    }
+
+    public static PFile open(String path, String mode) {
+        return open(path, mode, DEFAULT_ENCODING, DEFAULT_BUFFER_SIZE);
+    }
+
+    public static PFile open(String path) {
+        return open(path, "r", DEFAULT_ENCODING, DEFAULT_BUFFER_SIZE);
+    }
+
 
     public static boolean createIfNotExists(String path) {
         ensureDirectory(path);
@@ -119,7 +135,7 @@ public class PFile {
     }
 
     public static boolean write(InputStream is, OutputStream os) {
-        byte[] buffer = new byte[BUFFER_SIZE];
+        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         try {
             while (is.available() > 0) {
                 int n = is.read(buffer);
@@ -155,16 +171,16 @@ public class PFile {
 
     public static String renameWithoutExtension(String path, String newName) {
         File file = new File(path);
-        File newFile = new File(file.getParent(), newName + "." + getExtension(file.getName()));
+        File newFile = new File(file.getParent(), newName + getExtension(file.getName()));
         file.renameTo(newFile);
         return newFile.getAbsolutePath();
     }
 
     public static String getExtension(String fileName) {
         int i = fileName.lastIndexOf('.');
-        if (i < 0)
+        if (i < 0 || i == fileName.length() - 1)
             return "";
-        return fileName.substring(i + 1);
+        return fileName.substring(i);
     }
 
     public static boolean write(String path, String text) {
@@ -223,7 +239,7 @@ public class PFile {
             name += name.hashCode();
         }
         try {
-            File tmpFile = File.createTempFile(name, "." + extension, context.getCacheDir());
+            File tmpFile = File.createTempFile(name, extension, context.getCacheDir());
             copyAsset(context, path, tmpFile.getPath());
             return tmpFile;
         } catch (IOException e) {

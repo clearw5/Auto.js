@@ -1,5 +1,7 @@
 package com.stardust.view.accessibility;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -104,9 +106,10 @@ public class AccessibilityNodeInfoAllocator {
         return notRecycledCount;
     }
 
-    private AccessibilityNodeInfo add(AccessibilityNodeInfo nodeInfo) {
+    private AccessibilityNodeInfo add(@Nullable AccessibilityNodeInfo nodeInfo) {
         String stackTrace = DEBUG ? Arrays.toString(Thread.currentThread().getStackTrace()) : null;
-        mAccessibilityNodeInfoList.put(nodeInfo, stackTrace);
+        if (nodeInfo != null)
+            mAccessibilityNodeInfoList.put(nodeInfo, stackTrace);
         return nodeInfo;
     }
 
@@ -117,8 +120,6 @@ public class AccessibilityNodeInfoAllocator {
                 mAccessibilityNodeInfoList.put((AccessibilityNodeInfo) nodeInfo, stackTrace);
             } else if (nodeInfo instanceof AccessibilityNodeInfoCompat) {
                 mAccessibilityNodeInfoList.put((AccessibilityNodeInfo) ((AccessibilityNodeInfoCompat) nodeInfo).getInfo(), stackTrace);
-            } else {
-                throw new IllegalArgumentException("nodeInfo: " + nodeInfo + " nodeInfos:" + nodeInfos);
             }
         }
     }

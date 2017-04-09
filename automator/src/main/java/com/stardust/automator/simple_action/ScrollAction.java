@@ -36,11 +36,11 @@ public class ScrollAction extends SimpleAction {
 
     private List<AccessibilityNodeInfo> findScrollableNodes(AccessibilityNodeInfo root) {
         List<AccessibilityNodeInfo> list = new ArrayList<>();
-        findScrollableNodes(root, list);
+        findScrollableNodes(getAllocator(), root, list);
         return list;
     }
 
-    private static boolean findScrollableNodes(AccessibilityNodeInfo node, List<AccessibilityNodeInfo> list) {
+    private static boolean findScrollableNodes(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo node, List<AccessibilityNodeInfo> list) {
         if (node == null) {
             return false;
         }
@@ -48,10 +48,10 @@ public class ScrollAction extends SimpleAction {
             list.add(node);
         }
         for (int i = 0; i < node.getChildCount(); i++) {
-            AccessibilityNodeInfo child = AccessibilityNodeInfoAllocator.getGlobal().getChild(node, i);
+            AccessibilityNodeInfo child = allocator.getChild(node, i);
             if (child == null)
                 continue;
-            if (!findScrollableNodes(child, list))
+            if (!findScrollableNodes(allocator, child, list))
                 child.recycle();
         }
         return node.isScrollable();

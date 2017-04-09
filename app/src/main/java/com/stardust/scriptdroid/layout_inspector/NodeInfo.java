@@ -56,7 +56,7 @@ public class NodeInfo {
     }
 
     private String simplifyId(String idResourceName) {
-        if(idResourceName == null)
+        if (idResourceName == null)
             return null;
         int i = idResourceName.indexOf('/');
         return idResourceName.substring(i + 1);
@@ -75,13 +75,15 @@ public class NodeInfo {
     }
 
     public static NodeInfo capture(@NonNull AccessibilityNodeInfo root) {
+        AccessibilityNodeInfoAllocator allocator = new AccessibilityNodeInfoAllocator();
         NodeInfo nodeInfo = new NodeInfo(root);
         for (int i = 0; i < root.getChildCount(); i++) {
-            AccessibilityNodeInfo child = AccessibilityNodeInfoAllocator.getGlobal().getChild(root, i);
+            AccessibilityNodeInfo child = allocator.getChild(root, i);
             if (child != null) {
                 nodeInfo.children.add(capture(child));
             }
         }
+        allocator.recycleAll();
         return nodeInfo;
     }
 

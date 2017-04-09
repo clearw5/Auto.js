@@ -7,12 +7,14 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.autojs.runtime.AccessibilityBridge;
 import com.stardust.autojs.runtime.JavascriptInterface;
+import com.stardust.autojs.runtime.ScriptStopException;
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.automator.ActionArgument;
 import com.stardust.automator.UiGlobalSelector;
 import com.stardust.automator.UiObject;
 import com.stardust.automator.UiObjectCollection;
 import com.stardust.automator.filter.DfsFilter;
+import com.stardust.util.DeveloperUtils;
 import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
@@ -53,6 +55,7 @@ import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.
 
 public class UiSelector extends UiGlobalSelector {
 
+    @Deprecated
     private class FindCommand extends AccessibilityEventCommandHost.AbstractCommand {
 
         UiObjectCollection result;
@@ -70,20 +73,28 @@ public class UiSelector extends UiGlobalSelector {
     private static final String TAG = "UiSelector";
 
     private AccessibilityBridge mAccessibilityBridge;
+    private AccessibilityNodeInfoAllocator mAllocator = AccessibilityNodeInfoAllocator.getGlobal();
 
     public UiSelector(AccessibilityBridge accessibilityBridge) {
         mAccessibilityBridge = accessibilityBridge;
     }
 
+    public UiSelector(AccessibilityBridge accessibilityBridge, AccessibilityNodeInfoAllocator allocator) {
+        mAccessibilityBridge = accessibilityBridge;
+        mAllocator = allocator;
+    }
 
     @JavascriptInterface
     public UiObjectCollection find() {
         ensureAccessibilityServiceEnabled();
+        if (isRunningPackageSelf()) {
+            return null;
+        }
         AccessibilityService service = mAccessibilityBridge.getService();
         if (service != null) {
             AccessibilityNodeInfo root = service.getRootInActiveWindow();
             if (root != null) {
-                return findOf(root);
+                return findOf(mAllocator, root);
             }
         }
         return null;
@@ -93,12 +104,19 @@ public class UiSelector extends UiGlobalSelector {
         mAccessibilityBridge.ensureServiceEnabled();
     }
 
+    private boolean isRunningPackageSelf() {
+        return DeveloperUtils.isRunningPackageSelf(mAccessibilityBridge.getInfoProvider().getLatestPackage());
+    }
+
 
     @JavascriptInterface
     @NonNull
     public UiObjectCollection untilFind() {
         UiObjectCollection uiObjectCollection;
         do {
+            if (Thread.currentThread().isInterrupted()) {
+                throw new ScriptStopException(new InterruptedException());
+            }
             uiObjectCollection = find();
         } while (uiObjectCollection == null || uiObjectCollection.size() == 0);
         return uiObjectCollection;

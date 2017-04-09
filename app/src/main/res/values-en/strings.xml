@@ -158,6 +158,9 @@
     <string name="text_please_choose_file_to_import">请选择要导入的脚本</string>
     <string name="text_refresh">刷新</string>
     <string name="notice_no_running_script"><![CDATA[没有正在运行的脚本 φ(>ω<*)]]></string>
+    <string name="text_checking_update">正在检查更新</string>
+    <string name="text_new_version">新版本</string>
+    <string name="text_is_latest_version">已经是最新版本</string>
     <string-array name="record_control_keys">
         <item>None</item>
         <item>Volume Up</item>

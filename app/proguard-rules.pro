@@ -24,3 +24,61 @@
 -dontwarn jackpal.androidterm.**
 -dontwarn com.iwebpp.nodeandroid.**
 -dontwarn org.msgpack.core.**
+
+-keep class org.mozilla.javascript.** { *; }
+-keep class com.jecelyin.editor.** { *; }
+-keep class com.stardust.automator.** { *; }
+-keep class com.stardust.autojs.** { *; }
+-keep class org.greenrobot.eventbus.** { *; }
+-keep class * extends c
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keepclassmembers class ** {
+    @com.stardust.autojs.runtime.JavascriptInterface <methods>;
+}
+-keep class org.msgpack.** { *; }
+
+
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+-keepclassmembers public class * extends android.view.View {
+   void set*(***);
+   *** get*();
+}
+
+-keep class * extends android.support.v4.app.Fragment {
+    <methods>;
+}
+
+-keepclassmembers class * extends android.app.Activity {
+   public void *(android.view.View);
+}
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+-keep class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator *;
+}
+
+-keepclassmembers class **.R$* {
+    public static <fields>;
+}
+
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
+
+-keepattributes Signature
+-keepattributes EnclosingMethod

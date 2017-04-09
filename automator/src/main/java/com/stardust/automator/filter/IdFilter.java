@@ -2,6 +2,8 @@ package com.stardust.automator.filter;
 
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+
 import java.util.List;
 
 /**
@@ -45,8 +47,8 @@ public class IdFilter extends ListFilter.Default {
     }
 
     @Override
-    public List<AccessibilityNodeInfo> filter(AccessibilityNodeInfo node) {
-        return node.findAccessibilityNodeInfosByViewId(mId);
+    public List<AccessibilityNodeInfo> filter(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo node) {
+        return allocator.findAccessibilityNodeInfosByViewId(node, mId);
     }
 
 

@@ -17,8 +17,8 @@ import com.stardust.view.accessibility.AccessibilityDelegate;
 public class AccessibilityInfoProvider implements AccessibilityDelegate {
 
 
-    private String mLatestPackage = "";
-    private String mLatestActivity = "";
+    private volatile String mLatestPackage = "";
+    private volatile String mLatestActivity = "";
     private PackageManager mPackageManager;
 
     public AccessibilityInfoProvider(PackageManager packageManager) {

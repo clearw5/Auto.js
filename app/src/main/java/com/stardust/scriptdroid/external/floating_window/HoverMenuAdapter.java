@@ -18,7 +18,7 @@ import android.view.View;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.floating_window.content.MainMenuNavigatorContent;
 import com.stardust.scriptdroid.external.floating_window.content.RecordNavigatorContent;
-import com.stardust.scriptdroid.external.floating_window.content.ScritpListNavigatorContent;
+import com.stardust.scriptdroid.external.floating_window.content.ScriptListNavigatorContent;
 import com.stardust.theme.ThemeColorManagerCompat;
 
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class HoverMenuAdapter implements io.mattcarroll.hover.HoverMenuAdapter {
 
         mData.put(HoverMenuAdapter.ID_MAIN, new MainMenuNavigatorContent(context));
         mData.put(HoverMenuAdapter.ID_RECORD, new RecordNavigatorContent(context));
-        mData.put(HoverMenuAdapter.ID_SCRIPT_LIST, new ScritpListNavigatorContent(context));
+        mData.put(HoverMenuAdapter.ID_SCRIPT_LIST, new ScriptListNavigatorContent(context));
 
         mTabIds = new ArrayList<>();
         for (String tabId : mData.keySet()) {

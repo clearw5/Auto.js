@@ -18,8 +18,8 @@ public class TouchRecorder extends InputEventToJsRecorder {
     }
 
     private void setUpTriggers() {
-        setStartTriggerKey(Pref.def().getString(App.getResString(R.string.key_start_record_trigger), null));
-        setStopTriggerKey(Pref.def().getString(App.getResString(R.string.key_stop_record_trigger), null));
+        setStartTriggerKey(Pref.getStartRecordTrigger());
+        setStopTriggerKey(Pref.getStopRecordTrigger());
     }
 
 

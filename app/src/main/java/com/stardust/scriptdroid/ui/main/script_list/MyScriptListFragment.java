@@ -45,6 +45,7 @@ public class MyScriptListFragment extends Fragment {
     private ScriptFile mSelectedScriptFile;
     private MaterialDialog.InputCallback mFileNameInputCallback = new InputCallback(false);
     private MaterialDialog.InputCallback mDirectoryNameInputCallback = new InputCallback(true);
+    private int mSelectedPosition;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,14 +83,15 @@ public class MyScriptListFragment extends Fragment {
         });
         mScriptListRecyclerView.setOnItemClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileClickListener() {
             @Override
-            public void onClick(ScriptFile file) {
+            public void onClick(ScriptFile file, int position) {
                 EditActivity.editFile(getContext(), file);
             }
         });
         mScriptListRecyclerView.setOnItemLongClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileLongClickListener() {
             @Override
-            public void onLongClick(ScriptFile file) {
+            public void onLongClick(ScriptFile file, int position) {
                 mSelectedScriptFile = file;
+                mSelectedPosition = position;
                 if (file.isDirectory()) {
                     mDirectoryOperationDialog.show();
                 } else {
@@ -226,6 +228,7 @@ public class MyScriptListFragment extends Fragment {
             @Override
             public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                 mSelectedScriptFile.renameTo(input.toString());
+                StorageScriptProvider.getDefault().notifyDirectoryChanged(mScriptListRecyclerView.getCurrentDirectory());
                 onScriptFileOperated();
             }
         });

@@ -15,6 +15,8 @@ import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.automator.simple_action.SimpleAction;
 import com.stardust.automator.simple_action.ActionFactory;
 import com.stardust.automator.simple_action.ActionTarget;
+import com.stardust.util.DeveloperUtils;
+import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -180,16 +182,26 @@ public class SimpleActionAutomator {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T performAction(SimpleAction simpleAction) {
+    private boolean performAction(SimpleAction simpleAction) {
         ensureAccessibilityServiceEnabled();
-        AccessibilityService service = mAccessibilityBridge.getService();
-        if (service != null) {
-            AccessibilityNodeInfo root = service.getRootInActiveWindow();
-            Log.i("Automator", "performAction: " + simpleAction + " root = " + root);
-            if (root != null) {
-                simpleAction.setResult(simpleAction.perform(root));
-            }
+        if (isRunningPackageSelf()) {
+            return false;
         }
-        return (T) simpleAction.getResult();
+        AccessibilityService service = mAccessibilityBridge.getService();
+        if (service == null)
+            return false;
+        AccessibilityNodeInfo root = service.getRootInActiveWindow();
+        if (root == null)
+            return false;
+        AccessibilityNodeInfoAllocator allocator = new AccessibilityNodeInfoAllocator();
+        simpleAction.setAllocator(allocator);
+        Log.i("Automator", "performAction: " + simpleAction + " root = " + root);
+        boolean result = simpleAction.perform(root);
+        allocator.recycleAll();
+        return result;
+    }
+
+    private boolean isRunningPackageSelf() {
+        return DeveloperUtils.isRunningPackageSelf(mAccessibilityBridge.getInfoProvider().getLatestPackage());
     }
 }

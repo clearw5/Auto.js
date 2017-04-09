@@ -1,6 +1,7 @@
 package com.stardust.autojs;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.JavaScriptEngineManager;
@@ -10,6 +11,7 @@ import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.script.ScriptSource;
 
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -20,6 +22,7 @@ import java.util.Set;
 
 public class ScriptEngineService {
 
+    private static final String LOG_TAG = "ScriptEngineService";
     private static ScriptEngineService instance;
 
     public static ScriptEngineService getInstance() {
@@ -73,7 +76,9 @@ public class ScriptEngineService {
     }
 
     public JavaScriptEngine createScriptEngine() {
-        return mJavaScriptEngineManager.createEngine();
+        JavaScriptEngine engine = mJavaScriptEngineManager.createEngine();
+        Log.i(LOG_TAG, Arrays.toString(Thread.currentThread().getStackTrace()));
+        return engine;
     }
 
     public void registerEngineLifecycleCallback(JavaScriptEngineManager.EngineLifecycleCallback engineLifecycleCallback) {

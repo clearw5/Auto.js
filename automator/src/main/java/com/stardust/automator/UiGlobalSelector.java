@@ -352,27 +352,26 @@ public class UiGlobalSelector {
         return this;
     }
 
-    public UiObjectCollection findOf(AccessibilityNodeInfo node) {
-        List<AccessibilityNodeInfo> list = new ArrayList<>();
-        list.add(node);
-        for (ListFilter filter : mFilters) {
-            list = filter.filter(list);
-        }
-        return UiObjectCollection.of(list);
-    }
-
     public UiObjectCollection findOf(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo node) {
         List<AccessibilityNodeInfo> list = new ArrayList<>();
         list.add(node);
         for (ListFilter filter : mFilters) {
-            list = filter.filter(list);
+            list = filter.filter(allocator, list);
         }
         return UiObjectCollection.of(list);
     }
 
-    public UiObject findOneOf(AccessibilityNodeInfo node) {
+    public UiObjectCollection findOf(AccessibilityNodeInfo node) {
+        return findOf(AccessibilityNodeInfoAllocator.NONE, node);
+    }
+
+    public UiObject findOneOf(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo node) {
         // TODO: 2017/3/9 优化
-        return new UiObject(findOf(node).get(0).getInfo());
+        return new UiObject(findOf(allocator, node).get(0).getInfo());
+    }
+
+    public UiObject findOneOf(AccessibilityNodeInfo node) {
+        return findOneOf(AccessibilityNodeInfoAllocator.NONE, node);
     }
 
     public UiGlobalSelector addFilter(ListFilter filter) {

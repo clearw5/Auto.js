@@ -1,7 +1,10 @@
 package com.stardust.scriptdroid.tool;
 
+import android.accessibilityservice.AccessibilityService;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.Pref;
@@ -10,6 +13,8 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.util.Shell;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
+
+import java.util.Locale;
 
 import static com.stardust.view.accessibility.AccessibilityServiceUtils.isAccessibilityServiceEnabled;
 
@@ -20,8 +25,8 @@ import static com.stardust.view.accessibility.AccessibilityServiceUtils.isAccess
 public class AccessibilityServiceTool {
 
     public static void enableAccessibilityService() {
-        if (Pref.def().getBoolean(App.getApp().getString(R.string.key_enable_accessibility_service_by_root), false)) {
-            if (!enableAccessibilityServiceByRootAndWaitFor(AccessibilityWatchDogService.class, 3000)) {
+        if (Pref.enableAccessibilityServiceByRoot()) {
+            if (!enableAccessibilityServiceByRoot(AccessibilityWatchDogService.class)) {
                 goToAccessibilitySetting();
             }
         } else {
@@ -41,28 +46,32 @@ public class AccessibilityServiceTool {
         }
     }
 
-    public static boolean enableAccessibilityServiceByRootAndWaitFor(Class<AccessibilityWatchDogService> accessibilityService, int timeout) {
-        Shell.execCommand("settings put secure enabled_accessibility_services %accessibility:"
-                + App.getApp().getPackageName() + "/" + accessibilityService.getName(), true);
-        long millis = System.currentTimeMillis();
-        while (true) {
-            if (isAccessibilityServiceEnabled(App.getApp(), accessibilityService))
-                return true;
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (System.currentTimeMillis() - millis >= timeout) {
-                return false;
-            }
+    private static final String cmd = "enabled=$(settings get secure enabled_accessibility_services)\n" +
+            "pkg=%s\n" +
+            "if [[ $enabled == *$pkg* ]]\n" +
+            "then\n" +
+            "echo already_enabled\n" +
+            "else\n" +
+            "enabled=$pkg:$enabled\n" +
+            "settings put secure enabled_accessibility_services $enabled\n" +
+            "fi";
+
+    public static boolean enableAccessibilityServiceByRoot(Class<? extends AccessibilityService> accessibilityService) {
+        String serviceName = App.getApp().getPackageName() + "/" + accessibilityService.getName();
+        return TextUtils.isEmpty(Shell.execCommand(String.format(Locale.getDefault(), cmd, serviceName), true).error);
+    }
+
+    public static boolean enableAccessibilityServiceByRootAndWaitFor(long timeOut) {
+        if (enableAccessibilityServiceByRoot(AccessibilityWatchDogService.class)) {
+            AccessibilityWatchDogService.waitForEnabled(timeOut);
         }
+        return true;
     }
 
     public static void enableAccessibilityServiceByRootIfNeeded() {
         if (AccessibilityWatchDogService.getInstance() == null)
-            if (Pref.def().getBoolean(App.getApp().getString(R.string.key_enable_accessibility_service_by_root), false)) {
-                AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(AccessibilityWatchDogService.class, 3000);
+            if (Pref.enableAccessibilityServiceByRoot()) {
+                AccessibilityServiceTool.enableAccessibilityServiceByRoot(AccessibilityWatchDogService.class);
             }
     }
 }

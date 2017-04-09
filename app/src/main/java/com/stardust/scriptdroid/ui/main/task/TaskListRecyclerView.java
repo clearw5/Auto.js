@@ -128,7 +128,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Java
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.bind(mScriptEngines.get(position).getExecutedScript());
+            holder.bind((ScriptSource) mScriptEngines.get(position).getTag("script"));
         }
 
         @Override

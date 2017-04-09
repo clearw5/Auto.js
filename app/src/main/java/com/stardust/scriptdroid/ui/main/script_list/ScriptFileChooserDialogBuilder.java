@@ -52,7 +52,7 @@ public class ScriptFileChooserDialogBuilder extends MaterialDialog.Builder {
         if (mFileCallback != null) {
             mScriptListWithProgressBarView.setOnItemClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileClickListener() {
                 @Override
-                public void onClick(ScriptFile file) {
+                public void onClick(ScriptFile file, int position) {
                     mFileCallback.onFileSelection(dialog, file);
                 }
             });

@@ -11,9 +11,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.Pref;
+import com.stardust.scriptdroid.tool.UpdateChecker;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.error.IssueReporterActivity;
 import com.stardust.scriptdroid.ui.main.MainActivity;
+import com.stardust.scriptdroid.ui.update.UpdateCheckDialog;
 import com.stardust.util.IntentUtil;
 import com.stardust.util.MapEntries;
 import com.stardust.scriptdroid.R;
@@ -113,6 +115,12 @@ public class SettingsActivity extends BaseActivity {
                         @Override
                         public void run() {
                             EventBus.getDefault().post(new MessageEvent(MainActivity.MESSAGE_CLEAR_BACKGROUND_SETTINGS));
+                        }
+                    })
+                    .entry(getString(R.string.text_check_update), new Runnable() {
+                        @Override
+                        public void run() {
+                            new UpdateCheckDialog(getActivity()).show();
                         }
                     })
                     .entry(getString(R.string.text_issue_report), new Runnable() {
