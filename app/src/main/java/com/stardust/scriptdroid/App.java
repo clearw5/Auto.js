@@ -10,13 +10,17 @@ import android.support.annotation.Keep;
 import com.squareup.leakcanary.LeakCanary;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.app.VolumeChangeObserver;
+import com.stardust.mi666.OCR;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.CrashHandler;
-import com.stardust.scriptdroid.tool.UpdateChecker;
+import com.stardust.scriptdroid.tool.JsBeautifierFactory;
 import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
 import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
+import com.stardust.util.ScreenMetrics;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -26,22 +30,24 @@ public class App extends Application {
 
     private static final String TAG = "App";
 
-    private static App instance;
-    private static Activity currentActivity;
+    private static WeakReference<App> instance;
+    private static WeakReference<Activity> currentActivity;
 
     public static App getApp() {
-        return instance;
+        return instance.get();
     }
 
     private VolumeChangeObserver mVolumeChangeObserver = new VolumeChangeObserver();
 
     public void onCreate() {
         super.onCreate();
-        instance = this;
+        instance = new WeakReference<>(this);
         setUpDebugEnvironment();
         init();
         registerActivityLifecycleCallback();
+
     }
+
 
     private void setUpDebugEnvironment() {
         if (LeakCanary.isInAnalyzerProcess(this)) {
@@ -56,8 +62,10 @@ public class App extends Application {
         ThemeColorManager.setDefaultThemeColor(new ThemeColor(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorPrimaryDark), getResources().getColor(R.color.colorAccent)));
         ThemeColorManager.init(this);
         AutoJs.initInstance(this);
+        JsBeautifierFactory.initJsBeautify(this, "js/jsbeautify.js");
         initVolumeChangeObserver();
         startService(new Intent(this, AccessibilityWatchDogService.class));
+        OCR.init(this);
     }
 
     private void initVolumeChangeObserver() {
@@ -74,10 +82,6 @@ public class App extends Application {
 
     private void registerActivityLifecycleCallback() {
         registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                currentActivity = activity;
-            }
 
             @Override
             public void onActivityPaused(Activity activity) {
@@ -86,20 +90,17 @@ public class App extends Application {
 
             @Override
             public void onActivityResumed(Activity activity) {
-                currentActivity = activity;
+                ScreenMetrics.initIfNeeded(activity);
+                currentActivity = new WeakReference<>(activity);
             }
 
-            @Override
-            public void onActivityStopped(Activity activity) {
-                currentActivity = null;
-            }
 
         });
     }
 
     @Keep
     public static Activity currentActivity() {
-        return currentActivity;
+        return currentActivity.get();
     }
 
     public static String getResString(int id) {

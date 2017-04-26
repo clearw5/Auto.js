@@ -24,6 +24,7 @@ import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
 public class SimpleActionAutomator {
 
+    @Deprecated
     private static class PerformGlobalActionCommand extends AccessibilityEventCommandHost.AbstractCommand {
 
         boolean result;
@@ -91,22 +92,22 @@ public class SimpleActionAutomator {
     }
 
     @JavascriptInterface
-    public boolean scrollUp(int i) {
+    public boolean scrollBackward(int i) {
         return performAction(ActionFactory.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, i));
     }
 
     @JavascriptInterface
-    public boolean scrollDown(int i) {
+    public boolean scrollForward(int i) {
         return performAction(ActionFactory.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, i));
     }
 
     @JavascriptInterface
-    public boolean scrollAllUp() {
+    public boolean scrollMaxBackward() {
         return performAction(ActionFactory.createScrollMaxAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD));
     }
 
     @JavascriptInterface
-    public boolean scrollAllDown() {
+    public boolean scrollMaxForward() {
         return performAction(ActionFactory.createScrollMaxAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD));
     }
 

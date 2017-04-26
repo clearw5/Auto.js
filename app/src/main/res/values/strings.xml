@@ -199,6 +199,17 @@
     <string name="text_check_update_error">检查更新失败Orz</string>
     <string name="text_check_update">检查更新</string>
     <string name="text_is_latest_version">已经是最新版本</string>
+    <string name="text_version_too_old">版本过低</string>
+    <string name="warning_version_too_old">当然版本为公测版，显现和潜在的问题很多，不再适合继续使用，</string>
+    <string name="text_update">更新</string>
+    <string name="text_release_notes">更新日志</string>
+    <string name="text_download_url">下载地址</string>
+    <string name="text_directly_download">直接下载</string>
+    <string name="text_downloading">下载中</string>
+    <string name="text_download_failed">下载失败~请到应用商店下载</string>
+    <string name="text_do_not_ask_again_for_this_version">此版本不再提示</string>
+    <string name="text_code_beautify">格式化代码</string>
+    <string name="text_processing">处理中</string>
 
     <string-array name="record_control_keys">
         <item>无</item>

@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
+import java.io.File;
+
 
 public class IntentUtil {
 
@@ -80,5 +82,12 @@ public class IntentUtil {
 
     public static boolean goToAppDetailSettings(Context context) {
         return goToAppDetailSettings(context, context.getPackageName());
+    }
+
+    public static void installApk(Context context, String path) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(new File(path)), "application/vnd.android.package-archive");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 }

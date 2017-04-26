@@ -79,6 +79,9 @@ var clearConsole = function(){
 }
 
 var shell = function(cmd, root){
+    if(arguments.length == 1){
+        return new com.stardust.scriptdroid.tool.Shell(context, arguments[0] ? 1 : 0);
+    }
     root = root ? 1 : 0;
     return __runtime__.shell(cmd, root);
 }
@@ -145,23 +148,23 @@ var longClick = function(a, b, c, d){
 }
 
 
-var scrollUp = function(a, b, c, d){
+var scrollDown = function(a, b, c, d){
     if(arguments.length == 0)
-        return __runtime__.automator.scrollAllUp();
+        return __runtime__.automator.scrollMaxForward();
     if(arguments.length == 1 && typeof a === 'number')
-        return __runtime__.automator.scrollUp(a);
+        return __runtime__.automator.scrollForward(a);
     return performAction(function(target){
-        return __runtime__.automator.scrollUp(target);
+        return __runtime__.automator.scrollForward(target);
     }, arguments);
 }
 
-var scrollDown = function(a, b, c, d){
+var scrollUp = function(a, b, c, d){
      if(arguments.length == 0)
-        return __runtime__.automator.scrollAllDown();
+        return __runtime__.automator.scrollMaxBackward();
      if(arguments.length == 1 && typeof a === 'number')
-        return __runtime__.automator.scrollDown(a);
+        return __runtime__.automator.scrollBackward(a);
       return performAction(function(target){
-        return __runtime__.automator.scrollDown(target);
+        return __runtime__.automator.scrollBackward(target);
     }, arguments);
 }
 
@@ -180,18 +183,23 @@ var setClip = function(text){
 
 
 var Tap = function(x, y){
-    return shell("input tap " + x + " " + y, true).code == 1;
+    __runtime__.shellExecNotReturnResultWithRoot("input tap " + x + " " + y);
 }
 
 var Swipe = function(x1, y1, x2, y2, duration){
     if(arguments.length == 5){
-        return shell("input swipe " + x1 + " " + y1 + " " + x2 + " " + y2 + " " + duration, true).code == 1;
+        __runtime__.shellExecNotReturnResultWithRoot("input swipe " + x1 + " " + y1 + " " + x2 + " " + y2 + " " + duration);
+    }else{
+         __runtime__.shellExecNotReturnResultWithRoot("input swipe " + x1 + " " + y1 + " " + x2 + " " + y2);
     }
-    return shell("input swipe " + x1 + " " + y1 + " " + x2 + " " + y2, true).code == 1;
+}
+
+var Screencap = function(path){
+    __runtime__.shellExecNotReturnResultWithRoot("screencap -p " + path);
 }
 
 var KeyCode = function(keyCode){
-    return shell("input keyevent " + keyCode, true).code == 1;
+    __runtime__.shellExecNotReturnResultWithRoot("input keyevent " + keyCode);
 }
 
 var Home = function(){
@@ -243,7 +251,7 @@ var Camera = function(){
 }
 
 var Text = function(text){
-     return shell("input text " + text, true).code == 1;
+     __runtime__.shellExecNotReturnResultWithRoot("input text " + text);
 }
 
 var selector = function(){
@@ -290,7 +298,8 @@ var open = function(path, mode, encoding, bufferSize){
     }
 }
 
-__importClassOld__(com.stardust.autojs.runtime.api.Shell);
+
+//__importClassOld__(com.stardust.autojs.runtime.api.SlowShell);
 
 var newInjectableWebClient = function(){
     return new com.stardust.autojs.runtime.api.InjectableWebClient(org.mozilla.javascript.Context.getCurrentContext(), __this__);

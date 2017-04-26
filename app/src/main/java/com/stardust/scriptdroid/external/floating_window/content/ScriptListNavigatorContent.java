@@ -96,6 +96,7 @@ public class ScriptListNavigatorContent implements NavigatorContent {
                     int position = mFloatingScriptFileListView.getChildViewHolder((View) v.getParent()).getAdapterPosition();
                     ScriptFile file = mFloatingScriptFileListView.getAdapter().getScriptFileAt(position);
                     EditActivity.editFile(v.getContext(), file);
+                    HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_COLLAPSE_MENU));
                 }
             });
 

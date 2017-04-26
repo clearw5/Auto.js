@@ -122,7 +122,7 @@ public class CodeCompletion implements TextWatcher {
     }
 
     private Collection<CodeCompletionItem> searchWordCompletion(String str) {
-        if (mEditText.getEditableText().length() < Pref.MaxTextLengthForCodeCompletion()) {
+        if (mEditText.getEditableText().length() < Pref.getMaxTextLengthForCodeCompletion()) {
             return searchCodeCompletion(str, splitWord(mEditText.getEditableText().toString()));
         }
         return new TreeSet<>();

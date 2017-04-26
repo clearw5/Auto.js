@@ -46,7 +46,7 @@ public class Pref {
     }
 
     public static boolean isFirstGoToAccessibilitySetting() {
-        return getDisposableBoolean("isFirstGoToAccessibilitySetting", true);
+        return getDisposableBoolean("I miss you so much ...", true);
     }
 
     public static int oldVersion() {
@@ -77,7 +77,7 @@ public class Pref {
         return App.getResString(id);
     }
 
-    public static int MaxTextLengthForCodeCompletion() {
+    public static int getMaxTextLengthForCodeCompletion() {
         try {
             return Integer.parseInt(def().getString(App.getApp().getString(R.string.key_max_length_for_code_completion), "2000"));
         } catch (NumberFormatException e) {

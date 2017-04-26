@@ -3,24 +3,21 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_redo"
-        android:icon="@drawable/ic_undo_white_48dp"
+        android:id="@+id/action_beautify"
         android:orderInCategory="100"
-        android:title="@string/text_undo"
-        app:showAsAction="ifRoom|withText"/>
+        android:title="@string/text_code_beautify"
+        app:showAsAction="never"/>
 
     <item
-        android:id="@+id/action_undo"
-        android:icon="@drawable/ic_redo_white_48dp"
+        android:id="@+id/action_help"
         android:orderInCategory="200"
-        android:title="@string/text_redo"
-        app:showAsAction="ifRoom|withText"/>
+        android:title="@string/text_help"
+        app:showAsAction="never"/>
 
     <item
-        android:id="@+id/action_save"
-        android:icon="@drawable/ic_save_white_48dp"
+        android:id="@+id/action_console"
         android:orderInCategory="300"
-        android:title="@string/text_save"
-        app:showAsAction="ifRoom|withText"/>
+        android:title="@string/text_console"
+        app:showAsAction="never"/>
 
 </menu>

@@ -25,26 +25,27 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.NotAskAgainDialog;
 import com.stardust.app.OnActivityResultDelegate;
+import com.stardust.scriptdroid.BuildConfig;
+import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.scripts.ScriptFile;
 import com.stardust.scriptdroid.scripts.StorageScriptProvider;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.DrawableSaver;
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.ui.main.script_list.MyScriptListFragment;
 import com.stardust.scriptdroid.ui.main.sample_list.SampleScriptListFragment;
+import com.stardust.scriptdroid.ui.main.script_list.MyScriptListFragment;
 import com.stardust.scriptdroid.ui.main.script_list.ScriptFileChooserDialogBuilder;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity;
+import com.stardust.scriptdroid.ui.update.VersionGuard;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.BackPressedHandler;
 import com.stardust.util.MessageEvent;
-import com.stardust.view.ViewBinding;
-import com.stardust.widget.SlidingUpPanel;
-import com.stardust.scriptdroid.BuildConfig;
-import com.stardust.scriptdroid.R;
 import com.stardust.view.ViewBinder;
+import com.stardust.view.ViewBinding;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
+import com.stardust.widget.SlidingUpPanel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -68,6 +69,7 @@ public class MainActivity extends BaseActivity {
 
     private OnActivityResultDelegate.Intermediary mActivityResultIntermediary = new OnActivityResultDelegate.Intermediary();
     private DrawableSaver mDrawerHeaderBackgroundSaver, mAppbarBackgroundSaver;
+    private VersionGuard mVersionGuard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +79,10 @@ public class MainActivity extends BaseActivity {
         registerBackPressHandlers();
         handleIntent(getIntent());
         EventBus.getDefault().register(this);
+        mVersionGuard = new VersionGuard(this);
     }
+
+
 
     private void registerBackPressHandlers() {
         registerBackPressedHandler(new BackPressedHandler() {
@@ -101,7 +106,7 @@ public class MainActivity extends BaseActivity {
 
     private void showAccessibilitySettingPromptIfDisabled() {
         if (!AccessibilityServiceUtils.isAccessibilityServiceEnabled(this, AccessibilityWatchDogService.class)) {
-            new NotAskAgainDialog.Builder(this, "showAccessibilitySettingPromptIfDisabled")
+            new NotAskAgainDialog.Builder(this, "Eating...love you...miss you...17.4.12")
                     .title(R.string.text_need_to_enable_accessibility_service)
                     .content(R.string.explain_accessibility_permission)
                     .positiveText(R.string.text_go_to_setting)
@@ -279,24 +284,6 @@ public class MainActivity extends BaseActivity {
         return ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0));
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mActivityResultIntermediary.onActivityResult(requestCode, resultCode, data);
-    }
-
-    public static void onActionRecordStopped(Context context, String script) {
-        Intent intent = new Intent(context, MainActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(EXTRA_ACTION, ACTION_ON_ACTION_RECORD_STOPPED)
-                .putExtra(ARGUMENT_SCRIPT, script);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        StorageScriptProvider.getDefault().notifyStoragePermissionGranted();
-    }
-
     @ViewBinding.Click(R.id.toolbar)
     public void OnToolbarClick() {
         mAppbarBackgroundSaver.select(this, mActivityResultIntermediary);
@@ -311,8 +298,35 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mActivityResultIntermediary.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        StorageScriptProvider.getDefault().notifyStoragePermissionGranted();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mVersionGuard.checkDeprecateAndUpdate();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
+
+
+    public static void onRecordStop(Context context, String script) {
+        Intent intent = new Intent(context, MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(EXTRA_ACTION, ACTION_ON_ACTION_RECORD_STOPPED)
+                .putExtra(ARGUMENT_SCRIPT, script);
+        context.startActivity(intent);
+    }
+
 }

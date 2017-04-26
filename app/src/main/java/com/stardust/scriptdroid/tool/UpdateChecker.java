@@ -13,7 +13,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.stardust.pio.UncheckedIOException;
+import com.stardust.scriptdroid.BuildConfig;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -28,37 +28,40 @@ public class UpdateChecker implements Response.Listener<String>, Response.ErrorL
     private RequestQueue mRequestQueue;
     private static final String UPDATE_URL = "https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/version.json";
 
-
     public interface Callback {
 
-        void onSuccess(CheckResult result);
+        void onSuccess(UpdateInfo result);
 
         void onError(Exception exception);
 
     }
 
-    private Callback mCallback;
-    private final int mTimeOut = 3000;
+    public static UpdateInfo savedResult;
 
-    public UpdateChecker(Context context, Callback callback) {
-        mCallback = callback;
+
+    private final int mTimeOut = 3000;
+    private Callback mCallback;
+
+    public UpdateChecker(Context context) {
         mRequestQueue = Volley.newRequestQueue(context);
     }
 
-    private CheckResult parse(String json) {
+    private UpdateInfo parse(String json) {
         Gson gson = new Gson();
-        Type type = new TypeToken<CheckResult>() {
+        Type type = new TypeToken<UpdateInfo>() {
         }.getType();
-        CheckResult result = gson.fromJson(json, type);
+        UpdateInfo result = gson.fromJson(json, type);
         Log.i(LOG_TAG, result.toString());
         return result;
     }
 
 
-    public void check() {
+    public void check(final Callback callback) {
+        mCallback = callback;
         StringRequest request = new StringRequest(Request.Method.GET, UPDATE_URL, this, this);
         request.setRetryPolicy(new DefaultRetryPolicy(mTimeOut, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         request.setTag("update-check");
+        request.setShouldCache(false);
         mRequestQueue.add(request);
     }
 
@@ -66,12 +69,16 @@ public class UpdateChecker implements Response.Listener<String>, Response.ErrorL
     public void onErrorResponse(VolleyError error) {
         error.printStackTrace();
         mCallback.onError(error);
+        mCallback = null;
     }
 
     @Override
     public void onResponse(String response) {
         try {
-            CheckResult result = parse(response);
+            UpdateInfo result = parse(response);
+            savedResult = result;
+            if (mCallback == null)
+                return;
             if (result.isValid()) {
                 mCallback.onSuccess(result);
             } else {
@@ -81,13 +88,14 @@ public class UpdateChecker implements Response.Listener<String>, Response.ErrorL
             e.printStackTrace();
             mCallback.onError(e);
         }
+        mCallback = null;
     }
 
     public void cancel() {
         mRequestQueue.cancelAll("update-check");
     }
 
-    public static class CheckResult {
+    public static class UpdateInfo {
 
         public int versionCode;
         public String releaseNotes;
@@ -95,25 +103,34 @@ public class UpdateChecker implements Response.Listener<String>, Response.ErrorL
         public List<Download> downloads;
         public List<OldVersion> oldVersions;
         public int deprecated;
+        public String downloadUrl;
 
         public boolean isValid() {
             return downloads != null && !downloads.isEmpty() && versionCode > 0
                     && !TextUtils.isEmpty(versionName) && !TextUtils.isEmpty(releaseNotes);
         }
 
+        public OldVersion getOldVersion(int versionCode) {
+            for (OldVersion oldVersion : oldVersions) {
+                if (oldVersion.versionCode == versionCode) {
+                    return oldVersion;
+                }
+            }
+            return null;
+        }
+
         @Override
         public String toString() {
-            return "CheckResult{" +
+            return "UpdateInfo{" +
                     "versionCode=" + versionCode +
                     ", releaseNotes='" + releaseNotes + '\'' +
                     ", versionName='" + versionName + '\'' +
                     ", downloads=" + downloads +
                     ", oldVersions=" + oldVersions +
                     ", deprecated=" + deprecated +
+                    ", downloadUrl='" + downloadUrl + '\'' +
                     '}';
         }
-
-
     }
 
     public static class OldVersion {

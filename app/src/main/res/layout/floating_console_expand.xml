@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="12dp"
+        android:background="@drawable/floating_console_bg_bottom"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:title="@string/_app_name">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right">
+
+                    <ImageView
+                        android:id="@+id/move_or_resize"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:padding="8dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_settings_ethernet_white_24dp"
+                        android:tint="@android:color/white"/>
+
+                    <ImageView
+                        android:id="@+id/close"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:padding="8dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_close_white_24dp"/>
+                </LinearLayout>
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <view
+            android:id="@+id/console"
+            class="com.stardust.scriptdroid.ui.console.ConsoleActivity$ConsoleView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="200dp"/>
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/resizer"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/circle_color_primary"
+        android:padding="6dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_resizer"
+        android:tint="@android:color/white"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/move_cursor"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/circle_color_primary"
+        android:padding="5dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_move_cursor"
+        android:tint="@android:color/white"
+        android:visibility="gone"/>
+
+</RelativeLayout>

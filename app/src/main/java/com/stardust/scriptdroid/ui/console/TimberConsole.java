@@ -22,15 +22,19 @@ import timber.log.Timber;
 public class TimberConsole implements Console {
 
     static {
-        Timber.plant(new ConsoleTree.Builder()
-                .minPriority(Log.VERBOSE)
-                .verboseColor(0xff909090)
-                .debugColor(0xffc88b48)
-                .infoColor(0xffc9c9c9)
-                .warnColor(0xffa97db6)
-                .errorColor(0xffff534e)
-                .assertColor(0xffff5540)
-                .build());
+        try {
+            Timber.plant(new ConsoleTree.Builder()
+                    .minPriority(Log.VERBOSE)
+                    .verboseColor(0xff909090)
+                    .debugColor(0xffc88b48)
+                    .infoColor(0xffc9c9c9)
+                    .warnColor(0xffa97db6)
+                    .errorColor(0xffff534e)
+                    .assertColor(0xffff5540)
+                    .build());
+        } catch (Exception e) {
+            // FIXME: 2017/4/26  java.lang.NoClassDefFoundError: com.jraska.console.timber.ConsoleTree at android4.4
+        }
     }
 
     @Override

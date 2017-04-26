@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.IntentUtil;
@@ -51,9 +52,7 @@ public class AboutActivity extends BaseActivity {
 
     @ViewBinding.Click(R.id.github)
     private void openGitHub() {
-        if (!IntentUtil.browse(this, getString(R.string.my_github))) {
-            Toast.makeText(this, R.string.text_no_brower, Toast.LENGTH_SHORT).show();
-        }
+        IntentTool.browse(this, getString(R.string.my_github));
     }
 
     @ViewBinding.Click(R.id.qq)

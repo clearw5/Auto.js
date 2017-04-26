@@ -186,7 +186,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
     @Override
     public void onStop() {
-        MainActivity.onActionRecordStopped(mContext, mRecorder.getCode());
+        MainActivity.onRecordStop(mContext, mRecorder.getCode());
         mRecorder = null;
     }
 

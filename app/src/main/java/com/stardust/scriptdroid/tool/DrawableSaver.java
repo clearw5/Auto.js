@@ -14,7 +14,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.concurrent.Callable;
 
 /**
  * Created by Stardust on 2017/4/3.
@@ -24,14 +23,14 @@ public abstract class DrawableSaver {
 
     private static final String PREFIX = "saved_drawable_";
 
-    protected Drawable mOriginalDrawble;
+    protected Drawable mOriginalDrawable;
     private Context mContext;
     private String mName;
 
-    public DrawableSaver(Context context, String name, Drawable originalDrawble) {
+    public DrawableSaver(Context context, String name, Drawable originalDrawable) {
         mContext = context;
         mName = PREFIX + name;
-        mOriginalDrawble = originalDrawble;
+        mOriginalDrawable = originalDrawable;
         readImageAndApply();
     }
 
@@ -89,7 +88,7 @@ public abstract class DrawableSaver {
     }
 
     public void reset() {
-        applyDrawableToView(mOriginalDrawble);
+        applyDrawableToView(mOriginalDrawable);
         mContext.deleteFile(mName);
     }
 

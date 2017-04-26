@@ -1,6 +1,6 @@
 ﻿{
-  "versionCode": 117,
-  "versionName": "2.0.7 Beta",
+  "versionCode": 118,
+  "versionName": "2.0.8 Alpha",
   "releaseNotes": "* 新增 任务管理\n* 新增 代码格式化\n* 新增 免root模拟home键, 电源键, 多任务键等\n* 新增 真正支持Takser调用(插件)\n* 新增 新建文件夹\n* 新增 支持代码模块化(CommonJS)\n* 新增 支持NodeJs的部分模块",
   "downloads" : [
     {

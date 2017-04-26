@@ -8,6 +8,8 @@ import android.widget.Toast;
 import com.stardust.autojs.R;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.rhino_android.AndroidClassLoader;
+import com.stardust.autojs.runtime.api.AbstractShell;
+import com.stardust.autojs.runtime.api.SlowShell;
 import com.stardust.autojs.runtime.simple_action.SimpleActionAutomator;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
@@ -49,6 +51,8 @@ public class ScriptRuntime {
     @JavascriptField
     public AccessibilityInfoProvider info;
 
+    private AbstractShell mRootShell;
+
     public ScriptRuntime(Context context, Console console, AccessibilityBridge accessibilityBridge) {
         mContext = context;
         mAccessibilityBridge = accessibilityBridge;
@@ -88,6 +92,15 @@ public class ScriptRuntime {
         });
     }
 
+
+    @JavascriptInterface
+    public void shellExecNotReturnResultWithRoot(String cmd){
+        if(mRootShell == null){
+            mRootShell = new SlowShell(true);
+        }
+        mRootShell.exec(cmd);
+    }
+
     @JavascriptInterface
     public Shell.CommandResult shell(String cmd, int root) {
         return Shell.execCommand(cmd, root != 0);
@@ -96,7 +109,7 @@ public class ScriptRuntime {
     @JavascriptInterface
     public UiSelector selector(JavaScriptEngine engine) {
         AccessibilityNodeInfoAllocator allocator = (AccessibilityNodeInfoAllocator) engine.getTag("allocator");
-        if(allocator == null){
+        if (allocator == null) {
             allocator = new AccessibilityNodeInfoAllocator();
             engine.setTag("allocator", allocator);
         }

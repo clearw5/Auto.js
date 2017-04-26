@@ -2,9 +2,6 @@ package com.stardust.scriptdroid.tool;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore;
 
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.scriptdroid.R;
@@ -21,6 +18,8 @@ public class ImageSelector implements OnActivityResultDelegate {
     public interface ImageSelectorCallback {
         void onImageSelected(ImageSelector selector, InputStream path);
     }
+
+    private static final String TAG = ImageSelector.class.getSimpleName();
 
     private static final int REQUEST_CODE = "LOVE EATING".hashCode() >> 16;
     private Activity mActivity;

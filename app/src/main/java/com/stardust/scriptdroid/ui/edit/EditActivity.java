@@ -11,6 +11,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.SparseArray;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethod;
 
@@ -19,17 +21,24 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.ScriptExecutionListener;
 import com.stardust.autojs.script.FileScriptSource;
+import com.stardust.autojs.script.JsBeautifier;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
+import com.stardust.enhancedfloaty.ResizableFloatyService;
 import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.external.floating_window.FloatingConsole;
 import com.stardust.scriptdroid.scripts.ScriptFile;
+import com.stardust.scriptdroid.tool.JsBeautifierFactory;
+import com.stardust.scriptdroid.tool.MaterialDialogFactory;
 import com.stardust.scriptdroid.ui.BaseActivity;
+import com.stardust.scriptdroid.ui.console.ConsoleActivity;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Utils;
 import com.stardust.scriptdroid.ui.edit.sidemenu.EditSideMenuFragment;
 import com.stardust.scriptdroid.ui.edit.sidemenu.FunctionListRecyclerView;
+import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.SparseArrayEntries;
 import com.stardust.view.ViewBinding;
@@ -55,6 +64,7 @@ import timber.log.Timber;
  */
 
 public class EditActivity extends Editor920Activity {
+
 
     public static class InputMethodEnhanceBarBridge implements InputMethodEnhanceBar.EditTextBridge {
 
@@ -152,6 +162,7 @@ public class EditActivity extends Editor920Activity {
             }
         }
     };
+    private JsBeautifier mJsBeautifier = JsBeautifierFactory.getJsBeautify();
 
     public void onCreate(Bundle b) {
         super.onCreate(b);
@@ -312,6 +323,51 @@ public class EditActivity extends Editor920Activity {
             return;
         boolean disabled = status == MenuDef.STATUS_DISABLED;
         menuItem.setEnabled(!disabled);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_editor, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_console:
+                startActivity(new Intent(getContext(), ConsoleActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                return true;
+            case R.id.action_help:
+                HelpCatalogueActivity.showMainCatalogue(this);
+                return true;
+            case R.id.action_beautify:
+                beautifyCode();
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void beautifyCode() {
+        final MaterialDialog dialog = MaterialDialogFactory.showProgress(this);
+        mJsBeautifier.beautify(mEditorDelegate.getText(), new JsBeautifier.Callback() {
+            @Override
+            public void onSuccess(final String beautifiedCode) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mEditorDelegate.mEditText.setText(beautifiedCode);
+                        dialog.dismiss();
+                    }
+                });
+            }
+
+            @Override
+            public void onException(Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override

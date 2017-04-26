@@ -1,33 +1,29 @@
 package com.stardust.autojs.runtime.api;
 
 /**
- * Created by Stardust on 2017/3/7.
+ * Created by Stardust on 2017/4/24.
  */
 
-public class Shell extends com.stardust.util.Shell {
+public abstract class AbstractShell {
 
-    public Shell(boolean root) {
-        super(root);
+    public AbstractShell() {
+        this(false);
     }
 
-    public void Tap(int x, int y) {
-        execute("input tap " + x + " " + y);
+    public AbstractShell(boolean root) {
+        init(root ? "su" : "sh");
     }
 
-    public void Swipe(int x1, int y1, int x2, int y2) {
-        execute("input swipe " + x1 + " " + y1 + " " + x2 + " " + y2);
-    }
+    protected abstract void init(String initialCommand);
 
-    public void Swipe(int x1, int y1, int x2, int y2, long duration) {
-        execute("input swipe " + x1 + " " + y1 + " " + x2 + " " + y2 + " " + duration);
-    }
+    public abstract void exec(String command);
 
     public void KeyCode(int keyCode) {
-        execute("input keyevent " + keyCode);
+        exec("input keyevent " + keyCode);
     }
 
     public void KeyCode(String keyCode) {
-        execute("input keyevent " + keyCode);
+        exec("input keyevent " + keyCode);
     }
 
     public void Home() {
@@ -79,7 +75,6 @@ public class Shell extends com.stardust.util.Shell {
     }
 
     public void Text(String text) {
-        execute("input text " + text);
+        exec("input text " + text);
     }
-
 }

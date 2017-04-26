@@ -37,8 +37,12 @@ public class Shell {
     }
 
     public Shell(boolean root) {
+        this(root ? COMMAND_SU : COMMAND_SH);
+    }
+
+    public Shell(String initialCommand) {
         try {
-            mProcess = new ProcessBuilder(root ? COMMAND_SU : COMMAND_SH).redirectErrorStream(true).start();
+            mProcess = new ProcessBuilder(initialCommand).redirectErrorStream(true).start();
             mCommandOutputStream = new DataOutputStream(mProcess.getOutputStream());
             mSucceedReader = new BufferedReader(new InputStreamReader(mProcess.getInputStream()));
             mErrorReader = new BufferedReader(new InputStreamReader(mProcess.getErrorStream()));
