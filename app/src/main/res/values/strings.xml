@@ -1,5 +1,5 @@
 <resources>
-    <string name="_app_name">免Root脚本精灵</string>
+    <string name="_app_name">AutoJs</string>
     <string name="action_settings">设置</string>
     <string name="action_disable_service">关闭服务</string>
     <string name="text_accessibility_service_description">使脚本自动操作(点击、长按、滑动等)所需，若关闭则只能执行不涉及自动操作的脚本。</string>
@@ -12,7 +12,7 @@
     <string name="text_please_input_name">请输入名称</string>
     <string name="text_name">名称</string>
     <string name="text_go_to_setting">去设置</string>
-    <string name="explain_accessibility_permission">软件需要打开\"自动操作服务\"才能运行，请在随后的设置中选择\"免Root脚本精灵\"并开启服务。\n您也可以稍后在侧拉菜单中设置。</string>
+    <string name="explain_accessibility_permission">软件需要打开\"自动操作服务\"才能运行，请在随后的设置中选择\"AutoJs\"并开启服务。\n您也可以稍后在侧拉菜单中设置。</string>
     <string name="text_cancel">取消</string>
     <string name="text_path_is_empty">路径为空</string>
     <string name="text_file_not_exists">文件不存在</string>
@@ -42,14 +42,14 @@
     <string name="text_sample_simple_calculator">示例：简单计算器</string>
     <string name="copyright">Copyright©2016 All right reserves.</string>
     <string name="developer">星尘幻影</string>
-    <string name="qq">946994919</string>
+    <string name="qq">2732014414</string>
     <string name="email">hybbbb1996@gmail.com</string>
     <string name="github">软件源代码</string>
     <string name="text_already_copy_to_clip">已复制到剪贴板</string>
     <string name="donate_developer">打赏作者</string>
     <string name="text_email">邮箱</string>
     <string name="my_github">https://github.com/hyb1996/NoRootScriptDroid</string>
-    <string name="share_app">[免Root脚本精灵]下载地址：http://www.coolapk.com/apk/com.stardust.scriptdroid </string>
+    <string name="share_app">[AutoJs]下载地址：http://www.coolapk.com/apk/com.stardust.scriptdroid </string>
     <string name="text_floating_window">悬浮窗</string>
     <string name="text_assist_service_notification">通知栏点击区域辅助开关</string>
     <string name="text_others">其他</string>
@@ -165,7 +165,7 @@
     <string name="key_stop_record_trigger">key_stop_record_trigger</string>
     <string name="text_current_activity">当前活动:</string>
     <string name="text_current_package">当前应用包名:</string>
-    <string name="go_to_accessibility_settings"><![CDATA[请打开设置->无障碍服务->免Root脚本精灵并开启]]></string>
+    <string name="go_to_accessibility_settings"><![CDATA[请打开设置->无障碍服务->AutoJs并开启]]></string>
     <string name="text_script_running">脚本运行</string>
     <string name="key_use_volume_control_running">key_use_volume_control_running</string>
     <string name="text_use_volume_to_stop_running">每次音量键变化停止所有脚本</string>
@@ -210,6 +210,10 @@
     <string name="text_do_not_ask_again_for_this_version">此版本不再提示</string>
     <string name="text_code_beautify">格式化代码</string>
     <string name="text_processing">处理中</string>
+    <string name="text_already_reset">已重置</string>
+    <string name="text_guard_mode">保护模式</string>
+    <string name="summary_guard_mode">在本软件界面无法运行自动操作命令以免误触</string>
+    <string name="key_guard_mode">key_guard_mode</string>
 
     <string-array name="record_control_keys">
         <item>无</item>

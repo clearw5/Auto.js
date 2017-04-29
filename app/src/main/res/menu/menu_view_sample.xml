@@ -3,12 +3,6 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_beautify"
-        android:orderInCategory="100"
-        android:title="@string/text_code_beautify"
-        app:showAsAction="never"/>
-
-    <item
         android:id="@+id/action_console"
         android:orderInCategory="200"
         android:title="@string/text_console"
@@ -21,9 +15,9 @@
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/action_open_by_other_apps"
+        android:id="@+id/action_import"
         android:orderInCategory="400"
-        android:title="@string/text_open_by_other_apps"
+        android:title="@string/text_copy_to_my_scripts"
         app:showAsAction="never"/>
 
 </menu>

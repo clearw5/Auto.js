@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,8 @@ public class MyScriptListFragment extends Fragment {
 
     public static final String MESSAGE_SCRIPT_FILE_ADDED = "MESSAGE_SCRIPT_FILE_ADDED";
 
+    private static final String TAG = "MyScriptListFragment";
+
     private ScriptAndFolderListRecyclerView mScriptListRecyclerView;
     private ScriptListWithProgressBarView mScriptListWithProgressBarView;
     private View mNoScriptHint;
@@ -45,7 +48,7 @@ public class MyScriptListFragment extends Fragment {
     private ScriptFile mSelectedScriptFile;
     private MaterialDialog.InputCallback mFileNameInputCallback = new InputCallback(false);
     private MaterialDialog.InputCallback mDirectoryNameInputCallback = new InputCallback(true);
-    private int mSelectedPosition;
+    private String mFilePathToImport;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +70,10 @@ public class MyScriptListFragment extends Fragment {
         mNoScriptHint = $(R.id.hint_no_script);
         initScriptListRecyclerView();
         initDialogs();
+        if (mFilePathToImport != null) {
+            importFile(mFilePathToImport);
+            mFilePathToImport = null;
+        }
     }
 
     private void initScriptListRecyclerView() {
@@ -91,7 +98,6 @@ public class MyScriptListFragment extends Fragment {
             @Override
             public void onLongClick(ScriptFile file, int position) {
                 mSelectedScriptFile = file;
-                mSelectedPosition = position;
                 if (file.isDirectory()) {
                     mDirectoryOperationDialog.show();
                 } else {
@@ -147,6 +153,10 @@ public class MyScriptListFragment extends Fragment {
     }
 
     public void importFile(final String pathFrom) {
+        if (getActivity() == null) {
+            mFilePathToImport = pathFrom;
+            return;
+        }
         try {
             importFile(PFile.getNameWithoutExtension(pathFrom), new FileInputStream(pathFrom));
         } catch (FileNotFoundException e) {
@@ -245,7 +255,7 @@ public class MyScriptListFragment extends Fragment {
     @ViewBinding.Click(R.id.open_by_other_apps)
     private void openByOtherApps() {
         dismissDialogs();
-        ScriptFileOperation.openByOtherApps(mSelectedScriptFile);
+        ScriptFileOperation.openByOtherApps(mSelectedScriptFile.getPath());
         onScriptFileOperated();
     }
 

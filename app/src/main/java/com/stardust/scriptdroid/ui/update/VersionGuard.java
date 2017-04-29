@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.tool.UpdateChecker;
 import com.stardust.scriptdroid.tool.VersionInfo;
@@ -43,7 +44,7 @@ public class VersionGuard {
                     if (isCurrentVersionDeprecated) {
                         showDeprecatedDialogIfNeeded();
                     } else {
-                        showUpdateInfo(info);
+                        showUpdateInfoIfNeeded(info);
                     }
                 }
             });
@@ -51,10 +52,12 @@ public class VersionGuard {
         }
     }
 
-    private void showUpdateInfo(UpdateChecker.UpdateInfo info) {
-        new UpdateInfoDialogBuilder(mActivity, info)
-                .showDoNotAskAgain()
-                .show();
+    private void showUpdateInfoIfNeeded(UpdateChecker.UpdateInfo info) {
+        if (BuildConfig.VERSION_CODE < info.versionCode) {
+            new UpdateInfoDialogBuilder(mActivity, info)
+                    .showDoNotAskAgain()
+                    .show();
+        }
     }
 
     private void showDeprecatedDialogIfNeeded() {

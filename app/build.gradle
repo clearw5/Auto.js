@@ -76,6 +76,7 @@ dependencies {
     compile group:'com.twofortyfouram', name:'android-plugin-client-sdk-for-locale', version:'[4.0.2, 5.0['
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.github.hyb1996:EnhancedFloaty:0.11'
+    compile 'com.android.support:multidex:1.0.1'
     compile(name: 'libtermexec-release', ext: 'aar')
     compile(name: 'emulatorview-release', ext: 'aar')
     compile(name: 'term-debug', ext: 'aar')

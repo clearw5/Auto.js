@@ -1,6 +1,5 @@
 package com.stardust.scriptdroid.ui.edit;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,50 +13,48 @@ import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethod;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.autojs.engine.JavaScriptEngine;
-import com.stardust.autojs.ScriptExecutionListener;
-import com.stardust.autojs.script.FileScriptSource;
-import com.stardust.autojs.script.JsBeautifier;
-import com.stardust.autojs.script.ScriptSource;
-import com.stardust.autojs.script.StringScriptSource;
-import com.stardust.enhancedfloaty.ResizableFloatyService;
-import com.stardust.pio.PFile;
-import com.stardust.scriptdroid.Pref;
-import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.external.floating_window.FloatingConsole;
-import com.stardust.scriptdroid.scripts.ScriptFile;
-import com.stardust.scriptdroid.tool.JsBeautifierFactory;
-import com.stardust.scriptdroid.tool.MaterialDialogFactory;
-import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.ui.console.ConsoleActivity;
-import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
-import com.stardust.scriptdroid.ui.edit.editor920.Editor920Utils;
-import com.stardust.scriptdroid.ui.edit.sidemenu.EditSideMenuFragment;
-import com.stardust.scriptdroid.ui.edit.sidemenu.FunctionListRecyclerView;
-import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
-import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
-import com.stardust.util.SparseArrayEntries;
-import com.stardust.view.ViewBinding;
-import com.stardust.widget.ToolbarMenuItem;
 import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.common.SaveListener;
 import com.jecelyin.editor.v2.core.widget.TextView;
 import com.jecelyin.editor.v2.ui.EditorDelegate;
 import com.jecelyin.editor.v2.view.EditorView;
 import com.jecelyin.editor.v2.view.menu.MenuDef;
+import com.stardust.autojs.ScriptExecutionListener;
+import com.stardust.autojs.engine.JavaScriptEngine;
+import com.stardust.autojs.script.FileScriptSource;
+import com.stardust.autojs.script.JsBeautifier;
+import com.stardust.autojs.script.ScriptSource;
+import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.scripts.ScriptFile;
+import com.stardust.scriptdroid.tool.JsBeautifierFactory;
+import com.stardust.scriptdroid.tool.MaterialDialogFactory;
+import com.stardust.scriptdroid.ui.BaseActivity;
+import com.stardust.scriptdroid.ui.console.ConsoleActivity;
 import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhanceBar;
+import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
+import com.stardust.scriptdroid.ui.edit.editor920.Editor920Utils;
+import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
+import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.theme.ThemeColorManager;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.util.SparseArrayEntries;
 import com.stardust.view.ViewBinder;
+import com.stardust.view.ViewBinding;
+import com.stardust.widget.ToolbarMenuItem;
 
 import java.io.File;
 
 import timber.log.Timber;
+
+import static com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation.ACTION_ON_RUN_FINISHED;
+import static com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation.EXTRA_EXCEPTION_MESSAGE;
 
 /**
  * Created by Stardust on 2017/1/29.
@@ -94,41 +91,8 @@ public class EditActivity extends Editor920Activity {
 
     public static final String EXTRA_CONTENT = "Still Love Eating 17.4.5";
 
-    private static final String ACTION_ON_RUN_FINISHED = "ACTION_ON_RUN_FINISHED";
-    private static final String EXTRA_EXCEPTION_MESSAGE = "EXTRA_EXCEPTION_MESSAGE";
-
-
-    private static final ScriptExecutionListener SCRIPT_EXECUTION_LISTENER = new ScriptExecutionListener() {
-
-        @Override
-        public void onStart(JavaScriptEngine engine, ScriptSource source) {
-            AutoJs.getInstance().getScriptEngineService().getDefaultListener().onStart(engine, source);
-        }
-
-        @Override
-        public void onSuccess(JavaScriptEngine engine, ScriptSource source, Object result) {
-            App.getApp().sendBroadcast(new Intent(ACTION_ON_RUN_FINISHED));
-        }
-
-        @Override
-        public void onException(JavaScriptEngine engine, ScriptSource source, Exception e) {
-            App.getApp().sendBroadcast(new Intent(ACTION_ON_RUN_FINISHED)
-                    .putExtra(EXTRA_EXCEPTION_MESSAGE, e.getMessage()));
-            e.printStackTrace();
-        }
-
-    };
-
     public static void editFile(Context context, String path) {
         editFile(context, null, path);
-    }
-
-    public static void view(Context context, String name, String content) {
-        context.startActivity(new Intent(context, EditActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra("readOnly", true)
-                .putExtra("content", content)
-                .putExtra("name", name));
     }
 
     public static void editFile(Context context, String name, String path) {
@@ -145,7 +109,6 @@ public class EditActivity extends Editor920Activity {
     private String mName;
     private File mFile;
     private View mView;
-    private DrawerLayout mDrawerLayout;
     private EditorDelegate mEditorDelegate;
     private SparseArray<ToolbarMenuItem> mMenuMap;
     private boolean mReadOnly = false;
@@ -175,23 +138,6 @@ public class EditActivity extends Editor920Activity {
         registerReceiver(mOnRunFinishedReceiver, new IntentFilter(ACTION_ON_RUN_FINISHED));
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        openDrawerIfFirstUse();
-    }
-
-    private void openDrawerIfFirstUse() {
-        if (Pref.isEditActivityFirstUsing()) {
-            mDrawerLayout.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mDrawerLayout.openDrawer(GravityCompat.END);
-                }
-            }, 1000);
-        }
-    }
-
     private void handleIntent(Intent intent) {
         String path = intent.getStringExtra("path");
         mName = intent.getStringExtra("name");
@@ -214,23 +160,9 @@ public class EditActivity extends Editor920Activity {
 
     private void setUpUI() {
         ThemeColorManager.addActivityStatusBar(this);
-        mDrawerLayout = (DrawerLayout) mView.findViewById(R.id.drawer_layout);
-        initSideMenuFragment();
         setUpToolbar();
         initMenuItem();
         ViewBinder.bind(this);
-    }
-
-    private void initSideMenuFragment() {
-        EditSideMenuFragment.setFragment(EditActivity.this, R.id.fragment_edit_side_menu)
-                .setOnFunctionClickListener(new FunctionListRecyclerView.OnFunctionClickListener() {
-                    @Override
-                    public void onClick(FunctionListRecyclerView.Function function, int position) {
-                        if (!mReadOnly)
-                            insertText(function.name);
-                        mDrawerLayout.closeDrawer(GravityCompat.END);
-                    }
-                });
     }
 
     private void setUpEditor() {
@@ -284,9 +216,9 @@ public class EditActivity extends Editor920Activity {
         Snackbar.make(mView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         setMenuStatus(R.id.run, MenuDef.STATUS_DISABLED);
         if (mFile != null) {
-            AutoJs.getInstance().getScriptEngineService().execute(new FileScriptSource(mName, mFile), SCRIPT_EXECUTION_LISTENER);
+            ScriptFileOperation.runOnEditView(new FileScriptSource(mName, mFile));
         } else {
-            AutoJs.getInstance().getScriptEngineService().execute(new StringScriptSource(mName, mEditorDelegate.getText()), SCRIPT_EXECUTION_LISTENER);
+            ScriptFileOperation.runOnEditView(new StringScriptSource(mName, mEditorDelegate.getText()));
         }
     }
 
@@ -344,9 +276,17 @@ public class EditActivity extends Editor920Activity {
             case R.id.action_beautify:
                 beautifyCode();
                 return true;
-
+            case R.id.action_open_by_other_apps:
+                openByOtherApps();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openByOtherApps() {
+        if (mFile != null)
+            ScriptFileOperation.openByOtherApps(mFile.getPath());
+
     }
 
     private void beautifyCode() {
@@ -365,6 +305,7 @@ public class EditActivity extends Editor920Activity {
 
             @Override
             public void onException(Exception e) {
+                dialog.dismiss();
                 e.printStackTrace();
             }
         });

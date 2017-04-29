@@ -37,7 +37,6 @@ public class FloatingLayoutBoundsView extends LayoutBoundsView {
                 showNodeInfo(info);
             }
         });
-        setBackgroundColor(0x66000000);
         setVisibility(GONE);
         getPaint().setColor(0xFF222222);
         getPaint().setStrokeWidth(2f);

@@ -15,7 +15,6 @@ import com.stardust.scriptdroid.scripts.ScriptFile;
 import com.stardust.scriptdroid.scripts.StorageScriptProvider;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.scriptdroid.ui.main.script_list.ScriptAndFolderListRecyclerView;
-import com.stardust.scriptdroid.ui.main.script_list.ScriptListRecyclerView;
 import com.stardust.scriptdroid.ui.main.script_list.ScriptListWithProgressBarView;
 import com.stardust.util.MessageEvent;
 import com.stardust.widget.ViewHolderSupplier;

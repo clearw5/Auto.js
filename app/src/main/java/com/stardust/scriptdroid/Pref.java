@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.stardust.autojs.runtime.api.AutomatorConfig;
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.scriptdroid.autojs.AutoJs;
 
@@ -18,11 +19,19 @@ public class Pref {
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equals(getString(R.string.key_run_mode))) {
                 AutoJs.getInstance().getCommandHost().setRunMode(getRunModeFromValue(sharedPreferences.getString(key, null)));
+            } else if (key.equals(getString(R.string.key_guard_mode))) {
+                AutomatorConfig.setIsUnintendedGuardEnabled(sharedPreferences.getBoolean(getString(R.string.key_guard_mode), false));
             }
         }
     };
 
+    static {
+        AutomatorConfig.setIsUnintendedGuardEnabled(def().getBoolean(getString(R.string.key_guard_mode), false));
+    }
+
     private static int getRunModeFromValue(String value) {
+        if (value == null)
+            return AccessibilityEventCommandHost.RUN_MODE_THREAD_POOL;
         switch (value) {
             case "KEY_THREAD_POOL":
                 return AccessibilityEventCommandHost.RUN_MODE_THREAD_POOL;

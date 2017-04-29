@@ -4,10 +4,17 @@
        android:layout_height="match_parent"
        android:background="#fefefe">
 
-    <com.stardust.scriptdroid.ui.main.script_list.ScriptAndFolderListRecyclerView
-        android:id="@+id/script_list_recycler_view"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <com.stardust.scriptdroid.ui.main.script_list.ScriptAndFolderListRecyclerView
+            android:id="@+id/script_list_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <FrameLayout
         android:id="@+id/progressBar"

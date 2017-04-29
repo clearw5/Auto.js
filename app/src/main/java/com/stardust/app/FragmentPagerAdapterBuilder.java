@@ -16,6 +16,10 @@ import java.util.List;
 
 public class FragmentPagerAdapterBuilder {
 
+    public interface OnFragmentInstantiateListener {
+        void OnInstantiate(Fragment fragment);
+    }
+
     private List<Fragment> mFragments = new ArrayList<>();
     private List<String> mTitles = new ArrayList<>();
     private FragmentActivity mActivity;
@@ -56,6 +60,7 @@ public class FragmentPagerAdapterBuilder {
     public abstract static class StoredFragmentPagerAdapter extends FragmentPagerAdapter {
 
         private SparseArray<Fragment> mStoredFragments = new SparseArray<>();
+        private OnFragmentInstantiateListener mOnFragmentInstantiateListener;
 
         public StoredFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -65,8 +70,12 @@ public class FragmentPagerAdapterBuilder {
         public Object instantiateItem(ViewGroup container, int position) {
             Fragment fragment = (Fragment) super.instantiateItem(container, position);
             mStoredFragments.put(position, fragment);
+            if(mOnFragmentInstantiateListener != null){
+                mOnFragmentInstantiateListener.OnInstantiate(fragment);
+            }
             return fragment;
         }
+
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
@@ -76,6 +85,10 @@ public class FragmentPagerAdapterBuilder {
 
         public Fragment getStoredFragment(int position) {
             return mStoredFragments.get(position);
+        }
+
+        public void setOnFragmentInstantiateListener(OnFragmentInstantiateListener onFragmentInstantiateListener) {
+            mOnFragmentInstantiateListener = onFragmentInstantiateListener;
         }
     }
 }

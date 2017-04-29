@@ -1,16 +1,14 @@
 package com.stardust.scriptdroid;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.support.annotation.Keep;
+import android.support.multidex.MultiDexApplication;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.app.VolumeChangeObserver;
-import com.stardust.mi666.OCR;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.CrashHandler;
@@ -26,7 +24,7 @@ import java.lang.ref.WeakReference;
  * Created by Stardust on 2017/1/27.
  */
 
-public class App extends Application {
+public class App extends MultiDexApplication {
 
     private static final String TAG = "App";
 
@@ -65,7 +63,6 @@ public class App extends Application {
         JsBeautifierFactory.initJsBeautify(this, "js/jsbeautify.js");
         initVolumeChangeObserver();
         startService(new Intent(this, AccessibilityWatchDogService.class));
-        OCR.init(this);
     }
 
     private void initVolumeChangeObserver() {
@@ -93,7 +90,6 @@ public class App extends Application {
                 ScreenMetrics.initIfNeeded(activity);
                 currentActivity = new WeakReference<>(activity);
             }
-
 
         });
     }

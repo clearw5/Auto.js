@@ -63,20 +63,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <include layout="@layout/content_edit"/>
-
-        <FrameLayout
-            android:id="@+id/fragment_edit_side_menu"
-            android:layout_width="280dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:background="@android:color/white"
-            android:clickable="true"/>
-    </android.support.v4.widget.DrawerLayout>
+    <include layout="@layout/content_edit"/>
 
 </LinearLayout>

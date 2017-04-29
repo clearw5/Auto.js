@@ -85,8 +85,7 @@ public abstract class JavaScriptEngineManager {
 
     void removeEngine(JavaScriptEngine engine) {
         synchronized (mEngines) {
-            mEngines.remove(engine);
-            if (mEngineLifecycleCallback != null) {
+            if (mEngines.remove(engine) && mEngineLifecycleCallback != null) {
                 mEngineLifecycleCallback.onEngineRemove(engine);
             }
         }

@@ -2,6 +2,7 @@ package com.stardust.autojs.runtime.api;
 
 import android.accessibilityservice.AccessibilityService;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -87,7 +88,8 @@ public class UiSelector extends UiGlobalSelector {
     @JavascriptInterface
     public UiObjectCollection find() {
         ensureAccessibilityServiceEnabled();
-        if (isRunningPackageSelf()) {
+        if (AutomatorConfig.isUnintendedGuardEnabled() && isRunningPackageSelf()) {
+            Log.d(TAG, "isSelfPackage return null");
             return null;
         }
         AccessibilityService service = mAccessibilityBridge.getService();
@@ -105,7 +107,7 @@ public class UiSelector extends UiGlobalSelector {
     }
 
     private boolean isRunningPackageSelf() {
-        return DeveloperUtils.isRunningPackageSelf(mAccessibilityBridge.getInfoProvider().getLatestPackage());
+        return DeveloperUtils.isSelfPackage(mAccessibilityBridge.getInfoProvider().getLatestPackage());
     }
 
 
@@ -115,6 +117,7 @@ public class UiSelector extends UiGlobalSelector {
         UiObjectCollection uiObjectCollection;
         do {
             if (Thread.currentThread().isInterrupted()) {
+                Log.d(TAG, "Thread isInterrupted");
                 throw new ScriptStopException(new InterruptedException());
             }
             uiObjectCollection = find();

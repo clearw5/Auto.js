@@ -1,10 +1,10 @@
 package com.stardust.autojs.engine;
 
+import android.os.Looper;
 import android.util.Log;
 
 import com.stardust.autojs.rhino_android.AndroidContextFactory;
 import com.stardust.autojs.rhino_android.RhinoAndroidHelper;
-import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.ScriptStopException;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
@@ -17,7 +17,6 @@ import org.mozilla.javascript.ScriptableObject;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Timer;
@@ -36,6 +35,7 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
     private Thread mThread;
     private RhinoJavaScriptEngineManager mEngineManager;
     private Map<String, Object> mTags = new Hashtable<>();
+    private boolean mDestroyed = false;
 
     public RhinoJavaScriptEngine(RhinoJavaScriptEngineManager engineManager) {
         mEngineManager = engineManager;
@@ -67,7 +67,7 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
     }
 
     @Override
-    public void destroy() {
+    public synchronized void destroy() {
         Context.exit();
         // TODO: 2017/4/6 XXX :在这里回收内存池并不好
         final AccessibilityNodeInfoAllocator allocator = (AccessibilityNodeInfoAllocator) getTag("allocator");
@@ -75,6 +75,7 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
+                    // FIXME: 2017/4/28
                     //allocator.recycleAll();
                 }
             }, 1000);
@@ -136,14 +137,13 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
         @Override
         protected void observeInstructionCount(Context cx, int instructionCount) {
             if (Thread.currentThread().isInterrupted()) {
-
+                Context.exit();
                 throw new ScriptStopException(new InterruptedException());
             }
         }
 
         @Override
         protected Context makeContext() {
-
             Context cx = super.makeContext();
             cx.setInstructionObserverThreshold(10000);
             return cx;

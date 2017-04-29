@@ -16,7 +16,7 @@ public class DeveloperUtils {
         }
     }
 
-    public static boolean isRunningPackageSelf(@Nullable String runningPackage) {
+    public static boolean isSelfPackage(@Nullable String runningPackage) {
         return PACKAGE_NAME.equals(runningPackage);
     }
 }

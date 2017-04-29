@@ -20,7 +20,7 @@ public class ImportIntentActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            handleIntent();
+            handleIntent(getIntent());
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, R.string.edit_and_run_handle_intent_error, Toast.LENGTH_LONG).show();
@@ -28,8 +28,12 @@ public class ImportIntentActivity extends BaseActivity {
         }
     }
 
-    private void handleIntent() {
-        Intent intent = getIntent();
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
         final String path = intent.getData().getPath();
         if (!TextUtils.isEmpty(path))
             MainActivity.importScriptFile(this, path);

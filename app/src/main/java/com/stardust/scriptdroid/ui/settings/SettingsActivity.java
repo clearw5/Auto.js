@@ -115,6 +115,7 @@ public class SettingsActivity extends BaseActivity {
                         @Override
                         public void run() {
                             EventBus.getDefault().post(new MessageEvent(MainActivity.MESSAGE_CLEAR_BACKGROUND_SETTINGS));
+                            Toast.makeText(getActivity(), R.string.text_already_reset, Toast.LENGTH_SHORT).show();
                         }
                     })
                     .entry(getString(R.string.text_check_update), new Runnable() {

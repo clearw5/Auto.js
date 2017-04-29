@@ -77,13 +77,13 @@
         <activity android:name=".ui.error.ErrorReportActivity"/>
         <activity android:name=".ui.help.LocalWebViewActivity"/>
         <activity android:name=".external.tasker.TaskerScriptEditActivity"/>
+        <activity android:name=".ui.edit.ViewSampleActivity"/>
 
         <activity
             android:name=".ui.error.IssueReporterActivity"
             android:theme="@style/IssueReporterTheme"/>
 
         <service android:name="com.stardust.view.Floaty$FloatHeadService"/>
-        <service android:name="com.stardust.view.ResizableFloaty$FloatingWindowService"/>
         <service android:name="com.stardust.scriptdroid.external.floating_window.HoverMenuService"/>
 
         <activity android:name=".external.tasker.TaskPrefEditActivity"/>

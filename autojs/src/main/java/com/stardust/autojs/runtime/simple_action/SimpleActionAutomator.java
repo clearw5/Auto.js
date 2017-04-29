@@ -11,6 +11,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.stardust.autojs.runtime.AccessibilityBridge;
 import com.stardust.autojs.runtime.JavascriptInterface;
 import com.stardust.autojs.runtime.ScriptRuntime;
+import com.stardust.autojs.runtime.api.AutomatorConfig;
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.automator.simple_action.SimpleAction;
 import com.stardust.automator.simple_action.ActionFactory;
@@ -23,6 +24,8 @@ import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
  */
 
 public class SimpleActionAutomator {
+
+    private static final String TAG = "SimpleActionAutomator";
 
     @Deprecated
     private static class PerformGlobalActionCommand extends AccessibilityEventCommandHost.AbstractCommand {
@@ -185,7 +188,8 @@ public class SimpleActionAutomator {
     @SuppressWarnings("unchecked")
     private boolean performAction(SimpleAction simpleAction) {
         ensureAccessibilityServiceEnabled();
-        if (isRunningPackageSelf()) {
+        if (AutomatorConfig.isUnintendedGuardEnabled() && isRunningPackageSelf()) {
+            Log.i(TAG, "performAction: running package is self. return false");
             return false;
         }
         AccessibilityService service = mAccessibilityBridge.getService();
@@ -203,6 +207,6 @@ public class SimpleActionAutomator {
     }
 
     private boolean isRunningPackageSelf() {
-        return DeveloperUtils.isRunningPackageSelf(mAccessibilityBridge.getInfoProvider().getLatestPackage());
+        return DeveloperUtils.isSelfPackage(mAccessibilityBridge.getInfoProvider().getLatestPackage());
     }
 }

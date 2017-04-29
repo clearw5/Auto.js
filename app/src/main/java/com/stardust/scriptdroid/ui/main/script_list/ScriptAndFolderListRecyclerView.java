@@ -20,6 +20,7 @@ import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.scripts.ScriptFile;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.scripts.StorageScriptProvider;
+import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.widget.ViewHolderMutableAdapter;
 import com.stardust.widget.ViewHolderSupplier;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -107,7 +108,7 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         public void onClick(View v) {
             int position = getChildViewHolder((View) v.getParent()).getAdapterPosition();
             ScriptFile file = mAdapter.getScriptFileAt(position);
-            AutoJs.getInstance().getScriptEngineService().execute(new FileScriptSource(file));
+            ScriptFileOperation.run(file);
         }
     };
     private final ViewHolderSupplier<ViewHolder> mDefaultViewHolderSupplier = new ViewHolderSupplier<ViewHolder>() {
@@ -186,6 +187,10 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         mStorageScriptProvider = storageScriptProvider;
         mStorageScriptProvider.registerDirectoryChangeListener(this);
         setRootDirectory(mStorageScriptProvider.getInitialDirectory());
+    }
+
+    public StorageScriptProvider getStorageScriptProvider() {
+        return mStorageScriptProvider;
     }
 
     public void setOnItemClickListener(OnScriptFileClickListener onItemClickListener) {

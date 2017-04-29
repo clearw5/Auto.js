@@ -36,7 +36,7 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/air_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"/>
+            android:layout_height="wrap_content"/>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -52,12 +52,12 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipToPadding="false"
                 android:orientation="vertical"
-                android:padding="@dimen/air_baseline_card"
-                android:clipToPadding="false">
+                android:padding="@dimen/air_baseline_card">
 
                 <include
-                    layout="@layout/air_card_report"
+                    layout="@layout/air_card_report_compat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
@@ -82,8 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/air_baseline"
-            app:srcCompat="@drawable/air_ic_send_light"
-            app:backgroundTint="?colorAccent"/>
+            app:srcCompat="@drawable/air_ic_send_light"/>
 
     </FrameLayout>
 

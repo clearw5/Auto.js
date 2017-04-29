@@ -9,7 +9,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,6 +31,7 @@ import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.scripts.ScriptFile;
 import com.stardust.scriptdroid.scripts.StorageScriptProvider;
+import com.stardust.scriptdroid.scripts.sample.Sample;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.DrawableSaver;
@@ -50,6 +53,8 @@ import com.stardust.widget.SlidingUpPanel;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.IOException;
+
 
 public class MainActivity extends BaseActivity {
 
@@ -61,6 +66,9 @@ public class MainActivity extends BaseActivity {
     private static final String ACTION_IMPORT_SCRIPT = "ACTION_IMPORT_SCRIPT";
     private static final String ARGUMENT_SCRIPT = "ARGUMENT_SCRIPT";
     private static final String ARGUMENT_PATH = "ARGUMENT_PATH";
+    private static final String ACTION_IMPORT_SAMPLE = "I cannot find the way back to you...Eating...17.4.29";
+    private static final String ARGUMENT_SAMPLE = "Take a chance on me...ok...?";
+
 
     private DrawerLayout mDrawerLayout;
     @ViewBinding.Id(R.id.bottom_menu)
@@ -70,6 +78,7 @@ public class MainActivity extends BaseActivity {
     private OnActivityResultDelegate.Intermediary mActivityResultIntermediary = new OnActivityResultDelegate.Intermediary();
     private DrawableSaver mDrawerHeaderBackgroundSaver, mAppbarBackgroundSaver;
     private VersionGuard mVersionGuard;
+    private Intent mIntentToHandle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +86,10 @@ public class MainActivity extends BaseActivity {
         setUpUI();
         checkPermissions();
         registerBackPressHandlers();
-        handleIntent(getIntent());
+        mIntentToHandle = getIntent();
         EventBus.getDefault().register(this);
         mVersionGuard = new VersionGuard(this);
     }
-
 
 
     private void registerBackPressHandlers() {
@@ -164,6 +172,15 @@ public class MainActivity extends BaseActivity {
         viewPager.setAdapter(mPagerAdapter);
         viewPager.setOffscreenPageLimit(mPagerAdapter.getCount());
         tabLayout.setupWithViewPager(viewPager);
+        mPagerAdapter.setOnFragmentInstantiateListener(new FragmentPagerAdapterBuilder.OnFragmentInstantiateListener() {
+            @Override
+            public void OnInstantiate(Fragment fragment) {
+                if (fragment instanceof MyScriptListFragment && mIntentToHandle != null) {
+                    handleIntent(mIntentToHandle);
+                    mIntentToHandle = null;
+                }
+            }
+        });
     }
 
     @ViewBinding.Click(R.id.add)
@@ -183,13 +200,14 @@ public class MainActivity extends BaseActivity {
 
     @ViewBinding.Click(R.id.import_from_file)
     private void showFileChooser() {
+        final StorageScriptProvider provider = StorageScriptProvider.getExternalStorageProvider();
         new ScriptFileChooserDialogBuilder(this)
-                .scriptProvider(StorageScriptProvider.getExternalStorageProvider())
+                .scriptProvider(provider)
                 .fileCallback(new ScriptFileChooserDialogBuilder.FileCallback() {
                     @Override
                     public void onFileSelection(MaterialDialog dialog, ScriptFile file) {
                         dialog.dismiss();
-                        StorageScriptProvider.getExternalStorageProvider().clearCacheExceptInitialDirectory();
+                        provider.clearCacheExceptInitialDirectory();
                         getMyScriptListFragment().importFile(file.getPath());
                     }
                 })
@@ -203,7 +221,7 @@ public class MainActivity extends BaseActivity {
                         if (which == DialogAction.POSITIVE) {
                             dialog.dismiss();
                         } else {
-                            StorageScriptProvider.getExternalStorageProvider().refreshAll();
+                            provider.refreshAll();
                         }
                     }
                 })
@@ -226,6 +244,12 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mVersionGuard.checkDeprecateAndUpdate();
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
@@ -242,7 +266,20 @@ public class MainActivity extends BaseActivity {
             case ACTION_IMPORT_SCRIPT:
                 getMyScriptListFragment().importFile(intent.getStringExtra(ARGUMENT_PATH));
                 break;
+            case ACTION_IMPORT_SAMPLE:
+                importSample((Sample) intent.getSerializableExtra(ARGUMENT_SAMPLE));
+                break;
         }
+    }
+
+    private void importSample(Sample sample) {
+        try {
+            getMyScriptListFragment().importFile(sample.name, getAssets().open(sample.path));
+        } catch (IOException e) {
+            e.printStackTrace();
+            Snackbar.make(mDrawerLayout, R.string.text_import_fail, Snackbar.LENGTH_SHORT).show();
+        }
+
     }
 
     private void handleRecordedScript(final String script) {
@@ -280,6 +317,13 @@ public class MainActivity extends BaseActivity {
                 .putExtra(ARGUMENT_PATH, path));
     }
 
+    public static void importSample(Context context, Sample sample) {
+        context.startActivity(new Intent(context, MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra(EXTRA_ACTION, ACTION_IMPORT_SAMPLE)
+                .putExtra(ARGUMENT_SAMPLE, sample));
+    }
+
     public MyScriptListFragment getMyScriptListFragment() {
         return ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0));
     }
@@ -307,12 +351,6 @@ public class MainActivity extends BaseActivity {
         StorageScriptProvider.getDefault().notifyStoragePermissionGranted();
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mVersionGuard.checkDeprecateAndUpdate();
-    }
 
     @Override
     protected void onDestroy() {

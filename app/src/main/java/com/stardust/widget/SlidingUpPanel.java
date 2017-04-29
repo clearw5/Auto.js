@@ -50,6 +50,7 @@ public class SlidingUpPanel extends FrameLayout {
 
     public void show() {
         setVisibility(VISIBLE);
+        setClickable(true);
         mContentContainer.startAnimation(mSlideUpAnimation);
         mShowing = true;
     }

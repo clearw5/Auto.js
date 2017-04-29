@@ -15,6 +15,9 @@ import android.view.View;
 import com.stardust.scriptdroid.layout_inspector.NodeInfo;
 import com.stardust.util.ViewUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Stardust on 2017/3/10.
  */
@@ -109,13 +112,20 @@ public class LayoutBoundsView extends View {
         }
     }
 
-    private NodeInfo findNodeAt(NodeInfo node, int x, int y) {
+    private List<NodeInfo> findNodeAt(NodeInfo node, int x, int y) {
+        List<NodeInfo> list = null;
         for (NodeInfo child : node.getChildren()) {
             if (child != null && child.getBoundsInScreen().contains(x, y)) {
-                return findNodeAt(child, x, y);
+                if (list == null)
+                    list = findNodeAt(child, x, y);
+                else
+                    list.addAll(findNodeAt(child, x, y));
             }
         }
-        return node;
+        if (list == null)
+            list = new ArrayList<>();
+        list.add(node);
+        return list;
     }
 
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="_app_name">UiAutomator</string>
+    <string name="_app_name">AutoJs</string>
     <string name="action_settings">Settings</string>
     <string name="action_disable_service">Disable Service</string>
     <string name="text_accessibility_service_description">Required by the script automatic operation (click, long press, slide, etc.).</string>
@@ -38,8 +38,6 @@
     <string name="text_do_not_remind_again">Don\'t show again</string>
     <string name="copyright">Copyright©2016 All right reserves.</string>
     <string name="developer">Stardust</string>
-    <string name="qq">946994919</string>
-    <string name="email">hybbbb1996@gmail.com</string>
     <string name="github">Source Code</string>
     <string name="text_already_copy_to_clip">Copied</string>
     <string name="donate_developer">Donate</string>
@@ -122,7 +120,7 @@
     <string name="text_layout_hierarchy">View layout hierarchy</string>
     <string name="text_layout_bounds">View layout bounds</string>
     <string name="text_no_accessibility_permission_to_capture">Accessibility service is not activated</string>
-    <string name="text_sample_script">Sample Scripts</string>
+    <string name="text_sample_script">Samples</string>
     <string name="text_my_script">My Scripts</string>
     <string name="hint_no_script">Click ADD to create your first script~(。・・)ノ</string>
     <string name="text_reset_background">Reset background settings</string>
@@ -155,15 +153,15 @@
     <string name="summary_command_run_mode">If the app responses slowly when running script, choose Thread Pool or Create Thread. But it may causes rebooting of the device</string>
     <string name="text_on">ON</string>
     <string name="text_off">OFF</string>
-    <string name="text_please_choose_file_to_import">请选择要导入的脚本</string>
-    <string name="text_refresh">刷新</string>
-    <string name="notice_no_running_script"><![CDATA[没有正在运行的脚本 φ(>ω<*)]]></string>
-    <string name="text_checking_update">正在检查更新</string>
-    <string name="text_new_version">新版本</string>
-    <string name="text_is_latest_version">已经是最新版本</string>
-    <string name="text_version_too_old">版本过低</string>
-    <string name="warning_version_too_old">这个版本已经不能再使用了哦</string>
-    <string name="text_release_notes">更新日志</string>
+    <string name="text_please_choose_file_to_import">Select script file to import</string>
+    <string name="text_refresh">Refresh</string>
+    <string name="notice_no_running_script"><![CDATA[No running script φ(>ω<*)]]></string>
+    <string name="text_checking_update">Checking for updates</string>
+    <string name="text_new_version">New Version</string>
+    <string name="text_is_latest_version">No newer version found</string>
+    <string name="text_version_too_old">Version too old</string>
+    <string name="warning_version_too_old">This version is deprecated</string>
+    <string name="text_release_notes">Release Notes</string>
     <string-array name="record_control_keys">
         <item>None</item>
         <item>Volume Up</item>
@@ -176,5 +174,15 @@
         <item>Create New Thread Every Time</item>
         <item>Thread Pool</item>
     </string-array>
+    <string name="text_update">Update</string>
+    <string name="text_task_manage">Tasks</string>
+    <string name="text_script">Script</string>
+    <string name="text_root_script_record"></string>
+    <string name="text_processing">Processing</string>
+    <string name="text_re_import_succeed"></string>
+    <string name="text_pre_execute_script">Pre-execute script</string>
+    <string name="text_check_update">Check for updates</string>
+    <string name="text_new_directory">New Directory</string>
+    <string name="text_already_reset">已重置</string>
 
 </resources>
