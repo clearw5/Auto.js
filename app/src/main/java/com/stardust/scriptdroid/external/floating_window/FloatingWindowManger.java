@@ -6,6 +6,7 @@ import android.os.Build;
 import android.provider.Settings;
 
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService;
 import com.stardust.util.IntentUtil;
 
 /**
@@ -14,7 +15,7 @@ import com.stardust.util.IntentUtil;
 
 public class FloatingWindowManger {
 
-    public static void showFloatingWindow() {
+    public static void showHoverMenu() {
         if (!HoverMenuService.isServiceRunning()) {
             if (!hasFloatingWindowPermission()) {
                 goToFloatingWindowPermissionSetting();

@@ -102,7 +102,7 @@ public class AccessibilityNodeInfoAllocator {
             } catch (IllegalStateException ignored) {
             }
         }
-        Log.i(TAG, "Total: " + size + " Not recycled: " + notRecycledCount);
+        Log.v(TAG, "Total: " + size + " Not recycled: " + notRecycledCount);
         return notRecycledCount;
     }
 
@@ -127,7 +127,12 @@ public class AccessibilityNodeInfoAllocator {
     public static void recycleList(AccessibilityNodeInfo root, List<AccessibilityNodeInfo> list) {
         for (AccessibilityNodeInfo nodeInfo : list) {
             if (nodeInfo != root) {
-                nodeInfo.recycle();
+                try {
+                    nodeInfo.recycle();
+                }catch (IllegalStateException e){
+                    // FIXME: 2017/4/30
+                    e.printStackTrace();
+                }
             }
         }
     }

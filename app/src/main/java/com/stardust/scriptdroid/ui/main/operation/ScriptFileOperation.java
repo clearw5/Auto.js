@@ -1,10 +1,9 @@
 package com.stardust.scriptdroid.ui.main.operation;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.design.widget.Snackbar;
 
-import com.squareup.haha.perflib.Main;
 import com.stardust.autojs.ScriptExecutionListener;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.script.FileScriptSource;
@@ -19,9 +18,7 @@ import com.stardust.scriptdroid.external.shortcut.ShortcutActivity;
 import com.stardust.scriptdroid.scripts.ScriptFile;
 import com.stardust.scriptdroid.scripts.sample.Sample;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
-import com.stardust.scriptdroid.ui.main.MainActivity;
-
-import java.io.IOException;
+import com.stardust.util.AssetsCache;
 
 /**
  * Created by Stardust on 2017/1/23.
@@ -75,6 +72,10 @@ public abstract class ScriptFileOperation {
 
     public static void run(ScriptFile file) {
         AutoJs.getInstance().getScriptEngineService().execute(new FileScriptSource(file));
+    }
+
+    public static void run(Context context, Sample file) {
+        AutoJs.getInstance().getScriptEngineService().execute(new StringScriptSource(file.name, AssetsCache.get(context.getAssets(), file.path)));
     }
 
     public static void runOnEditView(ScriptSource scriptSource) {

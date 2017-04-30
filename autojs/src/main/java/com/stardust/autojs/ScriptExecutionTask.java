@@ -1,5 +1,7 @@
 package com.stardust.autojs;
 
+import android.util.Log;
+
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.script.ScriptSource;
@@ -11,6 +13,8 @@ import java.io.Serializable;
  */
 
 public class ScriptExecutionTask implements Serializable {
+
+    private static final String TAG = "ScriptExecutionTask";
 
     private ScriptSource mScriptSource;
     private ScriptExecutionListener mExecutionListener;
@@ -43,8 +47,10 @@ public class ScriptExecutionTask implements Serializable {
             engine.setTag("script", mScriptSource);
             mExecutionListener.onSuccess(engine, mScriptSource, engine.execute(mScriptSource));
         } catch (Exception e) {
+            e.printStackTrace();
             mExecutionListener.onException(engine, mScriptSource, e);
         } finally {
+            Log.d(TAG, "Engine destroy");
             engine.destroy();
         }
     }

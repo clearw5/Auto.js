@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.external.floating_window.content;
+package com.stardust.scriptdroid.external.floating_window.menu.content;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,9 +11,7 @@ import android.widget.Toast;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.view.accessibility.AccessibilityInfoProvider;
-import com.stardust.scriptdroid.external.floating_window.HoverMenuService;
-import com.stardust.scriptdroid.layout_inspector.LayoutInspector;
+import com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.util.MessageEvent;

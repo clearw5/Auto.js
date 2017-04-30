@@ -11,11 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.stardust.app.Fragment;
-import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
-import com.stardust.scriptdroid.external.floating_window.HoverMenuService;
+import com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.console.ConsoleActivity;
@@ -110,7 +109,7 @@ public class SlideMenuFragment extends Fragment {
     @ViewBinding.Check(R.id.sw_floating_window)
     private void setFloatingWindowEnable(boolean enable) {
         if (enable && !FloatingWindowManger.isFloatingWindowShowing()) {
-            FloatingWindowManger.showFloatingWindow();
+            FloatingWindowManger.showHoverMenu();
         } else if (!enable && FloatingWindowManger.isFloatingWindowShowing()) {
             FloatingWindowManger.hideFloatingWindow();
         }

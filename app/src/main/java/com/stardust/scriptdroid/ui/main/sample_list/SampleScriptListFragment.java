@@ -14,6 +14,7 @@ import com.stardust.scriptdroid.scripts.sample.Sample;
 import com.stardust.scriptdroid.scripts.sample.SampleFileManager;
 import com.stardust.scriptdroid.ui.edit.ViewSampleActivity;
 import com.stardust.scriptdroid.ui.main.MainActivity;
+import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 
 import java.io.IOException;
 
@@ -53,11 +54,15 @@ public class SampleScriptListFragment extends Fragment {
     private void showMenuDialog(final Sample sample) {
         new MaterialDialog.Builder(getActivity())
                 .title(sample.name)
-                .items(getString(R.string.text_copy_to_my_scripts))
+                .items(getString(R.string.text_run), getString(R.string.text_copy_to_my_scripts))
                 .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                        copySampleToMyScripts(sample);
+                        if (position == 0) {
+                            ScriptFileOperation.run(getActivity(), sample);
+                        } else {
+                            copySampleToMyScripts(sample);
+                        }
                     }
 
                 })
@@ -66,13 +71,6 @@ public class SampleScriptListFragment extends Fragment {
 
     private void copySampleToMyScripts(Sample sample) {
         MainActivity.importSample(getActivity(), sample);
-        try {
-            ((MainActivity) getActivity()).getMyScriptListFragment().
-                    importFile(sample.name, getActivity().getAssets().open(sample.path));
-        } catch (IOException e) {
-            e.printStackTrace();
-            Snackbar.make(mSampleScriptListRecyclerView, R.string.text_import_fail, Snackbar.LENGTH_SHORT).show();
-        }
     }
 
     private void viewSample(Sample sample) {

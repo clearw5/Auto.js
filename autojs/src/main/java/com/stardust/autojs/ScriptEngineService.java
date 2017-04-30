@@ -6,9 +6,14 @@ import android.util.Log;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.JavaScriptEngineManager;
 import com.stardust.autojs.engine.ScriptExecuteActivity;
+import com.stardust.autojs.runtime.ScriptInterrupptedException;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.script.ScriptSource;
+import com.stardust.lang.ThreadCompat;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.text.DateFormat;
 import java.util.Arrays;
@@ -23,6 +28,7 @@ import java.util.Set;
 public class ScriptEngineService {
 
     private static final String LOG_TAG = "ScriptEngineService";
+    private static final EventBus EVENT_BUS = new EventBus();
     private static ScriptEngineService instance;
 
     public static ScriptEngineService getInstance() {
@@ -33,27 +39,26 @@ public class ScriptEngineService {
         instance = service;
     }
 
+    private static final ScriptExecutionListener DEFAULT_LISTENER = new SimpleScriptExecutionListener() {
+        @Override
+        public void onStart(JavaScriptEngine engine, ScriptSource source) {
+            EVENT_BUS.post(new ScriptExecutionEvent(ScriptExecutionEvent.ON_START, source.toString()));
+        }
+
+        @Override
+        public void onException(JavaScriptEngine engine, ScriptSource source, Exception e) {
+            if (!causedByInterrupted(e)) {
+                EVENT_BUS.post(new ScriptExecutionEvent(ScriptExecutionEvent.ON_EXCEPTION, e.getMessage()));
+            }
+        }
+    };
+
+
     private final ScriptRuntime mRuntime;
     private final Context mContext;
     private final Console mConsole;
     private final JavaScriptEngineManager mJavaScriptEngineManager;
     private final EngineLifecycleObserver mEngineLifecycleObserver = new EngineLifecycleObserver();
-    private final ScriptExecutionListener mDefaultListener = new SimpleScriptExecutionListener() {
-
-        @Override
-        public void onStart(JavaScriptEngine engine, ScriptSource source) {
-            mConsole.v(DateFormat.getTimeInstance().format(new Date()) + " " + mContext.getString(R.string.text_start_running) + " " + source);
-        }
-
-        @Override
-        public void onException(JavaScriptEngine engine, ScriptSource source, Exception e) {
-            if (!causedByInterruptedException(e)) {
-                mRuntime.toast(mContext.getString(R.string.text_error) + ": " + e.getMessage());
-                mConsole.e(e.getMessage());
-            }
-        }
-
-    };
 
     ScriptEngineService(ScriptEngineServiceBuilder builder) {
         mRuntime = builder.mRuntime;
@@ -61,6 +66,7 @@ public class ScriptEngineService {
         mJavaScriptEngineManager = builder.mJavaScriptEngineManager;
         mConsole = builder.mConsole;
         mJavaScriptEngineManager.setEngineLifecycleCallback(mEngineLifecycleObserver);
+        EVENT_BUS.register(this);
     }
 
     public ScriptRuntime getRuntime() {
@@ -72,12 +78,12 @@ public class ScriptEngineService {
     }
 
     public ScriptExecutionListener getDefaultListener() {
-        return mDefaultListener;
+        return DEFAULT_LISTENER;
     }
 
     public JavaScriptEngine createScriptEngine() {
         JavaScriptEngine engine = mJavaScriptEngineManager.createEngine();
-        Log.i(LOG_TAG, Arrays.toString(Thread.currentThread().getStackTrace()));
+        Log.d(LOG_TAG, Arrays.toString(Thread.currentThread().getStackTrace()));
         return engine;
     }
 
@@ -89,18 +95,12 @@ public class ScriptEngineService {
         mEngineLifecycleObserver.unregisterCallback(engineLifecycleCallback);
     }
 
-    public static boolean causedByInterruptedException(Throwable e) {
-        while (e != null) {
-            if (e instanceof InterruptedException) {
-                return true;
-            }
-            e = e.getCause();
-        }
-        return false;
+    public static boolean causedByInterrupted(Throwable e) {
+        return e.getCause() instanceof ScriptInterrupptedException;
     }
 
     public ScriptExecution execute(ScriptExecutionTask task) {
-        ScriptExecutionListener listener = task.getExecutionListenerOrDefault(mDefaultListener);
+        ScriptExecutionListener listener = task.getExecutionListenerOrDefault(DEFAULT_LISTENER);
         ScriptSource source = task.getSource();
         int mode = source.getExecutionMode();
         if ((mode & ScriptSource.EXECUTION_MODE_UI) != 0) {
@@ -109,7 +109,7 @@ public class ScriptEngineService {
         } else {
             RunnableScriptExecution scriptExecution = new RunnableScriptExecution(source, listener, task.getConfig());
             if (task.getConfig().runInNewThread) {
-                new Thread(scriptExecution).start();
+                new ThreadCompat(scriptExecution).start();
             } else {
                 scriptExecution.run();
             }
@@ -126,7 +126,17 @@ public class ScriptEngineService {
     }
 
     public ScriptExecution execute(ScriptSource source) {
-        return execute(source, mDefaultListener, ExecutionConfig.getDefault());
+        return execute(source, DEFAULT_LISTENER, ExecutionConfig.getDefault());
+    }
+
+    @Subscribe
+    public void onScriptExecution(ScriptExecutionEvent event) {
+        if (event.getCode() == ScriptExecutionEvent.ON_START) {
+            mConsole.v(DateFormat.getTimeInstance().format(new Date()) + " " + mContext.getString(R.string.text_start_running) + " " + event.getMessage());
+        } else if (event.getCode() == ScriptExecutionEvent.ON_EXCEPTION) {
+            mRuntime.toast(mContext.getString(R.string.text_error) + ": " + event.getMessage());
+            mConsole.e(event.getMessage());
+        }
     }
 
     public int stopAll() {
@@ -207,6 +217,30 @@ public class ScriptEngineService {
             synchronized (mEngineLifecycleCallbacks) {
                 mEngineLifecycleCallbacks.remove(callback);
             }
+        }
+    }
+
+
+    private static class ScriptExecutionEvent {
+
+        static final int ON_START = "Eating...".hashCode();
+        static final int ON_SUCCESS = "I...lov...".hashCode();
+        static final int ON_EXCEPTION = "...Sorry...I should not have said it...".hashCode();
+
+        private final int mCode;
+        private final String mMessage;
+
+        ScriptExecutionEvent(int code, String message) {
+            mCode = code;
+            mMessage = message;
+        }
+
+        public int getCode() {
+            return mCode;
+        }
+
+        public String getMessage() {
+            return mMessage;
         }
     }
 }

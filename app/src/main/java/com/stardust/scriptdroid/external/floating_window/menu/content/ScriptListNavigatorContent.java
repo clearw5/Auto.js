@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.external.floating_window.content;
+package com.stardust.scriptdroid.external.floating_window.menu.content;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.stardust.autojs.script.FileScriptSource;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.external.floating_window.HoverMenuService;
+import com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService;
 import com.stardust.scriptdroid.scripts.ScriptFile;
 import com.stardust.scriptdroid.scripts.StorageScriptProvider;
 import com.stardust.scriptdroid.ui.edit.EditActivity;

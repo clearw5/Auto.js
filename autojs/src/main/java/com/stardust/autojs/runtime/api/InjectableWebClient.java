@@ -10,6 +10,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 
+import com.stardust.autojs.runtime.ScriptInterrupptedException;
 import com.stardust.autojs.runtime.ScriptStopException;
 
 import org.mozilla.javascript.Context;
@@ -107,7 +108,7 @@ public class InjectableWebClient extends WebViewClient {
                 try {
                     ScriptBridge.this.wait();
                 } catch (InterruptedException e) {
-                    throw new ScriptStopException(e);
+                    throw new ScriptInterrupptedException();
                 }
             }
             return result.toString();
@@ -131,7 +132,7 @@ public class InjectableWebClient extends WebViewClient {
                 try {
                     this.wait();
                 } catch (InterruptedException e) {
-                    throw new ScriptStopException(e);
+                    throw new ScriptInterrupptedException();
                 }
             }
             return result;

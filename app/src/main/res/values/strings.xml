@@ -214,6 +214,7 @@
     <string name="text_guard_mode">保护模式</string>
     <string name="summary_guard_mode">在本软件界面无法运行自动操作命令以免误触</string>
     <string name="key_guard_mode">key_guard_mode</string>
+    <string name="text_console_floating_window">控制台悬浮窗</string>
 
     <string-array name="record_control_keys">
         <item>无</item>

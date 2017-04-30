@@ -84,7 +84,7 @@
             android:theme="@style/IssueReporterTheme"/>
 
         <service android:name="com.stardust.view.Floaty$FloatHeadService"/>
-        <service android:name="com.stardust.scriptdroid.external.floating_window.HoverMenuService"/>
+        <service android:name="com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService"/>
 
         <activity android:name=".external.tasker.TaskPrefEditActivity"/>
 

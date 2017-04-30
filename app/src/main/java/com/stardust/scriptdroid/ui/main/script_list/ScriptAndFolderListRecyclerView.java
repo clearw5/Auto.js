@@ -28,6 +28,9 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 /**
  * Created by Stardust on 2017/3/27.
  */
@@ -131,6 +134,7 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
     private StorageScriptProvider mStorageScriptProvider;
     private FileProcessListener mFileProcessListener;
     private boolean mScriptFileOperationEnabled = true;
+    private Executor mFileListingExecutor = Executors.newSingleThreadExecutor();
 
     public ScriptAndFolderListRecyclerView(Context context) {
         super(context);
@@ -153,7 +157,7 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         if (mFileProcessListener != null) {
             mFileProcessListener.onFilesListing();
         }
-        new Thread(new Runnable() {
+        mFileListingExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 final ScriptFile[] scriptFiles = mStorageScriptProvider.getDirectoryScriptFiles(directory);
@@ -163,10 +167,11 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
                         mAdapter.setScripts(scriptFiles);
                         if (mFileProcessListener != null)
                             mFileProcessListener.onFileListed();
+                        smoothScrollToPosition(0);
                     }
                 });
             }
-        }).start();
+        });
     }
 
     public void setCurrentDirectory(final ScriptFile directory) {

@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.ui.main.task;
 
 import android.content.Context;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -75,17 +76,22 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Java
         setAdapter(mAdapter);
     }
 
-    private void updateEngineList() {
+    public void updateEngineList() {
         mScriptEngines.clear();
         mScriptEngines.addAll(ScriptEngineService.getInstance().getEngines());
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        updateEngineList();
-        mAdapter.notifyDataSetChanged();
         ScriptEngineService.getInstance().registerEngineLifecycleCallback(this);
+    }
+
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        super.onWindowVisibilityChanged(visibility);
+        updateEngineList();
     }
 
     @Override

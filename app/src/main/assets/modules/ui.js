@@ -14,12 +14,26 @@ gravity
 weight
 
 
+var ui = {
+
+};
+
+ui.layout = function(xml){
+
+}
+
+
+
 ui.layout(
-    <linear orientation="vertical" w="fill" h="300" bg="#ff0000" gravity="center">
-        <text text="测试" size="18" color="#000000"/>
+    <linear orientation="vertical" w="fill" h="300" bg="#ff0000" gravity="center" layout_gravity="center">
+        <text text="测试" size="18" color="#000000" id="adasd"/>
         <button id="btn" text="按钮"/>
     </linear>
 );
+
+
+
+vat text = ui.asadsad;
 
 <relative>
 
@@ -27,7 +41,7 @@ ui.layout(
 
 <horizon>
 
-</horiz>
+</horizon>
 
 <vertical>
 

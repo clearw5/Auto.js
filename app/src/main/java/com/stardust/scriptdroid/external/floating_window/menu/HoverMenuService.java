@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.external.floating_window;
+package com.stardust.scriptdroid.external.floating_window.menu;
 
 
 import android.app.Service;
@@ -17,9 +17,9 @@ import com.stardust.hover.SimpleHoverMenuTransitionListener;
 import com.stardust.hover.WindowHoverMenu;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.external.floating_window.view.FloatingLayoutBoundsView;
-import com.stardust.scriptdroid.external.floating_window.view.FloatingLayoutHierarchyView;
-import com.stardust.scriptdroid.layout_inspector.LayoutInspector;
+import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
+import com.stardust.scriptdroid.external.floating_window.menu.view.FloatingLayoutBoundsView;
+import com.stardust.scriptdroid.external.floating_window.menu.view.FloatingLayoutHierarchyView;
 import com.stardust.scriptdroid.layout_inspector.NodeInfo;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.theme.ThemeColorManagerCompat;

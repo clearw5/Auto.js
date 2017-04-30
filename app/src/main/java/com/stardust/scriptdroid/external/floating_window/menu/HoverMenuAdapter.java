@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.external.floating_window;
+package com.stardust.scriptdroid.external.floating_window.menu;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -16,9 +16,9 @@ import android.util.TypedValue;
 import android.view.View;
 
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.external.floating_window.content.MainMenuNavigatorContent;
-import com.stardust.scriptdroid.external.floating_window.content.RecordNavigatorContent;
-import com.stardust.scriptdroid.external.floating_window.content.ScriptListNavigatorContent;
+import com.stardust.scriptdroid.external.floating_window.menu.content.MainMenuNavigatorContent;
+import com.stardust.scriptdroid.external.floating_window.menu.content.RecordNavigatorContent;
+import com.stardust.scriptdroid.external.floating_window.menu.content.ScriptListNavigatorContent;
 import com.stardust.theme.ThemeColorManagerCompat;
 
 import java.util.ArrayList;

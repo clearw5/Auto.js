@@ -8,8 +8,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 118
-        versionName "2.0.8Alpha"
+        versionCode 119
+        versionName "2.0.8 Beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -68,14 +68,13 @@ dependencies {
     compile group: "pl.openrnd.android", name: "multi-level-listview", version: "1.0.1"
     compile 'de.psdev.licensesdialog:licensesdialog:1.8.1'
     compile 'io.mattcarroll.hover:hover:0.9.7'
-    compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
     compile 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     compile 'me.zhanghai.android.materialprogressbar:library:1.3.0'
     compile group:'com.twofortyfouram', name:'android-plugin-client-sdk-for-locale', version:'[4.0.2, 5.0['
     compile 'com.android.volley:volley:1.0.0'
-    compile 'com.github.hyb1996:EnhancedFloaty:0.11'
+    compile 'com.github.hyb1996:EnhancedFloaty:0.12'
     compile 'com.android.support:multidex:1.0.1'
     compile(name: 'libtermexec-release', ext: 'aar')
     compile(name: 'emulatorview-release', ext: 'aar')

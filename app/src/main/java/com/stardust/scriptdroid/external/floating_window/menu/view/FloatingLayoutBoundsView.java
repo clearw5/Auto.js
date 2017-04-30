@@ -1,20 +1,17 @@
-package com.stardust.scriptdroid.external.floating_window.view;
+package com.stardust.scriptdroid.external.floating_window.menu.view;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.stardust.scriptdroid.external.floating_window.HoverMenuService;
+import com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService;
 import com.stardust.scriptdroid.layout_inspector.NodeInfo;
 import com.stardust.scriptdroid.layout_inspector.view.LayoutBoundsView;
 import com.stardust.scriptdroid.layout_inspector.view.NodeInfoView;
 import com.stardust.scriptdroid.layout_inspector.view.OnNodeInfoSelectListener;
 import com.stardust.util.MessageEvent;
-
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by Stardust on 2017/3/12.

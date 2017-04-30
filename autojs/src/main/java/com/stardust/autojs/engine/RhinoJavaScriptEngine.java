@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.stardust.autojs.rhino_android.AndroidContextFactory;
 import com.stardust.autojs.rhino_android.RhinoAndroidHelper;
+import com.stardust.autojs.runtime.ScriptInterrupptedException;
 import com.stardust.autojs.runtime.ScriptStopException;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
@@ -59,6 +60,7 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
 
     @Override
     public void forceStop() {
+        Log.d(LOG_TAG, "forceStop: interrupt Thread: " + mThread);
         mThread.interrupt();
     }
 
@@ -68,6 +70,7 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
 
     @Override
     public synchronized void destroy() {
+        Log.d(LOG_TAG, "on destroy");
         Context.exit();
         // TODO: 2017/4/6 XXX :在这里回收内存池并不好
         final AccessibilityNodeInfoAllocator allocator = (AccessibilityNodeInfoAllocator) getTag("allocator");
@@ -138,7 +141,7 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
         protected void observeInstructionCount(Context cx, int instructionCount) {
             if (Thread.currentThread().isInterrupted()) {
                 Context.exit();
-                throw new ScriptStopException(new InterruptedException());
+                throw new ScriptInterrupptedException();
             }
         }
 

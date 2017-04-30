@@ -189,7 +189,7 @@ public class SimpleActionAutomator {
     private boolean performAction(SimpleAction simpleAction) {
         ensureAccessibilityServiceEnabled();
         if (AutomatorConfig.isUnintendedGuardEnabled() && isRunningPackageSelf()) {
-            Log.i(TAG, "performAction: running package is self. return false");
+            Log.d(TAG, "performAction: running package is self. return false");
             return false;
         }
         AccessibilityService service = mAccessibilityBridge.getService();
@@ -200,7 +200,7 @@ public class SimpleActionAutomator {
             return false;
         AccessibilityNodeInfoAllocator allocator = new AccessibilityNodeInfoAllocator();
         simpleAction.setAllocator(allocator);
-        Log.i("Automator", "performAction: " + simpleAction + " root = " + root);
+        Log.v(TAG, "performAction: " + simpleAction + " root = " + root);
         boolean result = simpleAction.perform(root);
         allocator.recycleAll();
         return result;

@@ -16,9 +16,9 @@ import static org.junit.Assert.assertTrue;
  */
 public class ExampleUnitTest {
     // TODO: 2017/3/3 自定义函数
-    // TODO: 2017/3/19 exist函数
-    // TODO: 2017/3/23 tasker插件
-    // TODO: 2017/3/23 任务管理与控制台
+    // TODO: 2017/3/19 exist函数 √
+    // TODO: 2017/3/23 tasker插件 √
+    // TODO: 2017/3/23 任务管理与控制台 √
     // TODO: 2017/3/23 悬浮窗加入控制台
     // TODO: 2017/3/24 文件读写api
     // TODO: 2017/3/24 网络读写api

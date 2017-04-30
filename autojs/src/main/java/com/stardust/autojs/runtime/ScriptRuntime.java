@@ -78,7 +78,7 @@ public class ScriptRuntime {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
-            throw new ScriptStopException(e);
+            throw new ScriptInterrupptedException();
         }
     }
 
@@ -140,10 +140,6 @@ public class ScriptRuntime {
     @JavascriptInterface
     public void stop() {
         Thread.interrupted();
-    }
-
-    public void stoppedByInterrupted(InterruptedException e) {
-        throw new ScriptStopException(e);
     }
 
     public void ensureAccessibilityServiceEnabled() {

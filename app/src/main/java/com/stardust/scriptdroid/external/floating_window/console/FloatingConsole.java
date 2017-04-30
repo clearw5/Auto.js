@@ -1,7 +1,8 @@
-package com.stardust.scriptdroid.external.floating_window;
+package com.stardust.scriptdroid.external.floating_window.console;
 
 import android.content.Context;
 
+import com.stardust.enhancedfloaty.ResizableExpandableFloatyService;
 import com.stardust.enhancedfloaty.ResizableFloatyService;
 
 /**
@@ -11,6 +12,6 @@ import com.stardust.enhancedfloaty.ResizableFloatyService;
 public class FloatingConsole {
 
     public static void startFloatingService(Context context) {
-        ResizableFloatyService.startService(context, new ConsoleFloaty());
+        ResizableExpandableFloatyService.startService(context, new ConsoleFloaty());
     }
 }

@@ -8,12 +8,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="12dp"
-        android:background="@drawable/floating_console_bg_bottom"
         android:orientation="vertical">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/floating_console_bg_top"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <android.support.v7.widget.Toolbar
@@ -22,12 +22,24 @@
                 android:layout_height="40dp"
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="@string/_app_name">
+                app:title="@string/text_console">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="right">
+
+                    <ImageView
+                        android:id="@+id/minimize"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="26dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_remove_white_24dp"/>
 
                     <ImageView
                         android:id="@+id/move_or_resize"
@@ -52,11 +64,11 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <view
+        <com.stardust.scriptdroid.external.floating_window.console.FloatingConsoleView
             android:id="@+id/console"
-            class="com.stardust.scriptdroid.ui.console.ConsoleActivity$ConsoleView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/floating_console_bg_bottom"
             android:minHeight="200dp"/>
     </LinearLayout>
 

@@ -16,6 +16,8 @@ import com.stardust.scriptdroid.layout_inspector.NodeInfo;
 import com.stardust.util.ViewUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -99,11 +101,16 @@ public class LayoutBoundsView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN && mRootNode != null) {
-            NodeInfo nodeInfo = findNodeAt(mRootNode, (int) event.getRawX(), (int) event.getRawY());
-            onNodeInfoClick(nodeInfo);
+            ArrayList<NodeInfo> list = new ArrayList<>();
+            findNodeAt(mRootNode, (int) event.getRawX(), (int) event.getRawY(), list);
+            showNodeInfoList(list);
         }
         return super.onTouchEvent(event);
 
+    }
+
+    private void showNodeInfoList(ArrayList<NodeInfo> list) {
+        onNodeInfoClick(list.get(list.size() - 1));
     }
 
     private void onNodeInfoClick(NodeInfo nodeInfo) {
@@ -112,20 +119,13 @@ public class LayoutBoundsView extends View {
         }
     }
 
-    private List<NodeInfo> findNodeAt(NodeInfo node, int x, int y) {
-        List<NodeInfo> list = null;
+    private void findNodeAt(NodeInfo node, int x, int y, List<NodeInfo> list) {
         for (NodeInfo child : node.getChildren()) {
             if (child != null && child.getBoundsInScreen().contains(x, y)) {
-                if (list == null)
-                    list = findNodeAt(child, x, y);
-                else
-                    list.addAll(findNodeAt(child, x, y));
+                list.add(child);
+                findNodeAt(child, x, y, list);
             }
         }
-        if (list == null)
-            list = new ArrayList<>();
-        list.add(node);
-        return list;
     }
 
 }
