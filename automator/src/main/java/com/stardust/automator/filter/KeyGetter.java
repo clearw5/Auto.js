@@ -1,6 +1,6 @@
 package com.stardust.automator.filter;
 
-import android.view.accessibility.AccessibilityNodeInfo;
+import com.stardust.automator.UiObject;
 
 /**
  * Created by Stardust on 2017/3/9.
@@ -8,5 +8,5 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 public interface KeyGetter {
 
-    String getKey(AccessibilityNodeInfo nodeInfo);
+    String getKey(UiObject nodeInfo);
 }

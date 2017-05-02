@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.stardust.automator.UiObject;
 import com.stardust.util.MapEntries;
 
 import java.util.Map;
@@ -45,7 +46,7 @@ public class ActionFactory {
         return new SearchTargetAction(action, new FilterAction.EditableFilter(index)) {
 
             @Override
-            protected void performAction(AccessibilityNodeInfo node) {
+            protected void performAction(UiObject node) {
                 Bundle args = new Bundle();
                 args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
                 node.performAction(getAction(), args);

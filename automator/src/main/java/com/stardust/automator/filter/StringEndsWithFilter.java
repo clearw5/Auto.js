@@ -1,6 +1,6 @@
 package com.stardust.automator.filter;
 
-import android.view.accessibility.AccessibilityNodeInfo;
+import com.stardust.automator.UiObject;
 
 /**
  * Created by Stardust on 2017/3/9.
@@ -17,7 +17,7 @@ public class StringEndsWithFilter extends DfsFilter {
     }
 
     @Override
-    protected boolean isIncluded(AccessibilityNodeInfo nodeInfo) {
+    protected boolean isIncluded(UiObject nodeInfo) {
         String key = mKeyGetter.getKey(nodeInfo);
         return key != null && key.endsWith(mSuffix);
     }

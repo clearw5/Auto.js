@@ -154,11 +154,7 @@ public class HoverMenuService extends Service {
     }
 
     private void captureCurrentWindow() {
-        NodeInfo nodeInfo = AutoJs.getInstance().getLayoutInspector().captureCurrentWindow();
-        if (nodeInfo == null)
-            return;
-        mFloatingLayoutHierarchyView.setRootNode(nodeInfo);
-        mFloatingLayoutBoundsView.setRootNode(nodeInfo);
+        AutoJs.getInstance().getLayoutInspector().captureCurrentWindow();
     }
 
     @Nullable
@@ -216,11 +212,13 @@ public class HoverMenuService extends Service {
     }
 
     private void showLayoutBounds() {
+        mFloatingLayoutBoundsView.setRootNode(AutoJs.getInstance().getLayoutInspector().getCapture());
         mWindowHoverMenu.getHoverMenuView().setVisibility(View.GONE);
         showView(mFloatingLayoutBoundsView);
     }
 
     public void showLayoutHierarchy() {
+        mFloatingLayoutHierarchyView.setRootNode(AutoJs.getInstance().getLayoutInspector().getCapture());
         mWindowHoverMenu.getHoverMenuView().setVisibility(View.GONE);
         showView(mFloatingLayoutHierarchyView);
     }

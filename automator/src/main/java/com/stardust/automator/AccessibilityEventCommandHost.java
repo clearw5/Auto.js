@@ -9,6 +9,7 @@ import com.stardust.view.accessibility.AccessibilityDelegate;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -67,6 +68,11 @@ public class AccessibilityEventCommandHost implements AccessibilityDelegate {
             }
         }
         return false;
+    }
+
+    @Override
+    public Set<Integer> getEventTypes() {
+        return null;
     }
 
     private void executeCommand(final Command command, final AccessibilityService service, final AccessibilityEvent event) {

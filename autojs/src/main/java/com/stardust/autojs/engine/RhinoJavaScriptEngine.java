@@ -43,7 +43,6 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
         mThread = Thread.currentThread();
         mContext = createContext();
         mScriptable = createScope(mContext);
-        setTag("create-traces", Arrays.toString(Thread.currentThread().getStackTrace()));
     }
 
     @Override
@@ -53,8 +52,6 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
 
     @Override
     public Object execute(ScriptSource source) {
-        setTag("execute-traces", Arrays.toString(Thread.currentThread().getStackTrace()));
-        setTag("execute-source", source);
         return mContext.evaluateString(mScriptable, source.getScript(), "<script>", 1, null);
     }
 
@@ -72,17 +69,6 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
     public synchronized void destroy() {
         Log.d(LOG_TAG, "on destroy");
         Context.exit();
-        // TODO: 2017/4/6 XXX :在这里回收内存池并不好
-        final AccessibilityNodeInfoAllocator allocator = (AccessibilityNodeInfoAllocator) getTag("allocator");
-        if (allocator != null) {
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    // FIXME: 2017/4/28
-                    //allocator.recycleAll();
-                }
-            }, 1000);
-        }
         mEngineManager.removeEngine(this);
     }
 
@@ -93,10 +79,6 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
 
     @Override
     public synchronized Object getTag(String key) {
-        Object tag = mTags.get(key);
-        if (tag == null && key.equals("script")) {
-            Log.i(LOG_TAG, mTags.entrySet().toString());
-        }
         return mTags.get(key);
     }
 

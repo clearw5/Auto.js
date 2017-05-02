@@ -6,6 +6,7 @@ import android.util.SparseArray;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.stardust.automator.UiObject;
 import com.stardust.automator.simple_action.FilterAction;
 import com.stardust.scriptdroid.layout_inspector.NodeInfo;
 import com.stardust.util.SparseArrayEntries;
@@ -123,24 +124,17 @@ public class AccessibilityActionConverter {
             if (source == null)
                 return;
             AccessibilityNodeInfoAllocator allocator = new AccessibilityNodeInfoAllocator();
-            List<AccessibilityNodeInfo> editableList = FilterAction.EditableFilter.findEditable(allocator, service.getRootInActiveWindow());
+            UiObject uiObject = new UiObject(service.getRootInActiveWindow(), allocator);
+            List<UiObject> editableList = FilterAction.EditableFilter.findEditable(uiObject);
             int i = findInEditableList(editableList, source);
-            recycle(editableList);
             sb.append("while(!input(").append(i).append(", \"").append(source.getText()).append("\"));");
             source.recycle();
             allocator.recycleAll();
         }
 
-        private void recycle(List<AccessibilityNodeInfo> list) {
-            for (AccessibilityNodeInfo nodeInfo : list) {
-                nodeInfo.recycle();
-            }
-        }
-
-
-        private static int findInEditableList(List<AccessibilityNodeInfo> editableList, AccessibilityNodeInfo editable) {
+        private static int findInEditableList(List<UiObject> editableList, AccessibilityNodeInfo editable) {
             int i = 0;
-            for (AccessibilityNodeInfo nodeInfo : editableList) {
+            for (UiObject nodeInfo : editableList) {
                 if (AccessibilityNodeInfoHelper.getBoundsInScreen(nodeInfo).equals(AccessibilityNodeInfoHelper.getBoundsInScreen(editable))) {
                     return i;
                 }

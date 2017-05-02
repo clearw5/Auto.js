@@ -13,11 +13,11 @@ import com.stardust.autojs.runtime.JavascriptInterface;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.AutomatorConfig;
 import com.stardust.automator.AccessibilityEventCommandHost;
+import com.stardust.automator.UiObject;
 import com.stardust.automator.simple_action.SimpleAction;
 import com.stardust.automator.simple_action.ActionFactory;
 import com.stardust.automator.simple_action.ActionTarget;
 import com.stardust.util.DeveloperUtils;
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -198,12 +198,8 @@ public class SimpleActionAutomator {
         AccessibilityNodeInfo root = service.getRootInActiveWindow();
         if (root == null)
             return false;
-        AccessibilityNodeInfoAllocator allocator = new AccessibilityNodeInfoAllocator();
-        simpleAction.setAllocator(allocator);
         Log.v(TAG, "performAction: " + simpleAction + " root = " + root);
-        boolean result = simpleAction.perform(root);
-        allocator.recycleAll();
-        return result;
+        return simpleAction.perform(new UiObject(root));
     }
 
     private boolean isRunningPackageSelf() {

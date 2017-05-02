@@ -1,8 +1,6 @@
 package com.stardust.automator.simple_action;
 
-import android.view.accessibility.AccessibilityNodeInfo;
-
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+import com.stardust.automator.UiObject;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -20,16 +18,16 @@ public class DepthFirstSearchTargetAction extends SearchTargetAction {
 
 
     @Override
-    public AccessibilityNodeInfo searchTarget(AccessibilityNodeInfo n) {
+    public UiObject searchTarget(UiObject n) {
         if (n == null)
             return null;
         if (mAble.isAble(n))
             return n;
         for (int i = 0; i < n.getChildCount(); i++) {
-            AccessibilityNodeInfo child = getAllocator().getChild(n, i);
+            UiObject child = n.child(i);
             if (child == null)
                 continue;
-            AccessibilityNodeInfo node = searchTarget(child);
+            UiObject node = searchTarget(child);
             if (node != null)
                 return node;
             else

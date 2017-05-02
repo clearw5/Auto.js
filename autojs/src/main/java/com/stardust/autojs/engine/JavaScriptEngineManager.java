@@ -43,7 +43,6 @@ public abstract class JavaScriptEngineManager {
     public JavaScriptEngine createEngine() {
         JavaScriptEngine engine = createEngineInner();
         putProperties(engine);
-        engine.init();
         addEngine(engine);
         return engine;
     }

@@ -38,14 +38,12 @@ public class ScriptExecutionTask implements Serializable {
         return mExecutionConfig;
     }
 
+
+
     public void execute(ScriptRuntime runtime, JavaScriptEngine engine) {
         try {
-            if ((mScriptSource.getExecutionMode() & ScriptSource.EXECUTION_MODE_AUTO) != 0) {
-                runtime.ensureAccessibilityServiceEnabled();
-            }
-            mExecutionListener.onStart(engine, mScriptSource);
-            engine.setTag("script", mScriptSource);
-            mExecutionListener.onSuccess(engine, mScriptSource, engine.execute(mScriptSource));
+            prepare(runtime, engine);
+            doExecution(engine);
         } catch (Exception e) {
             e.printStackTrace();
             mExecutionListener.onException(engine, mScriptSource, e);
@@ -55,9 +53,29 @@ public class ScriptExecutionTask implements Serializable {
         }
     }
 
+    private void prepare(ScriptRuntime runtime, JavaScriptEngine engine) {
+        if ((mScriptSource.getExecutionMode() & ScriptSource.EXECUTION_MODE_AUTO) != 0) {
+            runtime.ensureAccessibilityServiceEnabled();
+        }
+        engine.put("__runtime__", runtime);
+        engine.init();
+    }
+
+    private void doExecution(JavaScriptEngine engine) {
+        engine.setTag("script", mScriptSource);
+        mExecutionListener.onStart(engine, mScriptSource);
+        mExecutionListener.onSuccess(engine, mScriptSource, engine.execute(mScriptSource));
+    }
+
     public ScriptExecutionListener getExecutionListenerOrDefault(ScriptExecutionListener defaultListener) {
         if (mExecutionListener == null)
             return defaultListener;
         return mExecutionListener;
+    }
+
+    public void setDefaultListenerIfNeeded(ScriptExecutionListener defaultScriptExecutionListener) {
+        if (mExecutionListener == null) {
+            mExecutionListener = defaultScriptExecutionListener;
+        }
     }
 }

@@ -11,33 +11,29 @@ import com.stardust.autojs.runtime.JavascriptInterface;
 public interface Console {
 
     @JavascriptInterface
-    void i(@Nullable Object o);
+    void verbose(@Nullable Object data, Object... options);
 
     @JavascriptInterface
-    void i(String str);
+    void log(@Nullable Object data, Object... options);
 
     @JavascriptInterface
-    void e(String message);
+    void info(@Nullable Object data, Object... options);
 
     @JavascriptInterface
-    void e(@Nullable Object o);
+    void warn(@Nullable Object data, Object... options);
 
     @JavascriptInterface
-    void v(String v);
+    void error(@Nullable Object data, Object... options);
 
     @JavascriptInterface
-    void v(@Nullable Object o);
+    void assertTrue(boolean value, @Nullable Object data, Object... options);
 
     @JavascriptInterface
-    void log(@Nullable Object o);
-
-    @JavascriptInterface
-    void log(String string);
+    void clear();
 
     @JavascriptInterface
     void show();
 
     @JavascriptInterface
-    void clear();
-
+    void hide();
 }

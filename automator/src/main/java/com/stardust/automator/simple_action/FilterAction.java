@@ -1,9 +1,8 @@
 package com.stardust.automator.simple_action;
 
 import android.graphics.Rect;
-import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+import com.stardust.automator.UiObject;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -18,7 +17,7 @@ public abstract class FilterAction extends SimpleAction {
 
     public interface Filter {
 
-        List<AccessibilityNodeInfo> filter(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo root);
+        List<UiObject> filter(UiObject root);
     }
 
     public static class TextFilter implements Filter {
@@ -32,8 +31,8 @@ public abstract class FilterAction extends SimpleAction {
         }
 
         @Override
-        public List<AccessibilityNodeInfo> filter(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo root) {
-            List<AccessibilityNodeInfo> list = allocator.findAccessibilityNodeInfosByText(root, mText);
+        public List<UiObject> filter(UiObject root) {
+            List<UiObject> list = root.findByText(mText);
             if (mIndex == -1)
                 return list;
             if (mIndex >= list.size())
@@ -59,11 +58,11 @@ public abstract class FilterAction extends SimpleAction {
         }
 
         @Override
-        public List<AccessibilityNodeInfo> filter(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo root) {
-            return Collections.singletonList(findAccessibilityNodeInfosByBounds(allocator, root));
+        public List<UiObject> filter(UiObject root) {
+            return Collections.singletonList(findAccessibilityNodeInfosByBounds(root));
         }
 
-        private AccessibilityNodeInfo findAccessibilityNodeInfosByBounds(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo root) {
+        private UiObject findAccessibilityNodeInfosByBounds(UiObject root) {
             if (root == null)
                 return null;
             Rect rect = new Rect();
@@ -72,10 +71,10 @@ public abstract class FilterAction extends SimpleAction {
                 return root;
             }
             for (int i = 0; i < root.getChildCount(); i++) {
-                AccessibilityNodeInfo child = allocator.getChild(root, i);
+                UiObject child = root.child(i);
                 if (child == null)
                     continue;
-                AccessibilityNodeInfo nodeInfo = findAccessibilityNodeInfosByBounds(allocator, child);
+                UiObject nodeInfo = findAccessibilityNodeInfosByBounds(child);
                 if (nodeInfo != null)
                     return nodeInfo;
                 else
@@ -101,8 +100,8 @@ public abstract class FilterAction extends SimpleAction {
         }
 
         @Override
-        public List<AccessibilityNodeInfo> filter(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo root) {
-            List<AccessibilityNodeInfo> editableList = findEditable(allocator, root);
+        public List<UiObject> filter(UiObject root) {
+            List<UiObject> editableList = findEditable(root);
             if (mIndex == -1)
                 return editableList;
             if (mIndex >= editableList.size())
@@ -110,16 +109,16 @@ public abstract class FilterAction extends SimpleAction {
             return Collections.singletonList(editableList.get(mIndex));
         }
 
-        public static List<AccessibilityNodeInfo> findEditable(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo root) {
+        public static List<UiObject> findEditable(UiObject root) {
             if (root == null) {
                 return Collections.emptyList();
             }
             if (root.isEditable()) {
                 return Collections.singletonList(root);
             }
-            List<AccessibilityNodeInfo> list = new LinkedList<>();
+            List<UiObject> list = new LinkedList<>();
             for (int i = 0; i < root.getChildCount(); i++) {
-                list.addAll(findEditable(allocator, allocator.getChild(root, i)));
+                list.addAll(findEditable(root.child(i)));
             }
             return list;
         }
@@ -141,8 +140,8 @@ public abstract class FilterAction extends SimpleAction {
         }
 
         @Override
-        public List<AccessibilityNodeInfo> filter(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo root) {
-            return allocator.findAccessibilityNodeInfosByViewId(root, mId);
+        public List<UiObject> filter(UiObject root) {
+            return root.findByViewId(mId);
         }
 
         @Override
@@ -160,16 +159,15 @@ public abstract class FilterAction extends SimpleAction {
         mFilter = filter;
     }
 
-    public boolean perform(AccessibilityNodeInfo root) {
+    @Override
+    public boolean perform(UiObject root) {
         if (root == null)
             return false;
-        List<AccessibilityNodeInfo> list = mFilter.filter(getAllocator(), root);
-        boolean succeed = perform(list);
-        AccessibilityNodeInfoAllocator.recycleList(root, list);
-        return succeed;
+        List<UiObject> list = mFilter.filter(root);
+        return perform(list);
     }
 
-    public abstract boolean perform(List<AccessibilityNodeInfo> nodes);
+    public abstract boolean perform(List<UiObject> nodes);
 
     public static class SimpleFilterAction extends FilterAction {
 
@@ -181,11 +179,11 @@ public abstract class FilterAction extends SimpleAction {
         }
 
         @Override
-        public boolean perform(List<AccessibilityNodeInfo> nodes) {
+        public boolean perform(List<UiObject> nodes) {
             if (nodes == null || nodes.isEmpty())
                 return false;
             boolean succeed = true;
-            for (AccessibilityNodeInfo nodeInfo : nodes) {
+            for (UiObject nodeInfo : nodes) {
                 if (!nodeInfo.performAction(mAction)) {
                     succeed = false;
                 }

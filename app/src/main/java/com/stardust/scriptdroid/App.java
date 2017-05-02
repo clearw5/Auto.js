@@ -3,9 +3,11 @@ package com.stardust.scriptdroid;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.multidex.MultiDexApplication;
 
+import com.flurry.android.FlurryAgent;
 import com.squareup.leakcanary.LeakCanary;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.app.VolumeChangeObserver;
@@ -40,10 +42,16 @@ public class App extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         instance = new WeakReference<>(this);
+        setUpStaticsTool();
         setUpDebugEnvironment();
         init();
         registerActivityLifecycleCallback();
+    }
 
+    private void setUpStaticsTool() {
+        new FlurryAgent.Builder()
+                .withLogEnabled(true)
+                .build(this, "D42MH48ZN4PJC5TKNYZD");
     }
 
 
@@ -79,6 +87,12 @@ public class App extends MultiDexApplication {
 
     private void registerActivityLifecycleCallback() {
         registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
+
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                super.onActivityCreated(activity, savedInstanceState);
+                FlurryAgent.logEvent(activity.getClass().getSimpleName());
+            }
 
             @Override
             public void onActivityPaused(Activity activity) {

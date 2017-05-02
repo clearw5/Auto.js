@@ -1,6 +1,6 @@
 package com.stardust.automator.simple_action;
 
-import android.view.accessibility.AccessibilityNodeInfo;
+import com.stardust.automator.UiObject;
 
 import java.util.List;
 
@@ -19,20 +19,19 @@ public abstract class SearchTargetAction extends FilterAction {
 
 
     @Override
-    public boolean perform(List<AccessibilityNodeInfo> nodes) {
+    public boolean perform(List<UiObject> nodes) {
         boolean performed = false;
-        for (AccessibilityNodeInfo node : nodes) {
+        for (UiObject node : nodes) {
             node = searchTarget(node);
             if (node != null) {
                 performAction(node);
                 performed = true;
-                node.recycle();
             }
         }
         return performed;
     }
 
-    protected void performAction(AccessibilityNodeInfo node) {
+    protected void performAction(UiObject node) {
         node.performAction(mAction);
     }
 
@@ -40,7 +39,7 @@ public abstract class SearchTargetAction extends FilterAction {
         return mAction;
     }
 
-    public AccessibilityNodeInfo searchTarget(AccessibilityNodeInfo node) {
+    public UiObject searchTarget(UiObject node) {
         return node;
     }
 

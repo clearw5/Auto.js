@@ -2,7 +2,8 @@ package com.stardust.automator.filter;
 
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.view.accessibility.AccessibilityNodeInfo;
+
+import com.stardust.automator.UiObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,14 +32,14 @@ public class BooleanFilter extends DfsFilter {
 
     public interface BooleanSupplier {
 
-        boolean get(AccessibilityNodeInfo node);
+        boolean get(UiObject node);
 
     }
 
     public static final BooleanSupplier CHECKABLE = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isCheckable();
         }
     };
@@ -46,7 +47,7 @@ public class BooleanFilter extends DfsFilter {
     public static final BooleanSupplier CHECKED = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isChecked();
         }
     };
@@ -54,7 +55,7 @@ public class BooleanFilter extends DfsFilter {
     public static final BooleanSupplier FOCUSABLE = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isFocusable();
         }
     };
@@ -62,7 +63,7 @@ public class BooleanFilter extends DfsFilter {
     public static final BooleanSupplier FOCUSED = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isFocused();
         }
     };
@@ -70,7 +71,7 @@ public class BooleanFilter extends DfsFilter {
     public static final BooleanSupplier VISIBLE_TO_USER = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isVisibleToUser();
         }
     };
@@ -78,7 +79,7 @@ public class BooleanFilter extends DfsFilter {
     public static final BooleanSupplier ACCESSIBILITY_FOCUSED = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isAccessibilityFocused();
         }
     };
@@ -86,7 +87,7 @@ public class BooleanFilter extends DfsFilter {
     public static final BooleanSupplier SELECTED = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isSelected();
         }
     };
@@ -94,7 +95,7 @@ public class BooleanFilter extends DfsFilter {
     public static final BooleanSupplier CLICKABLE = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isClickable();
         }
     };
@@ -102,7 +103,7 @@ public class BooleanFilter extends DfsFilter {
     public static final BooleanSupplier LONG_CLICKABLE = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isLongClickable();
         }
     };
@@ -110,7 +111,7 @@ public class BooleanFilter extends DfsFilter {
     public static final BooleanSupplier ENABLED = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isEnabled();
         }
     };
@@ -119,7 +120,7 @@ public class BooleanFilter extends DfsFilter {
     public static final BooleanSupplier PASSWORD = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isPassword();
         }
     };
@@ -127,7 +128,7 @@ public class BooleanFilter extends DfsFilter {
     public static final BooleanSupplier SCROLLABLE = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isScrollable();
         }
     };
@@ -135,14 +136,14 @@ public class BooleanFilter extends DfsFilter {
     public static final BooleanSupplier EDITABLE = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isEditable();
         }
     };
     public static final BooleanSupplier CONTENT_INVALID = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isContentInvalid();
         }
     };
@@ -151,7 +152,7 @@ public class BooleanFilter extends DfsFilter {
 
         @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isContextClickable();
         }
     };
@@ -159,7 +160,7 @@ public class BooleanFilter extends DfsFilter {
     public static final BooleanSupplier MULTI_LINE = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isMultiLine();
         }
     };
@@ -167,7 +168,7 @@ public class BooleanFilter extends DfsFilter {
     public static final BooleanSupplier DISMISSABLE = new BooleanSupplier() {
 
         @Override
-        public boolean get(AccessibilityNodeInfo node) {
+        public boolean get(UiObject node) {
             return node.isDismissable();
         }
     };
@@ -181,7 +182,7 @@ public class BooleanFilter extends DfsFilter {
     }
 
     @Override
-    protected boolean isIncluded(AccessibilityNodeInfo nodeInfo) {
+    protected boolean isIncluded(UiObject nodeInfo) {
         return nodeInfo != null && mBooleanSupplier.get(nodeInfo) == mExceptedValue;
     }
 

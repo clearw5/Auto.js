@@ -12,6 +12,7 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService;
+import com.stardust.scriptdroid.layout_inspector.LayoutInspector;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.util.MessageEvent;
@@ -47,20 +48,31 @@ public class MainMenuNavigatorContent implements NavigatorContent {
 
     @ViewBinding.Click(R.id.layout_hierarchy)
     private void showLayoutHierarchy() {
-        if (AutoJs.getInstance().getLayoutInspector().getCapture() == null) {
-            Toast.makeText(mView.getContext(), R.string.text_no_accessibility_permission_to_capture, Toast.LENGTH_SHORT).show();
-        } else {
-            HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_SHOW_LAYOUT_HIERARCHY));
+        if (!ensureCapture()) {
+            return;
         }
+        HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_SHOW_LAYOUT_HIERARCHY));
+    }
+
+    private boolean ensureCapture() {
+        LayoutInspector inspector = AutoJs.getInstance().getLayoutInspector();
+        if (inspector.isDumping()) {
+            Toast.makeText(mView.getContext(), R.string.text_layout_inspector_is_dumping, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (inspector.getCapture() == null) {
+            Toast.makeText(mView.getContext(), R.string.text_no_accessibility_permission_to_capture, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
     @ViewBinding.Click(R.id.layout_bounds)
     private void showLayoutBounds() {
-        if (AutoJs.getInstance().getLayoutInspector().getCapture() == null) {
-            Toast.makeText(mView.getContext(), R.string.text_no_accessibility_permission_to_capture, Toast.LENGTH_SHORT).show();
-        } else {
-            HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_SHOW_LAYOUT_BOUNDS));
+        if (!ensureCapture()) {
+            return;
         }
+        HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_SHOW_LAYOUT_BOUNDS));
     }
 
     @ViewBinding.Click(R.id.stop_all_running_scripts)

@@ -1,8 +1,8 @@
 package com.stardust.automator.filter;
 
 import android.graphics.Rect;
-import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.stardust.automator.UiObject;
 import com.stardust.view.accessibility.AccessibilityNodeInfoHelper;
 
 /**
@@ -24,7 +24,7 @@ public class BoundsFilter extends DfsFilter {
     }
 
     @Override
-    protected boolean isIncluded(AccessibilityNodeInfo nodeInfo) {
+    protected boolean isIncluded(UiObject nodeInfo) {
         if (mType == TYPE_CONTAINS) {
             return AccessibilityNodeInfoHelper.getBoundsInScreen(nodeInfo).contains(mBounds);
         }

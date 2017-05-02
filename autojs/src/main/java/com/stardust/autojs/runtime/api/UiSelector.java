@@ -9,7 +9,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.stardust.autojs.runtime.AccessibilityBridge;
 import com.stardust.autojs.runtime.JavascriptInterface;
 import com.stardust.autojs.runtime.ScriptInterrupptedException;
-import com.stardust.autojs.runtime.ScriptStopException;
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.automator.ActionArgument;
 import com.stardust.automator.UiGlobalSelector;
@@ -66,7 +65,7 @@ public class UiSelector extends UiGlobalSelector {
         public void execute(AccessibilityService service, AccessibilityEvent event) {
             AccessibilityNodeInfo root = service.getRootInActiveWindow();
             if (root != null) {
-                result = findOf(root);
+                result = findOf(new UiObject(root, mAllocator));
             }
         }
 
@@ -75,7 +74,7 @@ public class UiSelector extends UiGlobalSelector {
     private static final String TAG = "UiSelector";
 
     private AccessibilityBridge mAccessibilityBridge;
-    private AccessibilityNodeInfoAllocator mAllocator = AccessibilityNodeInfoAllocator.getGlobal();
+    private AccessibilityNodeInfoAllocator mAllocator = null;
 
     public UiSelector(AccessibilityBridge accessibilityBridge) {
         mAccessibilityBridge = accessibilityBridge;
@@ -97,7 +96,7 @@ public class UiSelector extends UiGlobalSelector {
         if (service != null) {
             AccessibilityNodeInfo root = service.getRootInActiveWindow();
             if (root != null) {
-                return findOf(mAllocator, root);
+                return findOf(new UiObject(root, mAllocator));
             }
         }
         return null;
@@ -142,7 +141,7 @@ public class UiSelector extends UiGlobalSelector {
         if (!id.contains(":")) {
             addFilter(new DfsFilter() {
                 @Override
-                protected boolean isIncluded(AccessibilityNodeInfo nodeInfo) {
+                protected boolean isIncluded(UiObject nodeInfo) {
                     String fullId = mAccessibilityBridge.getInfoProvider().getLatestPackage() + ":id/" + id;
                     return fullId.equals(nodeInfo.getViewIdResourceName());
                 }

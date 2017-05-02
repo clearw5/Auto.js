@@ -1,12 +1,6 @@
 package com.stardust.automator.simple_action;
 
-import android.support.annotation.NonNull;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
-import android.view.accessibility.AccessibilityNodeInfo;
-
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
-
-import java.util.List;
+import com.stardust.automator.UiObject;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -14,12 +8,10 @@ import java.util.List;
 
 public abstract class SimpleAction {
 
-
-    private volatile AccessibilityNodeInfoAllocator mAllocator = AccessibilityNodeInfoAllocator.NONE;
     private volatile boolean mValid = true;
     private volatile boolean mResult = false;
 
-    public abstract boolean perform(AccessibilityNodeInfo root);
+    public abstract boolean perform(UiObject root);
 
     public boolean getResult() {
         return mResult;
@@ -35,14 +27,6 @@ public abstract class SimpleAction {
 
     public boolean isValid() {
         return mValid;
-    }
-
-    public AccessibilityNodeInfoAllocator getAllocator() {
-        return mAllocator;
-    }
-
-    public void setAllocator(@NonNull AccessibilityNodeInfoAllocator allocator) {
-        mAllocator = allocator;
     }
 
 }

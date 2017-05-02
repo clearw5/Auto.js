@@ -7,6 +7,11 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.stardust.scriptdroid.record.Recorder;
 import com.stardust.view.accessibility.AccessibilityDelegate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 
 /**
  * Created by Stardust on 2017/2/14.
@@ -26,6 +31,8 @@ public class AccessibilityActionRecorder extends Recorder.DefaultIMPL implements
             return mAccessibilityEvent;
         }
     }
+
+    private static final Set<Integer> EVENT_TYPES = new HashSet<>(Arrays.asList(AccessibilityEvent.TYPE_VIEW_CLICKED, AccessibilityEvent.TYPE_VIEW_LONG_CLICKED, AccessibilityEvent.TYPE_VIEW_SCROLLED, AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED));
 
     private static final long RECORD_TIME_OUT = 10 * 60 * 1000;
 
@@ -62,6 +69,11 @@ public class AccessibilityActionRecorder extends Recorder.DefaultIMPL implements
             checkTimeOut();
         }
         return false;
+    }
+
+    @Override
+    public Set<Integer> getEventTypes() {
+        return EVENT_TYPES;
     }
 
     private void checkTimeOut() {

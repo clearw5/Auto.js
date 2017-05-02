@@ -1,11 +1,7 @@
 package com.stardust.automator.simple_action;
 
-import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.stardust.automator.UiObject;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -23,19 +19,16 @@ public class SearchUpTargetAction extends SearchTargetAction {
     }
 
     @Override
-    public AccessibilityNodeInfo searchTarget(AccessibilityNodeInfo n) {
-        AccessibilityNodeInfo node = n;
+    public UiObject searchTarget(UiObject n) {
+        UiObject node = n;
         int i = 0;
-        List<AccessibilityNodeInfo> list = new ArrayList<>();
         while (node != null && !mAble.isAble(node)) {
             i++;
             if (i > LOOP_MAX) {
                 node.recycle();
                 return null;
             }
-            AccessibilityNodeInfo parent = getAllocator().getParent(node);
-            list.add(node);
-            node = parent;
+            node = node.parent();
         }
         return node;
     }

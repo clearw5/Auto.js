@@ -11,12 +11,12 @@ import com.stardust.autojs.runtime.ScriptRuntime;
 
 public class NodeJsJavaScriptEngineManager extends RhinoJavaScriptEngineManager {
 
-    public NodeJsJavaScriptEngineManager(Context context, ScriptRuntime runtime) {
-        super(context, runtime);
+    public NodeJsJavaScriptEngineManager(Context context) {
+        super(context);
     }
 
     @Override
-    public NodeJsJavaScriptEngine createEngineInner() {
+    protected NodeJsJavaScriptEngine createEngineInner() {
         NodeJsJavaScriptEngine engine = new NodeJsJavaScriptEngine(this);
         initRequireBuilder(engine.getContext(), engine.getScriptable());
         return engine;

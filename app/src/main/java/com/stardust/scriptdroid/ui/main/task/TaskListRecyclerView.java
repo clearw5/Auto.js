@@ -18,6 +18,7 @@ import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.JavaScriptEngineManager;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.autojs.AutoJs;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
@@ -46,8 +47,10 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Java
         }
     };
 
+
     private final List<JavaScriptEngine> mScriptEngines = new ArrayList<>();
     private Adapter mAdapter;
+    private final ScriptEngineService mScriptEngineService = AutoJs.getInstance().getScriptEngineService();
 
     public TaskListRecyclerView(Context context) {
         super(context);
@@ -78,14 +81,14 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Java
 
     public void updateEngineList() {
         mScriptEngines.clear();
-        mScriptEngines.addAll(ScriptEngineService.getInstance().getEngines());
+        mScriptEngines.addAll(mScriptEngineService.getEngines());
         mAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        ScriptEngineService.getInstance().registerEngineLifecycleCallback(this);
+        mScriptEngineService.registerEngineLifecycleCallback(this);
     }
 
     @Override
@@ -97,7 +100,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Java
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        ScriptEngineService.getInstance().unregisterEngineLifecycleCallback(this);
+        mScriptEngineService.unregisterEngineLifecycleCallback(this);
     }
 
     @Override

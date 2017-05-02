@@ -3,12 +3,14 @@ package com.stardust.automator;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 import com.stardust.view.accessibility.AccessibilityNodeInfoHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CONTEXT_CLICK;
@@ -26,15 +28,21 @@ import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.
 
 public class UiObject extends AccessibilityNodeInfoCompat {
 
+    private static final String TAG = "UiObject";
+    private static final boolean DEBUG = false;
+
     private AccessibilityNodeInfoAllocator mAllocator = null;
+    private String mStackTrace = "";
 
     public UiObject(Object info) {
-        super(info);
+        this(info, null);
     }
 
     public UiObject(Object info, AccessibilityNodeInfoAllocator allocator) {
         super(info);
         mAllocator = allocator;
+        if (DEBUG)
+            mStackTrace = Arrays.toString(Thread.currentThread().getStackTrace());
     }
 
     public UiObject parent() {
@@ -46,11 +54,11 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     }
 
     public UiObjectCollection find(UiGlobalSelector selector) {
-        return selector.findOf((AccessibilityNodeInfo) getInfo());
+        return selector.findOf(this);
     }
 
     public UiObject findOne(UiGlobalSelector selector) {
-        return selector.findOneOf((AccessibilityNodeInfo) getInfo());
+        return selector.findOneOf(this);
     }
 
     public UiObjectCollection children() {
@@ -237,6 +245,10 @@ public class UiObject extends AccessibilityNodeInfoCompat {
         return mAllocator.findAccessibilityNodeInfosByText(this, text);
     }
 
+    public List<UiObject> findByText(String text) {
+        return compatListToUiObjectList(findAccessibilityNodeInfosByText(text), mAllocator);
+    }
+
     @Override
     public List<AccessibilityNodeInfoCompat> findAccessibilityNodeInfosByViewId(String viewId) {
         if (mAllocator == null)
@@ -244,5 +256,37 @@ public class UiObject extends AccessibilityNodeInfoCompat {
         return mAllocator.findAccessibilityNodeInfosByViewId(this, viewId);
     }
 
+    public List<UiObject> findByViewId(String viewId) {
+        return compatListToUiObjectList(findAccessibilityNodeInfosByViewId(viewId), mAllocator);
+    }
 
+    public static List<UiObject> compatListToUiObjectList(List<AccessibilityNodeInfoCompat> compats, AccessibilityNodeInfoAllocator allocator) {
+        List<UiObject> uiObjects = new ArrayList<>(compats.size());
+        for (AccessibilityNodeInfoCompat compat : compats) {
+            uiObjects.add(new UiObject(compat.getInfo(), allocator));
+        }
+        return uiObjects;
+    }
+
+    public static List<UiObject> compatListToUiObjectList(List<AccessibilityNodeInfoCompat> compats) {
+        return compatListToUiObjectList(compats, null);
+    }
+
+    @Override
+    public void recycle() {
+        try {
+            super.recycle();
+        } catch (Exception e) {
+            Log.w(TAG, mStackTrace, e);
+        }
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            super.recycle();
+        } catch (Exception ignored) {
+        }
+        super.finalize();
+    }
 }

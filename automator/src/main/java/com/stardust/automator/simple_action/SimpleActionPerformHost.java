@@ -1,18 +1,14 @@
 package com.stardust.automator.simple_action;
 
 import android.accessibilityservice.AccessibilityService;
-import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+import com.stardust.automator.UiObject;
 import com.stardust.view.accessibility.AccessibilityDelegate;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Vector;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
@@ -50,6 +46,11 @@ public class SimpleActionPerformHost implements AccessibilityDelegate {
         return false;
     }
 
+    @Override
+    public Set<Integer> getEventTypes() {
+        return null;
+    }
+
     private void performAction(AccessibilityNodeInfo root, SimpleAction simpleAction) {
         mExecutor.execute(new SimpleActionPerformRunnable(root, simpleAction));
     }
@@ -78,7 +79,7 @@ public class SimpleActionPerformHost implements AccessibilityDelegate {
                 return;
             }
             Log.i(TAG, "perform simpleAction: " + mSimpleAction);
-            if (mSimpleAction.perform(mRoot)) {
+            if (mSimpleAction.perform(new UiObject(mRoot))) {
                 mSimpleAction.setResult(true);
                 onActionPerformed(mSimpleAction);
             }

@@ -106,7 +106,7 @@ public class CodeCompletion implements TextWatcher {
         mFunctions = functions;
     }
 
-    private String[] mFunctions = {"toast", "launchPackage", "launch", "launchApp", "click", "longClick", "scrollUp", "scrollDown", "select", "focus", "paste", "input", "sleep", "isStopped", "notStopped", "log", "err", "openConsole", "clearConsole", "shell", "getTexts", "getPackageName", "getActivityName", "setClip", "addAccessibilityDelegate"};
+    private String[] mFunctions = {"toast", "launchPackage", "launch", "launchApp", "click", "longClick", "scrollUp", "scrollDown", "select", "focus", "paste", "input", "sleep", "isStopped", "notStopped", "println", "err", "openConsole", "clearConsole", "shell", "getTexts", "getPackageName", "getActivityName", "setClip", "addAccessibilityDelegate"};
 
     private boolean searchCodeCompletion(String str) {
         Collection<CodeCompletionItem> c = searchWordCompletion(str);

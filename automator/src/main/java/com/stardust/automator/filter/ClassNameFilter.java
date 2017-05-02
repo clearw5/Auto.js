@@ -1,6 +1,6 @@
 package com.stardust.automator.filter;
 
-import android.view.accessibility.AccessibilityNodeInfo;
+import com.stardust.automator.UiObject;
 
 /**
  * Created by Stardust on 2017/3/9.
@@ -10,7 +10,7 @@ public class ClassNameFilter {
 
     private static final KeyGetter CLASS_NAME_GETTER = new KeyGetter() {
         @Override
-        public String getKey(AccessibilityNodeInfo nodeInfo) {
+        public String getKey(UiObject nodeInfo) {
             CharSequence charSequence = nodeInfo.getClassName();
             return charSequence == null ? null : charSequence.toString();
         }

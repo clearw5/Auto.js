@@ -34,7 +34,7 @@ public abstract class ScriptFileOperation {
 
         @Override
         public void onStart(JavaScriptEngine engine, ScriptSource source) {
-            AutoJs.getInstance().getScriptEngineService().getDefaultListener().onStart(engine, source);
+            AutoJs.getInstance().getScriptEngineService().getDefaultScriptExecutionListener().onStart(engine, source);
         }
 
         @Override

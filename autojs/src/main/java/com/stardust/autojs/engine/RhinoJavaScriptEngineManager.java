@@ -32,12 +32,11 @@ public class RhinoJavaScriptEngineManager extends JavaScriptEngineManager {
     private String mRequirePath = "";
 
 
-    public RhinoJavaScriptEngineManager(android.content.Context context, ScriptRuntime runtime) {
+    public RhinoJavaScriptEngineManager(android.content.Context context) {
         super(context);
-        put("__runtime__", runtime);
     }
 
-    public RhinoJavaScriptEngine createEngineInner() {
+    protected RhinoJavaScriptEngine createEngineInner() {
         RhinoJavaScriptEngine engine = new RhinoJavaScriptEngine(this);
         initRequireBuilder(engine.getContext(), engine.getScriptable());
         return engine;

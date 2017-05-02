@@ -81,7 +81,6 @@ public class LayoutHierarchyView extends MultiLevelListView {
     }
 
 
-
     private void init() {
         mAdapter = new Adapter();
         setAdapter(mAdapter);
@@ -204,6 +203,8 @@ public class LayoutHierarchyView extends MultiLevelListView {
         }
 
         private String simplifyClassName(CharSequence className) {
+            if (className == null)
+                return null;
             String s = className.toString();
             if (s.startsWith("android.widget.")) {
                 s = s.substring(15);
@@ -214,7 +215,6 @@ public class LayoutHierarchyView extends MultiLevelListView {
 
         private String getItemInfoDsc(ItemInfo itemInfo) {
             StringBuilder builder = new StringBuilder();
-
             builder.append(String.format(Locale.getDefault(), "level[%d], idx in level[%d/%d]",
                     itemInfo.getLevel() + 1, /*Indexing starts from 0*/
                     itemInfo.getIdxInLevel() + 1 /*Indexing starts from 0*/,

@@ -10,6 +10,11 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.view.accessibility.AccessibilityDelegate;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by Stardust on 2017/3/9.
  */
@@ -35,8 +40,17 @@ public class AccessibilityInfoProvider implements AccessibilityDelegate {
 
     @Override
     public boolean onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event) {
-        setLatestComponent(event.getPackageName(), event.getClassName());
+        AccessibilityNodeInfo root = service.getRootInActiveWindow();
+        if (root != null)
+            setLatestComponent(root.getPackageName(), event.getClassName());
+        else
+            setLatestComponent(event.getPackageName(), event.getClassName());
         return false;
+    }
+
+    @Override
+    public Set<Integer> getEventTypes() {
+        return null;
     }
 
     private synchronized void setLatestComponent(CharSequence latestPackage, CharSequence latestClass) {

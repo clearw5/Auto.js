@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.stardust.app.Fragment;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 import com.stardust.widget.SimpleAdapterDataObserver;
@@ -74,6 +75,6 @@ public class TaskManagerFragment extends Fragment {
 
     @ViewBinding.Click(R.id.close_all)
     private void closeAllRunningScripts() {
-        ScriptEngineService.getInstance().stopAll();
+        AutoJs.getInstance().getScriptEngineService().stopAll();
     }
 }

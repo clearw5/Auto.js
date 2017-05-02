@@ -1,8 +1,6 @@
 package com.stardust.automator.filter;
 
-import android.view.accessibility.AccessibilityNodeInfo;
-
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+import com.stardust.automator.UiObject;
 
 import java.util.List;
 
@@ -12,6 +10,6 @@ import java.util.List;
 
 public interface Filter {
 
-    List<AccessibilityNodeInfo> filter(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo node);
+    List<UiObject> filter(UiObject node);
 
 }

@@ -1,8 +1,6 @@
 package com.stardust.automator.simple_action;
 
-import android.view.accessibility.AccessibilityNodeInfo;
-
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+import com.stardust.automator.UiObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,27 +18,27 @@ public class ScrollAction extends SimpleAction {
     }
 
     @Override
-    public boolean perform(AccessibilityNodeInfo root) {
-        List<AccessibilityNodeInfo> scrollableNodes = findScrollableNodes(root);
+    public boolean perform(UiObject root) {
+        List<UiObject> scrollableNodes = findScrollableNodes(root);
         boolean result = mIndex < scrollableNodes.size() && scrollableNodes.get(mIndex).performAction(mAction);
         recycle(scrollableNodes, root);
         return result;
     }
 
-    private void recycle(List<AccessibilityNodeInfo> list, AccessibilityNodeInfo root) {
-        for (AccessibilityNodeInfo nodeInfo : list) {
+    private void recycle(List<UiObject> list, UiObject root) {
+        for (UiObject nodeInfo : list) {
             if (nodeInfo != root)
                 nodeInfo.recycle();
         }
     }
 
-    private List<AccessibilityNodeInfo> findScrollableNodes(AccessibilityNodeInfo root) {
-        List<AccessibilityNodeInfo> list = new ArrayList<>();
-        findScrollableNodes(getAllocator(), root, list);
+    private List<UiObject> findScrollableNodes(UiObject root) {
+        List<UiObject> list = new ArrayList<>();
+        findScrollableNodes(root, list);
         return list;
     }
 
-    private static boolean findScrollableNodes(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo node, List<AccessibilityNodeInfo> list) {
+    private static boolean findScrollableNodes(UiObject node, List<UiObject> list) {
         if (node == null) {
             return false;
         }
@@ -48,10 +46,10 @@ public class ScrollAction extends SimpleAction {
             list.add(node);
         }
         for (int i = 0; i < node.getChildCount(); i++) {
-            AccessibilityNodeInfo child = allocator.getChild(node, i);
+            UiObject child = node.child(i);
             if (child == null)
                 continue;
-            if (!findScrollableNodes(allocator, child, list))
+            if (!findScrollableNodes(child, list))
                 child.recycle();
         }
         return node.isScrollable();

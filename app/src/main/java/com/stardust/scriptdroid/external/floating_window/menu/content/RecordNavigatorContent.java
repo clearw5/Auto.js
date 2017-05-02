@@ -118,7 +118,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     private void resumeRecord() {
         mRecorder.resume();
         setState(Recorder.STATE_RECORDING);
-        EventBus.getDefault().post(new MessageEvent(HoverMenuService.MESSAGE_COLLAPSE_MENU));
+        HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_COLLAPSE_MENU));
     }
 
     private void pauseRecord() {
@@ -131,7 +131,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
         mRecorder.setOnStateChangedListener(this);
         mRecorder.start();
         setState(Recorder.STATE_RECORDING);
-        EventBus.getDefault().post(new MessageEvent(HoverMenuService.MESSAGE_COLLAPSE_MENU));
+        HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_COLLAPSE_MENU));
     }
 
     private void setState(int state) {
@@ -147,7 +147,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     private void stopRecord() {
         mRecorder.stop();
         setState(Recorder.STATE_STOPPED);
-        EventBus.getDefault().post(new MessageEvent(HoverMenuService.MESSAGE_COLLAPSE_MENU));
+        HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_COLLAPSE_MENU));
     }
 
 

@@ -126,13 +126,9 @@ public class AccessibilityNodeInfoAllocator {
 
     public static void recycleList(AccessibilityNodeInfo root, List<AccessibilityNodeInfo> list) {
         for (AccessibilityNodeInfo nodeInfo : list) {
-            if (nodeInfo != root) {
-                try {
-                    nodeInfo.recycle();
-                }catch (IllegalStateException e){
-                    // FIXME: 2017/4/30
-                    e.printStackTrace();
-                }
+            if (nodeInfo != root && nodeInfo != null) {
+                //// FIXME: 2017/5/1 Issue #180
+                nodeInfo.recycle();
             }
         }
     }

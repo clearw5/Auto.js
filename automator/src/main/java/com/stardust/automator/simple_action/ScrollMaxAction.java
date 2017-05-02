@@ -2,9 +2,8 @@ package com.stardust.automator.simple_action;
 
 import android.graphics.Rect;
 import android.util.Log;
-import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+import com.stardust.automator.UiObject;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -14,15 +13,15 @@ public class ScrollMaxAction extends SimpleAction {
 
     private static final String TAG = ScrollMaxAction.class.getSimpleName();
     private int mScrollAction;
-    private AccessibilityNodeInfo mMaxScrollableNode;
-    private AccessibilityNodeInfo mRootNode;
+    private UiObject mMaxScrollableNode;
+    private UiObject mRootNode;
 
     public ScrollMaxAction(int scrollAction) {
         mScrollAction = scrollAction;
     }
 
     @Override
-    public boolean perform(AccessibilityNodeInfo rootNodeInfo) {
+    public boolean perform(UiObject rootNodeInfo) {
         reset();
         mRootNode = rootNodeInfo;
         findMaxScrollableNodeInfo(rootNodeInfo);
@@ -38,7 +37,7 @@ public class ScrollMaxAction extends SimpleAction {
         mMaxScrollableNode = mRootNode = null;
     }
 
-    private void findMaxScrollableNodeInfo(AccessibilityNodeInfo nodeInfo) {
+    private void findMaxScrollableNodeInfo(UiObject nodeInfo) {
         if (nodeInfo == null)
             return;
         if (nodeInfo.isScrollable()) {
@@ -51,7 +50,7 @@ public class ScrollMaxAction extends SimpleAction {
             }
         }
         for (int i = 0; i < nodeInfo.getChildCount(); i++) {
-            AccessibilityNodeInfo child = getAllocator().getChild(nodeInfo, i);
+            UiObject child = nodeInfo.child(i);
             if (child != null) {
                 findMaxScrollableNodeInfo(child);
                 if (mMaxScrollableNode != child) {
@@ -61,7 +60,7 @@ public class ScrollMaxAction extends SimpleAction {
         }
     }
 
-    private long getAreaInScreen(AccessibilityNodeInfo nodeInfo) {
+    private long getAreaInScreen(UiObject nodeInfo) {
         Rect rect = new Rect();
         nodeInfo.getBoundsInScreen(rect);
         long area = ((long) rect.width()) * rect.height();

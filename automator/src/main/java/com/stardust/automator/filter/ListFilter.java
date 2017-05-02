@@ -1,8 +1,6 @@
 package com.stardust.automator.filter;
 
-import android.view.accessibility.AccessibilityNodeInfo;
-
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+import com.stardust.automator.UiObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,15 +11,15 @@ import java.util.List;
 
 public interface ListFilter {
 
-    List<AccessibilityNodeInfo> filter(AccessibilityNodeInfoAllocator allocator, List<AccessibilityNodeInfo> nodes);
+    List<UiObject> filter(List<UiObject> nodes);
 
     abstract class Default implements Filter, ListFilter {
 
         @Override
-        public List<AccessibilityNodeInfo> filter(AccessibilityNodeInfoAllocator allocator, List<AccessibilityNodeInfo> nodes) {
-            List<AccessibilityNodeInfo> list = new ArrayList<>();
-            for (AccessibilityNodeInfo node : nodes) {
-                list.addAll(filter(allocator, node));
+        public List<UiObject> filter(List<UiObject> nodes) {
+            List<UiObject> list = new ArrayList<>();
+            for (UiObject node : nodes) {
+                list.addAll(filter(node));
             }
             return list;
         }

@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.flurry.android.FlurryAgent;
 import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
@@ -57,7 +58,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
     }
-
 
 
     @Override

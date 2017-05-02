@@ -26,28 +26,30 @@ import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.
 public class UiObjectCollection {
 
     public static UiObjectCollection ofCompat(List<AccessibilityNodeInfoCompat> list) {
-        return new UiObjectCollection(list);
+        return new UiObjectCollection(UiObject.compatListToUiObjectList(list));
     }
 
-    public static UiObjectCollection of(List<AccessibilityNodeInfo> list) {
-        List<AccessibilityNodeInfoCompat> compatList = new ArrayList<>(list.size());
+    public static UiObjectCollection ofInfo(List<AccessibilityNodeInfo> list) {
+        List<UiObject> compatList = new ArrayList<>(list.size());
         for (AccessibilityNodeInfo nodeInfo : list) {
-            compatList.add(new AccessibilityNodeInfoCompat(nodeInfo));
+            compatList.add(new UiObject(nodeInfo));
         }
         return new UiObjectCollection(compatList);
     }
 
-    private List<AccessibilityNodeInfoCompat> mNodes;
-    private UiObject[] mUiObjects;
+    public static UiObjectCollection of(List<UiObject> list) {
+        return new UiObjectCollection(list);
+    }
 
+    private List<UiObject> mNodes;
 
-    private UiObjectCollection(List<AccessibilityNodeInfoCompat> list) {
+    private UiObjectCollection(List<UiObject> list) {
         mNodes = list;
     }
 
     public boolean performAction(int action) {
         boolean fail = false;
-        for (AccessibilityNodeInfoCompat node : mNodes) {
+        for (UiObject node : mNodes) {
             if (!node.performAction(action)) {
                 fail = true;
             }
@@ -58,7 +60,7 @@ public class UiObjectCollection {
     public boolean performAction(int action, ActionArgument... arguments) {
         boolean fail = false;
         Bundle bundle = argumentsToBundle(arguments);
-        for (AccessibilityNodeInfoCompat node : mNodes) {
+        for (UiObject node : mNodes) {
             if (!node.performAction(action, bundle)) {
                 fail = true;
             }
@@ -182,18 +184,7 @@ public class UiObjectCollection {
     }
 
     public UiObject get(int i) {
-        ensureUiObjectAt(i);
-        return mUiObjects[i];
-    }
-
-
-    private void ensureUiObjectAt(int i) {
-        if (mUiObjects == null) {
-            mUiObjects = new UiObject[mNodes.size()];
-        }
-        if (mUiObjects[i] == null) {
-            mUiObjects[i] = new UiObject(mNodes.get(i).getInfo());
-        }
+        return mNodes.get(i);
     }
 
     public int size() {
@@ -201,9 +192,8 @@ public class UiObjectCollection {
     }
 
     public UiObjectCollection each(Consumer<UiObject> consumer) {
-        for (int i = 0; i < mNodes.size(); i++) {
-            ensureUiObjectAt(i);
-            consumer.accept(mUiObjects[i]);
+        for (UiObject uiObject : mNodes) {
+            consumer.accept(uiObject);
         }
         return this;
     }

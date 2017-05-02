@@ -2,18 +2,16 @@ package com.stardust.automator;
 
 import android.graphics.Rect;
 import android.os.Build;
-import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.automator.filter.BooleanFilter;
 import com.stardust.automator.filter.BoundsFilter;
-import com.stardust.automator.filter.DfsFilter;
-import com.stardust.automator.filter.IdFilter;
-import com.stardust.automator.filter.PackageNameFilter;
-import com.stardust.automator.filter.TextFilter;
 import com.stardust.automator.filter.ClassNameFilter;
 import com.stardust.automator.filter.DescFilter;
+import com.stardust.automator.filter.DfsFilter;
+import com.stardust.automator.filter.IdFilter;
 import com.stardust.automator.filter.ListFilter;
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+import com.stardust.automator.filter.PackageNameFilter;
+import com.stardust.automator.filter.TextFilter;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -173,7 +171,7 @@ public class UiGlobalSelector {
     public UiGlobalSelector drawingOrder(final int order) {
         mFilters.add(new DfsFilter() {
             @Override
-            protected boolean isIncluded(AccessibilityNodeInfo nodeInfo) {
+            protected boolean isIncluded(UiObject nodeInfo) {
                 return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && nodeInfo.getDrawingOrder() == order;
             }
         });
@@ -352,26 +350,18 @@ public class UiGlobalSelector {
         return this;
     }
 
-    public UiObjectCollection findOf(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo node) {
-        List<AccessibilityNodeInfo> list = new ArrayList<>();
+    public UiObjectCollection findOf(UiObject node) {
+        List<UiObject> list = new ArrayList<>();
         list.add(node);
         for (ListFilter filter : mFilters) {
-            list = filter.filter(allocator, list);
+            list = filter.filter(list);
         }
         return UiObjectCollection.of(list);
     }
 
-    public UiObjectCollection findOf(AccessibilityNodeInfo node) {
-        return findOf(AccessibilityNodeInfoAllocator.NONE, node);
-    }
-
-    public UiObject findOneOf(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo node) {
+    public UiObject findOneOf(UiObject node) {
         // TODO: 2017/3/9 优化
-        return new UiObject(findOf(allocator, node).get(0).getInfo());
-    }
-
-    public UiObject findOneOf(AccessibilityNodeInfo node) {
-        return findOneOf(AccessibilityNodeInfoAllocator.NONE, node);
+        return findOf(node).get(0);
     }
 
     public UiGlobalSelector addFilter(ListFilter filter) {

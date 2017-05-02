@@ -1,6 +1,5 @@
 package com.stardust.scriptdroid.service;
 
-import android.accessibilityservice.AccessibilityService;
 import android.os.Build;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -10,12 +9,16 @@ import com.stardust.autojs.runtime.JavascriptInterface;
 import com.stardust.view.accessibility.AccessibilityDelegate;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
+import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.lang.ref.WeakReference;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.Executor;
@@ -32,10 +35,16 @@ public class AccessibilityWatchDogService extends AccessibilityService {
     private static final SortedMap<Integer, AccessibilityDelegate> mDelegates = new TreeMap<>();
     private static final Object LOCK = new Object();
     private static AccessibilityWatchDogService instance;
-    private Executor mExecutor = Executors.newSingleThreadExecutor();
+    private static boolean containsAllEventTypes = false;
+    private static final Set<Integer> eventTypes = new HashSet<>();
 
     public static void addDelegate(int uniquePriority, AccessibilityDelegate delegate) {
         mDelegates.put(uniquePriority, delegate);
+        Set<Integer> set = delegate.getEventTypes();
+        if (set == null)
+            containsAllEventTypes = true;
+        else
+            eventTypes.addAll(set);
     }
 
     public static boolean isEnable() {
@@ -49,25 +58,17 @@ public class AccessibilityWatchDogService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
         Log.v(TAG, "onAccessibilityEvent: " + event);
-        mExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                for (Map.Entry<Integer, AccessibilityDelegate> entry : mDelegates.entrySet()) {
-                    Log.v(TAG, "delegate: " + entry.getValue().getClass().getName());
-                    if (entry.getValue().onAccessibilityEvent(AccessibilityWatchDogService.this, event))
-                        break;
-                }
-            }
-        });
-    }
-
-    @Override
-    public AccessibilityNodeInfo getRootInActiveWindow() {
-        try {
-            return super.getRootInActiveWindow();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-            return null;
+        if (!containsAllEventTypes && !eventTypes.contains(event.getEventType()))
+            return;
+        for (Map.Entry<Integer, AccessibilityDelegate> entry : mDelegates.entrySet()) {
+            AccessibilityDelegate delegate = entry.getValue();
+            Set<Integer> types = delegate.getEventTypes();
+            if (types != null && !delegate.getEventTypes().contains(event.getEventType()))
+                continue;
+            long start = System.currentTimeMillis();
+            if (delegate.onAccessibilityEvent(AccessibilityWatchDogService.this, event))
+                break;
+            Log.v(TAG, "millis: " + (System.currentTimeMillis() - start) + " delegate: " + entry.getValue().getClass().getName());
         }
     }
 

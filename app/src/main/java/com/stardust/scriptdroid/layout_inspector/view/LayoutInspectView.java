@@ -71,11 +71,6 @@ public class LayoutInspectView extends FrameLayout {
         }
     }
 
-    public void showLayoutBoundsView() {
-        mLayoutBoundsView.setRootNode(AutoJs.getInstance().getLayoutInspector().captureCurrentWindow());
-        backToLayoutBoundsView();
-    }
-
     public boolean isLayoutBoundsViewShowing() {
         return mCurrentView == mLayoutBoundsView;
     }

@@ -53,10 +53,10 @@ public class ScriptRuntime {
 
     private AbstractShell mRootShell;
 
-    public ScriptRuntime(Context context, Console console, AccessibilityBridge accessibilityBridge) {
+    public ScriptRuntime(Context context, Handler uiHandler, Console console, AccessibilityBridge accessibilityBridge) {
         mContext = context;
         mAccessibilityBridge = accessibilityBridge;
-        mUIHandler = new Handler(mContext.getMainLooper());
+        mUIHandler = uiHandler;
         app = new AppUtils(context);
         info = accessibilityBridge.getInfoProvider();
         this.console = console;
@@ -94,8 +94,8 @@ public class ScriptRuntime {
 
 
     @JavascriptInterface
-    public void shellExecNotReturnResultWithRoot(String cmd){
-        if(mRootShell == null){
+    public void shellExecNotReturnResultWithRoot(String cmd) {
+        if (mRootShell == null) {
             mRootShell = new SlowShell(true);
         }
         mRootShell.exec(cmd);
@@ -108,12 +108,7 @@ public class ScriptRuntime {
 
     @JavascriptInterface
     public UiSelector selector(JavaScriptEngine engine) {
-        AccessibilityNodeInfoAllocator allocator = (AccessibilityNodeInfoAllocator) engine.getTag("allocator");
-        if (allocator == null) {
-            allocator = new AccessibilityNodeInfoAllocator();
-            engine.setTag("allocator", allocator);
-        }
-        return new UiSelector(mAccessibilityBridge, allocator);
+        return new UiSelector(mAccessibilityBridge);
     }
 
     @JavascriptInterface

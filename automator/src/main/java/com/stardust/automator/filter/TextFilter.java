@@ -1,8 +1,6 @@
 package com.stardust.automator.filter;
 
-import android.view.accessibility.AccessibilityNodeInfo;
-
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+import com.stardust.automator.UiObject;
 
 import java.util.List;
 
@@ -14,7 +12,7 @@ public class TextFilter extends ListFilter.Default {
 
     private static final KeyGetter TEXT_GETTER = new KeyGetter() {
         @Override
-        public String getKey(AccessibilityNodeInfo nodeInfo) {
+        public String getKey(UiObject nodeInfo) {
             CharSequence charSequence = nodeInfo.getText();
             return charSequence == null ? null : charSequence.toString();
         }
@@ -48,7 +46,7 @@ public class TextFilter extends ListFilter.Default {
 
 
     @Override
-    public List<AccessibilityNodeInfo> filter(AccessibilityNodeInfoAllocator allocator, AccessibilityNodeInfo node) {
-        return allocator.findAccessibilityNodeInfosByText(node, mText);
+    public List<UiObject> filter(UiObject node) {
+        return node.findByText(mText);
     }
 }
