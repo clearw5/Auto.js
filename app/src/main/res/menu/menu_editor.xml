@@ -15,6 +15,12 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/action_force_stop"
+        android:orderInCategory="250"
+        android:title="@string/text_force_stop"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/action_help"
         android:orderInCategory="300"
         android:title="@string/text_help"

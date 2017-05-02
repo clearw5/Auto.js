@@ -8,7 +8,7 @@ import java.util.List;
  * Created by Stardust on 2017/4/1.
  */
 
-public class PReadableTextFile extends PFile {
+public class PReadableTextFile extends PFile implements Closeable {
 
     private BufferedReader mBufferedReader;
     private FileInputStream mFileInputStream;
@@ -91,6 +91,7 @@ public class PReadableTextFile extends PFile {
         }
     }
 
+    @Override
     public void close() {
         try {
             if (mBufferedReader != null) {

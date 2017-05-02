@@ -41,4 +41,10 @@ public class ViewUtil {
     }
 
 
+    public static void setViewMeasure(View view, int width, int height) {
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.width = width;
+        params.height = height;
+        view.setLayoutParams(params);
+    }
 }

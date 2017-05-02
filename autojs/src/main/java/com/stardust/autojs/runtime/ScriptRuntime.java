@@ -1,9 +1,6 @@
 package com.stardust.autojs.runtime;
 
-import android.content.Context;
 import android.os.Build;
-import android.os.Handler;
-import android.widget.Toast;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.engine.JavaScriptEngine;
@@ -18,8 +15,8 @@ import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.SdkVersionUtil;
 import com.stardust.util.Shell;
+import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
 import org.mozilla.javascript.ContextFactory;
 
@@ -35,8 +32,7 @@ public class ScriptRuntime {
 
     private static final String TAG = "ScriptRuntime";
 
-    private Handler mUIHandler;
-    private Context mContext;
+    private UiHandler mUiHandler;
     private AccessibilityBridge mAccessibilityBridge;
 
     @JavascriptField
@@ -53,11 +49,10 @@ public class ScriptRuntime {
 
     private AbstractShell mRootShell;
 
-    public ScriptRuntime(Context context, Handler uiHandler, Console console, AccessibilityBridge accessibilityBridge) {
-        mContext = context;
+    public ScriptRuntime(UiHandler uiHandler, Console console, AccessibilityBridge accessibilityBridge) {
         mAccessibilityBridge = accessibilityBridge;
-        mUIHandler = uiHandler;
-        app = new AppUtils(context);
+        mUiHandler = uiHandler;
+        app = new AppUtils(uiHandler.getContext());
         info = accessibilityBridge.getInfoProvider();
         this.console = console;
         automator = new SimpleActionAutomator(accessibilityBridge, this);
@@ -65,12 +60,7 @@ public class ScriptRuntime {
 
     @JavascriptInterface
     public void toast(final String text) {
-        mUIHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
-            }
-        });
+        mUiHandler.toast(text);
     }
 
     @JavascriptInterface
@@ -78,16 +68,16 @@ public class ScriptRuntime {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
-            throw new ScriptInterrupptedException();
+            throw new ScriptInterruptedException();
         }
     }
 
     @JavascriptInterface
     public void setClip(final String text) {
-        mUIHandler.post(new Runnable() {
+        mUiHandler.post(new Runnable() {
             @Override
             public void run() {
-                ClipboardUtil.setClip(mContext, text);
+                ClipboardUtil.setClip(mUiHandler.getContext(), text);
             }
         });
     }
@@ -119,7 +109,7 @@ public class ScriptRuntime {
     @JavascriptInterface
     public void requiresApi(int i) {
         if (Build.VERSION.SDK_INT < i) {
-            throw new ScriptStopException(mContext.getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
+            throw new ScriptStopException(mUiHandler.getContext().getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
         }
     }
 

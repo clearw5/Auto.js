@@ -1,14 +1,11 @@
 package com.stardust.autojs.engine;
 
-import android.os.Looper;
 import android.util.Log;
 
 import com.stardust.autojs.rhino_android.AndroidContextFactory;
 import com.stardust.autojs.rhino_android.RhinoAndroidHelper;
-import com.stardust.autojs.runtime.ScriptInterrupptedException;
-import com.stardust.autojs.runtime.ScriptStopException;
+import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.autojs.script.ScriptSource;
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
@@ -17,11 +14,9 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -31,12 +26,13 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
 
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
 
+    private static int contextCount = 0;
+
     private Context mContext;
     private Scriptable mScriptable;
     private Thread mThread;
     private RhinoJavaScriptEngineManager mEngineManager;
-    private Map<String, Object> mTags = new Hashtable<>();
-    private boolean mDestroyed = false;
+    private Map<String, Object> mTags = new ConcurrentHashMap<>();
 
     public RhinoJavaScriptEngine(RhinoJavaScriptEngineManager engineManager) {
         mEngineManager = engineManager;
@@ -69,6 +65,8 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
     public synchronized void destroy() {
         Log.d(LOG_TAG, "on destroy");
         Context.exit();
+        contextCount--;
+        Log.d(LOG_TAG, "contextCount = " + contextCount);
         mEngineManager.removeEngine(this);
     }
 
@@ -108,8 +106,9 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
             ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mEngineManager.getContext().getCacheDir(), "classes")));
         }
         Context context = new RhinoAndroidHelper(mEngineManager.getContext()).enterContext();
+        contextCount++;
         context.setOptimizationLevel(-1);
-        context.setLanguageVersion(Context.VERSION_1_7);
+        context.setLanguageVersion(Context.VERSION_ES6);
         return context;
     }
 
@@ -122,8 +121,7 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
         @Override
         protected void observeInstructionCount(Context cx, int instructionCount) {
             if (Thread.currentThread().isInterrupted()) {
-                Context.exit();
-                throw new ScriptInterrupptedException();
+                throw new ScriptInterruptedException();
             }
         }
 

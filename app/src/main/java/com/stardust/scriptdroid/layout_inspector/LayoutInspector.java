@@ -6,6 +6,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.stardust.util.UnderuseExecutors;
 import com.stardust.view.accessibility.AccessibilityDelegate;
 
 import java.util.Set;
@@ -20,7 +21,7 @@ public class LayoutInspector {
 
     private volatile NodeInfo mCapture;
     private volatile boolean mDumping = false;
-    private Executor mExecutor = Executors.newSingleThreadExecutor();
+    private Executor mExecutor = UnderuseExecutors.getExecutor();
 
     public void captureCurrentWindow() {
         AccessibilityService service = AccessibilityWatchDogService.getInstance();

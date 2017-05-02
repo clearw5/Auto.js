@@ -26,16 +26,16 @@ public class TimberConsole extends AbstractConsole {
         Timber.plant(new ConsoleTree.Builder()
                 .minPriority(Log.VERBOSE)
                 .verboseColor(0xff909090)
-                .debugColor(0xffc88b48)
-                .infoColor(0xffc9c9c9)
-                .warnColor(0xffa97db6)
+                .debugColor(0xdf000000)
+                .infoColor(0xdf4caf50)
+                .warnColor(0xff2196f3)
                 .errorColor(0xffff534e)
-                .assertColor(0xffff5540)
+                .assertColor(0xffff534e)
                 .build());
     }
 
     @Override
-    protected void log(int level, CharSequence charSequence) {
+    public void println(int level, CharSequence charSequence) {
         if (level == Log.DEBUG) {
             SpannableString spannable = new SpannableString(charSequence);
             spannable.setSpan(new ForegroundColorSpan(0xdd000000), 0, charSequence.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -59,5 +59,10 @@ public class TimberConsole extends AbstractConsole {
     @Override
     public void hide() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+
     }
 }

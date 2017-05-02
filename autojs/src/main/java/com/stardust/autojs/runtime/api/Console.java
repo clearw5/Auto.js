@@ -36,4 +36,8 @@ public interface Console {
 
     @JavascriptInterface
     void hide();
+
+    void println(int level, CharSequence charSequence);
+
+    void setTitle(CharSequence title);
 }

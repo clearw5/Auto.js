@@ -11,6 +11,7 @@ import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -20,16 +21,16 @@ import com.jecelyin.editor.v2.core.widget.TextView;
 import com.jecelyin.editor.v2.ui.EditorDelegate;
 import com.jecelyin.editor.v2.view.EditorView;
 import com.jecelyin.editor.v2.view.menu.MenuDef;
+import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.FileScriptSource;
 import com.stardust.autojs.script.JsBeautifier;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.external.floating_window.console.FloatingConsole;
+import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.scripts.ScriptFile;
 import com.stardust.scriptdroid.tool.JsBeautifierFactory;
 import com.stardust.scriptdroid.tool.MaterialDialogFactory;
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.ui.console.ConsoleActivity;
 import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhanceBar;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Utils;
@@ -109,6 +110,7 @@ public class EditActivity extends Editor920Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(ACTION_ON_RUN_FINISHED)) {
+                mScriptExecution = null;
                 setMenuStatus(R.id.run, MenuDef.STATUS_NORMAL);
                 String msg = intent.getStringExtra(EXTRA_EXCEPTION_MESSAGE);
                 if (msg != null) {
@@ -119,6 +121,7 @@ public class EditActivity extends Editor920Activity {
         }
     };
     private JsBeautifier mJsBeautifier = JsBeautifierFactory.getJsBeautify();
+    private ScriptExecution mScriptExecution;
 
     public void onCreate(Bundle b) {
         super.onCreate(b);
@@ -209,9 +212,9 @@ public class EditActivity extends Editor920Activity {
         Snackbar.make(mView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         setMenuStatus(R.id.run, MenuDef.STATUS_DISABLED);
         if (mFile != null) {
-            ScriptFileOperation.runOnEditView(new FileScriptSource(mName, mFile));
+            mScriptExecution = ScriptFileOperation.runOnEditView(new FileScriptSource(mName, mFile));
         } else {
-            ScriptFileOperation.runOnEditView(new StringScriptSource(mName, mEditorDelegate.getText()));
+            mScriptExecution = ScriptFileOperation.runOnEditView(new StringScriptSource(mName, mEditorDelegate.getText()));
         }
     }
 
@@ -261,7 +264,7 @@ public class EditActivity extends Editor920Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_console:
-                startActivity(new Intent(getContext(), ConsoleActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                showConsole();
                 return true;
             case R.id.action_help:
                 HelpCatalogueActivity.showMainCatalogue(this);
@@ -272,8 +275,25 @@ public class EditActivity extends Editor920Activity {
             case R.id.action_open_by_other_apps:
                 openByOtherApps();
                 return true;
+            case R.id.action_force_stop:
+                forceStop();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showConsole() {
+        if (mScriptExecution != null) {
+            mScriptExecution.getRuntime().console.show();
+        } else {
+            AutoJs.getInstance().getScriptEngineService().getGlobalConsole().show();
+        }
+    }
+
+    private void forceStop() {
+        if (mScriptExecution != null) {
+            mScriptExecution.getEngine().forceStop();
+        }
     }
 
     private void openByOtherApps() {
@@ -297,9 +317,15 @@ public class EditActivity extends Editor920Activity {
             }
 
             @Override
-            public void onException(Exception e) {
-                dialog.dismiss();
+            public void onException(final Exception e) {
                 e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                        Toast.makeText(EditActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }

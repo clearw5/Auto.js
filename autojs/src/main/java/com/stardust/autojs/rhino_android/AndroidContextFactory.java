@@ -1,8 +1,7 @@
 package com.stardust.autojs.rhino_android;
 
 
-import com.stardust.autojs.runtime.ScriptInterrupptedException;
-import com.stardust.autojs.runtime.ScriptStopException;
+import com.stardust.autojs.runtime.ScriptInterruptedException;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
@@ -40,7 +39,7 @@ public class AndroidContextFactory extends ContextFactory {
     @Override
     protected void observeInstructionCount(Context cx, int instructionCount) {
         if (Thread.currentThread().isInterrupted()) {
-            throw new ScriptInterrupptedException();
+            throw new ScriptInterruptedException();
         }
     }
 

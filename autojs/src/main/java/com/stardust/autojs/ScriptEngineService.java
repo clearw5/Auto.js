@@ -6,12 +6,19 @@ import android.util.Log;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.JavaScriptEngineManager;
 import com.stardust.autojs.engine.ScriptExecuteActivity;
-import com.stardust.autojs.runtime.ScriptInterrupptedException;
+import com.stardust.autojs.execution.ExecutionConfig;
+import com.stardust.autojs.execution.RunnableScriptExecution;
+import com.stardust.autojs.execution.ScriptExecution;
+import com.stardust.autojs.execution.ScriptExecutionListener;
+import com.stardust.autojs.execution.ScriptExecutionObserver;
+import com.stardust.autojs.execution.ScriptExecutionTask;
+import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.lang.ThreadCompat;
 import com.stardust.util.Supplier;
+import com.stardust.util.UiHandler;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -21,7 +28,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+
+import javax.microedition.khronos.opengles.GL;
+
+import static com.stardust.autojs.runtime.ScriptInterruptedException.causedByInterrupted;
 
 /**
  * Created by Stardust on 2017/1/23.
@@ -31,15 +41,18 @@ public class ScriptEngineService {
 
     private static final String LOG_TAG = "ScriptEngineService";
     private static final EventBus EVENT_BUS = new EventBus();
-    private static final ScriptExecutionListener DEFAULT_LISTENER = new SimpleScriptExecutionListener() {
+    private static final ScriptExecutionListener GLOBAL_LISTENER = new SimpleScriptExecutionListener() {
         @Override
-        public void onStart(JavaScriptEngine engine, ScriptSource source) {
-            EVENT_BUS.post(new ScriptExecutionEvent(ScriptExecutionEvent.ON_START, source.toString()));
+        public void onStart(ScriptExecution execution) {
+            execution.getRuntime().console.setTitle(execution.getSource().getName());
+            EVENT_BUS.post(new ScriptExecutionEvent(ScriptExecutionEvent.ON_START, execution.getSource().toString()));
         }
 
         @Override
-        public void onException(JavaScriptEngine engine, ScriptSource source, Exception e) {
+        public void onException(ScriptExecution execution, Exception e) {
+            e.printStackTrace();
             if (!causedByInterrupted(e)) {
+                execution.getRuntime().console.error(e.getMessage());
                 EVENT_BUS.post(new ScriptExecutionEvent(ScriptExecutionEvent.ON_EXCEPTION, e.getMessage()));
             }
         }
@@ -48,19 +61,20 @@ public class ScriptEngineService {
 
     private final Supplier<ScriptRuntime> mRuntimeSupplier;
     private final Context mContext;
-    private ScriptRuntime mGlobalScriptRuntime;
+    private UiHandler mUiHandler;
     private final Console mGlobalConsole;
     private final JavaScriptEngineManager mJavaScriptEngineManager;
     private final EngineLifecycleObserver mEngineLifecycleObserver = new EngineLifecycleObserver();
-    private ScriptExecutionListener mDefaultScriptExecutionListener = DEFAULT_LISTENER;
+    private ScriptExecutionObserver mScriptExecutionObserver = new ScriptExecutionObserver();
 
     ScriptEngineService(ScriptEngineServiceBuilder builder) {
         mRuntimeSupplier = builder.mRuntimeSupplier;
-        mContext = builder.mContext;
+        mUiHandler = builder.mUiHandler;
+        mContext = mUiHandler.getContext();
         mJavaScriptEngineManager = builder.mJavaScriptEngineManager;
-        mGlobalScriptRuntime = mRuntimeSupplier.get();
-        mGlobalConsole = mGlobalScriptRuntime.console;
+        mGlobalConsole = builder.mGlobalConsole;
         mJavaScriptEngineManager.setEngineLifecycleCallback(mEngineLifecycleObserver);
+        mScriptExecutionObserver.registerScriptExecutionListener(GLOBAL_LISTENER);
         EVENT_BUS.register(this);
     }
 
@@ -68,17 +82,8 @@ public class ScriptEngineService {
         return mGlobalConsole;
     }
 
-    public ScriptExecutionListener getDefaultScriptExecutionListener() {
-        return mDefaultScriptExecutionListener;
-    }
-
-    public void setDefaultScriptExecutionListener(ScriptExecutionListener defaultScriptExecutionListener) {
-        mDefaultScriptExecutionListener = defaultScriptExecutionListener;
-    }
-
     public JavaScriptEngine createScriptEngine() {
         JavaScriptEngine engine = mJavaScriptEngineManager.createEngine();
-        Log.d(LOG_TAG, Arrays.toString(Thread.currentThread().getStackTrace()));
         return engine;
     }
 
@@ -94,12 +99,20 @@ public class ScriptEngineService {
         mEngineLifecycleObserver.unregisterCallback(engineLifecycleCallback);
     }
 
-    public static boolean causedByInterrupted(Throwable e) {
-        return e instanceof ScriptInterrupptedException || e.getCause() instanceof ScriptInterrupptedException;
+    public boolean registerGlobalScriptExecutionListener(ScriptExecutionListener listener) {
+        return mScriptExecutionObserver.registerScriptExecutionListener(listener);
+    }
+
+    public boolean unregisterGlobalScriptExecutionListener(ScriptExecutionListener listener) {
+        return mScriptExecutionObserver.removeScriptExecutionListener(listener);
     }
 
     public ScriptExecution execute(ScriptExecutionTask task) {
-        task.setDefaultListenerIfNeeded(mDefaultScriptExecutionListener);
+        if (task.getListener() != null) {
+            task.setExecutionListener(new ScriptExecutionObserver.Wrapper(mScriptExecutionObserver, task.getListener()));
+        } else {
+            task.setExecutionListener(mScriptExecutionObserver);
+        }
         if (isUiMode(task)) {
             return ScriptExecuteActivity.execute(mContext, this, task);
         } else {
@@ -128,7 +141,7 @@ public class ScriptEngineService {
     }
 
     public ScriptExecution execute(ScriptSource source) {
-        return execute(source, mDefaultScriptExecutionListener, ExecutionConfig.getDefault());
+        return execute(source, null, ExecutionConfig.getDefault());
     }
 
     @Subscribe
@@ -136,7 +149,7 @@ public class ScriptEngineService {
         if (event.getCode() == ScriptExecutionEvent.ON_START) {
             mGlobalConsole.verbose(DateFormat.getTimeInstance().format(new Date()) + " " + mContext.getString(R.string.text_start_running) + " " + event.getMessage());
         } else if (event.getCode() == ScriptExecutionEvent.ON_EXCEPTION) {
-            mGlobalScriptRuntime.toast(mContext.getString(R.string.text_error) + ": " + event.getMessage());
+            mUiHandler.toast(mContext.getString(R.string.text_error) + ": " + event.getMessage());
             mGlobalConsole.error(event.getMessage());
         }
     }
@@ -149,9 +162,9 @@ public class ScriptEngineService {
     public void stopAllAndToast() {
         int n = stopAll();
         if (n > 0)
-            mGlobalScriptRuntime.toast(String.format(mContext.getString(R.string.text_already_stop_n_scripts), n));
+            mUiHandler.toast(String.format(mContext.getString(R.string.text_already_stop_n_scripts), n));
         else
-            mGlobalScriptRuntime.toast(mContext.getString(R.string.text_no_running_script));
+            mUiHandler.toast(mContext.getString(R.string.text_no_running_script));
     }
 
     public String[] getGlobalFunctions() {

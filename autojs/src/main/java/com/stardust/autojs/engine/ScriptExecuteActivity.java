@@ -5,11 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.stardust.autojs.ExecutionConfig;
 import com.stardust.autojs.ScriptEngineService;
-import com.stardust.autojs.ScriptExecution;
-import com.stardust.autojs.ScriptExecutionListener;
-import com.stardust.autojs.ScriptExecutionTask;
+import com.stardust.autojs.execution.ScriptExecution;
+import com.stardust.autojs.execution.ScriptExecutionListener;
+import com.stardust.autojs.execution.ScriptExecutionTask;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.script.ScriptSource;
 
@@ -50,14 +49,14 @@ public class ScriptExecuteActivity extends Activity {
             prepare();
             doExecution();
         } catch (Exception e) {
-            mExecutionListener.onException(mJavaScriptEngine, mScriptSource, e);
+            mExecutionListener.onException(execution, e);
             super.finish();
         }
     }
 
     private void doExecution() {
         mJavaScriptEngine.setTag("script", mScriptSource);
-        mExecutionListener.onStart(mJavaScriptEngine, mScriptSource);
+        mExecutionListener.onStart(execution);
         mResult = mJavaScriptEngine.execute(mScriptSource);
     }
 
@@ -69,7 +68,7 @@ public class ScriptExecuteActivity extends Activity {
 
     @Override
     public void finish() {
-        mExecutionListener.onSuccess(mJavaScriptEngine, mScriptSource, mResult);
+        mExecutionListener.onSuccess(execution, mResult);
         super.finish();
     }
 
@@ -81,7 +80,7 @@ public class ScriptExecuteActivity extends Activity {
         execution = null;
     }
 
-    private static class ActivityScriptExecution extends ScriptExecution.AbstarctScriptExecution {
+    private static class ActivityScriptExecution extends ScriptExecution.AbstractScriptExecution {
 
         private JavaScriptEngine mJavaScriptEngine;
         private ScriptRuntime mScriptRuntime;

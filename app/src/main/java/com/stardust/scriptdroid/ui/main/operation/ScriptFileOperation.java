@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.stardust.autojs.ScriptExecutionListener;
-import com.stardust.autojs.engine.JavaScriptEngine;
+import com.stardust.autojs.execution.ScriptExecution;
+import com.stardust.autojs.execution.ScriptExecutionListener;
+import com.stardust.autojs.execution.SimpleScriptExecutionListener;
+import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.autojs.script.FileScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
@@ -30,23 +32,20 @@ public abstract class ScriptFileOperation {
     public static final String EXTRA_EXCEPTION_MESSAGE = "EXTRA_EXCEPTION_MESSAGE";
 
 
-    private static final ScriptExecutionListener SCRIPT_EXECUTION_LISTENER = new ScriptExecutionListener() {
+    private static final ScriptExecutionListener RUN_ON_EDIT_VIEW_SCRIPT_EXECUTION_LISTENER = new SimpleScriptExecutionListener() {
 
         @Override
-        public void onStart(JavaScriptEngine engine, ScriptSource source) {
-            AutoJs.getInstance().getScriptEngineService().getDefaultScriptExecutionListener().onStart(engine, source);
-        }
-
-        @Override
-        public void onSuccess(JavaScriptEngine engine, ScriptSource source, Object result) {
+        public void onSuccess(ScriptExecution execution, Object result) {
             App.getApp().sendBroadcast(new Intent(ACTION_ON_RUN_FINISHED));
         }
 
         @Override
-        public void onException(JavaScriptEngine engine, ScriptSource source, Exception e) {
+        public void onException(ScriptExecution execution, Exception e) {
+            if (ScriptInterruptedException.causedByInterrupted(e)) {
+                return;
+            }
             App.getApp().sendBroadcast(new Intent(ACTION_ON_RUN_FINISHED)
                     .putExtra(EXTRA_EXCEPTION_MESSAGE, e.getMessage()));
-            e.printStackTrace();
         }
 
     };
@@ -78,8 +77,8 @@ public abstract class ScriptFileOperation {
         AutoJs.getInstance().getScriptEngineService().execute(new StringScriptSource(file.name, AssetsCache.get(context.getAssets(), file.path)));
     }
 
-    public static void runOnEditView(ScriptSource scriptSource) {
-        AutoJs.getInstance().getScriptEngineService().execute(scriptSource, SCRIPT_EXECUTION_LISTENER);
+    public static ScriptExecution runOnEditView(ScriptSource scriptSource) {
+        return AutoJs.getInstance().getScriptEngineService().execute(scriptSource, RUN_ON_EDIT_VIEW_SCRIPT_EXECUTION_LISTENER);
     }
 
 }

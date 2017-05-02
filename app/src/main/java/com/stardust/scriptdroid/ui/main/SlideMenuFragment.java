@@ -19,11 +19,14 @@ import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.console.ConsoleActivity;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
+import com.stardust.util.UnderuseExecutors;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.concurrent.Executor;
 
 
 /**
@@ -38,7 +41,8 @@ public class SlideMenuFragment extends Fragment {
         activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).commit();
     }
 
-    private SwitchCompat mAutoOperateServiceSwitch, mFloatingWindowSwitch;
+    private SwitchCompat mAccessibilityServiceSwitch, mFloatingWindowSwitch;
+    private Executor mExecutor = UnderuseExecutors.getExecutor();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,17 +71,28 @@ public class SlideMenuFragment extends Fragment {
 
 
     private void syncSwitchState() {
-        mAutoOperateServiceSwitch.postDelayed(new Runnable() {
+        mAccessibilityServiceSwitch.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mAutoOperateServiceSwitch.setChecked(AccessibilityWatchDogService.isEnable());
+                mExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        final boolean checked = AccessibilityWatchDogService.isEnable();
+                        mAccessibilityServiceSwitch.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAccessibilityServiceSwitch.setChecked(checked);
+                            }
+                        });
+                    }
+                });
             }
         }, 450);
         mFloatingWindowSwitch.setChecked(FloatingWindowManger.isFloatingWindowShowing());
     }
 
     private void setUpSwitchCompat() {
-        mAutoOperateServiceSwitch = $(R.id.sw_auto_operate_service);
+        mAccessibilityServiceSwitch = $(R.id.sw_auto_operate_service);
         mFloatingWindowSwitch = $(R.id.sw_floating_window);
     }
 
@@ -94,7 +109,7 @@ public class SlideMenuFragment extends Fragment {
 
     @ViewBinding.Click(R.id.auto_operate_service)
     private void clickAutoOperateServiceSwitch() {
-        mAutoOperateServiceSwitch.toggle();
+        mAccessibilityServiceSwitch.toggle();
     }
 
     @ViewBinding.Check(R.id.sw_auto_operate_service)

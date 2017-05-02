@@ -181,6 +181,8 @@ public class HoverMenuService extends Service {
         if (eventBus.isRegistered(this))
             eventBus.unregister(this);
         setIsRunning(false);
+        mWindowViewController.removeView(mFloatingLayoutBoundsView);
+        mWindowViewController.removeView(mFloatingLayoutHierarchyView);
     }
 
 

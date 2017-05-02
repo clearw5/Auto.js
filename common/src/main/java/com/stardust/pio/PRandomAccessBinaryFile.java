@@ -1,5 +1,6 @@
 package com.stardust.pio;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

@@ -8,7 +8,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.autojs.runtime.AccessibilityBridge;
 import com.stardust.autojs.runtime.JavascriptInterface;
-import com.stardust.autojs.runtime.ScriptInterrupptedException;
+import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.automator.ActionArgument;
 import com.stardust.automator.UiGlobalSelector;
@@ -118,7 +118,7 @@ public class UiSelector extends UiGlobalSelector {
         do {
             if (Thread.currentThread().isInterrupted()) {
                 Log.d(TAG, "Thread isInterrupted");
-                throw new ScriptInterrupptedException();
+                throw new ScriptInterruptedException();
             }
             uiObjectCollection = find();
         } while (uiObjectCollection == null || uiObjectCollection.size() == 0);

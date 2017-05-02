@@ -29,8 +29,8 @@ public class JsBeautifier {
 
     private Executor mExecutor = Executors.newSingleThreadExecutor();
     private Context mContext;
-    private org.mozilla.javascript.Context mScriptContext;
     private Function mJsBeautifyFunction;
+    private org.mozilla.javascript.Context mScriptContext;
     private Scriptable mScriptable;
     private final String mBeautifyJsPath;
 
@@ -45,14 +45,31 @@ public class JsBeautifier {
             public void run() {
                 try {
                     prepareIfNeeded();
+                    enterContext();
                     Object beautifiedCode = mJsBeautifyFunction.call(mScriptContext, mScriptable, mScriptable, new Object[]{code});
                     callback.onSuccess(beautifiedCode.toString());
                 } catch (Exception e) {
                     callback.onException(e);
+                } finally {
+                    exitContext();
                 }
             }
 
         });
+    }
+
+    private void exitContext() {
+        if (mScriptContext != null) {
+            org.mozilla.javascript.Context.exit();
+            mScriptContext = null;
+        }
+    }
+
+    private void enterContext() {
+        if (mScriptContext == null) {
+            mScriptContext = org.mozilla.javascript.Context.enter();
+            mScriptContext.setOptimizationLevel(-1);
+        }
     }
 
     public void prepare() {
@@ -71,19 +88,20 @@ public class JsBeautifier {
 
 
     private void prepareIfNeeded() {
-        if (mScriptContext != null)
+        if (mJsBeautifyFunction != null)
             return;
-        RhinoAndroidHelper helper = new RhinoAndroidHelper(mContext);
-        mScriptContext = helper.enterContext();
         compile();
     }
 
     private void compile() {
         try {
+            enterContext();
             InputStream is = mContext.getAssets().open(mBeautifyJsPath);
-            mScriptable = mScriptContext.initSafeStandardObjects();
+            if (mScriptable == null)
+                mScriptable = mScriptContext.initSafeStandardObjects();
             mJsBeautifyFunction = mScriptContext.compileFunction(mScriptable, PFile.read(is), "<js_beautify>", 1, null);
         } catch (IOException e) {
+            exitContext();
             throw new UncheckedIOException(e);
         }
     }

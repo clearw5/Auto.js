@@ -3,26 +3,18 @@ package com.stardust.scriptdroid.service;
 import android.os.Build;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.stardust.autojs.runtime.JavascriptInterface;
-import com.stardust.view.accessibility.AccessibilityDelegate;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
+import com.stardust.view.accessibility.AccessibilityDelegate;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
-import org.greenrobot.eventbus.EventBus;
-
-import java.lang.ref.WeakReference;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /**
  * Created by Stardust on 2017/2/14.

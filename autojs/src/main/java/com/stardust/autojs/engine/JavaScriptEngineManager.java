@@ -114,7 +114,6 @@ public abstract class JavaScriptEngineManager {
             for (JavaScriptEngine engine : mEngines) {
                 engine.forceStop();
             }
-            mEngines.clear();
             return n;
         }
     }

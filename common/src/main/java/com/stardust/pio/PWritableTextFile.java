@@ -1,6 +1,7 @@
 package com.stardust.pio;
 
 import java.io.BufferedWriter;
+import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.util.List;
  * Created by Stardust on 2017/4/1.
  */
 
-public class PWritableTextFile extends PFile {
+public class PWritableTextFile extends PFile implements Closeable {
 
     public static PWritableTextFile open(String path, String encoding, int bufferSize) {
         return new PWritableTextFile(path, encoding, bufferSize, false);

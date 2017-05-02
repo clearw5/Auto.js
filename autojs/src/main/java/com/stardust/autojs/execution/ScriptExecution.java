@@ -1,4 +1,4 @@
-package com.stardust.autojs;
+package com.stardust.autojs.execution;
 
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.runtime.ScriptRuntime;
@@ -20,11 +20,11 @@ public interface ScriptExecution {
 
     ExecutionConfig getConfig();
 
-    abstract class AbstarctScriptExecution implements ScriptExecution {
+    abstract class AbstractScriptExecution implements ScriptExecution {
 
         protected ScriptExecutionTask mScriptExecutionTask;
 
-        public AbstarctScriptExecution(ScriptExecutionTask task) {
+        public AbstractScriptExecution(ScriptExecutionTask task) {
             mScriptExecutionTask = task;
         }
 

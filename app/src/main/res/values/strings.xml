@@ -216,6 +216,8 @@
     <string name="key_guard_mode">key_guard_mode</string>
     <string name="text_console_floating_window">控制台悬浮窗</string>
     <string name="text_layout_inspector_is_dumping">布局分析中，请稍后点击</string>
+    <string name="text_force_stop">强制停止</string>
+    <string name="text_execution_finished" formatted="false">\n------------\n[%s]运行结束，用时%f秒</string>
 
     <string-array name="record_control_keys">
         <item>无</item>
