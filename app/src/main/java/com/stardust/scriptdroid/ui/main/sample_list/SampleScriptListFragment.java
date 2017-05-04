@@ -2,7 +2,6 @@ package com.stardust.scriptdroid.ui.main.sample_list;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +9,11 @@ import android.view.ViewGroup;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.Fragment;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.scripts.sample.Sample;
-import com.stardust.scriptdroid.scripts.sample.SampleFileManager;
+import com.stardust.scriptdroid.script.Scripts;
+import com.stardust.scriptdroid.script.sample.Sample;
+import com.stardust.scriptdroid.script.sample.SampleFileManager;
 import com.stardust.scriptdroid.ui.edit.ViewSampleActivity;
 import com.stardust.scriptdroid.ui.main.MainActivity;
-import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
-
-import java.io.IOException;
 
 /**
  * Created by Stardust on 2017/3/13.
@@ -59,7 +56,7 @@ public class SampleScriptListFragment extends Fragment {
                     @Override
                     public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
                         if (position == 0) {
-                            ScriptFileOperation.run(getActivity(), sample);
+                            Scripts.run(getActivity(), sample);
                         } else {
                             copySampleToMyScripts(sample);
                         }

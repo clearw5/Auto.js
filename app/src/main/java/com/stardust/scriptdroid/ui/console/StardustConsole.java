@@ -3,7 +3,7 @@ package com.stardust.scriptdroid.ui.console;
 import android.content.Context;
 import android.content.Intent;
 
-import com.stardust.autojs.runtime.AbstractConsole;
+import com.stardust.autojs.runtime.api.AbstractConsole;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;

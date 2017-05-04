@@ -16,10 +16,10 @@ public interface OnActivityResultDelegate {
     void onActivityResult(int requestCode, int resultCode, Intent data);
 
     interface DelegateHost {
-        Intermediary getDelegateManger();
+        Mediator getDelegateManger();
     }
 
-    class Intermediary implements OnActivityResultDelegate {
+    class Mediator implements OnActivityResultDelegate {
 
         private SparseArray<OnActivityResultDelegate> mSpecialDelegate = new SparseArray<>();
         private List<OnActivityResultDelegate> mDelegates = new ArrayList<>();

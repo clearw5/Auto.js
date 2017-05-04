@@ -4,19 +4,16 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.util.Shell;
+import com.stardust.autojs.runtime.api.ProcessShell;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
 import java.util.Locale;
-
-import static com.stardust.view.accessibility.AccessibilityServiceUtils.isAccessibilityServiceEnabled;
 
 /**
  * Created by Stardust on 2017/1/26.
@@ -58,7 +55,7 @@ public class AccessibilityServiceTool {
 
     public static boolean enableAccessibilityServiceByRoot(Class<? extends AccessibilityService> accessibilityService) {
         String serviceName = App.getApp().getPackageName() + "/" + accessibilityService.getName();
-        return TextUtils.isEmpty(Shell.execCommand(String.format(Locale.getDefault(), cmd, serviceName), true).error);
+        return TextUtils.isEmpty(ProcessShell.exec(String.format(Locale.getDefault(), cmd, serviceName), true).error);
     }
 
     public static boolean enableAccessibilityServiceByRootAndWaitFor(long timeOut) {

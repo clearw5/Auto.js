@@ -1,5 +1,7 @@
 package com.stardust.scriptdroid.record;
 
+import java.util.Arrays;
+
 /**
  * Created by Stardust on 2017/3/16.
  */
@@ -18,27 +20,25 @@ public interface Recorder {
 
     }
 
-    OnStateChangedListener NO_OPERATION_LISTENER = new OnStateChangedListener() {
-        @Override
-        public void onStart() {
+    class StateChangeEvent {
 
+        private int mOldState;
+        private int mCurrentState;
+
+        public StateChangeEvent(int oldState, int currentState) {
+            mOldState = oldState;
+            mCurrentState = currentState;
         }
 
-        @Override
-        public void onStop() {
-
+        public int getOldState() {
+            return mOldState;
         }
 
-        @Override
-        public void onPause() {
-
+        public int getCurrentState() {
+            return mCurrentState;
         }
+    }
 
-        @Override
-        public void onResume() {
-
-        }
-    };
 
     int STATE_NOT_START = 0;
     int STATE_RECORDING = 1;
@@ -59,44 +59,65 @@ public interface Recorder {
 
     void setOnStateChangedListener(OnStateChangedListener onStateChangedListener);
 
-    abstract class DefaultIMPL implements Recorder {
+    abstract class AbstractRecorder implements Recorder {
+
+        private static final OnStateChangedListener NO_OPERATION_LISTENER = new OnStateChangedListener() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onStop() {
+
+            }
+
+            @Override
+            public void onPause() {
+
+            }
+
+            @Override
+            public void onResume() {
+
+            }
+        };
 
 
         private OnStateChangedListener mOnStateChangedListener = NO_OPERATION_LISTENER;
 
-
         private final boolean mSync;
         private int mState = STATE_NOT_START;
 
-        public DefaultIMPL(boolean syncOfState) {
+        public AbstractRecorder(boolean syncOfState) {
             mSync = syncOfState;
         }
 
-        public DefaultIMPL() {
+        public AbstractRecorder() {
             this(false);
         }
 
         public void start() {
-            checkState(STATE_NOT_START);
+            ensureIsStateOf(STATE_NOT_START);
             setState(STATE_RECORDING);
             startImpl();
             mOnStateChangedListener.onStart();
         }
 
 
-        private void checkState(int... expectedStates) {
+        private void ensureIsStateOf(int... expectedStates) {
             for (int expectedState : expectedStates) {
                 if (mState == expectedState)
                     return;
             }
-            throw new IllegalStateException();
+            throw new IllegalStateException("expected=" + Arrays.toString(expectedStates) + " state=" + mState);
         }
 
 
         protected abstract void startImpl();
 
         public void stop() {
-            checkState(STATE_RECORDING, STATE_PAUSED);
+            ensureIsStateOf(STATE_RECORDING, STATE_PAUSED);
             setState(STATE_STOPPED);
             stopImpl();
             mOnStateChangedListener.onStop();
@@ -105,7 +126,7 @@ public interface Recorder {
         protected abstract void stopImpl();
 
         public void pause() {
-            checkState(STATE_RECORDING);
+            ensureIsStateOf(STATE_RECORDING);
             setState(STATE_PAUSED);
             pauseImpl();
             mOnStateChangedListener.onPause();
@@ -136,7 +157,7 @@ public interface Recorder {
         }
 
         public void resume() {
-            checkState(STATE_PAUSED);
+            ensureIsStateOf(STATE_PAUSED);
             setState(STATE_RECORDING);
             resumeImpl();
             mOnStateChangedListener.onResume();

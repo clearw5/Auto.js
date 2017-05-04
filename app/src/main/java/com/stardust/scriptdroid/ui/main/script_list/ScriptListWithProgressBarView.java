@@ -13,8 +13,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.scripts.ScriptFile;
-import com.stardust.scriptdroid.scripts.StorageScriptProvider;
+import com.stardust.scriptdroid.script.ScriptFile;
+import com.stardust.scriptdroid.script.StorageScriptProvider;
 
 /**
  * Created by Stardust on 2017/4/3.

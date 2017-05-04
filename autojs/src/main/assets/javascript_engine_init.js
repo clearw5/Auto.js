@@ -1,11 +1,11 @@
 
 if(__engine_name__ == "rhino"){
-  __importClassOld__ = importClass;
+  __importClass__ = importClass;
   var importClass = function(pack){
     if(typeof(pack) == "string"){
-        __importClassOld__(Packages[pack]);
+        __importClass__(Packages[pack]);
     }else{
-        __importClassOld__(pack);
+        __importClass__(pack);
     }
   }
   var loadJar = function(path){
@@ -183,23 +183,23 @@ var setClip = function(text){
 
 
 var Tap = function(x, y){
-    __runtime__.shellExecNotReturnResultWithRoot("input tap " + x + " " + y);
+    __runtime__.shellExecAsync("input tap " + x + " " + y);
 }
 
 var Swipe = function(x1, y1, x2, y2, duration){
     if(arguments.length == 5){
-        __runtime__.shellExecNotReturnResultWithRoot("input swipe " + x1 + " " + y1 + " " + x2 + " " + y2 + " " + duration);
+        __runtime__.shellExecAsync("input swipe " + x1 + " " + y1 + " " + x2 + " " + y2 + " " + duration);
     }else{
-         __runtime__.shellExecNotReturnResultWithRoot("input swipe " + x1 + " " + y1 + " " + x2 + " " + y2);
+         __runtime__.shellExecAsync("input swipe " + x1 + " " + y1 + " " + x2 + " " + y2);
     }
 }
 
 var Screencap = function(path){
-    __runtime__.shellExecNotReturnResultWithRoot("screencap -p " + path);
+    __runtime__.shellExecAsync("screencap -p " + path);
 }
 
 var KeyCode = function(keyCode){
-    __runtime__.shellExecNotReturnResultWithRoot("input keyevent " + keyCode);
+    __runtime__.shellExecAsync("input keyevent " + keyCode);
 }
 
 var Home = function(){
@@ -251,7 +251,7 @@ var Camera = function(){
 }
 
 var Text = function(text){
-     __runtime__.shellExecNotReturnResultWithRoot("input text " + text);
+     __runtime__.shellExecAsync("input text " + text);
 }
 
 var selector = function(){
@@ -299,8 +299,6 @@ var open = function(path, mode, encoding, bufferSize){
 }
 
 
-//__importClassOld__(com.stardust.autojs.runtime.api.SlowShell);
-
 var newInjectableWebClient = function(){
     return new com.stardust.autojs.runtime.api.InjectableWebClient(org.mozilla.javascript.Context.getCurrentContext(), __this__);
 }
@@ -308,11 +306,3 @@ var newInjectableWebClient = function(){
 var newInjectableWebView = function(activity){
     return new com.stardust.autojs.runtime.api.InjectableWebView(activity, org.mozilla.javascript.Context.getCurrentContext(), __this__);
 }
-
-/*
-importClass("com.stardust.script__runtime__.service.AccessibilityDelegate");
-
-var addAccessibilityDelegate = function(delegate){
-    __runtime__.addAccessibilityDelegate(delegate);
-}
-*/

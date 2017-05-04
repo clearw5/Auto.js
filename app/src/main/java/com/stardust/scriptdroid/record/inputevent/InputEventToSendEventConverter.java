@@ -17,7 +17,7 @@ public class InputEventToSendEventConverter extends InputEventConverter {
     private StringBuilder mSendEventCommands = new StringBuilder();
 
     @Override
-    public void addEvent(@NonNull Event event) {
+    public void convertEvent(@NonNull Event event) {
         if (mLastEventTime == 0) {
             mLastEventTime = event.time;
         } else if (event.time - mLastEventTime > 0.1) {
@@ -30,6 +30,11 @@ public class InputEventToSendEventConverter extends InputEventConverter {
                 .append(hex2dec(event.code)).append(" ")
                 .append(hex2dec(event.value)).append("\n");
 
+    }
+
+    @Override
+    public String getGetEventCommand() {
+        return "getevent -t";
     }
 
     public String getCode() {

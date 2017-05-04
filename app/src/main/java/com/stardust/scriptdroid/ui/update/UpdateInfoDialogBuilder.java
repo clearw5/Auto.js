@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.scripts.StorageScriptProvider;
+import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.scriptdroid.tool.UpdateChecker;
 import com.stardust.util.DownloadTask;

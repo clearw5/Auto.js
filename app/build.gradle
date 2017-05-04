@@ -38,6 +38,17 @@ android {
             output.outputFile = new File(file.parent, file.name.replace(".apk", "-" + defaultConfig.versionName + ".apk"))
         }
     }
+    packagingOptions {
+        pickFirst 'org/mozilla/javascript/tools/debugger/build.xml'
+        pickFirst 'org/mozilla/javascript/tools/debugger/test.js'
+        pickFirst 'org/mozilla/javascript/tools/idswitch/README'
+        pickFirst 'org/mozilla/javascript/NativeString.java.orig'
+        pickFirst 'org/mozilla/javascript/Node.java.orig'
+        pickFirst 'org/mozilla/javascript/resources/Messages_fr.properties'
+        pickFirst 'org/mozilla/javascript/resources/Messages.properties'
+        pickFirst 'org/mozilla/javascript/*.java.orig'
+        pickFirst 'org/mozilla/javascript/tools/resources/*.properties'
+    }
 }
 
 repositories {
@@ -47,7 +58,6 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar', '*.so'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
@@ -62,7 +72,6 @@ dependencies {
     compile 'com.github.atlassian:commonmark-java:commonmark-parent-0.9.0'
     compile 'moe.feng:AlipayZeroSdk:1.1'
     compile 'com.jraska:console:0.4.3'
-    compile 'com.jraska:console-timber-tree:0.4.3'
     compile 'com.heinrichreimersoftware:android-issue-reporter:1.3.1'
     compile 'de.codecrafters.tableview:tableview:2.5.0'
     compile group: "pl.openrnd.android", name: "multi-level-listview", version: "1.0.1"
@@ -72,7 +81,7 @@ dependencies {
     compile 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     compile 'me.zhanghai.android.materialprogressbar:library:1.3.0'
-    compile group:'com.twofortyfouram', name:'android-plugin-client-sdk-for-locale', version:'[4.0.2, 5.0['
+    compile group: 'com.twofortyfouram', name: 'android-plugin-client-sdk-for-locale', version: '[4.0.2, 5.0['
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.github.hyb1996:EnhancedFloaty:0.15'
     compile 'com.flurry.android:analytics:7.0.0@aar'

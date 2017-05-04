@@ -2,12 +2,10 @@ package com.stardust.scriptdroid.record.accessibility;
 
 import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.scriptdroid.record.Recorder;
 import com.stardust.view.accessibility.AccessibilityDelegate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +15,7 @@ import java.util.Set;
  * Created by Stardust on 2017/2/14.
  */
 
-public class AccessibilityActionRecorder extends Recorder.DefaultIMPL implements AccessibilityDelegate {
+public class AccessibilityActionRecorder extends Recorder.AbstractRecorder implements AccessibilityDelegate {
 
     public static class AccessibilityActionRecordEvent {
 

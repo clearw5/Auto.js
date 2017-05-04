@@ -29,9 +29,9 @@ import com.stardust.app.NotAskAgainDialog;
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.scripts.ScriptFile;
-import com.stardust.scriptdroid.scripts.StorageScriptProvider;
-import com.stardust.scriptdroid.scripts.sample.Sample;
+import com.stardust.scriptdroid.script.ScriptFile;
+import com.stardust.scriptdroid.script.StorageScriptProvider;
+import com.stardust.scriptdroid.script.sample.Sample;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.DrawableSaver;
@@ -75,7 +75,7 @@ public class MainActivity extends BaseActivity {
     private SlidingUpPanel mAddBottomMenuPanel;
     private FragmentPagerAdapterBuilder.StoredFragmentPagerAdapter mPagerAdapter;
 
-    private OnActivityResultDelegate.Intermediary mActivityResultIntermediary = new OnActivityResultDelegate.Intermediary();
+    private OnActivityResultDelegate.Mediator mActivityResultMediator = new OnActivityResultDelegate.Mediator();
     private DrawableSaver mDrawerHeaderBackgroundSaver, mAppbarBackgroundSaver;
     private VersionGuard mVersionGuard;
     private Intent mIntentToHandle;
@@ -240,7 +240,7 @@ public class MainActivity extends BaseActivity {
 
     @ViewBinding.Click(R.id.drawer_header_img)
     public void selectHeaderImage() {
-        mDrawerHeaderBackgroundSaver.select(this, mActivityResultIntermediary);
+        mDrawerHeaderBackgroundSaver.select(this, mActivityResultMediator);
     }
 
     @Override
@@ -330,7 +330,7 @@ public class MainActivity extends BaseActivity {
 
     @ViewBinding.Click(R.id.toolbar)
     public void OnToolbarClick() {
-        mAppbarBackgroundSaver.select(this, mActivityResultIntermediary);
+        mAppbarBackgroundSaver.select(this, mActivityResultMediator);
     }
 
     @Subscribe
@@ -343,7 +343,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mActivityResultIntermediary.onActivityResult(requestCode, resultCode, data);
+        mActivityResultMediator.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

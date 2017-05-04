@@ -4,8 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.scriptdroid.scripts.ScriptFile;
-import com.stardust.scriptdroid.scripts.StorageScriptProvider;
+import com.stardust.scriptdroid.script.ScriptFile;
+import com.stardust.scriptdroid.script.StorageScriptProvider;
 
 /**
  * Created by Stardust on 2017/4/3.

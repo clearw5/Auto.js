@@ -15,16 +15,18 @@ import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.ui.EditorDelegate;
 import com.jecelyin.editor.v2.view.EditorView;
 import com.jecelyin.editor.v2.view.menu.MenuDef;
+import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.scripts.sample.Sample;
+import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.script.Scripts;
+import com.stardust.scriptdroid.script.sample.Sample;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.console.ConsoleActivity;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Utils;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.scriptdroid.ui.main.MainActivity;
-import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.AssetsCache;
 import com.stardust.util.SparseArrayEntries;
@@ -32,16 +34,17 @@ import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 import com.stardust.widget.ToolbarMenuItem;
 
-import timber.log.Timber;
 
-import static com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation.ACTION_ON_RUN_FINISHED;
-import static com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation.EXTRA_EXCEPTION_MESSAGE;
+import static com.stardust.scriptdroid.script.Scripts.ACTION_ON_EXECUTION_FINISHED;
+import static com.stardust.scriptdroid.script.Scripts.EXTRA_EXCEPTION_MESSAGE;
+
 
 /**
  * Created by Stardust on 2017/4/29.
  */
 
 public class ViewSampleActivity extends Editor920Activity {
+
 
     public static void view(Context context, Sample sample) {
         context.startActivity(new Intent(context, ViewSampleActivity.class)
@@ -51,17 +54,18 @@ public class ViewSampleActivity extends Editor920Activity {
 
     private View mView;
     private Sample mSample;
+    private ScriptExecution mScriptExecution;
     private EditorDelegate mEditorDelegate;
     private SparseArray<ToolbarMenuItem> mMenuMap;
     private BroadcastReceiver mOnRunFinishedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(ACTION_ON_RUN_FINISHED)) {
+            if (intent.getAction().equals(ACTION_ON_EXECUTION_FINISHED)) {
+                mScriptExecution = null;
                 setMenuStatus(R.id.run, MenuDef.STATUS_NORMAL);
                 String msg = intent.getStringExtra(EXTRA_EXCEPTION_MESSAGE);
                 if (msg != null) {
                     Snackbar.make(mView, getString(R.string.text_error) + ": " + msg, Snackbar.LENGTH_LONG).show();
-                    Timber.e(msg);
                 }
             }
         }
@@ -75,7 +79,7 @@ public class ViewSampleActivity extends Editor920Activity {
         handleIntent(getIntent());
         setUpUI();
         setUpEditor();
-        registerReceiver(mOnRunFinishedReceiver, new IntentFilter(ACTION_ON_RUN_FINISHED));
+        registerReceiver(mOnRunFinishedReceiver, new IntentFilter(ACTION_ON_EXECUTION_FINISHED));
     }
 
     private void handleIntent(Intent intent) {
@@ -107,7 +111,7 @@ public class ViewSampleActivity extends Editor920Activity {
     private void run() {
         Snackbar.make(mView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         setMenuStatus(R.id.run, MenuDef.STATUS_DISABLED);
-        ScriptFileOperation.runOnEditView(new StringScriptSource(mSample.name, mEditorDelegate.getText()));
+        mScriptExecution = Scripts.runWithBroadcastSender(new StringScriptSource(mSample.name, mEditorDelegate.getText()));
     }
 
     private void initMenuItem() {
@@ -135,7 +139,10 @@ public class ViewSampleActivity extends Editor920Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_console:
-                startActivity(new Intent(getContext(), ConsoleActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                showConsole();
+                return true;
+            case R.id.action_log:
+                showLog();
                 return true;
             case R.id.action_help:
                 HelpCatalogueActivity.showMainCatalogue(this);
@@ -145,6 +152,17 @@ public class ViewSampleActivity extends Editor920Activity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void showLog() {
+        AutoJs.getInstance().getScriptEngineService().getGlobalConsole().show();
+    }
+
+    private void showConsole() {
+        if (mScriptExecution != null) {
+            mScriptExecution.getRuntime().console.show();
+        }
     }
 
     @Override

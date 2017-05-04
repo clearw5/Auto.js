@@ -10,17 +10,14 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.workground.WrapContentLinearLayoutManager;
 
-import com.stardust.autojs.script.FileScriptSource;
-import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.scripts.ScriptFile;
+import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.scripts.StorageScriptProvider;
-import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
+import com.stardust.scriptdroid.script.Scripts;
+import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.widget.ViewHolderMutableAdapter;
 import com.stardust.widget.ViewHolderSupplier;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -111,7 +108,7 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         public void onClick(View v) {
             int position = getChildViewHolder((View) v.getParent()).getAdapterPosition();
             ScriptFile file = mAdapter.getScriptFileAt(position);
-            ScriptFileOperation.run(file);
+            Scripts.run(file);
         }
     };
     private final ViewHolderSupplier<ViewHolder> mDefaultViewHolderSupplier = new ViewHolderSupplier<ViewHolder>() {

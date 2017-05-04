@@ -20,18 +20,14 @@ android {
         }
     }
 
-    packagingOptions {
-        exclude 'org/mozilla/javascript/tools/debugger/build.xml'
-    }
+
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'com.github.hyb1996:node-android-lib:1.0.14'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile project(path: ':common')

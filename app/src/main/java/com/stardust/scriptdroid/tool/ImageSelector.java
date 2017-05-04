@@ -25,8 +25,8 @@ public class ImageSelector implements OnActivityResultDelegate {
     private Activity mActivity;
     private ImageSelectorCallback mCallback;
 
-    public ImageSelector(Activity activity, Intermediary intermediary, ImageSelectorCallback callback) {
-        intermediary.addDelegate(REQUEST_CODE, this);
+    public ImageSelector(Activity activity, Mediator mediator, ImageSelectorCallback callback) {
+        mediator.addDelegate(REQUEST_CODE, this);
         mActivity = activity;
         mCallback = callback;
     }

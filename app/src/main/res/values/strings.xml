@@ -12,13 +12,13 @@
     <string name="text_please_input_name">请输入名称</string>
     <string name="text_name">名称</string>
     <string name="text_go_to_setting">去设置</string>
-    <string name="explain_accessibility_permission">软件需要打开\"自动操作服务\"才能运行，请在随后的设置中选择\"AutoJs\"并开启服务。\n您也可以稍后在侧拉菜单中设置。</string>
+    <string name="explain_accessibility_permission">软件需要打开\"无障碍服务\"才能运行，请在随后的设置中选择\"AutoJs\"并开启服务。\n您也可以稍后在侧拉菜单中设置。</string>
     <string name="text_cancel">取消</string>
     <string name="text_path_is_empty">路径为空</string>
     <string name="text_file_not_exists">文件不存在</string>
     <string name="text_no_file_rw_permission">无文件读写权限</string>
     <string name="action_test">内嵌920测试</string>
-    <string name="text_no_accessibility_permission">自动操作服务未启动，脚本已停止运行</string>
+    <string name="text_no_accessibility_permission">无障碍服务未启动，脚本已停止运行</string>
     <string name="text_drawer_close">关闭侧拉菜单</string>
     <string name="text_drawer_open">打开侧拉菜单</string>
     <string name="text_undo">撤销</string>
@@ -31,7 +31,7 @@
     <string name="text_exit_directly">直接退出</string>
     <string name="text_setting">设置</string>
     <string name="text_exit">退出</string>
-    <string name="text_auto_operate_service">自动操作服务</string>
+    <string name="text_auto_operate_service">无障碍服务</string>
     <string name="text_syntax_and_api">帮助</string>
     <string name="text_close_all_running_scripts">关闭所有正在运行的脚本</string>
     <string name="text_about">关于</string>
@@ -83,7 +83,7 @@
     <string name="text_choose_email_app">请选择邮件应用</string>
     <string name="text_assist_clip">点击定位剪贴板</string>
     <string name="text_script_stopped">脚本已停止</string>
-    <string name="assist_mode_notice">\"点击区域辅助服务\"是在要点击的区域不是文本时使用的，参见\"帮助\"。\"点击区域辅助服务\"只有在\"自动操作服务\"开启时才有效。</string>
+    <string name="assist_mode_notice">\"点击区域辅助服务\"是在要点击的区域不是文本时使用的，参见\"帮助\"。\"点击区域辅助服务\"只有在\"无障碍服务\"开启时才有效。</string>
     <string name="text_please_choose">请选择</string>
     <string name="text_crash">崩溃了o(≧口≦)o</string>
     <string name="crash_feedback">点击\"退出\"退出程序(ಥ _ ಥ)或者提交错误报告或者复制调试信息反馈给开发者(≧∇≦)ﾉ</string>
@@ -94,6 +94,7 @@
     <string name="text_fail">失败</string>
     <string name="text_clear">清空</string>
     <string name="text_console">控制台</string>
+    <string name="text_log">日志</string>
     <string name="text_sample_wechat_scan">微信扫一扫</string>
     <string name="text_report_bug">提交错误报告</string>
     <string name="text_bug_report">Bug Report</string>
@@ -112,7 +113,7 @@
     <string name="text_recorded">录制结束</string>
     <string name="text_copy_to_clip">复制到剪贴板</string>
     <string name="text_file_write_fail">文件写入失败</string>
-    <string name="text_need_enable_accessibility_service_to_record">需要打开\"自动操作服务“才能录制脚本</string>
+    <string name="text_need_enable_accessibility_service_to_record">需要打开\"无障碍服务“才能录制脚本</string>
     <string name="text_join_qq_group">加入QQ交流群</string>
     <string name="text_copied">已复制到剪贴板</string>
     <string name="text_close">关闭</string>
@@ -127,10 +128,10 @@
     <string name="text_file_exists">文件已存在</string>
     <string name="text_accessibility_service">无障碍服务</string>
     <string name="text_enable_accessibility_service_by_root">通过Root权限自动启用服务</string>
-    <string name="text_auto_operate_service_enabled_but_not_running">自动操作服务已启用但并未运行，这可能是安卓的BUG，您可能需要重启手机</string>
+    <string name="text_auto_operate_service_enabled_but_not_running">无障碍服务已启用但并未运行，这可能是安卓的BUG，您可能需要重启手机</string>
     <string name="key_enable_accessibility_service_by_root">key_enable_accessibility_service_by_root</string>
-    <string name="text_enable_accessibility_service_by_root_timeout">使用Root权限启动自动操作服务超时</string>
-    <string name="summary_enable_accessibility_service_by_root">开启后运行脚本会使用Root权限自动开启自动操作服务</string>
+    <string name="text_enable_accessibility_service_by_root_timeout">使用Root权限启动无障碍服务超时</string>
+    <string name="summary_enable_accessibility_service_by_root">开启后运行脚本会使用Root权限自动开启无障碍服务</string>
     <string name="text_appearance">外观</string>
     <string name="text_theme_color">主题色</string>
     <string name="text_select_image">选择图片</string>
@@ -218,6 +219,7 @@
     <string name="text_layout_inspector_is_dumping">布局分析中，请稍后点击</string>
     <string name="text_force_stop">强制停止</string>
     <string name="text_execution_finished" formatted="false">\n------------\n[%s]运行结束，用时%f秒</string>
+    <string name="text_record_format_error">录制格式错误</string>
 
     <string-array name="record_control_keys">
         <item>无</item>

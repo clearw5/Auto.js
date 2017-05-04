@@ -1,6 +1,14 @@
 package com.stardust.scriptdroid.record.inputevent;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.widget.Toast;
+
+import com.flurry.android.FlurryAgent;
+import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.record.Recorder;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -12,22 +20,6 @@ import java.util.regex.Pattern;
  */
 
 public abstract class InputEventConverter {
-
-
-    public static class RecordStateChangeEvent {
-
-        private boolean mIsRecording;
-
-        public RecordStateChangeEvent(boolean isRecording) {
-            this.mIsRecording = isRecording;
-        }
-
-
-        public boolean isRecording() {
-            return mIsRecording;
-        }
-
-    }
 
     static class Event {
 
@@ -76,47 +68,63 @@ public abstract class InputEventConverter {
     }
 
 
-    protected boolean mStarted = false;
+    protected boolean mConverting = false;
+    private int mState = Recorder.STATE_NOT_START;
 
-    public void parseAndAddEventIfFormatCorrect(String eventStr) {
+    public void convertEventIfFormatCorrect(String eventStr) {
+        if(!mConverting)
+            return;
+        if(TextUtils.isEmpty(eventStr) || !eventStr.startsWith("["))
+            return;
         Event event = parseEventOrNull(eventStr);
         if (event != null) {
-            addEvent(event);
+            convertEvent(event);
         }
     }
 
-    public abstract void addEvent(@NonNull Event event);
+    public abstract void convertEvent(@NonNull Event event);
+
+    public String getGetEventCommand() {
+        return "getevent -t -l";
+    }
 
 
     public void start() {
-        mStarted = true;
+        mConverting = true;
+        mState = Recorder.STATE_RECORDING;
+    }
+
+    public void resume(){
+        mConverting = true;
+        mState = Recorder.STATE_RECORDING;
     }
 
     public void pause() {
-        mStarted = false;
+        mConverting = false;
+        mState = Recorder.STATE_PAUSED;
     }
 
     public void stop() {
-        mStarted = false;
+        mConverting = false;
+        mState = Recorder.STATE_STOPPED;
     }
 
     public abstract String getCode();
+
+    private boolean mFirstEventFormatError = true;
 
     public Event parseEventOrNull(String eventStr) {
         try {
             return Event.parseEvent(eventStr);
         } catch (EventFormatException e) {
             e.printStackTrace();
+            if(mFirstEventFormatError){
+                Toast.makeText(App.getApp(), R.string.text_record_format_error, Toast.LENGTH_SHORT).show();
+                mFirstEventFormatError = false;
+                FlurryAgent.logEvent("EventFormatException:" + e.getMessage());
+            }
             return null;
         }
-    }
-
-    public void notifyRecordStopped() {
-        EventBus.getDefault().post(new RecordStateChangeEvent(false));
-    }
-
-    public void notifyRecordStarted() {
-        EventBus.getDefault().post(new RecordStateChangeEvent(true));
     }
 
 }

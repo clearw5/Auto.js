@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.scripts.sample;
+package com.stardust.scriptdroid.script.sample;
 
 import java.util.ArrayList;
 import java.util.List;

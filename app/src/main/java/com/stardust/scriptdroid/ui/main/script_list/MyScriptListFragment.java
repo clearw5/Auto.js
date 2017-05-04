@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +13,12 @@ import android.widget.EditText;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.Fragment;
-import com.stardust.scriptdroid.scripts.ScriptFile;
+import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.scripts.StorageScriptProvider;
+import com.stardust.scriptdroid.script.Scripts;
+import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
-import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
@@ -142,7 +141,7 @@ public class MyScriptListFragment extends Fragment {
                 }
             }
             notifyScriptFileChanged();
-            ScriptFileOperation.edit(new ScriptFile(path));
+            Scripts.edit(path);
         } else {
             Snackbar.make(getView(), R.string.text_create_fail, Snackbar.LENGTH_LONG).show();
         }
@@ -255,7 +254,7 @@ public class MyScriptListFragment extends Fragment {
     @ViewBinding.Click(R.id.open_by_other_apps)
     private void openByOtherApps() {
         dismissDialogs();
-        ScriptFileOperation.openByOtherApps(mSelectedScriptFile.getPath());
+        Scripts.openByOtherApps(mSelectedScriptFile);
         onScriptFileOperated();
     }
 
@@ -272,7 +271,7 @@ public class MyScriptListFragment extends Fragment {
     @ViewBinding.Click(R.id.create_shortcut)
     private void createShortcut() {
         dismissDialogs();
-        ScriptFileOperation.createShortcut(mSelectedScriptFile);
+        Scripts.createShortcut(mSelectedScriptFile);
         Snackbar.make(getView(), R.string.text_already_create, Snackbar.LENGTH_SHORT).show();
         onScriptFileOperated();
     }

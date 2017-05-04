@@ -18,6 +18,7 @@ import com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService;
 import com.stardust.scriptdroid.record.Recorder;
 import com.stardust.scriptdroid.record.accessibility.AccessibilityActionRecorder;
 import com.stardust.scriptdroid.record.inputevent.InputEventConverter;
+import com.stardust.scriptdroid.record.inputevent.KeyObserver;
 import com.stardust.scriptdroid.record.inputevent.TouchRecorder;
 import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.util.MessageEvent;
@@ -35,7 +36,7 @@ import io.mattcarroll.hover.NavigatorContent;
  * Created by Stardust on 2017/3/12.
  */
 
-public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStateChangedListener {
+public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStateChangedListener, KeyObserver.KeyListener {
 
     private View mView;
     @ViewBinding.Id(R.id.sw_recorded_by_root)
@@ -57,6 +58,8 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     private Recorder mRecorder;
     private Context mContext;
 
+    private KeyObserver mKeyObserver;
+
     private VolumeChangeObserver.OnVolumeChangeListener mOnVolumeChangeListener = new VolumeChangeObserver.OnVolumeChangeListener() {
         @Override
         public void onVolumeChange() {
@@ -74,8 +77,13 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
         mContext = context;
         mView = View.inflate(context, R.layout.floating_window_record, null);
         ViewBinder.bind(this);
-        EventBus.getDefault().register(this);
+        HoverMenuService.getEventBus().register(this);
         App.getApp().getVolumeChangeObserver().addOnVolumeChangeListener(mOnVolumeChangeListener);
+        if (Pref.hasRecordTrigger()) {
+            mKeyObserver = new KeyObserver();
+            mKeyObserver.startListening();
+            mKeyObserver.setKeyListener(this);
+        }
     }
 
     @NonNull
@@ -158,10 +166,18 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     @Subscribe
     public void onMessageEvent(MessageEvent event) {
         if (event.message.equals(HoverMenuService.MESSAGE_MENU_EXPANDING)) {
-            pauseRecord();
+            if (mRecorder != null && mRecorder.getState() == Recorder.STATE_RECORDING)
+                pauseRecord();
         } else if (event.message.equals(HoverMenuService.MESSAGE_MENU_EXIT)) {
-            EventBus.getDefault().unregister(this);
-            App.getApp().getVolumeChangeObserver().removeOnVolumeChangeListener(mOnVolumeChangeListener);
+            onMenuExit();
+        }
+    }
+
+    public void onMenuExit() {
+        HoverMenuService.getEventBus().unregister(this);
+        App.getApp().getVolumeChangeObserver().removeOnVolumeChangeListener(mOnVolumeChangeListener);
+        if (mKeyObserver != null) {
+            mKeyObserver.stopListening();
         }
     }
 
@@ -169,13 +185,6 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     public void onAccessibilityActionRecordEvent(AccessibilityActionRecorder.AccessibilityActionRecordEvent event) {
         if (mRecordToastSwitch.isChecked()) {
             Toast.makeText(mContext, AccessibilityEventHelper.getEventTypeNameResId(event.getAccessibilityEvent()), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Subscribe
-    public void onTouchRecorderStateChanged(InputEventConverter.RecordStateChangeEvent event) {
-        if (!event.isRecording()) {
-            stopRecord();
         }
     }
 
@@ -196,6 +205,22 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
     @Override
     public void onResume() {
+
+    }
+
+    @Override
+    public void onKeyDown(String keyName) {
+        if (keyName.equals(Pref.getStopRecordTrigger())) {
+            if (mRecorder != null && mRecorder.getState() == Recorder.STATE_RECORDING && mRecorder.getState() == Recorder.STATE_PAUSED)
+                stopRecord();
+        } else if (keyName.equals(Pref.getStartRecordTrigger())) {
+            if (mRecorder == null)
+                startRecord();
+        }
+    }
+
+    @Override
+    public void onKeyUp(String keyName) {
 
     }
 }

@@ -21,6 +21,12 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/action_log"
+        android:orderInCategory="280"
+        android:title="@string/text_log"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/action_help"
         android:orderInCategory="300"
         android:title="@string/text_help"

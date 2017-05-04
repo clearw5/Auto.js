@@ -27,7 +27,7 @@ public class ConsoleActivity extends BaseActivity {
 
     private void setUpUI() {
         setContentView(R.layout.activity_console);
-        setToolbarAsBack(getString(R.string.text_console));
+        setToolbarAsBack(getString(R.string.text_log));
     }
 
     @Override

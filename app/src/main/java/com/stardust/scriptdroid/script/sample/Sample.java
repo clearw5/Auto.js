@@ -1,4 +1,10 @@
-package com.stardust.scriptdroid.scripts.sample;
+package com.stardust.scriptdroid.script.sample;
+
+import android.content.Context;
+
+import com.stardust.autojs.script.StringScriptSource;
+import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.util.AssetsCache;
 
 import java.io.Serializable;
 

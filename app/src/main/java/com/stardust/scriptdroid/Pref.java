@@ -78,6 +78,13 @@ public class Pref {
         return def().getString(getString(R.string.key_stop_record_trigger), null);
     }
 
+    public static boolean hasRecordTrigger(){
+        String startTrigger = getStartRecordTrigger();
+        String stopTrigger = getStartRecordTrigger();
+        return startTrigger != null && !startTrigger.equals("NONE")
+                && stopTrigger != null && !startTrigger.equals("NONE");
+    }
+
     public static boolean enableAccessibilityServiceByRoot() {
         return def().getBoolean(getString(R.string.key_enable_accessibility_service_by_root), false);
     }

@@ -13,7 +13,7 @@ import com.stardust.automator.simple_action.SimpleActionPerformHost;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.scripts.StorageScriptProvider;
+import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.ui.console.StardustConsole;
 import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
@@ -22,7 +22,7 @@ import com.stardust.scriptdroid.layout_inspector.LayoutInspector;
 import com.stardust.scriptdroid.record.accessibility.AccessibilityActionRecorder;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
-import com.stardust.scriptdroid.ui.console.TimberConsole;
+import com.stardust.scriptdroid.ui.console.JraskaConsole;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
 
@@ -58,7 +58,7 @@ public class AutoJs implements AccessibilityBridge {
         manager.setRequirePath(StorageScriptProvider.DEFAULT_DIRECTORY_PATH);
         mScriptEngineService = new ScriptEngineServiceBuilder()
                 .uiHandler(mUiHandler)
-                .globalConsole(new TimberConsole())
+                .globalConsole(new JraskaConsole())
                 .engineManger(manager)
                 .runtime(new Supplier<ScriptRuntime>() {
 
@@ -81,6 +81,10 @@ public class AutoJs implements AccessibilityBridge {
 
     public AccessibilityActionRecorder getAccessibilityActionRecorder() {
         return mAccessibilityActionRecorder;
+    }
+
+    public UiHandler getUiHandler() {
+        return mUiHandler;
     }
 
     public LayoutInspector getLayoutInspector() {

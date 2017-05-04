@@ -7,13 +7,14 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.scripts.PathChecker;
+import com.stardust.scriptdroid.script.PathChecker;
 import com.stardust.autojs.script.FileScriptSource;
-import com.stardust.autojs.script.MultiScriptSource;
+import com.stardust.autojs.script.ScriptSourceWithInit;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.script.Scripts;
 
 /**
  * Created by Stardust on 2017/2/22.
@@ -40,10 +41,10 @@ public class RunIntentActivity extends Activity {
         if (path == null && script != null) {
             source = new StringScriptSource(script);
         } else if (path != null && new PathChecker(this).checkAndToastError(path)) {
-            source = new MultiScriptSource(new StringScriptSource(script), new FileScriptSource(path));
+            source = new ScriptSourceWithInit(new StringScriptSource(script), new FileScriptSource(path));
         }
         if (source != null) {
-            AutoJs.getInstance().getScriptEngineService().execute(source);
+            Scripts.run(source);
         }
     }
 

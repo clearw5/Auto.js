@@ -10,8 +10,8 @@ import android.view.MenuItem;
 
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.CommonUtils;
-import com.stardust.scriptdroid.scripts.ScriptFile;
-import com.stardust.scriptdroid.scripts.StorageScriptProvider;
+import com.stardust.scriptdroid.script.ScriptFile;
+import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.main.script_list.ScriptAndFolderListRecyclerView;
 import com.stardust.scriptdroid.ui.main.script_list.ScriptListWithProgressBarView;

@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.scripts;
+package com.stardust.scriptdroid.script;
 
 import android.os.Environment;
 
@@ -6,7 +6,6 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.util.FileSorter;
 import com.stardust.util.LimitedHashMap;
-import com.stardust.util.MapEntries;
 
 import org.greenrobot.eventbus.EventBus;
 

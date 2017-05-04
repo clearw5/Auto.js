@@ -1,8 +1,7 @@
-package com.stardust.scriptdroid.scripts;
+package com.stardust.scriptdroid.script;
 
 import android.os.Environment;
 
-import com.android.dex.util.FileUtils;
 import com.stardust.pio.PFile;
 
 import java.io.File;

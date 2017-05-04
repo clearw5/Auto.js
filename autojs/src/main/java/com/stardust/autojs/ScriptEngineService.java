@@ -147,10 +147,9 @@ public class ScriptEngineService {
     @Subscribe
     public void onScriptExecution(ScriptExecutionEvent event) {
         if (event.getCode() == ScriptExecutionEvent.ON_START) {
-            mGlobalConsole.verbose(DateFormat.getTimeInstance().format(new Date()) + " " + mContext.getString(R.string.text_start_running) + " " + event.getMessage());
+            mGlobalConsole.verbose(mContext.getString(R.string.text_start_running) + "[" + event.getMessage() + "]");
         } else if (event.getCode() == ScriptExecutionEvent.ON_EXCEPTION) {
             mUiHandler.toast(mContext.getString(R.string.text_error) + ": " + event.getMessage());
-            mGlobalConsole.error(event.getMessage());
         }
     }
 

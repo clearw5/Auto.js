@@ -86,7 +86,7 @@ public class InputEventToJsConverter extends InputEventConverter {
         }
 
         private void appendCodeIfNotStopped(Event event) {
-            if (!mStarted)
+            if (!mConverting)
                 return;
             long interval = (long) (1000 * (event.time - mTouchTime));
             mCode.append("sh.Swipe(")
@@ -115,20 +115,12 @@ public class InputEventToJsConverter extends InputEventConverter {
             if (event.code.equals("BTN_TOUCH")) {
                 mTouchDown = event.value.equals("DOWN");
                 if (!mTouchDown && mSwipe) {
-                    if (mStarted)
+                    if (mConverting)
                         mCode.append("sh.Tap(").append(mLastTouchPoint.x).append(", ").append(mLastTouchPoint.y).append(");\n");
                     mSwipe = false;
                 }
             } else if (event.value.equals("UP")) {
-                if (!mStarted && event.code.equals(mStartTriggerKey)) {
-                    mStarted = true;
-                    notifyRecordStarted();
-                } else if (mStarted && event.code.equals(mStopTriggerKey)) {
-                    mStarted = false;
-                    notifyRecordStopped();
-                } else {
                     appendKeyPressCode(event);
-                }
             }
         }
 
@@ -141,7 +133,6 @@ public class InputEventToJsConverter extends InputEventConverter {
     }
 
     private EventHandler mEventHandler = new TypeRouter();
-    private String mStartTriggerKey, mStopTriggerKey;
     private StringBuilder mCode = new StringBuilder().append("var sh = new Shell(true);\n");
     private Point mTouchPoint = new Point(), mLastTouchPoint = new Point();
     private boolean mTouchDown = false, mSwipe = false;
@@ -149,7 +140,7 @@ public class InputEventToJsConverter extends InputEventConverter {
 
 
     @Override
-    public void addEvent(@NonNull Event event) {
+    public void convertEvent(@NonNull Event event) {
         mEventHandler.handle(event);
     }
 
@@ -161,14 +152,6 @@ public class InputEventToJsConverter extends InputEventConverter {
 
     public String getCode() {
         return mCode.toString();
-    }
-
-    public void setStartTriggerKey(String startTriggerKey) {
-        mStartTriggerKey = startTriggerKey;
-    }
-
-    public void setStopTriggerKey(String stopTriggerKey) {
-        mStopTriggerKey = stopTriggerKey;
     }
 
 

@@ -27,7 +27,8 @@ import com.stardust.autojs.script.JsBeautifier;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.scripts.ScriptFile;
+import com.stardust.scriptdroid.script.ScriptFile;
+import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.tool.JsBeautifierFactory;
 import com.stardust.scriptdroid.tool.MaterialDialogFactory;
 import com.stardust.scriptdroid.ui.BaseActivity;
@@ -35,7 +36,6 @@ import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhanceBar;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Utils;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
-import com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.SparseArrayEntries;
@@ -44,11 +44,6 @@ import com.stardust.view.ViewBinding;
 import com.stardust.widget.ToolbarMenuItem;
 
 import java.io.File;
-
-import timber.log.Timber;
-
-import static com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation.ACTION_ON_RUN_FINISHED;
-import static com.stardust.scriptdroid.ui.main.operation.ScriptFileOperation.EXTRA_EXCEPTION_MESSAGE;
 
 /**
  * Created by Stardust on 2017/1/29.
@@ -83,6 +78,7 @@ public class EditActivity extends Editor920Activity {
         }
     }
 
+
     public static final String EXTRA_CONTENT = "Still Love Eating 17.4.5";
 
     public static void editFile(Context context, String path) {
@@ -109,13 +105,12 @@ public class EditActivity extends Editor920Activity {
     private BroadcastReceiver mOnRunFinishedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(ACTION_ON_RUN_FINISHED)) {
+            if (intent.getAction().equals(Scripts.ACTION_ON_EXECUTION_FINISHED)) {
                 mScriptExecution = null;
                 setMenuStatus(R.id.run, MenuDef.STATUS_NORMAL);
-                String msg = intent.getStringExtra(EXTRA_EXCEPTION_MESSAGE);
+                String msg = intent.getStringExtra(Scripts.EXTRA_EXCEPTION_MESSAGE);
                 if (msg != null) {
                     Snackbar.make(mView, getString(R.string.text_error) + ": " + msg, Snackbar.LENGTH_LONG).show();
-                    Timber.e(msg);
                 }
             }
         }
@@ -131,7 +126,7 @@ public class EditActivity extends Editor920Activity {
         handleIntent(getIntent());
         setUpUI();
         setUpEditor();
-        registerReceiver(mOnRunFinishedReceiver, new IntentFilter(ACTION_ON_RUN_FINISHED));
+        registerReceiver(mOnRunFinishedReceiver, new IntentFilter(Scripts.ACTION_ON_EXECUTION_FINISHED));
     }
 
     private void handleIntent(Intent intent) {
@@ -212,11 +207,12 @@ public class EditActivity extends Editor920Activity {
         Snackbar.make(mView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         setMenuStatus(R.id.run, MenuDef.STATUS_DISABLED);
         if (mFile != null) {
-            mScriptExecution = ScriptFileOperation.runOnEditView(new FileScriptSource(mName, mFile));
+            mScriptExecution = Scripts.runWithBroadcastSender(new FileScriptSource(mName, mFile));
         } else {
-            mScriptExecution = ScriptFileOperation.runOnEditView(new StringScriptSource(mName, mEditorDelegate.getText()));
+            mScriptExecution = Scripts.runWithBroadcastSender(new StringScriptSource(mName, mEditorDelegate.getText()));
         }
     }
+
 
     @ViewBinding.Click(R.id.undo)
     private void undo() {
@@ -266,6 +262,9 @@ public class EditActivity extends Editor920Activity {
             case R.id.action_console:
                 showConsole();
                 return true;
+            case R.id.action_log:
+                showLog();
+                return true;
             case R.id.action_help:
                 HelpCatalogueActivity.showMainCatalogue(this);
                 return true;
@@ -282,11 +281,13 @@ public class EditActivity extends Editor920Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void showLog() {
+        AutoJs.getInstance().getScriptEngineService().getGlobalConsole().show();
+    }
+
     private void showConsole() {
         if (mScriptExecution != null) {
             mScriptExecution.getRuntime().console.show();
-        } else {
-            AutoJs.getInstance().getScriptEngineService().getGlobalConsole().show();
         }
     }
 
@@ -298,8 +299,7 @@ public class EditActivity extends Editor920Activity {
 
     private void openByOtherApps() {
         if (mFile != null)
-            ScriptFileOperation.openByOtherApps(mFile.getPath());
-
+            Scripts.openByOtherApps(mFile);
     }
 
     private void beautifyCode() {

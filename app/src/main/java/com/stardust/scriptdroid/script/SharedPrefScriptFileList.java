@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.scripts;
+package com.stardust.scriptdroid.script;
 
 import android.content.Context;
 import android.content.SharedPreferences;

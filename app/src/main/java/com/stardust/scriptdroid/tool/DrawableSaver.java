@@ -76,13 +76,13 @@ public abstract class DrawableSaver {
 
     }
 
-    public void select(Activity activity, final OnActivityResultDelegate.Intermediary intermediary) {
-        new ImageSelector(activity, intermediary, new ImageSelector.ImageSelectorCallback() {
+    public void select(Activity activity, final OnActivityResultDelegate.Mediator mediator) {
+        new ImageSelector(activity, mediator, new ImageSelector.ImageSelectorCallback() {
             @Override
             public void onImageSelected(ImageSelector selector, InputStream inputStream) {
                 if (inputStream != null)
                     setDrawable(inputStream);
-                intermediary.removeDelegate(selector);
+                mediator.removeDelegate(selector);
             }
         }).select();
     }

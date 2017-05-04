@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.scripts.sample;
+package com.stardust.scriptdroid.script.sample;
 
 import android.content.Context;
 import android.content.res.AssetManager;

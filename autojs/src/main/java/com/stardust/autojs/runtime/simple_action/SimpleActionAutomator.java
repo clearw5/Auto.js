@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.stardust.autojs.runtime.AbstractScriptRuntime;
 import com.stardust.autojs.runtime.AccessibilityBridge;
 import com.stardust.autojs.runtime.JavascriptInterface;
 import com.stardust.autojs.runtime.ScriptRuntime;
@@ -45,9 +46,9 @@ public class SimpleActionAutomator {
     }
 
     private AccessibilityBridge mAccessibilityBridge;
-    private ScriptRuntime mScriptRuntime;
+    private AbstractScriptRuntime mScriptRuntime;
 
-    public SimpleActionAutomator(AccessibilityBridge accessibilityBridge, ScriptRuntime scriptRuntime) {
+    public SimpleActionAutomator(AccessibilityBridge accessibilityBridge, AbstractScriptRuntime scriptRuntime) {
         mAccessibilityBridge = accessibilityBridge;
         mScriptRuntime = scriptRuntime;
     }
