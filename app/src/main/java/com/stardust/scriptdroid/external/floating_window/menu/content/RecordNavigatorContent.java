@@ -66,7 +66,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
             if (Pref.isRecordVolumeControlEnable()) {
                 if (mRecorder == null) {
                     startRecord();
-                } else if (mRecorder.getState() == Recorder.STATE_RECORDING) {
+                } else if (alreadyStartedRecord()) {
                     stopRecord();
                 }
             }
@@ -211,12 +211,16 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     @Override
     public void onKeyDown(String keyName) {
         if (keyName.equals(Pref.getStopRecordTrigger())) {
-            if (mRecorder != null && mRecorder.getState() == Recorder.STATE_RECORDING && mRecorder.getState() == Recorder.STATE_PAUSED)
+            if (alreadyStartedRecord())
                 stopRecord();
         } else if (keyName.equals(Pref.getStartRecordTrigger())) {
             if (mRecorder == null)
                 startRecord();
         }
+    }
+
+    private boolean alreadyStartedRecord() {
+        return mRecorder != null && mRecorder.getState() == Recorder.STATE_RECORDING && mRecorder.getState() == Recorder.STATE_PAUSED;
     }
 
     @Override

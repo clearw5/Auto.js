@@ -7,10 +7,16 @@ import android.util.Log;
 
 import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.autojs.runtime.api.AbstractShell;
+import com.stardust.lang.ThreadCompat;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 
 import jackpal.androidterm.ShellTermSession;
 import jackpal.androidterm.emulatorview.TermSession;
@@ -22,19 +28,23 @@ import jackpal.androidterm.util.TermSettings;
 
 public class Shell extends AbstractShell implements AutoCloseable {
 
-    public interface OutputListener {
-        void onNewOutput(String str);
+    public interface Callback {
+        void onNewLine(String str);
+
+        void onInitialized();
+
+        void onInterrupted(InterruptedException e);
     }
 
     private static final String TAG = "Shell";
 
     private TermSession mTermSession;
-    private RuntimeException mInitException;
     private final Object mInitLock = new Object();
     private final Object mExitLock = new Object();
-    private boolean mInitialized = false;
-    private boolean mWaitingExit = false;
-    private OutputListener mOutputListener;
+    private volatile RuntimeException mInitException;
+    private volatile boolean mInitialized = false;
+    private volatile boolean mWaitingExit = false;
+    private Callback mCallback;
 
     public Shell() {
         super();
@@ -69,8 +79,12 @@ public class Shell extends AbstractShell implements AutoCloseable {
         mTermSession.write(command + "\n");
     }
 
-    public void setOutputListener(OutputListener outputListener) {
-        mOutputListener = outputListener;
+    public void setCallback(Callback callback) {
+        mCallback = callback;
+    }
+
+    public boolean isInitialized() {
+        return mInitialized;
     }
 
     private void ensureInitialized() {
@@ -97,9 +111,17 @@ public class Shell extends AbstractShell implements AutoCloseable {
             try {
                 mInitLock.wait();
             } catch (InterruptedException e) {
-                exit();
-                throw new ScriptInterruptedException();
+                onInterrupted(e);
             }
+        }
+    }
+
+    private void onInterrupted(InterruptedException e) {
+        if (mCallback == null) {
+            exit();
+            throw new ScriptInterruptedException();
+        } else {
+            mCallback.onInterrupted(e);
         }
     }
 
@@ -124,8 +146,7 @@ public class Shell extends AbstractShell implements AutoCloseable {
             try {
                 mExitLock.wait();
             } catch (InterruptedException e) {
-                exit();
-                throw new ScriptInterruptedException();
+                onInterrupted(e);
             }
         }
     }
@@ -137,30 +158,64 @@ public class Shell extends AbstractShell implements AutoCloseable {
 
     private class MyShellTermSession extends ShellTermSession {
 
+        private BufferedReader mBufferedReader;
+        private OutputStream mOutputStream;
+        private Thread mReadingThread;
+
         public MyShellTermSession(TermSettings settings, String initialCommand) throws IOException {
             super(settings, initialCommand);
+            PipedInputStream pipedInputStream = new PipedInputStream(8192);
+            mBufferedReader = new BufferedReader(new InputStreamReader(pipedInputStream));
+            mOutputStream = new PipedOutputStream(pipedInputStream);
+            startReadingThread();
         }
 
-        @Override
-        protected void processInput(byte[] data, int offset, int count) {
-            String output = new String(data, offset, count);
-            Log.d(TAG, output);
-            if(mOutputListener != null){
-                mOutputListener.onNewOutput(output);
-            }
-            if (mInitialized && !mWaitingExit) {
-                return;
-            }
-            String[] lines = new String(data, offset, count).split("\n");
-            for (String line : lines) {
-                if (!mInitialized && line.endsWith(" # ")) {
+        private void startReadingThread() {
+            mReadingThread = new ThreadCompat(new Runnable() {
+                @Override
+                public void run() {
+                    String line;
+                    try {
+                        while (!Thread.currentThread().isInterrupted()
+                                && (line = mBufferedReader.readLine()) != null) {
+                            onNewLine(line);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            mReadingThread.start();
+        }
+
+        private void onNewLine(String line) {
+            Log.d(TAG, line);
+            if (mInitialized) {
+                if (mCallback != null) {
+                    mCallback.onNewLine(line);
+                }
+            } else {
+                if (isRoot() && line.endsWith(" $ su")) {
                     notifyInitialized();
                     return;
                 }
-                if (mWaitingExit && line.endsWith(" $ ")) {
-                    notifyExit();
+                if (!isRoot() && line.endsWith(" $ ")) {
+                    notifyInitialized();
                     return;
                 }
+            }
+            if (mWaitingExit && line.endsWith(" exit")) {
+                notifyExit();
+            }
+        }
+
+
+        @Override
+        protected void processInput(byte[] data, int offset, int count) {
+            try {
+                mOutputStream.write(data, offset, count);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
         }
 
@@ -176,6 +231,9 @@ public class Shell extends AbstractShell implements AutoCloseable {
             synchronized (mInitLock) {
                 mInitLock.notifyAll();
             }
+            if (mCallback != null) {
+                mCallback.onInitialized();
+            }
         }
 
         @Override
@@ -184,6 +242,18 @@ public class Shell extends AbstractShell implements AutoCloseable {
             synchronized (mExitLock) {
                 mWaitingExit = false;
                 mExitLock.notify();
+            }
+        }
+
+        @Override
+        public void finish() {
+            super.finish();
+            mReadingThread.interrupt();
+            try {
+                mBufferedReader.close();
+                mOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.autojs.Shell;
 import com.stardust.scriptdroid.record.Recorder;
 
 import java.io.BufferedReader;
@@ -22,12 +23,13 @@ import jackpal.androidterm.util.TermSettings;
  * Created by Stardust on 2017/3/6.
  */
 
-public  class InputEventRecorder extends Recorder.AbstractRecorder {
+public class InputEventRecorder extends Recorder.AbstractRecorder {
 
     private static final String TAG = "InputEventRecorder";
-    private TermSession mTermSession;
     private String mGetEventCommand;
+    private Shell mShell;
     protected InputEventConverter mInputEventConverter;
+
 
     protected InputEventRecorder(InputEventConverter inputEventConverter) {
         mGetEventCommand = inputEventConverter.getGetEventCommand();
@@ -35,14 +37,25 @@ public  class InputEventRecorder extends Recorder.AbstractRecorder {
     }
 
     public void listen() {
-        TermSettings settings = new TermSettings(App.getApp().getResources(), PreferenceManager.getDefaultSharedPreferences(App.getApp()));
-        try {
-            mTermSession = new MyShellTermSession(settings, "su");
-            mTermSession.initializeEmulator(80, 40);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        mShell = new Shell(true);
+        mShell.setCallback(new Shell.Callback() {
+            @Override
+            public void onNewLine(String str) {
+                if (mShell.isInitialized()) {
+                    convertEvent(str);
+                }
+            }
 
+            @Override
+            public void onInitialized() {
+                mShell.exec(mGetEventCommand);
+            }
+
+            @Override
+            public void onInterrupted(InterruptedException e) {
+                stop();
+            }
+        });
     }
 
     @Override
@@ -62,7 +75,7 @@ public  class InputEventRecorder extends Recorder.AbstractRecorder {
 
     @Override
     protected void stopImpl() {
-        mTermSession.finish();
+        mShell.exit();
         mInputEventConverter.stop();
     }
 
@@ -75,70 +88,4 @@ public  class InputEventRecorder extends Recorder.AbstractRecorder {
         mInputEventConverter.convertEventIfFormatCorrect(eventStr);
     }
 
-    private class MyShellTermSession extends ShellTermSession {
-
-        private volatile boolean mGettingEvents = false;
-
-        private BufferedReader mBufferedReader;
-        private OutputStream mOutputStream;
-        private Thread mReadingThread;
-
-        public MyShellTermSession(TermSettings settings, String initialCommand) throws IOException {
-            super(settings, initialCommand);
-            PipedInputStream pipedInputStream = new PipedInputStream(8192);
-            mBufferedReader = new BufferedReader(new InputStreamReader(pipedInputStream));
-            mOutputStream = new PipedOutputStream(pipedInputStream);
-            startReadingThread();
-        }
-
-        private void startReadingThread() {
-            mReadingThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    String line;
-                    try {
-                        while (!Thread.currentThread().isInterrupted()
-                                && (line = mBufferedReader.readLine()) != null){
-                            onNewLine(line);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            mReadingThread.start();
-        }
-
-        private void onNewLine(String line) {
-            Log.d(TAG, line);
-            if (!mGettingEvents && line.endsWith(" $ su")) {
-                mTermSession.write(mGetEventCommand + "\r");
-                mGettingEvents = true;
-            } else if (mGettingEvents) {
-                convertEvent(line);
-            }
-        }
-
-
-        @Override
-        protected void processInput(byte[] data, int offset, int count) {
-            try {
-                mOutputStream.write(data, offset, count);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        @Override
-        public void finish() {
-            super.finish();
-            mReadingThread.interrupt();
-            try {
-                mBufferedReader.close();
-                mOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }

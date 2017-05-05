@@ -3,13 +3,13 @@ def AAVersion = '4.2.0'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 119
-        versionName "2.0.8 Beta"
+        versionCode 120
+        versionName "2.0.9 Beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -49,6 +49,9 @@ android {
         pickFirst 'org/mozilla/javascript/*.java.orig'
         pickFirst 'org/mozilla/javascript/tools/resources/*.properties'
     }
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
+    }
 }
 
 repositories {
@@ -58,13 +61,16 @@ repositories {
 }
 
 dependencies {
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
     testCompile 'junit:junit:4.12'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    annotationProcessor "org.androidannotations:androidannotations:$AAVersion"
-    compile "org.androidannotations:androidannotations-api:$AAVersion"
-    compile 'com.android.support:appcompat-v7:25.1.0'
+    annotationProcessor 'com.pushtorefresh.storio:sqlite-annotations-processor:1.12.3'
+    compile 'com.pushtorefresh.storio:sqlite-annotations:1.12.3'
+    compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'com.android.support:design:25.1.0'
     compile 'com.github.hyb1996:MutableTheme:0.2.2'
     compile 'com.afollestad.material-dialogs:core:0.9.2.3'
@@ -85,6 +91,7 @@ dependencies {
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.github.hyb1996:EnhancedFloaty:0.15'
     compile 'com.flurry.android:analytics:7.0.0@aar'
+    compile 'com.pushtorefresh.storio:sqlite:1.12.3'
     compile 'com.android.support:multidex:1.0.1'
     compile(name: 'libtermexec-release', ext: 'aar')
     compile(name: 'emulatorview-release', ext: 'aar')

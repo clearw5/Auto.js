@@ -13,6 +13,7 @@ import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.app.VolumeChangeObserver;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.stardust.scriptdroid.statics.ScriptStatics;
 import com.stardust.scriptdroid.tool.CrashHandler;
 import com.stardust.scriptdroid.tool.JsBeautifierFactory;
 import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
@@ -49,9 +50,7 @@ public class App extends MultiDexApplication {
     }
 
     private void setUpStaticsTool() {
-        new FlurryAgent.Builder()
-                .withLogEnabled(true)
-                .build(this, "D42MH48ZN4PJC5TKNYZD");
+        ScriptStatics.init(this);
     }
 
 
@@ -91,7 +90,6 @@ public class App extends MultiDexApplication {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
                 super.onActivityCreated(activity, savedInstanceState);
-                FlurryAgent.logEvent(activity.getClass().getSimpleName());
             }
 
             @Override

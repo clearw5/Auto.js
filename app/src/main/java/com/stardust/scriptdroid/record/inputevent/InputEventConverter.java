@@ -9,6 +9,7 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.record.Recorder;
+import com.stardust.util.MapEntries;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -72,9 +73,9 @@ public abstract class InputEventConverter {
     private int mState = Recorder.STATE_NOT_START;
 
     public void convertEventIfFormatCorrect(String eventStr) {
-        if(!mConverting)
+        if (!mConverting)
             return;
-        if(TextUtils.isEmpty(eventStr) || !eventStr.startsWith("["))
+        if (TextUtils.isEmpty(eventStr) || !eventStr.startsWith("["))
             return;
         Event event = parseEventOrNull(eventStr);
         if (event != null) {
@@ -94,7 +95,7 @@ public abstract class InputEventConverter {
         mState = Recorder.STATE_RECORDING;
     }
 
-    public void resume(){
+    public void resume() {
         mConverting = true;
         mState = Recorder.STATE_RECORDING;
     }
@@ -118,10 +119,12 @@ public abstract class InputEventConverter {
             return Event.parseEvent(eventStr);
         } catch (EventFormatException e) {
             e.printStackTrace();
-            if(mFirstEventFormatError){
+            if (mFirstEventFormatError) {
                 Toast.makeText(App.getApp(), R.string.text_record_format_error, Toast.LENGTH_SHORT).show();
                 mFirstEventFormatError = false;
-                FlurryAgent.logEvent("EventFormatException:" + e.getMessage());
+                FlurryAgent.logEvent("EventFormatException", new MapEntries<String, String>()
+                        .entry("message", e.getMessage())
+                        .map());
             }
             return null;
         }
