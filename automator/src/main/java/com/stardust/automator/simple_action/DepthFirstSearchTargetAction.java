@@ -30,8 +30,6 @@ public class DepthFirstSearchTargetAction extends SearchTargetAction {
             UiObject node = searchTarget(child);
             if (node != null)
                 return node;
-            else
-                child.recycle();
         }
         return null;
     }

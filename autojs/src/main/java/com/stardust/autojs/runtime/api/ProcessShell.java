@@ -61,22 +61,22 @@ public class ProcessShell extends AbstractShell implements AutoCloseable {
 
     @Override
     public void exit() {
-        if(mProcess != null) {
+        if (mProcess != null) {
             mProcess.destroy();
             mProcess = null;
         }
-        if(mSucceedReader != null){
-            try{
+        if (mSucceedReader != null) {
+            try {
                 mSucceedReader.close();
-            }catch (IOException ignored){
+            } catch (IOException ignored) {
 
             }
             mSucceedReader = null;
         }
-        if(mErrorReader != null){
-            try{
+        if (mErrorReader != null) {
+            try {
                 mErrorReader.close();
-            }catch (IOException ignored){
+            } catch (IOException ignored) {
 
             }
             mErrorReader = null;
@@ -158,8 +158,8 @@ public class ProcessShell extends AbstractShell implements AutoCloseable {
     }
 
     public static Result exec(String[] commands, boolean isRoot) {
-        try(ProcessShell shell = new ProcessShell(isRoot)){
-            for(String command : commands){
+        try (ProcessShell shell = new ProcessShell(isRoot)) {
+            for (String command : commands) {
                 shell.exec(command);
             }
             shell.exec(COMMAND_EXIT);
@@ -172,5 +172,6 @@ public class ProcessShell extends AbstractShell implements AutoCloseable {
             return result;
         }
     }
+
 
 }

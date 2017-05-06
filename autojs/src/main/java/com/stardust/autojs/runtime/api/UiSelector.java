@@ -65,7 +65,7 @@ public class UiSelector extends UiGlobalSelector {
         public void execute(AccessibilityService service, AccessibilityEvent event) {
             AccessibilityNodeInfo root = service.getRootInActiveWindow();
             if (root != null) {
-                result = findOf(new UiObject(root, mAllocator));
+                result = findOf(UiObject.createRoot(root, mAllocator));
             }
         }
 
@@ -96,7 +96,7 @@ public class UiSelector extends UiGlobalSelector {
         if (service != null) {
             AccessibilityNodeInfo root = service.getRootInActiveWindow();
             if (root != null) {
-                return findOf(new UiObject(root, mAllocator));
+                return findOf(UiObject.createRoot(root, mAllocator));
             }
         }
         return null;

@@ -123,13 +123,11 @@ public class AccessibilityActionConverter {
             AccessibilityNodeInfo source = event.getSource();
             if (source == null)
                 return;
-            AccessibilityNodeInfoAllocator allocator = new AccessibilityNodeInfoAllocator();
-            UiObject uiObject = new UiObject(service.getRootInActiveWindow(), allocator);
+            UiObject uiObject = UiObject.createRoot(service.getRootInActiveWindow());
             List<UiObject> editableList = FilterAction.EditableFilter.findEditable(uiObject);
             int i = findInEditableList(editableList, source);
             sb.append("while(!input(").append(i).append(", \"").append(source.getText()).append("\"));");
             source.recycle();
-            allocator.recycleAll();
         }
 
         private static int findInEditableList(List<UiObject> editableList, AccessibilityNodeInfo editable) {

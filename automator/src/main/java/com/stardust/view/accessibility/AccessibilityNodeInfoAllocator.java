@@ -106,7 +106,7 @@ public class AccessibilityNodeInfoAllocator {
         return notRecycledCount;
     }
 
-    private AccessibilityNodeInfo add(@Nullable AccessibilityNodeInfo nodeInfo) {
+    public AccessibilityNodeInfo add(@Nullable AccessibilityNodeInfo nodeInfo) {
         String stackTrace = DEBUG ? Arrays.toString(Thread.currentThread().getStackTrace()) : null;
         if (nodeInfo != null)
             mAccessibilityNodeInfoList.put(nodeInfo, stackTrace);

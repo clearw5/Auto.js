@@ -1,26 +1,15 @@
 package com.stardust.scriptdroid.ui;
 
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.flurry.android.FlurryAgent;
-import com.stardust.pio.PFile;
-import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.tool.UpdateChecker;
 import com.stardust.scriptdroid.tool.VersionInfo;
-import com.stardust.scriptdroid.ui.update.UpdateCheckDialog;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.BackPressedHandler;
 

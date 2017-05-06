@@ -77,8 +77,6 @@ public abstract class FilterAction extends SimpleAction {
                 UiObject nodeInfo = findAccessibilityNodeInfosByBounds(child);
                 if (nodeInfo != null)
                     return nodeInfo;
-                else
-                    child.recycle();
             }
             return null;
         }

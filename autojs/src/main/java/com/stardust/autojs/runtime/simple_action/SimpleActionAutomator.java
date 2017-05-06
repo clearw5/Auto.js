@@ -200,7 +200,7 @@ public class SimpleActionAutomator {
         if (root == null)
             return false;
         Log.v(TAG, "performAction: " + simpleAction + " root = " + root);
-        return simpleAction.perform(new UiObject(root));
+        return simpleAction.perform(UiObject.createRoot(root));
     }
 
     private boolean isRunningPackageSelf() {

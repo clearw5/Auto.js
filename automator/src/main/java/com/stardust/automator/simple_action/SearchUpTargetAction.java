@@ -25,7 +25,6 @@ public class SearchUpTargetAction extends SearchTargetAction {
         while (node != null && !mAble.isAble(node)) {
             i++;
             if (i > LOOP_MAX) {
-                node.recycle();
                 return null;
             }
             node = node.parent();

@@ -1,6 +1,5 @@
 package com.stardust.scriptdroid.autojs;
 
-import com.flurry.android.FlurryAgent;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.scriptdroid.App;

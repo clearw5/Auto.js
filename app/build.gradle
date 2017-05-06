@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.getkeepsafe.dexcount'
 def AAVersion = '4.2.0'
 
 android {
@@ -48,6 +49,20 @@ android {
         pickFirst 'org/mozilla/javascript/resources/Messages.properties'
         pickFirst 'org/mozilla/javascript/*.java.orig'
         pickFirst 'org/mozilla/javascript/tools/resources/*.properties'
+    }
+    dexcount {
+        format = "list"
+        includeClasses = false
+        includeFieldCount = true
+        includeTotalMethodCount = false
+        orderByMethodCount = false
+        verbose = false
+        maxTreeDepth = Integer.MAX_VALUE
+        teamCityIntegration = false
+        enableForInstantRun = false
+        teamCitySlug = null
+        runOnEachAssemble = true
+        maxMethodCount = 64000
     }
     configurations.all {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'

@@ -2,6 +2,8 @@ package com.stardust.automator;
 
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.util.Pools;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -9,6 +11,8 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 import com.stardust.view.accessibility.AccessibilityNodeInfoHelper;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,27 +34,62 @@ public class UiObject extends AccessibilityNodeInfoCompat {
 
     private static final String TAG = "UiObject";
     private static final boolean DEBUG = false;
+    private static int notRecycledCount = 0;
+
+    public static UiObject createRoot(AccessibilityNodeInfo root) {
+        return new UiObject(root, null, true);
+    }
+
+    public static UiObject createRoot(AccessibilityNodeInfo root, AccessibilityNodeInfoAllocator allocator) {
+        return new UiObject(root, allocator, true);
+    }
+
 
     private AccessibilityNodeInfoAllocator mAllocator = null;
     private String mStackTrace = "";
+    private boolean mIsRootNode = false;
 
     public UiObject(Object info) {
         this(info, null);
     }
 
-    public UiObject(Object info, AccessibilityNodeInfoAllocator allocator) {
+    public UiObject(Object info, AccessibilityNodeInfoAllocator allocator, boolean isRootNode) {
         super(info);
+        mIsRootNode = isRootNode;
         mAllocator = allocator;
         if (DEBUG)
             mStackTrace = Arrays.toString(Thread.currentThread().getStackTrace());
     }
 
-    public UiObject parent() {
-        return new UiObject(getParent().getInfo());
+    public UiObject(Object info, AccessibilityNodeInfoAllocator allocator) {
+        this(info, allocator, false);
     }
 
+    @Nullable
+    public UiObject parent() {
+        try {
+            AccessibilityNodeInfoCompat parent = super.getParent();
+            if (parent == null)
+                return null;
+            return new UiObject(parent.getInfo());
+        } catch (IllegalStateException e) {
+            // FIXME: 2017/5/5
+            return null;
+        }
+    }
+
+    @Nullable
     public UiObject child(int i) {
-        return new UiObject(getChild(i).getInfo());
+        try {
+            AccessibilityNodeInfoCompat child = super.getChild(i);
+            if (child == null)
+                return null;
+            return new UiObject(child.getInfo());
+        } catch (IllegalStateException e) {
+            // FIXME: 2017/5/5
+            return null;
+        }
+
     }
 
     public UiObjectCollection find(UiGlobalSelector selector) {
@@ -108,6 +147,31 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     public boolean performAction(int action, ActionArgument... arguments) {
         Bundle bundle = argumentsToBundle(arguments);
         return performAction(action, bundle);
+    }
+
+    @Override
+    public boolean performAction(int action, Bundle bundle) {
+        try {
+            return super.performAction(action);
+        } catch (IllegalStateException e) {
+            // FIXME: 2017/5/5
+            return false;
+        }
+    }
+
+    @Override
+    public boolean performAction(int action) {
+        try {
+            return super.performAction(action);
+        } catch (IllegalStateException e) {
+            // FIXME: 2017/5/5
+            return false;
+        }
+    }
+
+
+    public AccessibilityNodeInfoAllocator getAllocator() {
+        return mAllocator;
     }
 
     private static Bundle argumentsToBundle(ActionArgument[] arguments) {
@@ -263,7 +327,8 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     public static List<UiObject> compatListToUiObjectList(List<AccessibilityNodeInfoCompat> compats, AccessibilityNodeInfoAllocator allocator) {
         List<UiObject> uiObjects = new ArrayList<>(compats.size());
         for (AccessibilityNodeInfoCompat compat : compats) {
-            uiObjects.add(new UiObject(compat.getInfo(), allocator));
+            if (compat != null)
+                uiObjects.add(new UiObject(compat.getInfo(), allocator));
         }
         return uiObjects;
     }
@@ -281,12 +346,5 @@ public class UiObject extends AccessibilityNodeInfoCompat {
         }
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            super.recycle();
-        } catch (Exception ignored) {
-        }
-        super.finalize();
-    }
+
 }

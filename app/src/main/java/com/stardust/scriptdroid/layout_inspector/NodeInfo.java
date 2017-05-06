@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+import com.stardust.automator.UiObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,17 +74,22 @@ public class NodeInfo {
         this(new AccessibilityNodeInfoCompat(node));
     }
 
-    public static NodeInfo capture(@NonNull AccessibilityNodeInfo root) {
-        AccessibilityNodeInfoAllocator allocator = new AccessibilityNodeInfoAllocator();
+
+    public static NodeInfo capture(@NonNull UiObject root) {
         NodeInfo nodeInfo = new NodeInfo(root);
-        for (int i = 0; i < root.getChildCount(); i++) {
-            AccessibilityNodeInfo child = allocator.getChild(root, i);
+        int childCount = root.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            UiObject child = root.child(i);
             if (child != null) {
                 nodeInfo.children.add(capture(child));
             }
         }
-        allocator.recycleAll();
         return nodeInfo;
+    }
+
+    public static NodeInfo capture(@NonNull AccessibilityNodeInfo root) {
+        UiObject r = UiObject.createRoot(root);
+        return capture(r);
     }
 
     public List<NodeInfo> getChildren() {

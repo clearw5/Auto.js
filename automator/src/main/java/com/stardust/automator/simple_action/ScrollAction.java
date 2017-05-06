@@ -34,24 +34,29 @@ public class ScrollAction extends SimpleAction {
 
     private List<UiObject> findScrollableNodes(UiObject root) {
         List<UiObject> list = new ArrayList<>();
-        findScrollableNodes(root, list);
+        if (root != null) {
+            findScrollableNodes(root, list);
+            if (root.isScrollable()) {
+                list.add(root);
+            }
+        }
         return list;
     }
 
-    private static boolean findScrollableNodes(UiObject node, List<UiObject> list) {
+    private static void findScrollableNodes(UiObject node, List<UiObject> list) {
         if (node == null) {
-            return false;
-        }
-        if (node.isScrollable()) {
-            list.add(node);
+            return;
         }
         for (int i = 0; i < node.getChildCount(); i++) {
             UiObject child = node.child(i);
             if (child == null)
                 continue;
-            if (!findScrollableNodes(child, list))
+            findScrollableNodes(child, list);
+            if (child.isScrollable()) {
+                list.add(child);
+            } else {
                 child.recycle();
+            }
         }
-        return node.isScrollable();
     }
 }

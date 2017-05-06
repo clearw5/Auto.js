@@ -79,7 +79,7 @@ public class SimpleActionPerformHost implements AccessibilityDelegate {
                 return;
             }
             Log.i(TAG, "perform simpleAction: " + mSimpleAction);
-            if (mSimpleAction.perform(new UiObject(mRoot))) {
+            if (mSimpleAction.perform(UiObject.createRoot(mRoot))) {
                 mSimpleAction.setResult(true);
                 onActionPerformed(mSimpleAction);
             }

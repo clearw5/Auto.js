@@ -5,6 +5,9 @@ import android.util.Log;
 
 import com.stardust.automator.UiObject;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by Stardust on 2017/1/27.
  */
@@ -15,6 +18,7 @@ public class ScrollMaxAction extends SimpleAction {
     private int mScrollAction;
     private UiObject mMaxScrollableNode;
     private UiObject mRootNode;
+    private Set<UiObject> mRecycledMaxUiObjects = new HashSet<>();
 
     public ScrollMaxAction(int scrollAction) {
         mScrollAction = scrollAction;
@@ -35,6 +39,7 @@ public class ScrollMaxAction extends SimpleAction {
             mMaxScrollableNode.recycle();
         }
         mMaxScrollableNode = mRootNode = null;
+        mRecycledMaxUiObjects.clear();
     }
 
     private void findMaxScrollableNodeInfo(UiObject nodeInfo) {
@@ -44,8 +49,10 @@ public class ScrollMaxAction extends SimpleAction {
             if (mMaxScrollableNode == null) {
                 mMaxScrollableNode = nodeInfo;
             } else if (getAreaInScreen(mMaxScrollableNode) < getAreaInScreen(nodeInfo)) {
-                if (mMaxScrollableNode != mRootNode)
+                if (mMaxScrollableNode != mRootNode) {
+                    mRecycledMaxUiObjects.add(mMaxScrollableNode);
                     mMaxScrollableNode.recycle();
+                }
                 mMaxScrollableNode = nodeInfo;
             }
         }
@@ -53,7 +60,7 @@ public class ScrollMaxAction extends SimpleAction {
             UiObject child = nodeInfo.child(i);
             if (child != null) {
                 findMaxScrollableNodeInfo(child);
-                if (mMaxScrollableNode != child) {
+                if (mMaxScrollableNode != child && !mRecycledMaxUiObjects.contains(child)) {
                     child.recycle();
                 }
             }

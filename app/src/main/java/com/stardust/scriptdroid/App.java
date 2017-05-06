@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.multidex.MultiDexApplication;
 
-import com.flurry.android.FlurryAgent;
 import com.squareup.leakcanary.LeakCanary;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.app.VolumeChangeObserver;

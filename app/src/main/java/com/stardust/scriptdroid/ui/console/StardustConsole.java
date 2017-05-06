@@ -2,11 +2,13 @@ package com.stardust.scriptdroid.ui.console;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.WindowManager;
 
 import com.stardust.autojs.runtime.api.AbstractConsole;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
+import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.util.UiHandler;
 
@@ -82,7 +84,12 @@ public class StardustConsole extends AbstractConsole {
         mUiHandler.post(new Runnable() {
             @Override
             public void run() {
-                FloatyService.addWindow(mFloatyWindow);
+                try {
+                    FloatyService.addWindow(mFloatyWindow);
+                } catch (WindowManager.BadTokenException e) {
+                    e.printStackTrace();
+                    mUiHandler.toast(R.string.text_no_floating_window_permission);
+                }
             }
         });
     }
