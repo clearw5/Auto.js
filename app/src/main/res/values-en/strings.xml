@@ -1,13 +1,9 @@
 <resources>
     <string name="_app_name">AutoJs</string>
     <string name="action_settings">Settings</string>
-    <string name="action_disable_service">Disable Service</string>
     <string name="text_accessibility_service_description">Required by the script automatic operation (click, long press, slide, etc.).</string>
     <string name="text_new_file">New File</string>
     <string name="text_import_from_file">Import File</string>
-    <string name="action_exit">Exit</string>
-    <string name="text_service_disabled">Service disabled.</string>
-    <string name="text_file_manager_not_found">No file explorer T.T</string>
     <string name="text_create_fail">Creation failed</string>
     <string name="text_please_input_name">Input name</string>
     <string name="text_name">Name</string>
@@ -41,11 +37,9 @@
     <string name="github">Source Code</string>
     <string name="text_already_copy_to_clip">Copied</string>
     <string name="donate_developer">Donate</string>
-    <string name="text_email">Email</string>
     <string name="my_github">https://github.com/hyb1996/NoRootScriptDroid</string>
     <string name="share_app">[UiAutomator]Download：http://www.coolapk.com/apk/com.stardust.scriptdroid </string>
     <string name="text_floating_window">Floating Window</string>
-    <string name="text_others">Others</string>
     <string name="text_error_report">Bug Report</string>
     <string name="text_press_again_to_exit">Press again to exit</string>
     <string name="text_common_function">Common using functions</string>
@@ -54,49 +48,36 @@
     <string name="text_start_running">Running</string>
     <string name="text_open_by_other_apps">Open by other apps</string>
     <string name="text_rename">Rename</string>
-    <string name="text_rename_file_meanwhile">Rename file</string>
-    <string name="text_please_input_new_name">Input new name</string>
     <string name="text_send_shortcut">Create shortcut</string>
     <string name="text_already_create">Created</string>
     <string name="text_delete">Delete</string>
-    <string name="text_delete_absolutly">Delete file</string>
     <string name="text_already_delete">Deleted</string>
-    <string name="text_delete_failed">File deletion failed</string>
-    <string name="text_choose_file">Choose a file</string>
     <string name="folder_name">/Scripts/</string>
     <string name="text_error">Error</string>
     <string name="text_load_failed">There is no documentation yet/(ㄒoㄒ)/~~</string>
     <string name="text_copy_debug_info">Copy debugging log</string>
     <string name="text_it_is_the_developer_of_app">This is a software developer(。・・)ノ</string>
     <string name="text_lll">lol</string>
-    <string name="text_choose_email_app">Choose a email application</string>
-    <string name="text_script_stopped">Script stopped</string>
     <string name="text_please_choose">Please choose </string>
     <string name="text_crash">Crash~ o(≧口≦)o</string>
     <string name="crash_feedback">(ಥ _ ಥ)Exit or submit a bug report or copy debugging log to the developer(≧∇≦)ﾉ</string>
-    <string name="text_fail">Failed</string>
     <string name="text_clear">Clear</string>
     <string name="text_console">Console</string>
     <string name="text_report_bug">Submit Bug report</string>
-    <string name="text_bug_report">Bug Report</string>
     <string name="text_report_fail">Submission Failed</string>
     <string name="text_report_succeed">Submitted successfully</string>
     <string name="edit_and_run_handle_intent_error">Cannot process file</string>
-    <string name="text_crash_en">Crash</string>
     <string name="text_issue_report">Feedback</string>
     <string name="text_script_record">Record touches</string>
     <string name="text_start_record">Start</string>
     <string name="text_stop_record">Stop</string>
-    <string name="text_not_recording">Recording is not started</string>
     <string name="text_pause_record">Pause</string>
     <string name="text_resume_record">Resume</string>
     <string name="text_recorded">Recording stopped</string>
     <string name="text_copy_to_clip">Copy</string>
     <string name="text_file_write_fail">File writing failed</string>
-    <string name="text_need_enable_accessibility_service_to_record">Need to enable the Accessibility Service</string>
     <string name="text_join_qq_group">Join in QQ Group</string>
     <string name="text_copied">Copied</string>
-    <string name="text_close">Close</string>
     <string name="text_use_volume_control_record">Use the volume keys to control</string>
     <string name="summary_use_volume_control_record">Stop or start recording when volume changes</string>
     <string name="key_use_volume_control_record">key_use_volume_control_record</string>
@@ -116,7 +97,6 @@
     <string name="text_select_image">Choose a picture</string>
     <string name="text_help">Help</string>
     <string name="text_no_floating_window_permission">No floating window permission</string>
-    <string name="text_node_info">Node info</string>
     <string name="text_layout_hierarchy">View layout hierarchy</string>
     <string name="text_layout_bounds">View layout bounds</string>
     <string name="text_no_accessibility_permission_to_capture">Accessibility service is not activated</string>
@@ -124,7 +104,6 @@
     <string name="text_my_script">My Scripts</string>
     <string name="hint_no_script">Click ADD to create your first script~(。・・)ノ</string>
     <string name="text_reset_background">Reset background settings</string>
-    <string name="text_restart_app_to_apply">Restart to apply</string>
     <string name="text_record_with_root">Recording with Rooting</string>
     <string name="text_record_msg">Recording Prompt</string>
     <string name="text_text_changed">Text Changed</string>
@@ -148,9 +127,6 @@
     <string name="key_use_volume_control_running">key_use_volume_control_running</string>
     <string name="text_use_volume_to_stop_running">Stop all scripts when volume changes</string>
     <string name="text_need_to_enable_accessibility_service">Need to enable Accessibility Service</string>
-    <string name="text_advanced">Advanced</string>
-    <string name="text_command_run_mode">Auto operation function running mode</string>
-    <string name="summary_command_run_mode">If the app responses slowly when running script, choose Thread Pool or Create Thread. But it may causes rebooting of the device</string>
     <string name="text_on">ON</string>
     <string name="text_off">OFF</string>
     <string name="text_please_choose_file_to_import">Select script file to import</string>
@@ -169,17 +145,10 @@
         <item>Camera</item>
     </string-array>
 
-    <string-array name="run_mode_keys">
-        <item>Single Thread</item>
-        <item>Create New Thread Every Time</item>
-        <item>Thread Pool</item>
-    </string-array>
     <string name="text_update">Update</string>
     <string name="text_task_manage">Tasks</string>
-    <string name="text_script">Script</string>
     <string name="text_root_script_record"></string>
     <string name="text_processing">Processing</string>
-    <string name="text_re_import_succeed"></string>
     <string name="text_pre_execute_script">Pre-execute script</string>
     <string name="text_check_update">Check for updates</string>
     <string name="text_new_directory">New Directory</string>

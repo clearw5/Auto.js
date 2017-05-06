@@ -2,7 +2,6 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
     <dimen name="level_beam_view_padding_left">3dp</dimen>
     <dimen name="level_beam_view_line_width">6dp</dimen>
     <dimen name="level_beam_view_line_offset">2dp</dimen>

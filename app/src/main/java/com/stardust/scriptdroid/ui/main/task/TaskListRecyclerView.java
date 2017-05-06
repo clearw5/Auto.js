@@ -43,7 +43,11 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Java
         @Override
         public void onClick(View v) {
             int position = getChildViewHolder((View) v.getParent()).getAdapterPosition();
-            mScriptEngines.get(position).forceStop();
+            if(position >= 0){
+                mScriptEngines.get(position).forceStop();
+            }else {
+                updateEngineList();
+            }
         }
     };
 

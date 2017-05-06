@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.ui.main.script_list;
 
 import android.content.Context;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -103,5 +104,17 @@ public class ScriptListWithProgressBarView extends FrameLayout {
 
     public void setCurrentDirectory(ScriptFile directory) {
         mScriptAndFolderListRecyclerView.setCurrentDirectory(directory);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(state);
+        //in some phones, SwipeRefreshLayout will keep refreshing after screen orientation change
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 }

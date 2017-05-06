@@ -69,7 +69,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
     }
 
     public AbstractShell.Result shell(String cmd, int root) {
-        return ProcessShell.exec(cmd, root != 0);
+        return ProcessShell.execCommand(cmd, root != 0);
     }
 
     public UiSelector selector(JavaScriptEngine engine) {

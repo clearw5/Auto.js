@@ -9,16 +9,10 @@
         android:layout_height="match_parent"
         android:background="@color/sliding_up_panel_shadow_color"/>
 
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/content_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"/>
 
-
-        <FrameLayout
-            android:id="@+id/content_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"/>
-
-    </RelativeLayout>
 </FrameLayout>

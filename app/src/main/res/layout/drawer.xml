@@ -79,7 +79,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:padding="6dp"
-                    android:src="@drawable/ic_settings_applications_green_48dp"/>
+                    android:src="@drawable/ic_settings"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -102,7 +102,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:padding="6dp"
-                    android:src="@drawable/ic_exit_to_app_green_48dp"/>
+                    android:src="@drawable/ic_exit"/>
 
                 <TextView
                     android:layout_width="wrap_content"

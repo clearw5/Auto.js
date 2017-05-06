@@ -1,13 +1,9 @@
 <resources>
     <string name="_app_name">AutoJs</string>
     <string name="action_settings">设置</string>
-    <string name="action_disable_service">关闭服务</string>
     <string name="text_accessibility_service_description">使脚本自动操作(点击、长按、滑动等)所需，若关闭则只能执行不涉及自动操作的脚本。</string>
     <string name="text_new_file">新建文件</string>
     <string name="text_import_from_file">从文件导入</string>
-    <string name="action_exit">退出</string>
-    <string name="text_service_disabled">服务已关闭</string>
-    <string name="text_file_manager_not_found">找不到文件管理器T.T</string>
     <string name="text_create_fail">创建失败</string>
     <string name="text_please_input_name">请输入名称</string>
     <string name="text_name">名称</string>
@@ -17,7 +13,6 @@
     <string name="text_path_is_empty">路径为空</string>
     <string name="text_file_not_exists">文件不存在</string>
     <string name="text_no_file_rw_permission">无文件读写权限</string>
-    <string name="action_test">内嵌920测试</string>
     <string name="text_no_accessibility_permission">无障碍服务未启动，脚本已停止运行</string>
     <string name="text_drawer_close">关闭侧拉菜单</string>
     <string name="text_drawer_open">打开侧拉菜单</string>
@@ -37,9 +32,6 @@
     <string name="text_about">关于</string>
     <string name="text_licenses">开放源代码许可</string>
     <string name="text_do_not_remind_again">不再提示</string>
-    <string name="text_sample_alipay_scan">支付宝扫一扫</string>
-    <string name="text_sample_open_running_services">示例：打开正在运行的服务(安卓6.0+)</string>
-    <string name="text_sample_simple_calculator">示例：简单计算器</string>
     <string name="copyright">Copyright©2016 All right reserves.</string>
     <string name="developer">星尘幻影</string>
     <string name="qq">2732014414</string>
@@ -47,16 +39,10 @@
     <string name="github">软件源代码</string>
     <string name="text_already_copy_to_clip">已复制到剪贴板</string>
     <string name="donate_developer">打赏作者</string>
-    <string name="text_email">邮箱</string>
     <string name="my_github">https://github.com/hyb1996/NoRootScriptDroid</string>
     <string name="share_app">[AutoJs]下载地址：http://www.coolapk.com/apk/com.stardust.scriptdroid </string>
     <string name="text_floating_window">悬浮窗</string>
-    <string name="text_assist_service_notification">通知栏点击区域辅助开关</string>
-    <string name="text_others">其他</string>
-    <string name="text_assist_mode_enabled">点击区域辅助服务已开启(点击关闭)</string>
-    <string name="text_assist_mode_disabled">点击区域辅助服务已关闭(点击开启)</string>
     <string name="text_error_report">错误报告</string>
-    <string name="text_sample_qq_hongbao">示例：QQ自动抢红包</string>
     <string name="text_press_again_to_exit">再按一次退出程序</string>
     <string name="text_common_function">常用函数</string>
     <string name="sorry_for_crash">很抱歉(ಥ _ ಥ)程序遇到未知错误，即将停止运行\n错误代码：</string>
@@ -65,59 +51,37 @@
     <string name="text_start_running">开始运行</string>
     <string name="text_open_by_other_apps">用其他应用打开</string>
     <string name="text_rename">重命名</string>
-    <string name="text_rename_file_meanwhile">同时重命名原文件</string>
-    <string name="text_please_input_new_name">请输入新名称</string>
     <string name="text_send_shortcut">创建桌面快捷方式</string>
     <string name="text_already_create">已创建</string>
     <string name="text_delete">删除</string>
-    <string name="text_delete_absolutly">彻底删除</string>
     <string name="text_already_delete">已删除</string>
-    <string name="text_delete_failed">文件删除失败</string>
-    <string name="text_choose_file">选择一个文件</string>
     <string name="folder_name">/脚本/</string>
     <string name="text_error">错误</string>
     <string name="text_load_failed">还没有文档/(ㄒoㄒ)/~~</string>
     <string name="text_copy_debug_info">复制调试信息</string>
     <string name="text_it_is_the_developer_of_app">这是软件开发者(。・・)ノ</string>
     <string name="text_lll">略略略</string>
-    <string name="text_choose_email_app">请选择邮件应用</string>
-    <string name="text_assist_clip">点击定位剪贴板</string>
-    <string name="text_script_stopped">脚本已停止</string>
-    <string name="assist_mode_notice">\"点击区域辅助服务\"是在要点击的区域不是文本时使用的，参见\"帮助\"。\"点击区域辅助服务\"只有在\"无障碍服务\"开启时才有效。</string>
     <string name="text_please_choose">请选择</string>
     <string name="text_crash">崩溃了o(≧口≦)o</string>
     <string name="crash_feedback">点击\"退出\"退出程序(ಥ _ ಥ)或者提交错误报告或者复制调试信息反馈给开发者(≧∇≦)ﾉ</string>
-    <string name="text_cannot_create_dialog_when_app_invisible">无法在后台显示弹框，脚本已停止运行</string>
-    <string name="text_sample_for_qq_chat">示例：QQ强制聊天</string>
-    <string name="text_re_import_samples">重新导入示例脚本文件</string>
-    <string name="text_re_import_succeed">导入成功</string>
-    <string name="text_fail">失败</string>
     <string name="text_clear">清空</string>
     <string name="text_console">控制台</string>
     <string name="text_log">日志</string>
-    <string name="text_sample_wechat_scan">微信扫一扫</string>
     <string name="text_report_bug">提交错误报告</string>
-    <string name="text_bug_report">Bug Report</string>
     <string name="text_report_fail">提交失败</string>
     <string name="text_report_succeed">提交成功</string>
     <string name="edit_and_run_handle_intent_error">无法处理文件</string>
-    <string name="text_crash_en">Crash</string>
     <string name="text_issue_report">问题反馈</string>
     <string name="text_script_record">录制脚本</string>
-    <string name="hint_start_record">在通知栏中开始录制</string>
     <string name="text_start_record">开始录制</string>
     <string name="text_stop_record">停止录制</string>
-    <string name="text_not_recording">录制未开始</string>
     <string name="text_pause_record">暂停录制</string>
     <string name="text_resume_record">继续录制</string>
     <string name="text_recorded">录制结束</string>
     <string name="text_copy_to_clip">复制到剪贴板</string>
     <string name="text_file_write_fail">文件写入失败</string>
-    <string name="text_need_enable_accessibility_service_to_record">需要打开\"无障碍服务“才能录制脚本</string>
     <string name="text_join_qq_group">加入QQ交流群</string>
     <string name="text_copied">已复制到剪贴板</string>
-    <string name="text_close">关闭</string>
-    <string name="text_re_record">重新录制</string>
     <string name="text_use_volume_control_record">使用音量键控制</string>
     <string name="summary_use_volume_control_record">开启后每次音量变化会开始或停止脚本录制</string>
     <string name="key_use_volume_control_record">key_use_volume_control_record</string>
@@ -137,9 +101,7 @@
     <string name="text_select_image">选择图片</string>
     <string name="text_help">帮助</string>
     <string name="text_root_script_record">录制脚本(root)</string>
-    <string name="hint_start_root_record">使用音量上键，音量下键结束录制</string>
     <string name="text_no_floating_window_permission">没有悬浮窗权限</string>
-    <string name="text_node_info">节点信息</string>
     <string name="text_layout_hierarchy">布局层次分析</string>
     <string name="text_layout_bounds">布局范围查看</string>
     <string name="text_no_accessibility_permission_to_capture">无障碍服务未启动</string>
@@ -147,7 +109,6 @@
     <string name="text_my_script">我的脚本</string>
     <string name="hint_no_script">点击右上角新建第一个脚本吧~(。・・)ノ</string>
     <string name="text_reset_background">重置背景图片设置</string>
-    <string name="text_restart_app_to_apply">重启软件生效</string>
     <string name="text_record_with_root">使用root权限录制</string>
     <string name="text_record_msg">录制提示</string>
     <string name="text_text_changed">文字改变</string>
@@ -171,15 +132,9 @@
     <string name="key_use_volume_control_running">key_use_volume_control_running</string>
     <string name="text_use_volume_to_stop_running">每次音量键变化停止所有脚本</string>
     <string name="text_need_to_enable_accessibility_service">需要启用无障碍服务</string>
-    <string name="text_advanced">高级</string>
     <string name="key_run_mode">运行方式</string>
-    <string name="text_command_run_mode">自动操作函数执行方式</string>
-    <string name="summary_command_run_mode">如果运行脚本后界面卡顿请尝试多线程或线程池，但这可能导致设备重启</string>
-    <string name="key_single_thread">KEY_SINGLE_THREAD</string>
     <string name="text_on">已开启</string>
     <string name="text_off">已关闭</string>
-    <string name="text_script">脚本</string>
-    <string name="text_manage">管理</string>
     <string name="text_task_manage">任务管理</string>
     <string name="text_name_should_not_be_empty">名称不能为空</string>
     <string name="text_new_directory">新文件夹</string>
@@ -215,7 +170,6 @@
     <string name="text_guard_mode">保护模式</string>
     <string name="summary_guard_mode">在本软件界面无法运行自动操作命令以免误触</string>
     <string name="key_guard_mode">key_guard_mode</string>
-    <string name="text_console_floating_window">控制台悬浮窗</string>
     <string name="text_layout_inspector_is_dumping">布局分析中，请稍后点击</string>
     <string name="text_force_stop">强制停止</string>
     <string name="text_execution_finished" formatted="false">\n------------\n[%s]运行结束，用时%f秒</string>
@@ -235,15 +189,4 @@
         <item>KEY_CAMERA</item>
     </string-array>
 
-    <string-array name="run_mode_keys">
-        <item>单线程</item>
-        <item>每次都创建新线程</item>
-        <item>线程池</item>
-    </string-array>
-
-    <string-array name="run_mode_values">
-        <item>KEY_SINGLE_THREAD</item>
-        <item>KEY_NEW_THREAD_EVERY_TIME</item>
-        <item>KEY_THREAD_POOL</item>
-    </string-array>
 </resources>

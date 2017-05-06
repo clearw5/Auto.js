@@ -9,5 +9,5 @@
         android:layout_width="46dp"
         android:layout_height="46dp"
         android:padding="5dp"
-        android:src="@drawable/debug_console_icon_128"/>
+        android:src="@drawable/ic_debug_console"/>
 </LinearLayout>

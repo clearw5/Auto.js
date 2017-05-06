@@ -28,8 +28,8 @@ public abstract class AbstractShell {
         }
     }
 
-    private static final String COMMAND_SU = "su";
-    private static final String COMMAND_SH = "sh";
+    static final String COMMAND_SU = "su";
+    static final String COMMAND_SH = "sh";
     static final String COMMAND_EXIT = "exit\n";
     static final String COMMAND_LINE_END = "\n";
 

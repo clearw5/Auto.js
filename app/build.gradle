@@ -9,10 +9,13 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 120
-        versionName "2.0.9 Beta"
+        versionCode 121
+        versionName "2.0.9b Beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
     }
     buildTypes {
         release {
@@ -62,7 +65,7 @@ android {
         enableForInstantRun = false
         teamCitySlug = null
         runOnEachAssemble = true
-        maxMethodCount = 64000
+        maxMethodCount = 128000
     }
     configurations.all {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
