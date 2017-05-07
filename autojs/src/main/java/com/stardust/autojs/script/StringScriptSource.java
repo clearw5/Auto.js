@@ -1,6 +1,10 @@
 package com.stardust.autojs.script;
 
 
+import android.support.annotation.Nullable;
+
+import java.io.Reader;
+
 /**
  * Created by Stardust on 2017/4/2.
  */
@@ -22,6 +26,12 @@ public class StringScriptSource extends ScriptSource {
     @Override
     public String getScript() {
         return mScript;
+    }
+
+    @Nullable
+    @Override
+    public Reader getScriptReader() {
+        return null;
     }
 
 }

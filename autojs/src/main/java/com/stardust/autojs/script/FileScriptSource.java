@@ -2,8 +2,12 @@ package com.stardust.autojs.script;
 
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.pio.PFile;
+import com.stardust.pio.UncheckedIOException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -33,6 +37,15 @@ public class FileScriptSource extends ScriptSource {
         if (mScript == null)
             mScript = PFile.read(mFile);
         return mScript;
+    }
+
+    @Override
+    public Reader getScriptReader() {
+        try {
+            return new FileReader(mFile);
+        } catch (FileNotFoundException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     @Override

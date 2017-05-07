@@ -55,11 +55,11 @@ android {
     }
     dexcount {
         format = "list"
-        includeClasses = false
+        includeClasses = true
         includeFieldCount = true
-        includeTotalMethodCount = false
-        orderByMethodCount = false
-        verbose = false
+        includeTotalMethodCount = true
+        orderByMethodCount = true
+        verbose = true
         maxTreeDepth = Integer.MAX_VALUE
         teamCityIntegration = false
         enableForInstantRun = false

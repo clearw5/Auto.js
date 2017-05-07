@@ -1,6 +1,6 @@
 package com.stardust.autojs.execution;
 
-import com.stardust.autojs.engine.JavaScriptEngine;
+import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.script.ScriptSource;
 
@@ -10,7 +10,7 @@ import com.stardust.autojs.script.ScriptSource;
 
 public interface ScriptExecution {
 
-    JavaScriptEngine getEngine();
+    ScriptEngine getEngine();
 
     ScriptRuntime getRuntime();
 
@@ -29,7 +29,7 @@ public interface ScriptExecution {
         }
 
         @Override
-        public abstract JavaScriptEngine getEngine();
+        public abstract ScriptEngine getEngine();
 
         @Override
         public abstract ScriptRuntime getRuntime();

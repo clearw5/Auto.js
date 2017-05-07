@@ -10,7 +10,7 @@ import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.autojs.script.FileScriptSource;
 import com.stardust.autojs.script.ScriptSource;
-import com.stardust.autojs.script.ScriptSourceWithInit;
+import com.stardust.autojs.script.SequenceScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.BuildConfig;
@@ -52,8 +52,6 @@ public class Scripts {
         }
 
     };
-    private static final String INIT_SCRIPT_PATH = "js/autojs_init.js";
-    private static ScriptSource initScriptSource;
 
 
     public static void openByOtherApps(String path) {
@@ -87,27 +85,16 @@ public class Scripts {
     }
 
     public static ScriptExecution run(ScriptSource source) {
-        return AutoJs.getInstance().getScriptEngineService().execute(wrappedWithInitSource(source));
-    }
-
-    private static ScriptSource wrappedWithInitSource(ScriptSource source) {
-        return new ScriptSourceWithInit(getInitScriptSource(), source);
+        return AutoJs.getInstance().getScriptEngineService().execute(source);
     }
 
     public static ScriptExecution runWithBroadcastSender(ScriptSource scriptSource) {
-        return AutoJs.getInstance().getScriptEngineService().execute(wrappedWithInitSource(scriptSource), BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER);
+        return AutoJs.getInstance().getScriptEngineService().execute(scriptSource, BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER);
     }
 
     public static ScriptExecution run(Context context, Sample file) {
         ScriptSource source = new StringScriptSource(file.name, AssetsCache.get(context.getAssets(), file.path));
-        return AutoJs.getInstance().getScriptEngineService().execute(wrappedWithInitSource(source));
+        return AutoJs.getInstance().getScriptEngineService().execute(source);
     }
 
-    private static ScriptSource getInitScriptSource() {
-        if(initScriptSource == null || BuildConfig.DEBUG){
-            String initScript = AssetsCache.get(App.getApp().getAssets(), INIT_SCRIPT_PATH);
-            initScriptSource = new StringScriptSource(initScript);
-        }
-        return initScriptSource;
-    }
 }

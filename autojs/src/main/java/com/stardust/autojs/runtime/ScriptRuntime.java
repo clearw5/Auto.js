@@ -3,7 +3,7 @@ package com.stardust.autojs.runtime;
 import android.os.Build;
 
 import com.stardust.autojs.R;
-import com.stardust.autojs.engine.JavaScriptEngine;
+import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.rhino_android.AndroidClassLoader;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
@@ -72,7 +72,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
         return ProcessShell.execCommand(cmd, root != 0);
     }
 
-    public UiSelector selector(JavaScriptEngine engine) {
+    public UiSelector selector(ScriptEngine engine) {
         return new UiSelector(mAccessibilityBridge);
     }
 

@@ -6,7 +6,7 @@
     <application
         android:label="@string/app_name"
         >
-        <activity android:name=".engine.ScriptExecuteActivity"/>
+        <activity android:name=".execution.ScriptExecuteActivity"/>
     </application>
 
 </manifest>

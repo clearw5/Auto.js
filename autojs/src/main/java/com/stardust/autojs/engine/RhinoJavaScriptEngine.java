@@ -6,6 +6,7 @@ import com.stardust.autojs.rhino_android.AndroidContextFactory;
 import com.stardust.autojs.rhino_android.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.autojs.script.ScriptSource;
+import com.stardust.pio.UncheckedIOException;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
@@ -14,7 +15,8 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
 import java.io.File;
-import java.util.Hashtable;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by Stardust on 2017/4/2.
  */
 
-public class RhinoJavaScriptEngine implements JavaScriptEngine {
+public class RhinoJavaScriptEngine implements ScriptEngine {
 
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
 
@@ -48,7 +50,15 @@ public class RhinoJavaScriptEngine implements JavaScriptEngine {
 
     @Override
     public Object execute(ScriptSource source) {
-        return mContext.evaluateString(mScriptable, source.getScript(), "<script>", 1, null);
+        Reader reader = source.getScriptReader();
+        if (reader == null) {
+            return mContext.evaluateString(mScriptable, source.getScript(), "<script>", 1, null);
+        }
+        try {
+            return mContext.evaluateReader(mScriptable, source.getScriptReader(), "<script>", 1, null);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     @Override

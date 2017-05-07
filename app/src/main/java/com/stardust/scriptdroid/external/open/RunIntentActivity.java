@@ -6,10 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
-import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.script.PathChecker;
 import com.stardust.autojs.script.FileScriptSource;
-import com.stardust.autojs.script.ScriptSourceWithInit;
+import com.stardust.autojs.script.SequenceScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.scriptdroid.external.CommonUtils;
@@ -41,7 +40,8 @@ public class RunIntentActivity extends Activity {
         if (path == null && script != null) {
             source = new StringScriptSource(script);
         } else if (path != null && new PathChecker(this).checkAndToastError(path)) {
-            source = new ScriptSourceWithInit(new StringScriptSource(script), new FileScriptSource(path));
+            ScriptSource fileScriptSource = new FileScriptSource(path);
+            source = new SequenceScriptSource(fileScriptSource.getName(), new StringScriptSource(script), fileScriptSource);
         }
         if (source != null) {
             Scripts.run(source);

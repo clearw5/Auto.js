@@ -1,11 +1,11 @@
 package com.stardust.autojs;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.stardust.autojs.engine.JavaScriptEngine;
-import com.stardust.autojs.engine.JavaScriptEngineManager;
-import com.stardust.autojs.engine.ScriptExecuteActivity;
+import com.stardust.autojs.engine.AbstractScriptEngineManager;
+import com.stardust.autojs.engine.ScriptEngine;
+import com.stardust.autojs.engine.ScriptEngineManager;
+import com.stardust.autojs.execution.ScriptExecuteActivity;
 import com.stardust.autojs.execution.ExecutionConfig;
 import com.stardust.autojs.execution.RunnableScriptExecution;
 import com.stardust.autojs.execution.ScriptExecution;
@@ -23,13 +23,8 @@ import com.stardust.util.UiHandler;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.text.DateFormat;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import javax.microedition.khronos.opengles.GL;
 
 import static com.stardust.autojs.runtime.ScriptInterruptedException.causedByInterrupted;
 
@@ -63,7 +58,7 @@ public class ScriptEngineService {
     private final Context mContext;
     private UiHandler mUiHandler;
     private final Console mGlobalConsole;
-    private final JavaScriptEngineManager mJavaScriptEngineManager;
+    private final ScriptEngineManager mScriptEngineManager;
     private final EngineLifecycleObserver mEngineLifecycleObserver = new EngineLifecycleObserver();
     private ScriptExecutionObserver mScriptExecutionObserver = new ScriptExecutionObserver();
 
@@ -71,9 +66,9 @@ public class ScriptEngineService {
         mRuntimeSupplier = builder.mRuntimeSupplier;
         mUiHandler = builder.mUiHandler;
         mContext = mUiHandler.getContext();
-        mJavaScriptEngineManager = builder.mJavaScriptEngineManager;
+        mScriptEngineManager = builder.mScriptEngineManager;
         mGlobalConsole = builder.mGlobalConsole;
-        mJavaScriptEngineManager.setEngineLifecycleCallback(mEngineLifecycleObserver);
+        mScriptEngineManager.setEngineLifecycleCallback(mEngineLifecycleObserver);
         mScriptExecutionObserver.registerScriptExecutionListener(GLOBAL_LISTENER);
         EVENT_BUS.register(this);
     }
@@ -82,8 +77,8 @@ public class ScriptEngineService {
         return mGlobalConsole;
     }
 
-    public JavaScriptEngine createScriptEngine() {
-        JavaScriptEngine engine = mJavaScriptEngineManager.createEngine();
+    public ScriptEngine createScriptEngine() {
+        ScriptEngine engine = mScriptEngineManager.createEngine();
         return engine;
     }
 
@@ -91,11 +86,11 @@ public class ScriptEngineService {
         return mRuntimeSupplier.get();
     }
 
-    public void registerEngineLifecycleCallback(JavaScriptEngineManager.EngineLifecycleCallback engineLifecycleCallback) {
+    public void registerEngineLifecycleCallback(AbstractScriptEngineManager.EngineLifecycleCallback engineLifecycleCallback) {
         mEngineLifecycleObserver.registerCallback(engineLifecycleCallback);
     }
 
-    public void unregisterEngineLifecycleCallback(JavaScriptEngineManager.EngineLifecycleCallback engineLifecycleCallback) {
+    public void unregisterEngineLifecycleCallback(AbstractScriptEngineManager.EngineLifecycleCallback engineLifecycleCallback) {
         mEngineLifecycleObserver.unregisterCallback(engineLifecycleCallback);
     }
 
@@ -154,7 +149,7 @@ public class ScriptEngineService {
     }
 
     public int stopAll() {
-        return mJavaScriptEngineManager.stopAll();
+        return mScriptEngineManager.stopAll();
     }
 
 
@@ -167,43 +162,43 @@ public class ScriptEngineService {
     }
 
     public String[] getGlobalFunctions() {
-        return mJavaScriptEngineManager.getGlobalFunctions();
+        return mScriptEngineManager.getGlobalFunctions();
     }
 
-    public Set<JavaScriptEngine> getEngines() {
-        return mJavaScriptEngineManager.getEngines();
+    public Set<ScriptEngine> getEngines() {
+        return mScriptEngineManager.getEngines();
     }
 
-    private static class EngineLifecycleObserver implements JavaScriptEngineManager.EngineLifecycleCallback {
+    private static class EngineLifecycleObserver implements AbstractScriptEngineManager.EngineLifecycleCallback {
 
-        private final Set<JavaScriptEngineManager.EngineLifecycleCallback> mEngineLifecycleCallbacks = new LinkedHashSet<>();
+        private final Set<AbstractScriptEngineManager.EngineLifecycleCallback> mEngineLifecycleCallbacks = new LinkedHashSet<>();
 
         @Override
-        public void onEngineCreate(JavaScriptEngine engine) {
+        public void onEngineCreate(ScriptEngine engine) {
             synchronized (mEngineLifecycleCallbacks) {
-                for (JavaScriptEngineManager.EngineLifecycleCallback callback : mEngineLifecycleCallbacks) {
+                for (AbstractScriptEngineManager.EngineLifecycleCallback callback : mEngineLifecycleCallbacks) {
                     callback.onEngineCreate(engine);
                 }
             }
         }
 
         @Override
-        public void onEngineRemove(JavaScriptEngine engine) {
+        public void onEngineRemove(ScriptEngine engine) {
             synchronized (mEngineLifecycleCallbacks) {
-                for (JavaScriptEngineManager.EngineLifecycleCallback callback : mEngineLifecycleCallbacks) {
+                for (AbstractScriptEngineManager.EngineLifecycleCallback callback : mEngineLifecycleCallbacks) {
                     callback.onEngineRemove(engine);
                 }
             }
         }
 
-        void registerCallback(JavaScriptEngineManager.EngineLifecycleCallback callback) {
+        void registerCallback(AbstractScriptEngineManager.EngineLifecycleCallback callback) {
             synchronized (mEngineLifecycleCallbacks) {
                 mEngineLifecycleCallbacks.add(callback);
             }
 
         }
 
-        void unregisterCallback(JavaScriptEngineManager.EngineLifecycleCallback callback) {
+        void unregisterCallback(AbstractScriptEngineManager.EngineLifecycleCallback callback) {
             synchronized (mEngineLifecycleCallbacks) {
                 mEngineLifecycleCallbacks.remove(callback);
             }

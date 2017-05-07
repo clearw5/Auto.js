@@ -7,14 +7,18 @@ import android.support.annotation.Nullable;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.ScriptEngineServiceBuilder;
 import com.stardust.autojs.engine.NodeJsJavaScriptEngineManager;
+import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.runtime.*;
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.automator.simple_action.SimpleActionPerformHost;
+import com.stardust.pio.PFile;
+import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.ui.console.StardustConsole;
+import com.stardust.util.AssetsCache;
 import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
@@ -25,6 +29,8 @@ import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.console.JraskaConsole;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
+import java.io.IOException;
+
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -33,6 +39,7 @@ import com.stardust.view.accessibility.AccessibilityServiceUtils;
 public class AutoJs implements AccessibilityBridge {
 
     private static AutoJs instance;
+    private static final String INIT_SCRIPT_PATH = "js/autojs_init.js";
 
     public static AutoJs getInstance() {
         return instance;
@@ -54,8 +61,7 @@ public class AutoJs implements AccessibilityBridge {
     private AutoJs(final Context context) {
         mUiHandler = new UiHandler(context);
         mAccessibilityInfoProvider = new AccessibilityInfoProvider(context.getPackageManager());
-        NodeJsJavaScriptEngineManager manager = new NodeJsJavaScriptEngineManager(context);
-        manager.setRequirePath(StorageScriptProvider.DEFAULT_DIRECTORY_PATH);
+        ScriptEngineManager manager = createScriptEngineManager(context);
         mScriptEngineService = new ScriptEngineServiceBuilder()
                 .uiHandler(mUiHandler)
                 .globalConsole(new JraskaConsole())
@@ -70,6 +76,17 @@ public class AutoJs implements AccessibilityBridge {
                 .build();
         addAccessibilityServiceDelegates();
         mScriptEngineService.registerGlobalScriptExecutionListener(new ScriptExecutionGlobalListener());
+    }
+
+    private NodeJsJavaScriptEngineManager createScriptEngineManager(Context context) {
+        NodeJsJavaScriptEngineManager manager = new NodeJsJavaScriptEngineManager(context);
+        manager.setRequirePath(StorageScriptProvider.DEFAULT_DIRECTORY_PATH);
+        try {
+            manager.setInitScript(PFile.read(context.getAssets().open(INIT_SCRIPT_PATH)));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return manager;
     }
 
     private void addAccessibilityServiceDelegates() {

@@ -1,5 +1,6 @@
 package com.stardust.automator;
 
+import android.app.UiAutomation;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -89,7 +90,6 @@ public class UiObject extends AccessibilityNodeInfoCompat {
             // FIXME: 2017/5/5
             return null;
         }
-
     }
 
     public UiObjectCollection find(UiGlobalSelector selector) {

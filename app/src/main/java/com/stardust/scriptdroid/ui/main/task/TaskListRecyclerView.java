@@ -15,8 +15,8 @@ import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
-import com.stardust.autojs.engine.JavaScriptEngine;
-import com.stardust.autojs.engine.JavaScriptEngineManager;
+import com.stardust.autojs.engine.ScriptEngine;
+import com.stardust.autojs.engine.AbstractScriptEngineManager;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
@@ -29,7 +29,7 @@ import java.util.List;
  * Created by Stardust on 2017/3/24.
  */
 
-public class TaskListRecyclerView extends ThemeColorRecyclerView implements JavaScriptEngineManager.EngineLifecycleCallback {
+public class TaskListRecyclerView extends ThemeColorRecyclerView implements AbstractScriptEngineManager.EngineLifecycleCallback {
 
 
     private final OnClickListener mOnItemClickListenerProxy = new OnClickListener() {
@@ -52,7 +52,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Java
     };
 
 
-    private final List<JavaScriptEngine> mScriptEngines = new ArrayList<>();
+    private final List<ScriptEngine> mScriptEngines = new ArrayList<>();
     private Adapter mAdapter;
     private final ScriptEngineService mScriptEngineService = AutoJs.getInstance().getScriptEngineService();
     private ScriptExecutionListener mScriptExecutionListener = new SimpleScriptExecutionListener() {
@@ -129,7 +129,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Java
     }
 
     @Override
-    public void onEngineCreate(final JavaScriptEngine engine) {
+    public void onEngineCreate(final ScriptEngine engine) {
         synchronized (mScriptEngines) {
             post(new Runnable() {
                 @Override
@@ -142,7 +142,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Java
     }
 
     @Override
-    public void onEngineRemove(final JavaScriptEngine engine) {
+    public void onEngineRemove(final ScriptEngine engine) {
         post(new Runnable() {
             @Override
             public void run() {

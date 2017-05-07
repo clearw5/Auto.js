@@ -3,7 +3,7 @@ package com.stardust.autojs.execution;
 import android.util.Log;
 
 import com.stardust.autojs.ScriptEngineService;
-import com.stardust.autojs.engine.JavaScriptEngine;
+import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.script.ScriptSource;
 
@@ -14,7 +14,7 @@ import com.stardust.autojs.script.ScriptSource;
 public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecution implements ScriptExecution, Runnable {
 
     private static final String TAG = "RunnableScriptExecution";
-    private JavaScriptEngine mJavaScriptEngine;
+    private ScriptEngine mScriptEngine;
     private ScriptRuntime mScriptRuntime;
     private ScriptEngineService mScriptEngineService;
 
@@ -25,12 +25,12 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
 
     @Override
     public void run() {
-        mJavaScriptEngine = mScriptEngineService.createScriptEngine();
+        mScriptEngine = mScriptEngineService.createScriptEngine();
         mScriptRuntime = mScriptEngineService.createScriptRuntime();
-        execute(mScriptRuntime, mJavaScriptEngine);
+        execute(mScriptRuntime, mScriptEngine);
     }
 
-    private void execute(ScriptRuntime runtime, JavaScriptEngine engine) {
+    private void execute(ScriptRuntime runtime, ScriptEngine engine) {
         try {
             prepare(runtime, engine);
             doExecution(engine);
@@ -43,7 +43,7 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
         }
     }
 
-    private void prepare(ScriptRuntime runtime, JavaScriptEngine engine) {
+    private void prepare(ScriptRuntime runtime, ScriptEngine engine) {
         if ((getSource().getExecutionMode() & ScriptSource.EXECUTION_MODE_AUTO) != 0) {
             runtime.ensureAccessibilityServiceEnabled();
         }
@@ -51,15 +51,15 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
         engine.init();
     }
 
-    private void doExecution(JavaScriptEngine engine) {
+    private void doExecution(ScriptEngine engine) {
         engine.setTag("script", getSource());
         getListener().onStart(this);
         getListener().onSuccess(this, engine.execute(getSource()));
     }
 
     @Override
-    public JavaScriptEngine getEngine() {
-        return mJavaScriptEngine;
+    public ScriptEngine getEngine() {
+        return mScriptEngine;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.stardust.autojs.engine;
+package com.stardust.autojs.execution;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.stardust.autojs.ScriptEngineService;
-import com.stardust.autojs.execution.ScriptExecution;
-import com.stardust.autojs.execution.ScriptExecutionListener;
-import com.stardust.autojs.execution.ScriptExecutionTask;
+import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.script.ScriptSource;
 
@@ -21,7 +19,7 @@ public class ScriptExecuteActivity extends Activity {
 
     private static ActivityScriptExecution execution;
     private Object mResult;
-    private JavaScriptEngine mJavaScriptEngine;
+    private ScriptEngine mScriptEngine;
     private ScriptExecutionListener mExecutionListener;
     private ScriptSource mScriptSource;
 
@@ -39,7 +37,7 @@ public class ScriptExecuteActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mScriptSource = execution.getSource();
-        mJavaScriptEngine = execution.getEngine();
+        mScriptEngine = execution.getEngine();
         mExecutionListener = execution.getListener();
         runScript();
     }
@@ -55,15 +53,15 @@ public class ScriptExecuteActivity extends Activity {
     }
 
     private void doExecution() {
-        mJavaScriptEngine.setTag("script", mScriptSource);
+        mScriptEngine.setTag("script", mScriptSource);
         mExecutionListener.onStart(execution);
-        mResult = mJavaScriptEngine.execute(mScriptSource);
+        mResult = mScriptEngine.execute(mScriptSource);
     }
 
     private void prepare() {
-        mJavaScriptEngine.put("activity", this);
-        mJavaScriptEngine.put("__runtime__", execution.getRuntime());
-        mJavaScriptEngine.init();
+        mScriptEngine.put("activity", this);
+        mScriptEngine.put("__runtime__", execution.getRuntime());
+        mScriptEngine.init();
     }
 
     @Override
@@ -75,25 +73,25 @@ public class ScriptExecuteActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mJavaScriptEngine.put("activity", null);
-        mJavaScriptEngine.destroy();
+        mScriptEngine.put("activity", null);
+        mScriptEngine.destroy();
         execution = null;
     }
 
     private static class ActivityScriptExecution extends ScriptExecution.AbstractScriptExecution {
 
-        private JavaScriptEngine mJavaScriptEngine;
+        private ScriptEngine mScriptEngine;
         private ScriptRuntime mScriptRuntime;
 
         ActivityScriptExecution(ScriptEngineService service, ScriptExecutionTask task) {
             super(task);
-            mJavaScriptEngine = service.createScriptEngine();
+            mScriptEngine = service.createScriptEngine();
             mScriptRuntime = service.createScriptRuntime();
         }
 
         @Override
-        public JavaScriptEngine getEngine() {
-            return mJavaScriptEngine;
+        public ScriptEngine getEngine() {
+            return mScriptEngine;
         }
 
         @Override

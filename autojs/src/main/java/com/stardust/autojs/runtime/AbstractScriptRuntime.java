@@ -1,6 +1,6 @@
 package com.stardust.autojs.runtime;
 
-import com.stardust.autojs.engine.JavaScriptEngine;
+import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
@@ -52,7 +52,7 @@ public abstract class AbstractScriptRuntime {
     public abstract AbstractShell.Result shell(String cmd, int root);
 
     @JavascriptInterface
-    public abstract UiSelector selector(JavaScriptEngine engine);
+    public abstract UiSelector selector(ScriptEngine engine);
 
     @JavascriptInterface
     public abstract boolean isStopped();

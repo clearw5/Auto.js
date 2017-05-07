@@ -17,37 +17,28 @@ import java.util.Set;
  * Created by Stardust on 2017/1/27.
  */
 
-public abstract class JavaScriptEngineManager {
+public abstract class AbstractScriptEngineManager implements ScriptEngineManager {
 
-    public interface EngineLifecycleCallback {
-
-        void onEngineCreate(JavaScriptEngine engine);
-
-        void onEngineRemove(JavaScriptEngine engine);
-    }
-
-    private static final String TAG = "JavaScriptEngineManager";
+    private static final String TAG = "AbstractScriptEngineManager";
 
     private Map<String, Object> mGlobalVariableMap = new HashMap<>();
-    private final Set<JavaScriptEngine> mEngines = new HashSet<>();
+    private final Set<ScriptEngine> mEngines = new HashSet<>();
     private EngineLifecycleCallback mEngineLifecycleCallback;
-    private final ScriptSource INIT_SCRIPT;
 
     private android.content.Context mContext;
 
-    public JavaScriptEngineManager(Context context) {
+    public AbstractScriptEngineManager(Context context) {
         mContext = context;
-        INIT_SCRIPT = new StringScriptSource(readInitScript());
     }
 
-    public JavaScriptEngine createEngine() {
-        JavaScriptEngine engine = createEngineInner();
+    public ScriptEngine createEngine() {
+        ScriptEngine engine = createEngineInner();
         putProperties(engine);
         addEngine(engine);
         return engine;
     }
 
-    private void addEngine(JavaScriptEngine engine) {
+    private void addEngine(ScriptEngine engine) {
         synchronized (mEngines) {
             mEngines.add(engine);
             if (mEngineLifecycleCallback != null) {
@@ -56,7 +47,7 @@ public abstract class JavaScriptEngineManager {
         }
     }
 
-    public void put(String varName, Object value) {
+    public void putGlobal(String varName, Object value) {
         mGlobalVariableMap.put(varName, value);
     }
 
@@ -64,11 +55,11 @@ public abstract class JavaScriptEngineManager {
         mEngineLifecycleCallback = engineLifecycleCallback;
     }
 
-    public Set<JavaScriptEngine> getEngines() {
+    public Set<ScriptEngine> getEngines() {
         return mEngines;
     }
 
-    protected abstract JavaScriptEngine createEngineInner();
+    protected abstract ScriptEngine createEngineInner();
 
     public abstract String[] getGlobalFunctions();
 
@@ -76,13 +67,13 @@ public abstract class JavaScriptEngineManager {
         return mContext;
     }
 
-    protected void putProperties(JavaScriptEngine engine) {
+    protected void putProperties(ScriptEngine engine) {
         for (Map.Entry<String, Object> variable : mGlobalVariableMap.entrySet()) {
             engine.put(variable.getKey(), variable.getValue());
         }
     }
 
-    void removeEngine(JavaScriptEngine engine) {
+    public void removeEngine(ScriptEngine engine) {
         synchronized (mEngines) {
             if (mEngines.remove(engine) && mEngineLifecycleCallback != null) {
                 mEngineLifecycleCallback.onEngineRemove(engine);
@@ -90,28 +81,11 @@ public abstract class JavaScriptEngineManager {
         }
     }
 
-    private String readInitScript() {
-        try {
-            return PFile.read(mContext.getAssets().open("javascript_engine_init.js"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public ScriptSource getInitScript() {
-        if (BuildConfig.DEBUG) {
-            // 调试时不缓存INIT_SCRIPT否则修改javascript_engine_init.js后不会更新
-            return new StringScriptSource(readInitScript());
-        } else {
-            return INIT_SCRIPT;
-        }
-    }
-
 
     public int stopAll() {
         synchronized (mEngines) {
             int n = mEngines.size();
-            for (JavaScriptEngine engine : mEngines) {
+            for (ScriptEngine engine : mEngines) {
                 engine.forceStop();
             }
             return n;
