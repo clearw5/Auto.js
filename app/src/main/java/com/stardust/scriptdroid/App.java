@@ -31,7 +31,6 @@ public class App extends MultiDexApplication {
     private static final String TAG = "App";
 
     private static WeakReference<App> instance;
-    private static WeakReference<Activity> currentActivity;
 
     public static App getApp() {
         return instance.get();
@@ -89,25 +88,21 @@ public class App extends MultiDexApplication {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
                 super.onActivityCreated(activity, savedInstanceState);
+                AutoJs.getInstance().getAppUtils().setCurrentActivity(activity);
             }
 
             @Override
             public void onActivityPaused(Activity activity) {
-                currentActivity = null;
+                AutoJs.getInstance().getAppUtils().setCurrentActivity(null);
             }
 
             @Override
             public void onActivityResumed(Activity activity) {
                 ScreenMetrics.initIfNeeded(activity);
-                currentActivity = new WeakReference<>(activity);
+                AutoJs.getInstance().getAppUtils().setCurrentActivity(activity);
             }
 
         });
-    }
-
-    @Keep
-    public static Activity currentActivity() {
-        return currentActivity.get();
     }
 
     public static String getResString(int id) {

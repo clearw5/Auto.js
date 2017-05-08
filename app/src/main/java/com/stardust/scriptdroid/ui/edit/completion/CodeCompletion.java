@@ -1,12 +1,19 @@
 package com.stardust.scriptdroid.ui.edit.completion;
 
+import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 
+import com.google.gson.Gson;
+import com.stardust.pio.PFile;
+import com.stardust.pio.UncheckedIOException;
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.jecelyin.editor.v2.core.widget.TextView;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -106,7 +113,7 @@ public class CodeCompletion implements TextWatcher {
         mFunctions = functions;
     }
 
-    private String[] mFunctions = {"toast", "launchPackage", "launch", "launchApp", "click", "longClick", "scrollUp", "scrollDown", "select", "focus", "paste", "input", "sleep", "isStopped", "notStopped", "printf", "err", "openConsole", "clearConsole", "shell", "getTexts", "getPackageName", "getActivityName", "setClip", "addAccessibilityDelegate"};
+    private String[] mFunctions = new String[0];
 
     private boolean searchCodeCompletion(String str) {
         Collection<CodeCompletionItem> c = searchWordCompletion(str);
@@ -148,8 +155,7 @@ public class CodeCompletion implements TextWatcher {
         return searchCodeCompletion(str, KEYWORDS);
     }
 
-
-    private static final String[] DEFAULT_CODE_COMPLETIONS = new String[]{"=", "(", ")", ";", "{", "}", "\"", "!", "[", "]", "\\", ".", ", "};
+    private static final String[] DEFAULT_CODE_COMPLETIONS = new String[]{"=", "(", ")", ";", "{", "}", "\"", "!", "[", "]", "\\", ">", "<", ".", ", "};
     private static final List<CodeCompletionItem> DEFAULT_CODE_COMPLETION_LIST = new ArrayList<>();
 
     static {

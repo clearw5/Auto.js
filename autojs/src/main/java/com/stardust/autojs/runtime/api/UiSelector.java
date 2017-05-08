@@ -7,7 +7,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.autojs.runtime.AccessibilityBridge;
-import com.stardust.autojs.runtime.JavascriptInterface;
+import com.stardust.autojs.runtime.ScriptInterface;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.automator.ActionArgument;
@@ -85,7 +85,7 @@ public class UiSelector extends UiGlobalSelector {
         mAllocator = allocator;
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public UiObjectCollection find() {
         ensureAccessibilityServiceEnabled();
         if (AutomatorConfig.isUnintendedGuardEnabled() && isRunningPackageSelf()) {
@@ -111,7 +111,7 @@ public class UiSelector extends UiGlobalSelector {
     }
 
 
-    @JavascriptInterface
+    @ScriptInterface
     @NonNull
     public UiObjectCollection untilFind() {
         UiObjectCollection uiObjectCollection;
@@ -125,7 +125,7 @@ public class UiSelector extends UiGlobalSelector {
         return uiObjectCollection;
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public UiObject findOne() {
         return untilFindOne();
     }
@@ -136,7 +136,7 @@ public class UiSelector extends UiGlobalSelector {
         return new UiObject(collection.get(0).getInfo());
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public UiSelector id(final String id) {
         if (!id.contains(":")) {
             addFilter(new DfsFilter() {
@@ -157,131 +157,131 @@ public class UiSelector extends UiGlobalSelector {
         return untilFind().performAction(action, arguments);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean click() {
         return performAction(ACTION_CLICK);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean longClick() {
         return performAction(ACTION_LONG_CLICK);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean accessibilityFocus() {
         return performAction(ACTION_ACCESSIBILITY_FOCUS);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean clearAccessibilityFocus() {
         return performAction(ACTION_CLEAR_ACCESSIBILITY_FOCUS);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean focus() {
         return performAction(ACTION_FOCUS);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean clearFocus() {
         return performAction(ACTION_CLEAR_FOCUS);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean copy() {
         return performAction(ACTION_COPY);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean paste() {
         return performAction(ACTION_PASTE);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean select() {
         return performAction(ACTION_SELECT);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean cut() {
         return performAction(ACTION_CUT);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean collapse() {
         return performAction(ACTION_COLLAPSE);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean expand() {
         return performAction(ACTION_EXPAND);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean dismiss() {
         return performAction(ACTION_DISMISS);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean show() {
         return performAction(ACTION_SHOW_ON_SCREEN.getId());
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean scrollForward() {
         return performAction(ACTION_SCROLL_FORWARD);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean scrollBackward() {
         return performAction(ACTION_SCROLL_BACKWARD);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean scrollUp() {
         return performAction(ACTION_SCROLL_UP.getId());
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean scrollDown() {
         return performAction(ACTION_SCROLL_DOWN.getId());
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean scrollLeft() {
         return performAction(ACTION_SCROLL_LEFT.getId());
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean scrollRight() {
         return performAction(ACTION_SCROLL_RIGHT.getId());
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean contextClick() {
         return performAction(ACTION_CONTEXT_CLICK.getId());
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean setSelection(int s, int e) {
         return performAction(ACTION_SET_SELECTION,
                 new ActionArgument.IntActionArgument(ACTION_ARGUMENT_SELECTION_START_INT, s),
                 new ActionArgument.IntActionArgument(ACTION_ARGUMENT_SELECTION_END_INT, e));
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean setText(String text) {
         return performAction(ACTION_SET_TEXT,
                 new ActionArgument.CharSequenceActionArgument(ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text));
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean setProgress(float value) {
         return performAction(ACTION_SET_PROGRESS.getId(),
                 new ActionArgument.FloatActionArgument(ACTION_ARGUMENT_PROGRESS_VALUE, value));
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean scrollTo(int row, int column) {
         return performAction(ACTION_SCROLL_TO_POSITION.getId(),
                 new ActionArgument.IntActionArgument(ACTION_ARGUMENT_ROW_INT, row),

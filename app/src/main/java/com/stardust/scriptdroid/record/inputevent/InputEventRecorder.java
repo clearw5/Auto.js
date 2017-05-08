@@ -1,23 +1,7 @@
 package com.stardust.scriptdroid.record.inputevent;
 
-import android.preference.PreferenceManager;
-import android.util.Log;
-
-import com.stardust.pio.UncheckedIOException;
-import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.autojs.Shell;
+import com.stardust.scriptdroid.autojs.api.Shell;
 import com.stardust.scriptdroid.record.Recorder;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-
-import jackpal.androidterm.ShellTermSession;
-import jackpal.androidterm.emulatorview.TermSession;
-import jackpal.androidterm.util.TermSettings;
 
 /**
  * Created by Stardust on 2017/3/6.

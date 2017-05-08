@@ -25,15 +25,19 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
 
     @Override
     public void run() {
-        mScriptEngine = mScriptEngineService.createScriptEngine();
-        mScriptRuntime = mScriptEngineService.createScriptRuntime();
-        execute(mScriptRuntime, mScriptEngine);
+        execute();
     }
 
-    private void execute(ScriptRuntime runtime, ScriptEngine engine) {
+    public Object execute() {
+        mScriptEngine = mScriptEngineService.createScriptEngine();
+        mScriptRuntime = mScriptEngineService.createScriptRuntime();
+        return execute(mScriptRuntime, mScriptEngine);
+    }
+
+    private Object execute(ScriptRuntime runtime, ScriptEngine engine) {
         try {
             prepare(runtime, engine);
-            doExecution(engine);
+            return doExecution(engine);
         } catch (Exception e) {
             e.printStackTrace();
             getListener().onException(this, e);
@@ -41,6 +45,7 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
             Log.d(TAG, "Engine destroy");
             engine.destroy();
         }
+        return null;
     }
 
     private void prepare(ScriptRuntime runtime, ScriptEngine engine) {
@@ -51,10 +56,12 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
         engine.init();
     }
 
-    private void doExecution(ScriptEngine engine) {
+    private Object doExecution(ScriptEngine engine) {
         engine.setTag("script", getSource());
         getListener().onStart(this);
-        getListener().onSuccess(this, engine.execute(getSource()));
+        Object result = engine.execute(getSource());
+        getListener().onSuccess(this, result);
+        return result;
     }
 
     @Override

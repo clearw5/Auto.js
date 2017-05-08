@@ -70,7 +70,7 @@ public abstract class AbstractShell {
         exec(TextUtils.join("", new Object[]{"sendevent /dev/input/event", device, " ", type, " ", code, " ", value}));
     }
 
-    public void SetScreenScale(int width, int height){
+    public void SetScreenMetrics(int width, int height){
         mScreenWidth = width;
         mScreenHeight = height;
     }

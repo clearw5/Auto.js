@@ -5,8 +5,8 @@
     <list size="8">
       <item index="0" class="java.lang.String" itemvalue="android.support.annotation.Keep" />
       <item index="1" class="java.lang.String" itemvalue="android.webkit.JavascriptInterface" />
-      <item index="2" class="java.lang.String" itemvalue="com.stardust.autojs.runtime.JavascriptClass" />
-      <item index="3" class="java.lang.String" itemvalue="com.stardust.autojs.runtime.JavascriptInterface" />
+      <item index="2" class="java.lang.String" itemvalue="com.stardust.autojs.runtime.ScriptClass" />
+      <item index="3" class="java.lang.String" itemvalue="com.stardust.autojs.runtime.ScriptInterface" />
       <item index="4" class="java.lang.String" itemvalue="com.stardust.view.ViewBind.Click" />
       <item index="5" class="java.lang.String" itemvalue="com.stardust.view.ViewBinding.Check" />
       <item index="6" class="java.lang.String" itemvalue="com.stardust.view.ViewBinding.Click" />

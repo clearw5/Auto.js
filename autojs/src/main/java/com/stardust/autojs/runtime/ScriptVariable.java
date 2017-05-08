@@ -8,7 +8,8 @@ import java.lang.annotation.Target;
 /**
  * Created by Stardust on 2017/4/2.
  */
+
 @Retention(RetentionPolicy.SOURCE)
-@Target({ElementType.METHOD})
-public @interface JavascriptInterface {
+@Target({ElementType.FIELD})
+public @interface ScriptVariable {
 }

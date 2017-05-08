@@ -2,7 +2,7 @@ package com.stardust.autojs.runtime.api;
 
 import android.support.annotation.Nullable;
 
-import com.stardust.autojs.runtime.JavascriptInterface;
+import com.stardust.autojs.runtime.ScriptInterface;
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -10,31 +10,31 @@ import com.stardust.autojs.runtime.JavascriptInterface;
 
 public interface Console {
 
-    @JavascriptInterface
+    @ScriptInterface
     void verbose(@Nullable Object data, Object... options);
 
-    @JavascriptInterface
+    @ScriptInterface
     void log(@Nullable Object data, Object... options);
 
-    @JavascriptInterface
+    @ScriptInterface
     void info(@Nullable Object data, Object... options);
 
-    @JavascriptInterface
+    @ScriptInterface
     void warn(@Nullable Object data, Object... options);
 
-    @JavascriptInterface
+    @ScriptInterface
     void error(@Nullable Object data, Object... options);
 
-    @JavascriptInterface
+    @ScriptInterface
     void assertTrue(boolean value, @Nullable Object data, Object... options);
 
-    @JavascriptInterface
+    @ScriptInterface
     void clear();
 
-    @JavascriptInterface
+    @ScriptInterface
     void show();
 
-    @JavascriptInterface
+    @ScriptInterface
     void hide();
 
     void println(int level, CharSequence charSequence);

@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.autojs;
+package com.stardust.scriptdroid.autojs.api;
 
 import android.content.Context;
 import android.os.Handler;
@@ -10,6 +10,7 @@ import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.lang.ThreadCompat;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.autojs.AutoJs;
 
 import java.io.BufferedReader;
 import java.io.IOException;

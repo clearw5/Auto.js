@@ -10,8 +10,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.autojs.runtime.AbstractScriptRuntime;
 import com.stardust.autojs.runtime.AccessibilityBridge;
-import com.stardust.autojs.runtime.JavascriptInterface;
-import com.stardust.autojs.runtime.ScriptRuntime;
+import com.stardust.autojs.runtime.ScriptInterface;
 import com.stardust.autojs.runtime.api.AutomatorConfig;
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.automator.UiObject;
@@ -53,74 +52,74 @@ public class SimpleActionAutomator {
         mScriptRuntime = scriptRuntime;
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public ActionTarget text(String text, int i) {
         return new ActionTarget.TextActionTarget(text, i);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public ActionTarget bounds(int left, int top, int right, int bottom) {
         return new ActionTarget.BoundsActionTarget(new Rect(left, top, right, bottom));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    @JavascriptInterface
+    @ScriptInterface
     public ActionTarget editable(int i) {
         mScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
         return new ActionTarget.EditableActionTarget(i);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public ActionTarget id(String id) {
         return new ActionTarget.IdActionTarget(id);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean click(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_CLICK));
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean longClick(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_LONG_CLICK));
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean scrollUp(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD));
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean scrollDown(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD));
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean scrollBackward(int i) {
         return performAction(ActionFactory.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, i));
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean scrollForward(int i) {
         return performAction(ActionFactory.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, i));
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean scrollMaxBackward() {
         return performAction(ActionFactory.createScrollMaxAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD));
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean scrollMaxForward() {
         return performAction(ActionFactory.createScrollMaxAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD));
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean focus(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_FOCUS));
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean select(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SELECT));
     }
@@ -131,39 +130,39 @@ public class SimpleActionAutomator {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SET_TEXT, text));
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean back() {
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean home() {
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean powerDialog() {
         mScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_POWER_DIALOG);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean notifications() {
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean quickSettings() {
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_QUICK_SETTINGS);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean recents() {
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     @RequiresApi(api = Build.VERSION_CODES.N)
     public boolean splitScreen() {
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN);
@@ -177,7 +176,7 @@ public class SimpleActionAutomator {
         return service.performGlobalAction(action);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean paste(ActionTarget target) {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_PASTE));
     }

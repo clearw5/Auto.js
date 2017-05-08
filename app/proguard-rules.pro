@@ -36,7 +36,7 @@
     @org.greenrobot.eventbus.Subscribe <methods>;
 }
 -keepclassmembers class ** {
-    @com.stardust.autojs.runtime.JavascriptInterface <methods>;
+    @com.stardust.autojs.runtime.ScriptInterface <methods>;
 }
 -keep class org.msgpack.** { *; }
 

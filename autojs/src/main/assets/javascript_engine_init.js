@@ -17,28 +17,30 @@ var toast = function(text){
     __runtime__.toast(text);
 }
 
+var app = __runtime__.app;
+
 var launchPackage = function(package){
-    __runtime__.app.launchPackage(package);
+    app.launchPackage(package);
 }
 
 var launch = function(a, b){
     if(arguments.length == 2){
-        __runtime__.app.launch(a, b);
+        app.launch(a, b);
     }else{
-        __runtime__.app.launchPackage(a);
+        app.launchPackage(a);
     }
 }
 
 var launchApp = function(appName){
-    __runtime__.app.launchApp(appName);
+    app.launchApp(appName);
 }
 
 var getPackageName = function(appName){
-    return __runtime__.app.getPackageName(appName);
+    return app.getPackageName(appName);
 }
 
 var openAppSetting = function(packageName){
-    return __runtime__.app.openAppSetting(packageName);
+    return app.openAppSetting(packageName);
 }
 
 
@@ -179,6 +181,11 @@ var input = function(a, b){
 
 var setClip = function(text){
     __runtime__.setClip(text);
+}
+
+
+var SetScreenMetrics = function(w, h){
+    __runtime__.SetScreenMetrics(w, h);
 }
 
 

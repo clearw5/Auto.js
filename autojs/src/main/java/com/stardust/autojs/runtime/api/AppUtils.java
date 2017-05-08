@@ -1,10 +1,14 @@
 package com.stardust.autojs.runtime.api;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.support.annotation.Nullable;
 
-import com.stardust.autojs.runtime.JavascriptInterface;
+import com.stardust.autojs.runtime.ScriptInterface;
 import com.stardust.util.IntentUtil;
 
 import java.util.List;
@@ -16,13 +20,13 @@ import java.util.List;
 public class AppUtils {
 
     private Context mContext;
+    private Activity mCurrentActivity;
 
     public AppUtils(Context context) {
         mContext = context;
     }
 
-
-    @JavascriptInterface
+    @ScriptInterface
     public boolean launchPackage(String packageName) {
         try {
             PackageManager packageManager = mContext.getPackageManager();
@@ -34,12 +38,12 @@ public class AppUtils {
 
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean launchApp(String appName) {
         return launchPackage(getPackageName(appName));
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public String getPackageName(String appName) {
         PackageManager packageManager = mContext.getPackageManager();
         List<ApplicationInfo> installedApplications = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
@@ -51,10 +55,23 @@ public class AppUtils {
         return "";
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public boolean openAppSetting(String packageName) {
         return IntentUtil.goToAppDetailSettings(mContext, packageName);
     }
 
+    @Nullable
+    public Activity getCurrentActivity() {
+        return mCurrentActivity;
+    }
 
+    @ScriptInterface
+    public void uninstall(String packageName) {
+        mContext.startActivity(new Intent(Intent.ACTION_DELETE, Uri.parse("package:" + packageName))
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    public void setCurrentActivity(Activity currentActivity) {
+        mCurrentActivity = currentActivity;
+    }
 }

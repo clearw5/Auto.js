@@ -102,6 +102,7 @@ public class RhinoJavaScriptEngineManager extends AbstractScriptEngineManager {
         ScriptEngine engine = createEngine();
         ScriptSource source = new StringScriptSource("this", "this");
         engine.setTag("script", source);
+        engine.init();
         Scriptable scriptable = (Scriptable) engine.execute(source);
         Object[] ids = scriptable.getIds();
         String[] functions = new String[ids.length];

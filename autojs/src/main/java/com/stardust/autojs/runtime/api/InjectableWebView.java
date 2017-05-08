@@ -4,15 +4,15 @@ import android.content.Context;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 
-import com.stardust.autojs.runtime.JavascriptClass;
-import com.stardust.autojs.runtime.JavascriptInterface;
+import com.stardust.autojs.runtime.ScriptClass;
+import com.stardust.autojs.runtime.ScriptInterface;
 
 import org.mozilla.javascript.Scriptable;
 
 /**
  * Created by Stardust on 2017/4/1.
  */
-@JavascriptClass
+@ScriptClass
 public class InjectableWebView extends WebView {
 
     private InjectableWebClient mInjectableWebClient;
@@ -27,12 +27,12 @@ public class InjectableWebView extends WebView {
         setWebViewClient(mInjectableWebClient);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public void inject(String script, ValueCallback<String> callback) {
         mInjectableWebClient.inject(script, callback);
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public void inject(String script) {
         mInjectableWebClient.inject(script);
     }

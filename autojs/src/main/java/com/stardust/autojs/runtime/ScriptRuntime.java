@@ -13,6 +13,7 @@ import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.autojs.runtime.api.ProcessShell;
 import com.stardust.util.SdkVersionUtil;
+import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
 
 import org.mozilla.javascript.ContextFactory;
@@ -29,15 +30,69 @@ public class ScriptRuntime extends AbstractScriptRuntime {
 
     private static final String TAG = "ScriptRuntime";
 
+    public static class Builder {
+        private AppUtils mAppUtils;
+        private UiHandler mUiHandler;
+        private Console mConsole;
+        private AccessibilityBridge mAccessibilityBridge;
+        private Supplier<AbstractShell> mShellSupplier;
+
+
+        public Builder() {
+
+        }
+
+        public Builder setAppUtils(AppUtils appUtils) {
+            mAppUtils = appUtils;
+            return this;
+        }
+
+        public Builder setUiHandler(UiHandler uiHandler) {
+            mUiHandler = uiHandler;
+            return this;
+        }
+
+        public Builder setConsole(Console console) {
+            mConsole = console;
+            return this;
+        }
+
+        public Builder setAccessibilityBridge(AccessibilityBridge accessibilityBridge) {
+            mAccessibilityBridge = accessibilityBridge;
+            return this;
+        }
+
+        public Builder setShellSupplier(Supplier<AbstractShell> shellSupplier) {
+            mShellSupplier = shellSupplier;
+            return this;
+        }
+
+        public ScriptRuntime build() {
+            return new ScriptRuntime(mAppUtils, mUiHandler, mConsole, mAccessibilityBridge, mShellSupplier);
+        }
+
+    }
+
     private UiHandler mUiHandler;
     private AccessibilityBridge mAccessibilityBridge;
 
     private AbstractShell mRootShell;
+    private Supplier<AbstractShell> mShellSupplier;
 
-    public ScriptRuntime(UiHandler uiHandler, Console console, AccessibilityBridge accessibilityBridge) {
-        super(new AppUtils(uiHandler.getContext()), console, accessibilityBridge);
+
+    protected ScriptRuntime(AppUtils appUtils, UiHandler uiHandler, Console console, AccessibilityBridge accessibilityBridge, Supplier<AbstractShell> shellSupplier) {
+        super(appUtils, console, accessibilityBridge);
         mAccessibilityBridge = accessibilityBridge;
         mUiHandler = uiHandler;
+        mShellSupplier = shellSupplier;
+    }
+
+    public UiHandler getUiHandler() {
+        return mUiHandler;
+    }
+
+    public AccessibilityBridge getAccessibilityBridge() {
+        return mAccessibilityBridge;
     }
 
     public void toast(final String text) {
@@ -62,10 +117,18 @@ public class ScriptRuntime extends AbstractScriptRuntime {
     }
 
     public void shellExecAsync(String cmd) {
-        if (mRootShell == null) {
-            mRootShell = new ProcessShell(true);
-        }
+        ensureRootShell();
         mRootShell.exec(cmd);
+    }
+
+    private void ensureRootShell() {
+        if (mRootShell == null) {
+            if (mShellSupplier == null) {
+                throw new ScriptInterruptedException();
+            }
+            mRootShell = mShellSupplier.get();
+            mShellSupplier = null;
+        }
     }
 
     public AbstractShell.Result shell(String cmd, int root) {
@@ -98,7 +161,22 @@ public class ScriptRuntime extends AbstractScriptRuntime {
         Thread.interrupted();
     }
 
+    @Override
+    public void SetScreenMetrics(int width, int height) {
+        ensureRootShell();
+        mRootShell.SetScreenMetrics(width, height);
+    }
+
     public void ensureAccessibilityServiceEnabled() {
         mAccessibilityBridge.ensureServiceEnabled();
+    }
+
+    @Override
+    public void onStop() {
+        if (mRootShell != null) {
+            mRootShell.exit();
+            mRootShell = null;
+        }
+        mShellSupplier = null;
     }
 }

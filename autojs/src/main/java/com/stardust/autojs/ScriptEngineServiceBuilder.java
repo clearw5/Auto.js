@@ -13,7 +13,7 @@ import com.stardust.util.UiHandler;
 
 public class ScriptEngineServiceBuilder {
 
-    Supplier<ScriptRuntime> mRuntimeSupplier;
+    Supplier<? extends ScriptRuntime> mRuntimeSupplier;
     ScriptEngineManager mScriptEngineManager;
     Console mGlobalConsole;
     UiHandler mUiHandler;
@@ -22,7 +22,7 @@ public class ScriptEngineServiceBuilder {
 
     }
 
-    public ScriptEngineServiceBuilder runtime(Supplier<ScriptRuntime> runtimeSupplier) {
+    public ScriptEngineServiceBuilder runtime(Supplier<? extends ScriptRuntime> runtimeSupplier) {
         mRuntimeSupplier = runtimeSupplier;
         return this;
     }

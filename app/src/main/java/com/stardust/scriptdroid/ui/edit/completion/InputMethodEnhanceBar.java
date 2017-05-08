@@ -14,10 +14,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.workground.WrapContentLinearLayoutManager;
 
+import com.google.gson.Gson;
+import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -79,7 +83,7 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
     private void init() {
         setAdapter(new CodeCompletionAdapter());
         setLayoutManager(new WrapContentLinearLayoutManager(getContext(), HORIZONTAL, false));
-        mCodeCompletion.setFunctions(AutoJs.getInstance().getScriptEngineService().getGlobalFunctions());
+        mCodeCompletion.setFunctions(readFunctions(getContext(), "js/functions.json"));
     }
 
     public void setEditTextBridge(EditTextBridge editTextBridge) {
@@ -124,4 +128,14 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
             itemView.setOnLongClickListener(mOnCodeCompletionItemLongClickListener);
         }
     }
+
+    private static String[] readFunctions(Context context, String path) {
+        Gson gson = new Gson();
+        try {
+            return gson.fromJson(new InputStreamReader(context.getAssets().open(path)), String[].class);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
 }

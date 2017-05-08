@@ -44,8 +44,18 @@ public class ScriptEngineService {
         }
 
         @Override
+        public void onSuccess(ScriptExecution execution, Object result) {
+            onFinish(execution);
+        }
+
+        private void onFinish(ScriptExecution execution) {
+            execution.getRuntime().onStop();
+        }
+
+        @Override
         public void onException(ScriptExecution execution, Exception e) {
             e.printStackTrace();
+            onFinish(execution);
             if (!causedByInterrupted(e)) {
                 execution.getRuntime().console.error(e.getMessage());
                 EVENT_BUS.post(new ScriptExecutionEvent(ScriptExecutionEvent.ON_EXCEPTION, e.getMessage()));
@@ -54,7 +64,7 @@ public class ScriptEngineService {
     };
 
 
-    private final Supplier<ScriptRuntime> mRuntimeSupplier;
+    private final Supplier<? extends ScriptRuntime> mRuntimeSupplier;
     private final Context mContext;
     private UiHandler mUiHandler;
     private final Console mGlobalConsole;

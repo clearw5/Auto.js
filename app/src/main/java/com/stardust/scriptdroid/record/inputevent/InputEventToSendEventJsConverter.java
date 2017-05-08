@@ -23,7 +23,7 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
 
     public InputEventToSendEventJsConverter() {
         mCode.append("var sh = new Shell(true);\n")
-                .append("sh.SetScreenScale(").append(getScreenWidth()).append(", ")
+                .append("sh.SetScreenMetrics(").append(getScreenWidth()).append(", ")
                 .append(getScreenHeight()).append(");\n");
     }
 

@@ -8,7 +8,10 @@ import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.ScriptEngineServiceBuilder;
 import com.stardust.autojs.engine.NodeJsJavaScriptEngineManager;
 import com.stardust.autojs.engine.ScriptEngineManager;
-import com.stardust.autojs.runtime.*;
+import com.stardust.autojs.runtime.AccessibilityBridge;
+import com.stardust.autojs.runtime.ScriptStopException;
+import com.stardust.autojs.runtime.api.AbstractShell;
+import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.automator.simple_action.SimpleActionPerformHost;
 import com.stardust.pio.PFile;
@@ -16,9 +19,9 @@ import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.autojs.api.Shell;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.ui.console.StardustConsole;
-import com.stardust.util.AssetsCache;
 import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
@@ -56,10 +59,12 @@ public class AutoJs implements AccessibilityBridge {
     private final ScriptEngineService mScriptEngineService;
     private final AccessibilityInfoProvider mAccessibilityInfoProvider;
     private final UiHandler mUiHandler;
+    private final AppUtils mAppUtils;
 
 
     private AutoJs(final Context context) {
         mUiHandler = new UiHandler(context);
+        mAppUtils = new AppUtils(context);
         mAccessibilityInfoProvider = new AccessibilityInfoProvider(context.getPackageManager());
         ScriptEngineManager manager = createScriptEngineManager(context);
         mScriptEngineService = new ScriptEngineServiceBuilder()
@@ -70,7 +75,17 @@ public class AutoJs implements AccessibilityBridge {
 
                     @Override
                     public ScriptRuntime get() {
-                        return new ScriptRuntime(mUiHandler, new StardustConsole(mUiHandler), AutoJs.this);
+                        return new ScriptRuntime.Builder()
+                                .setAppUtils(mAppUtils)
+                                .setConsole(new StardustConsole(mUiHandler))
+                                .setAccessibilityBridge(AutoJs.this)
+                                .setUiHandler(mUiHandler)
+                                .setShellSupplier(new Supplier<AbstractShell>() {
+                                    @Override
+                                    public AbstractShell get() {
+                                        return new Shell(true);
+                                    }
+                                }).build();
                     }
                 })
                 .build();
@@ -98,6 +113,10 @@ public class AutoJs implements AccessibilityBridge {
 
     public AccessibilityActionRecorder getAccessibilityActionRecorder() {
         return mAccessibilityActionRecorder;
+    }
+
+    public AppUtils getAppUtils() {
+        return mAppUtils;
     }
 
     public UiHandler getUiHandler() {

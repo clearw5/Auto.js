@@ -14,17 +14,17 @@ import com.stardust.view.accessibility.AccessibilityInfoProvider;
 
 public abstract class AbstractScriptRuntime {
 
-    @JavascriptField
-    public  AppUtils app;
+    @ScriptVariable
+    public AppUtils app;
 
-    @JavascriptField
-    public  Console console;
+    @ScriptVariable
+    public Console console;
 
-    @JavascriptField
-    public  SimpleActionAutomator automator;
+    @ScriptVariable
+    public SimpleActionAutomator automator;
 
-    @JavascriptField
-    public  AccessibilityInfoProvider info;
+    @ScriptVariable
+    public AccessibilityInfoProvider info;
 
     public AbstractScriptRuntime(AppUtils app, Console console, AccessibilityBridge bridge) {
         this.app = app;
@@ -36,35 +36,40 @@ public abstract class AbstractScriptRuntime {
     public AbstractScriptRuntime() {
     }
 
-    @JavascriptInterface
+    @ScriptInterface
     public abstract void toast(final String text);
 
-    @JavascriptInterface
+    @ScriptInterface
     public abstract void sleep(long millis);
 
-    @JavascriptInterface
+    @ScriptInterface
     public abstract void setClip(final String text);
 
-    @JavascriptInterface
+    @ScriptInterface
     public abstract void shellExecAsync(String cmd);
 
-    @JavascriptInterface
+    @ScriptInterface
     public abstract AbstractShell.Result shell(String cmd, int root);
 
-    @JavascriptInterface
+    @ScriptInterface
     public abstract UiSelector selector(ScriptEngine engine);
 
-    @JavascriptInterface
+    @ScriptInterface
     public abstract boolean isStopped();
 
-    @JavascriptInterface
+    @ScriptInterface
     public abstract void requiresApi(int i);
 
-    @JavascriptInterface
+    @ScriptInterface
     public abstract void loadJar(String path);
 
-    @JavascriptInterface
+    @ScriptInterface
     public abstract void stop();
 
+    @ScriptInterface
+    public abstract void SetScreenMetrics(int width, int height);
+
     public abstract void ensureAccessibilityServiceEnabled();
+
+    public abstract void onStop();
 }
