@@ -81,6 +81,7 @@ public class ScriptEngineService {
         mScriptEngineManager.setEngineLifecycleCallback(mEngineLifecycleObserver);
         mScriptExecutionObserver.registerScriptExecutionListener(GLOBAL_LISTENER);
         EVENT_BUS.register(this);
+        mScriptEngineManager.putGlobal("context", mUiHandler.getContext());
     }
 
     public Console getGlobalConsole() {

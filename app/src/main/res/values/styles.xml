@@ -45,5 +45,9 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
+    <style name="AppTheme.Console" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorButtonNormal">#cc181818</item>
+    </style>
 
 </resources>

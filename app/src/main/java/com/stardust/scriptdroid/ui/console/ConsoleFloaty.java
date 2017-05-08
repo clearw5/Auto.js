@@ -55,9 +55,8 @@ public class ConsoleFloaty extends ResizableExpandableFloaty.AbstractResizableEx
     public View inflateExpandedView(FloatyService service, ResizableExpandableFloatyWindow window) {
         ensureContextWrapper(service);
         View view = View.inflate(mContextWrapper, R.layout.floating_console_expand, null);
-        ((ConsoleView) view.findViewById(R.id.console)).setConsole(mConsole);
         setListeners(view, window);
-        initConsoleTitle(view);
+        setUpConsole(view, window);
         setInitialMeasure(view);
         return view;
     }
@@ -79,6 +78,17 @@ public class ConsoleFloaty extends ResizableExpandableFloaty.AbstractResizableEx
     }
 
     private void setListeners(final View view, final ResizableExpandableFloatyWindow window) {
+        setWindowOperationIconListeners(view, window);
+    }
+
+    private void setUpConsole(View view, ResizableExpandableFloatyWindow window) {
+        ConsoleView consoleView = (ConsoleView) view.findViewById(R.id.console);
+        consoleView.setConsole(mConsole);
+        consoleView.setWindow(window);
+        initConsoleTitle(view);
+    }
+
+    private void setWindowOperationIconListeners(View view, final ResizableExpandableFloatyWindow window) {
         view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

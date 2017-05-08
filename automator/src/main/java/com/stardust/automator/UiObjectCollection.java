@@ -1,5 +1,6 @@
 package com.stardust.automator;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.accessibility.AccessibilityNodeInfo;

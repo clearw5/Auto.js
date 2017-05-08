@@ -1,9 +1,7 @@
 package com.stardust.scriptdroid.ui.console;
 
 import android.content.Context;
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatTextView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -13,26 +11,22 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.scriptdroid.R;
-import com.stardust.util.MapEntries;
 import com.stardust.util.SparseArrayEntries;
-
-import java.io.Closeable;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Stardust on 2017/5/2.
  */
 
-public class ConsoleView extends LinearLayout implements StardustConsole.LogListener {
+public class ConsoleView extends FrameLayout implements StardustConsole.LogListener {
 
     private static final SparseArray<Integer> COLORS = new SparseArrayEntries<Integer>()
             .entry(Log.VERBOSE, 0xdfc0c0c0)
@@ -46,6 +40,9 @@ public class ConsoleView extends LinearLayout implements StardustConsole.LogList
     private StardustConsole mConsole;
     private TextView mTextView;
     private EditText mEditText;
+    private ResizableExpandableFloatyWindow mWindow;
+    private LinearLayout mInputContainer;
+    private ScrollView mContentContainer;
 
     public ConsoleView(Context context) {
         super(context);
@@ -64,26 +61,43 @@ public class ConsoleView extends LinearLayout implements StardustConsole.LogList
 
     private void init() {
         inflate(getContext(), R.layout.console_view, this);
-        mTextView = (TextView) findViewById(R.id.textView);
+        mTextView = (TextView) findViewById(R.id.content);
+        mTextView.setMovementMethod(new ScrollingMovementMethod());
+        mContentContainer = (ScrollView) findViewById(R.id.content_container);
+        initEditText();
+        initSubmitButton();
     }
 
-    private void initEditText() {
-        //mEditText = (EditText) findViewById(R.id.ediText);
-        mEditText.setFocusableInTouchMode(true);
-        mTextView.setMovementMethod(new ScrollingMovementMethod());
-        setOnClickListener(new OnClickListener() {
+    private void initSubmitButton() {
+        final Button submit = (Button) findViewById(R.id.submit);
+        submit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mEditText.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                CharSequence input = mEditText.getText();
+                submitInput(input);
             }
         });
     }
 
+    private void submitInput(CharSequence input) {
+        if (android.text.TextUtils.isEmpty(input)) {
+            return;
+        }
+        if (mConsole.submitInput(input)) {
+            mEditText.setText("");
+            mEditText.requestFocus();
+        }
+    }
+
+    private void initEditText() {
+        mEditText = (EditText) findViewById(R.id.input);
+        mEditText.setFocusableInTouchMode(true);
+        mInputContainer = (LinearLayout) findViewById(R.id.input_container);
+    }
+
     public void setConsole(StardustConsole console) {
         mConsole = console;
-        mConsole.setLogListener(this);
+        mConsole.setConsoleView(this);
     }
 
     @Override
@@ -99,17 +113,9 @@ public class ConsoleView extends LinearLayout implements StardustConsole.LogList
             @Override
             public void run() {
                 mTextView.append(spannable);
+                mContentContainer.fullScroll(View.FOCUS_DOWN);
             }
 
-        });
-    }
-
-    private void scrollToBottom() {
-        mTextView.post(new Runnable() {
-            @Override
-            public void run() {
-                mTextView.scrollTo(0, mTextView.getLayout().getLineTop(mTextView.getLineCount()));
-            }
         });
     }
 
@@ -143,5 +149,20 @@ public class ConsoleView extends LinearLayout implements StardustConsole.LogList
                 onNewLog(log);
             }
         }
+    }
+
+    public void setWindow(ResizableExpandableFloatyWindow window) {
+        mWindow = window;
+    }
+
+    public void showEditText() {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                mWindow.requestWindowFocus();
+                mInputContainer.setVisibility(VISIBLE);
+                mEditText.requestFocus();
+            }
+        });
     }
 }

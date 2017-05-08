@@ -22,7 +22,7 @@ public class InputEventRecorder extends Recorder.AbstractRecorder {
 
     public void listen() {
         mShell = new Shell(true);
-        mShell.setCallback(new Shell.Callback() {
+        mShell.setCallback(new Shell.SimpleCallback() {
             @Override
             public void onNewLine(String str) {
                 if (mShell.isInitialized()) {

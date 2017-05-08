@@ -67,7 +67,7 @@ public class JraskaConsole extends AbstractConsole {
 
     @Override
     public void show() {
-        App.getApp().startActivity(new Intent(App.getApp(), ConsoleActivity.class)
+        App.getApp().startActivity(new Intent(App.getApp(), LogActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 

@@ -17,7 +17,7 @@ import com.stardust.scriptdroid.R;
  * Created by Stardust on 2017/2/12.
  */
 
-public class ConsoleActivity extends BaseActivity {
+public class LogActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

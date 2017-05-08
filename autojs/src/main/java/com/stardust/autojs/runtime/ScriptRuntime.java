@@ -1,5 +1,6 @@
 package com.stardust.autojs.runtime;
 
+import android.content.Intent;
 import android.os.Build;
 
 import com.stardust.autojs.R;
@@ -136,6 +137,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
     }
 
     public UiSelector selector(ScriptEngine engine) {
+        Intent intent;
         return new UiSelector(mAccessibilityBridge);
     }
 

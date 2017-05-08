@@ -22,7 +22,6 @@ import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.script.sample.Sample;
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.ui.console.ConsoleActivity;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Utils;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;

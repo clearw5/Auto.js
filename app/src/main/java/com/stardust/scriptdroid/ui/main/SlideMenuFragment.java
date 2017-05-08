@@ -17,7 +17,7 @@ import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
 import com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
-import com.stardust.scriptdroid.ui.console.ConsoleActivity;
+import com.stardust.scriptdroid.ui.console.LogActivity;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.util.UnderuseExecutors;
 import com.stardust.view.ViewBinder;
@@ -99,7 +99,7 @@ public class SlideMenuFragment extends Fragment {
 
     @ViewBinding.Click(R.id.console)
     private void startConsoleActivity() {
-        startActivity(new Intent(getContext(), ConsoleActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        startActivity(new Intent(getContext(), LogActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     @ViewBinding.Click(R.id.syntax_and_api)

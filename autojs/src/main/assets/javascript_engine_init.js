@@ -17,19 +17,13 @@ var toast = function(text){
     __runtime__.toast(text);
 }
 
-var app = __runtime__.app;
+var app = require("app")(__runtime__);
 
 var launchPackage = function(package){
     app.launchPackage(package);
 }
 
-var launch = function(a, b){
-    if(arguments.length == 2){
-        app.launch(a, b);
-    }else{
-        app.launchPackage(a);
-    }
-}
+var launch = app.launch.bind(app);
 
 var launchApp = function(appName){
     app.launchApp(appName);
@@ -42,6 +36,7 @@ var getPackageName = function(appName){
 var openAppSetting = function(packageName){
     return app.openAppSetting(packageName);
 }
+
 
 
 var sleep = function(millis){
@@ -81,9 +76,6 @@ var clearConsole = function(){
 }
 
 var shell = function(cmd, root){
-    if(arguments.length == 1){
-        return new com.stardust.scriptdroid.tool.Shell(context, arguments[0] ? 1 : 0);
-    }
     root = root ? 1 : 0;
     return __runtime__.shell(cmd, root);
 }
@@ -95,6 +87,8 @@ var currentPackage = function(){
 var currentActivity = function(){
     return __runtime__.info.getLatestActivity();
 }
+
+
 
 var __this__ = this;
 
@@ -125,7 +119,6 @@ var recents = function(){
 var splitScreen = function(){
     return __runtime__.automator.splitScreen();
 }
-
 
 function performAction(action, args){
     if(args.length == 4){

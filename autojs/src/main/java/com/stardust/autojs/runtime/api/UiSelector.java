@@ -1,6 +1,8 @@
 package com.stardust.autojs.runtime.api;
 
 import android.accessibilityservice.AccessibilityService;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -149,6 +151,7 @@ public class UiSelector extends UiGlobalSelector {
         } else {
             super.id(id);
         }
+        Intent intent;
         return this;
     }
 

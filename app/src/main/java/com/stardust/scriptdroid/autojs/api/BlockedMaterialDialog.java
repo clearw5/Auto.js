@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.autojs.api;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,10 +25,21 @@ public class BlockedMaterialDialog extends MaterialDialog {
 
     @Override
     public void show() {
-        if (!(getContext() instanceof Activity)) {
+        if (!isActivityContext(getContext())) {
             getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         }
         super.show();
+    }
+
+    private boolean isActivityContext(Context context) {
+        if (context == null)
+            return false;
+        if (context instanceof Activity)
+            return true;
+        if (context instanceof ContextWrapper) {
+            return isActivityContext(((ContextWrapper) context).getBaseContext());
+        }
+        return false;
     }
 
 

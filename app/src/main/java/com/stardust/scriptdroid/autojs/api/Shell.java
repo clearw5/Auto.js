@@ -11,6 +11,7 @@ import com.stardust.lang.ThreadCompat;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.tool.UpdateChecker;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,11 +31,37 @@ import jackpal.androidterm.util.TermSettings;
 public class Shell extends AbstractShell implements AutoCloseable {
 
     public interface Callback {
-        void onNewLine(String str);
+
+        void onOutput(String str);
+
+        void onNewLine(String line);
 
         void onInitialized();
 
         void onInterrupted(InterruptedException e);
+    }
+
+    public static class SimpleCallback implements Callback {
+
+        @Override
+        public void onOutput(String str) {
+
+        }
+
+        @Override
+        public void onNewLine(String str) {
+
+        }
+
+        @Override
+        public void onInitialized() {
+
+        }
+
+        @Override
+        public void onInterrupted(InterruptedException e) {
+
+        }
     }
 
     private static final String TAG = "Shell";
@@ -191,19 +218,18 @@ public class Shell extends AbstractShell implements AutoCloseable {
 
         private void onNewLine(String line) {
             Log.d(TAG, line);
-            if (mInitialized) {
-                if (mCallback != null) {
-                    mCallback.onNewLine(line);
-                }
-            } else {
+            if (!mInitialized) {
                 if (isRoot() && line.endsWith(" $ su")) {
                     notifyInitialized();
                     return;
                 }
-                if (!isRoot() && line.endsWith(" $ ")) {
+                if (!isRoot() && line.endsWith(" $ sh")) {
                     notifyInitialized();
                     return;
                 }
+            }
+            if (mCallback != null) {
+                mCallback.onNewLine(line);
             }
             if (mWaitingExit && line.endsWith(" exit")) {
                 notifyExit();
@@ -214,7 +240,11 @@ public class Shell extends AbstractShell implements AutoCloseable {
         @Override
         protected void processInput(byte[] data, int offset, int count) {
             try {
+                if (mCallback != null) {
+                    mCallback.onOutput(new String(data, offset, count));
+                }
                 mOutputStream.write(data, offset, count);
+
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }

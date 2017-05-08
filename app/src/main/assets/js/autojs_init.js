@@ -45,10 +45,6 @@ var rawInput = function(title, prefill){
     return dialogs.rawInput(title, prefill);
 }
 
-var input = function(title, prefill){
-    return dialogs.input(title, prefill);
-}
-
 var alert = function(title, prefill){
     dialogs.alert(title, prefill);
 }

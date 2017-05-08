@@ -76,7 +76,7 @@
         <activity android:name=".ui.help.HelpCatalogueActivity"/>
         <activity android:name=".ui.settings.AboutActivity"/>
         <activity android:name=".ui.settings.SettingsActivity"/>
-        <activity android:name=".ui.console.ConsoleActivity"/>
+        <activity android:name=".ui.console.LogActivity"/>
         <activity android:name=".ui.error.ErrorReportActivity"/>
         <activity android:name=".ui.help.LocalWebViewActivity"/>
         <activity android:name=".external.tasker.TaskerScriptEditActivity"/>

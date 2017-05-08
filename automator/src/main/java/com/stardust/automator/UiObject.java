@@ -1,6 +1,7 @@
 package com.stardust.automator;
 
 import android.app.UiAutomation;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -152,7 +153,7 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     @Override
     public boolean performAction(int action, Bundle bundle) {
         try {
-            return super.performAction(action);
+            return super.performAction(action, bundle);
         } catch (IllegalStateException e) {
             // FIXME: 2017/5/5
             return false;
@@ -167,6 +168,8 @@ public class UiObject extends AccessibilityNodeInfoCompat {
             // FIXME: 2017/5/5
             return false;
         }
+
+
     }
 
 

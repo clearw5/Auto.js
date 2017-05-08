@@ -2,18 +2,24 @@ package com.stardust.scriptdroid.ui.console;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.view.WindowManager;
 
+import com.stardust.autojs.runtime.ScriptInterface;
+import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.autojs.runtime.api.AbstractConsole;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.autojs.api.VolatileBox;
 import com.stardust.util.UiHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Stardust on 2017/5/2.
@@ -44,11 +50,23 @@ public class StardustConsole extends AbstractConsole {
     private ConsoleFloaty mConsoleFloaty;
     private LogListener mLogListener;
     private UiHandler mUiHandler;
+    //private volatile VolatileBox<String> mInput = new VolatileBox<>("");
+    private BlockingQueue<String> mInput = new ArrayBlockingQueue<>(1);
+    private ConsoleView mConsoleView;
+    private volatile boolean mShown = false;
 
     public StardustConsole(UiHandler uiHandler) {
         mUiHandler = uiHandler;
         mConsoleFloaty = new ConsoleFloaty(this);
         mFloatyWindow = new ResizableExpandableFloatyWindow(mConsoleFloaty);
+    }
+
+    public void setConsoleView(ConsoleView consoleView) {
+        mConsoleView = consoleView;
+        setLogListener(consoleView);
+        synchronized (this) {
+            this.notify();
+        }
     }
 
     public void setLogListener(LogListener logListener) {
@@ -92,6 +110,7 @@ public class StardustConsole extends AbstractConsole {
                 }
             }
         });
+        mShown = true;
     }
 
     private void startFloatyService() {
@@ -106,6 +125,43 @@ public class StardustConsole extends AbstractConsole {
         } catch (IllegalArgumentException ignored) {
 
         }
+        mShown = false;
+    }
+
+    @ScriptInterface
+    public String rawInput() {
+        if (mConsoleView == null) {
+            if (!mShown) {
+                show();
+            }
+            waitConsoleView();
+        }
+        mConsoleView.showEditText();
+        try {
+            return mInput.take();
+        } catch (InterruptedException e) {
+            throw new ScriptInterruptedException();
+        }
+    }
+
+    private void waitConsoleView() {
+        synchronized (this) {
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                throw new ScriptInterruptedException();
+            }
+        }
+    }
+
+    @ScriptInterface
+    public String rawInput(Object data, Object... param) {
+        log(data, param);
+        return rawInput();
+    }
+
+    boolean submitInput(@NonNull CharSequence input) {
+        return mInput.offer(input.toString());
     }
 
     @Override
