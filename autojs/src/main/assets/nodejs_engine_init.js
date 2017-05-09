@@ -1,4 +1,4 @@
-var __requireOld__ = require;
+var __require__ = require;
 var __nodejs_modules__ = {
     'websocket' : com.iwebpp.wspp.WebSocket,
     'websocketserver': com.iwebpp.wspp.WebSocketServer,
@@ -42,5 +42,5 @@ var require = function(module){
         };
     }
 
-    return __requireOld__(module);
+    return __require__(module);
 };

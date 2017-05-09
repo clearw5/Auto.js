@@ -1,9 +1,9 @@
 //以UTF-8编码打开SD卡上的1.txt文件
-var in = open("/sdcard/1.txt", "r", "utf-8");
+var f = open("/sdcard/1.txt", "r", "utf-8");
 //读取文件所有内容
-var text = in.read();
+var text = f.read();
 //关闭文件
-in.close();
+f.close();
 //以gbk编码打开SD卡上的2.txt文件
 var out = open("/sdcard/2.txt", "w", "gbk");
 //写入内容

@@ -2,6 +2,7 @@ package com.stardust.automator;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -199,4 +200,21 @@ public class UiObjectCollection {
         return this;
     }
 
+    public UiObjectCollection find(UiGlobalSelector selector) {
+        List<UiObject> list = new ArrayList<>();
+        for (UiObject object : mNodes) {
+            list.addAll(selector.findOf(object).mNodes);
+        }
+        return of(list);
+    }
+
+    @Nullable
+    public UiObject findOne(UiGlobalSelector selector) {
+        for (UiObject object : mNodes) {
+            UiObject result = selector.findOneOf(object);
+            if (result != null)
+                return result;
+        }
+        return null;
+    }
 }

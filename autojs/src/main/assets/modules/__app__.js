@@ -1,6 +1,7 @@
 
-module.exports = function(__runtime__){
+module.exports = function(__runtime__, scope){
     var app = new Object(__runtime__.app);
+    var context = scope.context;
 
     app.intent = function(i) {
       var intent = new android.content.Intent();
@@ -30,7 +31,7 @@ module.exports = function(__runtime__){
     }
 
     app.startActivity = function(i){
-        context.startActivity(app.intent(i));
+        context.startActivity(app.intent(i).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     app.sendBroadcast = function(i){
@@ -39,5 +40,8 @@ module.exports = function(__runtime__){
 
     app.launch = app.launchPackage;
 
+    scope.__asGlobal__(app, ['launchPackage', 'launch', 'launchApp', 'getPackageName', 'openAppSetting']);
+
     return app;
 }
+

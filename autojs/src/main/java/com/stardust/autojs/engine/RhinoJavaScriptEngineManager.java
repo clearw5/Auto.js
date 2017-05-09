@@ -86,7 +86,7 @@ public class RhinoJavaScriptEngineManager extends AbstractScriptEngineManager {
         AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(getContext(), list);
         new RequireBuilder()
                 .setModuleScriptProvider(new SoftCachingModuleScriptProvider(provider))
-                .setSandboxed(true)
+                .setSandboxed(false)
                 .createRequire(context, scope)
                 .install(scope);
     }

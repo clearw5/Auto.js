@@ -117,9 +117,10 @@ public class ScriptRuntime extends AbstractScriptRuntime {
         });
     }
 
-    public void shellExecAsync(String cmd) {
+    @Override
+    public AbstractShell getRootShell() {
         ensureRootShell();
-        mRootShell.exec(cmd);
+        return mRootShell;
     }
 
     private void ensureRootShell() {
@@ -137,7 +138,6 @@ public class ScriptRuntime extends AbstractScriptRuntime {
     }
 
     public UiSelector selector(ScriptEngine engine) {
-        Intent intent;
         return new UiSelector(mAccessibilityBridge);
     }
 
@@ -161,12 +161,6 @@ public class ScriptRuntime extends AbstractScriptRuntime {
 
     public void stop() {
         Thread.interrupted();
-    }
-
-    @Override
-    public void SetScreenMetrics(int width, int height) {
-        ensureRootShell();
-        mRootShell.SetScreenMetrics(width, height);
     }
 
     public void ensureAccessibilityServiceEnabled() {

@@ -46,7 +46,7 @@ public abstract class AbstractScriptRuntime {
     public abstract void setClip(final String text);
 
     @ScriptInterface
-    public abstract void shellExecAsync(String cmd);
+    public abstract AbstractShell getRootShell();
 
     @ScriptInterface
     public abstract AbstractShell.Result shell(String cmd, int root);
@@ -65,9 +65,6 @@ public abstract class AbstractScriptRuntime {
 
     @ScriptInterface
     public abstract void stop();
-
-    @ScriptInterface
-    public abstract void SetScreenMetrics(int width, int height);
 
     public abstract void ensureAccessibilityServiceEnabled();
 

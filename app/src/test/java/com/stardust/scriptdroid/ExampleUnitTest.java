@@ -27,12 +27,10 @@ public class ExampleUnitTest {
     // TODO: 2017/3/24  编辑界面文档和自动补全
     // TODO: 2017/3/24 驻留模式
     //// TODO: 2017/3/26 NODEJS
-    // TODO: 2017/3/26 加密
     // TODO: 2017/3/31 自定义快捷方式图标
 
 
     // FIXME: 2017/3/23 死机重启问题
-    // FIXME: 2017/3/23 卡顿问题
 
 
     @Test

@@ -8,6 +8,9 @@ import com.stardust.autojs.runtime.api.AutomatorConfig;
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.scriptdroid.autojs.AutoJs;
 
+import org.mozilla.javascript.tools.debugger.Dim;
+import org.mozilla.javascript.tools.debugger.GuiCallback;
+
 /**
  * Created by Stardust on 2017/1/31.
  */
@@ -78,7 +81,7 @@ public class Pref {
         return def().getString(getString(R.string.key_stop_record_trigger), null);
     }
 
-    public static boolean hasRecordTrigger(){
+    public static boolean hasRecordTrigger() {
         String startTrigger = getStartRecordTrigger();
         String stopTrigger = getStartRecordTrigger();
         return startTrigger != null && !startTrigger.equals("NONE")

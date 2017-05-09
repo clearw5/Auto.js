@@ -2,6 +2,7 @@ package com.stardust.automator;
 
 import android.graphics.Rect;
 import android.os.Build;
+import android.support.annotation.Nullable;
 
 import com.stardust.automator.filter.BooleanFilter;
 import com.stardust.automator.filter.BoundsFilter;
@@ -359,9 +360,14 @@ public class UiGlobalSelector {
         return UiObjectCollection.of(list);
     }
 
+    @Nullable
     public UiObject findOneOf(UiObject node) {
         // TODO: 2017/3/9 优化
-        return findOf(node).get(0);
+        UiObjectCollection collection = findOf(node);
+        if (collection.size() == 0) {
+            return null;
+        }
+        return collection.get(0);
     }
 
     public UiGlobalSelector addFilter(ListFilter filter) {
