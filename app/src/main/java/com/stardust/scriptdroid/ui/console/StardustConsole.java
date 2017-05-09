@@ -14,6 +14,7 @@ import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.autojs.api.VolatileBox;
+import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
 import com.stardust.util.UiHandler;
 
 import java.util.ArrayList;
@@ -50,7 +51,6 @@ public class StardustConsole extends AbstractConsole {
     private ConsoleFloaty mConsoleFloaty;
     private LogListener mLogListener;
     private UiHandler mUiHandler;
-    //private volatile VolatileBox<String> mInput = new VolatileBox<>("");
     private BlockingQueue<String> mInput = new ArrayBlockingQueue<>(1);
     private ConsoleView mConsoleView;
     private volatile boolean mShown = false;
@@ -98,6 +98,10 @@ public class StardustConsole extends AbstractConsole {
 
     @Override
     public void show() {
+        if (!FloatingWindowManger.hasFloatingWindowPermission(mUiHandler.getContext())) {
+            FloatingWindowManger.goToFloatingWindowPermissionSetting();
+            mUiHandler.toast(R.string.text_no_floating_window_permission);
+        }
         startFloatyService();
         mUiHandler.post(new Runnable() {
             @Override

@@ -61,6 +61,7 @@ public class ScriptExecuteActivity extends Activity {
     private void prepare() {
         mScriptEngine.put("activity", this);
         mScriptEngine.put("__runtime__", execution.getRuntime());
+        mScriptEngine.setTag("__require_path__", execution.getConfig().getRequirePath());
         mScriptEngine.init();
     }
 

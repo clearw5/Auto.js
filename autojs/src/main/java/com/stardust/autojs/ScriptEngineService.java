@@ -142,6 +142,10 @@ public class ScriptEngineService {
         return execute(new ScriptExecutionTask(source, listener, config));
     }
 
+    public ScriptExecution execute(ScriptSource source, ExecutionConfig config) {
+        return execute(new ScriptExecutionTask(source, null, config));
+    }
+
     public ScriptExecution execute(ScriptSource source, ScriptExecutionListener listener) {
         return execute(source, listener, ExecutionConfig.getDefault());
     }

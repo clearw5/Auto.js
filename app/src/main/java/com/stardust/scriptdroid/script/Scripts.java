@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.stardust.autojs.execution.ExecutionConfig;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
@@ -81,15 +82,22 @@ public class Scripts {
     }
 
     public static ScriptExecution run(ScriptFile file) {
-        return run(new FileScriptSource(file));
+        return run(new FileScriptSource(file), file.getParent());
+    }
+
+    public static ScriptExecution run(ScriptSource source, String directoryPath) {
+        return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
+                .requirePath(directoryPath, StorageScriptProvider.DEFAULT_DIRECTORY_PATH));
     }
 
     public static ScriptExecution run(ScriptSource source) {
-        return AutoJs.getInstance().getScriptEngineService().execute(source);
+        return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
+                .requirePath(StorageScriptProvider.DEFAULT_DIRECTORY_PATH));
     }
 
-    public static ScriptExecution runWithBroadcastSender(ScriptSource scriptSource) {
-        return AutoJs.getInstance().getScriptEngineService().execute(scriptSource, BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER);
+    public static ScriptExecution runWithBroadcastSender(ScriptSource scriptSource, String directoryPath) {
+        return AutoJs.getInstance().getScriptEngineService().execute(scriptSource, BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER,
+                new ExecutionConfig().requirePath(directoryPath, StorageScriptProvider.DEFAULT_DIRECTORY_PATH));
     }
 
     public static ScriptExecution run(Context context, Sample file) {
@@ -97,4 +105,8 @@ public class Scripts {
         return AutoJs.getInstance().getScriptEngineService().execute(source);
     }
 
+    public static ScriptExecution runWithBroadcastSender(ScriptSource source) {
+        return AutoJs.getInstance().getScriptEngineService().execute(source, BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER,
+                new ExecutionConfig().requirePath(StorageScriptProvider.DEFAULT_DIRECTORY_PATH));
+    }
 }

@@ -3,6 +3,7 @@ package com.stardust.autojs.execution;
 import android.util.Log;
 
 import com.stardust.autojs.ScriptEngineService;
+import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.script.ScriptSource;
@@ -53,6 +54,7 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
             runtime.ensureAccessibilityServiceEnabled();
         }
         engine.put("__runtime__", runtime);
+        engine.setTag("__require_path__", getConfig().getRequirePath());
         engine.init();
     }
 

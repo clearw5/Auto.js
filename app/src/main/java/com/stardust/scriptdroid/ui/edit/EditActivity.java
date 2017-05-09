@@ -206,11 +206,7 @@ public class EditActivity extends Editor920Activity {
     private void run() {
         Snackbar.make(mView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         setMenuStatus(R.id.run, MenuDef.STATUS_DISABLED);
-        if (mFile != null) {
-            mScriptExecution = Scripts.runWithBroadcastSender(new FileScriptSource(mName, mFile));
-        } else {
-            mScriptExecution = Scripts.runWithBroadcastSender(new StringScriptSource(mName, mEditorDelegate.getText()));
-        }
+        mScriptExecution = Scripts.runWithBroadcastSender(new FileScriptSource(mName, mFile), mFile.getParent());
     }
 
 

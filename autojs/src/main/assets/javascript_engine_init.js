@@ -15,11 +15,9 @@ if(__engine_name__ == "rhino"){
 
 
 var __asGlobal__ = function(obj, functions){
-    __runtime__.console.log(functions);
     var len = functions.length;
     for(var i = 0; i < len; i++) {
         var funcName = functions[i];
-        __runtime__.console.log(funcName);
         this[funcName] = obj[funcName].bind(obj);
     }
 }

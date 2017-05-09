@@ -18,7 +18,6 @@ public class NodeJsJavaScriptEngineManager extends RhinoJavaScriptEngineManager 
     @Override
     protected NodeJsJavaScriptEngine createEngineInner() {
         NodeJsJavaScriptEngine engine = new NodeJsJavaScriptEngine(this);
-        initRequireBuilder(engine.getContext(), engine.getScriptable());
         return engine;
     }
 

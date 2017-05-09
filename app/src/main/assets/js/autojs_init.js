@@ -9,7 +9,7 @@ dialogs.rawInput = function(title, prefill){
 };
 
 dialogs.input = function(title, prefill){
-    return eval(rawInput(title, prefill));
+    return eval(dialogs.rawInput(title, prefill) + "");
 }
 
 dialogs.prompt = dialogs.rawInput;
@@ -28,15 +28,18 @@ dialogs.select = function(title, items){
     return __runtime__.dialogs.select(title, [].slice.call(arguments, 1));
 }
 
-dialogs.singleChoice = function(title, index, items){
-    return __runtime__.dialogs.singleChoice(title, index, [].slice.call(arguments, 2));
+dialogs.singleChoice = function(title, items, index){
+    index = index || 0;
+    return __runtime__.dialogs.singleChoice(title, index, items);
 }
 
-dialogs.multiChoice = function(title, index, items){
-    var javaArray = __runtime__.dialogs.multiChoice(title, index, [].slice.call(arguments, 2));
-    var jsArray = {};
-    for each(i in javaArray){
-        jsArray.push(i);
+dialogs.multiChoice = function(title, items, index){
+    index = index || [];
+    var javaArray = __runtime__.dialogs.multiChoice(title, index, items);
+    var jsArray = [];
+    var len = javaArray.length;
+    for (var i = 0;i < len;i++){
+        jsArray.push(javaArray[i]);
     }
     return jsArray;
 }
@@ -56,23 +59,3 @@ var confirm = function(title, prefill){
 var prompt = function(title, prefill){
     return dialogs.prompt(title, prefill);
 }
-/*
-
-dialogs.rawInput = function(title, prefill){
-    prefill = prefill || "";
-    return __runtime__.dialogs.rawInput(title, prefill);
-}
-
-dialogs.input = function(title, prefill){
-    return eval(rawInput(title, prefill));
-}
-
-dialogs.alert = function(title, content){
-    __runtime__.dialogs.alert(title, content);
-}
-
-dialogs.select = function(title, content){
-    __runtime__.dialogs.alert(title, content);
-}
-
-*/

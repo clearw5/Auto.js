@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class ExecutionConfig implements Serializable {
 
+    private String[] mRequirePath = new String[0];
     private static final ExecutionConfig DEFAULT = new ExecutionConfig();
 
     public static ExecutionConfig getDefault() {
@@ -20,4 +21,12 @@ public class ExecutionConfig implements Serializable {
         return this;
     }
 
+    public ExecutionConfig requirePath(String... requirePath) {
+        mRequirePath = requirePath;
+        return this;
+    }
+
+    public String[] getRequirePath() {
+        return mRequirePath;
+    }
 }

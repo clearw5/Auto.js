@@ -13,10 +13,15 @@ import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.commonjs.module.RequireBuilder;
+import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,6 +34,7 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
 
     private static int contextCount = 0;
+    private String[] mRequirePath = new String[0];
 
     private Context mContext;
     private Scriptable mScriptable;
@@ -94,7 +100,26 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
     public void init() {
         ScriptableObject.putProperty(mScriptable, "__engine_name__", "rhino");
         ScriptableObject.putProperty(mScriptable, "__engine__", this);
+        mRequirePath = (String[]) getTag("__require_path__");
+        initRequireBuilder(mContext, mScriptable);
         mContext.evaluateString(mScriptable, mEngineManager.getInitScript().getScript(), "<init>", 1, null);
+    }
+
+    public void setRequirePath(String... requirePath) {
+        setTag("__require_path__", requirePath);
+    }
+
+    void initRequireBuilder(Context context, Scriptable scope) {
+        List<URI> list = new ArrayList<>();
+        for (String path : mRequirePath) {
+            list.add(new File(path).toURI());
+        }
+        AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(getEngineManager().getContext(), list);
+        new RequireBuilder()
+                .setModuleScriptProvider(new SoftCachingModuleScriptProvider(provider))
+                .setSandboxed(false)
+                .createRequire(context, scope)
+                .install(scope);
     }
 
     public Context getContext() {

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.iwebpp.node.NodeContext;
 import com.iwebpp.node.http.ClientRequest;
@@ -16,6 +17,7 @@ import com.squareup.leakcanary.LeakCanary;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.app.VolumeChangeObserver;
 import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.external.floating_window.OverlayPermissionChecker;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.statics.ScriptStatics;
 import com.stardust.scriptdroid.tool.CrashHandler;

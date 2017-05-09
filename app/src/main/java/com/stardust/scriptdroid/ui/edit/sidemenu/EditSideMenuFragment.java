@@ -78,7 +78,7 @@ public class EditSideMenuFragment extends Fragment {
     }
 
     private void syncSwitchState() {
-        mFloatingWindowSwitch.setChecked(FloatingWindowManger.isFloatingWindowShowing());
+        mFloatingWindowSwitch.setChecked(FloatingWindowManger.isHoverMenuShowing());
     }
 
     private void setUpSwitchCompat() {
@@ -97,10 +97,10 @@ public class EditSideMenuFragment extends Fragment {
 
     @ViewBinding.Check(R.id.sw_floating_window)
     private void setFloatingWindowEnable(boolean enable) {
-        if (enable && !FloatingWindowManger.isFloatingWindowShowing()) {
+        if (enable && !FloatingWindowManger.isHoverMenuShowing()) {
             FloatingWindowManger.showHoverMenu();
-        } else if (!enable && FloatingWindowManger.isFloatingWindowShowing()) {
-            FloatingWindowManger.hideFloatingWindow();
+        } else if (!enable && FloatingWindowManger.isHoverMenuShowing()) {
+            FloatingWindowManger.hideHoverMenu();
         }
     }
 

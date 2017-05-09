@@ -15,6 +15,8 @@ import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.Scripts;
 
+import java.io.File;
+
 /**
  * Created by Stardust on 2017/2/22.
  */
@@ -35,6 +37,7 @@ public class RunIntentActivity extends Activity {
 
     private void handleIntent(Intent intent) {
         String path = getPath(intent);
+        String directoryPath = null;
         String script = intent.getStringExtra(CommonUtils.EXTRA_KEY_PRE_EXECUTE_SCRIPT);
         ScriptSource source = null;
         if (path == null && script != null) {
@@ -42,9 +45,13 @@ public class RunIntentActivity extends Activity {
         } else if (path != null && new PathChecker(this).checkAndToastError(path)) {
             ScriptSource fileScriptSource = new FileScriptSource(path);
             source = new SequenceScriptSource(fileScriptSource.getName(), new StringScriptSource(script), fileScriptSource);
+            directoryPath = new File(path).getParent();
         }
         if (source != null) {
-            Scripts.run(source);
+            if (directoryPath == null)
+                Scripts.run(source);
+            else
+                Scripts.run(source, directoryPath);
         }
     }
 

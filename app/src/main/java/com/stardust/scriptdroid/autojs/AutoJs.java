@@ -95,7 +95,6 @@ public class AutoJs implements AccessibilityBridge {
 
     private NodeJsJavaScriptEngineManager createScriptEngineManager(Context context) {
         NodeJsJavaScriptEngineManager manager = new NodeJsJavaScriptEngineManager(context);
-        manager.setRequirePath(StorageScriptProvider.DEFAULT_DIRECTORY_PATH);
         try {
             manager.setInitScript(PFile.read(context.getAssets().open(INIT_SCRIPT_PATH)));
         } catch (IOException e) {

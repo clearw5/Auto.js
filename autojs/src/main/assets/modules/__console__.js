@@ -7,6 +7,10 @@ module.exports = function(__runtime__, scope){
         console.assertTrue(value, message);
     }
 
+    console.input = function(data, param){
+        return eval(console.rawInput.call(console, [].slice(arguments)) + "");
+    }
+
     scope.print = console.log.bind(console);
 
     scope.log = scope.print;
