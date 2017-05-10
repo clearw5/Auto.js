@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.stardust.autojs.runtime.ScriptStopException;
-import com.stardust.autojs.runtime.api.Console;
 
 /**
  * Created by Stardust on 2017/5/1.
@@ -24,6 +23,12 @@ public abstract class AbstractConsole implements Console {
         return String.format(data.toString(), options);
     }
 
+    @Override
+    public void print(int level, Object data, Object... options) {
+        write(level, format(data, options));
+    }
+
+    protected abstract void write(int level, CharSequence data);
 
     @Override
     public void verbose(@Nullable Object data, Object... options) {

@@ -9,8 +9,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 123
-        versionName "2.0.9d Alpha"
+        versionCode 125
+        versionName "2.0.9 Beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -18,6 +18,11 @@ android {
         }
     }
     buildTypes {
+        debug {
+            shrinkResources false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         release {
             shrinkResources false
             minifyEnabled false
@@ -42,17 +47,7 @@ android {
             output.outputFile = new File(file.parent, file.name.replace(".apk", "-" + defaultConfig.versionName + ".apk"))
         }
     }
-    packagingOptions {
-        pickFirst 'org/mozilla/javascript/tools/debugger/build.xml'
-        pickFirst 'org/mozilla/javascript/tools/debugger/test.js'
-        pickFirst 'org/mozilla/javascript/tools/idswitch/README'
-        pickFirst 'org/mozilla/javascript/NativeString.java.orig'
-        pickFirst 'org/mozilla/javascript/Node.java.orig'
-        pickFirst 'org/mozilla/javascript/resources/Messages_fr.properties'
-        pickFirst 'org/mozilla/javascript/resources/Messages.properties'
-        pickFirst 'org/mozilla/javascript/*.java.orig'
-        pickFirst 'org/mozilla/javascript/tools/resources/*.properties'
-    }
+
     dexcount {
         format = "list"
         includeClasses = true

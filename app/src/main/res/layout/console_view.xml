@@ -16,6 +16,7 @@
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:paddingLeft="3dp"
             android:textIsSelectable="true"
             android:textSize="14sp"

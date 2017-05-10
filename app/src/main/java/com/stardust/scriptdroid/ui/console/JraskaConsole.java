@@ -50,6 +50,12 @@ public class JraskaConsole extends AbstractConsole {
         Console.writeLine(getLevelSpannable(level, charSequence));
     }
 
+    @Override
+    public void write(int level, CharSequence data) {
+        Console.write(getLevelSpannable(level, getTag(level)));
+        Console.write(getLevelSpannable(level, data));
+    }
+
     private CharSequence getTag(int level) {
         return TextUtils.join("", DATE_FORMAT.format(new Date()), TAGS.get(level), ": ");
     }
@@ -80,4 +86,6 @@ public class JraskaConsole extends AbstractConsole {
     public void setTitle(CharSequence title) {
 
     }
+
+
 }

@@ -89,11 +89,11 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <com.stardust.theme.widget.ThemeColorImageView
+                    <com.stardust.theme.widget.ThemeColorImageViewCompat
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:padding="10dp"
-                        android:src="@drawable/ic_add_file_green"/>
+                        android:src="@drawable/ic_add_file"/>
 
                     <com.stardust.theme.widget.ThemeColorTextView
                         android:layout_width="match_parent"
@@ -114,7 +114,7 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <com.stardust.theme.widget.ThemeColorImageView
+                    <com.stardust.theme.widget.ThemeColorImageViewCompat
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:padding="10dp"
@@ -140,11 +140,11 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <com.stardust.theme.widget.ThemeColorImageView
+                    <com.stardust.theme.widget.ThemeColorImageViewCompat
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:padding="10dp"
-                        android:src="@drawable/ic_folder_open_outline_green"/>
+                        android:src="@drawable/ic_import"/>
 
                     <com.stardust.theme.widget.ThemeColorTextView
                         android:layout_width="match_parent"

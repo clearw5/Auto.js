@@ -151,13 +151,17 @@ public class UiSelector extends UiGlobalSelector {
         } else {
             super.id(id);
         }
-        Intent intent;
         return this;
     }
 
 
     private boolean performAction(int action, ActionArgument... arguments) {
         return untilFind().performAction(action, arguments);
+    }
+
+    public boolean exists() {
+        UiObjectCollection collection = find();
+        return collection != null && collection.size() > 0;
     }
 
     @ScriptInterface

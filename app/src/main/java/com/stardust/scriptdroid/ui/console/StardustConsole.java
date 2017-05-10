@@ -13,7 +13,6 @@ import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.autojs.api.VolatileBox;
 import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
 import com.stardust.util.UiHandler;
 
@@ -79,9 +78,20 @@ public class StardustConsole extends AbstractConsole {
 
     @Override
     public void println(int level, CharSequence charSequence) {
-        Log log = new Log(level, charSequence);
+        Log log = new Log(level, charSequence + "\n");
         mLogs.add(log);
         GLOBAL_CONSOLE.println(level, charSequence);
+        if (mLogListener != null) {
+            mLogListener.onNewLog(log);
+        }
+    }
+
+
+    @Override
+    public void write(int level, CharSequence charSequence) {
+        Log log = new Log(level, charSequence);
+        mLogs.add(log);
+        GLOBAL_CONSOLE.print(level, charSequence);
         if (mLogListener != null) {
             mLogListener.onNewLog(log);
         }

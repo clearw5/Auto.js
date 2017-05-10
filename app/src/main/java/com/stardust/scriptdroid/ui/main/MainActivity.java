@@ -27,8 +27,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.NotAskAgainDialog;
 import com.stardust.app.OnActivityResultDelegate;
+import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
@@ -80,6 +82,7 @@ public class MainActivity extends BaseActivity {
     private DrawableSaver mDrawerHeaderBackgroundSaver, mAppbarBackgroundSaver;
     private VersionGuard mVersionGuard;
     private Intent mIntentToHandle;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,15 +167,14 @@ public class MainActivity extends BaseActivity {
 
     private void setUpTabViewPager() {
         TabLayout tabLayout = $(R.id.tab);
-        ViewPager viewPager = $(R.id.viewpager);
+        mViewPager = $(R.id.viewpager);
         mPagerAdapter = new FragmentPagerAdapterBuilder(this)
                 .add(new MyScriptListFragment(), R.string.text_my_script)
                 .add(new SampleScriptListFragment(), R.string.text_sample_script)
                 .add(new TaskManagerFragment(), R.string.text_task_manage)
                 .build();
-        viewPager.setAdapter(mPagerAdapter);
-        viewPager.setOffscreenPageLimit(mPagerAdapter.getCount());
-        tabLayout.setupWithViewPager(viewPager);
+        mViewPager.setAdapter(mPagerAdapter);
+        tabLayout.setupWithViewPager(mViewPager);
         mPagerAdapter.setOnFragmentInstantiateListener(new FragmentPagerAdapterBuilder.OnFragmentInstantiateListener() {
             @Override
             public void OnInstantiate(Fragment fragment) {
@@ -235,8 +237,11 @@ public class MainActivity extends BaseActivity {
     }
 
     @ViewBinding.Click(R.id.exit)
-    public void finish() {
-        super.finish();
+    public void exitCompletely() {
+        FloatingWindowManger.hideHoverMenu();
+        stopService(new Intent(this, FloatyService.class));
+        AutoJs.getInstance().getScriptEngineService().stopAll();
+        finish();
     }
 
     @ViewBinding.Click(R.id.drawer_header_img)
@@ -265,22 +270,38 @@ public class MainActivity extends BaseActivity {
                 handleRecordedScript(intent.getStringExtra(ARGUMENT_SCRIPT));
                 break;
             case ACTION_IMPORT_SCRIPT:
-                getMyScriptListFragment().importFile(intent.getStringExtra(ARGUMENT_PATH));
+                handleImportScriptFile(intent);
                 break;
             case ACTION_IMPORT_SAMPLE:
-                importSample((Sample) intent.getSerializableExtra(ARGUMENT_SAMPLE));
+                handleImportSample(intent);
                 break;
         }
     }
 
-    private void importSample(Sample sample) {
-        try {
-            getMyScriptListFragment().importFile(sample.name, getAssets().open(sample.path));
-        } catch (IOException e) {
-            e.printStackTrace();
-            Snackbar.make(mDrawerLayout, R.string.text_import_fail, Snackbar.LENGTH_SHORT).show();
+    private void handleImportScriptFile(Intent intent) {
+        mViewPager.setCurrentItem(0, true);
+        MyScriptListFragment fragment = getMyScriptListFragment();
+        if (fragment == null) {
+            mIntentToHandle = intent;
+        } else {
+            fragment.importFile(intent.getStringExtra(ARGUMENT_PATH));
         }
+    }
 
+    private void handleImportSample(Intent intent) {
+        mViewPager.setCurrentItem(0, true);
+        MyScriptListFragment fragment = getMyScriptListFragment();
+        if (fragment == null) {
+            mIntentToHandle = intent;
+        } else {
+            Sample sample = (Sample) intent.getSerializableExtra(ARGUMENT_SAMPLE);
+            try {
+                getMyScriptListFragment().importFile(sample.name, getAssets().open(sample.path));
+            } catch (IOException e) {
+                e.printStackTrace();
+                Snackbar.make(mDrawerLayout, R.string.text_import_fail, Snackbar.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void handleRecordedScript(final String script) {

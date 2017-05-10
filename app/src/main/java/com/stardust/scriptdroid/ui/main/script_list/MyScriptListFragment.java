@@ -61,6 +61,7 @@ public class MyScriptListFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_my_script_list, container, false);
     }
 
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

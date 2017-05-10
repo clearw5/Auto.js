@@ -5,9 +5,11 @@ import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.SparseIntArray;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,16 +29,40 @@ import java.util.TimerTask;
 public class ErrorReportActivity extends BaseActivity {
 
     private static final String TAG = "ErrorReportActivity";
+    private static final SparseIntArray CRASH_COUNT = new SparseIntArray();
+    private static final String KEY_CRASH_COUNT = "Eating... you are my halo...";
+
+    static {
+        CRASH_COUNT.put(2, R.string.text_again);
+        CRASH_COUNT.put(3, R.string.text_again_and_again);
+        CRASH_COUNT.put(4, R.string.text_again_and_again_again);
+        CRASH_COUNT.put(5, R.string.text_again_and_again_again_again);
+    }
+
+    private String mTitle;
 
     protected void onCreate(Bundle savedInstanceState) {
         try {
             super.onCreate(savedInstanceState);
+            mTitle = getCrashCountText() + getString(R.string.text_crash);
             setUpUI();
             handleIntent();
         } catch (Throwable throwable) {
             Log.e(TAG, "", throwable);
             exit();
         }
+
+    }
+
+    private String getCrashCountText() {
+        int i = PreferenceManager.getDefaultSharedPreferences(this).getInt(KEY_CRASH_COUNT, 0);
+        i++;
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putInt(KEY_CRASH_COUNT, i).apply();
+        if (i < 2)
+            return "";
+        if (i > 5)
+            i = 5;
+        return getString(CRASH_COUNT.get(i));
     }
 
 
@@ -49,7 +75,7 @@ public class ErrorReportActivity extends BaseActivity {
 
     private void showErrorMessageByDialog(String message, final String errorDetail) {
         new ThemeColorMaterialDialogBuilder(this)
-                .title(R.string.text_crash)
+                .title(mTitle)
                 .content(R.string.crash_feedback)
                 .positiveText(R.string.text_exit)
                 .neutralText(R.string.text_copy_debug_info)

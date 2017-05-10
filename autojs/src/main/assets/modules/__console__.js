@@ -11,9 +11,9 @@ module.exports = function(__runtime__, scope){
         return eval(console.rawInput.call(console, [].slice(arguments)) + "");
     }
 
-    scope.print = console.log.bind(console);
+    scope.print = console.print.bind(console, android.util.Log.DEBUG);
 
-    scope.log = scope.print;
+    scope.log = console.log.bind(console);
 
     scope.err = console.error.bind(console);
 

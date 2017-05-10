@@ -17,6 +17,9 @@ public interface Console {
     void log(@Nullable Object data, Object... options);
 
     @ScriptInterface
+    void print(int level, Object data, Object... options);
+
+    @ScriptInterface
     void info(@Nullable Object data, Object... options);
 
     @ScriptInterface

@@ -6,12 +6,16 @@ import android.content.ClipboardManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.automator.UiObject;
+import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
@@ -29,6 +33,7 @@ import moe.feng.alipay.zerosdk.AlipayZeroSdk;
 
 public class AboutActivity extends BaseActivity {
 
+    private static final String TAG = "AboutActivity";
     private int mLolClickCount = 0;
 
     @Override
@@ -100,16 +105,52 @@ public class AboutActivity extends BaseActivity {
         mLolClickCount++;
         Toast.makeText(this, R.string.text_lll, Toast.LENGTH_LONG).show();
         if (mLolClickCount >= 5) {
-            new ThemeColorMaterialDialogBuilder(this)
-                    .title("Crash Test")
-                    .positiveText("Crash")
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            throw new RuntimeException("Crash Test");
-                        }
-                    }).show();
+            crashTest();
         }
+    }
+
+    private void showEasterEgg() {
+        new MaterialDialog.Builder(this)
+                .customView(R.layout.paint_layout, false)
+                .show();
+    }
+
+    private void uiObjectCreateTest() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int i = 0;
+                while (true) {
+                    AccessibilityNodeInfo root = AccessibilityWatchDogService.getInstance().getRootInActiveWindow();
+                    if (root != null) {
+                        UiObject uiObject = UiObject.createRoot(root);
+                        UiObject child = uiObject.child(0);
+                        if (i % 1000 == 0) {
+                            Log.v(TAG, String.valueOf(i));
+                            Log.v(TAG, Runtime.getRuntime().totalMemory() + "/" + Runtime.getRuntime().maxMemory());
+                            if (child != null)
+                                Log.v(TAG, String.valueOf(child.getChildCount()));
+                        }
+                        if (child != null)
+                            child.recycle();
+                        i++;
+                    }
+                }
+            }
+        }).start();
+
+    }
+
+    private void crashTest() {
+        new ThemeColorMaterialDialogBuilder(this)
+                .title("Crash Test")
+                .positiveText("Crash")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        throw new RuntimeException("Crash Test");
+                    }
+                }).show();
     }
 
     @ViewBinding.Click(R.id.developer)

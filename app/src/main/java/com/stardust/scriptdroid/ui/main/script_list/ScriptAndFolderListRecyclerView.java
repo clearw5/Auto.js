@@ -84,6 +84,8 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
                 return;
             }
             ScriptFile file = mAdapter.getScriptFileAt(position);
+            if (file == null)
+                return;
             if (file.isDirectory()) {
                 setCurrentDirectory(file, true);
             } else if (mOnItemClickListener != null) {
@@ -96,7 +98,10 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         public boolean onLongClick(View v) {
             if (mOnItemLongClickListener != null) {
                 int position = getChildViewHolder(v).getAdapterPosition();
-                mOnItemLongClickListener.onLongClick(mAdapter.getScriptFileAt(position), position);
+                ScriptFile file = mAdapter.getScriptFileAt(position);
+                if (file == null)
+                    return false;
+                mOnItemLongClickListener.onLongClick(file, position);
                 return true;
             }
             return false;
@@ -108,6 +113,8 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         public void onClick(View v) {
             int position = getChildViewHolder((View) v.getParent()).getAdapterPosition();
             ScriptFile file = mAdapter.getScriptFileAt(position);
+            if (file == null)
+                return;
             Scripts.run(file);
         }
     };
@@ -337,8 +344,13 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
             return getScriptFileAt(position).isDirectory() ? VIEW_TYPE_DIRECTORY : VIEW_TYPE_FILE;
         }
 
+        @Nullable
         public ScriptFile getScriptFileAt(int position) {
-            return mScriptFileList[mCanGoBack ? position - 1 : position];
+            int actualPos = mCanGoBack ? position - 1 : position;
+            if (actualPos >= mScriptFileList.length || actualPos < 0) {
+                return null;
+            }
+            return mScriptFileList[actualPos];
         }
 
         void setScripts(ScriptFile[] scriptFiles) {

@@ -5,11 +5,11 @@ var dialogs =  {};
 
 dialogs.rawInput = function(title, prefill){
    prefill = prefill || "";
-   return __runtime__.dialogs.rawInput(title, prefill);
+   return String(__runtime__.dialogs.rawInput(title, prefill));
 };
 
 dialogs.input = function(title, prefill){
-    return eval(dialogs.rawInput(title, prefill) + "");
+    return eval(dialogs.rawInput(title, prefill));
 }
 
 dialogs.prompt = dialogs.rawInput;
@@ -25,6 +25,9 @@ dialogs.confirm = function(title, prefill){
 }
 
 dialogs.select = function(title, items){
+    if(items instanceof Array){
+        return __runtime__.dialogs.select(title, items);
+    }
     return __runtime__.dialogs.select(title, [].slice.call(arguments, 1));
 }
 

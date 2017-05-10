@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
@@ -75,9 +77,9 @@ public class HoverMenuAdapter implements io.mattcarroll.hover.HoverMenuAdapter {
     private View getTabViewInner(int index) {
         String menuItemId = mTabIds.get(index);
         if (ID_MAIN.equals(menuItemId)) {
-            return createTabView(R.drawable.ic_android_eat_js_100);
+            return createTabView(R.drawable.ic_android_eat_js_64);
         } else if (ID_RECORD.equals(menuItemId)) {
-            return createTabView(R.drawable.ic_video_record);
+            return createTabView(R.drawable.ic_ali_record);
         } else if (ID_SCRIPT_LIST.equals(menuItemId)) {
             return createTabView(R.drawable.ic_menu);
         } else {
@@ -125,7 +127,7 @@ public class HoverMenuAdapter implements io.mattcarroll.hover.HoverMenuAdapter {
         Resources resources = mContext.getResources();
         int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, resources.getDisplayMetrics());
 
-        DemoTabView view = new DemoTabView(mContext, resources.getDrawable(R.drawable.tab_background), resources.getDrawable(tabBitmapRes));
+        DemoTabView view = new DemoTabView(mContext, getCircleDrawable(), resources.getDrawable(tabBitmapRes));
         view.setTabBackgroundColor(backgroundColor);
         view.setTabForegroundColor(iconColor);
         view.setPadding(padding, padding, padding, padding);
@@ -134,6 +136,12 @@ public class HoverMenuAdapter implements io.mattcarroll.hover.HoverMenuAdapter {
         }
         return view;
     }
+
+    private Drawable getCircleDrawable() {
+        ShapeDrawable oval = new ShapeDrawable(new OvalShape());
+        return oval;
+    }
+
 
     public class DemoTabView extends View {
 
@@ -183,13 +191,8 @@ public class HoverMenuAdapter implements io.mattcarroll.hover.HoverMenuAdapter {
         @Override
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
-
-            // Make circle as large as View minus padding.
             mCircleDrawable.setBounds(getPaddingLeft(), getPaddingTop(), w - getPaddingRight(), h - getPaddingBottom());
-
-            // Re-size the icon as necessary.
             updateIconBounds();
-
             invalidate();
         }
 

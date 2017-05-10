@@ -26,7 +26,7 @@ public class BlockedMaterialDialog extends MaterialDialog {
     @Override
     public void show() {
         if (!isActivityContext(getContext())) {
-            getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
         }
         super.show();
     }

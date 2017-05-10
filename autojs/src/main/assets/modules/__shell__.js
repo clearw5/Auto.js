@@ -3,7 +3,7 @@
 module.exports = function(__runtime__, scope){
 
     scope.SetScreenMetrics = function(w, h){
-        __runtime__.getRootShell().SetScreenMetrics(x, y);
+        __runtime__.getRootShell().SetScreenMetrics(w, h);
     }
 
     scope.Tap = function(x, y){

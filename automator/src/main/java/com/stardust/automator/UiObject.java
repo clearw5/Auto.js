@@ -4,6 +4,7 @@ import android.app.UiAutomation;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pools;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
@@ -129,8 +130,10 @@ public class UiObject extends AccessibilityNodeInfoCompat {
         return getViewIdResourceName();
     }
 
+    @NonNull
     public CharSequence text() {
-        return getText();
+        CharSequence t = getText();
+        return t == null ? "" : t;
     }
 
     public CharSequence desc() {
@@ -303,6 +306,10 @@ public class UiObject extends AccessibilityNodeInfoCompat {
         if (mAllocator == null)
             return super.getParent();
         return mAllocator.getParent(this);
+    }
+
+    public boolean visibleToUser() {
+        return isVisibleToUser();
     }
 
     @Override

@@ -45,5 +45,4 @@ public abstract class Fragment extends android.support.v4.app.Fragment {
     public abstract View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState);
 
 
-
 }

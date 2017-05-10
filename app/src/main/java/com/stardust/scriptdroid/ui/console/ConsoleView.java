@@ -85,7 +85,6 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
         }
         if (mConsole.submitInput(input)) {
             mEditText.setText("");
-            mEditText.requestFocus();
         }
     }
 
@@ -93,6 +92,17 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
         mEditText = (EditText) findViewById(R.id.input);
         mEditText.setFocusableInTouchMode(true);
         mInputContainer = (LinearLayout) findViewById(R.id.input_container);
+        OnClickListener listener = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mWindow != null) {
+                    mWindow.requestWindowFocus();
+                    mEditText.requestFocus();
+                }
+            }
+        };
+        mEditText.setOnClickListener(listener);
+        mInputContainer.setOnClickListener(listener);
     }
 
     public void setConsole(StardustConsole console) {
@@ -103,7 +113,6 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
     @Override
     public void onNewLog(StardustConsole.Log log) {
         log(log.level, log.content);
-        log(log.level, "\n");
     }
 
     private void log(int level, CharSequence log) {
@@ -114,6 +123,7 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
             public void run() {
                 mTextView.append(spannable);
                 mContentContainer.fullScroll(View.FOCUS_DOWN);
+                mEditText.requestFocus();
             }
 
         });

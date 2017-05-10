@@ -48,7 +48,7 @@ public class ActionFactory {
             @Override
             protected void performAction(UiObject node) {
                 Bundle args = new Bundle();
-                args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
+                args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, node.text() + text);
                 node.performAction(getAction(), args);
             }
         };

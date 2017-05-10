@@ -1,5 +1,5 @@
 var num1 = dialogs.input("请输入第一个数字");
-var op = dialogs.singleChoice("请选择运算", 0, "加", "减", "乘", "除", "幂");
+var op = dialogs.singleChoice("请选择运算", ["加", "减", "乘", "除", "幂"]);
 var num2 = dialogs.input("请输入第二个数字");
 var result = 0;
 switch(op){

@@ -21,26 +21,25 @@ import com.stardust.scriptdroid.ui.main.MainActivity;
 
 public class SampleScriptListFragment extends Fragment {
 
-    private SampleScriptListRecyclerView mSampleScriptListRecyclerView;
-
     @Nullable
     @Override
     public View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_sample_script_list, container, false);
     }
 
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mSampleScriptListRecyclerView = $(R.id.script_list);
-        mSampleScriptListRecyclerView.setSamples(SampleFileManager.getInstance().getSamplesFromAssets(getContext().getAssets(), "sample"));
-        mSampleScriptListRecyclerView.setOnItemLongClickListener(new SampleScriptListRecyclerView.OnItemLongClickListener() {
+        SampleScriptListRecyclerView sampleScriptListRecyclerView = $(R.id.script_list);
+        sampleScriptListRecyclerView.setSamples(SampleFileManager.getInstance().getSamplesFromAssets(getContext().getAssets(), "sample"));
+        sampleScriptListRecyclerView.setOnItemLongClickListener(new SampleScriptListRecyclerView.OnItemLongClickListener() {
             @Override
             public void onItemLongClick(Sample sample) {
                 showMenuDialog(sample);
             }
         });
-        mSampleScriptListRecyclerView.setOnItemClickListener(new SampleScriptListRecyclerView.OnItemClickListener() {
+        sampleScriptListRecyclerView.setOnItemClickListener(new SampleScriptListRecyclerView.OnItemClickListener() {
             @Override
             public void onItemClick(Sample sample) {
                 viewSample(sample);

@@ -13,7 +13,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <com.stardust.theme.widget.ThemeColorImageView
+        <com.stardust.theme.widget.ThemeColorImageViewCompat
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_margin="16dp"
@@ -35,7 +35,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <com.stardust.theme.widget.ThemeColorImageView
+        <com.stardust.theme.widget.ThemeColorImageViewCompat
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_margin="16dp"
@@ -57,7 +57,7 @@
         android:background="?selectableItemBackground"
         android:gravity="center_vertical">
 
-        <com.stardust.theme.widget.ThemeColorImageView
+        <com.stardust.theme.widget.ThemeColorImageViewCompat
             android:id="@+id/icon_assist_service"
             android:layout_width="20dp"
             android:layout_height="20dp"
