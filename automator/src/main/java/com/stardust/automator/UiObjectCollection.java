@@ -9,6 +9,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.stardust.util.Consumer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.*;
@@ -26,6 +27,8 @@ import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.
  */
 
 public class UiObjectCollection {
+
+    public static final UiObjectCollection EMPTY = UiObjectCollection.of(Collections.<UiObject>emptyList());
 
     public static UiObjectCollection ofCompat(List<AccessibilityNodeInfoCompat> list) {
         return new UiObjectCollection(UiObject.compatListToUiObjectList(list));
@@ -216,5 +219,13 @@ public class UiObjectCollection {
                 return result;
         }
         return null;
+    }
+
+    public boolean empty() {
+        return size() == 0;
+    }
+
+    public boolean nonEmpty() {
+        return size() != 0;
     }
 }

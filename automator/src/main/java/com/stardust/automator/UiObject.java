@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.Pools;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.Log;
+import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
@@ -308,8 +309,63 @@ public class UiObject extends AccessibilityNodeInfoCompat {
         return mAllocator.getParent(this);
     }
 
+
+    public boolean checkable() {
+        return isCheckable();
+    }
+
+
+    public boolean checked() {
+        return isChecked();
+    }
+
+
+    public boolean focusable() {
+        return isFocusable();
+    }
+
+
+    public boolean focused() {
+        return isFocused();
+    }
+
+
     public boolean visibleToUser() {
         return isVisibleToUser();
+    }
+
+
+    public boolean accessibilityFocused() {
+        return isAccessibilityFocused();
+    }
+
+
+    public boolean selected() {
+        return isSelected();
+    }
+
+    public boolean clickable() {
+        return isClickable();
+    }
+
+
+    public boolean longClickable() {
+        return isLongClickable();
+    }
+
+
+    public boolean enabled() {
+        return isEnabled();
+    }
+
+
+    public boolean password() {
+        return isPassword();
+    }
+
+
+    public boolean scrollable() {
+        return isScrollable();
     }
 
     @Override
@@ -355,6 +411,5 @@ public class UiObject extends AccessibilityNodeInfoCompat {
             Log.w(TAG, mStackTrace, e);
         }
     }
-
 
 }

@@ -14,7 +14,9 @@ function 显示更多(){
    } 
 }
 
-toast("请打开点赞自己的人的界面");
+toast("请打开自己的资料页，点击点赞图标");
+sleep(100);
+
 while(notStopped()){
   for(let i = 0; i < 10; i++){
     赞();

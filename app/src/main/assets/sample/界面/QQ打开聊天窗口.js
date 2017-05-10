@@ -16,7 +16,9 @@ container.addView(btnOk);
 activity.setContentView(container);
 
 btnOk.setOnClickListener(function(view){
-    activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("mqqwpa://im/chat?chat_type=wpa&uin=" + qq.getText()))
-        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    app.startActivity({
+        action: "android.intent.action.VIEW",
+        data: "mqqwpa://im/chat?chat_type=wpa&uin=" + qq.getText()
+    });
     activity.finish();
 });

@@ -87,12 +87,13 @@ public class UiSelector extends UiGlobalSelector {
         mAllocator = allocator;
     }
 
+    @NonNull
     @ScriptInterface
     public UiObjectCollection find() {
         ensureAccessibilityServiceEnabled();
         if (AutomatorConfig.isUnintendedGuardEnabled() && isRunningPackageSelf()) {
             Log.d(TAG, "isSelfPackage return null");
-            return null;
+            return UiObjectCollection.EMPTY;
         }
         AccessibilityService service = mAccessibilityBridge.getService();
         if (service != null) {
@@ -101,7 +102,7 @@ public class UiSelector extends UiGlobalSelector {
                 return findOf(UiObject.createRoot(root, mAllocator));
             }
         }
-        return null;
+        return UiObjectCollection.EMPTY;
     }
 
     private void ensureAccessibilityServiceEnabled() {
@@ -123,13 +124,19 @@ public class UiSelector extends UiGlobalSelector {
                 throw new ScriptInterruptedException();
             }
             uiObjectCollection = find();
-        } while (uiObjectCollection == null || uiObjectCollection.size() == 0);
+        } while (uiObjectCollection.empty());
         return uiObjectCollection;
     }
 
     @ScriptInterface
     public UiObject findOne() {
         return untilFindOne();
+    }
+
+    @ScriptInterface
+    public boolean exists() {
+        UiObjectCollection collection = find();
+        return collection.nonEmpty();
     }
 
     @NonNull
@@ -159,10 +166,6 @@ public class UiSelector extends UiGlobalSelector {
         return untilFind().performAction(action, arguments);
     }
 
-    public boolean exists() {
-        UiObjectCollection collection = find();
-        return collection != null && collection.size() > 0;
-    }
 
     @ScriptInterface
     public boolean click() {
