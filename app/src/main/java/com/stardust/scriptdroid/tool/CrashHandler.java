@@ -7,9 +7,12 @@ package com.stardust.scriptdroid.tool;
 
 import android.content.Intent;
 import android.util.Log;
+import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
+import com.stardust.util.IntentUtil;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -26,6 +29,11 @@ public class CrashHandler implements UncaughtExceptionHandler {
     }
 
     public void uncaughtException(Thread thread, Throwable ex) {
+        if (causedByBadWindowToken(ex)) {
+            Toast.makeText(App.getApp(), R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
+            IntentUtil.goToAppDetailSettings(App.getApp());
+            return;
+        }
         try {
             Log.e(TAG, "Uncaught Exception", ex);
             if (crashTooManyTimes())
@@ -36,6 +44,16 @@ public class CrashHandler implements UncaughtExceptionHandler {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
+    }
+
+    private static boolean causedByBadWindowToken(Throwable e) {
+        while (e != null) {
+            if (e instanceof WindowManager.BadTokenException) {
+                return true;
+            }
+            e = e.getCause();
+        }
+        return false;
     }
 
     private void startErrorReportActivity(String msg, String detail) {

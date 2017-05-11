@@ -6,18 +6,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Handler;
-import android.support.annotation.IntDef;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.FloatyWindow;
-import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.autojs.api.VolatileBox;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 /**
  * Created by Stardust on 2017/5/9.

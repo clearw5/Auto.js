@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.layout_inspector.view;
+package com.stardust.scriptdroid.external.floating_window.menu.layout_inspector.view;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.layout_inspector.NodeInfo;
+import com.stardust.scriptdroid.external.floating_window.menu.layout_inspector.NodeInfo;
 import com.stardust.util.ClipboardUtil;
 
 import java.lang.reflect.Field;

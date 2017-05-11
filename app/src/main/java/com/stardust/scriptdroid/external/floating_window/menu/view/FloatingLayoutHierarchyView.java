@@ -7,10 +7,10 @@ import android.view.WindowManager;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService;
-import com.stardust.scriptdroid.layout_inspector.NodeInfo;
-import com.stardust.scriptdroid.layout_inspector.view.LayoutHierarchyView;
-import com.stardust.scriptdroid.layout_inspector.view.NodeInfoView;
-import com.stardust.scriptdroid.layout_inspector.view.OnNodeInfoSelectListener;
+import com.stardust.scriptdroid.external.floating_window.menu.layout_inspector.NodeInfo;
+import com.stardust.scriptdroid.external.floating_window.menu.layout_inspector.view.LayoutHierarchyView;
+import com.stardust.scriptdroid.external.floating_window.menu.layout_inspector.view.NodeInfoView;
+import com.stardust.scriptdroid.external.floating_window.menu.layout_inspector.view.OnNodeInfoSelectListener;
 import com.stardust.util.MessageEvent;
 
 /**

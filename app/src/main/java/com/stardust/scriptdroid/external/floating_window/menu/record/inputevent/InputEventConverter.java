@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.record.inputevent;
+package com.stardust.scriptdroid.external.floating_window.menu.record.inputevent;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -7,11 +7,8 @@ import android.widget.Toast;
 import com.flurry.android.FlurryAgent;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.record.Recorder;
+import com.stardust.scriptdroid.external.floating_window.menu.record.Recorder;
 import com.stardust.util.MapEntries;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

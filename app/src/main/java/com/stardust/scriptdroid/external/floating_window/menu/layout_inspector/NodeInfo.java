@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.layout_inspector;
+package com.stardust.scriptdroid.external.floating_window.menu.layout_inspector;
 
 import android.graphics.Rect;
 import android.support.annotation.Keep;

@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.record.inputevent;
+package com.stardust.scriptdroid.external.floating_window.menu.record.inputevent;
 
 import android.support.annotation.NonNull;
 

@@ -2,6 +2,7 @@ package com.stardust.autojs.runtime;
 
 import android.content.Intent;
 import android.os.Build;
+import android.os.Looper;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.engine.ScriptEngine;
@@ -10,6 +11,7 @@ import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.UiSelector;
+import com.stardust.autojs.runtime.api.internal.VolatileBox;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.autojs.runtime.api.ProcessShell;
@@ -115,6 +117,20 @@ public class ScriptRuntime extends AbstractScriptRuntime {
                 ClipboardUtil.setClip(mUiHandler.getContext(), text);
             }
         });
+    }
+
+    public String getClip() {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            return ClipboardUtil.getClipOrEmpty(mUiHandler.getContext()).toString();
+        }
+        final VolatileBox<String> clip = new VolatileBox<>("");
+        mUiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                clip.setAndNotify(ClipboardUtil.getClipOrEmpty(mUiHandler.getContext()).toString());
+            }
+        });
+        return clip.blockedGet();
     }
 
     @Override

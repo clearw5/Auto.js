@@ -1,7 +1,7 @@
-package com.stardust.scriptdroid.record.inputevent;
+package com.stardust.scriptdroid.external.floating_window.menu.record.inputevent;
 
 import com.stardust.scriptdroid.autojs.api.Shell;
-import com.stardust.scriptdroid.record.Recorder;
+import com.stardust.scriptdroid.external.floating_window.menu.record.Recorder;
 
 /**
  * Created by Stardust on 2017/3/6.

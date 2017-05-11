@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
@@ -10,13 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.Fragment;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
 import com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.stardust.scriptdroid.sublime_plugin_client.SublimePluginClientManager;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
+import com.stardust.scriptdroid.tool.WifiTool;
 import com.stardust.scriptdroid.ui.console.LogActivity;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.util.UnderuseExecutors;
@@ -42,6 +46,7 @@ public class SlideMenuFragment extends Fragment {
     }
 
     private SwitchCompat mAccessibilityServiceSwitch, mFloatingWindowSwitch;
+    private SwitchCompat mDebugSwith;
     private Executor mExecutor = UnderuseExecutors.getExecutor();
 
     @Override
@@ -94,6 +99,7 @@ public class SlideMenuFragment extends Fragment {
     private void setUpSwitchCompat() {
         mAccessibilityServiceSwitch = $(R.id.sw_auto_operate_service);
         mFloatingWindowSwitch = $(R.id.sw_floating_window);
+        mDebugSwith = $(R.id.sw_debug);
     }
 
 
@@ -135,6 +141,27 @@ public class SlideMenuFragment extends Fragment {
         mFloatingWindowSwitch.toggle();
     }
 
+    @ViewBinding.Click(R.id.debug)
+    private void toggleDebugSwitch() {
+        mDebugSwith.toggle();
+    }
+
+    @ViewBinding.Check(R.id.sw_debug)
+    private void setDebugEnabled(boolean enabled) {
+        if (enabled && !SublimePluginClientManager.isConnected()) {
+            new MaterialDialog.Builder(getActivity())
+                    .title("服务器地址")
+                    .input("", WifiTool.getWifiAddress(getActivity()), new MaterialDialog.InputCallback() {
+                        @Override
+                        public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                            SublimePluginClientManager.connect(input.toString());
+                        }
+                    })
+                    .show();
+        } else if (!enabled) {
+            SublimePluginClientManager.disconnectIfNeeded();
+        }
+    }
 
     @ViewBinding.Click(R.id.stop_all_running_scripts)
     private void stopAllRunningScripts() {

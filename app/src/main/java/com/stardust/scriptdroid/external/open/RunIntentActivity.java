@@ -44,7 +44,11 @@ public class RunIntentActivity extends Activity {
             source = new StringScriptSource(script);
         } else if (path != null && new PathChecker(this).checkAndToastError(path)) {
             ScriptSource fileScriptSource = new FileScriptSource(path);
-            source = new SequenceScriptSource(fileScriptSource.getName(), new StringScriptSource(script), fileScriptSource);
+            if (script != null) {
+                source = new SequenceScriptSource(fileScriptSource.getName(), new StringScriptSource(script), fileScriptSource);
+            } else {
+                source = fileScriptSource;
+            }
             directoryPath = new File(path).getParent();
         }
         if (source != null) {

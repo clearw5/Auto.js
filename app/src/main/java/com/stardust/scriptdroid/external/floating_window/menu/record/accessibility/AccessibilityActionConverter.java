@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.record.accessibility;
+package com.stardust.scriptdroid.external.floating_window.menu.record.accessibility;
 
 import android.accessibilityservice.AccessibilityService;
 import android.os.Build;
@@ -8,9 +8,8 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.automator.UiObject;
 import com.stardust.automator.simple_action.FilterAction;
-import com.stardust.scriptdroid.layout_inspector.NodeInfo;
+import com.stardust.scriptdroid.external.floating_window.menu.layout_inspector.NodeInfo;
 import com.stardust.util.SparseArrayEntries;
-import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 import com.stardust.view.accessibility.AccessibilityNodeInfoHelper;
 
 import org.greenrobot.eventbus.EventBus;

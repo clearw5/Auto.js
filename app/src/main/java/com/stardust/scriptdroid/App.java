@@ -74,7 +74,6 @@ public class App extends MultiDexApplication {
         AutoJs.initInstance(this);
         JsBeautifierFactory.initJsBeautify(this, "js/jsbeautify.js");
         initVolumeChangeObserver();
-        startService(new Intent(this, AccessibilityWatchDogService.class));
     }
 
     private void initVolumeChangeObserver() {

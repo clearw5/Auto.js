@@ -40,8 +40,4 @@ public class ImportIntentActivity extends BaseActivity {
         finish();
     }
 
-    private void startMainActivity() {
-
-        finish();
-    }
 }

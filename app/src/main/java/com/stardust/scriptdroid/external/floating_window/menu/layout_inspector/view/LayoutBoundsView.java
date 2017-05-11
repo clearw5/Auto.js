@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.layout_inspector.view;
+package com.stardust.scriptdroid.external.floating_window.menu.layout_inspector.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -12,12 +12,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.stardust.scriptdroid.layout_inspector.NodeInfo;
+import com.stardust.scriptdroid.external.floating_window.menu.layout_inspector.NodeInfo;
 import com.stardust.util.ViewUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**

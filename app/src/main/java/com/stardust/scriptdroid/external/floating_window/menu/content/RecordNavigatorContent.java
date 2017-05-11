@@ -15,17 +15,15 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.accessibility.AccessibilityEventHelper;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService;
-import com.stardust.scriptdroid.record.Recorder;
-import com.stardust.scriptdroid.record.accessibility.AccessibilityActionRecorder;
-import com.stardust.scriptdroid.record.inputevent.InputEventConverter;
-import com.stardust.scriptdroid.record.inputevent.KeyObserver;
-import com.stardust.scriptdroid.record.inputevent.TouchRecorder;
+import com.stardust.scriptdroid.external.floating_window.menu.record.Recorder;
+import com.stardust.scriptdroid.external.floating_window.menu.record.accessibility.AccessibilityActionRecorder;
+import com.stardust.scriptdroid.external.floating_window.menu.record.inputevent.KeyObserver;
+import com.stardust.scriptdroid.external.floating_window.menu.record.inputevent.TouchRecorder;
 import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.util.MessageEvent;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import io.mattcarroll.hover.Navigator;

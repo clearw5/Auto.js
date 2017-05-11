@@ -20,7 +20,6 @@ import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
 import com.stardust.scriptdroid.external.floating_window.menu.view.FloatingLayoutBoundsView;
 import com.stardust.scriptdroid.external.floating_window.menu.view.FloatingLayoutHierarchyView;
-import com.stardust.scriptdroid.layout_inspector.NodeInfo;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.theme.ThemeColorManagerCompat;
 import com.stardust.util.MessageEvent;

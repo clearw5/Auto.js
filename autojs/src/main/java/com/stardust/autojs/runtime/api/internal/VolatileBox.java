@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.autojs.api;
+package com.stardust.autojs.runtime.api.internal;
 
 import com.stardust.autojs.runtime.ScriptInterruptedException;
 

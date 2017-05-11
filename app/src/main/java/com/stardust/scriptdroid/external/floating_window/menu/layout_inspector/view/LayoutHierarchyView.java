@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.layout_inspector.view;
+package com.stardust.scriptdroid.external.floating_window.menu.layout_inspector.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -14,7 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.layout_inspector.NodeInfo;
+import com.stardust.scriptdroid.external.floating_window.menu.layout_inspector.NodeInfo;
 import com.stardust.util.ViewUtil;
 import com.stardust.widget.LevelBeamView;
 

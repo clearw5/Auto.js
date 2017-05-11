@@ -1,17 +1,12 @@
-package com.stardust.scriptdroid.layout_inspector;
+package com.stardust.scriptdroid.external.floating_window.menu.layout_inspector;
 
 import android.accessibilityservice.AccessibilityService;
-import android.util.Log;
-import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.util.UnderuseExecutors;
-import com.stardust.view.accessibility.AccessibilityDelegate;
 
-import java.util.Set;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /**
  * Created by Stardust on 2017/3/10.

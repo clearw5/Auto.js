@@ -116,6 +116,39 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/debug"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="?selectableItemBackground"
+        android:gravity="center_vertical">
+
+        <com.stardust.theme.widget.ThemeColorImageViewCompat
+            android:id="@+id/icon_debug"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_debug"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/icon_debug"
+            android:gravity="center"
+            android:text="@string/debug"
+            android:textColor="@android:color/primary_text_light"/>
+
+        <com.stardust.theme.widget.ThemeColorSwitch
+            android:id="@+id/sw_debug"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"/>
+
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/stop_all_running_scripts"
         android:layout_width="match_parent"

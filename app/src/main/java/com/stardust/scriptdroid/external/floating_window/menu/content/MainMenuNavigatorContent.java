@@ -12,7 +12,7 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService;
-import com.stardust.scriptdroid.layout_inspector.LayoutInspector;
+import com.stardust.scriptdroid.external.floating_window.menu.layout_inspector.LayoutInspector;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.util.MessageEvent;
