@@ -178,7 +178,9 @@
     <string name="text_again_and_again">又双</string>
     <string name="text_again_and_again_again">又双叒</string>
     <string name="text_again_and_again_again_again">又双叒叕</string>
-    <string name="debug">连接调试服务器</string>
+    <string name="debug">连接电脑</string>
+    <string name="text_connected">已连接</string>
+    <string name="text_disconnected">已断开连接</string>
 
     <string-array name="record_control_keys">
         <item>无</item>

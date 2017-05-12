@@ -3,6 +3,8 @@ package com.stardust.scriptdroid.sublime_plugin_client;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
@@ -24,7 +26,7 @@ public class SublimeResponseHandler implements Handler {
                         @Override
                         public boolean handle(JsonObject data) {
                             String script = data.get("script").getAsString();
-                            String name = data.get("name").getAsString();
+                            String name = getName(data);
                             int viewId = data.get("view_id").getAsInt();
                             runScript(viewId, name, script);
                             return false;
@@ -44,7 +46,7 @@ public class SublimeResponseHandler implements Handler {
                         public boolean handle(JsonObject data) {
                             int viewId = data.get("view_id").getAsInt();
                             String script = data.get("script").getAsString();
-                            String name = data.get("name").getAsString();
+                            String name = getName(data);
                             stopScript(viewId);
                             runScript(viewId, name, script);
                             return false;
@@ -81,5 +83,13 @@ public class SublimeResponseHandler implements Handler {
             execution.getEngine().forceStop();
             mScriptExecutions.delete(viewId);
         }
+    }
+
+    private String getName(JsonObject data) {
+        JsonElement element = data.get("name");
+        if (element instanceof JsonNull) {
+            return null;
+        }
+        return element.getAsString();
     }
 }

@@ -34,7 +34,7 @@ public class SublimePluginClientManager {
     }
 
     public static void connect(String host) {
-        client = new SublimePluginClient(AutoJs.getInstance().getUiHandler(), host, 1209);
+        client = new SublimePluginClient(host, 1209);
         client.setResponseHandler(new SublimeResponseHandler());
         client.listen();
     }
@@ -45,10 +45,6 @@ public class SublimePluginClientManager {
         JsonObject object = new JsonObject();
         object.addProperty("type", "log");
         object.addProperty("log", log);
-        try {
-            client.send(object);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        client.send(object);
     }
 }

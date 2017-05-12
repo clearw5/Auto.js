@@ -10,7 +10,9 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.Fragment;
 import com.stardust.scriptdroid.R;
@@ -18,17 +20,20 @@ import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
 import com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.stardust.scriptdroid.sublime_plugin_client.SublimePluginClient;
 import com.stardust.scriptdroid.sublime_plugin_client.SublimePluginClientManager;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.WifiTool;
 import com.stardust.scriptdroid.ui.console.LogActivity;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
+import com.stardust.util.IntentUtil;
 import com.stardust.util.UnderuseExecutors;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.concurrent.Executor;
 
@@ -157,6 +162,13 @@ public class SlideMenuFragment extends Fragment {
                             SublimePluginClientManager.connect(input.toString());
                         }
                     })
+                    .neutralText(R.string.text_help)
+                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            IntentUtil.browse(getActivity(), "https://github.com/hyb1996/AutoJs-Sublime-Plugin/blob/master/Readme.md");
+                        }
+                    })
                     .show();
         } else if (!enabled) {
             SublimePluginClientManager.disconnectIfNeeded();
@@ -181,6 +193,12 @@ public class SlideMenuFragment extends Fragment {
     @Subscribe
     public void onHoverMenuServiceStateChanged(HoverMenuService.ServiceStateChangedEvent event) {
         mFloatingWindowSwitch.setChecked(event.state);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSublimeClientStateChange(SublimePluginClient.ConnectionStateChangeEvent event) {
+        mDebugSwith.setChecked(event.isConnected());
+        Toast.makeText(getActivity(), event.isConnected() ? R.string.text_connected : R.string.text_disconnected, Toast.LENGTH_SHORT).show();
     }
 
 }
