@@ -5,6 +5,7 @@ import com.stardust.autojs.runtime.ScriptInterruptedException;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.xml.XMLLib;
 
 import java.io.File;
 
@@ -48,5 +49,12 @@ public class AndroidContextFactory extends ContextFactory {
         Context cx = super.makeContext();
         cx.setInstructionObserverThreshold(10000);
         return cx;
+    }
+
+    @Override
+    protected XMLLib.Factory getE4xImplementationFactory() {
+        return org.mozilla.javascript.xml.XMLLib.Factory.create(
+                "org.mozilla.javascript.xmlimpl.XMLLibImpl"
+        );
     }
 }

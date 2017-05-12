@@ -1,6 +1,8 @@
 # AutoJs
 ## 简介
-一个**不需要Root权限**的类似按键精灵的自动操作软件，可以实现自动点击、滑动、输入文字、打开应用等。    
+一个**不需要Root权限**的类似按键精灵的自动操作软件，可以实现自动点击、滑动、输入文字、打开应用等。
+
+同时有[Sublime Text 插件](https://github.com/hyb1996/AutoJs-Sublime-Plugin)可提供基础的在桌面开发的功能。
 
 下载地址：[酷安](http://www.coolapk.com/apk/com.stardust.scriptdroid)
 
@@ -26,7 +28,5 @@
 ![screen-capture5](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss06.png)
 
 ## License
-[CC-BY-NC-SA](https://github.com/hyb1996/NoRootScriptDroid/blob/master/LICENSE.md)
-* 署名 — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-* **非商业性使用** — 您不得将本作品用于商业与盈利目的。
-* 相同方式共享 — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+基于[Mozilla Public License Version 2.0](https://github.com/hyb1996/NoRootScriptDroid/blob/master/LICENSE.md)并附加以下条款：
+* **非商业性使用** — 不得将此项目及其衍生的项目的源代码和二进制产品用于任何商业和盈利用途
