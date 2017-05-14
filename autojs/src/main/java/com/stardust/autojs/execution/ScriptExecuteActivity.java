@@ -83,20 +83,26 @@ public class ScriptExecuteActivity extends Activity {
 
         private ScriptEngine mScriptEngine;
         private ScriptRuntime mScriptRuntime;
+        private ScriptEngineService mScriptEngineService;
 
         ActivityScriptExecution(ScriptEngineService service, ScriptExecutionTask task) {
             super(task);
-            mScriptEngine = service.createScriptEngine();
-            mScriptRuntime = service.createScriptRuntime();
+            mScriptEngineService = service;
         }
 
         @Override
         public ScriptEngine getEngine() {
+            if (mScriptEngine == null) {
+                mScriptEngine = mScriptEngineService.createScriptEngine();
+            }
             return mScriptEngine;
         }
 
         @Override
         public ScriptRuntime getRuntime() {
+            if (mScriptRuntime == null) {
+                mScriptRuntime = mScriptEngineService.createScriptRuntime();
+            }
             return mScriptRuntime;
         }
 

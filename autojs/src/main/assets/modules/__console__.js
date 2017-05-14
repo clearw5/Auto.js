@@ -1,6 +1,6 @@
 
 module.exports = function(__runtime__, scope){
-    var console = new Object(__runtime__.console);
+    var console = Object.create(__runtime__.console);
 
     console.assert = function(value, message){
         message = message || "";

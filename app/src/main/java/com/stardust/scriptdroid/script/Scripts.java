@@ -26,6 +26,8 @@ import com.stardust.util.AssetsCache;
 
 import java.io.File;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 /**
  * Created by Stardust on 2017/5/3.
  */

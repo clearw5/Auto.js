@@ -20,14 +20,14 @@ public class UI {
 
 
     public UI(Context context) {
-        this(context, new ConvertLayoutInflater(context));
+        this(context, new ConvertLayoutInflater());
     }
 
     public JsLayoutInflater getLayoutInflater() {
         return mJsLayoutInflater;
     }
 
-    public View inflate(String xml) {
-        return mJsLayoutInflater.inflate(xml);
+    public View inflate(Context context, String xml) {
+        return mJsLayoutInflater.inflate(context, xml);
     }
 }

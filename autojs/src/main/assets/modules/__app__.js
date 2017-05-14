@@ -1,6 +1,6 @@
 
 module.exports = function(__runtime__, scope){
-    var app = new Object(__runtime__.app);
+    var app = Object.create(__runtime__.app);
     var context = scope.context;
 
     app.intent = function(i) {

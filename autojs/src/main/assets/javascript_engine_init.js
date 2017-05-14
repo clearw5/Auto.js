@@ -13,12 +13,13 @@ if(__engine_name__ == "rhino"){
   }
 }
 
+var __that__ = this;
 
 var __asGlobal__ = function(obj, functions){
     var len = functions.length;
     for(var i = 0; i < len; i++) {
         var funcName = functions[i];
-        this[funcName] = obj[funcName].bind(obj);
+        __that__[funcName] = obj[funcName].bind(obj);
     }
 }
 
@@ -32,4 +33,4 @@ require("__general__")(__runtime__, this);
         var m = modules[i];
         scope[m] = require('__' + m + '__')(scope.__runtime__, scope);
     }
-})(this);
+})(__that__);

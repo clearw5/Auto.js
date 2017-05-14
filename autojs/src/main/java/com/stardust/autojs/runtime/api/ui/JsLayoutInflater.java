@@ -9,5 +9,5 @@ import android.view.View;
 
 public interface JsLayoutInflater {
 
-    View inflate(String xml);
+    View inflate(Context context, String xml);
 }

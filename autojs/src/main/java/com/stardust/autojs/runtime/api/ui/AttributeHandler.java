@@ -105,7 +105,7 @@ public interface AttributeHandler {
 
         @Override
         public boolean handle(String nodeName, Node attr, StringBuilder layoutXml) {
-            String dimen = convertToAndroidDimen(attr.getNodeName());
+            String dimen = convertToAndroidDimen(attr.getNodeValue());
             layoutXml.append("android:").append(mAttrName).append("=\"").append(dimen).append("\"\n");
             return true;
         }

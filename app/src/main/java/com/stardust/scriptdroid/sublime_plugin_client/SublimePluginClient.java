@@ -87,26 +87,22 @@ public class SublimePluginClient {
         if (mSocket == null) {
             throw new IllegalStateException("Socket is not listening ");
         }
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            if (mExecutor == null) {
-                mExecutor = Executors.newSingleThreadExecutor();
-            }
-            mExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    send(object);
+        if (mExecutor == null) {
+            mExecutor = Executors.newSingleThreadExecutor();
+        }
+        mExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mOutputStream.write(object.toString().getBytes());
+                    mOutputStream.write("\n".getBytes());
+                    mOutputStream.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    tryClose();
                 }
-            });
-        }
-        try {
-            mOutputStream.write(object.toString().getBytes());
-            mOutputStream.write("\n".getBytes());
-            mOutputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-            tryClose();
-        }
-
+            }
+        });
     }
 
     public void close() throws IOException {
