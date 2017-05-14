@@ -19,6 +19,8 @@ import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.io.Writer;
 import java.nio.channels.Pipe;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -50,20 +52,10 @@ public class ExampleUnitTest {
 
     @Test
     public void test() {
-        PipedInputStream inputStream = new PipedInputStream(1024);
-        try {
-            System.setIn(inputStream);
-            OutputStream outputStream = new PipedOutputStream(inputStream);
-            outputStream.write("(<xml id=\"foo\"></xml>).attributes()[0].name()\n".getBytes());
-            org.mozilla.javascript.tools.shell.Main.exec(new String[]{});
-            inputStream.close();
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        Matcher matcher = Pattern.compile("\\S+").matcher("001   华为    6800");
+        while (matcher.find()){
+            System.out.println(matcher.group());
         }
-        org.mozilla.javascript.xmlimpl.XMLLibImpl
-
-
     }
 
     @Test

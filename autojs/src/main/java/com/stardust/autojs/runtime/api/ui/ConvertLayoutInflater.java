@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.nickandjerry.dynamiclayoutinflator.lib.DynamicLayoutInflator;
+import com.stardust.autojs.runtime.api.ui.widget.JsFrameLayout;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -24,7 +25,7 @@ public class ConvertLayoutInflater implements JsLayoutInflater {
     public View inflate(Context context, String xml) {
         try {
             String androidLayoutXml = XmlConverter.convertToAndroidLayout(xml);
-            FrameLayout root = new FrameLayout(context);
+            JsFrameLayout root = new JsFrameLayout(context);
             DynamicLayoutInflator.inflate(context, androidLayoutXml, root);
             return root;
         } catch (Exception e) {

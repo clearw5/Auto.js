@@ -9,6 +9,7 @@ import org.w3c.dom.Node;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 /**
  * Created by Stardust on 2017/5/14.
@@ -31,12 +32,12 @@ public interface AttributeHandler {
             return handler != null && handler.handle(nodeName, attr, layoutXml);
         }
 
-        public AttrNameRouter registerHandler(String attrName, AttributeHandler handler) {
+        public AttrNameRouter handler(String attrName, AttributeHandler handler) {
             mHandlerMap.put(attrName, handler);
             return this;
         }
 
-        public AttrNameRouter setDefaultHandler(AttributeHandler defaultHandler) {
+        public AttrNameRouter defaultHandler(AttributeHandler defaultHandler) {
             mDefaultHandler = defaultHandler;
             return this;
         }
@@ -54,12 +55,12 @@ public interface AttributeHandler {
             return true;
         }
 
-        public MappedAttributeHandler putAttrNameMap(String oldAttrName, String newAttrName) {
+        public MappedAttributeHandler mapName(String oldAttrName, String newAttrName) {
             mAttrNameMap.put(oldAttrName, newAttrName);
             return this;
         }
 
-        public MappedAttributeHandler putAttrValueMap(String attrName, String oldValue, String newValue) {
+        public MappedAttributeHandler mapValue(String attrName, String oldValue, String newValue) {
             Map<String, String> valueMap = mAttrValueMap.get(attrName);
             if (valueMap == null) {
                 valueMap = new HashMap<>();
@@ -122,5 +123,67 @@ public interface AttributeHandler {
             }
             return dimen;
         }
+    }
+
+    class OrientationHandler implements AttributeHandler {
+
+        @Override
+        public boolean handle(String nodeName, Node attr, StringBuilder layoutXml) {
+            if (attr.getNodeValue().equals("true")) {
+                layoutXml.append("android:orientation=\"vertical\"\n");
+            } else if (attr.getNodeValue().equals("false")) {
+                layoutXml.append("android:orientation=\"horizontal\"\n");
+            } else {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    class MarginPaddingHandler implements AttributeHandler {
+
+        private String mAttrName;
+
+        public MarginPaddingHandler(String attrName) {
+            mAttrName = attrName;
+        }
+
+        @Override
+        public boolean handle(String nodeName, Node attr, StringBuilder layoutXml) {
+            String[] intervals = attr.getNodeName().split("[ ,]");
+            String[] dimens = new String[intervals.length];
+            for (int i = 0; i < intervals.length; i++) {
+                dimens[i] = DimenHandler.convertToAndroidDimen(intervals[i]);
+            }
+            String left, top, right, bottom;
+            switch (dimens.length) {
+                case 1:
+                    left = top = right = bottom = dimens[0];
+                    break;
+                case 2:
+                    top = bottom = dimens[0];
+                    left = right = dimens[1];
+                    break;
+                case 3:
+                    top = dimens[0];
+                    left = right = dimens[1];
+                    bottom = dimens[2];
+                    break;
+                case 4:
+                    top = dimens[0];
+                    right = dimens[1];
+                    bottom = dimens[2];
+                    left = dimens[3];
+                    break;
+                default:
+                    return false;
+            }
+            layoutXml.append("android:").append(mAttrName).append("Top=\"").append(top).append("\"\n")
+                    .append("android:").append(mAttrName).append("Right=\"").append(right).append("\"\n")
+                    .append("android:").append(mAttrName).append("Bottom=\"").append(bottom).append("\"\n")
+                    .append("android:").append(mAttrName).append("Left=\"").append(left).append("\"\n");
+            return true;
+        }
+
     }
 }

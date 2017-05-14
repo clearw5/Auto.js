@@ -2,6 +2,8 @@ package com.stardust.autojs.runtime.api.ui;
 
 import com.stardust.util.MapEntries;
 
+import static com.stardust.autojs.runtime.api.ui.AttributeHandler.*;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -24,20 +26,37 @@ import javax.xml.parsers.ParserConfigurationException;
 public class XmlConverter {
 
     private static final Map<String, String> NODE_NAME_MAP = new MapEntries<String, String>()
-            .entry("linear", "LinearLayout")
+            .entry("frame", "com.stardust.autojs.runtime.api.ui.widget.JsFrameLayout")
+            .entry("linear", "com.stardust.autojs.runtime.api.ui.widget.JsLinearLayout")
+            .entry("relative", "com.stardust.autojs.runtime.api.ui.widget.JsRelativeLayout")
             .entry("button", "Button")
             .entry("text", "TextView")
             .entry("input", "EditText")
+            .entry("image", "ImageView")
             .map();
 
 
     private static final AttributeHandler ATTRIBUTE_HANDLER = new AttributeHandler.AttrNameRouter()
-            .registerHandler("w", new AttributeHandler.DimenHandler("width"))
-            .registerHandler("h", new AttributeHandler.DimenHandler("height"))
-            .registerHandler("id", new AttributeHandler.IdHandler())
-            .setDefaultHandler(new AttributeHandler.MappedAttributeHandler()
-                    .putAttrNameMap("align", "layout_gravity")
-                    .putAttrNameMap("bg", "background"));
+            .handler("w", new DimenHandler("width"))
+            .handler("h", new DimenHandler("height"))
+            .handler("size", new DimenHandler("textSize"))
+            .handler("id", new IdHandler())
+            .handler("vertical", new OrientationHandler())
+            .handler("margin", new MarginPaddingHandler("layout_margin"))
+            .handler("padding", new MarginPaddingHandler("padding"))
+            .handler("marginLeft", new DimenHandler("layout_marginLeft"))
+            .handler("marginRight", new DimenHandler("layout_marginRight"))
+            .handler("marginTop", new DimenHandler("layout_marginTop"))
+            .handler("marginBottom", new DimenHandler("layout_marginBottom"))
+            .handler("paddingLeft", new DimenHandler("paddingLeft"))
+            .handler("paddingRight", new DimenHandler("paddingRight"))
+            .handler("paddingTop", new DimenHandler("paddingTop"))
+            .handler("paddingBottom", new DimenHandler("paddingBottom"))
+            .defaultHandler(new MappedAttributeHandler()
+                    .mapName("align", "layout_gravity")
+                    .mapName("bg", "background")
+                    .mapName("color", "textColor")
+            );
 
     public static String convertToAndroidLayout(String xml) throws IOException, SAXException, ParserConfigurationException {
         return convertToAndroidLayout(new InputSource(new StringReader(xml)));
@@ -67,7 +86,7 @@ public class XmlConverter {
         if (textContent == null || textContent.isEmpty()) {
             return;
         }
-        if (nodeName.equals("text") || nodeName.equals("button"))
+        if (nodeName.equals("text") || nodeName.equals("button") || nodeName.equals("input"))
             layoutXml.append("android:text=\"").append(textContent).append("\"\n");
     }
 

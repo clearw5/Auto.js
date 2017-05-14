@@ -1,0 +1,37 @@
+package com.stardust.autojs.runtime.api.ui.widget;
+
+import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.RelativeLayout;
+
+import com.nickandjerry.dynamiclayoutinflator.lib.DynamicLayoutInflator;
+
+/**
+ * Created by Stardust on 2017/5/14.
+ */
+
+public class JsRelativeLayout extends RelativeLayout {
+    public JsRelativeLayout(Context context) {
+        super(context);
+    }
+
+    public JsRelativeLayout(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public JsRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public JsRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    public View id(String id) {
+        return DynamicLayoutInflator.findViewByIdString(this, id);
+    }
+}
