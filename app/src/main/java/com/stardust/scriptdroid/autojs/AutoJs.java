@@ -70,10 +70,10 @@ public class AutoJs implements AccessibilityBridge {
                 .uiHandler(mUiHandler)
                 .globalConsole(new JraskaConsole())
                 .engineManger(manager)
-                .runtime(new Supplier<ScriptRuntime>() {
+                .runtime(new Supplier<com.stardust.autojs.runtime.ScriptRuntime>() {
 
                     @Override
-                    public ScriptRuntime get() {
+                    public com.stardust.autojs.runtime.ScriptRuntime get() {
                         return new ScriptRuntime.Builder()
                                 .setAppUtils(mAppUtils)
                                 .setConsole(new StardustConsole(mUiHandler))

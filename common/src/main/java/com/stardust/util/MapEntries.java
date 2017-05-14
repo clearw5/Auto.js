@@ -1,5 +1,6 @@
 package com.stardust.util;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -12,7 +13,7 @@ public class MapEntries<K, V> {
     private Map<K, V> mMap;
 
     public MapEntries() {
-        this(new TreeMap<K, V>());
+        this(new HashMap<K, V>());
     }
 
     public MapEntries(Map<K, V> map) {

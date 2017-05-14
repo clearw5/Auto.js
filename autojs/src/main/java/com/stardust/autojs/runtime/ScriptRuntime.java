@@ -12,6 +12,7 @@ import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.UiSelector;
 import com.stardust.autojs.runtime.api.internal.VolatileBox;
+import com.stardust.autojs.runtime.api.ui.UI;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.autojs.runtime.api.ProcessShell;
@@ -39,6 +40,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
         private Console mConsole;
         private AccessibilityBridge mAccessibilityBridge;
         private Supplier<AbstractShell> mShellSupplier;
+        public UI mUi;
 
 
         public Builder() {
@@ -70,8 +72,13 @@ public class ScriptRuntime extends AbstractScriptRuntime {
             return this;
         }
 
+        public Builder setUI(UI ui) {
+            mUi = ui;
+            return this;
+        }
+
         public ScriptRuntime build() {
-            return new ScriptRuntime(mAppUtils, mUiHandler, mConsole, mAccessibilityBridge, mShellSupplier);
+            return new ScriptRuntime(this);
         }
 
     }
@@ -83,11 +90,14 @@ public class ScriptRuntime extends AbstractScriptRuntime {
     private Supplier<AbstractShell> mShellSupplier;
 
 
-    protected ScriptRuntime(AppUtils appUtils, UiHandler uiHandler, Console console, AccessibilityBridge accessibilityBridge, Supplier<AbstractShell> shellSupplier) {
-        super(appUtils, console, accessibilityBridge);
-        mAccessibilityBridge = accessibilityBridge;
-        mUiHandler = uiHandler;
-        mShellSupplier = shellSupplier;
+    protected ScriptRuntime(Builder builder) {
+        super(builder.mAppUtils, builder.mConsole, builder.mAccessibilityBridge, builder.mUi);
+        mAccessibilityBridge = builder.mAccessibilityBridge;
+        mUiHandler = builder.mUiHandler;
+        mShellSupplier = builder.mShellSupplier;
+        if (ui == null) {
+            ui = new UI(mUiHandler.getContext());
+        }
     }
 
     public UiHandler getUiHandler() {

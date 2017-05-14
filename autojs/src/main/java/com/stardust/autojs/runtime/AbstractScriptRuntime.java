@@ -1,10 +1,13 @@
 package com.stardust.autojs.runtime;
 
+import android.view.LayoutInflater;
+
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.UiSelector;
+import com.stardust.autojs.runtime.api.ui.UI;
 import com.stardust.autojs.runtime.simple_action.SimpleActionAutomator;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 
@@ -26,11 +29,15 @@ public abstract class AbstractScriptRuntime {
     @ScriptVariable
     public AccessibilityInfoProvider info;
 
-    public AbstractScriptRuntime(AppUtils app, Console console, AccessibilityBridge bridge) {
+    @ScriptVariable
+    public UI ui;
+
+    public AbstractScriptRuntime(AppUtils app, Console console, AccessibilityBridge bridge, UI ui) {
         this.app = app;
         this.console = console;
         this.automator = new SimpleActionAutomator(bridge, this);
         this.info = bridge.getInfoProvider();
+        this.ui = ui;
     }
 
     public AbstractScriptRuntime() {

@@ -101,7 +101,7 @@ public class InputEventToJsConverter extends InputEventConverter {
 
     private class KeyHandler implements EventHandler {
 
-        private Map<String, String> mKeyPressCodeMap = new MapEntries<>(new HashMap<String, String>())
+        private Map<String, String> mKeyPressCodeMap = new MapEntries<String, String>()
                 .entry("KEY_HOME", "Home")
                 .entry("KEY_MENU", "Menu")
                 .entry("KEY_VOLUMEDOWN", "VolumeDown")
