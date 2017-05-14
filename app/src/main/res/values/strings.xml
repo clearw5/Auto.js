@@ -181,6 +181,7 @@
     <string name="debug">连接电脑</string>
     <string name="text_connected">已连接</string>
     <string name="text_disconnected">已断开连接</string>
+    <string name="text_server_address">服务器地址</string>
 
     <string-array name="record_control_keys">
         <item>无</item>

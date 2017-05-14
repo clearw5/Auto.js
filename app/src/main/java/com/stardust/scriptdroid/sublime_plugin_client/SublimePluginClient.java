@@ -9,8 +9,10 @@ import com.stardust.util.UiHandler;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.concurrent.Executor;
@@ -117,15 +119,14 @@ public class SublimePluginClient {
     }
 
     private void startReadLoop(InputStream stream) throws IOException {
-        byte[] buffer = new byte[8192];
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         while (!Thread.currentThread().isInterrupted()) {
-            int len = stream.read(buffer);
-            if (len <= 0) {
+            String line = reader.readLine();
+            if (line == null) {
                 return;
             }
             if (mResponseHandler != null) {
-                String str = new String(buffer, 0, len);
-                JsonElement jsonElement = new JsonParser().parse(str);
+                JsonElement jsonElement = new JsonParser().parse(line);
                 JsonObject jsonObject = jsonElement.getAsJsonObject();
                 mResponseHandler.handle(jsonObject);
             }

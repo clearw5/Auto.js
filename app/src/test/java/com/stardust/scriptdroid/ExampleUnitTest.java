@@ -4,6 +4,21 @@ import com.jecelyin.common.http.Base64;
 import com.stardust.util.LimitedHashMap;
 
 import org.junit.Test;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.tools.shell.ShellContextFactory;
+import org.mozilla.javascript.xml.XMLLib;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.io.PipedReader;
+import java.io.PipedWriter;
+import java.io.Writer;
+import java.nio.channels.Pipe;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -35,29 +50,30 @@ public class ExampleUnitTest {
 
     @Test
     public void test() {
-        LimitedHashMap<String, Integer> hashMap = new LimitedHashMap<>(5);
-        hashMap.put("a", 1);
-        hashMap.put("b", 1);
-        hashMap.put("c", 1);
-        hashMap.put("d", 1);
-        hashMap.put("e", 1);
-        hashMap.get("a");
-        hashMap.put("f", 1);
-        assertFalse(hashMap.containsKey("a"));
+        PipedInputStream inputStream = new PipedInputStream(1024);
+        try {
+            System.setIn(inputStream);
+            OutputStream outputStream = new PipedOutputStream(inputStream);
+            outputStream.write("(<xml id=\"foo\"></xml>).attributes()[0].name()\n".getBytes());
+            org.mozilla.javascript.tools.shell.Main.exec(new String[]{});
+            inputStream.close();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        org.mozilla.javascript.xmlimpl.XMLLibImpl
+
+
     }
 
     @Test
     public void testAutoReorder() {
-        LimitedHashMap<String, Integer> hashMap = new LimitedHashMap<>(5);
-        hashMap.put("a", 1);
-        hashMap.put("b", 2);
-        hashMap.put("c", 3);
-        hashMap.put("d", 4);
-        hashMap.put("e", 5);
-        hashMap.get("a");
-        hashMap.put("f", 6);
-        assertTrue(hashMap.containsKey("a"));
-        assertFalse(hashMap.containsKey("b"));
+        Context context = Context.enter();
+        Scriptable scriptable = context.initStandardObjects();
+        context.setOptimizationLevel(-1);
+        Object o = context.evaluateString(scriptable, " (<xml id=\"foo\"></xml>).attributes()[0].name()", "<e4x>", 1, null);
+        System.out.println(o);
+        Context.exit();
     }
 
 

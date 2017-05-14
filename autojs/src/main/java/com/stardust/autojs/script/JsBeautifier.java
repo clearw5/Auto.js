@@ -1,6 +1,7 @@
 package com.stardust.autojs.script;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.stardust.autojs.rhino_android.RhinoAndroidHelper;
 import com.stardust.pio.PFile;
@@ -47,6 +48,8 @@ public class JsBeautifier {
                     prepareIfNeeded();
                     enterContext();
                     Object beautifiedCode = mJsBeautifyFunction.call(mScriptContext, mScriptable, mScriptable, new Object[]{code});
+                    Object o = mScriptContext.evaluateString(mScriptable, " (<xml id=\"foo\"></xml>).attributes()[0].name()", "<e4x>", 1, null);
+                    Log.i("e4x", o + "");
                     callback.onSuccess(beautifiedCode.toString());
                 } catch (Exception e) {
                     callback.onException(e);
@@ -68,6 +71,7 @@ public class JsBeautifier {
     private void enterContext() {
         if (mScriptContext == null) {
             mScriptContext = org.mozilla.javascript.Context.enter();
+            mScriptContext.setLanguageVersion(org.mozilla.javascript.Context.VERSION_1_8);
             mScriptContext.setOptimizationLevel(-1);
         }
     }

@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.script;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -17,10 +18,10 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 public class PathChecker {
     public static final int CHECK_RESULT_OK = 0;
 
-    private Activity mActivity;
+    private Context mContext;
 
-    public PathChecker(Activity activity) {
-        mActivity = activity;
+    public PathChecker(Context context) {
+        mContext = context;
     }
 
 
@@ -35,14 +36,14 @@ public class PathChecker {
     public boolean checkAndToastError(String path) {
         int result = checkWithStoragePermission(path);
         if (result != CHECK_RESULT_OK) {
-            Toast.makeText(mActivity, result, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, mContext.getString(result) + ":" + path, Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
     }
 
     private int checkWithStoragePermission(String path) {
-        if (!hasStorageReadPermission(mActivity)) {
+        if (mContext instanceof Activity && !hasStorageReadPermission((Activity) mContext)) {
             return com.stardust.autojs.R.string.text_no_file_rw_permission;
         }
         return check(path);

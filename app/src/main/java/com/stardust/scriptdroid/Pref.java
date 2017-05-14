@@ -17,6 +17,7 @@ import org.mozilla.javascript.tools.debugger.GuiCallback;
 public class Pref {
 
     private static final SharedPreferences DISPOSABLE_BOOLEAN = App.getApp().getSharedPreferences("DISPOSABLE_BOOLEAN", Context.MODE_PRIVATE);
+    private static final String KEY_SERVER_ADDRESS = "Still love you...17.5.14";
     private static SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -116,4 +117,11 @@ public class Pref {
         return getDisposableBoolean("Still Love Eating 17.4.6", true);
     }
 
+    public static String getServerAddressOrDefault(String defaultAddress) {
+        return def().getString(KEY_SERVER_ADDRESS, defaultAddress);
+    }
+
+    public static void saveServerAddress(String address) {
+        def().edit().putString(KEY_SERVER_ADDRESS, address).apply();
+    }
 }

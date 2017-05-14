@@ -15,13 +15,14 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.Fragment;
+import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
 import com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.sublime_plugin_client.SublimePluginClient;
-import com.stardust.scriptdroid.sublime_plugin_client.SublimePluginClientManager;
+import com.stardust.scriptdroid.sublime_plugin_client.SublimePluginService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.WifiTool;
 import com.stardust.scriptdroid.ui.console.LogActivity;
@@ -42,11 +43,11 @@ import java.util.concurrent.Executor;
  * Created by Stardust on 2017/1/30.
  */
 
-public class SlideMenuFragment extends Fragment {
+public class SideMenuFragment extends Fragment {
 
 
     public static void setFragment(FragmentActivity activity, int viewId) {
-        SlideMenuFragment fragment = new SlideMenuFragment();
+        SideMenuFragment fragment = new SideMenuFragment();
         activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).commit();
     }
 
@@ -153,13 +154,14 @@ public class SlideMenuFragment extends Fragment {
 
     @ViewBinding.Check(R.id.sw_debug)
     private void setDebugEnabled(boolean enabled) {
-        if (enabled && !SublimePluginClientManager.isConnected()) {
+        if (enabled && !SublimePluginService.isConnected()) {
             new MaterialDialog.Builder(getActivity())
-                    .title("服务器地址")
-                    .input("", WifiTool.getWifiAddress(getActivity()), new MaterialDialog.InputCallback() {
+                    .title(R.string.text_server_address)
+                    .input("", getServerAddress(), new MaterialDialog.InputCallback() {
                         @Override
                         public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                            SublimePluginClientManager.connect(input.toString());
+                            Pref.saveServerAddress(input.toString());
+                            SublimePluginService.connect(input.toString());
                         }
                     })
                     .neutralText(R.string.text_help)
@@ -171,8 +173,12 @@ public class SlideMenuFragment extends Fragment {
                     })
                     .show();
         } else if (!enabled) {
-            SublimePluginClientManager.disconnectIfNeeded();
+            SublimePluginService.disconnectIfNeeded();
         }
+    }
+
+    private CharSequence getServerAddress() {
+        return Pref.getServerAddressOrDefault(WifiTool.getWifiAddress(getActivity()));
     }
 
     @ViewBinding.Click(R.id.stop_all_running_scripts)

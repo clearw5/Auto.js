@@ -16,7 +16,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,7 +24,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.gson.JsonObject;
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.NotAskAgainDialog;
 import com.stardust.app.OnActivityResultDelegate;
@@ -38,8 +36,6 @@ import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.script.sample.Sample;
 import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
-import com.stardust.scriptdroid.sublime_plugin_client.SublimePluginClient;
-import com.stardust.scriptdroid.sublime_plugin_client.SublimeResponseHandler;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.DrawableSaver;
 import com.stardust.scriptdroid.ui.BaseActivity;
@@ -148,7 +144,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setUpFragment() {
-        SlideMenuFragment.setFragment(this, R.id.fragment_slide_menu);
+        SideMenuFragment.setFragment(this, R.id.fragment_slide_menu);
     }
 
     @SuppressLint("SetTextI18n")

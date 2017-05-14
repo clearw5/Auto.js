@@ -30,7 +30,7 @@ public class FireSettingReceiver extends AbstractPluginSettingReceiver {
 
     @Override
     protected void firePluginSetting(@NonNull Context context, @NonNull Bundle bundle) {
-        context.startActivity(new Intent(App.getApp(), RunIntentActivity.class)
+        CommonUtils.handleIntent(context, new Intent(App.getApp(), RunIntentActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(CommonUtils.EXTRA_KEY_PATH, bundle.getString(CommonUtils.EXTRA_KEY_PATH))
                 .putExtra(CommonUtils.EXTRA_KEY_PRE_EXECUTE_SCRIPT, bundle.getString(CommonUtils.EXTRA_KEY_PRE_EXECUTE_SCRIPT)));

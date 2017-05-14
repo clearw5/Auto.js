@@ -27,6 +27,9 @@ import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.ScreenMetrics;
 
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
+
 import java.lang.ref.WeakReference;
 
 /**

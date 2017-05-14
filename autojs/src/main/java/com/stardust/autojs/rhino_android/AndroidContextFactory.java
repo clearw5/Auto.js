@@ -5,6 +5,7 @@ import com.stardust.autojs.runtime.ScriptInterruptedException;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.tools.shell.ShellContextFactory;
 import org.mozilla.javascript.xml.XMLLib;
 
 import java.io.File;
@@ -13,7 +14,7 @@ import java.io.File;
  * Created by Stardust on 2017/4/5.
  */
 
-public class AndroidContextFactory extends ContextFactory {
+public class AndroidContextFactory extends ShellContextFactory {
     private final File cacheDirectory;
 
     /**
@@ -51,10 +52,4 @@ public class AndroidContextFactory extends ContextFactory {
         return cx;
     }
 
-    @Override
-    protected XMLLib.Factory getE4xImplementationFactory() {
-        return org.mozilla.javascript.xml.XMLLib.Factory.create(
-                "org.mozilla.javascript.xmlimpl.XMLLibImpl"
-        );
-    }
 }

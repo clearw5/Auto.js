@@ -27,41 +27,11 @@ public class RunIntentActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            handleIntent(getIntent());
+            CommonUtils.handleIntent(this, getIntent());
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, R.string.edit_and_run_handle_intent_error, Toast.LENGTH_LONG).show();
         }
         finish();
-    }
-
-    private void handleIntent(Intent intent) {
-        String path = getPath(intent);
-        String directoryPath = null;
-        String script = intent.getStringExtra(CommonUtils.EXTRA_KEY_PRE_EXECUTE_SCRIPT);
-        ScriptSource source = null;
-        if (path == null && script != null) {
-            source = new StringScriptSource(script);
-        } else if (path != null && new PathChecker(this).checkAndToastError(path)) {
-            ScriptSource fileScriptSource = new FileScriptSource(path);
-            if (script != null) {
-                source = new SequenceScriptSource(fileScriptSource.getName(), new StringScriptSource(script), fileScriptSource);
-            } else {
-                source = fileScriptSource;
-            }
-            directoryPath = new File(path).getParent();
-        }
-        if (source != null) {
-            if (directoryPath == null)
-                Scripts.run(source);
-            else
-                Scripts.run(source, directoryPath);
-        }
-    }
-
-    private String getPath(Intent intent) {
-        if (intent.getData() != null && intent.getData().getPath() != null)
-            return intent.getData().getPath();
-        return intent.getStringExtra(CommonUtils.EXTRA_KEY_PATH);
     }
 }

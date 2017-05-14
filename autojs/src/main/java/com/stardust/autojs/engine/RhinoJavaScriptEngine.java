@@ -141,12 +141,12 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
 
     protected Context createContext() {
         if (!ContextFactory.hasExplicitGlobal()) {
-            ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mEngineManager.getContext().getCacheDir(), "classes")));
+            //ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mEngineManager.getContext().getCacheDir(), "classes")));
         }
-        Context context = new RhinoAndroidHelper(mEngineManager.getContext()).enterContext();
+        Context context = Context.enter();//new RhinoAndroidHelper(mEngineManager.getContext()).enterContext();
         contextCount++;
         context.setOptimizationLevel(-1);
-        context.setLanguageVersion(Context.VERSION_ES6);
+        //context.setLanguageVersion(Context.VERSION_ES6);
         return context;
     }
 

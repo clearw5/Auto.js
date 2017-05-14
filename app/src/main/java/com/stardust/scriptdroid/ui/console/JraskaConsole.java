@@ -10,7 +10,7 @@ import android.util.SparseArray;
 import com.jraska.console.Console;
 import com.stardust.autojs.runtime.api.AbstractConsole;
 import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.sublime_plugin_client.SublimePluginClientManager;
+import com.stardust.scriptdroid.sublime_plugin_client.SublimePluginService;
 import com.stardust.util.SparseArrayEntries;
 import com.stardust.util.TextUtils;
 
@@ -49,14 +49,14 @@ public class JraskaConsole extends AbstractConsole {
     public void println(int level, CharSequence charSequence) {
         Console.write(getLevelSpannable(level, getTag(level)));
         Console.writeLine(getLevelSpannable(level, charSequence));
-        SublimePluginClientManager.log(getTag(level) + charSequence.toString());
+        SublimePluginService.log(getTag(level) + charSequence.toString());
     }
 
     @Override
     public void write(int level, CharSequence data) {
         Console.write(getLevelSpannable(level, getTag(level)));
         Console.write(getLevelSpannable(level, data));
-        SublimePluginClientManager.log(getTag(level) + data.toString());
+        SublimePluginService.log(getTag(level) + data.toString());
     }
 
     private CharSequence getTag(int level) {

@@ -9,7 +9,7 @@ import java.io.IOException;
  * Created by Stardust on 2017/5/11.
  */
 
-public class SublimePluginClientManager {
+public class SublimePluginService {
 
     private static SublimePluginClient client;
 
