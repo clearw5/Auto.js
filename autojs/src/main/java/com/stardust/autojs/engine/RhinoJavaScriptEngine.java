@@ -2,6 +2,7 @@ package com.stardust.autojs.engine;
 
 import android.util.Log;
 
+import com.stardust.autojs.engine.preprocess.Preprocessor;
 import com.stardust.autojs.rhino_android.AndroidContextFactory;
 import com.stardust.autojs.rhino_android.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
@@ -10,26 +11,22 @@ import com.stardust.pio.UncheckedIOException;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.ErrorReporter;
-import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.ImporterTopLevel;
-import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.RequireBuilder;
 import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider;
-import org.mozilla.javascript.xmlimpl.XMLLibImpl;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -38,6 +35,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class RhinoJavaScriptEngine implements ScriptEngine {
 
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
+    private static final Preprocessor PREPROCESSOR = new MultiLinePreprocessor();
 
     private static int contextCount = 0;
     private String[] mRequirePath = new String[0];
@@ -62,15 +60,17 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
 
     @Override
     public Object execute(ScriptSource source) {
-        Reader reader = source.getScriptReader();
-        if (reader == null) {
-            return mContext.evaluateString(mScriptable, source.getScript(), "<script>", 1, null);
-        }
+        Reader reader = source.getNonNullScriptReader();
         try {
-            return mContext.evaluateReader(mScriptable, source.getScriptReader(), "<script>", 1, null);
+            reader = preprocess(reader);
+            return mContext.evaluateReader(mScriptable, reader, "<script>", 1, null);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    private Reader preprocess(Reader script) throws IOException {
+        return PREPROCESSOR.preprocess(script);
     }
 
     @Override

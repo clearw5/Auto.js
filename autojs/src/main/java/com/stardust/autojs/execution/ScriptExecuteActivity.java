@@ -3,6 +3,7 @@ package com.stardust.autojs.execution;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -29,6 +30,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         if (execution != null) {
             return null;
         }
+
         execution = new ActivityScriptExecution(service, task);
         context.startActivity(new Intent(context, ScriptExecuteActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));

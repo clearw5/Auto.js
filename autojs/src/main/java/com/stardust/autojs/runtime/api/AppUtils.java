@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import com.stardust.autojs.runtime.ScriptInterface;
 import com.stardust.util.IntentUtil;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ import java.util.List;
 public class AppUtils {
 
     private Context mContext;
-    private Activity mCurrentActivity;
+    private WeakReference<Activity> mCurrentActivity;
 
     public AppUtils(Context context) {
         mContext = context;
@@ -62,7 +63,7 @@ public class AppUtils {
 
     @Nullable
     public Activity getCurrentActivity() {
-        return mCurrentActivity;
+        return mCurrentActivity.get();
     }
 
     @ScriptInterface
@@ -72,6 +73,6 @@ public class AppUtils {
     }
 
     public void setCurrentActivity(Activity currentActivity) {
-        mCurrentActivity = currentActivity;
+        mCurrentActivity = new WeakReference<>(currentActivity);
     }
 }

@@ -1,5 +1,6 @@
 module.exports = function(__runtime__, scope){
     var ui = Object(__runtime__.ui);
+    ui.__id_cache__ = {};
 
     ui.layout = function(xml){
         view = ui.inflate(activity, xml);
@@ -8,6 +9,7 @@ module.exports = function(__runtime__, scope){
 
     ui.setContentView = function(view){
         ui.view = view;
+        ui.__id_cache__ = {};
         activity.setContentView(view);
     }
 
@@ -29,6 +31,13 @@ module.exports = function(__runtime__, scope){
 
     ui.postDelay = function(action, delay){
         __runtime__.getUiHandler().postDelay(action, delay);
+    }
+
+    ui.statusBarColor = function(color){
+        if(typeof(color) == 'string'){
+            color = android.graphics.Color.parseColor(color);
+        }
+        activity.getWindow().setStatusBarColor(color);
     }
 
     function decorate(view){
@@ -59,10 +68,14 @@ module.exports = function(__runtime__, scope){
          },
          get: function(name, start) {
             if(!ui[name]){
-                var widget = ui.id(name);
-                if(widget){
-                    ui[name] = widget;
-                    return widget;
+                var cacheView = ui.__id_cache__[name];
+                if(cacheView){
+                    return cacheView;
+                }
+                cacheView = ui.id(name);
+                if(cacheView){
+                    ui.__id_cache__[name] = cacheView;
+                    return cacheView;
                 }
             }
             return ui[name];
