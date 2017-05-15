@@ -88,7 +88,7 @@ public class SideMenuFragment extends Fragment {
                 mExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        final boolean checked = AccessibilityWatchDogService.isEnable();
+                        final boolean checked = AccessibilityWatchDogService.isEnable(getActivity());
                         mAccessibilityServiceSwitch.post(new Runnable() {
                             @Override
                             public void run() {
@@ -126,9 +126,10 @@ public class SideMenuFragment extends Fragment {
 
     @ViewBinding.Check(R.id.sw_auto_operate_service)
     private void setAutoOperateServiceEnable(boolean enable) {
-        if (enable && !AccessibilityWatchDogService.isEnable()) {
+        boolean isWatchDogServiceEnabled = AccessibilityWatchDogService.isEnable(getActivity());
+        if (enable && !isWatchDogServiceEnabled) {
             AccessibilityServiceTool.enableAccessibilityService();
-        } else if (!enable && AccessibilityWatchDogService.isEnable()) {
+        } else if (!enable && isWatchDogServiceEnabled) {
             AccessibilityWatchDogService.disable();
         }
     }

@@ -1,10 +1,10 @@
 package com.stardust.scriptdroid.service;
 
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.view.accessibility.AccessibilityDelegate;
 import com.stardust.view.accessibility.AccessibilityService;
@@ -39,8 +39,8 @@ public class AccessibilityWatchDogService extends AccessibilityService {
             eventTypes.addAll(set);
     }
 
-    public static boolean isEnable() {
-        return AccessibilityServiceUtils.isAccessibilityServiceEnabled(App.getApp(), AccessibilityWatchDogService.class);
+    public static boolean isEnable(Context context) {
+        return AccessibilityServiceUtils.isAccessibilityServiceEnabled(context, AccessibilityWatchDogService.class);
     }
 
     public static AccessibilityWatchDogService getInstance() {

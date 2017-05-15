@@ -1,12 +1,11 @@
 package com.stardust.autojs.engine;
 
+import com.stardust.autojs.engine.preprocess.MultiLinePreprocessor;
+
 import org.junit.Test;
 
 import java.io.Reader;
 import java.io.StringReader;
-
-import static org.junit.Assert.*;
-import static com.stardust.autojs.engine.MultiLinePreprocessor.*;
 
 /**
  * Created by Stardust on 2017/5/15.

@@ -1,11 +1,11 @@
 "ui";
 
-ui.statusBarColor("#000000")
 showLoginUI();
+ui.statusBarColor("#000000")
 
 //显示登录界面
 function showLoginUI(){
-    ui.layout(`
+    ui.layout(
       <frame>
         <vertical h="auto" align="center" margin="0 50">
           <linear>
@@ -22,7 +22,7 @@ function showLoginUI(){
           </linear>
         </vertical>
       </frame>
-    `);
+    );
 
     ui.login.click(() => {
        toast("您输入的用户名为" + ui.name.text() + " 密码为" + ui.password.text());
@@ -32,7 +32,7 @@ function showLoginUI(){
 
 //显示注册界面
 function showRegisterUI(){
-    ui.layout(`
+    ui.layout(
       <frame>
         <vertical h="auto" align="center" margin="0 50">
           <linear>
@@ -53,6 +53,6 @@ function showRegisterUI(){
           </linear>
         </vertical>
       </frame>
-    `);
+    );
     ui.cancel.click(() => showLoginUI());
 }

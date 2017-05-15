@@ -2,6 +2,7 @@ package com.stardust.autojs.engine;
 
 import android.util.Log;
 
+import com.stardust.autojs.engine.preprocess.MultiLinePreprocessor;
 import com.stardust.autojs.engine.preprocess.Preprocessor;
 import com.stardust.autojs.rhino_android.AndroidContextFactory;
 import com.stardust.autojs.rhino_android.RhinoAndroidHelper;
@@ -17,11 +18,9 @@ import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.RequireBuilder;
 import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RhinoJavaScriptEngine implements ScriptEngine {
 
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
-    private static final Preprocessor PREPROCESSOR = new MultiLinePreprocessor();
 
     private static int contextCount = 0;
     private String[] mRequirePath = new String[0];
@@ -69,8 +67,8 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
         }
     }
 
-    private Reader preprocess(Reader script) throws IOException {
-        return PREPROCESSOR.preprocess(script);
+    protected Reader preprocess(Reader script) throws IOException {
+        return script;
     }
 
     @Override

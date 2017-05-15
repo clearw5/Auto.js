@@ -3,7 +3,7 @@ module.exports = function(__runtime__, scope){
     ui.__id_cache__ = {};
 
     ui.layout = function(xml){
-        view = ui.inflate(activity, xml);
+        view = ui.inflate(activity, xml.toString());
         ui.setContentView(view);
     }
 
@@ -14,6 +14,8 @@ module.exports = function(__runtime__, scope){
     }
 
     ui.id = function(id){
+        if(!ui.view)
+            return null;
         var v = ui.view.getChildAt(0).id(id);
         if(v){
             v = decorate(v);
@@ -67,7 +69,7 @@ module.exports = function(__runtime__, scope){
              ui[name] = value;
          },
          get: function(name, start) {
-            if(!ui[name]){
+            if(!ui[name] && ui.view){
                 var cacheView = ui.__id_cache__[name];
                 if(cacheView){
                     return cacheView;
