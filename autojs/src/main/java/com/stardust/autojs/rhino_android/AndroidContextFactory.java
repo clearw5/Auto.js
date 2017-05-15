@@ -24,7 +24,7 @@ public class AndroidContextFactory extends ShellContextFactory {
      */
     public AndroidContextFactory(File cacheDirectory) {
         this.cacheDirectory = cacheDirectory;
-        initApplicationClassLoader(createClassLoader(com.faendir.rhino_android.AndroidContextFactory.class.getClassLoader()));
+        initApplicationClassLoader(createClassLoader(AndroidContextFactory.class.getClassLoader()));
     }
 
     /**

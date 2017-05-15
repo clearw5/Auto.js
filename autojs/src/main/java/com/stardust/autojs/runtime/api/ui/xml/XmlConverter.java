@@ -1,8 +1,6 @@
-package com.stardust.autojs.runtime.api.ui;
+package com.stardust.autojs.runtime.api.ui.xml;
 
 import com.stardust.util.MapEntries;
-
-import static com.stardust.autojs.runtime.api.ui.AttributeHandler.*;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -25,34 +23,35 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class XmlConverter {
 
-    private static final Map<String, String> NODE_NAME_MAP = new MapEntries<String, String>()
-            .entry("frame", "com.stardust.autojs.runtime.api.ui.widget.JsFrameLayout")
-            .entry("linear", "com.stardust.autojs.runtime.api.ui.widget.JsLinearLayout")
-            .entry("relative", "com.stardust.autojs.runtime.api.ui.widget.JsRelativeLayout")
-            .entry("button", "Button")
-            .entry("text", "TextView")
-            .entry("input", "EditText")
-            .entry("image", "ImageView")
-            .map();
-
+    private static final NodeHandler NODE_HANDLER = new NodeHandler.NameRouter()
+            .handler("vertical", new NodeHandler.VerticalHandler("com.stardust.autojs.runtime.api.ui.widget.JsLinearLayout"))
+            .defaultHandler(new NodeHandler.MapNameHandler()
+                    .map("frame", "com.stardust.autojs.runtime.api.ui.widget.JsFrameLayout")
+                    .map("linear", "com.stardust.autojs.runtime.api.ui.widget.JsLinearLayout")
+                    .map("relative", "com.stardust.autojs.runtime.api.ui.widget.JsRelativeLayout")
+                    .map("button", "com.stardust.autojs.runtime.api.ui.widget.JsButton")
+                    .map("text", "com.stardust.autojs.runtime.api.ui.widget.JsTextView")
+                    .map("input", "com.stardust.autojs.runtime.api.ui.widget.JsEditText")
+                    .map("image", "ImageView")
+            );
 
     private static final AttributeHandler ATTRIBUTE_HANDLER = new AttributeHandler.AttrNameRouter()
-            .handler("w", new DimenHandler("width"))
-            .handler("h", new DimenHandler("height"))
-            .handler("size", new DimenHandler("textSize"))
-            .handler("id", new IdHandler())
-            .handler("vertical", new OrientationHandler())
-            .handler("margin", new MarginPaddingHandler("layout_margin"))
-            .handler("padding", new MarginPaddingHandler("padding"))
-            .handler("marginLeft", new DimenHandler("layout_marginLeft"))
-            .handler("marginRight", new DimenHandler("layout_marginRight"))
-            .handler("marginTop", new DimenHandler("layout_marginTop"))
-            .handler("marginBottom", new DimenHandler("layout_marginBottom"))
-            .handler("paddingLeft", new DimenHandler("paddingLeft"))
-            .handler("paddingRight", new DimenHandler("paddingRight"))
-            .handler("paddingTop", new DimenHandler("paddingTop"))
-            .handler("paddingBottom", new DimenHandler("paddingBottom"))
-            .defaultHandler(new MappedAttributeHandler()
+            .handler("w", new AttributeHandler.DimenHandler("width"))
+            .handler("h", new AttributeHandler.DimenHandler("height"))
+            .handler("size", new AttributeHandler.DimenHandler("textSize"))
+            .handler("id", new AttributeHandler.IdHandler())
+            .handler("vertical", new AttributeHandler.OrientationHandler())
+            .handler("margin", new AttributeHandler.MarginPaddingHandler("layout_margin"))
+            .handler("padding", new AttributeHandler.MarginPaddingHandler("padding"))
+            .handler("marginLeft", new AttributeHandler.DimenHandler("layout_marginLeft"))
+            .handler("marginRight", new AttributeHandler.DimenHandler("layout_marginRight"))
+            .handler("marginTop", new AttributeHandler.DimenHandler("layout_marginTop"))
+            .handler("marginBottom", new AttributeHandler.DimenHandler("layout_marginBottom"))
+            .handler("paddingLeft", new AttributeHandler.DimenHandler("paddingLeft"))
+            .handler("paddingRight", new AttributeHandler.DimenHandler("paddingRight"))
+            .handler("paddingTop", new AttributeHandler.DimenHandler("paddingTop"))
+            .handler("paddingBottom", new AttributeHandler.DimenHandler("paddingBottom"))
+            .defaultHandler(new AttributeHandler.MappedAttributeHandler()
                     .mapName("align", "layout_gravity")
                     .mapName("bg", "background")
                     .mapName("color", "textColor")
@@ -73,8 +72,7 @@ public class XmlConverter {
 
     private static void handleNode(Node node, String namespace, StringBuilder layoutXml) {
         String nodeName = node.getNodeName();
-        String mappedNodeName = mapNodeName(nodeName);
-        layoutXml.append("<").append(mappedNodeName).append(" ").append(namespace).append("\n");
+        String mappedNodeName = NODE_HANDLER.handleNode(node, namespace, layoutXml);
         handleText(nodeName, node.getTextContent(), layoutXml);
         handleAttributes(nodeName, node.getAttributes(), layoutXml);
         layoutXml.append(">\n");
@@ -115,11 +113,6 @@ public class XmlConverter {
 
     private static void handleAttribute(String nodeName, Node attr, StringBuilder layoutXml) {
         ATTRIBUTE_HANDLER.handle(nodeName, attr, layoutXml);
-    }
-
-    private static String mapNodeName(String nodeName) {
-        String str = NODE_NAME_MAP.get(nodeName);
-        return str == null ? nodeName : str;
     }
 
 

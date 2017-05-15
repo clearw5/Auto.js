@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.ScriptEngineServiceBuilder;
-import com.stardust.autojs.engine.NodeJsJavaScriptEngineManager;
+import com.stardust.autojs.engine.RhinoJavaScriptEngineManager;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.runtime.AccessibilityBridge;
 import com.stardust.autojs.runtime.ScriptStopException;
@@ -92,8 +92,8 @@ public class AutoJs implements AccessibilityBridge {
         mScriptEngineService.registerGlobalScriptExecutionListener(new ScriptExecutionGlobalListener());
     }
 
-    private NodeJsJavaScriptEngineManager createScriptEngineManager(Context context) {
-        NodeJsJavaScriptEngineManager manager = new NodeJsJavaScriptEngineManager(context);
+    private ScriptEngineManager createScriptEngineManager(Context context) {
+        RhinoJavaScriptEngineManager manager = new RhinoJavaScriptEngineManager(context);
         try {
             manager.setInitScript(PFile.read(context.getAssets().open(INIT_SCRIPT_PATH)));
         } catch (IOException e) {

@@ -1,10 +1,13 @@
 package com.stardust.autojs.runtime.api.ui;
 
 import android.content.res.Resources;
+import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.nickandjerry.dynamiclayoutinflator.lib.DynamicLayoutInflator;
 
 /**
  * Created by Stardust on 2017/5/14.
@@ -12,61 +15,20 @@ import android.view.ViewGroup;
 
 public class JsViewHelper {
 
-    private View mView;
-
-    public JsViewHelper(View view) {
-
-    }
-
-    public void w(String width) {
-        float w = toPixel(width);
-
-    }
-
-    public static float toPixel(String dimen) {
-        if (dimen.equals("*")) {
-            return ViewGroup.LayoutParams.MATCH_PARENT;
+    @Nullable
+    public static View findViewByStringId(View view, String id) {
+        View result = DynamicLayoutInflator.findViewByIdString(view, id);
+        if (result != null)
+            return result;
+        if (!(view instanceof ViewGroup)) {
+            return null;
         }
-        if (dimen.equals("auto")) {
-            return ViewGroup.LayoutParams.WRAP_CONTENT;
+        ViewGroup group = (ViewGroup) view;
+        for (int i = 0; i < group.getChildCount(); i++) {
+            result = findViewByStringId(group.getChildAt(i), id);
+            if (result != null)
+                return result;
         }
-        if (Character.isDigit(dimen.charAt(dimen.length() - 1))) {
-            return Float.parseFloat(dimen);
-        }
-        float f = Float.parseFloat(dimen.substring(0, dimen.length() - 2));
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        if (dimen.endsWith("dp")) {
-            return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, f, metrics);
-        }
-        if (dimen.endsWith("sp")) {
-            return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, f, metrics);
-        }
-        throw new IllegalArgumentException(dimen);
+        return null;
     }
-
-    public void h(String height) {
-
-    }
-
-    public void gravity(String gravity) {
-
-    }
-
-    public void align(String alignment) {
-
-    }
-
-    public void padding(String padding) {
-
-    }
-
-    public void margin(String margin) {
-
-    }
-
-    public void bg(String background) {
-
-    }
-
-
 }

@@ -18,6 +18,7 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.RequireBuilder;
 import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider;
+import org.mozilla.javascript.xmlimpl.XMLLibImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * Created by Stardust on 2017/4/2.

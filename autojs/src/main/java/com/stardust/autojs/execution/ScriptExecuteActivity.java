@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
+import com.stardust.autojs.R;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.runtime.ScriptRuntime;
@@ -14,7 +16,7 @@ import com.stardust.autojs.script.ScriptSource;
  * Created by Stardust on 2017/2/5.
  */
 
-public class ScriptExecuteActivity extends Activity {
+public class ScriptExecuteActivity extends AppCompatActivity {
 
 
     private static ActivityScriptExecution execution;

@@ -1,15 +1,9 @@
-package com.stardust.autojs.runtime.api.ui;
-
-import android.content.res.Resources;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
-import android.view.ViewGroup;
+package com.stardust.autojs.runtime.api.ui.xml;
 
 import org.w3c.dom.Node;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
 
 /**
  * Created by Stardust on 2017/5/14.
@@ -150,7 +144,7 @@ public interface AttributeHandler {
 
         @Override
         public boolean handle(String nodeName, Node attr, StringBuilder layoutXml) {
-            String[] intervals = attr.getNodeName().split("[ ,]");
+            String[] intervals = attr.getNodeValue().split("[ ,]");
             String[] dimens = new String[intervals.length];
             for (int i = 0; i < intervals.length; i++) {
                 dimens[i] = DimenHandler.convertToAndroidDimen(intervals[i]);

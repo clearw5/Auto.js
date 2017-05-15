@@ -1,5 +1,7 @@
 package com.stardust.autojs.runtime.api.ui;
 
+import com.stardust.autojs.runtime.api.ui.xml.XmlConverter;
+
 import org.junit.Test;
 import org.xml.sax.SAXException;
 

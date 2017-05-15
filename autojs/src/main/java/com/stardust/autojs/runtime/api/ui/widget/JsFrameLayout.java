@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.nickandjerry.dynamiclayoutinflator.lib.DynamicLayoutInflator;
+import com.stardust.autojs.runtime.api.ui.JsViewHelper;
 
 /**
  * Created by Stardust on 2017/5/14.
@@ -36,6 +37,6 @@ public class JsFrameLayout extends FrameLayout {
     }
 
     public View id(String id) {
-        return DynamicLayoutInflator.findViewByIdString(this, id);
+        return JsViewHelper.findViewByStringId(this, id);
     }
 }

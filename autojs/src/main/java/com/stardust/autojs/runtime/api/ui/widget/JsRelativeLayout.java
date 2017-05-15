@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.nickandjerry.dynamiclayoutinflator.lib.DynamicLayoutInflator;
+import com.stardust.autojs.runtime.api.ui.JsViewHelper;
 
 /**
  * Created by Stardust on 2017/5/14.
@@ -32,6 +33,6 @@ public class JsRelativeLayout extends RelativeLayout {
     }
 
     public View id(String id) {
-        return DynamicLayoutInflator.findViewByIdString(this, id);
+        return JsViewHelper.findViewByStringId(this, id);
     }
 }

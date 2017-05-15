@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.nickandjerry.dynamiclayoutinflator.lib.DynamicLayoutInflator;
+import com.stardust.autojs.runtime.api.ui.JsViewHelper;
 
 /**
  * Created by Stardust on 2017/5/14.
@@ -34,7 +35,4 @@ public class JsLinearLayout extends LinearLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public View id(String id) {
-        return DynamicLayoutInflator.findViewByIdString(this, id);
-    }
 }
