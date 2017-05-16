@@ -3,6 +3,7 @@ package com.stardust.scriptdroid.external;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.stardust.autojs.script.FileScriptSource;
 import com.stardust.autojs.script.ScriptSource;
@@ -32,6 +33,7 @@ public class CommonUtils {
         String directoryPath = null;
         String script = intent.getStringExtra(CommonUtils.EXTRA_KEY_PRE_EXECUTE_SCRIPT);
         ScriptSource source = null;
+        Toast.makeText(context, path, Toast.LENGTH_SHORT).show();
         if (path == null && script != null) {
             source = new StringScriptSource(script);
         } else if (path != null && new PathChecker(context).checkAndToastError(path)) {

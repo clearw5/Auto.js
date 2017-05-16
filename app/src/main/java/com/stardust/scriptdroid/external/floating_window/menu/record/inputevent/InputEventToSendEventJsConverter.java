@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.stardust.util.ScreenMetrics.getScreenHeight;
-import static com.stardust.util.ScreenMetrics.getScreenWidth;
+import static com.stardust.util.ScreenMetrics.getDeviceScreenHeight;
+import static com.stardust.util.ScreenMetrics.getDeviceScreenWidth;
 
 /**
  * Created by Stardust on 2017/5/3.
@@ -23,8 +23,8 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
 
     public InputEventToSendEventJsConverter() {
         mCode.append("var sh = new Shell(true);\n")
-                .append("sh.SetScreenMetrics(").append(getScreenWidth()).append(", ")
-                .append(getScreenHeight()).append(");\n");
+                .append("sh.SetScreenMetrics(").append(getDeviceScreenWidth()).append(", ")
+                .append(getDeviceScreenHeight()).append(");\n");
     }
 
 

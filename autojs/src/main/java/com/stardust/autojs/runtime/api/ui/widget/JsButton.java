@@ -10,7 +10,7 @@ import android.widget.Button;
  * Created by Stardust on 2017/5/15.
  */
 
-public class JsButton extends Button {
+public class JsButton extends android.support.v7.widget.AppCompatButton {
     public JsButton(Context context) {
         super(context);
     }
@@ -23,12 +23,11 @@ public class JsButton extends Button {
         super(context, attrs, defStyleAttr);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public JsButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
     public String text() {
         return getText().toString();
+    }
+
+    public void text(CharSequence text) {
+        setText(text);
     }
 }

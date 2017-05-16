@@ -1,10 +1,14 @@
 package com.stardust.scriptdroid.service;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.nickandjerry.dynamiclayoutinflator.lib.DynamicLayoutInflator;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.view.accessibility.AccessibilityDelegate;
 import com.stardust.view.accessibility.AccessibilityService;
@@ -49,6 +53,9 @@ public class AccessibilityWatchDogService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
+        if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
+
+        }
         Log.v(TAG, "onAccessibilityEvent: " + event);
         if (!containsAllEventTypes && !eventTypes.contains(event.getEventType()))
             return;
@@ -65,6 +72,18 @@ public class AccessibilityWatchDogService extends AccessibilityService {
     }
 
     @Override
+    protected boolean onKeyEvent(KeyEvent event) {
+        Log.v(TAG, "onKeyEvent: " + event);
+        return super.onKeyEvent(event);
+    }
+
+    @Override
+    protected boolean onGesture(int gestureId) {
+        Log.v(TAG, "onGesture: " + gestureId);
+        return super.onGesture(gestureId);
+    }
+
+    @Override
     public void onInterrupt() {
     }
 
@@ -76,7 +95,7 @@ public class AccessibilityWatchDogService extends AccessibilityService {
 
     @Override
     protected void onServiceConnected() {
-        Log.v(TAG, "onServiceConnected");
+        Log.v(TAG, "onServiceConnected: " + getServiceInfo().toString());
         instance = this;
         super.onServiceConnected();
         synchronized (LOCK) {

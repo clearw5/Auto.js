@@ -11,7 +11,7 @@ import android.view.WindowManager;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.autojs.runtime.api.internal.VolatileBox;
+import com.stardust.concurrent.VolatileBox;
 import com.stardust.util.UiHandler;
 
 /**

@@ -12,6 +12,8 @@ import com.stardust.pio.UncheckedIOException;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.ErrorReporter;
+import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -61,7 +63,7 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
         Reader reader = source.getNonNullScriptReader();
         try {
             reader = preprocess(reader);
-            return mContext.evaluateReader(mScriptable, reader, "<script>", 1, null);
+            return mContext.evaluateReader(mScriptable, reader, "<" + source.getName() + ">", 1, null);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

@@ -9,6 +9,7 @@ import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.UiSelector;
 import com.stardust.autojs.runtime.api.ui.UI;
 import com.stardust.autojs.runtime.simple_action.SimpleActionAutomator;
+import com.stardust.util.ScreenMetrics;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 
 /**
@@ -72,6 +73,12 @@ public abstract class AbstractScriptRuntime {
 
     @ScriptInterface
     public abstract void stop();
+
+    @ScriptInterface
+    public abstract void setScreenMetrics(int width, int height);
+
+    @ScriptInterface
+    public abstract ScreenMetrics getScreenMetrics();
 
     public abstract void ensureAccessibilityServiceEnabled();
 

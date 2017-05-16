@@ -4,8 +4,6 @@ import android.text.TextUtils;
 
 import com.stardust.util.ScreenMetrics;
 
-import java.util.Arrays;
-
 /**
  * Created by Stardust on 2017/4/24.
  */
@@ -35,7 +33,7 @@ public abstract class AbstractShell {
 
 
     private int mTouchDevice;
-    private int mScreenHeight, mScreenWidth;
+    private ScreenMetrics mScreenMetrics;
 
     private boolean mRoot;
 
@@ -71,9 +69,13 @@ public abstract class AbstractShell {
     }
 
     public void SetScreenMetrics(int width, int height) {
-        mScreenWidth = width;
-        mScreenHeight = height;
+        mScreenMetrics.setScreenMetrics(width, height);
     }
+
+    public void SetScreenMetrics(ScreenMetrics screenMetrics) {
+        mScreenMetrics = screenMetrics;
+    }
+
 
     public void Touch(int x, int y) {
         TouchX(x);
@@ -85,13 +87,7 @@ public abstract class AbstractShell {
     }
 
     private int scaleX(int x) {
-        if (mScreenWidth == 0)
-            return x;
-        int screenWidth = ScreenMetrics.getScreenWidth();
-        if (screenWidth == mScreenWidth) {
-            return x;
-        }
-        return x * screenWidth / mScreenWidth;
+        return mScreenMetrics.scaleX(x);
     }
 
     public void TouchY(int y) {
@@ -99,13 +95,8 @@ public abstract class AbstractShell {
     }
 
     private int scaleY(int y) {
-        if (mScreenHeight == 0)
-            return y;
-        int screenHeight = ScreenMetrics.getScreenHeight();
-        if (screenHeight == mScreenHeight) {
-            return y;
-        }
-        return y * screenHeight / mScreenHeight;
+        return mScreenMetrics.scaleY(y);
+
     }
 
     public void Tap(int x, int y) {

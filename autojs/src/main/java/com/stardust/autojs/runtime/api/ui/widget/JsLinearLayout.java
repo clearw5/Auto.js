@@ -35,4 +35,8 @@ public class JsLinearLayout extends LinearLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    public View id(String id) {
+        return JsViewHelper.findViewByStringId(this, id);
+    }
+
 }

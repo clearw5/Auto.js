@@ -1,10 +1,15 @@
 package com.stardust.autojs.runtime.simple_action;
 
 import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.GestureDescription;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
+import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -13,11 +18,13 @@ import com.stardust.autojs.runtime.AccessibilityBridge;
 import com.stardust.autojs.runtime.ScriptInterface;
 import com.stardust.autojs.runtime.api.AutomatorConfig;
 import com.stardust.automator.AccessibilityEventCommandHost;
+import com.stardust.automator.GlobalActionAutomator;
 import com.stardust.automator.UiObject;
 import com.stardust.automator.simple_action.SimpleAction;
 import com.stardust.automator.simple_action.ActionFactory;
 import com.stardust.automator.simple_action.ActionTarget;
 import com.stardust.util.DeveloperUtils;
+import com.stardust.util.ScreenMetrics;
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -27,25 +34,9 @@ public class SimpleActionAutomator {
 
     private static final String TAG = "SimpleActionAutomator";
 
-    @Deprecated
-    private static class PerformGlobalActionCommand extends AccessibilityEventCommandHost.AbstractCommand {
-
-        boolean result;
-        private int mGlobalAction;
-
-        PerformGlobalActionCommand(int globalAction) {
-            mGlobalAction = globalAction;
-        }
-
-        @Override
-        public void execute(AccessibilityService service, AccessibilityEvent event) {
-            result = service.performGlobalAction(mGlobalAction);
-        }
-
-    }
-
     private AccessibilityBridge mAccessibilityBridge;
     private AbstractScriptRuntime mScriptRuntime;
+    private GlobalActionAutomator mGlobalActionAutomator = new GlobalActionAutomator();
 
     public SimpleActionAutomator(AccessibilityBridge accessibilityBridge, AbstractScriptRuntime scriptRuntime) {
         mAccessibilityBridge = accessibilityBridge;
@@ -168,6 +159,65 @@ public class SimpleActionAutomator {
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN);
     }
 
+    @ScriptInterface
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public boolean gesture(long start, long duration, int[]... points) {
+        prepareForGesture();
+        return mGlobalActionAutomator.gesture(start, duration, points);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void gestureAsync(long start, long duration, int[]... points) {
+        prepareForGesture();
+        mGlobalActionAutomator.gestureAsync(start, duration, points);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public boolean gestures(GestureDescription.StrokeDescription... strokes) {
+        prepareForGesture();
+        return mGlobalActionAutomator.gestures(strokes);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void gesturesAsync(GestureDescription.StrokeDescription... strokes) {
+        prepareForGesture();
+        mGlobalActionAutomator.gesturesAsync(strokes);
+    }
+
+    private void prepareForGesture() {
+        ensureAccessibilityServiceEnabled();
+        mGlobalActionAutomator.setService(mAccessibilityBridge.getService());
+
+    }
+
+    @ScriptInterface
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public boolean click(int x, int y) {
+        prepareForGesture();
+        return mGlobalActionAutomator.click(x, y);
+    }
+
+    @ScriptInterface
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public boolean press(int x, int y, int delay) {
+        prepareForGesture();
+        return mGlobalActionAutomator.press(x, y, delay);
+    }
+
+    @ScriptInterface
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public boolean longClick(int x, int y) {
+        prepareForGesture();
+        return mGlobalActionAutomator.longClick(x, y);
+    }
+
+    @ScriptInterface
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public boolean swipe(int x1, int y1, int x2, int y2, int delay) {
+        prepareForGesture();
+        return mGlobalActionAutomator.swipe(x1, y1, x2, y2, delay);
+    }
+
     private boolean performGlobalAction(final int action) {
         ensureAccessibilityServiceEnabled();
         AccessibilityService service = mAccessibilityBridge.getService();
@@ -205,4 +255,9 @@ public class SimpleActionAutomator {
     private boolean isRunningPackageSelf() {
         return DeveloperUtils.isSelfPackage(mAccessibilityBridge.getInfoProvider().getLatestPackage());
     }
+
+    public void setScreenMetrics(ScreenMetrics metrics) {
+        mGlobalActionAutomator.setScreenMetrics(metrics);
+    }
+
 }

@@ -1,5 +1,5 @@
 module.exports = function(__runtime__, scope){
-    var ui = Object(__runtime__.ui);
+    var ui = Object.create(__runtime__.ui);
     ui.__id_cache__ = {};
 
     ui.layout = function(xml){
@@ -39,7 +39,13 @@ module.exports = function(__runtime__, scope){
         if(typeof(color) == 'string'){
             color = android.graphics.Color.parseColor(color);
         }
-        activity.getWindow().setStatusBarColor(color);
+        if(Build.VERSION.SDK_INT >= 21){
+            activity.getWindow().setStatusBarColor(color);
+        }
+    }
+
+    ui.finish = function(){
+        activity.finish();
     }
 
     function decorate(view){

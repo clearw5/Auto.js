@@ -30,41 +30,40 @@ public class AccessibilityInfoProvider implements AccessibilityDelegate {
         mPackageManager = packageManager;
     }
 
-    public synchronized String getLatestPackage() {
+    public String getLatestPackage() {
         return mLatestPackage;
     }
 
-    public synchronized String getLatestActivity() {
+    public String getLatestActivity() {
         return mLatestActivity;
     }
 
     @Override
     public boolean onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event) {
-        AccessibilityNodeInfo root = service.getRootInActiveWindow();
-        if (root != null)
-            setLatestComponent(root.getPackageName(), event.getClassName());
-        else
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             setLatestComponent(event.getPackageName(), event.getClassName());
+        }
         return false;
     }
 
     @Override
     public Set<Integer> getEventTypes() {
-        return null;
+        return ALL_EVENT_TYPES;
     }
 
-    private synchronized void setLatestComponent(CharSequence latestPackage, CharSequence latestClass) {
-        if (latestPackage == null)
+    private void setLatestComponent(CharSequence latestPackage, CharSequence latestClass) {
+        if (latestPackage == null || latestClass == null)
             return;
-        mLatestPackage = latestPackage.toString();
-        if (latestClass == null)
+        String latestPackageStr = latestPackage.toString();
+        String latestClassStr = latestClass.toString();
+        if (latestClassStr.startsWith("android.view.") || latestClassStr.startsWith("android.widget."))
             return;
         try {
-            ComponentName componentName = new ComponentName(latestPackage.toString(), latestClass.toString());
-            ActivityInfo activityInfo = mPackageManager.getActivityInfo(componentName, 0);
-            mLatestActivity = activityInfo.name;
+            ComponentName componentName = new ComponentName(latestPackageStr, latestClassStr);
+            mLatestActivity = mPackageManager.getActivityInfo(componentName, 0).name;
         } catch (PackageManager.NameNotFoundException ignored) {
-
+            return;
         }
+        mLatestPackage = latestPackage.toString();
     }
 }

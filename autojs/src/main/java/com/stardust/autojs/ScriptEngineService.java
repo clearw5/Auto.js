@@ -23,6 +23,11 @@ import com.stardust.util.UiHandler;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PipedReader;
+import java.io.PipedWriter;
+import java.io.PrintWriter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -57,7 +62,7 @@ public class ScriptEngineService {
             e.printStackTrace();
             onFinish(execution);
             if (!causedByInterrupted(e)) {
-                execution.getRuntime().console.error(e.getMessage());
+                execution.getRuntime().console.error(getScriptTrace(e));
                 EVENT_BUS.post(new ScriptExecutionEvent(ScriptExecutionEvent.ON_EXCEPTION, e.getMessage()));
             }
         }
@@ -249,4 +254,25 @@ public class ScriptEngineService {
             return mMessage;
         }
     }
+
+    private static String getScriptTrace(Exception e) {
+        try {
+            PipedReader reader = new PipedReader(8192);
+            PrintWriter writer = new PrintWriter(new PipedWriter(reader));
+            e.printStackTrace(writer);
+            writer.close();
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            String line;
+            StringBuilder scriptTrace = new StringBuilder(e.getMessage());
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.trim().startsWith("at script"))
+                    scriptTrace.append("\n").append(line);
+            }
+            return scriptTrace.toString();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
 }

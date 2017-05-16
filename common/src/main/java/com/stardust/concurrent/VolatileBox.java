@@ -1,6 +1,5 @@
-package com.stardust.autojs.runtime.api.internal;
+package com.stardust.concurrent;
 
-import com.stardust.autojs.runtime.ScriptInterruptedException;
 
 /**
  * Created by Stardust on 2017/5/8.
@@ -38,7 +37,7 @@ public class VolatileBox<T> {
             try {
                 this.wait();
             } catch (InterruptedException e) {
-                throw new ScriptInterruptedException();
+                throw new RuntimeException(e);
             }
         }
         return mValue;

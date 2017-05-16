@@ -42,4 +42,6 @@ module.exports = function(__runtime__, scope){
             sleep(delay);
         }
     }
+
+    scope.setScreenMetrics = __runtime__.setScreenMetrics.bind(__runtime__);
 }

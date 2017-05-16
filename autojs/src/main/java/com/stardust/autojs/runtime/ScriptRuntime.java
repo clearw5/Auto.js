@@ -1,21 +1,22 @@
 package com.stardust.autojs.runtime;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Looper;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.engine.ScriptEngine;
+import com.stardust.autojs.engine.preprocess.Preprocessor;
 import com.stardust.autojs.rhino_android.AndroidClassLoader;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.UiSelector;
-import com.stardust.autojs.runtime.api.internal.VolatileBox;
+import com.stardust.concurrent.VolatileBox;
 import com.stardust.autojs.runtime.api.ui.UI;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.autojs.runtime.api.ProcessShell;
+import com.stardust.util.ScreenMetrics;
 import com.stardust.util.SdkVersionUtil;
 import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
@@ -88,6 +89,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
 
     private AbstractShell mRootShell;
     private Supplier<AbstractShell> mShellSupplier;
+    private ScreenMetrics mScreenMetrics = new ScreenMetrics();
 
 
     protected ScriptRuntime(Builder builder) {
@@ -98,6 +100,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
         if (ui == null) {
             ui = new UI(mUiHandler.getContext());
         }
+        automator.setScreenMetrics(mScreenMetrics);
     }
 
     public UiHandler getUiHandler() {
@@ -155,6 +158,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
                 throw new ScriptInterruptedException();
             }
             mRootShell = mShellSupplier.get();
+            mRootShell.SetScreenMetrics(mScreenMetrics);
             mShellSupplier = null;
         }
     }
@@ -186,7 +190,19 @@ public class ScriptRuntime extends AbstractScriptRuntime {
     }
 
     public void stop() {
-        Thread.interrupted();
+        Thread.currentThread().interrupt();
+        throw new ScriptInterruptedException();
+    }
+
+
+    @Override
+    public void setScreenMetrics(int width, int height) {
+        mScreenMetrics.setScreenMetrics(width, height);
+    }
+
+    @Override
+    public ScreenMetrics getScreenMetrics() {
+        return mScreenMetrics;
     }
 
     public void ensureAccessibilityServiceEnabled() {

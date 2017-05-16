@@ -14,6 +14,8 @@ import java.util.Set;
 
 public interface AccessibilityDelegate {
 
+    Set<Integer> ALL_EVENT_TYPES = null;
+
     boolean onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event);
 
     /**

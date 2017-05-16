@@ -8,7 +8,7 @@ import android.view.ContextThemeWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.runtime.ScriptInterface;
 import com.stardust.autojs.runtime.api.AppUtils;
-import com.stardust.autojs.runtime.api.internal.VolatileBox;
+import com.stardust.concurrent.VolatileBox;
 import com.stardust.scriptdroid.R;
 import com.stardust.util.ArrayUtils;
 import com.stardust.util.UiHandler;

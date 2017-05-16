@@ -24,4 +24,9 @@ public class JsEditText extends android.support.v7.widget.AppCompatEditText {
     public String text() {
         return getText().toString();
     }
+
+    public void text(CharSequence text) {
+        setText(text);
+    }
+
 }

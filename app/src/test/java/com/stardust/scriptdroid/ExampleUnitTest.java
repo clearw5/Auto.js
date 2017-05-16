@@ -32,18 +32,18 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
-    // TODO: 2017/3/3 自定义函数
+    // TODO: 2017/3/3 自定义函数 ×
     // TODO: 2017/3/19 exist函数 √
     // TODO: 2017/3/23 tasker插件 √
     // TODO: 2017/3/23 任务管理与控制台 √
-    // TODO: 2017/3/23 悬浮窗加入控制台
-    // TODO: 2017/3/24 文件读写api
+    // TODO: 2017/3/23 悬浮窗加入控制台 √
+    // TODO: 2017/3/24 文件读写api ---
     // TODO: 2017/3/24 网络读写api
-    // TODO: 2017/3/24 常驻后台api
-    // TODO: 2017/3/24 ui。E4x
-    // TODO: 2017/3/24  编辑界面文档和自动补全
-    // TODO: 2017/3/24 驻留模式
-    //// TODO: 2017/3/26 NODEJS
+    // TODO: 2017/3/24 常驻后台api ×
+    // TODO: 2017/3/24 ui。E4x ---
+    // TODO: 2017/3/24  编辑界面文档和自动补全 ×
+    // TODO: 2017/3/24 驻留模式 ×
+    //// TODO: 2017/3/26 NODEJS ×
     // TODO: 2017/3/31 自定义快捷方式图标
 
 
