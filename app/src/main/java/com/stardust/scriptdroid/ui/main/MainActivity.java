@@ -7,7 +7,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -29,10 +28,12 @@ import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.NotAskAgainDialog;
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.enhancedfloaty.FloatyService;
+import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.BuildConfig;
+import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
+import com.stardust.scriptdroid.external.floatingwindow.FloatingWindowManger;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.script.sample.Sample;
@@ -52,6 +53,7 @@ import com.stardust.util.MessageEvent;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
+import com.stardust.widget.CommonMarkdownView;
 import com.stardust.widget.SlidingUpPanel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -94,6 +96,20 @@ public class MainActivity extends BaseActivity {
         mIntentToHandle = getIntent();
         EventBus.getDefault().register(this);
         mVersionGuard = new VersionGuard(this);
+        showAnnunciationIfNeeded();
+    }
+
+    private void showAnnunciationIfNeeded() {
+        if (!Pref.shouldShowAnnunciation()) {
+            return;
+        }
+        new CommonMarkdownView.DialogBuilder(this)
+                .padding(36, 0, 36, 0)
+                .markdown(PFile.read(getResources().openRawResource(R.raw.annunciation)))
+                .title(R.string.text_annunciation)
+                .positiveText(R.string.ok)
+                .canceledOnTouchOutside(false)
+                .show();
     }
 
 

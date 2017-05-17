@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.stardust.app.Fragment;
-import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
-import com.stardust.scriptdroid.external.floating_window.menu.HoverMenuService;
+import com.stardust.scriptdroid.external.floatingwindow.FloatingWindowManger;
+import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
 import com.stardust.view.ViewBinding;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.console.LogActivity;

@@ -72,7 +72,7 @@
 
         <Preference android:title="@string/text_issue_report"/>
 
-        <Preference android:title="@string/text_about"/>
+        <Preference android:title="@string/text_about_me_and_repo"/>
 
         <Preference android:title="@string/text_licenses"/>
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>

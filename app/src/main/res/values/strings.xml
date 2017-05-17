@@ -182,6 +182,8 @@
     <string name="text_connected">已连接</string>
     <string name="text_disconnected">已断开连接</string>
     <string name="text_server_address">服务器地址</string>
+    <string name="text_annunciation">声明</string>
+    <string name="text_about_me_and_repo">关于项目与开发者</string>
 
     <string-array name="record_control_keys">
         <item>无</item>

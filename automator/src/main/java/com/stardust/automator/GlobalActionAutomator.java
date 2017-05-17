@@ -2,7 +2,6 @@ package com.stardust.automator;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
-import android.content.Context;
 import android.graphics.Path;
 import android.os.Build;
 import android.os.Handler;

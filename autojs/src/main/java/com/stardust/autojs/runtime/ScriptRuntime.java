@@ -5,8 +5,7 @@ import android.os.Looper;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.engine.ScriptEngine;
-import com.stardust.autojs.engine.preprocess.Preprocessor;
-import com.stardust.autojs.rhino_android.AndroidClassLoader;
+import com.stardust.autojs.rhino.AndroidClassLoader;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;

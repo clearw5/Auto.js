@@ -280,23 +280,17 @@ public class MyScriptListFragment extends Fragment {
     @ViewBinding.Click(R.id.delete)
     private void deleteScriptFile() {
         dismissDialogs();
-        if (mSelectedScriptFile.isDirectory()) {
-            new MaterialDialog.Builder(getActivity())
-                    .title(R.string.delete_confirm)
-                    .positiveText(R.string.cancel)
-                    .negativeText(R.string.ok)
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            doDeletingScriptFile();
-                        }
-                    })
-                    .show();
-        } else {
-            doDeletingScriptFile();
-        }
-
-
+        new MaterialDialog.Builder(getActivity())
+                .title(R.string.delete_confirm)
+                .positiveText(R.string.cancel)
+                .negativeText(R.string.ok)
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        doDeletingScriptFile();
+                    }
+                })
+                .show();
     }
 
     private void doDeletingScriptFile() {

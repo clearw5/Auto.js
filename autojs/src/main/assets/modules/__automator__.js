@@ -45,7 +45,7 @@ module.exports = function(__runtime__, scope){
      function toStrokes(args){
         var screenMetrics = __runtime__.getScreenMetrics();
         var len = args.length;
-        var strokes = [];
+        var strokes = java.lang.reflect.Array.newInstance(android.accessibilityservice.GestureDescription.StrokeDescription, len);
         for(var i = 0; i < len; i++){
             var gesture = args[i];
             var pointsIndex = 1;
@@ -63,7 +63,7 @@ module.exports = function(__runtime__, scope){
             for(var j = pointsIndex + 1; j < gestureLen; j++){
                 path.lineTo(screenMetrics.scaleX(gesture[j][0]), screenMetrics.scaleY(gesture[j][1]));
             }
-            strokes.push(new android.accessibilityservice.GestureDescription.StrokeDescription(path, start, delay));
+            strokes[i] = new android.accessibilityservice.GestureDescription.StrokeDescription(path, start, delay);
         }
         return strokes;
      }

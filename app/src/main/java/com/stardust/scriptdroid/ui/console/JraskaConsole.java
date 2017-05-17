@@ -10,7 +10,7 @@ import android.util.SparseArray;
 import com.jraska.console.Console;
 import com.stardust.autojs.runtime.api.AbstractConsole;
 import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.sublime_plugin_client.SublimePluginService;
+import com.stardust.scriptdroid.sublime.SublimePluginService;
 import com.stardust.util.SparseArrayEntries;
 import com.stardust.util.TextUtils;
 

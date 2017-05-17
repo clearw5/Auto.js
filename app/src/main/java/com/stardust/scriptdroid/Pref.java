@@ -18,6 +18,7 @@ public class Pref {
 
     private static final SharedPreferences DISPOSABLE_BOOLEAN = App.getApp().getSharedPreferences("DISPOSABLE_BOOLEAN", Context.MODE_PRIVATE);
     private static final String KEY_SERVER_ADDRESS = "Still love you...17.5.14";
+    private static final String KEY_SHOULD_SHOW_ANNUNCIATION = "Sing about all the things you forgot, things you are not";
     private static SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -123,5 +124,9 @@ public class Pref {
 
     public static void saveServerAddress(String address) {
         def().edit().putString(KEY_SERVER_ADDRESS, address).apply();
+    }
+
+    public static boolean shouldShowAnnunciation() {
+        return getDisposableBoolean(KEY_SHOULD_SHOW_ANNUNCIATION, true);
     }
 }

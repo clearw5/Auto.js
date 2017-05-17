@@ -2,18 +2,14 @@ package com.stardust.autojs.engine;
 
 import android.util.Log;
 
-import com.stardust.autojs.engine.preprocess.MultiLinePreprocessor;
-import com.stardust.autojs.engine.preprocess.Preprocessor;
-import com.stardust.autojs.rhino_android.AndroidContextFactory;
-import com.stardust.autojs.rhino_android.RhinoAndroidHelper;
+import com.stardust.autojs.rhino.AndroidContextFactory;
+import com.stardust.autojs.rhino.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.pio.UncheckedIOException;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.ErrorReporter;
-import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;

@@ -3,7 +3,6 @@ package com.stardust.autojs.script;
 import android.content.Context;
 import android.util.Log;
 
-import com.stardust.autojs.rhino_android.RhinoAndroidHelper;
 import com.stardust.pio.PFile;
 import com.stardust.pio.UncheckedIOException;
 

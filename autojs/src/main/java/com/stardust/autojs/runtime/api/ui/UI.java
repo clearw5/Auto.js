@@ -1,49 +1,52 @@
 package com.stardust.autojs.runtime.api.ui;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.stardust.autojs.rhino.ProxyObject;
+
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.UniqueTag;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Stardust on 2017/5/14.
  */
 
-public class UI {
+public class UI extends ProxyObject {
+
 
     private Context mContext;
-    private JsLayoutInflater mJsLayoutInflater;
-    private ExecutorService mExecutorService;
+    private Map<String, Object> mProperties = new ConcurrentHashMap<>();
 
     public UI(Context context, JsLayoutInflater layoutInflater) {
         mContext = context;
-        mJsLayoutInflater = layoutInflater;
+        mProperties.put("layoutInflater", layoutInflater);
     }
-
 
     public UI(Context context) {
         this(context, new ConvertLayoutInflater());
     }
 
-    public JsLayoutInflater getLayoutInflater() {
-        return mJsLayoutInflater;
+
+    @Override
+    public String getClassName() {
+        return UI.class.getSimpleName();
     }
 
-    public View inflate(Context context, String xml) {
-        return mJsLayoutInflater.inflate(context, xml);
-    }
 
-    public void runOnNonUiThread(Runnable action) {
-        if (mExecutorService == null) {
-            mExecutorService = Executors.newSingleThreadExecutor();
+    @Override
+    public Object get(String name, Scriptable start) {
+        Object value = super.get(name, start);
+        if (value != null && value != UniqueTag.NOT_FOUND && !value.equals(org.mozilla.javascript.Context.getUndefinedValue())) {
+            return value;
         }
-        mExecutorService.submit(action);
+        value = mProperties.get(name);
+        if (value != null)
+            return value;
+        return UniqueTag.NOT_FOUND;
     }
 
-    public View findViewByStringId(View view, String id) {
-        return JsViewHelper.findViewByStringId(view, id);
-    }
+
 }

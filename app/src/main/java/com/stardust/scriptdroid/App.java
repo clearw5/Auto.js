@@ -1,20 +1,14 @@
 package com.stardust.scriptdroid;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.Keep;
 import android.support.multidex.MultiDexApplication;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.app.VolumeChangeObserver;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.external.floating_window.OverlayPermissionChecker;
-import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
 import com.stardust.scriptdroid.statics.ScriptStatics;
 import com.stardust.scriptdroid.tool.CrashHandler;
 import com.stardust.scriptdroid.tool.JsBeautifierFactory;
@@ -22,9 +16,6 @@ import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
 import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.ScreenMetrics;
-
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
 
 import java.lang.ref.WeakReference;
 

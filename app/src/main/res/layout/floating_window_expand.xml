@@ -19,13 +19,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.stardust.scriptdroid.external.floating_window.menu.layout_inspector.view.NodeInfoView
+        <com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.view.NodeInfoView
             android:id="@+id/node_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"/>
 
-        <com.stardust.scriptdroid.external.floating_window.menu.layout_inspector.view.LayoutHierarchyView
+        <com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.view.LayoutHierarchyView
             android:id="@+id/bounds_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

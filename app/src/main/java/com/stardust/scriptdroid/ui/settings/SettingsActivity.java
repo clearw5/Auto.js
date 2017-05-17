@@ -138,7 +138,7 @@ public class SettingsActivity extends BaseActivity {
                             }
                         }
                     })
-                    .entry(getString(R.string.text_about), new Runnable() {
+                    .entry(getString(R.string.text_about_me_and_repo), new Runnable() {
                         @Override
                         public void run() {
                             startActivity(new Intent(getActivity(), AboutActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));

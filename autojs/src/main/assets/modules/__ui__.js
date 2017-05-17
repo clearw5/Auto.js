@@ -1,15 +1,15 @@
 module.exports = function(__runtime__, scope){
-    var ui = Object.create(__runtime__.ui);
-    ui.__id_cache__ = {};
+    var ui = {};
+    ui.__view_cache__ = {};
 
     ui.layout = function(xml){
-        view = ui.inflate(activity, xml.toString());
+        var view = __runtime__.ui.layoutInflater.inflate(activity, xml.toString());
         ui.setContentView(view);
     }
 
     ui.setContentView = function(view){
         ui.view = view;
-        ui.__id_cache__ = {};
+        ui.__view_cache__ = {};
         activity.setContentView(view);
     }
 
@@ -28,7 +28,10 @@ module.exports = function(__runtime__, scope){
     }
 
     ui.nonUi = function(action){
-        ui.runOnNonUiThread(action);
+        if(!ui.__executor__){
+            ui.__executor__ = java.util.concurrent.Executors.newSingleThreadExecutor();
+        }
+        ui.__executor__.submit(action);
     }
 
     ui.postDelay = function(action, delay){
@@ -39,13 +42,17 @@ module.exports = function(__runtime__, scope){
         if(typeof(color) == 'string'){
             color = android.graphics.Color.parseColor(color);
         }
-        if(Build.VERSION.SDK_INT >= 21){
+        if(android.os.Build.VERSION.SDK_INT >= 21){
             activity.getWindow().setStatusBarColor(color);
         }
     }
 
     ui.finish = function(){
         activity.finish();
+    }
+
+    ui.findViewByStringId = function(view, id){
+        return com.stardust.autojs.runtime.api.ui.JsViewHelper.findViewByStringId(view, id);
     }
 
     function decorate(view){
@@ -70,23 +77,25 @@ module.exports = function(__runtime__, scope){
         return view;
     }
 
-    return new JavaAdapter(org.mozilla.javascript.NativeObject, {
-         put: function(name, start, value) {
-             ui[name] = value;
-         },
-         get: function(name, start) {
-            if(!ui[name] && ui.view){
-                var cacheView = ui.__id_cache__[name];
-                if(cacheView){
-                    return cacheView;
-                }
-                cacheView = ui.id(name);
-                if(cacheView){
-                    ui.__id_cache__[name] = cacheView;
-                    return cacheView;
-                }
-            }
-            return ui[name];
-         }
-     });
+    var proxy = __runtime__.ui;
+    proxy.__proxy__ = {
+        set: function(name, value){
+            ui[name] = value;
+        },
+        get: function(name) {
+           if(!ui[name] && ui.view){
+               var cacheView = ui.__view_cache__[name];
+               if(cacheView){
+                   return cacheView;
+               }
+               cacheView = ui.id(name);
+               if(cacheView){
+                   ui.__view_cache__[name] = cacheView;
+                   return cacheView;
+               }
+           }
+           return ui[name];
+        }
+    };
+    return proxy;
 }

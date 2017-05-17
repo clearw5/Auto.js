@@ -13,7 +13,7 @@ import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.external.floating_window.FloatingWindowManger;
+import com.stardust.scriptdroid.external.floatingwindow.FloatingWindowManger;
 import com.stardust.util.UiHandler;
 
 import java.util.ArrayList;

@@ -4,19 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import org.commonmark.ext.heading.anchor.HeadingAnchorExtension;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
-import java.util.Collection;
 import java.util.Collections;
 
 /**
@@ -31,6 +34,7 @@ public class CommonMarkdownView extends WebView {
             .build();
 
     private String mMarkdownHtml;
+    private String mPadding = "16px";
 
     public CommonMarkdownView(Context context) {
         super(context);
@@ -47,11 +51,15 @@ public class CommonMarkdownView extends WebView {
         init();
     }
 
+    public void setPadding(String padding) {
+        mPadding = padding;
+    }
+
     private void init() {
         setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
-                loadUrl("javascript:document.body.style.margin=\"12%\"; void 0");
+                loadUrl("javascript:document.body.style.margin=\"" + mPadding + "\"; void 0");
             }
 
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -103,5 +111,31 @@ public class CommonMarkdownView extends WebView {
         if (!canGoBack() && mMarkdownHtml != null) {
             loadHtml(mMarkdownHtml);
         }
+    }
+
+    public static class DialogBuilder extends ThemeColorMaterialDialogBuilder {
+
+        private CommonMarkdownView mMarkdownView;
+        private FrameLayout mContainer;
+
+        public DialogBuilder(@NonNull Context context) {
+            super(context);
+            mContainer = new FrameLayout(context);
+            mMarkdownView = new CommonMarkdownView(context);
+            mContainer.addView(mMarkdownView);
+            mContainer.setClipToPadding(true);
+            customView(mContainer, false);
+        }
+
+        public DialogBuilder padding(int l, int t, int r, int b) {
+            mContainer.setPadding(l, t, r, b);
+            return this;
+        }
+
+        public DialogBuilder markdown(String md) {
+            mMarkdownView.loadMarkdown(md);
+            return this;
+        }
+
     }
 }
