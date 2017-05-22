@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
@@ -79,26 +80,7 @@ public class App extends MultiDexApplication {
     }
 
     private void registerActivityLifecycleCallback() {
-        registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
 
-            @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                super.onActivityCreated(activity, savedInstanceState);
-                AutoJs.getInstance().getAppUtils().setCurrentActivity(activity);
-            }
-
-            @Override
-            public void onActivityPaused(Activity activity) {
-                AutoJs.getInstance().getAppUtils().setCurrentActivity(null);
-            }
-
-            @Override
-            public void onActivityResumed(Activity activity) {
-                ScreenMetrics.initIfNeeded(activity);
-                AutoJs.getInstance().getAppUtils().setCurrentActivity(activity);
-            }
-
-        });
     }
 
     public static String getResString(int id) {

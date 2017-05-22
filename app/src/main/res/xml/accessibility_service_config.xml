@@ -5,7 +5,6 @@
                        android:accessibilityFlags="flagIncludeNotImportantViews|flagReportViewIds|flagRetrieveInteractiveWindows|flagRequestEnhancedWebAccessibility|flagRequestFilterKeyEvents"
                        android:canPerformGestures="true"
                        android:canRequestEnhancedWebAccessibility="true"
-                       android:canRequestTouchExplorationMode="true"
                        android:canRetrieveWindowContent="true"
                        android:description="@string/text_accessibility_service_description"
                        android:notificationTimeout="100"/>

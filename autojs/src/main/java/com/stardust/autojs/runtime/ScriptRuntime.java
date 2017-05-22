@@ -10,6 +10,7 @@ import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.UiSelector;
+import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
 import com.stardust.concurrent.VolatileBox;
 import com.stardust.autojs.runtime.api.ui.UI;
 import com.stardust.pio.UncheckedIOException;
@@ -35,21 +36,14 @@ public class ScriptRuntime extends AbstractScriptRuntime {
     private static final String TAG = "ScriptRuntime";
 
     public static class Builder {
-        private AppUtils mAppUtils;
         private UiHandler mUiHandler;
         private Console mConsole;
         private AccessibilityBridge mAccessibilityBridge;
         private Supplier<AbstractShell> mShellSupplier;
-        public UI mUi;
-
+        private ScreenCaptureRequester mScreenCaptureRequester;
 
         public Builder() {
 
-        }
-
-        public Builder setAppUtils(AppUtils appUtils) {
-            mAppUtils = appUtils;
-            return this;
         }
 
         public Builder setUiHandler(UiHandler uiHandler) {
@@ -72,8 +66,8 @@ public class ScriptRuntime extends AbstractScriptRuntime {
             return this;
         }
 
-        public Builder setUI(UI ui) {
-            mUi = ui;
+        public Builder setScreenCaptureRequester(ScreenCaptureRequester requester) {
+            mScreenCaptureRequester = requester;
             return this;
         }
 
@@ -92,13 +86,11 @@ public class ScriptRuntime extends AbstractScriptRuntime {
 
 
     protected ScriptRuntime(Builder builder) {
-        super(builder.mAppUtils, builder.mConsole, builder.mAccessibilityBridge, builder.mUi);
+        super(builder.mUiHandler.getContext(), builder.mConsole, builder.mAccessibilityBridge, builder.mScreenCaptureRequester);
         mAccessibilityBridge = builder.mAccessibilityBridge;
         mUiHandler = builder.mUiHandler;
         mShellSupplier = builder.mShellSupplier;
-        if (ui == null) {
-            ui = new UI(mUiHandler.getContext());
-        }
+        ui = new UI(mUiHandler.getContext());
         automator.setScreenMetrics(mScreenMetrics);
     }
 
@@ -142,7 +134,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
                 clip.setAndNotify(ClipboardUtil.getClipOrEmpty(mUiHandler.getContext()).toString());
             }
         });
-        return clip.blockedGet();
+        return clip.blockedGetOrThrow(ScriptInterruptedException.class);
     }
 
     @Override
@@ -193,7 +185,6 @@ public class ScriptRuntime extends AbstractScriptRuntime {
         throw new ScriptInterruptedException();
     }
 
-
     @Override
     public void setScreenMetrics(int width, int height) {
         mScreenMetrics.setScreenMetrics(width, height);
@@ -210,6 +201,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
 
     @Override
     public void onStop() {
+        super.onStop();
         if (mRootShell != null) {
             mRootShell.exit();
             mRootShell = null;

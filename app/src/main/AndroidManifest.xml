@@ -84,6 +84,9 @@
         <activity android:name=".ui.help.LocalWebViewActivity"/>
         <activity android:name=".external.tasker.TaskerScriptEditActivity"/>
         <activity android:name=".ui.edit.ViewSampleActivity"/>
+        <activity
+            android:name=".autojs.api.ScreenCaptureRequestActivity"
+            android:taskAffinity="com.stardust.scriptdroid.autojs.api.ScreenCaptureRequestActivity"/>
 
         <activity
             android:name=".ui.error.IssueReporterActivity"

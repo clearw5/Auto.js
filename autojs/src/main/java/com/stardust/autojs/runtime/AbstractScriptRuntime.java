@@ -1,10 +1,15 @@
 package com.stardust.autojs.runtime;
 
+import android.content.Context;
+import android.support.annotation.CallSuper;
+
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.UiSelector;
+import com.stardust.autojs.runtime.api.image.Images;
+import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
 import com.stardust.autojs.runtime.api.ui.UI;
 import com.stardust.autojs.runtime.simpleaction.SimpleActionAutomator;
 import com.stardust.util.ScreenMetrics;
@@ -31,15 +36,16 @@ public abstract class AbstractScriptRuntime {
     @ScriptVariable
     public UI ui;
 
-    public AbstractScriptRuntime(AppUtils app, Console console, AccessibilityBridge bridge, UI ui) {
-        this.app = app;
+    @ScriptVariable
+    public Images images;
+
+    public AbstractScriptRuntime(Context context, Console console, AccessibilityBridge bridge, ScreenCaptureRequester screenCaptureRequester) {
+        this.app = new AppUtils(context);
         this.console = console;
         this.automator = new SimpleActionAutomator(bridge, this);
         this.info = bridge.getInfoProvider();
-        this.ui = ui;
-    }
-
-    public AbstractScriptRuntime() {
+        this.ui = new UI(context);
+        images = new Images(context, this, screenCaptureRequester);
     }
 
     @ScriptInterface
@@ -80,5 +86,8 @@ public abstract class AbstractScriptRuntime {
 
     public abstract void ensureAccessibilityServiceEnabled();
 
-    public abstract void onStop();
+    @CallSuper
+    public void onStop() {
+        images.releaseScreenCapturer();
+    }
 }

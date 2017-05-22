@@ -21,10 +21,10 @@ import com.jecelyin.editor.v2.core.widget.TextView;
 import com.jecelyin.editor.v2.ui.EditorDelegate;
 import com.jecelyin.editor.v2.view.EditorView;
 import com.jecelyin.editor.v2.view.menu.MenuDef;
+import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.FileScriptSource;
 import com.stardust.autojs.script.JsBeautifier;
-import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.script.ScriptFile;
@@ -49,7 +49,7 @@ import java.io.File;
  * Created by Stardust on 2017/1/29.
  */
 
-public class EditActivity extends Editor920Activity {
+public class EditActivity extends Editor920Activity implements OnActivityResultDelegate.DelegateHost {
 
 
     public static class InputMethodEnhanceBarBridge implements InputMethodEnhanceBar.EditTextBridge {
@@ -76,6 +76,8 @@ public class EditActivity extends Editor920Activity {
         public TextView getEditText() {
             return mTextView;
         }
+
+
     }
 
 
@@ -102,6 +104,7 @@ public class EditActivity extends Editor920Activity {
     private EditorDelegate mEditorDelegate;
     private SparseArray<ToolbarMenuItem> mMenuMap;
     private boolean mReadOnly = false;
+    private OnActivityResultDelegate.Mediator mActivityResultMediator = new OnActivityResultDelegate.Mediator();
     private BroadcastReceiver mOnRunFinishedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -357,6 +360,17 @@ public class EditActivity extends Editor920Activity {
                     }
                 })
                 .show();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mActivityResultMediator.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
+        return mActivityResultMediator;
     }
 
     @Override

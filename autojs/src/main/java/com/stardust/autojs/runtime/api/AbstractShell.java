@@ -69,6 +69,9 @@ public abstract class AbstractShell {
     }
 
     public void SetScreenMetrics(int width, int height) {
+        if (mScreenMetrics == null) {
+            mScreenMetrics = new ScreenMetrics();
+        }
         mScreenMetrics.setScreenMetrics(width, height);
     }
 

@@ -117,7 +117,6 @@ public class SQLiteStaticsStorage implements ScriptStaticsStorage {
 
     private static class SQLiteOpenHelper extends android.database.sqlite.SQLiteOpenHelper {
 
-
         SQLiteOpenHelper(Context context) {
             super(context, DATABASE_NAME, null, VERSION);
         }

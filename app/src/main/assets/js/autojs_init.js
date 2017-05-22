@@ -5,7 +5,8 @@ var dialogs =  {};
 
 dialogs.rawInput = function(title, prefill){
    prefill = prefill || "";
-   return String(__runtime__.dialogs.rawInput(title, prefill));
+   var s = __runtime__.dialogs.rawInput(title, prefill);
+   return s ? String(s) : null;
 };
 
 dialogs.input = function(title, prefill){

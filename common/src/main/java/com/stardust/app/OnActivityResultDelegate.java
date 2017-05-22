@@ -1,6 +1,7 @@
 package com.stardust.app;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
 import java.util.ArrayList;
@@ -12,11 +13,11 @@ import java.util.List;
 
 public interface OnActivityResultDelegate {
 
-
     void onActivityResult(int requestCode, int resultCode, Intent data);
 
     interface DelegateHost {
-        Mediator getDelegateManger();
+        @NonNull
+        Mediator getOnActivityResultDelegateMediator();
     }
 
     class Mediator implements OnActivityResultDelegate {

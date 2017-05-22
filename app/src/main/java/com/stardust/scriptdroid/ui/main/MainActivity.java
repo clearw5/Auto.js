@@ -62,10 +62,11 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.IOException;
 
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost {
 
     public static final String MESSAGE_CLEAR_BACKGROUND_SETTINGS = "MESSAGE_CLEAR_BACKGROUND_SETTINGS";
 
+    private static final String LOG_TAG = "MainActivity";
     private static final String EXTRA_ACTION = "EXTRA_ACTION";
 
     private static final String ACTION_ON_ACTION_RECORD_STOPPED = "ACTION_ON_ACTION_RECORD_STOPPED";
@@ -97,6 +98,11 @@ public class MainActivity extends BaseActivity {
         EventBus.getDefault().register(this);
         mVersionGuard = new VersionGuard(this);
         showAnnunciationIfNeeded();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     private void showAnnunciationIfNeeded() {
@@ -406,4 +412,8 @@ public class MainActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
+    @Override
+    public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
+        return mActivityResultMediator;
+    }
 }

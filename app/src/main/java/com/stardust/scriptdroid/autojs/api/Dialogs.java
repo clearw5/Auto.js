@@ -7,6 +7,7 @@ import android.view.ContextThemeWrapper;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.runtime.ScriptInterface;
+import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.concurrent.VolatileBox;
 import com.stardust.scriptdroid.R;
@@ -35,7 +36,7 @@ public class Dialogs {
                 .input(null, prefill, true, result)
                 .title(title)
                 .show();
-        return result.blockedGet();
+        return result.blockedGetOrThrow(ScriptInterruptedException.class);
     }
 
     @ScriptInterface
@@ -49,7 +50,7 @@ public class Dialogs {
             builder.content(content);
         }
         builder.show();
-        lock.blockedGet();
+        lock.blockedGetOrThrow(ScriptInterruptedException.class);
     }
 
     @ScriptInterface
@@ -65,7 +66,7 @@ public class Dialogs {
             builder.content(content);
         }
         builder.show();
-        return result.blockedGet();
+        return result.blockedGetOrThrow(ScriptInterruptedException.class);
     }
 
     private Context getContext() {
@@ -83,7 +84,7 @@ public class Dialogs {
                 .title(title)
                 .items((CharSequence[]) items)
                 .show();
-        return result.blockedGet();
+        return result.blockedGetOrThrow(ScriptInterruptedException.class);
     }
 
     @ScriptInterface
@@ -95,7 +96,7 @@ public class Dialogs {
                 .positiveText(R.string.ok)
                 .items((CharSequence[]) items)
                 .show();
-        return result.blockedGet();
+        return result.blockedGetOrThrow(ScriptInterruptedException.class);
     }
 
     @ScriptInterface
@@ -107,7 +108,7 @@ public class Dialogs {
                 .positiveText(R.string.ok)
                 .items((CharSequence[]) items)
                 .show();
-        return ArrayUtils.unbox(result.blockedGet());
+        return ArrayUtils.unbox(result.blockedGetOrThrow(ScriptInterruptedException.class));
     }
 
 

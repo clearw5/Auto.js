@@ -4,6 +4,11 @@ module.exports = function(__runtime__, scope){
         __runtime__.toast(text);
     }
 
+    scope.toastLog = function(text){
+        __runtime__.toast(text);
+        scope.log(text);
+    }
+
     scope.sleep = function(millis){
         __runtime__.sleep(millis);
     }

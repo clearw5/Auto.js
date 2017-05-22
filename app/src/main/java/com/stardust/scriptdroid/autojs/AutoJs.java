@@ -1,9 +1,15 @@
 package com.stardust.scriptdroid.autojs;
 
 import android.accessibilityservice.AccessibilityService;
+import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 
+import com.stardust.app.OnActivityResultDelegate;
+import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.ScriptEngineServiceBuilder;
 import com.stardust.autojs.engine.RhinoJavaScriptEngineManager;
@@ -12,6 +18,7 @@ import com.stardust.autojs.runtime.AccessibilityBridge;
 import com.stardust.autojs.runtime.ScriptStopException;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
+import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.automator.simple_action.SimpleActionPerformHost;
 import com.stardust.pio.PFile;
@@ -19,8 +26,10 @@ import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.autojs.api.ScreenCaptureRequestActivity;
 import com.stardust.scriptdroid.autojs.api.Shell;
 import com.stardust.scriptdroid.ui.console.StardustConsole;
+import com.stardust.util.ScreenMetrics;
 import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
@@ -59,6 +68,23 @@ public class AutoJs implements AccessibilityBridge {
     private final AccessibilityInfoProvider mAccessibilityInfoProvider;
     private final UiHandler mUiHandler;
     private final AppUtils mAppUtils;
+    private final ScreenCaptureRequester mScreenCaptureRequester = new ScreenCaptureRequester.AbstractScreenCaptureRequester() {
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void request() {
+            Activity activity = mAppUtils.getCurrentActivity();
+            if (activity instanceof OnActivityResultDelegate.DelegateHost) {
+                ScreenCaptureRequester requester = new ActivityScreenCaptureRequester(
+                        ((OnActivityResultDelegate.DelegateHost) activity).getOnActivityResultDelegateMediator(), activity);
+                requester.setOnActivityResultCallback(mCallback);
+                requester.request();
+            } else {
+                ScreenCaptureRequestActivity.request(mUiHandler.getContext(), mCallback);
+            }
+        }
+
+    };
 
 
     private AutoJs(final Context context) {
@@ -75,8 +101,8 @@ public class AutoJs implements AccessibilityBridge {
                     @Override
                     public com.stardust.autojs.runtime.ScriptRuntime get() {
                         return new ScriptRuntime.Builder()
-                                .setAppUtils(mAppUtils)
                                 .setConsole(new StardustConsole(mUiHandler))
+                                .setScreenCaptureRequester(mScreenCaptureRequester)
                                 .setAccessibilityBridge(AutoJs.this)
                                 .setUiHandler(mUiHandler)
                                 .setShellSupplier(new Supplier<AbstractShell>() {
@@ -90,6 +116,28 @@ public class AutoJs implements AccessibilityBridge {
                 .build();
         addAccessibilityServiceDelegates();
         mScriptEngineService.registerGlobalScriptExecutionListener(new ScriptExecutionGlobalListener());
+        registerActivityLifecycleCallbacks();
+    }
+
+    private void registerActivityLifecycleCallbacks() {
+        App.getApp().registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
+
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                ScreenMetrics.initIfNeeded(activity);
+                mAppUtils.setCurrentActivity(activity);
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+                mAppUtils.setCurrentActivity(null);
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                mAppUtils.setCurrentActivity(activity);
+            }
+        });
     }
 
     private ScriptEngineManager createScriptEngineManager(Context context) {

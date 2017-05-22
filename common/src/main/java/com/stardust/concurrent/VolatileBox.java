@@ -1,6 +1,8 @@
 package com.stardust.concurrent;
 
 
+import java.lang.reflect.Constructor;
+
 /**
  * Created by Stardust on 2017/5/8.
  */
@@ -25,6 +27,14 @@ public class VolatileBox<T> {
         mValue = value;
     }
 
+    public boolean isNull() {
+        return mValue == null;
+    }
+
+    public boolean notNull() {
+        return mValue != null;
+    }
+
     public void setAndNotify(T value) {
         mValue = value;
         synchronized (this) {
@@ -43,4 +53,18 @@ public class VolatileBox<T> {
         return mValue;
     }
 
+    public T blockedGetOrThrow(Class<? extends RuntimeException> exception) {
+        synchronized (this) {
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                try {
+                    throw exception.newInstance();
+                } catch (InstantiationException | IllegalAccessException e1) {
+                    throw new RuntimeException(e1);
+                }
+            }
+        }
+        return mValue;
+    }
 }

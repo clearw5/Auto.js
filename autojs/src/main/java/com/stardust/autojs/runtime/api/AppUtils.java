@@ -31,7 +31,8 @@ public class AppUtils {
     public boolean launchPackage(String packageName) {
         try {
             PackageManager packageManager = mContext.getPackageManager();
-            mContext.startActivity(packageManager.getLaunchIntentForPackage(packageName));
+            mContext.startActivity(packageManager.getLaunchIntentForPackage(packageName)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             return true;
         } catch (Exception e) {
             return false;

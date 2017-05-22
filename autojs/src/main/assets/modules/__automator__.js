@@ -13,7 +13,7 @@ module.exports = function(__runtime__, scope){
     }
 
     automator.click = function(){
-        if(arguments.length >= 2 && typeof(arguments[0]) == 'number' && typeof(arguments[1]) == 'number'){
+        if(arguments.length == 2 && typeof(arguments[0]) == 'number' && typeof(arguments[1]) == 'number'){
             return __runtime__.automator.click(arguments[0], arguments[1]);
         }
         return performAction(function(target){
@@ -34,7 +34,7 @@ module.exports = function(__runtime__, scope){
      automator.gesture = __runtime__.automator.gesture.bind(__runtime__.automator, 0);
      automator.gestureAsync = __runtime__.automator.gestureAsync.bind(__runtime__.automator, 0);
      automator.swipe = __runtime__.automator.swipe.bind(__runtime__.automator);
-     automator.gestures = function(){
+     automator.gestures  = function(){
         return __runtime__.automator.gestures(toStrokes(arguments));
      }
 

@@ -15,6 +15,7 @@ import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.ui.EditorDelegate;
 import com.jecelyin.editor.v2.view.EditorView;
 import com.jecelyin.editor.v2.view.menu.MenuDef;
+import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.scriptdroid.R;
@@ -42,7 +43,7 @@ import static com.stardust.scriptdroid.script.Scripts.EXTRA_EXCEPTION_MESSAGE;
  * Created by Stardust on 2017/4/29.
  */
 
-public class ViewSampleActivity extends Editor920Activity {
+public class ViewSampleActivity extends Editor920Activity implements OnActivityResultDelegate.DelegateHost {
 
 
     public static void view(Context context, Sample sample) {
@@ -56,6 +57,7 @@ public class ViewSampleActivity extends Editor920Activity {
     private ScriptExecution mScriptExecution;
     private EditorDelegate mEditorDelegate;
     private SparseArray<ToolbarMenuItem> mMenuMap;
+    private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
     private BroadcastReceiver mOnRunFinishedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -185,4 +187,13 @@ public class ViewSampleActivity extends Editor920Activity {
         }
     }
 
+    @Override
+    public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
+        return mMediator;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mMediator.onActivityResult(requestCode, resultCode, data);
+    }
 }
