@@ -9,7 +9,6 @@ import com.pushtorefresh.storio.sqlite.annotations.StorIOSQLiteType;
  */
 
 @StorIOSQLiteType(table = SQLiteStaticsStorage.TABLE_NAME)
-
 public class ScriptStaticsRecord {
 
     @StorIOSQLiteColumn(name = "name", key = true)

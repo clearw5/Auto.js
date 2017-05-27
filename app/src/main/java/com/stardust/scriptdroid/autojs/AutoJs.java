@@ -105,6 +105,7 @@ public class AutoJs implements AccessibilityBridge {
                                 .setScreenCaptureRequester(mScreenCaptureRequester)
                                 .setAccessibilityBridge(AutoJs.this)
                                 .setUiHandler(mUiHandler)
+                                .setAppUtils(mAppUtils)
                                 .setShellSupplier(new Supplier<AbstractShell>() {
                                     @Override
                                     public AbstractShell get() {

@@ -12,9 +12,15 @@ import java.nio.ByteBuffer;
 
 public interface ColorIterator {
 
+    class Pixel {
+        int red;
+        int green;
+        int blue;
+    }
+
     boolean hasNext();
 
-    int nextColor();
+    void nextColor(Pixel pixel);
 
     int getX();
 
@@ -94,7 +100,7 @@ public interface ColorIterator {
         }
 
         @Override
-        public int nextColor() {
+        public void nextColor(Pixel pixel) {
             if (mX == mWidth - 1) {
                 skip(mSkipPerRow);
                 mX = 0;
@@ -102,11 +108,9 @@ public interface ColorIterator {
             } else {
                 mX++;
             }
-            int c = (mByteBuffer.get() & 0xff) << 16;
-            c |= (mByteBuffer.get() & 0xff) << 8;
-            c |= (mByteBuffer.get() & 0xff);
-            c |= (mByteBuffer.get() & 0xff) << 24;
-            return c;
+            pixel.red = mByteBuffer.get() & 0xff;
+            pixel.green = mByteBuffer.get() & 0xff;
+            pixel.blue = mByteBuffer.get() & 0xff;
         }
     }
 
@@ -145,7 +149,7 @@ public interface ColorIterator {
         }
 
         @Override
-        public int nextColor() {
+        public void nextColor(Pixel pixel) {
             int c = mByteBuffer.getInt();
             skip(mNextStepSkip);
             mStepCount++;
@@ -168,7 +172,6 @@ public interface ColorIterator {
                         break;
                 }
             }
-            return c;
         }
 
         @Override

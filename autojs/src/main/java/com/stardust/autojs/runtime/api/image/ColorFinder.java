@@ -151,9 +151,11 @@ public class ColorFinder {
 
     public static Point findColor(ColorIterator iterator, ColorDetector detector) {
         Thread thread = Thread.currentThread();
-        while (!thread.isInterrupted() && iterator.hasNext()) {
-            int c = iterator.nextColor();
-            if (detector.detectsColor(c)) {
+        ColorIterator.Pixel pixel = new ColorIterator.Pixel();
+        while (iterator.hasNext() && !thread.isInterrupted()) {
+            iterator.nextColor(pixel);
+            iterator.nextColor(pixel);
+            if (detector.detectsColor(pixel.red, pixel.green, pixel.blue)) {
                 return new Point(iterator.getX(), iterator.getY());
             }
         }
@@ -206,9 +208,11 @@ public class ColorFinder {
         @Override
         public void run() {
             Thread thread = Thread.currentThread();
+            ColorIterator.Pixel pixel = new ColorIterator.Pixel();
             while (mResultBox.isNull() && mColorIterator.hasNext() && !thread.isInterrupted()) {
-                int c = mColorIterator.nextColor();
-                if (mColorDetector.detectsColor(c)) {
+                mColorIterator.nextColor(pixel);
+                mColorIterator.nextColor(pixel);
+                if (mColorDetector.detectsColor(pixel.red, pixel.green, pixel.blue)) {
                     mResultBox.set(new Point(mColorIterator.getX(), mColorIterator.getY()));
                     break;
                 }
@@ -234,9 +238,10 @@ public class ColorFinder {
         @Override
         public void run() {
             Thread thread = Thread.currentThread();
+            ColorIterator.Pixel pixel = new ColorIterator.Pixel();
             while (mColorIterator.hasNext() && !thread.isInterrupted()) {
-                int c = mColorIterator.nextColor();
-                if (mColorDetector.detectsColor(c)) {
+                mColorIterator.nextColor(pixel);
+                if (mColorDetector.detectsColor(pixel.red, pixel.green, pixel.blue)) {
                     mResult.add(new Point(mColorIterator.getX(), mColorIterator.getY()));
                 }
             }

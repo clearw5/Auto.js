@@ -11,6 +11,13 @@ module.exports = function(__runtime__, scope){
    images.saveImage = __runtime__.images.saveImage.bind(__runtime__.images);
 
    images.findColor = function(img, color, options){
+        if(typeof(color) == 'string'){
+            if(color.startsWith('#')){
+                color = parseInt('0x' + color.substring(1));
+            }else{
+                color = parseInt('0x' + color);
+            }
+        }
         options = options || {};
         var region = options.region || [];
         x = region[0] || 0;

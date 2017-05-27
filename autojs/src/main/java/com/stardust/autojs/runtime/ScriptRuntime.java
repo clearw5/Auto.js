@@ -41,6 +41,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
         private AccessibilityBridge mAccessibilityBridge;
         private Supplier<AbstractShell> mShellSupplier;
         private ScreenCaptureRequester mScreenCaptureRequester;
+        private AppUtils mAppUtils;
 
         public Builder() {
 
@@ -71,6 +72,11 @@ public class ScriptRuntime extends AbstractScriptRuntime {
             return this;
         }
 
+        public Builder setAppUtils(AppUtils appUtils) {
+            mAppUtils = appUtils;
+            return this;
+        }
+
         public ScriptRuntime build() {
             return new ScriptRuntime(this);
         }
@@ -86,7 +92,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
 
 
     protected ScriptRuntime(Builder builder) {
-        super(builder.mUiHandler.getContext(), builder.mConsole, builder.mAccessibilityBridge, builder.mScreenCaptureRequester);
+        super(builder.mUiHandler.getContext(), builder.mConsole, builder.mAccessibilityBridge, builder.mAppUtils, builder.mScreenCaptureRequester);
         mAccessibilityBridge = builder.mAccessibilityBridge;
         mUiHandler = builder.mUiHandler;
         mShellSupplier = builder.mShellSupplier;

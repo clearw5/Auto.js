@@ -118,13 +118,18 @@ public class UiSelector extends UiGlobalSelector {
     @NonNull
     public UiObjectCollection untilFind() {
         UiObjectCollection uiObjectCollection;
-        do {
+        uiObjectCollection = find();
+        while (uiObjectCollection.empty()) {
             if (Thread.currentThread().isInterrupted()) {
-                Log.d(TAG, "Thread isInterrupted");
+                throw new ScriptInterruptedException();
+            }
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
                 throw new ScriptInterruptedException();
             }
             uiObjectCollection = find();
-        } while (uiObjectCollection.empty());
+        }
         return uiObjectCollection;
     }
 

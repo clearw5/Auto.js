@@ -39,8 +39,8 @@ public abstract class AbstractScriptRuntime {
     @ScriptVariable
     public Images images;
 
-    public AbstractScriptRuntime(Context context, Console console, AccessibilityBridge bridge, ScreenCaptureRequester screenCaptureRequester) {
-        this.app = new AppUtils(context);
+    public AbstractScriptRuntime(Context context, Console console, AccessibilityBridge bridge, AppUtils appUtils, ScreenCaptureRequester screenCaptureRequester) {
+        this.app = appUtils;
         this.console = console;
         this.automator = new SimpleActionAutomator(bridge, this);
         this.info = bridge.getInfoProvider();

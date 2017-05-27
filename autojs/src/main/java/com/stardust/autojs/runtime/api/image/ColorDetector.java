@@ -1,65 +1,72 @@
 package com.stardust.autojs.runtime.api.image;
 
+import android.graphics.Color;
+
+import java.util.Comparator;
+
 /**
  * Created by Stardust on 2017/5/20.
  */
 
 public interface ColorDetector {
 
-    boolean detectsColor(int color);
+    boolean detectsColor(int red, int green, int blue);
 
     abstract class AbstractColorDetector implements ColorDetector {
 
         protected final int mColor;
+        protected final int mR, mG, mB;
 
         public AbstractColorDetector(int color) {
             mColor = color;
+            mR = Color.red(color);
+            mG = Color.green(color);
+            mB = Color.blue(color);
         }
     }
 
-    class EqualityDetector implements ColorDetector {
+    class EqualityDetector extends AbstractColorDetector {
 
-        private final int mColor;
 
         public EqualityDetector(int color) {
-            mColor = color & 0xffffff;
+            super(color);
         }
 
         @Override
-        public boolean detectsColor(int color) {
-            return mColor == (color & 0xffffff);
+        public boolean detectsColor(int red, int green, int blue) {
+            return mR == red && mG == green && mB == blue;
         }
     }
 
     class DifferenceDetector extends AbstractColorDetector {
 
-        private final int mThreshold;
+        private final int mRThreshold, mGThreshold, mBThreshold;
 
         public DifferenceDetector(int color, int threshold) {
             super(color);
-            mThreshold = threshold;
+            mRThreshold = Color.red(threshold);
+            mGThreshold = Color.green(threshold);
+            mBThreshold = Color.blue(threshold);
         }
 
         @Override
-        public boolean detectsColor(int color) {
-            return Math.abs(mColor - color) <= mThreshold;
+        public boolean detectsColor(int R, int G, int B) {
+            return Math.abs(R - mR) <= mRThreshold && Math.abs(G - mG) <= mGThreshold &&
+                    Math.abs(B - mB) <= mBThreshold;
         }
     }
 
     class RDistanceDetector extends AbstractColorDetector {
 
-        private final int mR;
         private final int mThreshold;
 
         public RDistanceDetector(int color, int threshold) {
             super(color);
             mThreshold = threshold;
-            mR = (color & 0xff0000) >> 16;
         }
 
         @Override
-        public boolean detectsColor(int color) {
-            int R = (color & 0xff0000) >> 16;
+        public boolean detectsColor(int R, int G, int B) {
             return Math.abs(mR - R) <= mThreshold;
         }
     }
@@ -67,21 +74,17 @@ public interface ColorDetector {
     class RGBDistanceDetector extends AbstractColorDetector {
 
         private final int mThreshold;
-        private final int mR, mG, mB;
 
         public RGBDistanceDetector(int color, int threshold) {
             super(color);
-            mR = (color & 0xff0000) >> 16;
-            mG = (color & 0x00ff00) >> 8;
-            mB = color & 0xff;
             mThreshold = threshold * threshold;
         }
 
         @Override
-        public boolean detectsColor(int color) {
-            int dR = ((color & 0xff0000) >> 16) - mR;
-            int dG = ((color & 0x00ff00) >> 8) - mG;
-            int dB = (color & 0xff) - mB;
+        public boolean detectsColor(int R, int G, int B) {
+            int dR = R - mR;
+            int dG = G - mG;
+            int dB = B - mB;
             int d = dR * dR + dG * dG + dB * dB;
             return d <= mThreshold;
         }
@@ -101,11 +104,10 @@ public interface ColorDetector {
         }
 
         @Override
-        public boolean detectsColor(int color) {
-            int R = (color & 0xff0000) >> 16;
+        public boolean detectsColor(int R, int G, int B) {
             int dR = R - mR;
-            int dG = ((color & 0x00ff00) >> 8) - mG;
-            int dB = (color & 0xff) - mB;
+            int dG = G - mG;
+            int dB = B - mB;
             double meanR = (mR + R) / 2;
             double weightR = 2 + meanR / 256;
             double weightG = 4.0;
@@ -121,19 +123,16 @@ public interface ColorDetector {
 
         public HDistanceDetector(int color, int threshold) {
             super(color);
-            mH = getH(color);
+            mH = getH(mR, mG, mB);
             mThreshold = threshold;
         }
 
         @Override
-        public boolean detectsColor(int color) {
-            return Math.abs(mH - getH(color)) <= mThreshold;
+        public boolean detectsColor(int R, int G, int B) {
+            return Math.abs(mH - getH(R, G, B)) <= mThreshold;
         }
 
-        private static int getH(int color) {
-            int R = (color & 0xff0000) >> 16;
-            int G = (color & 0x00ff00) >> 8;
-            int B = color & 0xff;
+        private static int getH(int R, int G, int B) {
             int max, min, H;
             if (R > G) {
                 min = Math.min(G, B);
@@ -161,24 +160,21 @@ public interface ColorDetector {
 
         public HSDistanceDetector(int color, int threshold) {
             super(color);
-            long HS = getHS(color);
+            long HS = getHS(mR, mG, mB);
             mH = (int) (HS & 0xffffffffL);
             mS = (int) ((HS >> 32) & 0xffffffffL);
             mThreshold = threshold * threshold;
         }
 
         @Override
-        public boolean detectsColor(int color) {
-            long hs = getHS(color);
+        public boolean detectsColor(int R, int G, int B) {
+            long hs = getHS(R, G, B);
             int dH = (int) (hs & 0xffffffffL) - mH;
             int dS = (int) ((hs >> 32) & 0xffffffffL) - mS;
             return dH * dH + dS * dS <= mThreshold;
         }
 
-        private static long getHS(int color) {
-            int R = (color & 0xff0000) >> 16;
-            int G = (color & 0x00ff00) >> 8;
-            int B = color & 0xff;
+        private static long getHS(int R, int G, int B) {
             int max, min, H;
             if (R > G) {
                 min = Math.min(G, B);

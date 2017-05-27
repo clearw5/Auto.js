@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.stardust.autojs.runtime.ScriptInterface;
 import com.stardust.util.IntentUtil;
@@ -21,7 +22,7 @@ import java.util.List;
 public class AppUtils {
 
     private Context mContext;
-    private WeakReference<Activity> mCurrentActivity;
+    private volatile WeakReference<Activity> mCurrentActivity = new WeakReference<>(null);
 
     public AppUtils(Context context) {
         mContext = context;
@@ -64,6 +65,7 @@ public class AppUtils {
 
     @Nullable
     public Activity getCurrentActivity() {
+        Log.d("App", "getCurrentActivity: " + mCurrentActivity.get());
         return mCurrentActivity.get();
     }
 
@@ -75,5 +77,6 @@ public class AppUtils {
 
     public void setCurrentActivity(Activity currentActivity) {
         mCurrentActivity = new WeakReference<>(currentActivity);
+        Log.d("App", "setCurrentActivity: " + currentActivity);
     }
 }

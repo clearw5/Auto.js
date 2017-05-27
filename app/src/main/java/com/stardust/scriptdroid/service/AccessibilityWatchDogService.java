@@ -53,10 +53,8 @@ public class AccessibilityWatchDogService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
-        if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
-
-        }
         Log.v(TAG, "onAccessibilityEvent: " + event);
+        super.onAccessibilityEvent(event);
         if (!containsAllEventTypes && !eventTypes.contains(event.getEventType()))
             return;
         for (Map.Entry<Integer, AccessibilityDelegate> entry : mDelegates.entrySet()) {

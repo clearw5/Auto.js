@@ -13,6 +13,7 @@ import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.statics.ScriptStatics;
 import com.stardust.scriptdroid.tool.CrashHandler;
 import com.stardust.scriptdroid.tool.JsBeautifierFactory;
+import com.stardust.scriptdroid.tool.Logcat;
 import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
 import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
@@ -43,6 +44,8 @@ public class App extends MultiDexApplication {
         setUpDebugEnvironment();
         init();
         registerActivityLifecycleCallback();
+        Logcat.deleteLogFile();
+        Logcat.startLogSavingIfNeeded();
     }
 
     private void setUpStaticsTool() {
