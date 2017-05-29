@@ -44,8 +44,6 @@ public class App extends MultiDexApplication {
         setUpDebugEnvironment();
         init();
         registerActivityLifecycleCallback();
-        Logcat.deleteLogFile();
-        Logcat.startLogSavingIfNeeded();
     }
 
     private void setUpStaticsTool() {

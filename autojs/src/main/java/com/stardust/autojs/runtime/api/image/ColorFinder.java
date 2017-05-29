@@ -211,7 +211,6 @@ public class ColorFinder {
             ColorIterator.Pixel pixel = new ColorIterator.Pixel();
             while (mResultBox.isNull() && mColorIterator.hasNext() && !thread.isInterrupted()) {
                 mColorIterator.nextColor(pixel);
-                mColorIterator.nextColor(pixel);
                 if (mColorDetector.detectsColor(pixel.red, pixel.green, pixel.blue)) {
                     mResultBox.set(new Point(mColorIterator.getX(), mColorIterator.getY()));
                     break;

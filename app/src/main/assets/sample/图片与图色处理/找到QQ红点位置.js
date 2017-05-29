@@ -6,7 +6,7 @@ launchApp("QQ");
 sleep(2000);
 var img = captureScreen();
 toastLog("开始找色");
-var point = findColor(img, 0xf64d30);
+var point = findColor(img, "#f64d30");
 if(point){
     toastLog("x = " + point.x + ", y = " + point.y);
 }else{

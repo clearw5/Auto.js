@@ -3,7 +3,10 @@ package com.stardust.automator.simple_action;
 import android.graphics.Rect;
 
 import com.stardust.automator.UiObject;
+import com.stardust.automator.filter.BoundsFilter;
+import com.stardust.view.accessibility.AccessibilityNodeInfoHelper;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,26 +62,29 @@ public abstract class FilterAction extends SimpleAction {
 
         @Override
         public List<UiObject> filter(UiObject root) {
-            return Collections.singletonList(findAccessibilityNodeInfosByBounds(root));
+            List<UiObject> list = new ArrayList<>();
+            findAccessibilityNodeInfosByBounds(root, list);
+            return list;
         }
 
-        private UiObject findAccessibilityNodeInfosByBounds(UiObject root) {
+        private void findAccessibilityNodeInfosByBounds(UiObject root, List<UiObject> list) {
             if (root == null)
-                return null;
+                return;
             Rect rect = new Rect();
             root.getBoundsInScreen(rect);
             if (rect.equals(mBoundsInScreen)) {
-                return root;
+                list.add(root);
             }
+            int oldSize = list.size();
             for (int i = 0; i < root.getChildCount(); i++) {
                 UiObject child = root.child(i);
                 if (child == null)
                     continue;
-                UiObject nodeInfo = findAccessibilityNodeInfosByBounds(child);
-                if (nodeInfo != null)
-                    return nodeInfo;
+                findAccessibilityNodeInfosByBounds(child, list);
             }
-            return null;
+            if (oldSize == list.size() && rect.contains(mBoundsInScreen)) {
+                list.add(root);
+            }
         }
 
         @Override

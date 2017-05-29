@@ -24,7 +24,7 @@ module.exports = function(__runtime__, scope){
         y = region[1] || 0;
         width = region[2] || (img.getWidth() - x);
         height = region[3] || (img.getHeight() - y);
-        threads = options.threads || 4;
+        threads = options.threads || 2;
         if(options.threshold !== 0){
             threshold = options.threshold || 8;
         }
@@ -57,6 +57,8 @@ module.exports = function(__runtime__, scope){
                 return new com.stardust.autojs.runtime.api.image.ColorDetector.RGBDistanceDetector(color, threshold);
             case "equal":
                 return new com.stardust.autojs.runtime.api.image.ColorDetector.EqualityDetector(color);
+            case "diff":
+                return new com.stardust.autojs.runtime.api.image.ColorDetector.DifferenceDetector(color, threshold);
             case "rgb+":
                 return new com.stardust.autojs.runtime.api.image.ColorDetector.WeightedRGBDistanceDetector(color, threshold);
             case "hs":

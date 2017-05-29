@@ -111,13 +111,12 @@ public interface ColorIterator {
             pixel.red = mByteBuffer.get() & 0xff;
             pixel.green = mByteBuffer.get() & 0xff;
             pixel.blue = mByteBuffer.get() & 0xff;
+            mByteBuffer.get();
         }
     }
 
 
-    /**
-     * 中心螺旋。未完成。
-     */
+    // TODO: 2017/5/29  中心螺旋。未完成。
     class CentralSpiralIterator extends ImageColorIterator {
 
         private static final int DIRECTION_RIGHT = 0;

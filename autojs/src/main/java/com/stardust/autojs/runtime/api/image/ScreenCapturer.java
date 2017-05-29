@@ -25,7 +25,7 @@ public class ScreenCapturer {
     private ImageReader mImageReader;
     private MediaProjection mMediaProjection;
     private VirtualDisplay mVirtualDisplay;
-    private final Object mImageLock = new Object();
+    private Image mImage;
 
     public ScreenCapturer(Context context, Intent data, int screenWidth, int screenHeight, int screenDensity) {
         MediaProjectionManager manager = (MediaProjectionManager) context.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
@@ -49,8 +49,11 @@ public class ScreenCapturer {
     }
 
     public Image capture() {
-        Image image = mImageReader.acquireLatestImage();
-        if (image == null) {
+        if (mImage != null) {
+            mImage.close();
+        }
+        mImage = mImageReader.acquireLatestImage();
+        if (mImage == null) {
             Looper.prepare();
             mImageReader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
                 @Override
@@ -59,9 +62,9 @@ public class ScreenCapturer {
                 }
             }, null);
             Looper.loop();
-            image = mImageReader.acquireLatestImage();
+            mImage = mImageReader.acquireLatestImage();
         }
-        return image;
+        return mImage;
     }
 
 
@@ -72,6 +75,9 @@ public class ScreenCapturer {
         }
         if (mVirtualDisplay != null) {
             mVirtualDisplay.release();
+        }
+        if (mImage != null) {
+            mImage.close();
         }
     }
 }
