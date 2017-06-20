@@ -37,6 +37,9 @@ public class TaskManagerFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ViewBinder.bind(this, view);
         init();
+        final boolean noRunningScript = mTaskListRecyclerView.getAdapter().getItemCount() == 0;
+        mNoRunningScriptNotice.setVisibility(noRunningScript ? View.VISIBLE : View.GONE);
+        mCloseAllView.setVisibility(noRunningScript ? View.GONE : View.VISIBLE);
     }
 
     private void init() {
@@ -48,7 +51,7 @@ public class TaskManagerFragment extends Fragment {
             @Override
             public void onSomethingChanged() {
                 final boolean noRunningScript = mTaskListRecyclerView.getAdapter().getItemCount() == 0;
-                mCloseAllView.postDelayed(new Runnable() {
+                mTaskListRecyclerView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mNoRunningScriptNotice.setVisibility(noRunningScript ? View.VISIBLE : View.GONE);
