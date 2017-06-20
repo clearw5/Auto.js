@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -49,7 +50,9 @@ import com.stardust.scriptdroid.ui.settings.SettingsActivity;
 import com.stardust.scriptdroid.ui.update.VersionGuard;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.BackPressedHandler;
+import com.stardust.util.Callback;
 import com.stardust.util.MessageEvent;
+import com.stardust.view.DrawerAutoClose;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
@@ -130,7 +133,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 return false;
             }
         });
-        registerBackPressedHandler(new BackPressedHandler.DrawerAutoClose(mDrawerLayout, Gravity.START));
+        registerBackPressedHandler(new DrawerAutoClose(mDrawerLayout, Gravity.START));
         registerBackPressedHandler(new BackPressedHandler.DoublePressExit(this, R.string.text_press_again_to_exit));
     }
 
@@ -216,12 +219,22 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @ViewBinding.Click(R.id.create_new_file)
     private void createScriptFile() {
-        getMyScriptListFragment().newScriptFile();
+        doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
+            @Override
+            public void call(MyScriptListFragment myScriptListFragment) {
+                myScriptListFragment.newScriptFile();
+            }
+        });
     }
 
     @ViewBinding.Click(R.id.create_new_directory)
     private void createNewDirectory() {
-        getMyScriptListFragment().newDirectory();
+        doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
+            @Override
+            public void call(MyScriptListFragment myScriptListFragment) {
+                myScriptListFragment.newDirectory();
+            }
+        });
     }
 
     @ViewBinding.Click(R.id.import_from_file)
@@ -231,10 +244,15 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 .scriptProvider(provider)
                 .fileCallback(new ScriptFileChooserDialogBuilder.FileCallback() {
                     @Override
-                    public void onFileSelection(MaterialDialog dialog, ScriptFile file) {
+                    public void onFileSelection(MaterialDialog dialog, final ScriptFile file) {
                         dialog.dismiss();
                         provider.clearCacheExceptInitialDirectory();
-                        getMyScriptListFragment().importFile(file.getPath());
+                        doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
+                            @Override
+                            public void call(MyScriptListFragment myScriptListFragment) {
+                                myScriptListFragment.importFile(file.getPath());
+                            }
+                        });
                     }
                 })
                 .title(R.string.text_please_choose_file_to_import)
@@ -317,13 +335,18 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         if (fragment == null) {
             mIntentToHandle = intent;
         } else {
-            Sample sample = (Sample) intent.getSerializableExtra(ARGUMENT_SAMPLE);
-            try {
-                getMyScriptListFragment().importFile(sample.name, getAssets().open(sample.path));
-            } catch (IOException e) {
-                e.printStackTrace();
-                Snackbar.make(mDrawerLayout, R.string.text_import_fail, Snackbar.LENGTH_SHORT).show();
-            }
+            final Sample sample = (Sample) intent.getSerializableExtra(ARGUMENT_SAMPLE);
+            doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
+                @Override
+                public void call(MyScriptListFragment myScriptListFragment) {
+                    try {
+                        myScriptListFragment.importFile(sample.name, getAssets().open(sample.path));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Snackbar.make(mDrawerLayout, R.string.text_import_fail, Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
     }
 
@@ -335,7 +358,12 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                     @Override
                     public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
                         if (position == 0) {
-                            getMyScriptListFragment().newScriptFileForScript(script);
+                            doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
+                                @Override
+                                public void call(MyScriptListFragment myScriptListFragment) {
+                                    myScriptListFragment.newScriptFileForScript(script);
+                                }
+                            });
                         } else {
                             ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE))
                                     .setPrimaryClip(ClipData.newPlainText("script", script));
@@ -369,7 +397,30 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 .putExtra(ARGUMENT_SAMPLE, sample));
     }
 
+    public void doWithMyScriptListFragment(final Callback<MyScriptListFragment> callback) {
+        MyScriptListFragment fragment = ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0));
+        if (fragment != null) {
+            callback.call(fragment);
+            return;
+        }
+        mViewPager.setCurrentItem(0);
+        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    mViewPager.removeOnPageChangeListener(this);
+                    doWithMyScriptListFragment(callback);
+                }
+            }
+        });
+    }
+
+    @Nullable
     public MyScriptListFragment getMyScriptListFragment() {
+        MyScriptListFragment fragment = ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0));
+        if (fragment == null) {
+            mViewPager.setCurrentItem(0);
+        }
         return ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0));
     }
 
@@ -412,6 +463,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         context.startActivity(intent);
     }
 
+    @NonNull
     @Override
     public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
         return mActivityResultMediator;

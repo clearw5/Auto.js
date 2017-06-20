@@ -188,7 +188,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
     @Override
     public void onStart() {
-        Toast.makeText(mContext, R.string.text_start_record, Toast.LENGTH_SHORT).show();
+        App.getApp().getUiHandler().toast(R.string.text_start_record);
     }
 
     @Override

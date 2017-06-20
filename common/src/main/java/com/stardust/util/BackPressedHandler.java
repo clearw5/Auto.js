@@ -1,7 +1,6 @@
 package com.stardust.util;
 
 import android.app.Activity;
-import android.support.v4.widget.DrawerLayout;
 import android.widget.Toast;
 
 
@@ -68,23 +67,5 @@ public interface BackPressedHandler {
         }
     }
 
-    class DrawerAutoClose implements BackPressedHandler {
 
-        private DrawerLayout mDrawerLayout;
-        private int mGravity;
-
-        public DrawerAutoClose(DrawerLayout drawerLayout, int gravity){
-            mDrawerLayout = drawerLayout;
-            mGravity = gravity;
-        }
-
-        @Override
-        public boolean onBackPressed(Activity activity) {
-            if (mDrawerLayout.isDrawerOpen(mGravity)) {
-                mDrawerLayout.closeDrawer(mGravity);
-                return true;
-            }
-            return false;
-        }
-    }
 }

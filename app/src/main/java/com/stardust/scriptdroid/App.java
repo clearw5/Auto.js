@@ -18,6 +18,7 @@ import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
 import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.ScreenMetrics;
+import com.stardust.util.UiHandler;
 
 import java.lang.ref.WeakReference;
 
@@ -30,6 +31,7 @@ public class App extends MultiDexApplication {
     private static final String TAG = "App";
 
     private static WeakReference<App> instance;
+    private UiHandler mUiHandler;
 
     public static App getApp() {
         return instance.get();
@@ -40,6 +42,7 @@ public class App extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         instance = new WeakReference<>(this);
+        mUiHandler = new UiHandler(this);
         setUpStaticsTool();
         setUpDebugEnvironment();
         init();
@@ -90,5 +93,9 @@ public class App extends MultiDexApplication {
 
     public VolumeChangeObserver getVolumeChangeObserver() {
         return mVolumeChangeObserver;
+    }
+
+    public UiHandler getUiHandler() {
+        return mUiHandler;
     }
 }

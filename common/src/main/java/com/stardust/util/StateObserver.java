@@ -1,7 +1,6 @@
 package com.stardust.util;
 
 import android.content.SharedPreferences;
-import android.support.v7.widget.SwitchCompat;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -39,19 +38,6 @@ public class StateObserver {
         mSharedPreferences = sharedPreferences;
     }
 
-    public void register(final String key, SwitchCompat switchCompat) {
-        final WeakReference<SwitchCompat> switchCompatWeakReference = new WeakReference<>(switchCompat);
-        register(key, new SimpleOnStateChangedListener() {
-            @Override
-            public void onStateChanged(boolean newState) {
-                if (switchCompatWeakReference.get() != null) {
-                    switchCompatWeakReference.get().setChecked(newState);
-                } else {
-                    unregister(key, this);
-                }
-            }
-        });
-    }
 
     public void register(String key, OnStateChangedListener listener) {
         initState(key, listener);
