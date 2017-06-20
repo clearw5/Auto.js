@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.Fragment;
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
@@ -52,7 +53,7 @@ public class SideMenuFragment extends Fragment {
     }
 
     private SwitchCompat mAccessibilityServiceSwitch, mFloatingWindowSwitch;
-    private SwitchCompat mDebugSwith;
+    private SwitchCompat mDebugSwitch;
     private Executor mExecutor = UnderuseExecutors.getExecutor();
 
     @Override
@@ -88,7 +89,7 @@ public class SideMenuFragment extends Fragment {
                 mExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        final boolean checked = AccessibilityWatchDogService.isEnable(getActivity());
+                        final boolean checked = AccessibilityWatchDogService.isEnable(App.getApp());
                         mAccessibilityServiceSwitch.post(new Runnable() {
                             @Override
                             public void run() {
@@ -105,13 +106,13 @@ public class SideMenuFragment extends Fragment {
     private void setUpSwitchCompat() {
         mAccessibilityServiceSwitch = $(R.id.sw_auto_operate_service);
         mFloatingWindowSwitch = $(R.id.sw_floating_window);
-        mDebugSwith = $(R.id.sw_debug);
+        mDebugSwitch = $(R.id.sw_debug);
     }
 
 
     @ViewBinding.Click(R.id.console)
     private void startConsoleActivity() {
-        startActivity(new Intent(getContext(), LogActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        startActivity(new Intent(getActivity(), LogActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     @ViewBinding.Click(R.id.syntax_and_api)
@@ -126,7 +127,7 @@ public class SideMenuFragment extends Fragment {
 
     @ViewBinding.Check(R.id.sw_auto_operate_service)
     private void setAutoOperateServiceEnable(boolean enable) {
-        boolean isWatchDogServiceEnabled = AccessibilityWatchDogService.isEnable(getActivity());
+        boolean isWatchDogServiceEnabled = AccessibilityWatchDogService.isEnable(App.getApp());
         if (enable && !isWatchDogServiceEnabled) {
             AccessibilityServiceTool.enableAccessibilityService();
         } else if (!enable && isWatchDogServiceEnabled) {
@@ -150,7 +151,7 @@ public class SideMenuFragment extends Fragment {
 
     @ViewBinding.Click(R.id.debug)
     private void toggleDebugSwitch() {
-        mDebugSwith.toggle();
+        mDebugSwitch.toggle();
     }
 
     @ViewBinding.Check(R.id.sw_debug)
@@ -204,8 +205,8 @@ public class SideMenuFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSublimeClientStateChange(SublimePluginClient.ConnectionStateChangeEvent event) {
-        mDebugSwith.setChecked(event.isConnected());
-        Toast.makeText(getActivity(), event.isConnected() ? R.string.text_connected : R.string.text_disconnected, Toast.LENGTH_SHORT).show();
+        mDebugSwitch.setChecked(event.isConnected());
+        App.getApp().getUiHandler().toast(event.isConnected() ? R.string.text_connected : R.string.text_disconnected);
     }
 
 }
