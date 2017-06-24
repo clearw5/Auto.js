@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.aakira.expandablelayout.BuildConfig;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.heinrichreimersoftware.androidissuereporter.model.DeviceInfo;
 import com.heinrichreimersoftware.androidissuereporter.model.Report;
@@ -138,7 +139,7 @@ public abstract class AbstractIssueReporterActivity extends AppCompatActivity {
         if (errorDetail != null) {
             inputDescription.setText(errorDetail);
             String title = getFirstLine(errorDetail);
-            inputTitle.setText(title);
+            inputTitle.setText("[" + BuildConfig.VERSION_CODE + "]" + title);
             mCrash = true;
         }
     }

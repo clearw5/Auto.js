@@ -15,10 +15,12 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.scriptdroid.R;
 
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -116,7 +118,7 @@ public class ErrorReportActivity extends BaseActivity {
     }
 
     private String getDeviceMessage() {
-        return "Android: " + Build.VERSION.SDK_INT + "\n";
+        return String.format(Locale.getDefault(), "Version: %s\nAndroid: %d", BuildConfig.VERSION_CODE, Build.VERSION.SDK_INT);
     }
 
     private void exitAfter(long millis) {

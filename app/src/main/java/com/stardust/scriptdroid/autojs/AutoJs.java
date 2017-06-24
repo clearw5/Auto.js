@@ -206,6 +206,7 @@ public class AutoJs implements AccessibilityBridge {
                 }
             }
             if (errorMessage != null) {
+                AccessibilityServiceTool.goToAccessibilitySetting();
                 throw new ScriptStopException(errorMessage);
             }
         }

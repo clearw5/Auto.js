@@ -125,12 +125,6 @@ public class ScriptEngineService {
             task.setExecutionListener(mScriptExecutionObserver);
         }
         if (isUiMode(task)) {
-            mUiHandler.post(new Runnable() {
-                @Override
-                public void run() {
-
-                }
-            });
             return ScriptExecuteActivity.execute(mContext, this, task);
         } else {
             RunnableScriptExecution scriptExecution = new RunnableScriptExecution(this, task);
