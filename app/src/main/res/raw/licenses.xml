@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <notices>
     <notice>
+        <name>Rhino: JavaScript in Java</name>
+        <url>https://github.com/mozilla/rhino</url>
+        <copyright/>
+        <license>Mozilla Public License 2.0</license>
+    </notice>
+    <notice>
+        <name>920 Text Editor</name>
+        <url>https://github.com/jecelyin/920-text-editor-v2</url>
+        <copyright/>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
         <name>LeakCanary</name>
         <copyright>Copyright 2015 Square, Inc.</copyright>
         <url>https://github.com/square/leakcanary</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>StorIO </name>
+        <url>https://github.com/pushtorefresh/storio</url>
         <license>Apache Software License 2.0</license>
     </notice>
     <notice>
@@ -16,18 +33,6 @@
         <name>Gson</name>
         <url>https://github.com/google/gson</url>
         <copyright>Copyright 2008 Google Inc.</copyright>
-        <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
-        <name>Rhino: JavaScript in Java</name>
-        <url>https://github.com/mozilla/rhino</url>
-        <copyright/>
-        <license>Mozilla Public License 2.0</license>
-    </notice>
-    <notice>
-        <name>920 Text Editor</name>
-        <url>https://github.com/jecelyin/920-text-editor-v2</url>
-        <copyright/>
         <license>Apache Software License 2.0</license>
     </notice>
     <notice>
@@ -61,12 +66,6 @@
         <license>Apache Software License 2.0</license>
     </notice>
     <notice>
-        <name>Android Terminal Emulator</name>
-        <copyright/>
-        <url>https://github.com/jackpal/Android-Terminal-Emulator</url>
-        <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
         <name>MultiLevelListView</name>
         <copyright>2016 (C) Copyright Open-RnD Sp. z o.o.</copyright>
         <url>https://github.com/open-rnd/android-multi-level-listview</url>
@@ -89,5 +88,23 @@
         <copyright>Copyright (c) 2014 Big Nerd Ranch</copyright>
         <url>https://github.com/bignerdranch/expandable-recycler-view</url>
         <license>MIT License</license>
+    </notice>
+    <notice>
+        <name>Android Terminal Emulator</name>
+        <copyright/>
+        <url>https://github.com/jackpal/Android-Terminal-Emulator</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>RecyclerView-FlexibleDivider</name>
+        <copyright>Copyright 2016 yqritc</copyright>
+        <url>https://github.com/yqritc/RecyclerView-FlexibleDivider</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>Volley</name>
+        <copyright/>
+        <url>https://github.com/google/volley</url>
+        <license>Apache Software License 2.0</license>
     </notice>
 </notices>
