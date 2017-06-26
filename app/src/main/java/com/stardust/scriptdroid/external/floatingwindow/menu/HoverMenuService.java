@@ -88,6 +88,7 @@ public class HoverMenuService extends Service {
 
     private WindowViewController mWindowViewController;
 
+    private ContextThemeWrapper mThemeWrapper;
     private FloatingLayoutHierarchyView mFloatingLayoutHierarchyView;
     private FloatingLayoutBoundsView mFloatingLayoutBoundsView;
 
@@ -121,15 +122,16 @@ public class HoverMenuService extends Service {
     }
 
     private void initViews() {
-        mFloatingLayoutHierarchyView = new FloatingLayoutHierarchyView(this);
-        mFloatingLayoutBoundsView = new FloatingLayoutBoundsView(this);
+        mThemeWrapper = new ContextThemeWrapper(this, R.style.AppTheme);
+        mFloatingLayoutHierarchyView = new FloatingLayoutHierarchyView(mThemeWrapper);
+        mFloatingLayoutBoundsView = new FloatingLayoutBoundsView(mThemeWrapper);
         initWindowMenu();
         mWindowViewController.addView(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, true, mFloatingLayoutHierarchyView);
         mWindowViewController.addView(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, true, mFloatingLayoutBoundsView);
     }
 
     private void initWindowMenu() {
-        mWindowHoverMenu = (WindowHoverMenu) new HoverMenuBuilder(new ContextThemeWrapper(this, R.style.AppTheme))
+        mWindowHoverMenu = (WindowHoverMenu) new HoverMenuBuilder(mThemeWrapper)
                 .displayWithinWindow()
                 .useAdapter(new HoverMenuAdapter(this))
                 .restoreVisualState(loadPreferredLocation())

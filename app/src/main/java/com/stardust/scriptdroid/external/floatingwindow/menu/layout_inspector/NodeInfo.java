@@ -18,15 +18,27 @@ import java.util.List;
 public class NodeInfo {
 
     private List<NodeInfo> children = new ArrayList<>();
+    private Rect mBoundsInScreen;
 
     public String id;
-    public CharSequence contentDesc, className, packageName, text;
+    public CharSequence contentDesc;
+    public CharSequence className;
+    public CharSequence packageName;
+    public CharSequence text;
     public int drawingOrder;
-    public boolean accessibilityFocused, checked, clickable, contextClickable, dismissable, editable, enabled,
-            focusable, longClickable, selected, scrollable, visibleToUser;
+    public boolean accessibilityFocused;
+    public boolean checked;
+    public boolean clickable;
+    public boolean contextClickable;
+    public boolean dismissable;
+    public boolean editable;
+    public boolean enabled;
+    public boolean focusable;
+    public boolean longClickable;
+    public boolean selected;
+    public boolean scrollable;
     public String bounds;
 
-    private Rect mBoundsInScreen;
 
     public NodeInfo(AccessibilityNodeInfoCompat node) {
         id = simplifyId(node.getViewIdResourceName());
@@ -48,8 +60,6 @@ public class NodeInfo {
         longClickable = node.isLongClickable();
         selected = node.isSelected();
         scrollable = node.isScrollable();
-        visibleToUser = node.isVisibleToUser();
-
         mBoundsInScreen = new Rect();
         node.getBoundsInScreen(mBoundsInScreen);
         bounds = boundsToString(mBoundsInScreen);

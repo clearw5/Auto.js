@@ -51,9 +51,10 @@ public class FloatingLayoutBoundsView extends LayoutBoundsView {
             mNodeInfoView = new NodeInfoView(getContext());
             mNodeInfoDialog = new MaterialDialog.Builder(getContext())
                     .customView(mNodeInfoView, false)
+                    .backgroundColor(0xddffffff)
                     .theme(Theme.LIGHT)
                     .build();
-            mNodeInfoDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            mNodeInfoDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
         }
     }
 

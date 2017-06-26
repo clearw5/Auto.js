@@ -184,6 +184,8 @@
     <string name="text_server_address">服务器地址</string>
     <string name="text_annunciation">声明</string>
     <string name="text_about_me_and_repo">关于项目与开发者</string>
+    <string name="text_attribute">属性</string>
+    <string name="text_value">值</string>
 
     <string-array name="record_control_keys">
         <item>无</item>

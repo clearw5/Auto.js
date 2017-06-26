@@ -57,7 +57,7 @@ public class FloatingLayoutHierarchyView extends LayoutHierarchyView {
                     .theme(Theme.LIGHT)
                     .build();
             if (mNodeInfoDialog.getWindow() != null)
-                mNodeInfoDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                mNodeInfoDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
         }
     }
 
