@@ -31,9 +31,10 @@ import butterknife.Optional;
 
 public class NodeInfoView extends RecyclerView {
 
-    private static final String[] FIELD_NAMES = {"id",
+    private static final String[] FIELD_NAMES = {
+            "id",
             "bounds",
-            "contentDesc",
+            "desc",
             "className",
             "packageName",
             "text",
@@ -56,7 +57,7 @@ public class NodeInfoView extends RecyclerView {
         Arrays.sort(FIELD_NAMES);
         for (int i = 0; i < FIELD_NAMES.length; i++) {
             try {
-                FIELDS[i] = NodeInfo.class.getField(FIELD_NAMES[i]);
+                FIELDS[i] = NodeInfo.class.getDeclaredField(FIELD_NAMES[i]);
             } catch (NoSuchFieldException e) {
                 throw new RuntimeException(e);
             }
@@ -92,10 +93,10 @@ public class NodeInfoView extends RecyclerView {
     }
 
     public void setNodeInfo(NodeInfo nodeInfo) {
-        for (int i = 1; i < FIELD_NAMES.length; i++) {
+        for (int i = 0; i < FIELDS.length; i++) {
             try {
-                Object value = FIELDS[i - 1].get(nodeInfo);
-                mData[i][1] = value == null ? "" : value.toString();
+                Object value = FIELDS[i].get(nodeInfo);
+                mData[i + 1][1] = value == null ? "" : value.toString();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

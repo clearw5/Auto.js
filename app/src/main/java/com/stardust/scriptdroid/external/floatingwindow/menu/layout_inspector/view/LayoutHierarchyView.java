@@ -19,8 +19,11 @@ import com.stardust.util.ViewUtil;
 import com.stardust.widget.LevelBeamView;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.Stack;
 
 import pl.openrnd.multilevellistview.ItemInfo;
 import pl.openrnd.multilevellistview.MultiLevelListAdapter;
@@ -34,13 +37,17 @@ import pl.openrnd.multilevellistview.OnItemClickListener;
 
 public class LayoutHierarchyView extends MultiLevelListView {
 
+    public interface OnItemLongClickListener {
+        void onItemLongClick(View view, NodeInfo nodeInfo);
+    }
+
     private Adapter mAdapter;
-    private OnNodeInfoSelectListener mOnNodeInfoSelectListener;
+    private OnItemLongClickListener mOnItemLongClickListener;
     private AdapterView.OnItemLongClickListener mOnItemLongClickListenerProxy = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            if (mOnNodeInfoSelectListener != null) {
-                mOnNodeInfoSelectListener.onNodeSelect(((ViewHolder) view.getTag()).nodeInfo);
+            if (mOnItemLongClickListener != null) {
+                mOnItemLongClickListener.onItemLongClick(view, ((ViewHolder) view.getTag()).nodeInfo);
                 return true;
             }
             return false;
@@ -55,7 +62,9 @@ public class LayoutHierarchyView extends MultiLevelListView {
     private Drawable mOriginalBackground;
 
     private boolean mShowClickedNodeBounds;
-    private int mClickedColor = 0x77c4c4c4;
+    private int mClickedColor = 0x99b2b3b7;
+    private NodeInfo mRootNode;
+    private Set<NodeInfo> mInitiallyExpandedNodes = new HashSet<>();
 
     public LayoutHierarchyView(Context context) {
         super(context);
@@ -80,6 +89,9 @@ public class LayoutHierarchyView extends MultiLevelListView {
         mClickedColor = clickedColor;
     }
 
+    public int getStatusBarHeight() {
+        return mStatusBarHeight;
+    }
 
     private void init() {
         mAdapter = new Adapter();
@@ -127,12 +139,14 @@ public class LayoutHierarchyView extends MultiLevelListView {
     }
 
     public void setRootNode(NodeInfo rootNodeInfo) {
+        mRootNode = rootNodeInfo;
         mAdapter.setDataItems(Collections.singletonList(rootNodeInfo));
         mClickedNodeInfo = null;
+        mInitiallyExpandedNodes.clear();
     }
 
-    public void setOnNodeInfoLongClickListener(final OnNodeInfoSelectListener onNodeInfoSelectListener) {
-        mOnNodeInfoSelectListener = onNodeInfoSelectListener;
+    public void setOnItemLongClickListener(final OnItemLongClickListener onNodeInfoSelectListener) {
+        mOnItemLongClickListener = onNodeInfoSelectListener;
     }
 
     @Override
@@ -141,6 +155,35 @@ public class LayoutHierarchyView extends MultiLevelListView {
         if (mShowClickedNodeBounds && mClickedNodeInfo != null) {
             LayoutBoundsView.drawRect(canvas, mClickedNodeInfo.getBoundsInScreen(), mStatusBarHeight, mPaint);
         }
+    }
+
+    public void setSelectedNode(NodeInfo selectedNode) {
+        mInitiallyExpandedNodes.clear();
+        Stack<NodeInfo> parents = new Stack<>();
+        searchNodeParents(selectedNode, mRootNode, parents);
+        mClickedNodeInfo = parents.peek();
+        for (NodeInfo nodeInfo : parents) {
+            mInitiallyExpandedNodes.add(nodeInfo);
+        }
+        mAdapter.reloadData();
+    }
+
+    private boolean searchNodeParents(NodeInfo nodeInfo, NodeInfo rootNode, Stack<NodeInfo> stack) {
+        stack.push(rootNode);
+        if (nodeInfo == rootNode) {
+            return true;
+        }
+        boolean found = false;
+        for (NodeInfo child : rootNode.getChildren()) {
+            if (searchNodeParents(nodeInfo, child, stack)) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            stack.pop();
+        }
+        return found;
     }
 
     private class ViewHolder {
@@ -163,13 +206,18 @@ public class LayoutHierarchyView extends MultiLevelListView {
 
 
         @Override
-        public List<?> getSubObjects(Object object) {
+        protected List<?> getSubObjects(Object object) {
             return ((NodeInfo) object).getChildren();
         }
 
         @Override
-        public boolean isExpandable(Object object) {
+        protected boolean isExpandable(Object object) {
             return !((NodeInfo) object).getChildren().isEmpty();
+        }
+
+        @Override
+        protected boolean isInitiallyExpanded(Object object) {
+            return mInitiallyExpandedNodes.contains((NodeInfo) object);
         }
 
         @Override
@@ -199,6 +247,9 @@ public class LayoutHierarchyView extends MultiLevelListView {
 
             viewHolder.levelBeamView.setLevel(itemInfo.getLevel());
 
+            if (nodeInfo == mClickedNodeInfo) {
+                setClickedItem(convertView, nodeInfo);
+            }
             return convertView;
         }
 

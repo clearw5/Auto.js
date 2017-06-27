@@ -14,5 +14,5 @@ public abstract class BindableViewHolder<DataType> extends RecyclerView.ViewHold
         super(itemView);
     }
 
-    public abstract void bind(DataType data);
+    public abstract void bind(DataType data, int position);
 }

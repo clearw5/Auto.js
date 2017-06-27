@@ -13,11 +13,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public abstract class AccessibilityService extends android.accessibilityservice.AccessibilityService {
 
-    public interface NotificationCallback {
-        void onNotification();
-    }
-
-    private CopyOnWriteArrayList<NotificationCallback> mNotificationCallbacks = new CopyOnWriteArrayList<>();
     private AccessibilityNodeInfo mRootInActiveWindow;
 
     @CallSuper
@@ -32,7 +27,12 @@ public abstract class AccessibilityService extends android.accessibilityservice.
 
     @Override
     public AccessibilityNodeInfo getRootInActiveWindow() {
-        return mRootInActiveWindow;
+        try {
+            return super.getRootInActiveWindow();
+        } catch (IllegalStateException ignored) {
+            return mRootInActiveWindow;
+        }
     }
+
 
 }

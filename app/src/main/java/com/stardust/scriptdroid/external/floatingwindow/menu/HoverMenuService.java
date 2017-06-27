@@ -18,11 +18,13 @@ import com.stardust.hover.WindowHoverMenu;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.FloatingWindowManger;
+import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.NodeInfo;
 import com.stardust.scriptdroid.external.floatingwindow.menu.view.FloatingLayoutBoundsView;
 import com.stardust.scriptdroid.external.floatingwindow.menu.view.FloatingLayoutHierarchyView;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.theme.ThemeColorManagerCompat;
 import com.stardust.util.MessageEvent;
+import com.stardust.util.MessageIntent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -45,13 +47,18 @@ public class HoverMenuService extends Service {
         public boolean state;
     }
 
-    public static final String MESSAGE_SHOW_AND_EXPAND_MENU = "MESSAGE_SHOW_AND_EXPAND_MENU";
-    public static final String MESSAGE_SHOW_LAYOUT_HIERARCHY = "MESSAGE_SHOW_LAYOUT_HIERARCHY";
-    public static final String MESSAGE_SHOW_LAYOUT_BOUNDS = "MESSAGE_SHOW_LAYOUT_BOUNDS";
-    public static final String MESSAGE_COLLAPSE_MENU = "MESSAGE_COLLAPSE_MENU";
-    public static final String MESSAGE_MENU_COLLAPSING = "MESSAGE_MENU_COLLAPSING";
-    public static final String MESSAGE_MENU_EXPANDING = "MESSAGE_MENU_EXPANDING";
-    public static final String MESSAGE_MENU_EXIT = "MESSAGE_MENU_EXIT";
+    public static final String ACTION_SHOW_AND_EXPAND_MENU = "ACTION_SHOW_AND_EXPAND_MENU";
+    public static final String ACTION_SHOW_LAYOUT_HIERARCHY = "ACTION_SHOW_LAYOUT_HIERARCHY";
+    public static final String ACTION_SHOW_LAYOUT_BOUNDS = "ACTION_SHOW_LAYOUT_BOUNDS";
+    public static final String ACTION_COLLAPSE_MENU = "ACTION_COLLAPSE_MENU";
+    public static final String ACTION_MENU_COLLAPSING = "ACTION_MENU_COLLAPSING";
+    public static final String ACTION_MENU_EXPANDING = "ACTION_MENU_EXPANDING";
+    public static final String ACTION_MENU_EXIT = "ACTION_MENU_EXIT";
+    public static final String ACTION_SHOW_NODE_LAYOUT_HIERARCHY = "ACTION_SHOW_NODE_LAYOUT_HIERARCHY";
+    public static final String ACTION_SHOW_NODE_LAYOUT_BOUNDS = "ACTION_SHOW_NODE_LAYOUT_BOUNDS";
+
+    public static final String EXTRA_NODE_INFO = "EXTRA_NODE_INFO";
+
 
     private static boolean sIsRunning;
     private static EventBus eventBus = new EventBus();
@@ -70,8 +77,12 @@ public class HoverMenuService extends Service {
         eventBus.post(new ServiceStateChangedEvent(sIsRunning));
     }
 
-    public static void postEvent(MessageEvent event) {
-        eventBus.post(event);
+    public static void postIntent(Intent intent) {
+        eventBus.post(new MessageIntent(intent));
+    }
+
+    public static void postMessageIntent(MessageIntent intent) {
+        eventBus.post(intent);
     }
 
 
@@ -96,7 +107,7 @@ public class HoverMenuService extends Service {
     private HoverMenu.OnExitListener mWindowHoverMenuMenuExitListener = new HoverMenu.OnExitListener() {
         @Override
         public void onExitByUserRequest() {
-            eventBus.post(new MessageEvent(MESSAGE_MENU_EXIT));
+            eventBus.post(new MessageEvent(ACTION_MENU_EXIT));
             savePreferredLocation();
             mWindowHoverMenu.hide();
             stopSelf();
@@ -142,14 +153,14 @@ public class HoverMenuService extends Service {
         mWindowHoverMenu.setHoverMenuTransitionListener(new SimpleHoverMenuTransitionListener() {
             @Override
             public void onExpanding() {
-                eventBus.post(new MessageEvent(MESSAGE_MENU_EXPANDING));
+                eventBus.post(new MessageEvent(ACTION_MENU_EXPANDING));
                 captureCurrentWindow();
             }
 
             @Override
             public void onCollapsing() {
                 AutoJs.getInstance().getLayoutInspector().clearCapture();
-                eventBus.post(new MessageEvent(MESSAGE_MENU_COLLAPSING));
+                eventBus.post(new MessageEvent(ACTION_MENU_COLLAPSING));
             }
         });
     }
@@ -197,19 +208,29 @@ public class HoverMenuService extends Service {
     }
 
     @Subscribe
-    public void onMessageEvent(MessageEvent event) {
-        switch (event.message) {
-            case MESSAGE_SHOW_AND_EXPAND_MENU:
+    public void handleMessageIntent(MessageIntent intent) {
+        switch (intent.getAction()) {
+            case ACTION_SHOW_AND_EXPAND_MENU:
                 showAndExpandMenu();
                 break;
-            case MESSAGE_SHOW_LAYOUT_HIERARCHY:
+            case ACTION_SHOW_LAYOUT_HIERARCHY:
                 showLayoutHierarchy();
                 break;
-            case MESSAGE_SHOW_LAYOUT_BOUNDS:
+            case ACTION_SHOW_LAYOUT_BOUNDS:
                 showLayoutBounds();
                 break;
-            case MESSAGE_COLLAPSE_MENU:
+            case ACTION_COLLAPSE_MENU:
                 mWindowHoverMenu.collapseMenu();
+                break;
+            case ACTION_SHOW_NODE_LAYOUT_BOUNDS:
+                mFloatingLayoutHierarchyView.setVisibility(View.GONE);
+                showLayoutBounds();
+                mFloatingLayoutBoundsView.setSelectedNode((NodeInfo) intent.getObjectExtra(EXTRA_NODE_INFO));
+                break;
+            case ACTION_SHOW_NODE_LAYOUT_HIERARCHY:
+                mFloatingLayoutBoundsView.setVisibility(View.GONE);
+                showLayoutHierarchy();
+                mFloatingLayoutHierarchyView.setSelectedNode((NodeInfo) intent.getObjectExtra(EXTRA_NODE_INFO));
                 break;
         }
     }

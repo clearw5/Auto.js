@@ -21,7 +21,7 @@ public class NodeInfo {
     private Rect mBoundsInScreen;
 
     public String id;
-    public CharSequence contentDesc;
+    public CharSequence desc;
     public CharSequence className;
     public CharSequence packageName;
     public CharSequence text;
@@ -42,7 +42,7 @@ public class NodeInfo {
 
     public NodeInfo(AccessibilityNodeInfoCompat node) {
         id = simplifyId(node.getViewIdResourceName());
-        contentDesc = node.getContentDescription();
+        desc = node.getContentDescription();
         className = node.getClassName();
         packageName = node.getPackageName();
         text = node.getText();
@@ -102,6 +102,7 @@ public class NodeInfo {
         return capture(r);
     }
 
+    @NonNull
     public List<NodeInfo> getChildren() {
         return children;
     }
