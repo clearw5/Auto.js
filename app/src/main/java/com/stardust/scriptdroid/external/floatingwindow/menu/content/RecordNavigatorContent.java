@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.external.floatingwindow.menu.content;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
@@ -124,7 +125,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     private void resumeRecord() {
         mRecorder.resume();
         setState(Recorder.STATE_RECORDING);
-        HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_COLLAPSE_MENU));
+        HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
     }
 
     private void pauseRecord() {
@@ -137,7 +138,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
         mRecorder.setOnStateChangedListener(this);
         mRecorder.start();
         setState(Recorder.STATE_RECORDING);
-        HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_COLLAPSE_MENU));
+        HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
     }
 
     private void setState(int state) {
@@ -153,7 +154,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     private void stopRecord() {
         mRecorder.stop();
         setState(Recorder.STATE_STOPPED);
-        HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_COLLAPSE_MENU));
+        HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
     }
 
 
@@ -163,10 +164,10 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
     @Subscribe
     public void onMessageEvent(MessageEvent event) {
-        if (event.message.equals(HoverMenuService.MESSAGE_MENU_EXPANDING)) {
+        if (event.message.equals(HoverMenuService.ACTION_MENU_EXPANDING)) {
             if (mRecorder != null && mRecorder.getState() == Recorder.STATE_RECORDING)
                 pauseRecord();
-        } else if (event.message.equals(HoverMenuService.MESSAGE_MENU_EXIT)) {
+        } else if (event.message.equals(HoverMenuService.ACTION_MENU_EXIT)) {
             onMenuExit();
         }
     }

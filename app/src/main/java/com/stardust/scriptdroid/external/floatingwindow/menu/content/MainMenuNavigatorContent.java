@@ -51,7 +51,7 @@ public class MainMenuNavigatorContent implements NavigatorContent {
         if (!ensureCapture()) {
             return;
         }
-        HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_SHOW_LAYOUT_HIERARCHY));
+        HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_SHOW_LAYOUT_HIERARCHY));
     }
 
     private boolean ensureCapture() {
@@ -72,7 +72,7 @@ public class MainMenuNavigatorContent implements NavigatorContent {
         if (!ensureCapture()) {
             return;
         }
-        HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_SHOW_LAYOUT_BOUNDS));
+        HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_SHOW_LAYOUT_BOUNDS));
     }
 
     @ViewBinding.Click(R.id.stop_all_running_scripts)
@@ -84,7 +84,7 @@ public class MainMenuNavigatorContent implements NavigatorContent {
     private void openMainActivity() {
         App.getApp().startActivity(new Intent(App.getApp(), MainActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY | Intent.FLAG_ACTIVITY_NEW_TASK));
-        HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_COLLAPSE_MENU));
+        HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
     }
 
     @NonNull
@@ -125,9 +125,9 @@ public class MainMenuNavigatorContent implements NavigatorContent {
 
     @Subscribe
     public void onMessageEvent(MessageEvent event) {
-        if (event.message.equals(HoverMenuService.MESSAGE_MENU_EXPANDING)) {
+        if (event.message.equals(HoverMenuService.ACTION_MENU_EXPANDING)) {
             syncCurrentInfo();
-        } else if (event.message.equals(HoverMenuService.MESSAGE_MENU_EXIT)) {
+        } else if (event.message.equals(HoverMenuService.ACTION_MENU_EXIT)) {
             HoverMenuService.getEventBus().unregister(this);
         }
     }

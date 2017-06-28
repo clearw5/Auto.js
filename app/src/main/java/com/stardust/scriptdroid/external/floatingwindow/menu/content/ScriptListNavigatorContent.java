@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.external.floatingwindow.menu.content;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -15,7 +16,6 @@ import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.scriptdroid.ui.main.script_list.ScriptAndFolderListRecyclerView;
 import com.stardust.scriptdroid.ui.main.script_list.ScriptListWithProgressBarView;
-import com.stardust.util.MessageEvent;
 import com.stardust.widget.ViewHolderSupplier;
 
 import io.mattcarroll.hover.Navigator;
@@ -53,7 +53,7 @@ public class ScriptListNavigatorContent implements NavigatorContent {
             @Override
             public void onClick(ScriptFile file, int position) {
                 Scripts.run(file);
-                HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_COLLAPSE_MENU));
+                HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
             }
 
         });
@@ -94,7 +94,7 @@ public class ScriptListNavigatorContent implements NavigatorContent {
                     int position = mFloatingScriptFileListView.getChildViewHolder((View) v.getParent()).getAdapterPosition();
                     ScriptFile file = mFloatingScriptFileListView.getAdapter().getScriptFileAt(position);
                     EditActivity.editFile(v.getContext(), file);
-                    HoverMenuService.postEvent(new MessageEvent(HoverMenuService.MESSAGE_COLLAPSE_MENU));
+                    HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
                 }
             });
 

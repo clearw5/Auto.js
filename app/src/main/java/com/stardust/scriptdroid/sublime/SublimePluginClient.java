@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -39,7 +40,7 @@ public class SublimePluginClient {
     private String host;
     private int port;
     private OutputStream mOutputStream;
-    private Executor mExecutor;
+    private ExecutorService mExecutor;
 
     public SublimePluginClient(String host, int port) {
         this.host = host;
@@ -105,8 +106,10 @@ public class SublimePluginClient {
     public void close() throws IOException {
         if (mSocket != null) {
             mSocket.close();
+            mExecutor.shutdownNow();
             mSocket = null;
             mOutputStream = null;
+            mExecutor = null;
             EventBus.getDefault().post(new ConnectionStateChangeEvent(false));
         }
     }

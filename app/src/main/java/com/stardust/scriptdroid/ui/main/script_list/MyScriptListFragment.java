@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.ui.main.script_list;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.Fragment;
+import com.stardust.app.OperationDialogBuilder;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
@@ -20,6 +22,7 @@ import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.util.UnderuseExecutors;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 import com.stardust.widget.SimpleAdapterDataObserver;
@@ -28,6 +31,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+
+import butterknife.OnClick;
+import butterknife.Optional;
 
 /**
  * Created by Stardust on 2017/3/13.
@@ -109,15 +115,17 @@ public class MyScriptListFragment extends Fragment {
 
 
     private void initDialogs() {
-        mScriptFileOperationDialog = buildDialog(R.layout.dialog_script_file_operations);
-        mDirectoryOperationDialog = buildDialog(R.layout.dialog_directory_operations);
-    }
-
-    private MaterialDialog buildDialog(int layout) {
-        View view = View.inflate(getActivity(), layout, null);
-        ViewBinder.bind(this, view);
-        return new MaterialDialog.Builder(getActivity())
-                .customView(view, false)
+        mScriptFileOperationDialog = new OperationDialogBuilder(getContext())
+                .item(R.id.rename, R.drawable.ic_ali_rename, R.string.text_rename)
+                .item(R.id.open_by_other_apps, R.drawable.ic_ali_open, R.string.text_open_by_other_apps)
+                .item(R.id.create_shortcut, R.drawable.ic_ali_shortcut, R.string.text_send_shortcut)
+                .item(R.id.delete, R.drawable.ic_ali_delete, R.string.text_delete)
+                .bindItemClick(this)
+                .build();
+        mDirectoryOperationDialog = new OperationDialogBuilder(getContext())
+                .item(R.id.rename, R.drawable.ic_ali_rename, R.string.text_rename)
+                .item(R.id.delete, R.drawable.ic_ali_delete, R.string.text_delete)
+                .bindItemClick(this)
                 .build();
     }
 
@@ -230,8 +238,9 @@ public class MyScriptListFragment extends Fragment {
         });
     }
 
-    @ViewBinding.Click(R.id.rename)
-    private void renameScriptFile() {
+    @Optional
+    @OnClick(R.id.rename)
+    void renameScriptFile() {
         dismissDialogs();
         String originalName = mSelectedScriptFile.getSimplifiedName();
         showNameInputDialog(originalName, new InputCallback(mSelectedScriptFile.isDirectory(), originalName), new MaterialDialog.InputCallback() {
@@ -252,8 +261,9 @@ public class MyScriptListFragment extends Fragment {
     }
 
 
-    @ViewBinding.Click(R.id.open_by_other_apps)
-    private void openByOtherApps() {
+    @Optional
+    @OnClick(R.id.open_by_other_apps)
+    void openByOtherApps() {
         dismissDialogs();
         Scripts.openByOtherApps(mSelectedScriptFile);
         onScriptFileOperated();
@@ -269,16 +279,18 @@ public class MyScriptListFragment extends Fragment {
         });
     }
 
-    @ViewBinding.Click(R.id.create_shortcut)
-    private void createShortcut() {
+    @Optional
+    @OnClick(R.id.create_shortcut)
+    void createShortcut() {
         dismissDialogs();
         Scripts.createShortcut(mSelectedScriptFile);
         Snackbar.make(getView(), R.string.text_already_create, Snackbar.LENGTH_SHORT).show();
         onScriptFileOperated();
     }
 
-    @ViewBinding.Click(R.id.delete)
-    private void deleteScriptFile() {
+    @Optional
+    @OnClick(R.id.delete)
+    void deleteScriptFile() {
         dismissDialogs();
         new MaterialDialog.Builder(getActivity())
                 .title(R.string.delete_confirm)
@@ -295,7 +307,7 @@ public class MyScriptListFragment extends Fragment {
 
     private void doDeletingScriptFile() {
         mScriptListWithProgressBarView.showProgressBar();
-        new Thread(new Runnable() {
+        UnderuseExecutors.execute(new Runnable() {
             @Override
             public void run() {
                 if (PFile.deleteRecursively(mSelectedScriptFile)) {
@@ -306,7 +318,7 @@ public class MyScriptListFragment extends Fragment {
                 }
                 onScriptFileOperated();
             }
-        }).start();
+        });
     }
 
     private void showMessage(final int resId) {

@@ -10,10 +10,7 @@ import java.util.concurrent.Executor;
 
 /**
  * Created by Stardust on 2017/3/10.
- *
  */
-
-// TODO: 2017/5/8
 
 public class LayoutInspector {
 
@@ -22,7 +19,7 @@ public class LayoutInspector {
     private Executor mExecutor = UnderuseExecutors.getExecutor();
 
     public void captureCurrentWindow() {
-        AccessibilityService service = AccessibilityWatchDogService.getInstance();
+        AccessibilityWatchDogService service = AccessibilityWatchDogService.getInstance();
         if (service == null) {
             mCapture = null;
         } else {
