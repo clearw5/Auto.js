@@ -97,7 +97,6 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     // Personal libraries
     compile 'com.github.hyb1996:MutableTheme:0.2.2'
-    compile 'com.github.hyb1996:EnhancedFloaty:0.17'
     // Material Dialogs
     compile 'com.afollestad.material-dialogs:core:0.9.2.3'
     // Gson
@@ -121,10 +120,6 @@ dependencies {
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.flurry.android:analytics:7.0.0@aar'
     compile 'com.pushtorefresh.storio:sqlite:1.12.3'
-    // Terminal emulator
-    compile(name: 'libtermexec-release', ext: 'aar')
-    compile(name: 'emulatorview-release', ext: 'aar')
-    compile(name: 'term-debug', ext: 'aar')
     // 920 Text Editor
     compile 'com.afollestad.material-dialogs:commons:0.9.2.3'
     compile 'com.makeramen:roundedimageview:2.2.1'

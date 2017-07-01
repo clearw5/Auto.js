@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.autojs.api;
+package com.stardust.autojs.runtime.api.image;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,17 +6,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.AppCompatActivity;
 
 import com.stardust.app.OnActivityResultDelegate;
-import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
-import com.stardust.scriptdroid.ui.BaseActivity;
 
 /**
  * Created by Stardust on 2017/5/22.
  */
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-public class ScreenCaptureRequestActivity extends BaseActivity {
+public class ScreenCaptureRequestActivity extends AppCompatActivity {
 
 
     private static ScreenCaptureRequester.Callback sCallback;

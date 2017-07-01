@@ -92,7 +92,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
 
 
     protected ScriptRuntime(Builder builder) {
-        super(builder.mUiHandler.getContext(), builder.mConsole, builder.mAccessibilityBridge, builder.mAppUtils, builder.mScreenCaptureRequester);
+        super(builder.mUiHandler, builder.mConsole, builder.mAccessibilityBridge, builder.mAppUtils, builder.mScreenCaptureRequester);
         mAccessibilityBridge = builder.mAccessibilityBridge;
         mUiHandler = builder.mUiHandler;
         mShellSupplier = builder.mShellSupplier;

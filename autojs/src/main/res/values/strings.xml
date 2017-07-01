@@ -8,5 +8,11 @@
     <string name="text_no_running_script">没有正在运行的脚本</string>
     <string name="text_already_stop_n_scripts">已停止%d个正在运行的脚本</string>
     <string name="text_requires_sdk_version_to_run_the_script">本脚本需要此安卓版本以上才能运行:</string>
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="text_console">控制台</string>
+    <string name="text_no_floating_window_permission">没有悬浮窗权限</string>
+    <string name="text_accessibility_service_description">使脚本自动操作(点击、长按、滑动等)所需，若关闭则只能执行不涉及自动操作的脚本。</string>
+
 
 </resources>

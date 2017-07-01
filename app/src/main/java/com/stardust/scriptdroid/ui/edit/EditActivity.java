@@ -39,16 +39,19 @@ import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.SparseArrayEntries;
-import com.stardust.view.ViewBinder;
-import com.stardust.view.ViewBinding;
 import com.stardust.widget.ToolbarMenuItem;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
 
 /**
  * Created by Stardust on 2017/1/29.
  */
-
+@EActivity(R.layout.activity_edit)
 public class EditActivity extends Editor920Activity implements OnActivityResultDelegate.DelegateHost {
 
 
@@ -81,26 +84,28 @@ public class EditActivity extends Editor920Activity implements OnActivityResultD
     }
 
 
-    public static final String EXTRA_CONTENT = "Still Love Eating 17.4.5";
+    public static final String EXTRA_PATH = "Still Love Eating 17.4.5";
+    private static final String EXTRA_NAME = "Still love you 17.6.29 But....(ಥ_ಥ)";
 
     public static void editFile(Context context, String path) {
         editFile(context, null, path);
     }
 
     public static void editFile(Context context, String name, String path) {
-        context.startActivity(new Intent(context, EditActivity.class)
+        context.startActivity(new Intent(context, EditActivity_.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra("path", path)
-                .putExtra("name", name));
+                .putExtra(EXTRA_PATH, path)
+                .putExtra(EXTRA_NAME, name));
     }
 
     public static void editFile(Context context, ScriptFile file) {
         editFile(context, file.getSimplifiedName(), file.getPath());
     }
 
+    @ViewById(R.id.content_view)
+    View mView;
     private String mName;
     private File mFile;
-    private View mView;
     private EditorDelegate mEditorDelegate;
     private SparseArray<ToolbarMenuItem> mMenuMap;
     private boolean mReadOnly = false;
@@ -124,17 +129,21 @@ public class EditActivity extends Editor920Activity implements OnActivityResultD
     public void onCreate(Bundle b) {
         super.onCreate(b);
         setTheme(R.style.EditorTheme);
-        mView = View.inflate(this, R.layout.activity_edit, null);
-        setContentView(mView);
         handleIntent(getIntent());
-        setUpUI();
-        setUpEditor();
         registerReceiver(mOnRunFinishedReceiver, new IntentFilter(Scripts.ACTION_ON_EXECUTION_FINISHED));
     }
 
+    @AfterViews
+    void setUpViews() {
+        ThemeColorManager.addActivityStatusBar(this);
+        setUpToolbar();
+        initMenuItem();
+        setUpEditor();
+    }
+
     private void handleIntent(Intent intent) {
-        String path = intent.getStringExtra("path");
-        mName = intent.getStringExtra("name");
+        String path = intent.getStringExtra(EXTRA_PATH);
+        mName = intent.getStringExtra(EXTRA_NAME);
         mReadOnly = intent.getBooleanExtra("readOnly", false);
         boolean saveEnabled = intent.getBooleanExtra("saveEnabled", true);
         if (mReadOnly || !saveEnabled) {
@@ -150,13 +159,6 @@ public class EditActivity extends Editor920Activity implements OnActivityResultD
             }
             mEditorDelegate = new EditorDelegate(0, mFile, 0, "utf-8");
         }
-    }
-
-    private void setUpUI() {
-        ThemeColorManager.addActivityStatusBar(this);
-        setUpToolbar();
-        initMenuItem();
-        ViewBinder.bind(this);
     }
 
     private void setUpEditor() {
@@ -184,8 +186,8 @@ public class EditActivity extends Editor920Activity implements OnActivityResultD
         BaseActivity.setToolbarAsBack(this, R.id.toolbar, mName);
     }
 
-    @ViewBinding.Click(R.id.run)
-    private void runAndSaveFileIFNeeded() {
+    @Click(R.id.run)
+    void runAndSaveFileIFNeeded() {
         if (!mReadOnly && mEditorDelegate.isChanged()) {
             saveFile(false, new SaveListener() {
                 @Override
@@ -213,21 +215,21 @@ public class EditActivity extends Editor920Activity implements OnActivityResultD
     }
 
 
-    @ViewBinding.Click(R.id.undo)
-    private void undo() {
+    @Click(R.id.undo)
+    void undo() {
         Command command = new Command(Command.CommandEnum.UNDO);
         mEditorDelegate.doCommand(command);
     }
 
-    @ViewBinding.Click(R.id.redo)
-    private void redo() {
+    @Click(R.id.redo)
+    void redo() {
         Command command = new Command(Command.CommandEnum.REDO);
         mEditorDelegate.doCommand(command);
     }
 
 
-    @ViewBinding.Click(R.id.save)
-    private void saveFile() {
+    @Click(R.id.save)
+    void saveFile() {
         saveFile(false, null);
     }
 

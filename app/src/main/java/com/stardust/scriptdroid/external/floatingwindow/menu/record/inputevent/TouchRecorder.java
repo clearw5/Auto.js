@@ -1,13 +1,15 @@
 package com.stardust.scriptdroid.external.floatingwindow.menu.record.inputevent;
 
+import android.content.Context;
+
 /**
  * Created by Stardust on 2017/3/16.
  */
 
 public class TouchRecorder extends InputEventRecorder {
 
-    public TouchRecorder() {
-        super(new InputEventToSendEventJsConverter());
+    public TouchRecorder(Context context) {
+        super(context, new InputEventToSendEventJsConverter());
         listen();
     }
 

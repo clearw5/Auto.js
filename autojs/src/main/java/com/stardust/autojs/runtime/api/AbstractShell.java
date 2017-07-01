@@ -1,5 +1,6 @@
 package com.stardust.autojs.runtime.api;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.stardust.util.ScreenMetrics;
@@ -36,12 +37,18 @@ public abstract class AbstractShell {
     private ScreenMetrics mScreenMetrics;
 
     private boolean mRoot;
+    protected Context mContext;
 
     public AbstractShell() {
         this(false);
     }
 
     public AbstractShell(boolean root) {
+        this(null, root);
+    }
+
+    public AbstractShell(Context context, boolean root) {
+        mContext = context;
         mRoot = root;
         init(root ? COMMAND_SU : COMMAND_SH);
     }

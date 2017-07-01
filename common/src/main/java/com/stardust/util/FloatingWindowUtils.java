@@ -3,6 +3,8 @@ package com.stardust.util;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
+import android.provider.Settings;
 import android.widget.Toast;
 
 /**
@@ -12,7 +14,7 @@ import android.widget.Toast;
 public class FloatingWindowUtils {
 
     public static boolean checkFloatingWindowPermission(Context context, int messageResId) {
-        if (!isFloatingWindowPermitted(context)) {
+        if (!hasOverlayPermission(context)) {
             Toast.makeText(context, messageResId, Toast.LENGTH_SHORT).show();
             IntentUtil.goToAppDetailSettings(context, context.getPackageName());
             return false;
@@ -28,4 +30,10 @@ public class FloatingWindowUtils {
                 == PackageManager.PERMISSION_GRANTED;
     }
 
+    public static boolean hasOverlayPermission(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return Settings.canDrawOverlays(context);
+        }
+        return true;
+    }
 }

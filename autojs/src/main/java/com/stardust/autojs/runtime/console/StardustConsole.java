@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.ui.console;
+package com.stardust.autojs.runtime.console;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,10 +11,10 @@ import com.stardust.autojs.runtime.api.AbstractConsole;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
-import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.external.floatingwindow.FloatingWindowManger;
+import com.stardust.util.FloatingWindowUtils;
+import com.stardust.util.IntentUtil;
 import com.stardust.util.UiHandler;
+import com.stardust.autojs.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public class StardustConsole extends AbstractConsole {
         void onLogClear();
     }
 
-    private final Console GLOBAL_CONSOLE = AutoJs.getInstance().getScriptEngineService().getGlobalConsole();
+    private final Console mGlobalConsole;
     private List<Log> mLogs = new ArrayList<>();
     private ResizableExpandableFloatyWindow mFloatyWindow;
     private ConsoleFloaty mConsoleFloaty;
@@ -55,9 +55,14 @@ public class StardustConsole extends AbstractConsole {
     private volatile boolean mShown = false;
 
     public StardustConsole(UiHandler uiHandler) {
+        this(uiHandler, null);
+    }
+
+    public StardustConsole(UiHandler uiHandler, Console globalConsole) {
         mUiHandler = uiHandler;
         mConsoleFloaty = new ConsoleFloaty(this);
         mFloatyWindow = new ResizableExpandableFloatyWindow(mConsoleFloaty);
+        mGlobalConsole = globalConsole;
     }
 
     public void setConsoleView(ConsoleView consoleView) {
@@ -80,7 +85,9 @@ public class StardustConsole extends AbstractConsole {
     public void println(int level, CharSequence charSequence) {
         Log log = new Log(level, charSequence + "\n");
         mLogs.add(log);
-        GLOBAL_CONSOLE.println(level, charSequence);
+        if (mGlobalConsole != null) {
+            mGlobalConsole.println(level, charSequence);
+        }
         if (mLogListener != null) {
             mLogListener.onNewLog(log);
         }
@@ -91,7 +98,9 @@ public class StardustConsole extends AbstractConsole {
     public void write(int level, CharSequence charSequence) {
         Log log = new Log(level, charSequence);
         mLogs.add(log);
-        GLOBAL_CONSOLE.print(level, charSequence);
+        if (mGlobalConsole != null) {
+            mGlobalConsole.print(level, charSequence);
+        }
         if (mLogListener != null) {
             mLogListener.onNewLog(log);
         }
@@ -108,8 +117,8 @@ public class StardustConsole extends AbstractConsole {
 
     @Override
     public void show() {
-        if (!FloatingWindowManger.hasFloatingWindowPermission(mUiHandler.getContext())) {
-            FloatingWindowManger.goToFloatingWindowPermissionSetting();
+        if (!FloatingWindowUtils.hasOverlayPermission(mUiHandler.getContext())) {
+            IntentUtil.goToAppDetailSettings(mUiHandler.getContext());
             mUiHandler.toast(R.string.text_no_floating_window_permission);
         }
         startFloatyService();

@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.ui.console;
+package com.stardust.autojs.runtime.console;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -18,14 +18,14 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.stardust.autojs.R;
+import com.stardust.autojs.runtime.console.StardustConsole;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
-import com.stardust.scriptdroid.R;
 import com.stardust.util.SparseArrayEntries;
 
 /**
  * Created by Stardust on 2017/5/2.
  */
-
 public class ConsoleView extends FrameLayout implements StardustConsole.LogListener {
 
     private static final SparseArray<Integer> COLORS = new SparseArrayEntries<Integer>()

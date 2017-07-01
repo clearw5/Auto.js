@@ -10,10 +10,14 @@ import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.UiSelector;
 import com.stardust.autojs.runtime.api.image.Images;
 import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
+import com.stardust.autojs.runtime.api.ui.Dialogs;
 import com.stardust.autojs.runtime.api.ui.UI;
 import com.stardust.autojs.runtime.simpleaction.SimpleActionAutomator;
 import com.stardust.util.ScreenMetrics;
+import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Created by Stardust on 2017/5/4.
@@ -39,13 +43,30 @@ public abstract class AbstractScriptRuntime {
     @ScriptVariable
     public Images images;
 
-    public AbstractScriptRuntime(Context context, Console console, AccessibilityBridge bridge, AppUtils appUtils, ScreenCaptureRequester screenCaptureRequester) {
+    @ScriptVariable
+    public Dialogs dialogs;
+
+    private static WeakReference<Context> applicationContext;
+
+    public AbstractScriptRuntime(UiHandler uiHandler, Console console, AccessibilityBridge bridge, AppUtils appUtils, ScreenCaptureRequester screenCaptureRequester) {
         this.app = appUtils;
         this.console = console;
         this.automator = new SimpleActionAutomator(bridge, this);
         this.info = bridge.getInfoProvider();
-        this.ui = new UI(context);
-        images = new Images(context, this, screenCaptureRequester);
+        this.ui = new UI(uiHandler.getContext());
+        images = new Images(uiHandler.getContext(), this, screenCaptureRequester);
+        dialogs = new Dialogs(app, uiHandler);
+    }
+
+    public static void setApplicationContext(Context context) {
+        applicationContext = new WeakReference<>(context);
+    }
+
+    public static Context getApplicationContext() {
+        if (applicationContext == null || applicationContext.get() == null) {
+            throw new ScriptEnvironmentException("No application context");
+        }
+        return applicationContext.get();
     }
 
     @ScriptInterface

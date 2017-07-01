@@ -27,10 +27,12 @@ require("__general__")(__runtime__, this);
 
 
 (function(scope){
-    var modules = ['app', 'automator', 'console', 'io', 'selector', 'shell', 'web', 'ui', "images"];
+    var modules = ['app', 'automator', 'console', 'dialogs', 'io', 'selector', 'shell', 'web', 'ui', "images"];
     var len = modules.length;
     for(var i = 0; i < len; i++) {
         var m = modules[i];
         scope[m] = require('__' + m + '__')(scope.__runtime__, scope);
     }
 })(__that__);
+
+__importClass__(com.stardust.autojs.runtime.api.Shell);
