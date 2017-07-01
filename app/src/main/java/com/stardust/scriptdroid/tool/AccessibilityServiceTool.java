@@ -1,13 +1,12 @@
 package com.stardust.scriptdroid.tool;
 
-import android.accessibilityservice.AccessibilityService;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.Pref;
-import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.autojs.runtime.api.ProcessShell;
@@ -23,7 +22,7 @@ public class AccessibilityServiceTool {
 
     public static void enableAccessibilityService() {
         if (Pref.enableAccessibilityServiceByRoot()) {
-            if (!enableAccessibilityServiceByRoot(AccessibilityWatchDogService.class)) {
+            if (!enableAccessibilityServiceByRoot(AccessibilityService.class)) {
                 goToAccessibilitySetting();
             }
         } else {
@@ -53,22 +52,22 @@ public class AccessibilityServiceTool {
             "settings put secure enabled_accessibility_services $enabled\n" +
             "fi";
 
-    public static boolean enableAccessibilityServiceByRoot(Class<? extends AccessibilityService> accessibilityService) {
+    public static boolean enableAccessibilityServiceByRoot(Class<? extends android.accessibilityservice.AccessibilityService> accessibilityService) {
         String serviceName = App.getApp().getPackageName() + "/" + accessibilityService.getName();
         return TextUtils.isEmpty(ProcessShell.execCommand(String.format(Locale.getDefault(), cmd, serviceName), true).error);
     }
 
     public static boolean enableAccessibilityServiceByRootAndWaitFor(long timeOut) {
-        if (enableAccessibilityServiceByRoot(AccessibilityWatchDogService.class)) {
-            AccessibilityWatchDogService.waitForEnabled(timeOut);
+        if (enableAccessibilityServiceByRoot(AccessibilityService.class)) {
+            AccessibilityService.waitForEnabled(timeOut);
         }
         return true;
     }
 
     public static void enableAccessibilityServiceByRootIfNeeded() {
-        if (AccessibilityWatchDogService.getInstance() == null)
+        if (AccessibilityService.getInstance() == null)
             if (Pref.enableAccessibilityServiceByRoot()) {
-                AccessibilityServiceTool.enableAccessibilityServiceByRoot(AccessibilityWatchDogService.class);
+                AccessibilityServiceTool.enableAccessibilityServiceByRoot(AccessibilityService.class);
             }
     }
 }

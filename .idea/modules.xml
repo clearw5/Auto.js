@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/autojs/autojs.iml" filepath="$PROJECT_DIR$/autojs/autojs.iml" />
       <module fileurl="file://$PROJECT_DIR$/automator/automator.iml" filepath="$PROJECT_DIR$/automator/automator.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/inrt/inrt.iml" filepath="$PROJECT_DIR$/inrt/inrt.iml" />
     </modules>
   </component>
 </project>

@@ -24,7 +24,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:label, android:icon, android:allowBackup">
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".ui.main.MainActivity_"
             android:hardwareAccelerated="true"
             android:label="@string/_app_name"
             android:launchMode="singleTask"
@@ -46,21 +46,6 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".service.AccessibilityWatchDogService"
-            android:enabled="true"
-            android:exported="true"
-            android:label="@string/_app_name"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService"/>
-            </intent-filter>
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_service_config"/>
-
-        </service>
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.stardust.scriptdroid.fileprovider"
@@ -72,21 +57,21 @@
         </provider>
 
         <activity
-            android:name=".ui.edit.EditActivity"
+            android:name=".ui.edit.EditActivity_"
             android:multiprocess="true">
 
         </activity>
         <activity android:name=".ui.help.DocumentationActivity"/>
         <activity android:name=".ui.help.HelpCatalogueActivity"/>
-        <activity android:name=".ui.settings.AboutActivity"/>
-        <activity android:name=".ui.settings.SettingsActivity"/>
-        <activity android:name=".ui.console.LogActivity"/>
+        <activity android:name=".ui.settings.AboutActivity_"/>
+        <activity android:name=".ui.settings.SettingsActivity_"/>
+        <activity android:name=".ui.console.LogActivity_"/>
         <activity android:name=".ui.error.ErrorReportActivity"/>
         <activity android:name=".ui.help.LocalWebViewActivity"/>
         <activity android:name=".external.tasker.TaskerScriptEditActivity"/>
         <activity android:name=".ui.edit.ViewSampleActivity"/>
         <activity
-            android:name=".autojs.api.ScreenCaptureRequestActivity"
+            android:name="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
             android:taskAffinity="com.stardust.scriptdroid.autojs.api.ScreenCaptureRequestActivity"/>
 
         <activity

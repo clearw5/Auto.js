@@ -13,8 +13,8 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
 import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.LayoutInspector;
+import com.stardust.scriptdroid.ui.main.MainActivity_;
 import com.stardust.util.ClipboardUtil;
-import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.util.MessageEvent;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
@@ -82,7 +82,7 @@ public class MainMenuNavigatorContent implements NavigatorContent {
 
     @ViewBinding.Click(R.id.open_launcher)
     private void openMainActivity() {
-        App.getApp().startActivity(new Intent(App.getApp(), MainActivity.class)
+        App.getApp().startActivity(new Intent(App.getApp(), MainActivity_.class)
                 .addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY | Intent.FLAG_ACTIVITY_NEW_TASK));
         HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
     }
@@ -95,7 +95,6 @@ public class MainMenuNavigatorContent implements NavigatorContent {
 
     @Override
     public void onShown(@NonNull Navigator navigator) {
-
     }
 
     @SuppressLint("SetTextI18n")

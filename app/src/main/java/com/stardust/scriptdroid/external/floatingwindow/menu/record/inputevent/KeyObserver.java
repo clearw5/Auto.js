@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.external.floatingwindow.menu.record.inputevent;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 /**
@@ -19,14 +20,14 @@ public class KeyObserver {
     private InputEventRecorder mObserver;
     private KeyListener mKeyListener;
 
-    public KeyObserver(){
-        mObserver = new InputEventRecorder(new InputEventConverter() {
+    public KeyObserver(Context context) {
+        mObserver = new InputEventRecorder(context, new InputEventConverter() {
             @Override
             public void convertEvent(@NonNull Event event) {
-                if(event.value.equalsIgnoreCase("UP")){
+                if (event.value.equalsIgnoreCase("UP")) {
                     notifyKeyUp(event.code);
                 }
-                if(event.value.equalsIgnoreCase("DOWN")){
+                if (event.value.equalsIgnoreCase("DOWN")) {
                     notifyKeyDown(event.code);
                 }
             }
@@ -42,23 +43,23 @@ public class KeyObserver {
         mKeyListener = keyListener;
     }
 
-    public void startListening(){
+    public void startListening() {
         mObserver.listen();
         mObserver.start();
     }
 
-    public void stopListening(){
+    public void stopListening() {
         mObserver.stopImpl();
     }
 
     private void notifyKeyDown(String keyName) {
-        if(mKeyListener != null){
+        if (mKeyListener != null) {
             mKeyListener.onKeyDown(keyName);
         }
     }
 
     private void notifyKeyUp(String keyName) {
-        if(mKeyListener != null){
+        if (mKeyListener != null) {
             mKeyListener.onKeyUp(keyName);
         }
     }

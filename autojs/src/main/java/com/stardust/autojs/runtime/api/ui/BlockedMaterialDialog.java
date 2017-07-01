@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.autojs.api;
+package com.stardust.autojs.runtime.api.ui;
 
 import android.app.Activity;
 import android.content.Context;

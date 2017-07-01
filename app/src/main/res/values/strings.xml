@@ -1,7 +1,6 @@
 <resources>
     <string name="_app_name">AutoJs</string>
     <string name="action_settings">设置</string>
-    <string name="text_accessibility_service_description">使脚本自动操作(点击、长按、滑动等)所需，若关闭则只能执行不涉及自动操作的脚本。</string>
     <string name="text_new_file">新建文件</string>
     <string name="text_import_from_file">从文件导入</string>
     <string name="text_create_fail">创建失败</string>

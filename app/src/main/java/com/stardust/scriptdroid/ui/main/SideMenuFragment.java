@@ -10,7 +10,6 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -21,12 +20,12 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.FloatingWindowManger;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
-import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.sublime.SublimePluginClient;
 import com.stardust.scriptdroid.sublime.SublimePluginService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.WifiTool;
-import com.stardust.scriptdroid.ui.console.LogActivity;
+import com.stardust.scriptdroid.ui.console.LogActivity_;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.util.IntentUtil;
 import com.stardust.util.UnderuseExecutors;
@@ -89,7 +88,7 @@ public class SideMenuFragment extends Fragment {
                 mExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        final boolean checked = AccessibilityWatchDogService.isEnable(App.getApp());
+                        final boolean checked = AccessibilityService.isEnable(App.getApp());
                         mAccessibilityServiceSwitch.post(new Runnable() {
                             @Override
                             public void run() {
@@ -112,7 +111,7 @@ public class SideMenuFragment extends Fragment {
 
     @ViewBinding.Click(R.id.console)
     private void startConsoleActivity() {
-        startActivity(new Intent(getActivity(), LogActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        startActivity(new Intent(getActivity(), LogActivity_.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     @ViewBinding.Click(R.id.syntax_and_api)
@@ -127,11 +126,13 @@ public class SideMenuFragment extends Fragment {
 
     @ViewBinding.Check(R.id.sw_auto_operate_service)
     private void setAutoOperateServiceEnable(boolean enable) {
-        boolean isWatchDogServiceEnabled = AccessibilityWatchDogService.isEnable(App.getApp());
-        if (enable && !isWatchDogServiceEnabled) {
+        boolean isAccessibilityServiceEnabled = AccessibilityService.isEnable(App.getApp());
+        if (enable && !isAccessibilityServiceEnabled) {
             AccessibilityServiceTool.enableAccessibilityService();
-        } else if (!enable && isWatchDogServiceEnabled) {
-            AccessibilityWatchDogService.disable();
+        } else if (!enable && isAccessibilityServiceEnabled) {
+            if (!AccessibilityService.disable()) {
+                AccessibilityServiceTool.goToAccessibilitySetting();
+            }
         }
     }
 

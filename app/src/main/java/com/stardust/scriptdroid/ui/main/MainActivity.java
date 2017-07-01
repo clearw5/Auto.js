@@ -38,7 +38,7 @@ import com.stardust.scriptdroid.external.floatingwindow.FloatingWindowManger;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.script.sample.Sample;
-import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.DrawableSaver;
 import com.stardust.scriptdroid.ui.BaseActivity;
@@ -46,25 +46,27 @@ import com.stardust.scriptdroid.ui.main.sample_list.SampleScriptListFragment;
 import com.stardust.scriptdroid.ui.main.script_list.MyScriptListFragment;
 import com.stardust.scriptdroid.ui.main.script_list.ScriptFileChooserDialogBuilder;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment;
-import com.stardust.scriptdroid.ui.settings.SettingsActivity;
+import com.stardust.scriptdroid.ui.settings.SettingsActivity_;
 import com.stardust.scriptdroid.ui.update.VersionGuard;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.BackPressedHandler;
 import com.stardust.util.Callback;
 import com.stardust.util.MessageEvent;
 import com.stardust.view.DrawerAutoClose;
-import com.stardust.view.ViewBinder;
-import com.stardust.view.ViewBinding;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 import com.stardust.widget.CommonMarkdownView;
 import com.stardust.widget.SlidingUpPanel;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 
-
+@EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost {
 
     public static final String MESSAGE_CLEAR_BACKGROUND_SETTINGS = "MESSAGE_CLEAR_BACKGROUND_SETTINGS";
@@ -80,21 +82,22 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private static final String ARGUMENT_SAMPLE = "Take a chance on me...ok...?";
 
 
-    private DrawerLayout mDrawerLayout;
-    @ViewBinding.Id(R.id.bottom_menu)
-    private SlidingUpPanel mAddBottomMenuPanel;
+    @ViewById(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @ViewById(R.id.bottom_menu)
+    SlidingUpPanel mAddBottomMenuPanel;
+    @ViewById(R.id.viewpager)
+    ViewPager mViewPager;
     private FragmentPagerAdapterBuilder.StoredFragmentPagerAdapter mPagerAdapter;
 
     private OnActivityResultDelegate.Mediator mActivityResultMediator = new OnActivityResultDelegate.Mediator();
     private DrawableSaver mDrawerHeaderBackgroundSaver, mAppbarBackgroundSaver;
     private VersionGuard mVersionGuard;
     private Intent mIntentToHandle;
-    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setUpUI();
         checkPermissions();
         registerBackPressHandlers();
         mIntentToHandle = getIntent();
@@ -103,9 +106,14 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         showAnnunciationIfNeeded();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    @AfterViews
+    void setUpViews() {
+        setUpToolbar();
+        setUpTabViewPager();
+        setUpDrawerHeader();
+        setUpFragment();
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+
     }
 
     private void showAnnunciationIfNeeded() {
@@ -143,7 +151,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     private void showAccessibilitySettingPromptIfDisabled() {
-        if (!AccessibilityServiceUtils.isAccessibilityServiceEnabled(this, AccessibilityWatchDogService.class)) {
+        if (!AccessibilityServiceUtils.isAccessibilityServiceEnabled(this, AccessibilityService.class)) {
             new NotAskAgainDialog.Builder(this, "Eating...love you...miss you...17.4.12")
                     .title(R.string.text_need_to_enable_accessibility_service)
                     .content(R.string.explain_accessibility_permission)
@@ -156,17 +164,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                         }
                     }).show();
         }
-    }
-
-    private void setUpUI() {
-        mDrawerLayout = (DrawerLayout) View.inflate(this, R.layout.activity_main, null);
-        setContentView(mDrawerLayout);
-        setUpToolbar();
-        setUpTabViewPager();
-        setUpDrawerHeader();
-        setUpFragment();
-        ViewBinder.bind(this);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
     }
 
     private void setUpFragment() {
@@ -193,7 +190,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     private void setUpTabViewPager() {
         TabLayout tabLayout = $(R.id.tab);
-        mViewPager = $(R.id.viewpager);
         mPagerAdapter = new FragmentPagerAdapterBuilder(this)
                 .add(new MyScriptListFragment(), R.string.text_my_script)
                 .add(new SampleScriptListFragment(), R.string.text_sample_script)
@@ -212,13 +208,13 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         });
     }
 
-    @ViewBinding.Click(R.id.add)
-    private void showAddFilePanel() {
+    @Click(R.id.add)
+    void showAddFilePanel() {
         mAddBottomMenuPanel.show();
     }
 
-    @ViewBinding.Click(R.id.create_new_file)
-    private void createScriptFile() {
+    @Click(R.id.create_new_file)
+    void createScriptFile() {
         doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
             @Override
             public void call(MyScriptListFragment myScriptListFragment) {
@@ -227,8 +223,8 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         });
     }
 
-    @ViewBinding.Click(R.id.create_new_directory)
-    private void createNewDirectory() {
+    @Click(R.id.create_new_directory)
+    void createNewDirectory() {
         doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
             @Override
             public void call(MyScriptListFragment myScriptListFragment) {
@@ -237,8 +233,8 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         });
     }
 
-    @ViewBinding.Click(R.id.import_from_file)
-    private void showFileChooser() {
+    @Click(R.id.import_from_file)
+    void showFileChooser() {
         final StorageScriptProvider provider = StorageScriptProvider.getExternalStorageProvider();
         new ScriptFileChooserDialogBuilder(this)
                 .scriptProvider(provider)
@@ -272,12 +268,12 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 .show();
     }
 
-    @ViewBinding.Click(R.id.setting)
-    private void startSettingActivity() {
-        startActivity(new Intent(this, SettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    @Click(R.id.setting)
+    void startSettingActivity() {
+        startActivity(new Intent(this, SettingsActivity_.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
-    @ViewBinding.Click(R.id.exit)
+    @Click(R.id.exit)
     public void exitCompletely() {
         FloatingWindowManger.hideHoverMenu();
         stopService(new Intent(this, FloatyService.class));
@@ -285,7 +281,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         finish();
     }
 
-    @ViewBinding.Click(R.id.drawer_header_img)
+    @Click(R.id.drawer_header_img)
     public void selectHeaderImage() {
         mDrawerHeaderBackgroundSaver.select(this, mActivityResultMediator);
     }
@@ -384,14 +380,14 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
 
     public static void importScriptFile(Context context, String path) {
-        context.startActivity(new Intent(context, MainActivity.class)
+        context.startActivity(new Intent(context, MainActivity_.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra(EXTRA_ACTION, ACTION_IMPORT_SCRIPT)
                 .putExtra(ARGUMENT_PATH, path));
     }
 
     public static void importSample(Context context, Sample sample) {
-        context.startActivity(new Intent(context, MainActivity.class)
+        context.startActivity(new Intent(context, MainActivity_.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra(EXTRA_ACTION, ACTION_IMPORT_SAMPLE)
                 .putExtra(ARGUMENT_SAMPLE, sample));
@@ -424,7 +420,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         return ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0));
     }
 
-    @ViewBinding.Click(R.id.toolbar)
+    @Click(R.id.toolbar)
     public void OnToolbarClick() {
         mAppbarBackgroundSaver.select(this, mActivityResultMediator);
     }
@@ -456,7 +452,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
 
     public static void onRecordStop(Context context, String script) {
-        Intent intent = new Intent(context, MainActivity.class)
+        Intent intent = new Intent(context, MainActivity_.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(EXTRA_ACTION, ACTION_ON_ACTION_RECORD_STOPPED)
                 .putExtra(ARGUMENT_SCRIPT, script);

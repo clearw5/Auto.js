@@ -46,7 +46,6 @@ public class App extends MultiDexApplication {
         setUpStaticsTool();
         setUpDebugEnvironment();
         init();
-        registerActivityLifecycleCallback();
     }
 
     private void setUpStaticsTool() {
@@ -83,9 +82,6 @@ public class App extends MultiDexApplication {
         });
     }
 
-    private void registerActivityLifecycleCallback() {
-
-    }
 
     public static String getResString(int id) {
         return getApp().getString(id);

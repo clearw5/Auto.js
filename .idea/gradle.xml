@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/autojs" />
             <option value="$PROJECT_DIR$/automator" />
             <option value="$PROJECT_DIR$/common" />
+            <option value="$PROJECT_DIR$/inrt" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.autojs.api;
+package com.stardust.autojs.runtime.api.ui;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -6,11 +6,12 @@ import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
+import com.stardust.autojs.R;
 import com.stardust.autojs.runtime.ScriptInterface;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.concurrent.VolatileBox;
-import com.stardust.scriptdroid.R;
 import com.stardust.util.ArrayUtils;
 import com.stardust.util.UiHandler;
 
@@ -22,7 +23,6 @@ public class Dialogs {
 
     private AppUtils mAppUtils;
     private UiHandler mUiHandler;
-    private ContextWrapper mContextWrapper;
 
     public Dialogs(AppUtils appUtils, UiHandler uiHandler) {
         mAppUtils = appUtils;
@@ -70,10 +70,7 @@ public class Dialogs {
     }
 
     private Context getContext() {
-        if (mContextWrapper == null) {
-            mContextWrapper = new ContextThemeWrapper(mUiHandler.getContext(), R.style.AppTheme);
-        }
-        return mContextWrapper;
+        return mUiHandler.getContext();
     }
 
     @ScriptInterface
@@ -117,6 +114,7 @@ public class Dialogs {
         if (context == null) {
             context = getContext();
         }
-        return new BlockedMaterialDialog.Builder(context, mUiHandler);
+        return (BlockedMaterialDialog.Builder) new BlockedMaterialDialog.Builder(context, mUiHandler)
+                .theme(Theme.LIGHT);
     }
 }

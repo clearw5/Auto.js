@@ -1,9 +1,8 @@
 package com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector;
 
-import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.util.UnderuseExecutors;
 
 import java.util.concurrent.Executor;
@@ -19,7 +18,7 @@ public class LayoutInspector {
     private Executor mExecutor = UnderuseExecutors.getExecutor();
 
     public void captureCurrentWindow() {
-        AccessibilityWatchDogService service = AccessibilityWatchDogService.getInstance();
+        AccessibilityService service = AccessibilityService.getInstance();
         if (service == null) {
             mCapture = null;
         } else {

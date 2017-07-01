@@ -1,17 +1,14 @@
-package com.stardust.scriptdroid.autojs.api;
+package com.stardust.autojs.runtime.api;
 
 import android.content.Context;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.stardust.autojs.runtime.AbstractScriptRuntime;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
-import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.lang.ThreadCompat;
 import com.stardust.pio.UncheckedIOException;
-import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.tool.UpdateChecker;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -74,24 +71,29 @@ public class Shell extends AbstractShell implements AutoCloseable {
     private volatile boolean mWaitingExit = false;
     private Callback mCallback;
 
+    public Shell(Context context) {
+        this(context, false);
+    }
+
+    public Shell(Context context, boolean root) {
+        super(context, root);
+    }
+
     public Shell() {
-        super();
+        this(false);
     }
 
     public Shell(boolean root) {
-        super(root);
+        this(AbstractScriptRuntime.getApplicationContext(), root);
     }
 
     @Override
-    protected void init(String initialCommand) {
-        init(initialCommand, App.getApp(), AutoJs.getInstance().getUiHandler());
-    }
-
-    private void init(final String initialCommand, final Context context, Handler uiHandler) {
+    protected void init(final String initialCommand) {
+        Handler uiHandler = new Handler(mContext.getMainLooper());
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
-                TermSettings settings = new TermSettings(context.getResources(), PreferenceManager.getDefaultSharedPreferences(context));
+                TermSettings settings = new TermSettings(mContext.getResources(), PreferenceManager.getDefaultSharedPreferences(mContext));
                 try {
                     mTermSession = new MyShellTermSession(settings, initialCommand);
                     mTermSession.initializeEmulator(40, 40);

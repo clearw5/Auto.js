@@ -1,6 +1,9 @@
 package com.stardust.scriptdroid.external.floatingwindow.menu.record.inputevent;
 
-import com.stardust.scriptdroid.autojs.api.Shell;
+import android.content.Context;
+
+import com.stardust.autojs.runtime.api.Shell;
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.external.floatingwindow.menu.record.Recorder;
 
 /**
@@ -13,15 +16,17 @@ public class InputEventRecorder extends Recorder.AbstractRecorder {
     private String mGetEventCommand;
     private Shell mShell;
     protected InputEventConverter mInputEventConverter;
+    private Context mContext;
 
 
-    protected InputEventRecorder(InputEventConverter inputEventConverter) {
+    protected InputEventRecorder(Context context, InputEventConverter inputEventConverter) {
         mGetEventCommand = inputEventConverter.getGetEventCommand();
         mInputEventConverter = inputEventConverter;
+        mContext = context;
     }
 
     public void listen() {
-        mShell = new Shell(true);
+        mShell = new Shell(mContext, true);
         mShell.setCallback(new Shell.SimpleCallback() {
             @Override
             public void onNewLine(String str) {

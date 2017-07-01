@@ -1,6 +1,5 @@
 package com.stardust.scriptdroid.autojs;
 
-import android.accessibilityservice.AccessibilityService;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
@@ -15,32 +14,30 @@ import com.stardust.autojs.ScriptEngineServiceBuilder;
 import com.stardust.autojs.engine.RhinoJavaScriptEngineManager;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.runtime.AccessibilityBridge;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.ScriptStopException;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
+import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.automator.simple_action.SimpleActionPerformHost;
-import com.stardust.pio.PFile;
-import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.autojs.api.ScreenCaptureRequestActivity;
-import com.stardust.scriptdroid.autojs.api.Shell;
-import com.stardust.scriptdroid.ui.console.StardustConsole;
+import com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity;
+import com.stardust.autojs.runtime.api.Shell;
+import com.stardust.autojs.runtime.console.StardustConsole;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.LayoutInspector;
 import com.stardust.scriptdroid.external.floatingwindow.menu.record.accessibility.AccessibilityActionRecorder;
-import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.console.JraskaConsole;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
-
-import java.io.IOException;
 
 
 /**
@@ -50,7 +47,6 @@ import java.io.IOException;
 public class AutoJs implements AccessibilityBridge {
 
     private static AutoJs instance;
-    private static final String INIT_SCRIPT_PATH = "js/autojs_init.js";
 
     public static AutoJs getInstance() {
         return instance;
@@ -92,16 +88,17 @@ public class AutoJs implements AccessibilityBridge {
         mAppUtils = new AppUtils(context);
         mAccessibilityInfoProvider = new AccessibilityInfoProvider(context.getPackageManager());
         ScriptEngineManager manager = createScriptEngineManager(context);
+        final Console globalConsole = new JraskaConsole();
         mScriptEngineService = new ScriptEngineServiceBuilder()
                 .uiHandler(mUiHandler)
-                .globalConsole(new JraskaConsole())
+                .globalConsole(globalConsole)
                 .engineManger(manager)
                 .runtime(new Supplier<com.stardust.autojs.runtime.ScriptRuntime>() {
 
                     @Override
                     public com.stardust.autojs.runtime.ScriptRuntime get() {
                         return new ScriptRuntime.Builder()
-                                .setConsole(new StardustConsole(mUiHandler))
+                                .setConsole(new StardustConsole(mUiHandler, globalConsole))
                                 .setScreenCaptureRequester(mScreenCaptureRequester)
                                 .setAccessibilityBridge(AutoJs.this)
                                 .setUiHandler(mUiHandler)
@@ -109,7 +106,7 @@ public class AutoJs implements AccessibilityBridge {
                                 .setShellSupplier(new Supplier<AbstractShell>() {
                                     @Override
                                     public AbstractShell get() {
-                                        return new Shell(true);
+                                        return new Shell(context, true);
                                     }
                                 }).build();
                     }
@@ -142,20 +139,14 @@ public class AutoJs implements AccessibilityBridge {
     }
 
     private ScriptEngineManager createScriptEngineManager(Context context) {
-        RhinoJavaScriptEngineManager manager = new RhinoJavaScriptEngineManager(context);
-        try {
-            manager.setInitScript(PFile.read(context.getAssets().open(INIT_SCRIPT_PATH)));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-        return manager;
+        return new RhinoJavaScriptEngineManager(context);
     }
 
     private void addAccessibilityServiceDelegates() {
-        AccessibilityWatchDogService.addDelegate(100, mAccessibilityInfoProvider);
-        AccessibilityWatchDogService.addDelegate(300, mAccessibilityActionRecorder);
-        // AccessibilityWatchDogService.addDelegate(400, mSimpleActionPerformHost);
-        //AccessibilityWatchDogService.addDelegate(500, mAccessibilityEventCommandHost);
+        AccessibilityService.addDelegate(100, mAccessibilityInfoProvider);
+        AccessibilityService.addDelegate(300, mAccessibilityActionRecorder);
+        // AccessibilityService.addDelegate(400, mSimpleActionPerformHost);
+        //AccessibilityService.addDelegate(500, mAccessibilityEventCommandHost);
     }
 
     public AccessibilityActionRecorder getAccessibilityActionRecorder() {
@@ -186,15 +177,15 @@ public class AutoJs implements AccessibilityBridge {
 
     @Nullable
     @Override
-    public AccessibilityService getService() {
-        return AccessibilityWatchDogService.getInstance();
+    public android.accessibilityservice.AccessibilityService getService() {
+        return AccessibilityService.getInstance();
     }
 
     @Override
     public void ensureServiceEnabled() {
-        if (AccessibilityWatchDogService.getInstance() == null) {
+        if (AccessibilityService.getInstance() == null) {
             String errorMessage = null;
-            if (AccessibilityServiceUtils.isAccessibilityServiceEnabled(App.getApp(), AccessibilityWatchDogService.class)) {
+            if (AccessibilityServiceUtils.isAccessibilityServiceEnabled(App.getApp(), AccessibilityService.class)) {
                 errorMessage = App.getApp().getString(R.string.text_auto_operate_service_enabled_but_not_running);
             } else {
                 if (Pref.enableAccessibilityServiceByRoot()) {

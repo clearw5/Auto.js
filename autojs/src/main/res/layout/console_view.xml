@@ -47,7 +47,7 @@
             android:layout_height="match_parent"
             android:text="@string/ok"
             android:textColor="@android:color/white"
-            android:theme="@style/AppTheme.Console"/>
+            android:theme="@style/ConsoleTheme"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -1,11 +1,7 @@
 package com.stardust.scriptdroid.ui.settings;
 
 import android.annotation.SuppressLint;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -15,35 +11,37 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.automator.UiObject;
-import com.stardust.scriptdroid.service.AccessibilityWatchDogService;
+import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.IntentUtil;
-import com.stardust.view.ViewBinding;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
 import com.stardust.view.ViewBinder;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 
 import moe.feng.alipay.zerosdk.AlipayZeroSdk;
 
 /**
  * Created by Stardust on 2017/2/2.
  */
-
+@EActivity(R.layout.activity_about)
 public class AboutActivity extends BaseActivity {
 
     private static final String TAG = "AboutActivity";
+    @ViewById(R.id.version)
+    TextView mVersion;
+
     private int mLolClickCount = 0;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setUpUI();
-    }
 
-    private void setUpUI() {
-        setContentView(R.layout.activity_about);
+    @AfterViews
+    void setUpViews() {
         setVersionName();
         setToolbarAsBack(getString(R.string.text_about));
         ViewBinder.bind(this);
@@ -51,32 +49,31 @@ public class AboutActivity extends BaseActivity {
 
     @SuppressLint("SetTextI18n")
     private void setVersionName() {
-        TextView version = $(R.id.version);
-        version.setText("Version " + BuildConfig.VERSION_NAME);
+        mVersion.setText("Version " + BuildConfig.VERSION_NAME);
     }
 
-    @ViewBinding.Click(R.id.github)
-    private void openGitHub() {
+    @Click(R.id.github)
+    void openGitHub() {
         IntentTool.browse(this, getString(R.string.my_github));
     }
 
-    @ViewBinding.Click(R.id.qq)
-    private void openQQToChatWithMe() {
+    @Click(R.id.qq)
+    void openQQToChatWithMe() {
         String qq = getString(R.string.qq);
         if (!IntentUtil.chatWithQQ(this, qq)) {
             Toast.makeText(this, R.string.text_mobile_qq_not_installed, Toast.LENGTH_SHORT).show();
         }
     }
 
-    @ViewBinding.Click(R.id.email)
-    private void openEmailToSendMe() {
+    @Click(R.id.email)
+    void openEmailToSendMe() {
         String email = getString(R.string.email);
         IntentUtil.sendMailTo(this, email);
     }
 
 
-    @ViewBinding.Click(R.id.donate)
-    private void showDonateMeDialog() {
+    @Click(R.id.donate)
+    void showDonateMeDialog() {
         new ThemeColorMaterialDialogBuilder(this)
                 .title(R.string.donate)
                 .items("支付宝")
@@ -95,13 +92,13 @@ public class AboutActivity extends BaseActivity {
                 .show();
     }
 
-    @ViewBinding.Click(R.id.share)
-    private void share() {
+    @Click(R.id.share)
+    void share() {
         IntentUtil.shareText(this, getString(R.string.share_app));
     }
 
-    @ViewBinding.Click(R.id.icon)
-    private void lol() {
+    @Click(R.id.icon)
+    void lol() {
         mLolClickCount++;
         Toast.makeText(this, R.string.text_lll, Toast.LENGTH_LONG).show();
         if (mLolClickCount >= 5) {
@@ -121,7 +118,7 @@ public class AboutActivity extends BaseActivity {
             public void run() {
                 int i = 0;
                 while (true) {
-                    AccessibilityNodeInfo root = AccessibilityWatchDogService.getInstance().getRootInActiveWindow();
+                    AccessibilityNodeInfo root = AccessibilityService.getInstance().getRootInActiveWindow();
                     if (root != null) {
                         UiObject uiObject = UiObject.createRoot(root);
                         UiObject child = uiObject.child(0);
@@ -153,8 +150,8 @@ public class AboutActivity extends BaseActivity {
                 }).show();
     }
 
-    @ViewBinding.Click(R.id.developer)
-    private void hhh() {
+    @Click(R.id.developer)
+    void hhh() {
         Toast.makeText(this, R.string.text_it_is_the_developer_of_app, Toast.LENGTH_LONG).show();
     }
 

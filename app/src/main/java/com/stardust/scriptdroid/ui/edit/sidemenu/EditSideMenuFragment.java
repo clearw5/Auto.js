@@ -10,13 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.stardust.app.Fragment;
+import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.floatingwindow.FloatingWindowManger;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
-import com.stardust.view.ViewBinding;
-import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.ui.console.LogActivity;
+import com.stardust.scriptdroid.ui.console.LogActivity_;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.view.ViewBinder;
+import com.stardust.view.ViewBinding;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -92,7 +92,7 @@ public class EditSideMenuFragment extends Fragment {
 
     @ViewBinding.Click(R.id.console)
     private void startConsoleActivity() {
-        startActivity(new Intent(getContext(), LogActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        startActivity(new Intent(getContext(), LogActivity_.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     @ViewBinding.Check(R.id.sw_floating_window)

@@ -79,7 +79,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
         HoverMenuService.getEventBus().register(this);
         App.getApp().getVolumeChangeObserver().addOnVolumeChangeListener(mOnVolumeChangeListener);
         if (Pref.hasRecordTrigger()) {
-            mKeyObserver = new KeyObserver();
+            mKeyObserver = new KeyObserver(mContext);
             mKeyObserver.startListening();
             mKeyObserver.setKeyListener(this);
         }
@@ -134,7 +134,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     }
 
     private void startRecord() {
-        mRecorder = mRecordedByRootSwitch.isChecked() ? new TouchRecorder() : AutoJs.getInstance().getAccessibilityActionRecorder();
+        mRecorder = mRecordedByRootSwitch.isChecked() ? new TouchRecorder(mContext) : AutoJs.getInstance().getAccessibilityActionRecorder();
         mRecorder.setOnStateChangedListener(this);
         mRecorder.start();
         setState(Recorder.STATE_RECORDING);

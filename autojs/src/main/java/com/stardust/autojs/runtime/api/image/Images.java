@@ -4,10 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.Image;
+import android.media.ImageReader;
+import android.media.ImageWriter;
+import android.media.MediaCodec;
 import android.os.Build;
+import android.provider.ContactsContract;
 import android.support.annotation.RequiresApi;
+import android.view.Surface;
 
 import com.stardust.autojs.runtime.AbstractScriptRuntime;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
@@ -100,6 +106,19 @@ public class Images {
         return bitmap;
     }
 
+    public static int pixel(Image image, int x, int y) {
+        Image.Plane plane = image.getPlanes()[0];
+        int offset = y * plane.getRowStride() + x * plane.getPixelStride();
+        return plane.getBuffer().getInt(offset);
+    }
+
+    public static int pixel(Bitmap bitmap, int x, int y) {
+        return bitmap.getPixel(x, y);
+    }
+
+    public static Bitmap read(String path) {
+        return BitmapFactory.decodeFile(path);
+    }
 
     public static void saveBitmap(Bitmap bitmap, String path) {
         try {
@@ -109,12 +128,21 @@ public class Images {
         }
     }
 
+    public static void saveBitmap(Bitmap bitmap, String path, int width, int height) {
+        if (width != bitmap.getWidth() || height != bitmap.getHeight()) {
+            Bitmap scaleBitmap = scaleBitmap(bitmap, width, height);
+            saveBitmap(scaleBitmap, path);
+            if (scaleBitmap != bitmap) {
+                scaleBitmap.recycle();
+            }
+        } else {
+            saveBitmap(bitmap, path);
+        }
+    }
+
     public void saveImage(Image image, String path, int width, int height) {
         Bitmap bitmap = toBitmap(image);
-        if (width != bitmap.getWidth() || height != bitmap.getHeight()) {
-            bitmap = scaleBitmap(bitmap, width, height);
-        }
-        saveBitmap(bitmap, path);
+        saveBitmap(bitmap, path, width, height);
         bitmap.recycle();
     }
 

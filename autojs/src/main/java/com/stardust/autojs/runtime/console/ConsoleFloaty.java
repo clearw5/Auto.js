@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.ui.console;
+package com.stardust.autojs.runtime.console;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -10,8 +10,8 @@ import android.widget.TextView;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloaty;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
-import com.stardust.scriptdroid.R;
 import com.stardust.util.ViewUtil;
+import com.stardust.autojs.R;
 
 /**
  * Created by Stardust on 2017/4/20.
@@ -47,7 +47,7 @@ public class ConsoleFloaty extends ResizableExpandableFloaty.AbstractResizableEx
 
     private void ensureContextWrapper(Context context) {
         if (mContextWrapper == null) {
-            mContextWrapper = new ContextThemeWrapper(context, R.style.AppTheme);
+            mContextWrapper = new ContextThemeWrapper(context, R.style.ConsoleTheme);
         }
     }
 
