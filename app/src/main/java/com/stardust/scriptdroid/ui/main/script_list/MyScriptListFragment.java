@@ -55,12 +55,6 @@ public class MyScriptListFragment extends Fragment {
     private MaterialDialog.InputCallback mDirectoryNameInputCallback = new InputCallback(true);
     private String mFilePathToImport;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-
     @Nullable
     @Override
     public View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

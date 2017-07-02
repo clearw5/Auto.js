@@ -79,6 +79,7 @@
             android:name=".ui.error.IssueReporterActivity"
             android:theme="@style/IssueReporterTheme"/>
 
+
         <service android:name="com.stardust.scriptdroid.external.ScriptExecutionIntentService"/>
         <service android:name="com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService"/>
 

@@ -3,23 +3,23 @@ shell命令是通过shell函数运行的命令。等同于"adb shell"。shell函
 * cmd \<String\> 要执行的命令
 * root \<Boolean\> 是否以root权限运行，默认为false。
 返回运行一个执行结果。该返回值一般不会用到，其属性如下:
-    * code \<Number\> 返回码。执行成功时为1，失败时为非1的数字，一般为0。
+    * code \<Number\> 返回码。执行成功时为0，失败时为非0的数字。
     * result \<String\> 运行结果。
     * error \<String\> 运行的错误信息。例如执行需要root权限的命令但没有授予root权限会返回错误信息"Permission denied"。
     
 示例(强制停止微信) ： 
 ```
 var result = shell("am force-stop com.tencent.mm", true);
-if(result.code == 1){
+log(result);
+openConsole();
+if(result.code == 0){
   toast("执行成功");
 }else{
   toast("执行失败！请到控制台查看错误信息");
-  err(result.error);
-  openConsole();
 }
 ```
 
-以下关于shell命令的资料来自[AndroidStudio用户指南：Sehll命令](https://developer.android.com/studio/command-line/adb.html#shellcommands)。
+以下关于shell命令的资料来自[AndroidStudio用户指南：Shell命令](https://developer.android.com/studio/command-line/adb.html#shellcommands)。
 
 目录：
 * [am命令](#am命令)
@@ -367,31 +367,19 @@ log(shell("ls /system/bin"));
 
 Shell类的构造函数。
 
-### Shell.execute(cmd)
+### Shell.exec(cmd)
 * cmd \<String\> 要执行的命令
+
+该命令没有返回值。
 
 执行命令cmd，例如：
 ```
-var sh = Shell(true);
-sh.execute("rm /sdcard/1.txt"); //删除SD卡上的1.txt文件
+var sh = new Shell(true);
+sh.exec("rm -f /sdcard/1.txt"); //删除SD卡上的1.txt文件
 ```
-
-### Shell.exitAndWaitFor()
-退出Shell，并等待所有命令执行完成。
-一个完整的例子如下：
-```
-var sh = Shell(true);
-sh.execute("rm /sdcard/1.txt"); 
-sh.execute("input keyevent 26");
-sh.exitAndWaitFor();
-```
-
-### Shell.waitFor()
-等待当前所有命令执行完成。返回一个整数作为返回码，1为执行成功，其他数字为错误。
 
 ### Shell.exit()
 退出Shell。调用该函数后再执行的命令无效。
-
 
 
 除以上命令之外, Shell也包含自动操作的命令，例如Shell.Tap，参见《需要Root权限的自动操作函数》。

@@ -30,8 +30,6 @@ public class VersionInfo {
 
     private boolean mDeprecated = false;
     private UpdateChecker.UpdateInfo mUpdateInfo;
-    private final int mReconnectTimes = 2;
-    private int mReconnectCount = 0;
     private OnReceiveUpdateResultCallback mOnReceiveUpdateResultCallback;
     private SharedPreferences mSharedPreferences;
 
@@ -87,28 +85,22 @@ public class VersionInfo {
     }
 
     public void checkUpdate(Context context) {
-        mReconnectCount = 0;
         checkUpdateInner(context);
     }
 
     private void checkUpdateInner(final Context context) {
-        mReconnectCount++;
         new UpdateChecker(context).check(new UpdateChecker.Callback() {
 
             @Override
             public void onSuccess(UpdateChecker.UpdateInfo result) {
                 if (result.isValid()) {
                     setUpdateInfo(result);
-                } else if (mReconnectCount < mReconnectTimes) {
-                    checkUpdate(context);
                 }
             }
 
             @Override
             public void onError(Exception exception) {
-                if (mReconnectCount < mReconnectTimes) {
-                    checkUpdate(context);
-                }
+                exception.printStackTrace();
             }
         });
     }

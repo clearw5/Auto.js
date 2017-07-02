@@ -4,14 +4,12 @@
     >
 
     <application
-        android:label="@string/app_name"
+        android:label="@string/_app_name"
         >
         <activity android:name=".execution.ScriptExecuteActivity"/>
         <service
             android:name="com.stardust.view.accessibility.AccessibilityService"
-            android:enabled="true"
-            android:exported="true"
-            android:label="@string/app_name"
+            android:label="@string/_app_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService"/>
