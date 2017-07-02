@@ -38,10 +38,11 @@
 
         <activity
             android:name=".external.shortcut.ShortcutActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:taskAffinity="com.stardust.scriptdroid.external.shortcut.ShortcutActivity"
+            android:theme="@android:style/Theme.NoDisplay">
 
             <intent-filter>
-                <action android:name="com.example.Project.Action"/>
+                <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
@@ -151,7 +152,9 @@
         <activity
             android:name=".external.open.RunIntentActivity"
             android:icon="@drawable/ic_ali_run"
-            android:label="运行脚本">
+            android:label="运行脚本"
+            android:taskAffinity="com.stardust.scriptdroid.external.open.RunIntentActivity"
+            android:theme="@android:style/Theme.NoDisplay">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

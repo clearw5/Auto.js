@@ -40,7 +40,7 @@ public class ScriptFile extends File {
         if (isDirectory())
             return renameTo(new File(getParent(), newName));
         else
-            return renameTo(new File(getParent(), newName + getExtension()));
+            return renameTo(new File(getParent(), newName + "." + getExtension()));
     }
 
     private String getExtension() {
