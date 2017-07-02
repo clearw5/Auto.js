@@ -171,16 +171,16 @@ public class PFile {
 
     public static String renameWithoutExtension(String path, String newName) {
         File file = new File(path);
-        File newFile = new File(file.getParent(), newName + getExtension(file.getName()));
+        File newFile = new File(file.getParent(), newName + "." + getExtension(file.getName()));
         file.renameTo(newFile);
         return newFile.getAbsolutePath();
     }
 
     public static String getExtension(String fileName) {
         int i = fileName.lastIndexOf('.');
-        if (i < 0 || i == fileName.length() - 1)
+        if (i < 0 || i + 1 >= fileName.length() - 1)
             return "";
-        return fileName.substring(i);
+        return fileName.substring(i + 1);
     }
 
     public static boolean write(String path, String text) {
@@ -233,7 +233,7 @@ public class PFile {
     }
 
     public static File copyAssetToTmpFile(Context context, String path) {
-        String extension = getExtension(path);
+        String extension = "." + getExtension(path);
         String name = getNameWithoutExtension(path);
         if (name.length() < 5) {
             name += name.hashCode();

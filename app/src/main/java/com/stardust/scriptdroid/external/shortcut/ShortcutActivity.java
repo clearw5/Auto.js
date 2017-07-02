@@ -23,10 +23,6 @@ public class ShortcutActivity extends Activity {
         if (new PathChecker(this).checkAndToastError(path)) {
             runScriptFile(path);
         }
-    }
-
-    public void onStart() {
-        super.onStart();
         finish();
     }
 

@@ -99,7 +99,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkPermissions();
-        registerBackPressHandlers();
         mIntentToHandle = getIntent();
         EventBus.getDefault().register(this);
         mVersionGuard = new VersionGuard(this);
@@ -113,7 +112,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         setUpDrawerHeader();
         setUpFragment();
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-
+        registerBackPressHandlers();
     }
 
     private void showAnnunciationIfNeeded() {

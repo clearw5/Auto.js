@@ -63,7 +63,7 @@ public class Shell extends AbstractShell implements AutoCloseable {
 
     private static final String TAG = "Shell";
 
-    private TermSession mTermSession;
+    private volatile TermSession mTermSession;
     private final Object mInitLock = new Object();
     private final Object mExitLock = new Object();
     private volatile RuntimeException mInitException;

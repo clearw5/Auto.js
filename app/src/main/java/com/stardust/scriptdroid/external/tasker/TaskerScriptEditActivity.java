@@ -16,6 +16,8 @@ import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhanceBar;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Utils;
+import com.stardust.theme.ThemeColorManager;
+import com.stardust.theme.ThemeColorManagerCompat;
 import com.stardust.view.ViewBinder;
 import com.stardust.view.ViewBinding;
 import com.stardust.widget.ToolbarMenuItem;
@@ -56,6 +58,7 @@ public class TaskerScriptEditActivity extends Editor920Activity {
         ((TextView) findViewById(R.id.summary)).setText(mSummary);
         mRedo = (ToolbarMenuItem) findViewById(R.id.redo);
         mUndo = (ToolbarMenuItem) findViewById(R.id.undo);
+        ThemeColorManager.addActivityStatusBar(this);
     }
 
     private void handleIntent(Intent intent) {
