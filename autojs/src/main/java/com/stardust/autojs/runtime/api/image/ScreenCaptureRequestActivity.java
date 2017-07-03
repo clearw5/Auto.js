@@ -1,5 +1,6 @@
 package com.stardust.autojs.runtime.api.image;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -15,7 +16,7 @@ import com.stardust.app.OnActivityResultDelegate;
  */
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-public class ScreenCaptureRequestActivity extends AppCompatActivity {
+public class ScreenCaptureRequestActivity extends Activity {
 
 
     private static ScreenCaptureRequester.Callback sCallback;
@@ -42,8 +43,8 @@ public class ScreenCaptureRequestActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mOnActivityResultDelegateMediator.onActivityResult(requestCode, resultCode, data);
-        finish();
         sCallback = null;
+        finish();
     }
 
 }

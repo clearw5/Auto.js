@@ -7,6 +7,7 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.workground.WrapContentLinearLayoutManager;
 
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
@@ -47,6 +48,7 @@ public class ScriptListNavigatorContent implements NavigatorContent {
         mScriptListWithProgressBarView = new ScriptListWithProgressBarView(new ContextThemeWrapper(context, R.style.AppTheme));
         mFloatingScriptFileListView = mScriptListWithProgressBarView.getScriptAndFolderListRecyclerView();
         mFloatingScriptFileListView.setViewHolderSupplier(mViewHolderSupplier);
+        mFloatingScriptFileListView.setLayoutManager(new WrapContentLinearLayoutManager(context));
         mFloatingScriptFileListView.setStorageScriptProvider(StorageScriptProvider.getDefault());
         mFloatingScriptFileListView.setOnItemClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileClickListener() {
 

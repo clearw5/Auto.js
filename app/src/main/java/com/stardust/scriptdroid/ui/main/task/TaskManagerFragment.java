@@ -1,41 +1,35 @@
 package com.stardust.scriptdroid.ui.main.task;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import com.stardust.app.Fragment;
-import com.stardust.autojs.ScriptEngineService;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.view.ViewBinder;
-import com.stardust.view.ViewBinding;
 import com.stardust.widget.SimpleAdapterDataObserver;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.ViewById;
 
 /**
  * Created by Stardust on 2017/3/24.
  */
-
+@EFragment(R.layout.fragment_task_manager)
 public class TaskManagerFragment extends Fragment {
 
-    private TaskListRecyclerView mTaskListRecyclerView;
-    private View mCloseAllView;
-    private View mNoRunningScriptNotice;
+    @ViewById(R.id.task_list)
+    TaskListRecyclerView mTaskListRecyclerView;
+    @ViewById(R.id.close_all)
+    View mCloseAllView;
+    @ViewById(R.id.notice_no_running_script)
+    View mNoRunningScriptNotice;
+    @ViewById(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
-    @Nullable
-    @Override
-    public View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_task_manager, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ViewBinder.bind(this, view);
+    @AfterViews
+    void setUpViews() {
         init();
         final boolean noRunningScript = mTaskListRecyclerView.getAdapter().getItemCount() == 0;
         mNoRunningScriptNotice.setVisibility(noRunningScript ? View.VISIBLE : View.GONE);
@@ -43,9 +37,6 @@ public class TaskManagerFragment extends Fragment {
     }
 
     private void init() {
-        mNoRunningScriptNotice = $(R.id.notice_no_running_script);
-        mCloseAllView = $(R.id.close_all);
-        mTaskListRecyclerView = $(R.id.task_list);
         mTaskListRecyclerView.getAdapter().registerAdapterDataObserver(new SimpleAdapterDataObserver() {
 
             @Override
@@ -61,23 +52,23 @@ public class TaskManagerFragment extends Fragment {
             }
 
         });
-        final SwipeRefreshLayout swipeRefreshLayout = $(R.id.swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 mTaskListRecyclerView.updateEngineList();
                 mTaskListRecyclerView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
+                        if (mSwipeRefreshLayout != null)
+                            mSwipeRefreshLayout.setRefreshing(false);
                     }
                 }, 800);
             }
         });
     }
 
-    @ViewBinding.Click(R.id.close_all)
-    private void closeAllRunningScripts() {
+    @Click(R.id.close_all)
+    void closeAllRunningScripts() {
         AutoJs.getInstance().getScriptEngineService().stopAll();
     }
 }

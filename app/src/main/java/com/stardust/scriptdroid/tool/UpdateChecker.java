@@ -15,6 +15,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.stardust.scriptdroid.BuildConfig;
 
+import org.json.JSONObject;
+
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -95,7 +97,7 @@ public class UpdateChecker implements Response.Listener<String>, Response.ErrorL
         mRequestQueue.cancelAll("update-check");
     }
 
-    public static class UpdateInfo {
+    public static class UpdateInfo extends JSONObject {
 
         public int versionCode;
         public String releaseNotes;
@@ -133,7 +135,7 @@ public class UpdateChecker implements Response.Listener<String>, Response.ErrorL
         }
     }
 
-    public static class OldVersion {
+    public static class OldVersion extends JSONObject {
 
         public int versionCode;
         public String issues;
@@ -147,7 +149,7 @@ public class UpdateChecker implements Response.Listener<String>, Response.ErrorL
         }
     }
 
-    public static class Download {
+    public static class Download extends JSONObject {
 
         public String name;
         public String url;

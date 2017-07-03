@@ -18,7 +18,6 @@ import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.IntentUtil;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
-import com.stardust.view.ViewBinder;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -44,7 +43,6 @@ public class AboutActivity extends BaseActivity {
     void setUpViews() {
         setVersionName();
         setToolbarAsBack(getString(R.string.text_about));
-        ViewBinder.bind(this);
     }
 
     @SuppressLint("SetTextI18n")

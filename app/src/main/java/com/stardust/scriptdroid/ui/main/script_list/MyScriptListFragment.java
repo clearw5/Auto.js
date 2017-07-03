@@ -23,8 +23,6 @@ import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.UnderuseExecutors;
-import com.stardust.view.ViewBinder;
-import com.stardust.view.ViewBinding;
 import com.stardust.widget.SimpleAdapterDataObserver;
 
 import java.io.File;

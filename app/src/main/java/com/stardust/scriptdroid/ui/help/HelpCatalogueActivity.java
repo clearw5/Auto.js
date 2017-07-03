@@ -3,6 +3,7 @@ package com.stardust.scriptdroid.ui.help;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Keep;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -53,7 +54,9 @@ public class HelpCatalogueActivity extends BaseActivity {
 
         String title;
         String summary;
+        @Keep
         private String type;
+        @Keep
         private String path;
 
         Item(String title, String summary) {

@@ -18,21 +18,24 @@ import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Utils;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.theme.ThemeColorManagerCompat;
-import com.stardust.view.ViewBinder;
-import com.stardust.view.ViewBinding;
 import com.stardust.widget.ToolbarMenuItem;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 
 /**
  * Created by Stardust on 2017/4/5.
  */
-
+@EActivity(R.layout.activity_tasker_script_edit)
 public class TaskerScriptEditActivity extends Editor920Activity {
 
     public static final int REQUEST_CODE = "Love you. Can we go back?".hashCode() >> 16;
     public static final String EXTRA_CONTENT = "Still Love Eating 17.4.5";
 
     public static void edit(Activity activity, String title, String summary, String content) {
-        activity.startActivityForResult(new Intent(activity, TaskerScriptEditActivity.class)
+        activity.startActivityForResult(new Intent(activity, TaskerScriptEditActivity_.class)
                 .putExtra(EXTRA_CONTENT, content)
                 .putExtra("summary", summary)
                 .putExtra("title", title), REQUEST_CODE);
@@ -40,25 +43,24 @@ public class TaskerScriptEditActivity extends Editor920Activity {
 
     private EditorDelegate mEditorDelegate;
     private String mTitle, mSummary;
-    private ToolbarMenuItem mRedo, mUndo;
+    @ViewById(R.id.redo)
+    ToolbarMenuItem mRedo;
+    @ViewById(R.id.undo)
+    ToolbarMenuItem mUndo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.EditorTheme);
         handleIntent(getIntent());
-        setUpUI();
-        BaseActivity.setToolbarAsBack(this, R.id.toolbar, mTitle);
-        setUpEditor();
-        ViewBinder.bind(this);
     }
 
-    private void setUpUI() {
-        setTheme(R.style.EditorTheme);
-        setContentView(R.layout.activity_tasker_script_edit);
+    @AfterViews
+    void setUpViews() {
         ((TextView) findViewById(R.id.summary)).setText(mSummary);
-        mRedo = (ToolbarMenuItem) findViewById(R.id.redo);
-        mUndo = (ToolbarMenuItem) findViewById(R.id.undo);
         ThemeColorManager.addActivityStatusBar(this);
+        BaseActivity.setToolbarAsBack(this, R.id.toolbar, mTitle);
+        setUpEditor();
     }
 
     private void handleIntent(Intent intent) {
@@ -81,14 +83,14 @@ public class TaskerScriptEditActivity extends Editor920Activity {
         inputMethodEnhanceBar.setEditTextBridge(new EditActivity.InputMethodEnhanceBarBridge(this, editorView.getEditText()));
     }
 
-    @ViewBinding.Click(R.id.undo)
-    private void undo() {
+    @Click(R.id.undo)
+    void undo() {
         Command command = new Command(Command.CommandEnum.UNDO);
         mEditorDelegate.doCommand(command);
     }
 
-    @ViewBinding.Click(R.id.redo)
-    private void redo() {
+    @Click(R.id.redo)
+    void redo() {
         Command command = new Command(Command.CommandEnum.REDO);
         mEditorDelegate.doCommand(command);
     }

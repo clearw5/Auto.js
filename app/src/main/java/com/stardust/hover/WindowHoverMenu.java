@@ -18,7 +18,6 @@ import io.mattcarroll.hover.HoverMenuAdapter;
 import io.mattcarroll.hover.Navigator;
 import io.mattcarroll.hover.defaulthovermenu.HoverMenuView;
 import io.mattcarroll.hover.defaulthovermenu.window.InWindowDragger;
-import io.mattcarroll.hover.defaulthovermenu.window.WindowViewController;
 
 /**
  * Created by Stardust on 2017/3/11.

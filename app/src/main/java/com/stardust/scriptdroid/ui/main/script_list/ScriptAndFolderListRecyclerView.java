@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -18,6 +19,8 @@ import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
+import com.stardust.util.ViewUtil;
+import com.stardust.util.ViewUtils;
 import com.stardust.widget.ViewHolderMutableAdapter;
 import com.stardust.widget.ViewHolderSupplier;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -111,7 +114,10 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
     private OnClickListener mOnRunClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            int position = getChildViewHolder((View) v.getParent()).getAdapterPosition();
+            View item = ViewUtils.findParentById(v, R.id.item);
+            if (item == null)
+                return;
+            int position = getChildViewHolder(item).getAdapterPosition();
             ScriptFile file = mAdapter.getScriptFileAt(position);
             if (file == null)
                 return;
@@ -236,13 +242,8 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
     }
 
     private void init() {
-        setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
-        addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext())
-                .color(0xffd9d9d9)
-                .size(2)
-                .marginResId(R.dimen.script_and_folder_list_divider_left_margin, R.dimen.script_and_folder_list_divider_right_margin)
-                .showLastDivider()
-                .build());
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+        setLayoutManager(layoutManager);//new WrapContentLinearLayoutManager(getContext()));
         mAdapter = new Adapter(mDefaultViewHolderSupplier);
         setAdapter(mAdapter);
     }

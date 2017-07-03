@@ -23,7 +23,6 @@ import com.stardust.scriptdroid.script.StorageScriptProvider;
 
 public class ScriptListWithProgressBarView extends FrameLayout {
 
-    private View mProgressBar;
     private ScriptAndFolderListRecyclerView mScriptAndFolderListRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -51,7 +50,6 @@ public class ScriptListWithProgressBarView extends FrameLayout {
     private void init() {
         inflate(getContext(), R.layout.script_and_folder_list_view, this);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        mProgressBar = findViewById(R.id.progressBar);
         mScriptAndFolderListRecyclerView = (ScriptAndFolderListRecyclerView) findViewById(R.id.script_list_recycler_view);
         mScriptAndFolderListRecyclerView.setFileProcessListener(new ScriptAndFolderListRecyclerView.FileProcessListener() {
             @Override

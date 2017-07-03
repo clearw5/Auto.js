@@ -5,6 +5,7 @@ import android.os.Build;
 import android.support.annotation.CallSuper;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -56,7 +57,9 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                 || event.getEventType() == AccessibilityEvent.TYPE_VIEW_HOVER_ENTER
                 || event.getEventType() == AccessibilityEvent.TYPE_VIEW_HOVER_EXIT) {
-            mRootInActiveWindow = super.getRootInActiveWindow();
+            if (!event.getPackageName().equals(getPackageName())) {
+                mRootInActiveWindow = super.getRootInActiveWindow();
+            }
         }
         if (!containsAllEventTypes && !eventTypes.contains(event.getEventType()))
             return;
@@ -74,11 +77,7 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
 
     @Override
     public AccessibilityNodeInfo getRootInActiveWindow() {
-        try {
-            return super.getRootInActiveWindow();
-        } catch (IllegalStateException ignored) {
-            return mRootInActiveWindow;
-        }
+        return mRootInActiveWindow;
     }
 
 

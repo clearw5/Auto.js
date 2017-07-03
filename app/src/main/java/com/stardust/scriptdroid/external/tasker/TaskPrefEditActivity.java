@@ -15,28 +15,28 @@ import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.main.script_list.ScriptAndFolderListRecyclerView;
 import com.stardust.scriptdroid.ui.main.script_list.ScriptListWithProgressBarView;
-import com.stardust.view.ViewBinder;
-import com.stardust.view.ViewBinding;
 import com.twofortyfouram.locale.sdk.client.ui.activity.AbstractAppCompatPluginActivity;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
 
 /**
  * Created by Stardust on 2017/3/27.
  */
-
+@EActivity(R.layout.activity_tasker_edit)
 public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
 
     private String mSelectedScriptFilePath;
     private String mPreExecuteScript;
     private StorageScriptProvider mStorageScriptProvider;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tasker_edit);
+    @AfterViews
+    void setUpViews() {
         BaseActivity.setToolbarAsBack(this, R.id.toolbar, getString(R.string.text_please_choose_a_script));
         initScriptListRecyclerView();
-        ViewBinder.bind(this);
     }
+
 
     private void initScriptListRecyclerView() {
         mStorageScriptProvider = StorageScriptProvider.getExternalStorageProvider();
@@ -54,8 +54,8 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
     }
 
 
-    @ViewBinding.Click(R.id.edit_script)
-    private void editPreExecuteScript() {
+    @Click(R.id.edit_script)
+    void editPreExecuteScript() {
         TaskerScriptEditActivity.edit(this, getString(R.string.text_pre_execute_script), getString(R.string.summary_pre_execute_script), mPreExecuteScript == null ? "" : mPreExecuteScript);
     }
 

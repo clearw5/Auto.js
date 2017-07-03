@@ -22,11 +22,12 @@ import com.stardust.scriptdroid.external.floatingwindow.menu.record.inputevent.K
 import com.stardust.scriptdroid.external.floatingwindow.menu.record.inputevent.TouchRecorder;
 import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.util.MessageEvent;
-import com.stardust.view.ViewBinder;
-import com.stardust.view.ViewBinding;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.mattcarroll.hover.Navigator;
 import io.mattcarroll.hover.NavigatorContent;
 
@@ -38,21 +39,21 @@ import io.mattcarroll.hover.NavigatorContent;
 public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStateChangedListener, KeyObserver.KeyListener {
 
     private View mView;
-    @ViewBinding.Id(R.id.sw_recorded_by_root)
-    private SwitchCompat mRecordedByRootSwitch;
+    @BindView(R.id.sw_recorded_by_root)
+    SwitchCompat mRecordedByRootSwitch;
 
-    @ViewBinding.Id(R.id.sw_record_toast)
-    private SwitchCompat mRecordToastSwitch;
+    @BindView(R.id.sw_record_toast)
+    SwitchCompat mRecordToastSwitch;
 
-    @ViewBinding.Id(R.id.img_start_or_pause)
-    private ImageView mStartOrPauseRecordIcon;
+    @BindView(R.id.img_start_or_pause)
+    ImageView mStartOrPauseRecordIcon;
 
-    @ViewBinding.Id(R.id.text_start_or_pause)
-    private TextView mStartOrPauseRecordText;
+    @BindView(R.id.text_start_or_pause)
+    TextView mStartOrPauseRecordText;
 
 
-    @ViewBinding.Id(R.id.stop_record)
-    private View mStopRecord;
+    @BindView(R.id.stop_record)
+    View mStopRecord;
 
     private Recorder mRecorder;
     private Context mContext;
@@ -75,7 +76,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     public RecordNavigatorContent(Context context) {
         mContext = context;
         mView = View.inflate(context, R.layout.floating_window_record, null);
-        ViewBinder.bind(this);
+        ButterKnife.bind(this, mView);
         HoverMenuService.getEventBus().register(this);
         App.getApp().getVolumeChangeObserver().addOnVolumeChangeListener(mOnVolumeChangeListener);
         if (Pref.hasRecordTrigger()) {
@@ -101,18 +102,18 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
     }
 
-    @ViewBinding.Click(R.id.sw_root_container)
-    private void toggleRecordedByRootSwitch() {
+    @OnClick(R.id.sw_root_container)
+    void toggleRecordedByRootSwitch() {
         mRecordedByRootSwitch.toggle();
     }
 
-    @ViewBinding.Click(R.id.sw_record_toast_container)
-    private void toggleRecordToastSwitch() {
+    @OnClick(R.id.sw_record_toast_container)
+    void toggleRecordToastSwitch() {
         mRecordToastSwitch.toggle();
     }
 
-    @ViewBinding.Click(R.id.start_or_pause)
-    private void startOrPauseRecord() {
+    @OnClick(R.id.start_or_pause)
+    void startOrPauseRecord() {
         if (mRecorder == null) {
             startRecord();
         } else if (mRecorder.getState() == Recorder.STATE_PAUSED) {
@@ -150,17 +151,13 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
     }
 
-    @ViewBinding.Click(R.id.stop_record)
-    private void stopRecord() {
+    @OnClick(R.id.stop_record)
+    void stopRecord() {
         mRecorder.stop();
         setState(Recorder.STATE_STOPPED);
         HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
     }
 
-
-    public View findViewById(int id) {
-        return mView.findViewById(id);
-    }
 
     @Subscribe
     public void onMessageEvent(MessageEvent event) {
