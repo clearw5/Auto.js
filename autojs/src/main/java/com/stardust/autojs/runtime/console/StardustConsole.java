@@ -61,8 +61,14 @@ public class StardustConsole extends AbstractConsole {
     public StardustConsole(UiHandler uiHandler, Console globalConsole) {
         mUiHandler = uiHandler;
         mConsoleFloaty = new ConsoleFloaty(this);
-        mFloatyWindow = new ResizableExpandableFloatyWindow(mConsoleFloaty);
         mGlobalConsole = globalConsole;
+        mFloatyWindow = new ResizableExpandableFloatyWindow(mConsoleFloaty) {
+            @Override
+            public void onCreate(FloatyService service, WindowManager manager) {
+                super.onCreate(service, manager);
+                expand();
+            }
+        };
     }
 
     public void setConsoleView(ConsoleView consoleView) {
