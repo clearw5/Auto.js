@@ -11,6 +11,7 @@ import android.view.WindowManager;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.stardust.concurrent.VolatileBox;
 import com.stardust.util.UiHandler;
 
@@ -50,6 +51,7 @@ public class BlockedMaterialDialog extends MaterialDialog {
 
         public Builder(Context context, UiHandler uiHandler) {
             super(context);
+            super.theme(Theme.LIGHT);
             mUiHandler = uiHandler;
         }
 

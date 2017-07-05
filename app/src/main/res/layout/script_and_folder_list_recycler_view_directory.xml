@@ -1,115 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:id="@+id/item"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:clipToPadding="false"
-             android:padding="8dp"
-             android:gravity="bottom">
-
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                                        xmlns:tools="http://schemas.android.com/tools"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:layout_gravity="bottom"
-                                        android:foreground="?selectableItemBackground"
-                                        android:paddingLeft="2dp"
-                                        android:paddingRight="2dp"
-                                        android:rotation="8"
-                                        app:cardBackgroundColor="#ffffff"
-                                        app:cardCornerRadius="4dp"
-                                        app:cardElevation="2dp"
-                                        app:cardUseCompatPadding="true"/>
-
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                                        xmlns:tools="http://schemas.android.com/tools"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:layout_gravity="bottom"
-                                        android:foreground="?selectableItemBackground"
-                                        android:paddingLeft="2dp"
-                                        android:paddingRight="2dp"
-                                        android:rotation="4"
-                                        app:cardBackgroundColor="#ffffff"
-                                        app:cardCornerRadius="4dp"
-                                        app:cardElevation="4dp"
-                                        app:cardUseCompatPadding="true"/>
-
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                                        xmlns:tools="http://schemas.android.com/tools"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:foreground="?selectableItemBackground"
-                                        android:paddingLeft="2dp"
-                                        android:paddingRight="2dp"
-                                        app:cardBackgroundColor="#ffffff"
-                                        app:cardCornerRadius="4dp"
-                                        app:cardElevation="6dp"
-                                        app:cardUseCompatPadding="true">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-
-            <TextView
-                android:id="@+id/name"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/item"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:paddingBottom="10dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="10dp"
-                android:textColor="#99000000"
-                android:textSize="14sp"
-                tools:text="正在运行的服务"/>
+                android:layout_height="wrap_content"
+                android:foreground="?android:selectableItemBackground">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="34dp"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:gravity="right"
-                android:orientation="horizontal"
-                android:weightSum="4">
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:paddingBottom="8dp"
-                    android:paddingTop="8dp"
-                    android:src="@drawable/ic_rename_gray"
-                    android:tint="#767886"/>
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:paddingBottom="8dp"
-                    android:paddingTop="8dp"
-                    android:src="@drawable/ic_more_vert_black_24dp"
-                    android:tint="#767886"/>
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:contentDescription="@string/_app_name"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_folder_yellow_100px"/>
 
 
-            </LinearLayout>
-        </LinearLayout>
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="80dp"
+        android:layout_toRightOf="@id/icon"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@android:color/secondary_text_light"
+        android:textSize="16sp"
+        tools:text="示例脚本"/>
 
 
-    </android.support.v7.widget.CardView>
-
-</FrameLayout>
-
+</RelativeLayout>

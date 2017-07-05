@@ -5,7 +5,10 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.scriptdroid.Pref;
+import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
@@ -33,12 +36,12 @@ public class AccessibilityServiceTool {
     public static void goToAccessibilitySetting() {
         Context context = App.getApp();
         if (Pref.isFirstGoToAccessibilitySetting()) {
-            Toast.makeText(context, context.getString(R.string.text_please_choose) + context.getString(R.string._app_name), Toast.LENGTH_LONG).show();
+            App.getApp().getUiHandler().toast(context.getString(R.string.text_please_choose) + context.getString(R.string._app_name));
         }
         try {
             AccessibilityServiceUtils.goToAccessibilitySetting(context);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(context, context.getString(R.string.go_to_accessibility_settings) + context.getString(R.string._app_name), Toast.LENGTH_LONG).show();
+            App.getApp().getUiHandler().toast(context.getString(R.string.go_to_accessibility_settings) + context.getString(R.string._app_name));
         }
     }
 

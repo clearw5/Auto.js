@@ -127,7 +127,8 @@ public class StardustConsole extends AbstractConsole {
             public void run() {
                 try {
                     FloatyService.addWindow(mFloatyWindow);
-                } catch (WindowManager.BadTokenException e) {
+                    // SecurityException: https://github.com/hyb1996-guest/AutoJsIssueReport/issues/4781
+                } catch (WindowManager.BadTokenException | SecurityException e) {
                     e.printStackTrace();
                     mUiHandler.toast(R.string.text_no_floating_window_permission);
                 }

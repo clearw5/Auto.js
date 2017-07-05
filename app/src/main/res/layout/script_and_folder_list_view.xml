@@ -11,10 +11,7 @@
         <com.stardust.scriptdroid.ui.main.script_list.ScriptAndFolderListRecyclerView
             android:id="@+id/script_list_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:paddingTop="8dp"/>
+            android:layout_height="match_parent"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

@@ -54,12 +54,11 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
         Log.v(TAG, "onAccessibilityEvent: " + event);
+        Log.v(TAG, "getRootInActiveWindow: " + super.getRootInActiveWindow());
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                 || event.getEventType() == AccessibilityEvent.TYPE_VIEW_HOVER_ENTER
                 || event.getEventType() == AccessibilityEvent.TYPE_VIEW_HOVER_EXIT) {
-            if (!event.getPackageName().equals(getPackageName())) {
-                mRootInActiveWindow = super.getRootInActiveWindow();
-            }
+            mRootInActiveWindow = super.getRootInActiveWindow();
         }
         if (!containsAllEventTypes && !eventTypes.contains(event.getEventType()))
             return;

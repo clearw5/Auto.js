@@ -242,10 +242,15 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
     }
 
     private void init() {
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
-        setLayoutManager(layoutManager);//new WrapContentLinearLayoutManager(getContext()));
+        setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
         mAdapter = new Adapter(mDefaultViewHolderSupplier);
         setAdapter(mAdapter);
+        addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext())
+                .color(0xffd9d9d9)
+                .size(2)
+                .marginResId(R.dimen.script_and_folder_list_divider_left_margin, R.dimen.script_and_folder_list_divider_right_margin)
+                .showLastDivider()
+                .build());
     }
 
 
