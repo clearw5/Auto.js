@@ -57,7 +57,8 @@ public interface ScreenCaptureRequester {
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             mMediator.removeDelegate(this);
-            mCallback.onRequestResult(resultCode, data);
+            if (mCallback != null)
+                mCallback.onRequestResult(resultCode, data);
         }
     }
 

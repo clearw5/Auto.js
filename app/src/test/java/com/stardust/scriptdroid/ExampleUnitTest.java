@@ -32,40 +32,25 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
-    // TODO: 2017/3/3 自定义函数 ×
-    // TODO: 2017/3/19 exist函数 √
-    // TODO: 2017/3/23 tasker插件 √
-    // TODO: 2017/3/23 任务管理与控制台 √
-    // TODO: 2017/3/23 悬浮窗加入控制台 √
-    // TODO: 2017/3/24 文件读写api ---
-    // TODO: 2017/3/24 网络读写api
-    // TODO: 2017/3/24 常驻后台api ×
-    // TODO: 2017/3/24 ui。E4x ---
-    // TODO: 2017/3/24  编辑界面文档和自动补全 ×
-    // TODO: 2017/3/24 驻留模式 ×
-    //// TODO: 2017/3/26 NODEJS ×
-    // TODO: 2017/3/31 自定义快捷方式图标
-
-
-    // FIXME: 2017/3/23 死机重启问题
+    //// TODO: 2017/7/4 恢复项目 一天 7.6
+    // TODO: 2017/7/4  修复 一天 7.7
+    // TODO: 2017/7/4 修复Bug，增加一点脚本，发布2.0.13Beta2 半天 7.8
+    // TODO: 2017/7/2 底部导航栏 一天 7.9
+    //// TODO: 2017/7/4 教程，服务器界面 二至三天 7.12
+    // TODO: 2017/7/4  服务器初步开发 三天 7.15
+    // TODO: 2017/7/4  细节 三天 7.18
+    // TODO: 2017/7/4 写文档 两天 7.20
+    // TODO: 2017/7/4 发布 3.0.0 Beta 7.22
 
 
     @Test
     public void test() {
-        Matcher matcher = Pattern.compile("\\S+").matcher("001   华为    6800");
-        while (matcher.find()){
-            System.out.println(matcher.group());
-        }
+        System.out.println("SOS".hashCode());
     }
 
     @Test
     public void testAutoReorder() {
-        Context context = Context.enter();
-        Scriptable scriptable = context.initStandardObjects();
-        context.setOptimizationLevel(-1);
-        Object o = context.evaluateString(scriptable, " (<xml id=\"foo\"></xml>).attributes()[0].name()", "<e4x>", 1, null);
-        System.out.println(o);
-        Context.exit();
+
     }
 
 

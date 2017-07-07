@@ -30,10 +30,14 @@ import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.AssetsCache;
 import com.stardust.util.SparseArrayEntries;
-import com.stardust.view.ViewBinder;
-import com.stardust.view.ViewBinding;
 import com.stardust.widget.ToolbarMenuItem;
 
+
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.stardust.scriptdroid.script.Scripts.ACTION_ON_EXECUTION_FINISHED;
 import static com.stardust.scriptdroid.script.Scripts.EXTRA_EXCEPTION_MESSAGE;
@@ -42,7 +46,6 @@ import static com.stardust.scriptdroid.script.Scripts.EXTRA_EXCEPTION_MESSAGE;
 /**
  * Created by Stardust on 2017/4/29.
  */
-
 public class ViewSampleActivity extends Editor920Activity implements OnActivityResultDelegate.DelegateHost {
 
 
@@ -93,7 +96,7 @@ public class ViewSampleActivity extends Editor920Activity implements OnActivityR
         ThemeColorManager.addActivityStatusBar(this);
         setUpToolbar();
         initMenuItem();
-        ViewBinder.bind(this);
+        ButterKnife.bind(this);
     }
 
     private void setUpEditor() {
@@ -108,8 +111,8 @@ public class ViewSampleActivity extends Editor920Activity implements OnActivityR
         BaseActivity.setToolbarAsBack(this, R.id.toolbar, mSample.name);
     }
 
-    @ViewBinding.Click(R.id.run)
-    private void run() {
+    @OnClick(R.id.run)
+    void run() {
         Snackbar.make(mView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         setMenuStatus(R.id.run, MenuDef.STATUS_DISABLED);
         mScriptExecution = Scripts.runWithBroadcastSender(new StringScriptSource(mSample.name, mEditorDelegate.getText()));

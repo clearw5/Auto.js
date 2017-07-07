@@ -61,8 +61,14 @@ public class StardustConsole extends AbstractConsole {
     public StardustConsole(UiHandler uiHandler, Console globalConsole) {
         mUiHandler = uiHandler;
         mConsoleFloaty = new ConsoleFloaty(this);
-        mFloatyWindow = new ResizableExpandableFloatyWindow(mConsoleFloaty);
         mGlobalConsole = globalConsole;
+        mFloatyWindow = new ResizableExpandableFloatyWindow(mConsoleFloaty) {
+            @Override
+            public void onCreate(FloatyService service, WindowManager manager) {
+                super.onCreate(service, manager);
+                expand();
+            }
+        };
     }
 
     public void setConsoleView(ConsoleView consoleView) {
@@ -127,7 +133,8 @@ public class StardustConsole extends AbstractConsole {
             public void run() {
                 try {
                     FloatyService.addWindow(mFloatyWindow);
-                } catch (WindowManager.BadTokenException e) {
+                    // SecurityException: https://github.com/hyb1996-guest/AutoJsIssueReport/issues/4781
+                } catch (WindowManager.BadTokenException | SecurityException e) {
                     e.printStackTrace();
                     mUiHandler.toast(R.string.text_no_floating_window_permission);
                 }

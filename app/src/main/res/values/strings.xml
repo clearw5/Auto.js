@@ -188,6 +188,8 @@
     <string name="text_show_widget_infomation">查看控件信息</string>
     <string name="text_show_layout_hierarchy">在布局层次中查看</string>
     <string name="text_show_layout_bounds">在布局范围中查看</string>
+    <string name="text_more">更多</string>
+    <string name="text_share">分享</string>
 
     <string-array name="record_control_keys">
         <item>无</item>

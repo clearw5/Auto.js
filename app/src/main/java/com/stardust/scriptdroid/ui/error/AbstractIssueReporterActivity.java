@@ -35,7 +35,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.github.aakira.expandablelayout.BuildConfig;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.heinrichreimersoftware.androidissuereporter.model.DeviceInfo;
 import com.heinrichreimersoftware.androidissuereporter.model.Report;
@@ -58,6 +57,7 @@ import java.lang.ref.WeakReference;
 import static android.util.Patterns.EMAIL_ADDRESS;
 
 import com.heinrichreimersoftware.androidissuereporter.R;
+import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.theme.ThemeColorManager;
 
 /**

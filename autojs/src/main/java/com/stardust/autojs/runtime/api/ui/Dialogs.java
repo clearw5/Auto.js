@@ -23,6 +23,7 @@ public class Dialogs {
 
     private AppUtils mAppUtils;
     private UiHandler mUiHandler;
+    private ContextThemeWrapper mThemeWrapper;
 
     public Dialogs(AppUtils appUtils, UiHandler uiHandler) {
         mAppUtils = appUtils;
@@ -70,7 +71,10 @@ public class Dialogs {
     }
 
     private Context getContext() {
-        return mUiHandler.getContext();
+        if (mThemeWrapper != null)
+            return mThemeWrapper;
+        mThemeWrapper = new ContextThemeWrapper(mUiHandler.getContext(), R.style.Theme_AppCompat_Light);
+        return mThemeWrapper;
     }
 
     @ScriptInterface

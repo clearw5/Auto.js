@@ -7,7 +7,8 @@
     <com.stardust.scriptdroid.ui.main.script_list.ScriptListWithProgressBarView
         android:id="@+id/script_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:background="#f2f3f5"/>
 
     <TextView
         android:id="@+id/hint_no_script"

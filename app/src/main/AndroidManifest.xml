@@ -69,11 +69,12 @@
         <activity android:name=".ui.console.LogActivity_"/>
         <activity android:name=".ui.error.ErrorReportActivity"/>
         <activity android:name=".ui.help.LocalWebViewActivity"/>
-        <activity android:name=".external.tasker.TaskerScriptEditActivity"/>
+        <activity android:name=".external.tasker.TaskerScriptEditActivity_"/>
         <activity android:name=".ui.edit.ViewSampleActivity"/>
         <activity
             android:name="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
-            android:taskAffinity="com.stardust.scriptdroid.autojs.api.ScreenCaptureRequestActivity"/>
+            android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
         <activity
             android:name=".ui.error.IssueReporterActivity"
@@ -83,14 +84,14 @@
         <service android:name="com.stardust.scriptdroid.external.ScriptExecutionIntentService"/>
         <service android:name="com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService"/>
 
-        <activity android:name=".external.tasker.TaskPrefEditActivity"/>
+        <activity android:name=".external.tasker.TaskPrefEditActivity_"/>
 
         <activity-alias
             android:name="com.stardust.scriptdroid.external.tasker.PluginActivity"
             android:exported="true"
             android:icon="@drawable/ic_android_eat_js"
             android:label="@string/_app_name"
-            android:targetActivity="com.stardust.scriptdroid.external.tasker.TaskPrefEditActivity"
+            android:targetActivity="com.stardust.scriptdroid.external.tasker.TaskPrefEditActivity_"
             tools:ignore="ExportedActivity">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING"/>

@@ -16,11 +16,12 @@ import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.La
 import com.stardust.scriptdroid.ui.main.MainActivity_;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.MessageEvent;
-import com.stardust.view.ViewBinder;
-import com.stardust.view.ViewBinding;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.mattcarroll.hover.Navigator;
 import io.mattcarroll.hover.NavigatorContent;
 
@@ -30,24 +31,23 @@ import io.mattcarroll.hover.NavigatorContent;
 
 public class MainMenuNavigatorContent implements NavigatorContent {
 
-
     private View mView;
-    @ViewBinding.Id(R.id.current_package)
-    private TextView mCurrentPackageTextView;
-    @ViewBinding.Id(R.id.current_activity)
-    private TextView mCurrentActivityTextView;
+    @BindView(R.id.current_package)
+    TextView mCurrentPackageTextView;
+    @BindView(R.id.current_activity)
+    TextView mCurrentActivityTextView;
     private String mCurrentPackage, mCurrentActivity;
     private Context mContext;
 
     public MainMenuNavigatorContent(Context context) {
         mContext = context;
         mView = View.inflate(context, R.layout.floating_window_main_menu, null);
-        ViewBinder.bind(this);
+        ButterKnife.bind(this, mView);
         HoverMenuService.getEventBus().register(this);
     }
 
-    @ViewBinding.Click(R.id.layout_hierarchy)
-    private void showLayoutHierarchy() {
+    @OnClick(R.id.layout_hierarchy)
+    void showLayoutHierarchy() {
         if (!ensureCapture()) {
             return;
         }
@@ -67,21 +67,21 @@ public class MainMenuNavigatorContent implements NavigatorContent {
         return true;
     }
 
-    @ViewBinding.Click(R.id.layout_bounds)
-    private void showLayoutBounds() {
+    @OnClick(R.id.layout_bounds)
+    void showLayoutBounds() {
         if (!ensureCapture()) {
             return;
         }
         HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_SHOW_LAYOUT_BOUNDS));
     }
 
-    @ViewBinding.Click(R.id.stop_all_running_scripts)
-    private void stopAllRunningScripts() {
+    @OnClick(R.id.stop_all_running_scripts)
+    void stopAllRunningScripts() {
         AutoJs.getInstance().getScriptEngineService().stopAllAndToast();
     }
 
-    @ViewBinding.Click(R.id.open_launcher)
-    private void openMainActivity() {
+    @OnClick(R.id.open_launcher)
+    void openMainActivity() {
         App.getApp().startActivity(new Intent(App.getApp(), MainActivity_.class)
                 .addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY | Intent.FLAG_ACTIVITY_NEW_TASK));
         HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
@@ -105,14 +105,14 @@ public class MainMenuNavigatorContent implements NavigatorContent {
         mCurrentPackageTextView.setText(mContext.getString(R.string.text_current_package) + mCurrentPackage);
     }
 
-    @ViewBinding.Click(R.id.current_activity)
-    private void copyCurrentActivity() {
+    @OnClick(R.id.current_activity)
+    void copyCurrentActivity() {
         ClipboardUtil.setClip(mContext, mCurrentActivity);
         Toast.makeText(mContext, R.string.text_copied, Toast.LENGTH_SHORT).show();
     }
 
-    @ViewBinding.Click(R.id.current_package)
-    private void copyCurrentPackage() {
+    @OnClick(R.id.current_package)
+    void copyCurrentPackage() {
         ClipboardUtil.setClip(mContext, mCurrentPackage);
         Toast.makeText(mContext, R.string.text_copied, Toast.LENGTH_SHORT).show();
     }
@@ -129,10 +129,6 @@ public class MainMenuNavigatorContent implements NavigatorContent {
         } else if (event.message.equals(HoverMenuService.ACTION_MENU_EXIT)) {
             HoverMenuService.getEventBus().unregister(this);
         }
-    }
-
-    public View findViewById(int id) {
-        return mView.findViewById(id);
     }
 
 }

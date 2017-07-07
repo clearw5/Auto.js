@@ -31,7 +31,7 @@ public class FireSettingReceiver extends AbstractPluginSettingReceiver {
 
     @Override
     protected void firePluginSetting(@NonNull Context context, @NonNull Bundle bundle) {
-        context.startService(new Intent(context, ScriptExecutionIntentService.class)
+        context.startActivity(new Intent(context, RunIntentActivity.class)
                 .putExtras(bundle));
     }
 

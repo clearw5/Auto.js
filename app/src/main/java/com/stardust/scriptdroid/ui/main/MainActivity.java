@@ -38,6 +38,7 @@ import com.stardust.scriptdroid.external.floatingwindow.FloatingWindowManger;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.script.sample.Sample;
+import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.DrawableSaver;
@@ -192,7 +193,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         mPagerAdapter = new FragmentPagerAdapterBuilder(this)
                 .add(new MyScriptListFragment(), R.string.text_my_script)
                 .add(new SampleScriptListFragment(), R.string.text_sample_script)
-                .add(new TaskManagerFragment(), R.string.text_task_manage)
+                .add(new TaskManagerFragment_(), R.string.text_task_manage)
                 .build();
         mViewPager.setAdapter(mPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);

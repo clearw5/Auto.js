@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
        android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:background="#fefefe">
+       android:layout_height="match_parent">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
@@ -16,18 +15,4 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <FrameLayout
-        android:id="@+id/progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        android:clickable="true"
-        android:visibility="gone">
-
-        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminate="true"/>
-    </FrameLayout>
 </merge>

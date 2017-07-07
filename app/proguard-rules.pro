@@ -24,6 +24,7 @@
 -dontwarn jackpal.androidterm.**
 -dontwarn com.iwebpp.nodeandroid.**
 -dontwarn org.msgpack.core.**
+-dontwarn com.pushtorefresh.storio.**
 
 -keep class org.mozilla.javascript.** { *; }
 -keep class com.jecelyin.editor.** { *; }
@@ -32,19 +33,36 @@
 -keep class org.greenrobot.eventbus.** { *; }
 -keep class * extends c
 -keepattributes *Annotation*
+# Event bus
 -keepclassmembers class ** {
     @org.greenrobot.eventbus.Subscribe <methods>;
 }
+# volley
+-keepclassmembers class ** {
+  @com.google.common.eventbus.Subscribe <methods>;
+}
+-keepclassmembers class ** {
+  @com.some.package.server.JsonDeserializerWithOptions$FieldRequired public *;
+}
+-keep @interface com.some.package.server.JsonDeserializerWithOptions$FieldRequired
+-keep class com.some.package.server.JsonDeserializerWithOptions
+# autojs
 -keepclassmembers class ** {
     @com.stardust.autojs.runtime.ScriptInterface <methods>;
 }
+# 920 editor
 -keep class org.msgpack.** { *; }
 
+# gson
+-keep class * extends org.json.JSONObject {
+    <fields>;
+}
 
+# JNI
 -keepclasseswithmembernames class * {
     native <methods>;
 }
-
+# common
 -keepclassmembers public class * extends android.view.View {
    void set*(***);
    *** get*();
@@ -88,13 +106,13 @@
 -keep class com.flurry.** { *; }
 -dontwarn com.flurry.**
 -keepattributes *Annotation*,EnclosingMethod,Signature
--keepclasseswithmembers class * {
-   public (android.content.Context, android.util.AttributeSet, int);
- }
 
- # Google Play Services library
+-keepclasseswithmembers class * {
+	public <init>(android.content.Context, android.util.AttributeSet, int);
+}
+# Google Play Services library
 -keep class * extends java.util.ListResourceBundle {
-    protected Object[ ][ ] getContents();
+    protected Object[][] getContents();
 }
 
 -keep public class com.google.android.gms.common.internal.safeparcel.SafeParcelable {
