@@ -18,8 +18,7 @@
         <item name="windowNoTitle">true</item>
 
         <item name="windowActionBar">false</item>
-
-        <item name="android:windowBackground">@drawable/background_splash</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="MainToolbarTheme" parent="AppTheme">

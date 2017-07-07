@@ -9,7 +9,7 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 142
+        versionCode 143
         versionName "2.0.13 Beta2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -118,7 +118,7 @@ dependencies {
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     compile 'com.ashokvarma.android:bottom-navigation-bar:2.0.1'
     // Tasker Plugin
-    compile group: 'com.twofortyfouram', name: 'android-plugin-client-sdk-for-locale', version: '[4.0.2, 5.0['
+    compile 'com.twofortyfouram:android-plugin-client-sdk-for-locale:[4.0.2, 5.0['
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.flurry.android:analytics:7.0.0@aar'
     compile 'com.pushtorefresh.storio:sqlite:1.12.3'
@@ -134,4 +134,5 @@ dependencies {
     compile project(':automator')
     compile project(':common')
     compile project(':autojs')
+    compile files('libs/GDTUnionSDK.4.9.545.min.jar')
 }

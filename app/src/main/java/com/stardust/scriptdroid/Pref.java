@@ -11,6 +11,8 @@ import com.stardust.scriptdroid.autojs.AutoJs;
 import org.mozilla.javascript.tools.debugger.Dim;
 import org.mozilla.javascript.tools.debugger.GuiCallback;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by Stardust on 2017/1/31.
  */
@@ -19,6 +21,8 @@ public class Pref {
     private static final SharedPreferences DISPOSABLE_BOOLEAN = App.getApp().getSharedPreferences("DISPOSABLE_BOOLEAN", Context.MODE_PRIVATE);
     private static final String KEY_SERVER_ADDRESS = "Still love you...17.5.14";
     private static final String KEY_SHOULD_SHOW_ANNUNCIATION = "Sing about all the things you forgot, things you are not";
+    private static final String KEY_FIRST_SHOW_AD = "En, Today is 17.7.7, but, I'm still love you so....";
+    private static final String KEY_LAST_SHOW_AD_MILLIS = "But... it seems that...you will not come back any more...";
     private static SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -128,5 +132,27 @@ public class Pref {
 
     public static boolean shouldShowAnnunciation() {
         return getDisposableBoolean(KEY_SHOULD_SHOW_ANNUNCIATION, true);
+    }
+
+    public static boolean shouldShowAd() {
+        String adShowingMode = def().getString(getString(R.string.key_ad_showing_mode), "Default");
+        switch (adShowingMode) {
+            case "Default":
+                return true;
+            case "OncePerDay":
+                long lastShowMillis = def().getLong(KEY_LAST_SHOW_AD_MILLIS, 0);
+                if (System.currentTimeMillis() - lastShowMillis < TimeUnit.DAYS.toMillis(1)) {
+                    return false;
+                }
+                def().edit().putLong(KEY_LAST_SHOW_AD_MILLIS, System.currentTimeMillis()).apply();
+                return true;
+            case "Off":
+                return false;
+        }
+        return true;
+    }
+
+    public static boolean isFirstShowingAd() {
+        return getDisposableBoolean(KEY_FIRST_SHOW_AD, true);
     }
 }

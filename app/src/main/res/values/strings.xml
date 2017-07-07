@@ -190,6 +190,13 @@
     <string name="text_show_layout_bounds">在布局范围中查看</string>
     <string name="text_more">更多</string>
     <string name="text_share">分享</string>
+    <string name="format_skip">跳过 %d</string>
+    <string name="text_can_close_ad_in_settings">广告可以在设置中关闭</string>
+    <string name="key_ad_showing_mode">key_ad_showing_mode</string>
+    <string name="text_ad">广告</string>
+    <string name="show_ad">欣赏广告</string>
+    <string name="text_ad_showing_settings">广告显示设置</string>
+    <string name="text_default">Default</string>
 
     <string-array name="record_control_keys">
         <item>无</item>
@@ -203,6 +210,18 @@
         <item>KEY_VOLUMEUP</item>
         <item>KEY_VOLUMEDOWN</item>
         <item>KEY_CAMERA</item>
+    </string-array>
+
+    <string-array name="ad_showing_mode_keys">
+        <item>默认</item>
+        <item>每天显示一次</item>
+        <item>不显示</item>
+    </string-array>
+
+    <string-array name="ad_showing_mode_values">
+        <item>Default</item>
+        <item>OncePerDay</item>
+        <item>Off</item>
     </string-array>
 
 </resources>
