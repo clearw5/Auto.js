@@ -6,7 +6,7 @@
       "path":"documentation"
     },
     {
-      "title": "EMCAScript教程",
+      "title": "ECMAScript教程",
       "type": "catalogue"
     },
     {
@@ -65,7 +65,7 @@
       "path":"documentation"
     }
   ],
-  "EMCAScript教程": [
+  "ECMAScript教程": [
     {
       "title": "基础",
       "type": "catalogue"

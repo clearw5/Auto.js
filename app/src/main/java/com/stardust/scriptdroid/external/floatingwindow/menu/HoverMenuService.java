@@ -112,6 +112,7 @@ public class HoverMenuService extends Service {
             mWindowHoverMenu.hide();
             stopSelf();
         }
+
     };
 
     @Override

@@ -7,14 +7,10 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.SwitchCompat;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.app.Fragment;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
@@ -82,7 +78,7 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
                 mExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        final boolean checked = AccessibilityService.isEnable(App.getApp());
+                        final boolean checked = AccessibilityService.isEnabled(App.getApp());
                         mAccessibilityServiceSwitch.post(new Runnable() {
                             @Override
                             public void run() {
@@ -114,7 +110,7 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
 
     @CheckedChange(R.id.sw_auto_operate_service)
     void setAutoOperateServiceEnable(CompoundButton button, boolean enable) {
-        boolean isAccessibilityServiceEnabled = AccessibilityService.isEnable(App.getApp());
+        boolean isAccessibilityServiceEnabled = AccessibilityService.isEnabled(App.getApp());
         if (enable && !isAccessibilityServiceEnabled) {
             AccessibilityServiceTool.enableAccessibilityService();
         } else if (!enable && isAccessibilityServiceEnabled) {

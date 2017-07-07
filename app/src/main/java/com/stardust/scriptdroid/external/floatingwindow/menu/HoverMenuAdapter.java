@@ -32,6 +32,7 @@ import java.util.Set;
 
 import io.mattcarroll.hover.NavigatorContent;
 
+
 /**
  * Created by Stardust on 2017/3/11.
  */
@@ -46,7 +47,7 @@ public class HoverMenuAdapter implements io.mattcarroll.hover.HoverMenuAdapter {
     private final Context mContext;
     private final List<String> mTabIds;
     private final Map<String, NavigatorContent> mData = new LinkedHashMap<>();
-    private final Set<ContentChangeListener> mContentChangeListeners = new HashSet<>();
+    private final Set<io.mattcarroll.hover.HoverMenuAdapter.ContentChangeListener> mContentChangeListeners = new HashSet<>();
     private View[] mViews;
 
     public HoverMenuAdapter(@NonNull HoverMenuService context) {

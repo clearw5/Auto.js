@@ -8,6 +8,7 @@ import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.TextView;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -16,6 +17,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by Stardust on 2017/5/2.
@@ -29,7 +33,8 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     private static final String TAG = "AccessibilityService";
 
     private static final SortedMap<Integer, AccessibilityDelegate> mDelegates = new TreeMap<>();
-    private static final Object LOCK = new Object();
+    private static final ReentrantLock LOCK = new ReentrantLock();
+    private static final Condition ENABLED = LOCK.newCondition();
     private static AccessibilityService instance;
     private static boolean containsAllEventTypes = false;
     private static final Set<Integer> eventTypes = new HashSet<>();
@@ -43,7 +48,7 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
             eventTypes.addAll(set);
     }
 
-    public static boolean isEnable(Context context) {
+    public static boolean isEnabled(Context context) {
         return AccessibilityServiceUtils.isAccessibilityServiceEnabled(context, AccessibilityService.class);
     }
 
@@ -54,7 +59,6 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
         Log.v(TAG, "onAccessibilityEvent: " + event);
-        Log.v(TAG, "getRootInActiveWindow: " + super.getRootInActiveWindow());
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                 || event.getEventType() == AccessibilityEvent.TYPE_VIEW_HOVER_ENTER
                 || event.getEventType() == AccessibilityEvent.TYPE_VIEW_HOVER_EXIT) {
@@ -108,9 +112,9 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
         Log.v(TAG, "onServiceConnected: " + getServiceInfo().toString());
         instance = this;
         super.onServiceConnected();
-        synchronized (LOCK) {
-            LOCK.notifyAll();
-        }
+        LOCK.lock();
+        ENABLED.signalAll();
+        LOCK.unlock();
         // FIXME: 2017/2/12 有时在无障碍中开启服务后这里不会调用服务也不会运行，安卓的BUG???
     }
 
@@ -123,12 +127,13 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     }
 
     public static void waitForEnabled(long timeOut) {
-        synchronized (LOCK) {
-            try {
-                LOCK.wait(timeOut);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        LOCK.lock();
+        try {
+            ENABLED.await(timeOut, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            LOCK.unlock();
         }
     }
 

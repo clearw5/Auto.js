@@ -49,8 +49,6 @@ public class MyScriptListFragment extends Fragment {
     private MaterialDialog mScriptFileOperationDialog;
     private MaterialDialog mDirectoryOperationDialog;
     private ScriptFile mSelectedScriptFile;
-    private MaterialDialog.InputCallback mFileNameInputCallback = new InputCallback(false);
-    private MaterialDialog.InputCallback mDirectoryNameInputCallback = new InputCallback(true);
     private String mFilePathToImport;
 
     @Nullable
@@ -186,7 +184,7 @@ public class MyScriptListFragment extends Fragment {
 
 
     public void newDirectory() {
-        showNameInputDialog("", mDirectoryNameInputCallback, new MaterialDialog.InputCallback() {
+        showNameInputDialog("", new InputCallback(true), new MaterialDialog.InputCallback() {
             @Override
             public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                 if (new ScriptFile(getCurrentDirectory(), input.toString()).mkdirs()) {
@@ -204,7 +202,7 @@ public class MyScriptListFragment extends Fragment {
     }
 
     private void showFileNameInputDialog(String prefix, final MaterialDialog.InputCallback callback) {
-        showNameInputDialog(prefix, mFileNameInputCallback, callback);
+        showNameInputDialog(prefix, new InputCallback(false), callback);
     }
 
     private void showNameInputDialog(String prefix, MaterialDialog.InputCallback textWatcher, final MaterialDialog.InputCallback callback) {
@@ -334,6 +332,7 @@ public class MyScriptListFragment extends Fragment {
 
         private boolean mIsDirectory = false;
         private String mExcluded;
+        private boolean mIsFirstTextChanged = true;
 
         InputCallback(boolean isDirectory, String excluded) {
             mIsDirectory = isDirectory;
@@ -346,6 +345,10 @@ public class MyScriptListFragment extends Fragment {
 
         @Override
         public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+            if (mIsFirstTextChanged) {
+                mIsFirstTextChanged = false;
+                return;
+            }
             EditText editText = dialog.getInputEditText();
             if (editText == null)
                 return;

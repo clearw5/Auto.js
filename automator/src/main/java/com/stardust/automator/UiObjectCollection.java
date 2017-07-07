@@ -7,6 +7,7 @@ import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.util.Consumer;
+import com.stardust.util.Func1;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -201,6 +202,15 @@ public class UiObjectCollection {
             consumer.accept(uiObject);
         }
         return this;
+    }
+
+    public UiObjectCollection filter(Func1<UiObject, Boolean> func1) {
+        List<UiObject> list = new ArrayList<>();
+        for (UiObject uiObject : mNodes) {
+            if (func1.call(uiObject))
+                list.add(uiObject);
+        }
+        return of(list);
     }
 
     public UiObjectCollection find(UiGlobalSelector selector) {
