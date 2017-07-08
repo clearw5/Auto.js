@@ -51,19 +51,15 @@ public class SplashActivity extends BaseActivity {
     private SplashAD mSplashAD;
     private boolean mCanEnterNextActivity = false;
     private boolean mNotStartMainActivity;
-    private boolean mForceShowAd = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mNotStartMainActivity = getIntent().getBooleanExtra(NOT_START_MAIN_ACTIVITY, false);
-        mForceShowAd = getIntent().getBooleanExtra(FORCE_SHOW_AD, false);
-        if (!mForceShowAd && !Pref.shouldShowAd()) {
+        boolean forceShowAd = getIntent().getBooleanExtra(FORCE_SHOW_AD, false);
+        if (!forceShowAd && !Pref.shouldShowAd()) {
             enterNextActivity();
             return;
-        }
-        if (Pref.isFirstShowingAd()) {
-            Toast.makeText(this, R.string.text_can_close_ad_in_settings, Toast.LENGTH_SHORT).show();
         }
         checkPermission(Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }

@@ -15,7 +15,7 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.external.floatingwindow.FloatingWindowManger;
+import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.sublime.SublimePluginClient;
@@ -89,7 +89,7 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
                 });
             }
         }, 450);
-        mFloatingWindowSwitch.setChecked(FloatingWindowManger.isHoverMenuShowing());
+        mFloatingWindowSwitch.setChecked(HoverMenuManger.isHoverMenuShowing());
     }
 
 
@@ -122,10 +122,10 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
 
     @CheckedChange(R.id.sw_floating_window)
     void setFloatingWindowEnable(CompoundButton button, boolean enable) {
-        if (enable && !FloatingWindowManger.isHoverMenuShowing()) {
-            FloatingWindowManger.showHoverMenu();
-        } else if (!enable && FloatingWindowManger.isHoverMenuShowing()) {
-            FloatingWindowManger.hideHoverMenu();
+        if (enable && !HoverMenuManger.isHoverMenuShowing()) {
+            HoverMenuManger.showHoverMenu();
+        } else if (!enable && HoverMenuManger.isHoverMenuShowing()) {
+            HoverMenuManger.hideHoverMenu();
         }
     }
 

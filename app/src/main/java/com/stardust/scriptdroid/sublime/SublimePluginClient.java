@@ -76,7 +76,7 @@ public class SublimePluginClient {
     private void tryClose() {
         try {
             close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
