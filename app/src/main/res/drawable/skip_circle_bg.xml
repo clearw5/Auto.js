@@ -7,16 +7,12 @@
             <solid android:color="#80000000"/>
 
             <padding
-                android:bottom="5dp"
-                android:left="8dp"
-                android:right="8dp"
-                android:top="5dp"/>
+                android:bottom="3dp"
+                android:left="12dp"
+                android:right="12dp"
+                android:top="3dp"/>
 
-            <corners
-                android:bottomLeftRadius="45dp"
-                android:bottomRightRadius="45dp"
-                android:topLeftRadius="45dp"
-                android:topRightRadius="45dp"/>
+            <corners android:radius="16dp"/>
 
         </shape>
     </item>
@@ -27,16 +23,12 @@
             <solid android:color="#40000000"/>
 
             <padding
-                android:bottom="5dp"
-                android:left="8dp"
-                android:right="8dp"
-                android:top="5dp"/>
+                android:bottom="3dp"
+                android:left="12dp"
+                android:right="12dp"
+                android:top="3dp"/>
 
-            <corners
-                android:bottomLeftRadius="45dp"
-                android:bottomRightRadius="45dp"
-                android:topLeftRadius="45dp"
-                android:topRightRadius="45dp"/>
+            <corners android:radius="16dp"/>
 
         </shape>
     </item>

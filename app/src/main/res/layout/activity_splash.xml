@@ -1,30 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:background="@android:color/white"
-             android:gravity="center">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@android:color/white"
+              android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:src="@drawable/ic_android_eat_js">
-
-    </ImageView>
 
     <RelativeLayout
         android:id="@+id/ad_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
 
         <FrameLayout
             android:id="@+id/ad"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"/>
 
         <TextView
             android:id="@+id/skip_view"
@@ -32,13 +26,42 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_margin="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/skip_circle_bg"
             android:gravity="center"
-            android:textColor="@android:color/white"
+            android:textColor="#ddffffff"
             android:textSize="14sp"
             android:visibility="invisible"
-            tools:text="跳过"/>
+            tools:text="跳过 4"
+            tools:visibility="visible"/>
 
     </RelativeLayout>
-</FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_android_eat_js">
+
+        </ImageView>
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="-4dp"
+            android:src="@drawable/autojs">
+
+        </ImageView>
+    </LinearLayout>
+
+</LinearLayout>

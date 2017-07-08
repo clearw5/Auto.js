@@ -134,6 +134,6 @@ public class SplashActivity extends BaseActivity {
             public void onADTick(long l) {
                 mSkipView.setText(String.format(Locale.getDefault(), getString(R.string.format_skip), Math.round(l / 1000f)));
             }
-        }, 4000);
+        }, 0);
     }
 }

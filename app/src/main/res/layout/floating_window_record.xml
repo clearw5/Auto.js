@@ -1,151 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:theme="@style/AppTheme"
-              tools:background="@color/colorPrimary">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="@string/text_script_record"
-        android:textColor="@android:color/primary_text_dark"
-        android:textSize="20sp"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#c4c4c4"/>
-
-    <RelativeLayout
-        android:id="@+id/sw_root_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:gravity="center_vertical"
-        android:padding="16dp">
-
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/sw_recorded_by_root"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:textOn="@string/text_on"
-            android:textOff="@string/text_off"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@id/sw_recorded_by_root"
-            android:text="@string/text_record_with_root"
-            android:textColor="@android:color/primary_text_dark"
-            android:textSize="16sp"/>
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#c4c4c4"/>
-
-    <RelativeLayout
-        android:id="@+id/sw_record_toast_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:gravity="center_vertical"
-        android:padding="16dp">
-
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/sw_record_toast"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:textOn="@string/text_on"
-            android:textOff="@string/text_off"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@id/sw_record_toast"
-            android:text="@string/text_record_msg"
-            android:textColor="@android:color/primary_text_dark"
-            android:textSize="16sp"/>
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#c4c4c4"/>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:theme="@style/AppTheme"
+            tools:background="@color/colorPrimary">
 
     <LinearLayout
-        android:id="@+id/start_or_pause"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:gravity="center_vertical"
-        android:paddingBottom="16dp"
-        android:paddingLeft="8dp"
-        android:paddingTop="16dp">
-
-        <ImageView
-            android:id="@+id/img_start_or_pause"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginRight="8dp"
-            android:src="@drawable/ic_play_arrow_white_48dp"/>
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/text_start_or_pause"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/text_start_record"
+            android:padding="16dp"
+            android:text="@string/text_script_record"
             android:textColor="@android:color/primary_text_dark"
-            android:textSize="16sp"/>
+            android:textSize="20sp"/>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c4c4c4"/>
+
+        <RelativeLayout
+            android:id="@+id/sw_root_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:padding="16dp">
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/sw_recorded_by_root"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textOff="@string/text_off"
+                android:textOn="@string/text_on"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/sw_recorded_by_root"
+                android:text="@string/text_record_with_root"
+                android:textColor="@android:color/primary_text_dark"
+                android:textSize="16sp"/>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c4c4c4"/>
+
+        <RelativeLayout
+            android:id="@+id/sw_record_toast_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:padding="16dp">
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/sw_record_toast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textOff="@string/text_off"
+                android:textOn="@string/text_on"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/sw_record_toast"
+                android:text="@string/text_record_msg"
+                android:textColor="@android:color/primary_text_dark"
+                android:textSize="16sp"/>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c4c4c4"/>
+
+        <LinearLayout
+            android:id="@+id/start_or_pause"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:paddingBottom="16dp"
+            android:paddingLeft="8dp"
+            android:paddingTop="16dp">
+
+            <ImageView
+                android:id="@+id/img_start_or_pause"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/ic_play_arrow_white_48dp"/>
+
+            <TextView
+                android:id="@+id/text_start_or_pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_start_record"
+                android:textColor="@android:color/primary_text_dark"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c4c4c4"/>
+
+        <LinearLayout
+            android:id="@+id/stop_record"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:paddingBottom="16dp"
+            android:paddingLeft="8dp"
+            android:paddingTop="16dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/ic_stop_white_36pt"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_stop_record"
+                android:textColor="@android:color/primary_text_dark"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c4c4c4"/>
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#c4c4c4"/>
 
-    <LinearLayout
-        android:id="@+id/stop_record"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:gravity="center_vertical"
-        android:paddingBottom="16dp"
-        android:paddingLeft="8dp"
-        android:paddingTop="16dp"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginRight="8dp"
-            android:src="@drawable/ic_stop_white_36pt"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/text_stop_record"
-            android:textColor="@android:color/primary_text_dark"
-            android:textSize="16sp"/>
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#c4c4c4"/>
-
-</LinearLayout>
+</ScrollView>
