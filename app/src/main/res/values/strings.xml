@@ -198,6 +198,12 @@
     <string name="text_ad_showing_settings">广告显示设置</string>
     <string name="text_default">Default</string>
     <string name="text_script_save_successfully">保存成功，请刷新目录</string>
+    <string name="text_run_repeatedly">循环运行</string>
+    <string name="text_loop_interval">循环间隔(秒)</string>
+    <string name="text_loop_delay">延迟执行(秒)</string>
+    <string name="text_loop_times">循环次数</string>
+    <string name="hint_loop_times">0为无限循环</string>
+    <string name="hint_loop_delay">延迟多少秒后开始循环</string>
 
     <string-array name="record_control_keys">
         <item>无</item>

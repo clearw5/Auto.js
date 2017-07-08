@@ -20,6 +20,7 @@ import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
+import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.UnderuseExecutors;
@@ -106,6 +107,7 @@ public class MyScriptListFragment extends Fragment {
 
     private void initDialogs() {
         mScriptFileOperationDialog = new OperationDialogBuilder(getContext())
+                .item(R.id.loop, R.drawable.ic_loop_white_24dp, R.string.text_run_repeatedly)
                 .item(R.id.rename, R.drawable.ic_ali_rename, R.string.text_rename)
                 .item(R.id.open_by_other_apps, R.drawable.ic_ali_open, R.string.text_open_by_other_apps)
                 .item(R.id.create_shortcut, R.drawable.ic_ali_shortcut, R.string.text_send_shortcut)
@@ -226,6 +228,14 @@ public class MyScriptListFragment extends Fragment {
                 StorageScriptProvider.getDefault().notifyDirectoryChanged(getCurrentDirectory());
             }
         });
+    }
+
+    @Optional
+    @OnClick(R.id.loop)
+    void runScriptRepeatedly() {
+        dismissDialogs();
+        new ScriptLoopDialog(getActivity(), mSelectedScriptFile)
+                .show();
     }
 
     @Optional
