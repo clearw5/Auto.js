@@ -5,9 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.view.View;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.Scripts;
@@ -39,7 +41,7 @@ public class ScriptLoopDialog {
         View view = View.inflate(context, R.layout.dialog_script_loop, null);
         mDialog = new MaterialDialog.Builder(context)
                 .title(R.string.text_run_repeatedly)
-                .customView(view, false)
+                .customView(view, true)
                 .positiveText(R.string.ok)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
@@ -52,10 +54,14 @@ public class ScriptLoopDialog {
     }
 
     private void startScriptRunningLoop() {
-        int loopTimes = Integer.parseInt(mLoopTimes.getText().toString());
-        float loopInterval = Float.parseFloat(mLoopInterval.getText().toString());
-        float loopDelay = Float.parseFloat(mLoopDelay.getText().toString());
-        Scripts.runRepeatedly(mScriptFile, loopTimes, (long) (1000L * loopDelay), (long) (loopInterval * 1000L));
+        try {
+            int loopTimes = Integer.parseInt(mLoopTimes.getText().toString());
+            float loopInterval = Float.parseFloat(mLoopInterval.getText().toString());
+            float loopDelay = Float.parseFloat(mLoopDelay.getText().toString());
+            Scripts.runRepeatedly(mScriptFile, loopTimes, (long) (1000L * loopDelay), (long) (loopInterval * 1000L));
+        } catch (NumberFormatException e) {
+            App.getApp().getUiHandler().toast(R.string.text_number_format_error);
+        }
     }
 
     public ScriptLoopDialog windowType(int windowType) {

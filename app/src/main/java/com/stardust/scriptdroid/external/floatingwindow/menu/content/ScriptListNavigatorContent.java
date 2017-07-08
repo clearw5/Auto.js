@@ -7,6 +7,7 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.workground.WrapContentLinearLayoutManager;
 
 import com.stardust.scriptdroid.R;
@@ -14,6 +15,7 @@ import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
+import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.scriptdroid.ui.main.script_list.ScriptAndFolderListRecyclerView;
 import com.stardust.scriptdroid.ui.main.script_list.ScriptListWithProgressBarView;
@@ -88,18 +90,33 @@ public class ScriptListNavigatorContent implements NavigatorContent {
 
     private class FileViewHolder extends DirectoryViewHolder {
 
-        FileViewHolder(View itemView) {
+        FileViewHolder(final View itemView) {
             super(itemView);
             itemView.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = mFloatingScriptFileListView.getChildViewHolder((View) v.getParent()).getAdapterPosition();
-                    ScriptFile file = mFloatingScriptFileListView.getAdapter().getScriptFileAt(position);
-                    EditActivity.editFile(v.getContext(), file);
+                    EditActivity.editFile(v.getContext(), getScriptFile());
                     HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
                 }
             });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    new ScriptLoopDialog(v.getContext(), getScriptFile())
+                            .windowType(WindowManager.LayoutParams.TYPE_PHONE)
+                            .show();
+                    HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
+                    return true;
+                }
+            });
+        }
+
+        private ScriptFile getScriptFile() {
+            return mFloatingScriptFileListView.getAdapter().getScriptFileAt(getAdapterPosition());
 
         }
+
     }
+
+
 }
