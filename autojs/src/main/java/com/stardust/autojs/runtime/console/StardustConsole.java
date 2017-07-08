@@ -11,8 +11,6 @@ import com.stardust.autojs.runtime.api.AbstractConsole;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
-import com.stardust.util.FloatingWindowUtils;
-import com.stardust.util.IntentUtil;
 import com.stardust.util.UiHandler;
 import com.stardust.autojs.R;
 
@@ -20,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+
+import ezy.assist.compat.SettingsCompat;
 
 /**
  * Created by Stardust on 2017/5/2.
@@ -123,8 +123,8 @@ public class StardustConsole extends AbstractConsole {
 
     @Override
     public void show() {
-        if (!FloatingWindowUtils.hasOverlayPermission(mUiHandler.getContext())) {
-            IntentUtil.goToAppDetailSettings(mUiHandler.getContext());
+        if (!SettingsCompat.canDrawOverlays(mUiHandler.getContext())) {
+            SettingsCompat.manageDrawOverlays(mUiHandler.getContext());
             mUiHandler.toast(R.string.text_no_floating_window_permission);
         }
         startFloatyService();

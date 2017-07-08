@@ -1,95 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:theme="@style/AppTheme">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:theme="@style/AppTheme">
 
-    <TextView
-        android:id="@+id/layout_hierarchy"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:padding="16dp"
-        android:text="@string/text_layout_hierarchy"
-        android:textColor="@android:color/primary_text_dark"
-        android:textSize="16sp"/>
+        android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#c4c4c4"/>
+        <TextView
+            android:id="@+id/layout_hierarchy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="16dp"
+            android:text="@string/text_layout_hierarchy"
+            android:textColor="@android:color/primary_text_dark"
+            android:textSize="16sp"/>
 
-    <TextView
-        android:id="@+id/layout_bounds"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:padding="16dp"
-        android:text="@string/text_layout_bounds"
-        android:textColor="@android:color/primary_text_dark"
-        android:textSize="16sp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c4c4c4"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#c4c4c4"/>
+        <TextView
+            android:id="@+id/layout_bounds"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="16dp"
+            android:text="@string/text_layout_bounds"
+            android:textColor="@android:color/primary_text_dark"
+            android:textSize="16sp"/>
 
-    <TextView
-        android:id="@+id/stop_all_running_scripts"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:padding="16dp"
-        android:text="@string/text_close_all_running_scripts"
-        android:textColor="@android:color/primary_text_dark"
-        android:textSize="16sp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c4c4c4"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#c4c4c4"/>
+        <TextView
+            android:id="@+id/stop_all_running_scripts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="16dp"
+            android:text="@string/text_close_all_running_scripts"
+            android:textColor="@android:color/primary_text_dark"
+            android:textSize="16sp"/>
 
-    <TextView
-        android:id="@+id/open_launcher"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:padding="16dp"
-        android:text="@string/text_open_launcher"
-        android:textColor="@android:color/primary_text_dark"
-        android:textSize="16sp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c4c4c4"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#c4c4c4"/>
+        <TextView
+            android:id="@+id/open_launcher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="16dp"
+            android:text="@string/text_open_launcher"
+            android:textColor="@android:color/primary_text_dark"
+            android:textSize="16sp"/>
 
-    <TextView
-        android:id="@+id/current_package"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:padding="16dp"
-        android:textColor="@android:color/primary_text_dark"
-        android:textSize="16sp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c4c4c4"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#c4c4c4"/>
+        <TextView
+            android:id="@+id/open_accessibility_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="16dp"
+            android:text="@string/text_accessibility_settings"
+            android:textColor="@android:color/primary_text_dark"
+            android:textSize="16sp"/>
 
-    <TextView
-        android:id="@+id/current_activity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:padding="16dp"
-        android:textColor="@android:color/primary_text_dark"
-        android:textSize="16sp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c4c4c4"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#c4c4c4"/>
-</LinearLayout>
+        <TextView
+            android:id="@+id/current_package"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="16dp"
+            android:textColor="@android:color/primary_text_dark"
+            android:textSize="16sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c4c4c4"/>
+
+        <TextView
+            android:id="@+id/current_activity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="16dp"
+            android:textColor="@android:color/primary_text_dark"
+            android:textSize="16sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c4c4c4"/>
+    </LinearLayout>
+
+</ScrollView>

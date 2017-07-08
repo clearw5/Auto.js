@@ -5,6 +5,7 @@ import android.util.Log;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
+import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.script.ScriptSource;
 
@@ -61,9 +62,32 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
     private Object doExecution(ScriptEngine engine) {
         engine.setTag("script", getSource());
         getListener().onStart(this);
-        Object result = engine.execute(getSource());
+        Object result = null;
+        long delay = getConfig().delay;
+        int times = getConfig().loopTimes;
+        if (times == 0) {
+            times = Integer.MAX_VALUE;
+        }
+        long interval = getConfig().interval;
+        sleep(delay);
+        ScriptSource source = getSource();
+        for (int i = 0; i < times; i++) {
+            result = engine.execute(source);
+            sleep(interval);
+        }
         getListener().onSuccess(this, result);
         return result;
+    }
+
+    private void sleep(long i) {
+        if (i <= 0) {
+            return;
+        }
+        try {
+            Thread.sleep(i);
+        } catch (InterruptedException e) {
+            throw new ScriptInterruptedException();
+        }
     }
 
     @Override

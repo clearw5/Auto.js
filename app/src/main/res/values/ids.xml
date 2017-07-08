@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="rename" type="id"/>
+    <item name="open_by_other_apps" type="id"/>
+    <item name="create_shortcut" type="id"/>
+    <item name="delete" type="id"/>
+    <item name="loop" type="id"/>
+</resources>

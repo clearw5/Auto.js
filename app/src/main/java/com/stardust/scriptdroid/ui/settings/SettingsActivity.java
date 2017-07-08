@@ -15,6 +15,8 @@ import com.stardust.scriptdroid.tool.UpdateChecker;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.error.IssueReporterActivity;
 import com.stardust.scriptdroid.ui.main.MainActivity;
+import com.stardust.scriptdroid.ui.splash.SplashActivity;
+import com.stardust.scriptdroid.ui.splash.SplashActivity_;
 import com.stardust.scriptdroid.ui.update.UpdateCheckDialog;
 import com.stardust.util.IntentUtil;
 import com.stardust.util.MapEntries;
@@ -112,6 +114,15 @@ public class SettingsActivity extends BaseActivity {
                         public void run() {
                             EventBus.getDefault().post(new MessageEvent(MainActivity.MESSAGE_CLEAR_BACKGROUND_SETTINGS));
                             Toast.makeText(getActivity(), R.string.text_already_reset, Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .entry(getString(R.string.show_ad), new Runnable() {
+                        @Override
+                        public void run() {
+                            SplashActivity_.intent(getActivity())
+                                    .extra(SplashActivity.NOT_START_MAIN_ACTIVITY, true)
+                                    .extra(SplashActivity.FORCE_SHOW_AD, true)
+                                    .start();
                         }
                     })
                     .entry(getString(R.string.text_check_update), new Runnable() {

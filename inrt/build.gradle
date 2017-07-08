@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.stardust.auojs.inrt"
-        minSdkVersion 19
+        minSdkVersion 17
         targetSdkVersion 23
         versionCode 1
         versionName "0.0.1"

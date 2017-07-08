@@ -9,8 +9,11 @@ import com.google.gson.JsonObject;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.pio.PFile;
+import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.script.Scripts;
+import com.stardust.scriptdroid.script.StorageScriptProvider;
 
 /**
  * Created by Stardust on 2017/5/11.
@@ -37,6 +40,15 @@ public class SublimeResponseHandler implements Handler {
                             int viewId = data.get("view_id").getAsInt();
                             stopScript(viewId);
                             return true;
+                        }
+                    })
+                    .handler("save", new Handler() {
+                        @Override
+                        public boolean handle(JsonObject data) {
+                            String script = data.get("script").getAsString();
+                            String name = getName(data);
+                            saveScript(name, script);
+                            return false;
                         }
                     })
                     .handler("rerun", new Handler() {
@@ -90,5 +102,19 @@ public class SublimeResponseHandler implements Handler {
             return null;
         }
         return element.getAsString();
+    }
+
+    private void saveScript(String name, String script) {
+        if (TextUtils.isEmpty(name)) {
+            name = "untitled";
+        }
+        name = PFile.getNameWithoutExtension(name);
+        if (!name.endsWith(".js")) {
+            name = "<remote>" + name + ".js";
+        } else {
+            name = "<remote>" + name;
+        }
+        PFile.write(StorageScriptProvider.DEFAULT_DIRECTORY_PATH + name, script);
+        App.getApp().getUiHandler().toast(R.string.text_script_save_successfully);
     }
 }

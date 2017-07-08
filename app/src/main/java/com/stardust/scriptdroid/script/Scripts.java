@@ -111,4 +111,12 @@ public class Scripts {
         return AutoJs.getInstance().getScriptEngineService().execute(source, BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER,
                 new ExecutionConfig().requirePath(StorageScriptProvider.DEFAULT_DIRECTORY_PATH));
     }
+
+    public static ScriptExecution runRepeatedly(ScriptFile scriptFile, int loopTimes, long delay, long interval) {
+        ScriptSource source = new FileScriptSource(scriptFile);
+        String directoryPath = scriptFile.getParent();
+        return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
+                .requirePath(directoryPath, StorageScriptProvider.DEFAULT_DIRECTORY_PATH)
+                .loop(delay, loopTimes, interval));
+    }
 }

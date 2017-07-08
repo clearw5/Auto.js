@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 17
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -27,4 +27,5 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:support-annotations:25.3.1'
+    compile 'com.github.czy1121:settingscompat:1.1.4'
 }

@@ -17,7 +17,6 @@ import com.stardust.hover.SimpleHoverMenuTransitionListener;
 import com.stardust.hover.WindowHoverMenu;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.external.floatingwindow.FloatingWindowManger;
 import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.NodeInfo;
 import com.stardust.scriptdroid.external.floatingwindow.menu.view.FloatingLayoutBoundsView;
 import com.stardust.scriptdroid.external.floatingwindow.menu.view.FloatingLayoutHierarchyView;
@@ -29,6 +28,7 @@ import com.stardust.util.MessageIntent;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import ezy.assist.compat.SettingsCompat;
 import io.mattcarroll.hover.HoverMenu;
 import io.mattcarroll.hover.defaulthovermenu.window.WindowViewController;
 
@@ -129,7 +129,7 @@ public class HoverMenuService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
-            FloatingWindowManger.goToFloatingWindowPermissionSetting();
+            SettingsCompat.manageDrawOverlays(this);
         }
     }
 
