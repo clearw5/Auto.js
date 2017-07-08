@@ -78,7 +78,7 @@
                 android:textColor="@android:color/primary_text_light"/>
 
             <com.stardust.theme.widget.ThemeColorSwitch
-                android:id="@+id/sw_auto_operate_service"
+                android:id="@+id/sw_accessibility_service"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"

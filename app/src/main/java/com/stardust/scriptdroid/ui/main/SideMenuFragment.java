@@ -50,7 +50,7 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
         activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).commit();
     }
 
-    @ViewById(R.id.sw_auto_operate_service)
+    @ViewById(R.id.sw_accessibility_service)
     SwitchCompat mAccessibilityServiceSwitch;
     @ViewById(R.id.sw_floating_window)
     SwitchCompat mFloatingWindowSwitch;
@@ -108,7 +108,7 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
         mAccessibilityServiceSwitch.toggle();
     }
 
-    @CheckedChange(R.id.sw_auto_operate_service)
+    @CheckedChange(R.id.sw_accessibility_service)
     void setAutoOperateServiceEnable(CompoundButton button, boolean enable) {
         boolean isAccessibilityServiceEnabled = AccessibilityService.isEnabled(App.getApp());
         if (enable && !isAccessibilityServiceEnabled) {

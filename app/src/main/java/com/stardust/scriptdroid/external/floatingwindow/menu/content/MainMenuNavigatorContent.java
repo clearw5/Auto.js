@@ -13,6 +13,7 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
 import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.LayoutInspector;
+import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.main.MainActivity_;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.MessageEvent;
@@ -84,6 +85,12 @@ public class MainMenuNavigatorContent implements NavigatorContent {
     void openMainActivity() {
         App.getApp().startActivity(new Intent(App.getApp(), MainActivity_.class)
                 .addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY | Intent.FLAG_ACTIVITY_NEW_TASK));
+        HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
+    }
+
+    @OnClick(R.id.open_accessibility_settings)
+    void openAccessibilitySettings() {
+        AccessibilityServiceTool.enableAccessibilityService();
         HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
     }
 
