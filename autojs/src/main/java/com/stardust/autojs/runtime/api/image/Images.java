@@ -5,15 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.Image;
-import android.media.ImageReader;
-import android.media.ImageWriter;
-import android.media.MediaCodec;
 import android.os.Build;
-import android.provider.ContactsContract;
 import android.support.annotation.RequiresApi;
-import android.view.Surface;
 
 import com.stardust.autojs.runtime.AbstractScriptRuntime;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
@@ -29,7 +25,7 @@ import java.nio.ByteBuffer;
 /**
  * Created by Stardust on 2017/5/20.
  */
-
+@RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class Images {
 
     private AbstractScriptRuntime mScriptRuntime;
@@ -109,11 +105,26 @@ public class Images {
     public static int pixel(Image image, int x, int y) {
         Image.Plane plane = image.getPlanes()[0];
         int offset = y * plane.getRowStride() + x * plane.getPixelStride();
-        return plane.getBuffer().getInt(offset);
+        int c = plane.getBuffer().getInt(offset);
+        return (c & 0xff000000) + ((c & 0xff) << 16) + (c & 0x00ff00) + ((c & 0xff0000) >> 16);
     }
 
     public static int pixel(Bitmap bitmap, int x, int y) {
         return bitmap.getPixel(x, y);
+    }
+
+    public boolean detectsColor(Image image, int x, int y, int color) {
+        if (image == null)
+            return false;
+        int pixel = pixel(image, x, y);
+        return colorFinder.defaultColorDetector(color).detectsColor(Color.red(pixel), Color.green(pixel), Color.blue(pixel));
+    }
+
+    public boolean detectsColor(Image image, int x, int y, int color, int threshold) {
+        if (image == null)
+            return false;
+        int pixel = pixel(image, x, y);
+        return colorFinder.defaultColorDetector(color, threshold).detectsColor(Color.red(pixel), Color.green(pixel), Color.blue(pixel));
     }
 
     public static Bitmap read(String path) {
