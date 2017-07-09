@@ -78,10 +78,16 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
                 mExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
+                        if (mAccessibilityServiceSwitch == null) {
+                            return;
+                        }
                         final boolean checked = AccessibilityService.isEnabled(App.getApp());
                         mAccessibilityServiceSwitch.post(new Runnable() {
                             @Override
                             public void run() {
+                                if (mAccessibilityServiceSwitch == null) {
+                                    return;
+                                }
                                 mAccessibilityServiceSwitch.setChecked(checked);
                             }
                         });

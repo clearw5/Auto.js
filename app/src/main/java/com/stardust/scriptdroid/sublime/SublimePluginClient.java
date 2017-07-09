@@ -35,7 +35,7 @@ public class SublimePluginClient {
         }
     }
 
-    private Socket mSocket;
+    private volatile Socket mSocket;
     private Handler mResponseHandler;
     private String host;
     private int port;
@@ -71,6 +71,10 @@ public class SublimePluginClient {
                 }
             }
         }).start();
+    }
+
+    public boolean isListening() {
+        return mSocket != null;
     }
 
     private void tryClose() {

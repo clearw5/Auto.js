@@ -1,7 +1,7 @@
 ﻿{
-  "versionCode": 137,
-  "versionName": "2.0.12 Beta",
-  "releaseNotes": "* 新增 安卓5.0以上免Root截图、保存与找色\n* 新增 电脑端Sublime Text 3插件的支持\n* 新增 Android7.0及以上支持免root任意坐标点击、点按、手势\n* 新增 界面相关API\n* 修复 部分机型上转屏时手机重启的问题\n",
+  "versionCode": 145,
+  "versionName": "2.0.13 Beta3",
+  "releaseNotes": "* 新增 脚本循环运行选项，可设置循环间隔、次数、延迟等（长按脚本）\n* 新增 兼容安卓4.2 （可能会崩溃\n* 新增 跳转悬浮窗权限适配\n* 新增 SublimeText插件支持保存脚本到手机\n* 增加 点赞群成员、名片顺序点赞、批量删除QQ好友脚本\n* 修复 一些bug",
   "downloads" : [
     {
 	  "name": "酷安",

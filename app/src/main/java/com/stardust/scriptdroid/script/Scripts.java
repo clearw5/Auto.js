@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.script;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 
 import com.stardust.autojs.execution.ExecutionConfig;
@@ -69,7 +70,7 @@ public class Scripts {
     public static void createShortcut(ScriptFile scriptFile) {
         new Shortcut(App.getApp()).name(scriptFile.getSimplifiedName())
                 .targetClass(ShortcutActivity.class)
-                .icon(R.drawable.ic_node_js_black)
+                .iconRes(R.drawable.ic_node_js_black)
                 .extras(new Intent().putExtra(CommonUtils.EXTRA_KEY_PATH, scriptFile.getPath()))
                 .send();
     }

@@ -147,7 +147,12 @@ public class Pref {
                 def().edit().putLong(KEY_LAST_SHOW_AD_MILLIS, System.currentTimeMillis()).apply();
                 return true;
             case "Off":
-                return false;
+                lastShowMillis = def().getLong(KEY_LAST_SHOW_AD_MILLIS, 0);
+                if (System.currentTimeMillis() - lastShowMillis < TimeUnit.DAYS.toMillis(2)) {
+                    return false;
+                }
+                def().edit().putLong(KEY_LAST_SHOW_AD_MILLIS, System.currentTimeMillis()).apply();
+                return true;
         }
         return true;
     }

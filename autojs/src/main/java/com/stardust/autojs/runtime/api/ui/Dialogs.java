@@ -1,5 +1,6 @@
 package com.stardust.autojs.runtime.api.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.text.TextUtils;
@@ -73,7 +74,7 @@ public class Dialogs {
     private Context getContext() {
         if (mThemeWrapper != null)
             return mThemeWrapper;
-        mThemeWrapper = new ContextThemeWrapper(mUiHandler.getContext(), R.style.Theme_AppCompat_Light);
+        mThemeWrapper = new ContextThemeWrapper(mUiHandler.getContext().getApplicationContext(), R.style.Theme_AppCompat_Light);
         return mThemeWrapper;
     }
 
@@ -115,7 +116,7 @@ public class Dialogs {
 
     private BlockedMaterialDialog.Builder dialogBuilder() {
         Context context = mAppUtils.getCurrentActivity();
-        if (context == null) {
+        if (context == null || ((Activity) context).isFinishing()) {
             context = getContext();
         }
         return (BlockedMaterialDialog.Builder) new BlockedMaterialDialog.Builder(context, mUiHandler)

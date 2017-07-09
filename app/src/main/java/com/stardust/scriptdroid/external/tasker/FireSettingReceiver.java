@@ -32,7 +32,8 @@ public class FireSettingReceiver extends AbstractPluginSettingReceiver {
     @Override
     protected void firePluginSetting(@NonNull Context context, @NonNull Bundle bundle) {
         context.startActivity(new Intent(context, RunIntentActivity.class)
-                .putExtras(bundle));
+                .putExtras(bundle)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
 }

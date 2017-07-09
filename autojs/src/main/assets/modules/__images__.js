@@ -10,6 +10,10 @@ module.exports = function(__runtime__, scope){
 
    images.saveImage = __runtime__.images.saveImage.bind(__runtime__.images);
 
+   images.pixel = __runtime__.images.pixel;
+
+   images.detectsColor = __runtime__.images.detectsColor.bind(__runtime__.images);
+
    images.findColor = function(img, color, options){
         if(typeof(color) == 'string'){
             if(color.startsWith('#')){

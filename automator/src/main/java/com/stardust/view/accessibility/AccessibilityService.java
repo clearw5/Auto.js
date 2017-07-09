@@ -82,26 +82,15 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     }
 
     @Override
+    public void onInterrupt() {
+
+    }
+
+    @Override
     public AccessibilityNodeInfo getRootInActiveWindow() {
         return mRootInActiveWindow;
     }
 
-
-    @Override
-    protected boolean onKeyEvent(KeyEvent event) {
-        Log.v(TAG, "onKeyEvent: " + event);
-        return super.onKeyEvent(event);
-    }
-
-    @Override
-    protected boolean onGesture(int gestureId) {
-        Log.v(TAG, "onGesture: " + gestureId);
-        return super.onGesture(gestureId);
-    }
-
-    @Override
-    public void onInterrupt() {
-    }
 
     @Override
     public void onDestroy() {

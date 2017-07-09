@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.qq.e.comm.DownloadService;
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.NotAskAgainDialog;
 import com.stardust.app.OnActivityResultDelegate;
@@ -103,6 +104,8 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         EventBus.getDefault().register(this);
         mVersionGuard = new VersionGuard(this);
         showAnnunciationIfNeeded();
+        //Stop download service of ad sdk
+        stopService(new Intent(this, DownloadService.class));
     }
 
     @AfterViews
