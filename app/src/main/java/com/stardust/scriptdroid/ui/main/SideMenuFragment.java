@@ -85,6 +85,9 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
                         mAccessibilityServiceSwitch.post(new Runnable() {
                             @Override
                             public void run() {
+                                if (mAccessibilityServiceSwitch == null) {
+                                    return;
+                                }
                                 mAccessibilityServiceSwitch.setChecked(checked);
                             }
                         });

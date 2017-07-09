@@ -40,6 +40,10 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (execution == null) {
+            finish();
+            return;
+        }
         mScriptSource = execution.getSource();
         mScriptEngine = execution.getEngine();
         mExecutionListener = execution.getListener();
