@@ -36,8 +36,9 @@ public class BlockedMaterialDialog extends MaterialDialog {
     private boolean isActivityContext(Context context) {
         if (context == null)
             return false;
-        if (context instanceof Activity)
-            return true;
+        if (context instanceof Activity) {
+            return !((Activity) context).isFinishing();
+        }
         if (context instanceof ContextWrapper) {
             return isActivityContext(((ContextWrapper) context).getBaseContext());
         }

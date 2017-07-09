@@ -2,7 +2,7 @@ package com.stardust.scriptdroid.external.shortcut;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 /**
@@ -15,9 +15,10 @@ public class Shortcut {
     private String mName;
     private String mTargetClass;
     private String mTargetPackage;
-    private Intent.ShortcutIconResource mIcon;
+    private Intent.ShortcutIconResource mIconRes;
     private boolean mDuplicate = false;
     private Intent mLaunchIntent = new Intent();
+    private Bitmap mIcon;
 
     public Shortcut(Context context) {
         mContext = context;
@@ -50,15 +51,31 @@ public class Shortcut {
     }
 
 
-    public Shortcut icon(Intent.ShortcutIconResource icon) {
+    public Shortcut iconRes(Intent.ShortcutIconResource icon) {
+        if (mIcon != null) {
+            throw new IllegalStateException("Cannot set both iconRes and icon");
+        }
+        mIconRes = icon;
+        return this;
+    }
+
+    public Shortcut iconRes(int resId) {
+        return iconRes(Intent.ShortcutIconResource.fromContext(mContext, resId));
+    }
+
+
+    public Shortcut icon(Bitmap icon) {
+        if (mIconRes != null) {
+            throw new IllegalStateException("Cannot set both iconRes and icon");
+        }
         mIcon = icon;
         return this;
     }
 
-    public Shortcut icon(int resId) {
-        mIcon = Intent.ShortcutIconResource.fromContext(mContext, resId);
-        return this;
+    public Intent.ShortcutIconResource getIconRes() {
+        return mIconRes;
     }
+
 
     public Shortcut duplicate(boolean duplicate) {
         mDuplicate = duplicate;
@@ -69,7 +86,7 @@ public class Shortcut {
         return mName;
     }
 
-    public Intent.ShortcutIconResource getIcon() {
+    public Bitmap getIcon() {
         return mIcon;
     }
 
@@ -86,12 +103,18 @@ public class Shortcut {
     }
 
     public Intent getCreateIntent() {
-        return new Intent(Intent.ACTION_CREATE_SHORTCUT)
+        Intent intent = new Intent(Intent.ACTION_CREATE_SHORTCUT)
                 .putExtra(Intent.EXTRA_SHORTCUT_NAME, getName())
-                .putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, getIcon())
                 .putExtra(Intent.EXTRA_SHORTCUT_INTENT, getLaunchIntent())
                 .putExtra("duplicate", isDuplicate())
                 .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+        Bitmap icon = getIcon();
+        if (icon == null) {
+            intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, getIconRes());
+        } else {
+            intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, icon);
+        }
+        return intent;
     }
 
     public Intent getLaunchIntent() {
