@@ -13,7 +13,7 @@ public class SublimePluginService {
     private static SublimePluginClient client;
 
     public static boolean isConnected() {
-        return client != null;
+        return client != null && client.isListening();
     }
 
     public static void disconnectIfNeeded() {
@@ -44,6 +44,10 @@ public class SublimePluginService {
         JsonObject object = new JsonObject();
         object.addProperty("type", "log");
         object.addProperty("log", log);
-        client.send(object);
+        try {
+            client.send(object);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
     }
 }
