@@ -124,6 +124,12 @@ public class StardustConsole extends AbstractConsole {
     @Override
     public void show() {
         if (!SettingsCompat.canDrawOverlays(mUiHandler.getContext())) {
+            mUiHandler.post(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
             SettingsCompat.manageDrawOverlays(mUiHandler.getContext());
             mUiHandler.toast(R.string.text_no_floating_window_permission);
         }

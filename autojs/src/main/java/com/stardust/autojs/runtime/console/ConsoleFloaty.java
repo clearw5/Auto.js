@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloaty;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
+import com.stardust.util.ScreenMetrics;
 import com.stardust.util.ViewUtil;
 import com.stardust.autojs.R;
 
@@ -30,6 +31,7 @@ public class ConsoleFloaty extends ResizableExpandableFloaty.AbstractResizableEx
         setShouldRequestFocusWhenExpand(false);
         setInitialX(100);
         setInitialY(1000);
+        setCollapsedViewUnpressedAlpha(1.0f);
     }
 
     @Override
@@ -58,7 +60,7 @@ public class ConsoleFloaty extends ResizableExpandableFloaty.AbstractResizableEx
         view.post(new Runnable() {
             @Override
             public void run() {
-                ViewUtil.setViewMeasure(view, 800, 800);
+                ViewUtil.setViewMeasure(view, ScreenMetrics.getDeviceScreenWidth() * 2 / 3, ScreenMetrics.getDeviceScreenHeight() / 3);
             }
         });
     }
