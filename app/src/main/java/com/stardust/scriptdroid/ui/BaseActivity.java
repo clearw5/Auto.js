@@ -2,6 +2,8 @@ package com.stardust.scriptdroid.ui;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +28,9 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
+
     protected static final int PERMISSION_REQUEST_CODE = 11186;
+    private static boolean isRequestingPermissions = false;
     private BackPressedHandler.Observer mBackPressObserver = new BackPressedHandler.Observer();
 
     @Override
@@ -62,15 +66,21 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void checkPermission(String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (isRequestingPermissions) {
+                return;
+            }
             String[] requestPermissions = getRequestPermissions(permissions);
-            if (requestPermissions.length > 0)
+            if (requestPermissions.length > 0) {
+                isRequestingPermissions = true;
                 requestPermissions(requestPermissions, PERMISSION_REQUEST_CODE);
+            }
         } else {
             int[] grantResults = new int[permissions.length];
             Arrays.fill(grantResults, PERMISSION_GRANTED);
             onRequestPermissionsResult(PERMISSION_REQUEST_CODE, permissions, grantResults);
         }
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private String[] getRequestPermissions(String[] permissions) {
@@ -111,5 +121,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             });
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    @CallSuper
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        isRequestingPermissions = false;
     }
 }
