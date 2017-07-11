@@ -206,6 +206,7 @@
     <string name="hint_loop_delay">延迟多少秒后开始循环</string>
     <string name="text_number_format_error">格式错误</string>
     <string name="text_accessibility_settings">打开无障碍服务</string>
+    <string name="text_discard_record">放弃录制</string>
 
     <string-array name="record_control_keys">
         <item>无</item>

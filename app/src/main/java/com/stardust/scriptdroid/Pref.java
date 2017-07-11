@@ -99,7 +99,7 @@ public class Pref {
     }
 
     private static String getString(int id) {
-        return App.getResString(id);
+        return App.getApp().getString(id);
     }
 
     public static int getMaxTextLengthForCodeCompletion() {
