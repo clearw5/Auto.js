@@ -83,10 +83,6 @@ public class App extends MultiDexApplication {
     }
 
 
-    public static String getResString(int id) {
-        return getApp().getString(id);
-    }
-
     public VolumeChangeObserver getVolumeChangeObserver() {
         return mVolumeChangeObserver;
     }

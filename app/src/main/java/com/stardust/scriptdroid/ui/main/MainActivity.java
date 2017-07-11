@@ -40,6 +40,7 @@ import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.script.sample.Sample;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
+import com.stardust.util.IntentExtras;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.DrawableSaver;
@@ -306,7 +307,10 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
             return;
         switch (action) {
             case ACTION_ON_ACTION_RECORD_STOPPED:
-                handleRecordedScript(intent.getStringExtra(ARGUMENT_SCRIPT));
+                IntentExtras extras = IntentExtras.fromIntent(intent);
+                String script = extras.get(ARGUMENT_SCRIPT);
+                extras.clear();
+                handleRecordedScript(script);
                 break;
             case ACTION_IMPORT_SCRIPT:
                 handleImportScriptFile(intent);
@@ -442,6 +446,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         StorageScriptProvider.getDefault().notifyStoragePermissionGranted();
     }
 
@@ -456,8 +461,10 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     public static void onRecordStop(Context context, String script) {
         Intent intent = new Intent(context, MainActivity_.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(EXTRA_ACTION, ACTION_ON_ACTION_RECORD_STOPPED)
-                .putExtra(ARGUMENT_SCRIPT, script);
+                .putExtra(EXTRA_ACTION, ACTION_ON_ACTION_RECORD_STOPPED);
+        IntentExtras.newExtras()
+                .put(ARGUMENT_SCRIPT, script)
+                .putInIntent(intent);
         context.startActivity(intent);
     }
 

@@ -51,15 +51,17 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     @BindView(R.id.text_start_or_pause)
     TextView mStartOrPauseRecordText;
 
-
     @BindView(R.id.stop_record)
     View mStopRecord;
 
+    @BindView(R.id.discard_record)
+    View mDiscardRecord;
+
+
     private Recorder mRecorder;
     private Context mContext;
-
+    private boolean mDiscard = false;
     private KeyObserver mKeyObserver;
-
     private VolumeChangeObserver.OnVolumeChangeListener mOnVolumeChangeListener = new VolumeChangeObserver.OnVolumeChangeListener() {
         @Override
         public void onVolumeChange() {
@@ -123,6 +125,12 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
         }
     }
 
+    @OnClick(R.id.discard_record)
+    void discardRecord() {
+        mDiscard = true;
+        stopRecord();
+    }
+
     private void resumeRecord() {
         mRecorder.resume();
         setState(Recorder.STATE_RECORDING);
@@ -135,6 +143,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     }
 
     private void startRecord() {
+        mDiscard = false;
         mRecorder = mRecordedByRootSwitch.isChecked() ? new TouchRecorder(mContext) : AutoJs.getInstance().getAccessibilityActionRecorder();
         mRecorder.setOnStateChangedListener(this);
         mRecorder.start();
@@ -191,7 +200,9 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
     @Override
     public void onStop() {
-        MainActivity.onRecordStop(mContext, mRecorder.getCode());
+        if (!mDiscard) {
+            MainActivity.onRecordStop(mContext, mRecorder.getCode());
+        }
         mRecorder = null;
     }
 
