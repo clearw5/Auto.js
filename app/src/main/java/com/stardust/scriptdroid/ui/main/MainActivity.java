@@ -36,6 +36,7 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
+import com.stardust.scriptdroid.external.open.ImportIntentActivity;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.script.sample.Sample;
@@ -67,6 +68,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost {
@@ -82,6 +84,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private static final String ARGUMENT_PATH = "ARGUMENT_PATH";
     private static final String ACTION_IMPORT_SAMPLE = "I cannot find the way back to you...Eating...17.4.29";
     private static final String ARGUMENT_SAMPLE = "Take a chance on me...ok...?";
+    private static final String ARGUMENT_INPUT_STREAM = "17.7.12, Hi...could we start all over again...";
 
 
     @ViewById(R.id.drawer_layout)
@@ -327,9 +330,16 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         if (fragment == null) {
             mIntentToHandle = intent;
         } else {
-            fragment.importFile(intent.getStringExtra(ARGUMENT_PATH));
+            String path = intent.getStringExtra(ARGUMENT_PATH);
+            if (path != null) {
+                fragment.importFile(intent.getStringExtra(ARGUMENT_PATH));
+                return;
+            }
+            InputStream inputStream = IntentExtras.fromIntent(intent).getAndClear(ARGUMENT_INPUT_STREAM);
+            fragment.importFile("", inputStream);
         }
     }
+
 
     private void handleImportSample(Intent intent) {
         mViewPager.setCurrentItem(0, true);
@@ -390,6 +400,16 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra(EXTRA_ACTION, ACTION_IMPORT_SCRIPT)
                 .putExtra(ARGUMENT_PATH, path));
+    }
+
+    public static void importScriptFileByInputStream(Context context, InputStream inputStream) {
+        Intent intent = new Intent(context, MainActivity_.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra(EXTRA_ACTION, ACTION_IMPORT_SCRIPT);
+        IntentExtras.newExtras()
+                .put(ARGUMENT_INPUT_STREAM, inputStream)
+                .putInIntent(intent);
+        context.startActivity(intent);
     }
 
     public static void importSample(Context context, Sample sample) {
@@ -473,4 +493,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
         return mActivityResultMediator;
     }
+
+
 }

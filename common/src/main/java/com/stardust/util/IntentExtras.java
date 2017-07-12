@@ -52,6 +52,13 @@ public class IntentExtras implements Serializable {
         return (T) mMap.get(key);
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T getAndClear(String key) {
+        T value = (T) mMap.get(key);
+        clear();
+        return value;
+    }
+
     public IntentExtras put(String key, Object value) {
         mMap.put(key, value);
         return this;
