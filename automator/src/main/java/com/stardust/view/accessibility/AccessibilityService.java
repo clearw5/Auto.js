@@ -59,13 +59,14 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
         Log.v(TAG, "onAccessibilityEvent: " + event);
-        try {
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                || event.getEventType() == AccessibilityEvent.TYPE_VIEW_HOVER_ENTER
+                || event.getEventType() == AccessibilityEvent.TYPE_VIEW_HOVER_EXIT) {
             AccessibilityNodeInfo root = super.getRootInActiveWindow();
-            Log.v(TAG, "getRootInActiveWindow: " + root);
-            if (root != null)
+            if (root != null) {
                 mRootInActiveWindow = root;
-        } catch (Exception ignored) {
-
+                Log.d(TAG, "rootInActiveWindow: " + mRootInActiveWindow);
+            }
         }
         if (!containsAllEventTypes && !eventTypes.contains(event.getEventType()))
             return;
@@ -80,6 +81,7 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
             Log.v(TAG, "millis: " + (System.currentTimeMillis() - start) + " delegate: " + entry.getValue().getClass().getName());
         }
     }
+
 
     @Override
     public void onInterrupt() {

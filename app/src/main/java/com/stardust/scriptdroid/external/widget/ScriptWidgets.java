@@ -48,6 +48,9 @@ public class ScriptWidgets {
     static void removeAllNotIn(Set<Integer> appWidgetIdSet) {
         List<String> keysToRemove = new LinkedList<>();
         for (Map.Entry<String, ?> entry : widgets.getAll().entrySet()) {
+            if (entry.getKey().equals("max_rc")) {
+                continue;
+            }
             Matcher matcher = ID_PATTERN.matcher(entry.getKey());
             if (matcher.find()) {
                 int id = Integer.parseInt(matcher.group(1));
@@ -55,7 +58,8 @@ public class ScriptWidgets {
                     keysToRemove.add(entry.getKey());
                 }
             } else {
-                Log.e(LOG_TAG, "illegal key: " + entry.getKey());
+                Log.w(LOG_TAG, "illegal key: " + entry.getKey());
+                keysToRemove.add(entry.getKey());
             }
         }
         SharedPreferences.Editor editor = widgets.edit();
