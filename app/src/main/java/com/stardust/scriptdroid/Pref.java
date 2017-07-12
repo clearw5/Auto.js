@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
  * Created by Stardust on 2017/1/31.
  */
 public class Pref {
-    private static final boolean enableRemoveAdOption = true;
 
     private static final SharedPreferences DISPOSABLE_BOOLEAN = App.getApp().getSharedPreferences("DISPOSABLE_BOOLEAN", Context.MODE_PRIVATE);
     private static final String KEY_SERVER_ADDRESS = "Still love you...17.5.14";
@@ -140,16 +139,6 @@ public class Pref {
             case "OncePerDay":
                 long lastShowMillis = def().getLong(KEY_LAST_SHOW_AD_MILLIS, 0);
                 if (System.currentTimeMillis() - lastShowMillis < TimeUnit.DAYS.toMillis(1)) {
-                    return false;
-                }
-                def().edit().putLong(KEY_LAST_SHOW_AD_MILLIS, System.currentTimeMillis()).apply();
-                return true;
-            case "Off":
-                if (enableRemoveAdOption) {
-                    return false;
-                }
-                lastShowMillis = def().getLong(KEY_LAST_SHOW_AD_MILLIS, 0);
-                if (System.currentTimeMillis() - lastShowMillis < TimeUnit.DAYS.toMillis(2)) {
                     return false;
                 }
                 def().edit().putLong(KEY_LAST_SHOW_AD_MILLIS, System.currentTimeMillis()).apply();
