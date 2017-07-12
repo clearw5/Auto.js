@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.media.Image;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 
 import com.stardust.autojs.runtime.AbstractScriptRuntime;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
@@ -21,6 +22,7 @@ import com.stardust.util.ScreenMetrics;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
+import java.util.Locale;
 
 /**
  * Created by Stardust on 2017/5/20.
@@ -103,13 +105,20 @@ public class Images {
     }
 
     public static int pixel(Image image, int x, int y) {
+        int originX = x;
+        int originY = y;
+        x = ScreenMetrics.rescaleX(x, image.getWidth());
+        y = ScreenMetrics.rescaleY(y, image.getHeight());
         Image.Plane plane = image.getPlanes()[0];
         int offset = y * plane.getRowStride() + x * plane.getPixelStride();
         int c = plane.getBuffer().getInt(offset);
+        Log.d("Images", String.format(Locale.getDefault(), "(%d, %d)→(%d, %d)", originX, originY, x, y));
         return (c & 0xff000000) + ((c & 0xff) << 16) + (c & 0x00ff00) + ((c & 0xff0000) >> 16);
     }
 
     public static int pixel(Bitmap bitmap, int x, int y) {
+        x = ScreenMetrics.rescaleX(x, bitmap.getWidth());
+        y = ScreenMetrics.rescaleY(y, bitmap.getHeight());
         return bitmap.getPixel(x, y);
     }
 
