@@ -1,18 +1,23 @@
 
 module.exports = function(__runtime__, scope){
    var images = {};
+   if(android.os.Build.VERSION.SDK_INT < 19){
+        return images;
+   }
 
-   var colorFinder = __runtime__.images.colorFinder;
+   var rtImages = __runtime__.getImages();
 
-   images.requestScreenCapture = __runtime__.images.requestScreenCapture.bind(__runtime__.images);
+   var colorFinder = rtImages.colorFinder;
 
-   images.captureScreen = __runtime__.images.captureScreen.bind(__runtime__.images);
+   images.requestScreenCapture = rtImages.requestScreenCapture.bind(rtImages);
 
-   images.saveImage = __runtime__.images.saveImage.bind(__runtime__.images);
+   images.captureScreen = rtImages.captureScreen.bind(rtImages);
 
-   images.pixel = __runtime__.images.pixel;
+   images.saveImage = rtImages.saveImage.bind(rtImages);
 
-   images.detectsColor = __runtime__.images.detectsColor.bind(__runtime__.images);
+   images.pixel = rtImages.pixel;
+
+   images.detectsColor = rtImages.detectsColor.bind(rtImages);
 
    images.findColor = function(img, color, options){
         if(typeof(color) == 'string'){

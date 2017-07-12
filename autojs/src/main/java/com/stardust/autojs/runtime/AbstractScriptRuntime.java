@@ -1,6 +1,7 @@
 package com.stardust.autojs.runtime;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.CallSuper;
 
 import com.stardust.autojs.engine.ScriptEngine;
@@ -40,11 +41,11 @@ public abstract class AbstractScriptRuntime {
     @ScriptVariable
     public UI ui;
 
-    @ScriptVariable
-    public Images images;
 
     @ScriptVariable
     public Dialogs dialogs;
+
+    private Images images;
 
     private static WeakReference<Context> applicationContext;
 
@@ -54,7 +55,9 @@ public abstract class AbstractScriptRuntime {
         this.automator = new SimpleActionAutomator(bridge, this);
         this.info = bridge.getInfoProvider();
         this.ui = new UI(uiHandler.getContext());
-        images = new Images(uiHandler.getContext(), this, screenCaptureRequester);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            images = new Images(uiHandler.getContext(), this, screenCaptureRequester);
+        }
         dialogs = new Dialogs(app, uiHandler);
     }
 
@@ -109,6 +112,12 @@ public abstract class AbstractScriptRuntime {
 
     @CallSuper
     public void onStop() {
-        images.releaseScreenCapturer();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            images.releaseScreenCapturer();
+        }
+    }
+
+    public Object getImages() {
+        return images;
     }
 }
