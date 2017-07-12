@@ -30,7 +30,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     protected static final int PERMISSION_REQUEST_CODE = 11186;
-    private static boolean isRequestingPermissions = false;
     private BackPressedHandler.Observer mBackPressObserver = new BackPressedHandler.Observer();
 
     @Override
@@ -66,12 +65,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void checkPermission(String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (isRequestingPermissions) {
-                return;
-            }
             String[] requestPermissions = getRequestPermissions(permissions);
             if (requestPermissions.length > 0) {
-                isRequestingPermissions = true;
                 requestPermissions(requestPermissions, PERMISSION_REQUEST_CODE);
             }
         } else {
@@ -127,6 +122,5 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        isRequestingPermissions = false;
     }
 }
