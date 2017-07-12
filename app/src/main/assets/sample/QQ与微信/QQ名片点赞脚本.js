@@ -11,7 +11,7 @@ function 赞(){
 function 显示更多(){
   for(let i = 0; i < 2;i++){
     click("显示更多");
-   } 
+  }
 }
 
 toast("请打开自己的资料页，点击点赞图标");

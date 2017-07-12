@@ -36,6 +36,8 @@ import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.
 
 public class UiObject extends AccessibilityNodeInfoCompat {
 
+    public static final int ACTION_APPEND_TEXT = 0x00200001;
+
     private static final String TAG = "UiObject";
     private static final boolean DEBUG = false;
     private static int notRecycledCount = 0;
