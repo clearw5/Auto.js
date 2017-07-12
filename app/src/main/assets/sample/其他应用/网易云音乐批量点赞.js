@@ -3,8 +3,8 @@
 launchApp("网易云音乐");
 toast("打开一个歌曲的评论页面");
 
-//循环直至当前为评论页面
-waitActivity("com.netease.cloudmusic.activity.ResourceCommentActivity");
+//等待当前为评论页面
+waitForActivity("com.netease.cloudmusic.activity.ResourceCommentActivity");
 
 
 while(true){
