@@ -59,9 +59,7 @@ public class SplashActivity extends BaseActivity {
         boolean forceShowAd = getIntent().getBooleanExtra(FORCE_SHOW_AD, false);
         if (!forceShowAd && !Pref.shouldShowAd()) {
             enterNextActivity();
-            return;
         }
-        checkPermission(Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     @AfterViews
