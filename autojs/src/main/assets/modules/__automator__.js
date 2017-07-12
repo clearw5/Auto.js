@@ -88,7 +88,7 @@ module.exports = function(__runtime__, scope){
         }, arguments);
     }
 
-    automator.input = function(a, b){
+    automator.setText = function(a, b){
         if(arguments.length == 1){
             return __runtime__.automator.setText(__runtime__.automator.editable(-1), a);
         }else{
@@ -96,8 +96,16 @@ module.exports = function(__runtime__, scope){
         }
     }
 
+    automator.input = function(a, b){
+            if(arguments.length == 1){
+                return __runtime__.automator.appendText(__runtime__.automator.editable(-1), a);
+            }else{
+                return __runtime__.automator.appendText(__runtime__.automator.editable(a), b);
+            }
+        }
+
     scope.__asGlobal__(__runtime__.automator, ['back', 'home', 'powerDialog', 'notifications', 'quickSettings', 'recents', 'splitScreen']);
-    scope.__asGlobal__(automator, ['click', 'longClick', 'press', 'swipe', 'gesture', 'gestures', 'gestureAsync', 'gesturesAsync', 'scrollDown', 'scrollUp', 'input']);
+    scope.__asGlobal__(automator, ['click', 'longClick', 'press', 'swipe', 'gesture', 'gestures', 'gestureAsync', 'gesturesAsync', 'scrollDown', 'scrollUp', 'input', 'setText']);
 
     return automator;
 }

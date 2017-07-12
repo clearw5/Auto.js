@@ -27,8 +27,8 @@ public class LayoutInspector {
             mCapture = null;
         } else {
             final AccessibilityNodeInfo root = service.getRootInActiveWindow();
-            Log.d(LOG_TAG, "captureCurrentWindow: root = null");
             if (root == null) {
+                Log.d(LOG_TAG, "captureCurrentWindow: root = null");
                 mCapture = null;
             } else {
                 mExecutor.execute(new Runnable() {

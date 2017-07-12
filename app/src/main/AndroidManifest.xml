@@ -80,6 +80,11 @@
         <activity android:name=".ui.help.LocalWebViewActivity"/>
         <activity android:name=".external.tasker.TaskerScriptEditActivity_"/>
         <activity android:name=".ui.edit.ViewSampleActivity"/>
+        <activity android:name=".external.widget.ScriptWidgetSettingsActivity_">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
             android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
@@ -240,6 +245,15 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+
+        <receiver android:name=".external.widget.ScriptWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/script_widget_config"/>
+        </receiver>
 
         <!-- 声明广告SDK所需要的组件 -->
         <service

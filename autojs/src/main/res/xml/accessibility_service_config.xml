@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
-                       android:accessibilityEventTypes="typeAllMask"
+                       android:accessibilityEventTypes="typeNotificationStateChanged|typeAnnouncement|typeAssistReadingContext|typeContextClicked|typeGestureDetectionEnd|typeGestureDetectionStart|typeTouchExplorationGestureEnd|typeTouchExplorationGestureStart|typeTouchInteractionEnd|typeTouchInteractionStart|typeViewAccessibilityFocusCleared|typeViewAccessibilityFocused|typeViewClicked|typeViewHoverEnter|typeViewHoverExit|typeViewFocused|typeViewLongClicked|typeViewScrolled|typeViewSelected|typeViewTextChanged|typeViewTextSelectionChanged|typeViewTextTraversedAtMovementGranularity|typeWindowContentChanged|typeWindowsChanged|typeWindowStateChanged"
                        android:accessibilityFeedbackType="feedbackGeneric"
-                       android:accessibilityFlags="flagRetrieveInteractiveWindows|flagIncludeNotImportantViews|flagReportViewIds|flagRequestEnhancedWebAccessibility"
+                       android:accessibilityFlags="flagIncludeNotImportantViews|flagReportViewIds|flagRetrieveInteractiveWindows|flagRequestEnhancedWebAccessibility"
                        android:canPerformGestures="true"
                        android:canRequestEnhancedWebAccessibility="true"
                        android:canRetrieveWindowContent="true"
                        android:description="@string/text_accessibility_service_description"
-                       android:notificationTimeout="0"/>
+                       android:notificationTimeout="100"/>

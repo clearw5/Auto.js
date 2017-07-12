@@ -8,15 +8,13 @@ import com.stardust.autojs.runtime.api.AutomatorConfig;
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.scriptdroid.autojs.AutoJs;
 
-import org.mozilla.javascript.tools.debugger.Dim;
-import org.mozilla.javascript.tools.debugger.GuiCallback;
-
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Stardust on 2017/1/31.
  */
 public class Pref {
+    private static final boolean enableRemoveAdOption = true;
 
     private static final SharedPreferences DISPOSABLE_BOOLEAN = App.getApp().getSharedPreferences("DISPOSABLE_BOOLEAN", Context.MODE_PRIVATE);
     private static final String KEY_SERVER_ADDRESS = "Still love you...17.5.14";
@@ -99,7 +97,7 @@ public class Pref {
     }
 
     private static String getString(int id) {
-        return App.getResString(id);
+        return App.getApp().getString(id);
     }
 
     public static int getMaxTextLengthForCodeCompletion() {
@@ -147,6 +145,9 @@ public class Pref {
                 def().edit().putLong(KEY_LAST_SHOW_AD_MILLIS, System.currentTimeMillis()).apply();
                 return true;
             case "Off":
+                if (enableRemoveAdOption) {
+                    return false;
+                }
                 lastShowMillis = def().getLong(KEY_LAST_SHOW_AD_MILLIS, 0);
                 if (System.currentTimeMillis() - lastShowMillis < TimeUnit.DAYS.toMillis(2)) {
                     return false;

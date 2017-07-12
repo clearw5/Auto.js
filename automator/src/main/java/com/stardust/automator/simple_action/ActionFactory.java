@@ -42,14 +42,18 @@ public class ActionFactory {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static SimpleAction createActionWithEditableFilter(int action, int index, final String text) {
+    public static SimpleAction createActionWithEditableFilter(final int action, int index, final String text) {
         return new SearchTargetAction(action, new FilterAction.EditableFilter(index)) {
 
             @Override
             protected void performAction(UiObject node) {
                 Bundle args = new Bundle();
-                args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, node.text() + text);
-                node.performAction(getAction(), args);
+                if (action == AccessibilityNodeInfo.ACTION_SET_TEXT) {
+                    args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
+                } else {
+                    args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, node.text() + text);
+                }
+                node.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args);
             }
         };
     }

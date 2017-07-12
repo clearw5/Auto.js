@@ -3,6 +3,8 @@ package com.stardust.autojs.runtime.api.image;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.Image;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.concurrent.VolatileBox;
@@ -18,6 +20,7 @@ import java.util.concurrent.TimeUnit;
  * Created by Stardust on 2017/5/18.
  */
 
+@RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class ColorFinder {
 
     private static ThreadPoolExecutor sThreadPoolExecutor = new ThreadPoolExecutor(4, 16, 5, TimeUnit.MINUTES, new SynchronousQueue<Runnable>());

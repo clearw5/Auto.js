@@ -109,10 +109,18 @@ public class SimpleActionAutomator {
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SELECT));
     }
 
+    @ScriptInterface
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean setText(ActionTarget target, String text) {
         mScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SET_TEXT, text));
+    }
+
+    @ScriptInterface
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public boolean appendText(ActionTarget target, String text) {
+        mScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
+        return performAction(target.createAction(UiObject.ACTION_APPEND_TEXT, text));
     }
 
     @ScriptInterface

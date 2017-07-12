@@ -49,6 +49,19 @@ public class ScreenMetrics {
         return y * deviceScreenHeight / height;
     }
 
+    public static int rescaleX(int x, int width) {
+        if (width == 0 || !initialized)
+            return x;
+        return x * width / deviceScreenWidth;
+    }
+
+    public static int rescaleY(int y, int height) {
+        if (height == 0 || !initialized)
+            return y;
+        return y * height / deviceScreenHeight;
+    }
+
+
     private int mScreenWidth;
     private int mScreenHeight;
 

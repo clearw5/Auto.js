@@ -41,7 +41,7 @@ module.exports = function(__runtime__, scope){
         return __runtime__.info.getLatestActivity();
     }
 
-    scope.waitActivity = function(activity, delay){
+    scope.waitForActivity = function(activity, delay){
         delay = delay || 200;
         while(scope.currentActivity() != activity){
             sleep(delay);

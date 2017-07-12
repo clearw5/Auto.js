@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:configure="com.stardust.scriptdroid.external.widget.ScriptWidgetSettingsActivity_"
+                    android:initialLayout="@layout/widget_script_shortcut"
+                    android:minHeight="40dp"
+                    android:minWidth="40dp"
+                    android:previewImage="@drawable/ic_node_js_black"
+                    android:resizeMode="none"/>
