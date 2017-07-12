@@ -25,7 +25,7 @@ function like(){
            }
         }
       }catch(e){
-        log(e)
+        log(e);
       }
    });
 }
