@@ -22,6 +22,7 @@ import com.stardust.scriptdroid.external.floatingwindow.menu.view.FloatingLayout
 import com.stardust.scriptdroid.external.floatingwindow.menu.view.FloatingLayoutHierarchyView;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.theme.ThemeColorManagerCompat;
+import com.stardust.util.IntentUtil;
 import com.stardust.util.MessageEvent;
 import com.stardust.util.MessageIntent;
 
@@ -129,7 +130,12 @@ public class HoverMenuService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
-            SettingsCompat.manageDrawOverlays(this);
+            try {
+                SettingsCompat.manageDrawOverlays(this);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                IntentUtil.goToAppDetailSettings(this);
+            }
         }
     }
 

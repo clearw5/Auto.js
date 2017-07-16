@@ -30,7 +30,12 @@ public class HoverMenuManger {
         if (!HoverMenuService.isServiceRunning()) {
             if (!SettingsCompat.canDrawOverlays(App.getApp())) {
                 Toast.makeText(App.getApp(), R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
-                SettingsCompat.manageDrawOverlays(App.getApp());
+                try {
+                    SettingsCompat.manageDrawOverlays(App.getApp());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    IntentUtil.goToAppDetailSettings(App.getApp());
+                }
             } else {
                 HoverMenuService.startService(App.getApp());
             }

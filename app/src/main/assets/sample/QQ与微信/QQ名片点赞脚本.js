@@ -24,11 +24,13 @@ sleep(100);
 waitForActivity("com.tencent.mobileqq.activity.VisitorsActivity");
 
 while(notStopped()){
- var  i = 0;
+  var  i = 0;
   while(i < 10){
     i += 赞() ? 1 : 0;
     click("取消");
   }
   显示更多();
-  下滑();
+  if(currentActivity() == "com.tencent.mobileqq.activity.VisitorsActivity"){
+     下滑();
+  }
 }

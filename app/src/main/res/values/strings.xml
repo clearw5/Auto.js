@@ -207,6 +207,7 @@
     <string name="text_number_format_error">格式错误</string>
     <string name="text_accessibility_settings">打开无障碍服务</string>
     <string name="text_discard_record">放弃录制</string>
+    <string name="text_inspect_failed">布局抓取失败，请关闭悬浮窗后动一下页面重试</string>
 
     <string-array name="record_control_keys">
         <item>无</item>
