@@ -36,3 +36,4 @@ require("__general__")(__runtime__, this);
 })(__that__);
 
 __importClass__(com.stardust.autojs.runtime.api.Shell);
+__importClass__(com.stardust.autojs.runtime.api.InputEventSender);
