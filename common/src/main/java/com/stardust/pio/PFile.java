@@ -2,11 +2,16 @@ package com.stardust.pio;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.os.Environment;
+import android.provider.MediaStore;
+
+import com.stardust.util.Func1;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -47,9 +52,16 @@ public class PFile {
         return open(path, "r", DEFAULT_ENCODING, DEFAULT_BUFFER_SIZE);
     }
 
+    public static boolean create(String path) {
+        try {
+            return new File(path).createNewFile();
+        } catch (IOException e) {
+            return false;
+        }
+    }
 
     public static boolean createIfNotExists(String path) {
-        ensureDirectory(path);
+        ensureDir(path);
         File file = new File(path);
         if (!file.exists()) {
             try {
@@ -61,7 +73,11 @@ public class PFile {
         return false;
     }
 
-    public static boolean ensureDirectory(String path) {
+    public static boolean exists(String path) {
+        return new File(path).exists();
+    }
+
+    public static boolean ensureDir(String path) {
         int i = path.lastIndexOf("\\");
         if (i < 0)
             i = path.lastIndexOf("/");
@@ -89,8 +105,7 @@ public class PFile {
         try {
             return read(new FileInputStream(file), encoding);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -104,8 +119,7 @@ public class PFile {
             is.read(bytes);
             return new String(bytes, encoding);
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -119,7 +133,7 @@ public class PFile {
     }
 
     public static boolean copyStream(InputStream is, String path) {
-        if (!ensureDirectory(path))
+        if (!ensureDir(path))
             return false;
         File file = new File(path);
         try {
@@ -127,14 +141,15 @@ public class PFile {
                 if (!file.createNewFile())
                     return false;
             FileOutputStream fos = new FileOutputStream(file);
-            return write(is, fos);
-        } catch (IOException e) {
+            write(is, fos);
+            return false;
+        } catch (IOException | UncheckedIOException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public static boolean write(InputStream is, OutputStream os) {
+    public static void write(InputStream is, OutputStream os) {
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         try {
             while (is.available() > 0) {
@@ -143,13 +158,44 @@ public class PFile {
             }
             is.close();
             os.close();
-            return true;
         } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+            throw new UncheckedIOException(e);
         }
     }
 
+
+    public static void write(String path, String text) {
+        write(new File(path), text);
+    }
+
+    public static void write(String path, String text, String encoding) {
+        try {
+            write(new FileOutputStream(path), text, encoding);
+        } catch (FileNotFoundException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static void write(File file, String text) {
+        try {
+            write(new FileOutputStream(file), text);
+        } catch (FileNotFoundException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static void write(FileOutputStream fileOutputStream, String text) {
+        write(fileOutputStream, text, "utf-8");
+    }
+
+
+    public static void write(OutputStream outputStream, String text, String encoding) {
+        try {
+            outputStream.write(text.getBytes(encoding));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
     public static boolean copy(String pathFrom, String pathTo) {
         try {
@@ -183,29 +229,6 @@ public class PFile {
         return fileName.substring(i + 1);
     }
 
-    public static boolean write(String path, String text) {
-        return write(new File(path), text);
-    }
-
-    public static boolean write(File file, String text) {
-        try {
-            return write(new FileOutputStream(file), text);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static boolean write(OutputStream outputStream, String text) {
-        try {
-            outputStream.write(text.getBytes());
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     public static String generateNotExistingPath(String path, String extension) {
         if (!new File(path + extension).exists())
             return path + extension;
@@ -216,19 +239,18 @@ public class PFile {
                 return pathI;
             i++;
         }
-
     }
 
-    public static String getNameWithoutExtension(String fileName) {
-        int a = fileName.lastIndexOf('/');
-        if (a < 0)
-            a = fileName.lastIndexOf('\\');
-        if (a < 0)
-            a = -1;
-        int b = fileName.indexOf('.', a + 1);
+    public static String getName(String filePath) {
+        return new File(filePath).getName();
+    }
+
+    public static String getNameWithoutExtension(String filePath) {
+        String fileName = getName(filePath);
+        int b = fileName.lastIndexOf('.');
         if (b < 0)
             b = fileName.length();
-        fileName = fileName.substring(a + 1, b);
+        fileName = fileName.substring(0, b);
         return fileName;
     }
 
@@ -257,11 +279,55 @@ public class PFile {
         return file.delete();
     }
 
+    public static boolean remove(String path) {
+        return new File(path).delete();
+    }
+
+    public static boolean removeDir(String path) {
+        return deleteRecursively(new File(path));
+    }
+
+    public static String getSdcardPath() {
+        return Environment.getExternalStorageDirectory().getPath();
+    }
+
     public static String readAsset(AssetManager assets, String path) {
         try {
             return read(assets.open(path));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    public static String[] listDir(String path) {
+        File file = new File(path);
+        return file.list();
+    }
+
+    public static String[] listDir(String path, final Func1<String, Boolean> filter) {
+        final File file = new File(path);
+        return file.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return filter.call(name);
+            }
+        });
+    }
+
+    public static boolean isFile(String path) {
+        return new File(path).isFile();
+    }
+
+    public static boolean isDir(String path) {
+        return new File(path).isDirectory();
+    }
+
+    public static boolean isDirEmpty(String path) {
+        File file = new File(path);
+        return file.isDirectory() && file.list().length == 0;
+    }
+
+    public static String join(String parent, String child) {
+        return new File(parent, child).getPath();
     }
 }

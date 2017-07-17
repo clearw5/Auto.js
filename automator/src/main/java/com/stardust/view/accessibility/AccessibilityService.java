@@ -1,8 +1,10 @@
 package com.stardust.view.accessibility;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -41,6 +43,7 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     private static final Set<Integer> eventTypes = new HashSet<>();
     private volatile AccessibilityNodeInfo mRootInActiveWindow;
     private Timer mTimer;
+    private Handler mHandler;
 
     public static void addDelegate(int uniquePriority, AccessibilityDelegate delegate) {
         mDelegates.put(uniquePriority, delegate);
@@ -84,11 +87,7 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
 
     @Override
     public AccessibilityNodeInfo getRootInActiveWindow() {
-        try {
-            return super.getRootInActiveWindow();
-        } catch (IllegalStateException e) {
-            return null;
-        }
+        return mRootInActiveWindow;
     }
 
     @Override
@@ -107,17 +106,34 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
         LOCK.lock();
         ENABLED.signalAll();
         LOCK.unlock();
+        mHandler = new Handler();
         mTimer = new Timer();
         mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                AccessibilityNodeInfo root = getRootInActiveWindow();
-                if (root != null) {
-                    mRootInActiveWindow = root;
-                }
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        AccessibilityNodeInfo root = superGetRootInActiveWindow();
+                        if (root != null) {
+                            mRootInActiveWindow = root;
+                            Log.d(TAG, "getRootInActiveWindow: " + root);
+                        }
+                    }
+                });
+
             }
         }, 0, 100);
         // FIXME: 2017/2/12 有时在无障碍中开启服务后这里不会调用服务也不会运行，安卓的BUG???
+    }
+
+    private AccessibilityNodeInfo superGetRootInActiveWindow() {
+        try {
+            return super.getRootInActiveWindow();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static boolean disable() {

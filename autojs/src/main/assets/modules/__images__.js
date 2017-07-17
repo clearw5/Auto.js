@@ -1,6 +1,10 @@
 
 module.exports = function(__runtime__, scope){
    var images = {};
+   var colors = Object.create(android.graphics.Color);
+   colors.toString = function(color){
+        return '#' + (color >>> 0).toString(16);
+   }
    if(android.os.Build.VERSION.SDK_INT < 19){
         return images;
    }
@@ -17,25 +21,28 @@ module.exports = function(__runtime__, scope){
 
    images.pixel = rtImages.pixel;
 
-   images.detectsColor = rtImages.detectsColor.bind(rtImages);
+   images.detectsColor = function(img, color, x, y, threshold, algorithm){
+        color = parseColor(color);
+        algorithm =  algorithm || "rgb";
+        threshold = threshold || 16;
+        var colorDetector = getColorDetector(color, algorithm, threshold);
+        var pixel = images.pixel(img, x, y);
+        return colorDetector.detectsColor(colors.red(pixel), colors.green(pixel), colors.blue(pixel));
+   }
 
    images.findColor = function(img, color, options){
-        if(typeof(color) == 'string'){
-            if(color.startsWith('#')){
-                color = parseInt('0x' + color.substring(1));
-            }else{
-                color = parseInt('0x' + color);
-            }
-        }
+        color = parseColor(color);
         options = options || {};
         var region = options.region || [];
-        x = region[0] || 0;
-        y = region[1] || 0;
-        width = region[2] || (img.getWidth() - x);
-        height = region[3] || (img.getHeight() - y);
-        threads = options.threads || 2;
-        if(options.threshold !== 0){
-            threshold = options.threshold || 8;
+        var x = region[0] || 0;
+        var y = region[1] || 0;
+        var width = region[2] || (img.getWidth() - x);
+        var height = region[3] || (img.getHeight() - y);
+        var threads = options.threads || 2;
+        if(options.similarity){
+            var threshold = parseInt(255 * (1 - options.similarity));
+        }else{
+            var threshold = options.threshold || 16;
         }
         algorithm = options.algorithm || "rgb";
         var rect = new android.graphics.Rect(x, y, width + x, height + y);
@@ -76,7 +83,20 @@ module.exports = function(__runtime__, scope){
         throw new Error("Unknown algorithm: " + algorithm);
    }
 
+   function parseColor(color){
+     if(typeof(color) == 'string'){
+        if(color.startsWith('#')){
+           return parseInt('0x' + color.substring(1));
+        }else{
+           return parseInt('0x' + color);
+        }
+      }
+      return color;
+   }
+
    scope.__asGlobal__(images, ['requestScreenCapture', 'captureScreen', 'findColor', 'findColorInRegion', 'findColorEquals']);
+
+   scope.colors = colors;
 
    return images;
 }

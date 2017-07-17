@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.external.floatingwindow.menu.record.inputevent;
 
+import android.media.Image;
 import android.support.annotation.NonNull;
 
 import java.util.regex.Matcher;
@@ -22,8 +23,8 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
     private int mLastTouchY = -1;
 
     public InputEventToSendEventJsConverter() {
-        mCode.append("var ies = new InputEventSender();\n")
-                .append("ies.setScreenMetrics(").append(getDeviceScreenWidth()).append(", ")
+        mCode.append("var sh = new Shell(true);\n")
+                .append("sh.SetScreenMetrics(").append(getDeviceScreenWidth()).append(", ")
                 .append(getDeviceScreenHeight()).append(");\n");
     }
 
@@ -33,7 +34,7 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
         if (mLastEventTime == 0) {
             mLastEventTime = event.time;
         } else if (event.time - mLastEventTime > 0.03) {
-            mCode.append("sleep(").append((long) (1000L * (event.time - mLastEventTime))).append(");\n");
+            mCode.append("sh.usleep(").append((long) (1000000 * (event.time - mLastEventTime))).append(");\n");
             mLastEventTime = event.time;
         }
         int device = parseDeviceNumber(event.device);
@@ -51,7 +52,7 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
             }
         }
         checkLastTouch();
-        mCode.append("ies.sendEvent(");
+        mCode.append("sh.SendEvent(");
         if (device != mTouchDevice) {
             mCode.append(device).append(", ");
         }
@@ -62,11 +63,11 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
 
     private void checkLastTouch() {
         if (mLastTouchX >= 0) {
-            mCode.append("ies.touchX(").append(mLastTouchX).append(");\n");
+            mCode.append("sh.TouchX(").append(mLastTouchX).append(");\n");
             mLastTouchX = -1;
         }
         if (mLastTouchY >= 0) {
-            mCode.append("ies.touchY(").append(mLastTouchY).append(");\n");
+            mCode.append("sh.TouchY(").append(mLastTouchY).append(");\n");
             mLastTouchY = -1;
         }
     }
@@ -93,7 +94,7 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
             setTouchDevice(device);
         }
         if (mLastTouchX >= 0) {
-            mCode.append("ies.touch(")
+            mCode.append("sh.Touch(")
                     .append(mLastTouchX).append(", ")
                     .append(value).append(");\n");
             mLastTouchX = -1;
@@ -103,7 +104,7 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
     }
 
     private void setTouchDevice(int i) {
-        mCode.append("ies.setInputDevice(").append(i).append(");\n");
+        mCode.append("sh.SetTouchDevice(").append(i).append(");\n");
         mTouchDevice = i;
     }
 
@@ -119,14 +120,7 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
     @Override
     public void stop() {
         super.stop();
-        mCode.append("ies.exitAndWaitFor();");
+        mCode.append("sh.exitAndWaitFor();");
     }
 
-    private static String hex2dec(String hex) {
-        try {
-            return String.valueOf((int) Long.parseLong(hex, 16));
-        } catch (NumberFormatException e) {
-            throw new EventFormatException(e);
-        }
-    }
 }

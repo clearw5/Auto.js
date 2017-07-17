@@ -15,6 +15,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.Fragment;
 import com.stardust.app.OperationDialogBuilder;
+import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
@@ -137,7 +138,9 @@ public class MyScriptListFragment extends Fragment {
     public void createScriptFile(String path, String script) {
         if (PFile.createIfNotExists(path)) {
             if (script != null) {
-                if (!PFile.write(path, script)) {
+                try {
+                    PFile.write(path, script);
+                } catch (UncheckedIOException e) {
                     Snackbar.make(getView(), R.string.text_file_write_fail, Snackbar.LENGTH_LONG).show();
                 }
             }

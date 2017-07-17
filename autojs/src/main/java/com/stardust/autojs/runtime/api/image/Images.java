@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.media.Image;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -71,6 +72,9 @@ public class Images {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public Image captureScreen() {
         mScriptRuntime.requiresApi(21);
+        if(mScreenCapturer == null){
+            throw new SecurityException("No screen capture permission");
+        }
         colorFinder.prestartThreads();
         return mScreenCapturer.capture();
     }
@@ -122,19 +126,6 @@ public class Images {
         return bitmap.getPixel(x, y);
     }
 
-    public boolean detectsColor(Image image, int x, int y, int color) {
-        if (image == null)
-            return false;
-        int pixel = pixel(image, x, y);
-        return colorFinder.defaultColorDetector(color).detectsColor(Color.red(pixel), Color.green(pixel), Color.blue(pixel));
-    }
-
-    public boolean detectsColor(Image image, int x, int y, int color, int threshold) {
-        if (image == null)
-            return false;
-        int pixel = pixel(image, x, y);
-        return colorFinder.defaultColorDetector(color, threshold).detectsColor(Color.red(pixel), Color.green(pixel), Color.blue(pixel));
-    }
 
     public static Bitmap read(String path) {
         return BitmapFactory.decodeFile(path);
