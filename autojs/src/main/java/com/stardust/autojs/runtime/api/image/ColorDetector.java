@@ -40,19 +40,17 @@ public interface ColorDetector {
 
     class DifferenceDetector extends AbstractColorDetector {
 
-        private final int mRThreshold, mGThreshold, mBThreshold;
+        private final int mThreshold;
 
         public DifferenceDetector(int color, int threshold) {
             super(color);
-            mRThreshold = Color.red(threshold);
-            mGThreshold = Color.green(threshold);
-            mBThreshold = Color.blue(threshold);
+            mThreshold = threshold * 3;
         }
+
 
         @Override
         public boolean detectsColor(int R, int G, int B) {
-            return Math.abs(R - mR) <= mRThreshold && Math.abs(G - mG) <= mGThreshold &&
-                    Math.abs(B - mB) <= mBThreshold;
+            return Math.abs(R - mR) + Math.abs(G - mG) + Math.abs(B - mB) <= mThreshold;
         }
     }
 
@@ -77,7 +75,7 @@ public interface ColorDetector {
 
         public RGBDistanceDetector(int color, int threshold) {
             super(color);
-            mThreshold = threshold * threshold;
+            mThreshold = threshold * threshold * 3;
         }
 
         @Override
@@ -100,7 +98,7 @@ public interface ColorDetector {
             mR = (color & 0xff0000) >> 16;
             mG = (color & 0x00ff00) >> 8;
             mB = color & 0xff;
-            mThreshold = threshold * threshold;
+            mThreshold = threshold * threshold * 8;
         }
 
         @Override
@@ -163,7 +161,11 @@ public interface ColorDetector {
             long HS = getHS(mR, mG, mB);
             mH = (int) (HS & 0xffffffffL);
             mS = (int) ((HS >> 32) & 0xffffffffL);
-            mThreshold = threshold * threshold;
+            mThreshold = threshold * 3729600 / 255;
+        }
+
+        public HSDistanceDetector(int color, float similarity) {
+            this(color, (int) (1.0f - similarity) * 255);
         }
 
         @Override
@@ -191,7 +193,7 @@ public interface ColorDetector {
                 H = 240 + (R - G) / (max - min) * 60;
             }
             if (H < 0) H = H + 360;
-            int S = (max - min) / max;
+            int S = (max - min) * 100 / max;
             return H & ((long) S << 32);
         }
     }

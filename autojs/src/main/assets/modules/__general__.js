@@ -48,5 +48,12 @@ module.exports = function(__runtime__, scope){
         }
     }
 
+    scope.waitForPackage = function(packageName, delay){
+        delay = delay || 200;
+        while(scope.currentPackage() != packageName){
+            sleep(delay);
+        }
+    }
+
     scope.setScreenMetrics = __runtime__.setScreenMetrics.bind(__runtime__);
 }

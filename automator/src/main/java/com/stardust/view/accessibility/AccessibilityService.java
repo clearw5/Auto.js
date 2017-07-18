@@ -1,22 +1,27 @@
 package com.stardust.view.accessibility;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.CallSuper;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.WindowManager;
+import android.view.InputDevice;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.TextView;
+import android.widget.FrameLayout;
+
+import com.stardust.util.ScreenMetrics;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -27,8 +32,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class AccessibilityService extends android.accessibilityservice.AccessibilityService {
 
-    private AccessibilityNodeInfo mRootInActiveWindow;
-
 
     private static final String TAG = "AccessibilityService";
 
@@ -38,6 +41,9 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     private static AccessibilityService instance;
     private static boolean containsAllEventTypes = false;
     private static final Set<Integer> eventTypes = new HashSet<>();
+    private volatile AccessibilityNodeInfo mRootInActiveWindow;
+    private Timer mTimer;
+    private Handler mHandler;
 
     public static void addDelegate(int uniquePriority, AccessibilityDelegate delegate) {
         mDelegates.put(uniquePriority, delegate);
@@ -59,15 +65,6 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
         Log.v(TAG, "onAccessibilityEvent: " + event);
-        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                || event.getEventType() == AccessibilityEvent.TYPE_VIEW_HOVER_ENTER
-                || event.getEventType() == AccessibilityEvent.TYPE_VIEW_HOVER_EXIT) {
-            AccessibilityNodeInfo root = super.getRootInActiveWindow();
-            if (root != null) {
-                mRootInActiveWindow = root;
-                Log.d(TAG, "rootInActiveWindow: " + mRootInActiveWindow);
-            }
-        }
         if (!containsAllEventTypes && !eventTypes.contains(event.getEventType()))
             return;
         for (Map.Entry<Integer, AccessibilityDelegate> entry : mDelegates.entrySet()) {
@@ -93,10 +90,10 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
         return mRootInActiveWindow;
     }
 
-
     @Override
     public void onDestroy() {
         instance = null;
+        mTimer.cancel();
         super.onDestroy();
     }
 
@@ -109,7 +106,34 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
         LOCK.lock();
         ENABLED.signalAll();
         LOCK.unlock();
+        mHandler = new Handler();
+        mTimer = new Timer();
+        mTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        AccessibilityNodeInfo root = superGetRootInActiveWindow();
+                        if (root != null) {
+                            mRootInActiveWindow = root;
+                            Log.d(TAG, "getRootInActiveWindow: " + root);
+                        }
+                    }
+                });
+
+            }
+        }, 0, 100);
         // FIXME: 2017/2/12 有时在无障碍中开启服务后这里不会调用服务也不会运行，安卓的BUG???
+    }
+
+    private AccessibilityNodeInfo superGetRootInActiveWindow() {
+        try {
+            return super.getRootInActiveWindow();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static boolean disable() {

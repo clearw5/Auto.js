@@ -5,12 +5,7 @@ function 下滑(){
 }
 
 function 赞(){
-  var like = className("ImageView").desc("赞").find();
-  if(like){
-    like.click();
-    return true;
-  }
-  return false;
+  className("ImageView").desc("赞").click();
 }
 
 function 显示更多(){
@@ -21,13 +16,10 @@ function 显示更多(){
 
 toast("请打开自己的资料页，点击点赞图标");
 sleep(100);
-waitForActivity("com.tencent.mobileqq.activity.VisitorsActivity");
 
 while(notStopped()){
- var  i = 0;
-  while(i < 10){
-    i += 赞() ? 1 : 0;
-    click("取消");
+  for(let i = 0; i < 10; i++){
+    赞();
   }
   显示更多();
   下滑();

@@ -79,7 +79,7 @@
     <string name="text_recorded">录制结束</string>
     <string name="text_copy_to_clip">复制到剪贴板</string>
     <string name="text_file_write_fail">文件写入失败</string>
-    <string name="text_join_qq_group">加入QQ交流群</string>
+    <string name="text_join_qq_group">加入QQ互赞&amp;交流群</string>
     <string name="text_copied">已复制到剪贴板</string>
     <string name="text_use_volume_control_record">使用音量键控制</string>
     <string name="summary_use_volume_control_record">开启后每次音量变化会开始或停止脚本录制</string>
@@ -207,6 +207,7 @@
     <string name="text_number_format_error">格式错误</string>
     <string name="text_accessibility_settings">打开无障碍服务</string>
     <string name="text_discard_record">放弃录制</string>
+    <string name="text_inspect_failed">布局抓取失败，请关闭悬浮窗后动一下页面重试</string>
 
     <string-array name="record_control_keys">
         <item>无</item>
@@ -225,11 +226,13 @@
     <string-array name="ad_showing_mode_keys">
         <item>默认</item>
         <item>每天显示一次</item>
+        <item>关闭广告</item>
     </string-array>
 
     <string-array name="ad_showing_mode_values">
         <item>Default</item>
         <item>OncePerDay</item>
+        <item>Off</item>
     </string-array>
 
 </resources>

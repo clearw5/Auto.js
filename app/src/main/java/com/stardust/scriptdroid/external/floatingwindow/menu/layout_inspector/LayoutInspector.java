@@ -1,5 +1,7 @@
 package com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -40,6 +42,17 @@ public class LayoutInspector {
                     }
                 });
             }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private void refreshChildList(AccessibilityNodeInfo root) {
+        if (root == null)
+            return;
+        root.refresh();
+        int childCount = root.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            refreshChildList(root.getChild(i));
         }
     }
 

@@ -6,6 +6,11 @@
       "path":"documentation"
     },
     {
+      "title": "如何阅读本文档",
+      "type": "markdown",
+      "path":"documentation"
+    },
+    {
       "title": "ECMAScript教程",
       "type": "catalogue"
     },
@@ -25,16 +30,6 @@
       "path":"documentation"
     },
     {
-      "title": "控制台与输出",
-      "type": "markdown",
-      "path":"documentation"
-    },
-    {
-      "title": "UI(用户界面)",
-      "type": "markdown",
-      "path":"documentation"
-    },
-    {
       "title": "选择器",
       "type": "markdown",
       "path":"documentation"
@@ -45,7 +40,12 @@
       "path": "documentation"
     },
     {
-      "title": "模块与第三方jar",
+      "title": "图片与图色处理",
+      "type": "markdown",
+      "path":"documentation"
+    },
+    {
+      "title": "控制台与输出",
       "type": "markdown",
       "path":"documentation"
     },
@@ -56,6 +56,26 @@
     },
     {
       "title": "需要Root权限的自动操作函数",
+      "type": "markdown",
+      "path":"documentation"
+    },
+    {
+      "title": "UI(用户界面)",
+      "type": "markdown",
+      "path":"documentation"
+    },
+    {
+      "title": "文件读写",
+      "type": "markdown",
+      "path":"documentation"
+    },
+    {
+      "title": "应用",
+      "type": "markdown",
+      "path":"documentation"
+    },
+    {
+      "title": "模块与第三方jar",
       "type": "markdown",
       "path":"documentation"
     },

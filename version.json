@@ -1,7 +1,7 @@
 ﻿{
-  "versionCode": 147,
-  "versionName": "2.0.14 Beta",
-  "releaseNotes": "* 新增 自动添加群成员脚本\n* 优化 QQ名片点赞脚本（自动取消金豆）\n* 优化 空间点赞脚本\n* 新增 桌面小部件的支持\n* 修复 低分辨率下悬浮窗显示不全的问题\n* 修复 其他一些问题",
+  "versionCode": 151,
+  "versionName": "2.0.14 Beta2",
+  "releaseNotes": "* 修复 QQ加群成员、群成员点赞脚本（完美版）\n* 新增 互赞交流群（设置页面末尾）\n* 新增 批量同意好友验证脚本\n* 新增 文件读写、图色处理、控制台、一般常用函数等部分的文档\n* 修复 无障碍授权跳转失败的问题",
   "downloads" : [
     {
 	  "name": "酷安",
@@ -10,10 +10,6 @@
 	{
 	  "name": "应用宝",
 	  "url": "http://a.app.qq.com/o/simple.jsp?pkgname=com.stardust.scriptdroid"
-	},
-	{
-	  "name": "百度手机助手",
-	  "url": "https://mobile.baidu.com/item?docid=11462633"
 	}
   ],
   "oldVersions": [

@@ -190,4 +190,12 @@ public abstract class AbstractShell {
     }
 
     public abstract void exitAndWaitFor();
+
+    public void sleep(long i) {
+        exec("sleep " + i);
+    }
+
+    public void usleep(long l) {
+        exec("usleep " + l);
+    }
 }

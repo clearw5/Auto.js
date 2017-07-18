@@ -17,6 +17,7 @@ import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.main.MainActivity_;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.MessageEvent;
+import com.stardust.view.accessibility.AccessibilityService;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -61,8 +62,12 @@ public class MainMenuNavigatorContent implements NavigatorContent {
             Toast.makeText(mView.getContext(), R.string.text_layout_inspector_is_dumping, Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (inspector.getCapture() == null) {
+        if (AccessibilityService.getInstance() == null) {
             Toast.makeText(mView.getContext(), R.string.text_no_accessibility_permission_to_capture, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (inspector.getCapture() == null) {
+            Toast.makeText(mView.getContext(), R.string.text_inspect_failed, Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

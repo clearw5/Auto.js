@@ -1,5 +1,6 @@
 package com.stardust.autojs.runtime.api.image;
 
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.Image;
