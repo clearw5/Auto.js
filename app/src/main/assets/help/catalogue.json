@@ -70,6 +70,11 @@
       "path":"documentation"
     },
     {
+      "title": "应用",
+      "type": "markdown",
+      "path":"documentation"
+    },
+    {
       "title": "模块与第三方jar",
       "type": "markdown",
       "path":"documentation"

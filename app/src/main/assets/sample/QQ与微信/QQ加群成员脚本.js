@@ -4,9 +4,9 @@ var 好友验证信息 = "AutoJs自动添加群好友";
 var 延迟 = 500;
 
 launchApp("QQ");
-toast("请打开要加的群");
 sleep(500);
 if(currentActivity() != "com.tencent.mobileqq.activity.TroopMemberListActivity"){
+    toast("请打开要加的群的聊天窗口");
     openGroupMemberList();
 }
 
@@ -16,7 +16,7 @@ while(true){
 	var count = list.childCount();
 	for(var i = 0; i < count; i++){
 	    var child = list.child(i);
-	    if(!child || child.className() != "android.widget.FrameLayout"){
+        if(!child || child.className() != "android.widget.FrameLayout"){
             continue;
         }
         if(!isGroupMember(child) || isMyself(child)){
@@ -29,20 +29,21 @@ while(true){
 	}
 }
 
-
 function isGroupMember(child){
-	if(child.childCount() != 1){
-		return false;
-	}
-	if(!child.findByText("Baby Q").isEmpty()){
-    	return false;
+    var tvName = child.findOne(id("tv_name"));
+    if(!tvName){
+      return false;
     }
-	return child.child(0) && child.child(0).className() == "android.widget.FrameLayout";
+    log(tvName.text());
+	return tvName.text() != "Baby Q";
 }
 
 function isMyself(child){
-	var l = child.findByText("我");
-	return l && l.size() > 0;
+	var i = child.findOne(text("我"));
+	if(!i){
+	  return false;
+	}
+	return i.id() && !i.id().endsWith("tv_name");
 }
 
 function addAsFriend(){
@@ -61,9 +62,9 @@ function addAsFriend(){
         if(click("取消")){
           sleep(400);
         }
-        back();
+        while(!back());
     }else{
-        back();
+        while(!back());
     }
 }
 

@@ -81,6 +81,8 @@
 
         <Preference android:title="@string/text_check_update"/>
 
+        <Preference android:title="@string/text_join_qq_group"/>
+
         <Preference android:title="@string/text_issue_report"/>
 
         <Preference android:title="@string/text_about_me_and_repo"/>

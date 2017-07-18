@@ -140,7 +140,7 @@ public class SettingsActivity extends BaseActivity {
                     .entry(getString(R.string.text_join_qq_group), new Runnable() {
                         @Override
                         public void run() {
-                            if (!IntentUtil.joinQQGroup(getActivity(), "vjHXzZlpGcXNe-YEWzQ85mm_z8y-curC")) {
+                            if (!IntentUtil.joinQQGroup(getActivity(), "-7riBQuwFUUqdgYL5vFeIdBfH4H9m-Uj")) {
                                 Toast.makeText(getActivity(), R.string.text_mobile_qq_not_installed, Toast.LENGTH_SHORT).show();
                             }
                         }

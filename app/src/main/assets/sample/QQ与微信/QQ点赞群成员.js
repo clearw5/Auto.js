@@ -1,10 +1,10 @@
 "auto";
 
 launchApp("QQ");
-toast("请打开要点赞的群");
 sleep(500);
 if(currentActivity() != "com.tencent.mobileqq.activity.TroopMemberListActivity"){
-    openGroupMemberList();
+     toast("请打开要点赞的群的聊天窗口");
+     openGroupMemberList();
 }
 
 while(true){
@@ -31,18 +31,20 @@ while(true){
 
 
 function isGroupMember(child){
-	if(child.childCount() != 1){
-		return false;
-	}
-	if(!child.findByText("Baby Q").isEmpty()){
-		return false;
+    var tvName = child.findOne(id("tv_name"));
+    if(!tvName){
+      return false;
     }
-	return child.child(0) && child.child(0).className() == "android.widget.FrameLayout";
+    log(tvName.text());
+	return tvName.text() != "Baby Q";
 }
 
 function isMyself(child){
-	var l = child.findByText("我");
-	return l && l.size() > 0;
+	var i = child.findOne(text("我"));
+	if(!i){
+	  return false;
+	}
+	return i.id() && !i.id().endsWith("tv_name");
 }
 
 function like(){
