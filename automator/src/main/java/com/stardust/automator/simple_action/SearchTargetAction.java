@@ -1,5 +1,7 @@
 package com.stardust.automator.simple_action;
 
+import android.graphics.BitmapFactory;
+
 import com.stardust.automator.UiObject;
 
 import java.util.List;

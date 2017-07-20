@@ -32,12 +32,12 @@ import com.stardust.util.ScreenMetrics;
 import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
-import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.LayoutInspector;
-import com.stardust.scriptdroid.external.floatingwindow.menu.record.accessibility.AccessibilityActionRecorder;
+import com.stardust.autojs.runtime.record.accessibility.AccessibilityActionRecorder;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.console.JraskaConsole;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
+import com.stardust.view.accessibility.LayoutInspector;
 
 
 /**
@@ -177,7 +177,7 @@ public class AutoJs implements AccessibilityBridge {
 
     @Nullable
     @Override
-    public android.accessibilityservice.AccessibilityService getService() {
+    public AccessibilityService getService() {
         return AccessibilityService.getInstance();
     }
 

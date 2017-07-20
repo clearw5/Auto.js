@@ -1,19 +1,12 @@
 package com.stardust.view.accessibility;
 
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.InputDevice;
+import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.FrameLayout;
-
-import com.stardust.util.ScreenMetrics;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -22,6 +15,9 @@ import java.util.SortedMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -39,11 +35,14 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     private static final ReentrantLock LOCK = new ReentrantLock();
     private static final Condition ENABLED = LOCK.newCondition();
     private static AccessibilityService instance;
+    private static final OnKeyListener.Observer stickOnKeyObserver = new OnKeyListener.Observer();
     private static boolean containsAllEventTypes = false;
     private static final Set<Integer> eventTypes = new HashSet<>();
+    private OnKeyListener.Observer mOnKeyObserver = new OnKeyListener.Observer();
     private volatile AccessibilityNodeInfo mRootInActiveWindow;
     private Timer mTimer;
     private Handler mHandler;
+    private ExecutorService mKeyEventExecutor;
 
     public static void addDelegate(int uniquePriority, AccessibilityDelegate delegate) {
         mDelegates.put(uniquePriority, delegate);
@@ -86,6 +85,25 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     }
 
     @Override
+    protected boolean onKeyEvent(final KeyEvent event) {
+        if (mKeyEventExecutor == null) {
+            mKeyEventExecutor = Executors.newSingleThreadExecutor();
+        }
+        mKeyEventExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                stickOnKeyObserver.onKeyEvent(event.getKeyCode(), event);
+                mOnKeyObserver.onKeyEvent(event.getKeyCode(), event);
+            }
+        });
+        return false;
+    }
+
+    public OnKeyListener.Observer getOnKeyObserver() {
+        return mOnKeyObserver;
+    }
+
+    @Override
     public AccessibilityNodeInfo getRootInActiveWindow() {
         return mRootInActiveWindow;
     }
@@ -93,7 +111,10 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     @Override
     public void onDestroy() {
         instance = null;
-        mTimer.cancel();
+        if (mTimer != null)
+            mTimer.cancel();
+        if (mKeyEventExecutor != null)
+            mKeyEventExecutor.shutdownNow();
         super.onDestroy();
     }
 
@@ -155,5 +176,7 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
         }
     }
 
-
+    public static OnKeyListener.Observer getStickOnKeyObserver() {
+        return stickOnKeyObserver;
+    }
 }

@@ -151,7 +151,7 @@ public class AutoJs implements AccessibilityBridge {
 
     @Nullable
     @Override
-    public android.accessibilityservice.AccessibilityService getService() {
+    public AccessibilityService getService() {
         return AccessibilityService.getInstance();
     }
 

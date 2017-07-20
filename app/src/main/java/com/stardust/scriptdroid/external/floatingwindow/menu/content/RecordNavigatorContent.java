@@ -10,16 +10,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.stardust.app.VolumeChangeObserver;
+import com.stardust.autojs.runtime.record.Recorder;
+import com.stardust.autojs.runtime.record.accessibility.AccessibilityActionRecorder;
+import com.stardust.autojs.runtime.record.inputevent.KeyObserver;
+import com.stardust.autojs.runtime.record.inputevent.TouchRecorder;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.accessibility.AccessibilityEventHelper;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
-import com.stardust.scriptdroid.external.floatingwindow.menu.record.Recorder;
-import com.stardust.scriptdroid.external.floatingwindow.menu.record.accessibility.AccessibilityActionRecorder;
-import com.stardust.scriptdroid.external.floatingwindow.menu.record.inputevent.KeyObserver;
-import com.stardust.scriptdroid.external.floatingwindow.menu.record.inputevent.TouchRecorder;
 import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.util.MessageEvent;
 

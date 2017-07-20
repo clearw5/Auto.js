@@ -1,6 +1,5 @@
-package com.stardust.scriptdroid.external.floatingwindow.menu.record.inputevent;
+package com.stardust.autojs.runtime.record.inputevent;
 
-import android.media.Image;
 import android.support.annotation.NonNull;
 
 import java.util.regex.Matcher;
@@ -15,7 +14,6 @@ import static com.stardust.util.ScreenMetrics.getDeviceScreenWidth;
 
 public class InputEventToSendEventJsConverter extends InputEventConverter {
 
-    private final static Pattern LAST_INT_PATTERN = Pattern.compile("[^0-9]+([0-9]+)$");
     private double mLastEventTime;
     private StringBuilder mCode = new StringBuilder();
     private int mTouchDevice = -1;
@@ -72,15 +70,6 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
         }
     }
 
-
-    private int parseDeviceNumber(String device) {
-        Matcher matcher = LAST_INT_PATTERN.matcher(device);
-        if (matcher.find()) {
-            String someNumberStr = matcher.group(1);
-            return Integer.parseInt(someNumberStr);
-        }
-        return -1;
-    }
 
     private void onTouchX(int device, int value) {
         if (mTouchDevice == -1) {

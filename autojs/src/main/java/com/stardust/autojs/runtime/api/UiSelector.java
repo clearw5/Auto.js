@@ -117,8 +117,7 @@ public class UiSelector extends UiGlobalSelector {
     @ScriptInterface
     @NonNull
     public UiObjectCollection untilFind() {
-        UiObjectCollection uiObjectCollection;
-        uiObjectCollection = find();
+        UiObjectCollection uiObjectCollection = find();
         while (uiObjectCollection.empty()) {
             if (Thread.currentThread().isInterrupted()) {
                 throw new ScriptInterruptedException();

@@ -9,9 +9,7 @@ module.exports = function(__runtime__, scope){
         scope.log(text);
     }
 
-    scope.sleep = function(millis){
-        __runtime__.sleep(millis);
-    }
+    scope.sleep = __runtime__.sleep.bind(__runtime__);
 
     scope.isStopped = function(){
         return __runtime__.isStopped();

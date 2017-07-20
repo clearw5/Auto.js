@@ -1,10 +1,9 @@
-package com.stardust.scriptdroid.external.floatingwindow.menu.record.inputevent;
+package com.stardust.autojs.runtime.record.inputevent;
 
 import android.content.Context;
 
 import com.stardust.autojs.runtime.api.Shell;
-import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.external.floatingwindow.menu.record.Recorder;
+import com.stardust.autojs.runtime.record.Recorder;
 
 /**
  * Created by Stardust on 2017/3/6.

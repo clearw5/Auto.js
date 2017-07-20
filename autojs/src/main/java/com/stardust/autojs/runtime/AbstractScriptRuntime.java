@@ -8,6 +8,7 @@ import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
+import com.stardust.autojs.runtime.api.Events;
 import com.stardust.autojs.runtime.api.UiSelector;
 import com.stardust.autojs.runtime.api.image.Images;
 import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
@@ -41,9 +42,11 @@ public abstract class AbstractScriptRuntime {
     @ScriptVariable
     public UI ui;
 
-
     @ScriptVariable
     public Dialogs dialogs;
+
+    @ScriptVariable
+    public Events events;
 
     private Images images;
 
@@ -54,11 +57,13 @@ public abstract class AbstractScriptRuntime {
         this.console = console;
         this.automator = new SimpleActionAutomator(bridge, this);
         this.info = bridge.getInfoProvider();
-        this.ui = new UI(uiHandler.getContext());
+        Context context = uiHandler.getContext();
+        this.ui = new UI(context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            images = new Images(uiHandler.getContext(), this, screenCaptureRequester);
+            images = new Images(context, this, screenCaptureRequester);
         }
         dialogs = new Dialogs(app, uiHandler);
+        events = new Events(context, bridge);
     }
 
     public static void setApplicationContext(Context context) {
@@ -115,6 +120,7 @@ public abstract class AbstractScriptRuntime {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             images.releaseScreenCapturer();
         }
+        events.recycle();
     }
 
     public Object getImages() {

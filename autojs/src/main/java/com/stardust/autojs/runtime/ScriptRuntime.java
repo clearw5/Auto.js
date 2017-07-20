@@ -1,6 +1,7 @@
 package com.stardust.autojs.runtime;
 
 import android.os.Build;
+import android.os.Handler;
 import android.os.Looper;
 
 import com.stardust.autojs.R;
@@ -85,7 +86,6 @@ public class ScriptRuntime extends AbstractScriptRuntime {
 
     private UiHandler mUiHandler;
     private AccessibilityBridge mAccessibilityBridge;
-
     private AbstractShell mRootShell;
     private Supplier<AbstractShell> mShellSupplier;
     private ScreenMetrics mScreenMetrics = new ScreenMetrics();

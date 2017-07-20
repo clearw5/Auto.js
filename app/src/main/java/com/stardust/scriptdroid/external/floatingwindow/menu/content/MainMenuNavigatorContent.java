@@ -12,12 +12,12 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
-import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.LayoutInspector;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.main.MainActivity_;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.MessageEvent;
 import com.stardust.view.accessibility.AccessibilityService;
+import com.stardust.view.accessibility.LayoutInspector;
 
 import org.greenrobot.eventbus.Subscribe;
 
