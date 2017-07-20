@@ -1,14 +1,14 @@
 package com.stardust.autojs.runtime.api;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.method.KeyListener;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 
 import com.stardust.autojs.runtime.AccessibilityBridge;
 import com.stardust.autojs.runtime.ScriptStopException;
-import com.stardust.autojs.runtime.record.inputevent.InputEventRecorder;
 import com.stardust.autojs.runtime.record.inputevent.TouchObserver;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.OnKeyListener;
@@ -23,15 +23,16 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
 
     private static final String PREFIX_KEY_DOWN = "__key_down__#";
     private static final String PREFIX_KEY_UP = "__key_up__#";
+    private static final Object[] NO_ARGUMENT = new Object[0];
 
     private static ConcurrentHashMap<Thread, Looper> sLoopers = new ConcurrentHashMap<>();
     private AccessibilityBridge mAccessibilityBridge;
-    private boolean mListeningKey = false;
     private Handler mHandler;
     private Context mContext;
     private TouchObserver mTouchObserver;
     private long mLastTouchEventMillis;
     private long mTouchEventTimeout = 10;
+    private boolean mListeningKey = false;
 
     public Events(Context context, AccessibilityBridge accessibilityBridge) {
         mAccessibilityBridge = accessibilityBridge;
@@ -39,10 +40,19 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     }
 
     public void observeKey() {
-        ensureListeningKey();
+        if (mListeningKey)
+            return;
+        mListeningKey = true;
+        prepareLoopIfNeeded();
+        mAccessibilityBridge.ensureServiceEnabled();
+        AccessibilityService service = mAccessibilityBridge.getService();
+        if (service == null)
+            throw new ScriptStopException();
+        service.getOnKeyObserver().addListener(this);
     }
 
     public void observeTouch() {
+        prepareLoopIfNeeded();
         if (mTouchObserver != null)
             return;
         mTouchObserver = new TouchObserver(mContext);
@@ -50,16 +60,19 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
         mTouchObserver.observe();
     }
 
-    private void ensureListeningKey() {
-        if (mListeningKey) {
+    public void setTimeout(final Object listener, long t) {
+        prepareLoopIfNeeded();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                call(listener, NO_ARGUMENT);
+            }
+        }, t);
+    }
+
+    private void prepareLoopIfNeeded() {
+        if (Looper.myLooper() != null)
             return;
-        }
-        mListeningKey = true;
-        mAccessibilityBridge.ensureServiceEnabled();
-        AccessibilityService service = mAccessibilityBridge.getService();
-        if (service == null)
-            throw new ScriptStopException();
-        service.getOnKeyObserver().addListener(this);
         Looper.prepare();
         sLoopers.put(Thread.currentThread(), Looper.myLooper());
         mHandler = new Handler();
@@ -151,12 +164,17 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     }
 
     @Override
-    public void onTouch(int x, int y) {
+    public void onTouch(final int x, final int y) {
         if (System.currentTimeMillis() - mLastTouchEventMillis < mTouchEventTimeout) {
             return;
         }
         mLastTouchEventMillis = System.currentTimeMillis();
-        emit("touch", x, y);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                emit("touch", new Point(x, y));
+            }
+        });
     }
 
     public static void removeThreadRecord(Thread thread) {
@@ -169,6 +187,5 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
             looper.quit();
         }
     }
-
 
 }

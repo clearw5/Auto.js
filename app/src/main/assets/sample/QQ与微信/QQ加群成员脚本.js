@@ -27,6 +27,7 @@ while(true){
         addAsFriend();
         sleep(延迟);
 	}
+	list.scrollForward();
 }
 
 function isGroupMember(child){

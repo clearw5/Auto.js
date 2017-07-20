@@ -54,16 +54,10 @@ public class EventEmitter {
             Iterator<ListenerWrapper> listenerIterator = mListenerWrappers.iterator();
             while (listenerIterator.hasNext()) {
                 ListenerWrapper listenerWrapper = listenerIterator.next();
-                onEvent(listenerWrapper, args);
+                call(listenerWrapper.listener, args);
                 if (listenerWrapper.isOnce) {
                     listenerIterator.remove();
                 }
-            }
-        }
-
-        private void onEvent(ListenerWrapper listenerWrapper, Object[] args) {
-            if (mFunctionCaller != null) {
-                mFunctionCaller.call(listenerWrapper.listener, args);
             }
         }
 
@@ -98,7 +92,8 @@ public class EventEmitter {
     }
 
     private Map<String, Listeners> mListenersMap = new HashMap<>();
-    private int mMaxListeners = defaultMaxListeners();
+    public static int defaultMaxListeners = 10;
+    private int mMaxListeners = defaultMaxListeners;
     private FunctionCaller mFunctionCaller;
 
     public EventEmitter once(String eventName, Object listener) {
@@ -186,10 +181,17 @@ public class EventEmitter {
     }
 
     public static int defaultMaxListeners() {
-        return 0;
+        return defaultMaxListeners;
     }
 
     public void setFunctionCaller(FunctionCaller functionCaller) {
         mFunctionCaller = functionCaller;
     }
+
+    protected void call(Object func, Object[] args) {
+        if (mFunctionCaller != null) {
+            mFunctionCaller.call(func, args);
+        }
+    }
+
 }

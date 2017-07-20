@@ -46,7 +46,7 @@ public class TouchObserver {
 
     private class TouchEventObserver extends InputEventConverter {
 
-        private int mLastTouchX, mLastTouchY;
+        private int mLastTouchX = -1, mLastTouchY = -1;
 
         @Override
         public void convertEvent(@NonNull Event event) {

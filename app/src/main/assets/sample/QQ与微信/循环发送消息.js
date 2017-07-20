@@ -7,5 +7,5 @@ sleep(500);
 while(true){
     setText("我喜欢你");
     click("发送");
-    sleep(200);
+    sleep(100);
 }
