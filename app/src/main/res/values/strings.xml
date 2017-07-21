@@ -1,5 +1,5 @@
 <resources>
-    <string name="_app_name">AutoJs</string>
+    <string name="_app_name">Auto.js</string>
     <string name="action_settings">设置</string>
     <string name="text_new_file">新建文件</string>
     <string name="text_import_from_file">从文件导入</string>
