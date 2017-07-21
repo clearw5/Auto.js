@@ -20,7 +20,7 @@ events.on("key", function(code, event){
     }
 });
 
-events.loop();
+loop();
 
 
 

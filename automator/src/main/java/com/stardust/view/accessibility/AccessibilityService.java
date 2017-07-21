@@ -39,8 +39,6 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     private static boolean containsAllEventTypes = false;
     private static final Set<Integer> eventTypes = new HashSet<>();
     private OnKeyListener.Observer mOnKeyObserver = new OnKeyListener.Observer();
-    private volatile AccessibilityNodeInfo mRootInActiveWindow;
-    private Timer mTimer;
     private Handler mHandler;
     private ExecutorService mKeyEventExecutor;
 
@@ -105,14 +103,16 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
 
     @Override
     public AccessibilityNodeInfo getRootInActiveWindow() {
-        return mRootInActiveWindow;
+        try {
+            return super.getRootInActiveWindow();
+        } catch (IllegalStateException e) {
+            return null;
+        }
     }
 
     @Override
     public void onDestroy() {
         instance = null;
-        if (mTimer != null)
-            mTimer.cancel();
         if (mKeyEventExecutor != null)
             mKeyEventExecutor.shutdownNow();
         super.onDestroy();
@@ -128,23 +128,6 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
         ENABLED.signalAll();
         LOCK.unlock();
         mHandler = new Handler();
-        mTimer = new Timer();
-        mTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        AccessibilityNodeInfo root = superGetRootInActiveWindow();
-                        if (root != null) {
-                            mRootInActiveWindow = root;
-                            Log.d(TAG, "getRootInActiveWindow: " + root);
-                        }
-                    }
-                });
-
-            }
-        }, 0, 100);
         // FIXME: 2017/2/12 有时在无障碍中开启服务后这里不会调用服务也不会运行，安卓的BUG???
     }
 

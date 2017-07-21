@@ -15,20 +15,20 @@ events.onKeyDown("volume_up", function(event){
 });
 
 events.onKeyDown("volume_down", function(event){
-    stop();
     toast("程序结束");
+    exit();
 });
 
 task();
 
-events.loop();
+loop();
 
 function task1(){
     toast("任务1运行中，音量下键结束，音量上键切换任务");
-    events.setTimeout(task, interval);
+    setTimeout(task, interval);
 }
 
 function task2(){
     toast("任务2运行中，音量下键结束，音量上键切换任务");
-    events.setTimeout(task, interval);
+    setTimeout(task, interval);
 }

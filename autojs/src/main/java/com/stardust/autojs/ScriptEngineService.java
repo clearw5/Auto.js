@@ -55,7 +55,7 @@ public class ScriptEngineService {
         }
 
         private void onFinish(ScriptExecution execution) {
-            execution.getRuntime().onStop();
+            execution.getRuntime().onExit();
         }
 
         @Override

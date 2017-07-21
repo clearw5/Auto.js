@@ -7,6 +7,7 @@ import com.stardust.autojs.rhino.AndroidContextFactory;
 import com.stardust.autojs.rhino.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.autojs.runtime.api.Events;
+import com.stardust.autojs.runtime.api.Timers;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.pio.UncheckedIOException;
 
@@ -76,7 +77,7 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
     public void forceStop() {
         Log.d(LOG_TAG, "forceStop: interrupt Thread: " + mThread);
         mThread.interrupt();
-        Events.quitLooperIfNeeded(mThread);
+        Timers.quitLooperIfNeeded(mThread);
     }
 
     public RhinoJavaScriptEngineManager getEngineManager() {
@@ -90,7 +91,7 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
         contextCount--;
         Log.d(LOG_TAG, "contextCount = " + contextCount);
         mEngineManager.removeEngine(this);
-        Events.removeThreadRecord(mThread);
+        Timers.removeThreadRecord(mThread);
         mDestroyed = true;
     }
 

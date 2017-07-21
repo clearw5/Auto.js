@@ -17,10 +17,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EventEmitter {
 
-    public interface FunctionCaller {
-        Object call(Object func, Object[] arg);
-    }
-
     private static class ListenerWrapper {
         Object listener;
         boolean isOnce;
@@ -54,7 +50,7 @@ public class EventEmitter {
             Iterator<ListenerWrapper> listenerIterator = mListenerWrappers.iterator();
             while (listenerIterator.hasNext()) {
                 ListenerWrapper listenerWrapper = listenerIterator.next();
-                call(listenerWrapper.listener, args);
+                mBridges.callFunction(listenerWrapper.listener, EventEmitter.this, args);
                 if (listenerWrapper.isOnce) {
                     listenerIterator.remove();
                 }
@@ -94,7 +90,11 @@ public class EventEmitter {
     private Map<String, Listeners> mListenersMap = new HashMap<>();
     public static int defaultMaxListeners = 10;
     private int mMaxListeners = defaultMaxListeners;
-    private FunctionCaller mFunctionCaller;
+    ScriptBridges mBridges;
+
+    public EventEmitter(ScriptBridges bridges) {
+        mBridges = bridges;
+    }
 
     public EventEmitter once(String eventName, Object listener) {
         getListeners(eventName).add(listener, true);
@@ -184,14 +184,5 @@ public class EventEmitter {
         return defaultMaxListeners;
     }
 
-    public void setFunctionCaller(FunctionCaller functionCaller) {
-        mFunctionCaller = functionCaller;
-    }
-
-    protected void call(Object func, Object[] args) {
-        if (mFunctionCaller != null) {
-            mFunctionCaller.call(func, args);
-        }
-    }
 
 }

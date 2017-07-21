@@ -105,7 +105,7 @@ public class AppUtils {
 
     @ScriptInterface
     public void openUrl(String url) {
-        if (!url.startsWith("http://") || !url.startsWith("https://")) {
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
             url = "http://" + url;
         }
         mContext.startActivity(new Intent(Intent.ACTION_VIEW)

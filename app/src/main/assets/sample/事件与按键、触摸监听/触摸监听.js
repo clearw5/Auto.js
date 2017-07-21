@@ -9,4 +9,4 @@ events.on("touch", function(point){
     log(point);
 });
 
-events.loop();
+loop();

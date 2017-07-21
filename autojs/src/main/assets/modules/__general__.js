@@ -19,9 +19,11 @@ module.exports = function(__runtime__, scope){
         return !isStopped();
     }
 
-    scope.stop = function(){
-        __runtime__.stop();
+    scope.exit = function(){
+        __runtime__.exit();
     }
+
+    scope.stop = scope.exit;
 
     scope.setClip = function(text){
         __runtime__.setClip(text);

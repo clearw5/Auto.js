@@ -23,27 +23,31 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
 
     private static final String PREFIX_KEY_DOWN = "__key_down__#";
     private static final String PREFIX_KEY_UP = "__key_up__#";
-    private static final Object[] NO_ARGUMENT = new Object[0];
 
-    private static ConcurrentHashMap<Thread, Looper> sLoopers = new ConcurrentHashMap<>();
     private AccessibilityBridge mAccessibilityBridge;
-    private Handler mHandler;
     private Context mContext;
     private TouchObserver mTouchObserver;
+    private Timers mTimers;
     private long mLastTouchEventMillis;
     private long mTouchEventTimeout = 10;
     private boolean mListeningKey = false;
 
-    public Events(Context context, AccessibilityBridge accessibilityBridge) {
+    public Events(Context context, AccessibilityBridge accessibilityBridge, ScriptBridges bridges, Timers timers) {
+        super(bridges);
         mAccessibilityBridge = accessibilityBridge;
         mContext = context;
+        mTimers = timers;
+    }
+
+    public EventEmitter emitter(){
+        return new EventEmitter(mBridges);
     }
 
     public void observeKey() {
         if (mListeningKey)
             return;
         mListeningKey = true;
-        prepareLoopIfNeeded();
+        mTimers.prepareLoopIfNeeded();
         mAccessibilityBridge.ensureServiceEnabled();
         AccessibilityService service = mAccessibilityBridge.getService();
         if (service == null)
@@ -52,34 +56,12 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     }
 
     public void observeTouch() {
-        prepareLoopIfNeeded();
+        mTimers.prepareLoopIfNeeded();
         if (mTouchObserver != null)
             return;
         mTouchObserver = new TouchObserver(mContext);
         mTouchObserver.setOnTouchEventListener(this);
         mTouchObserver.observe();
-    }
-
-    public void setTimeout(final Object listener, long t) {
-        prepareLoopIfNeeded();
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                call(listener, NO_ARGUMENT);
-            }
-        }, t);
-    }
-
-    private void prepareLoopIfNeeded() {
-        if (Looper.myLooper() != null)
-            return;
-        Looper.prepare();
-        sLoopers.put(Thread.currentThread(), Looper.myLooper());
-        mHandler = new Handler();
-    }
-
-    public void loop() {
-        Looper.loop();
     }
 
     public Events onKeyDown(String keyName, Object listener) {
@@ -146,7 +128,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
 
     @Override
     public void onKeyEvent(final int keyCode, final KeyEvent event) {
-        mHandler.post(new Runnable() {
+        mTimers.post(new Runnable() {
             @Override
             public void run() {
                 String keyName = KeyEvent.keyCodeToString(keyCode).substring(8).toLowerCase();
@@ -169,7 +151,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
             return;
         }
         mLastTouchEventMillis = System.currentTimeMillis();
-        mHandler.post(new Runnable() {
+        mTimers.post(new Runnable() {
             @Override
             public void run() {
                 emit("touch", new Point(x, y));
@@ -177,15 +159,5 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
         });
     }
 
-    public static void removeThreadRecord(Thread thread) {
-        sLoopers.remove(thread);
-    }
-
-    public static void quitLooperIfNeeded(Thread thread) {
-        Looper looper = sLoopers.get(thread);
-        if (looper != null) {
-            looper.quit();
-        }
-    }
 
 }

@@ -40,8 +40,6 @@ public class App extends MultiDexApplication {
         return instance.get();
     }
 
-    private VolumeChangeObserver mVolumeChangeObserver = new VolumeChangeObserver();
-
     public void onCreate() {
         super.onCreate();
         instance = new WeakReference<>(this);
@@ -74,29 +72,18 @@ public class App extends MultiDexApplication {
     }
 
     private void initVolumeChangeObserver() {
-        //registerReceiver(mVolumeChangeObserver, new IntentFilter(VolumeChangeObserver.ACTION_VOLUME_CHANGE));
-        mVolumeChangeObserver.addOnVolumeChangeListener(new VolumeChangeObserver.OnVolumeChangeListener() {
-            @Override
-            public void onVolumeChange() {
-                if (Pref.isRunningVolumeControlEnabled()) {
-                    AutoJs.getInstance().getScriptEngineService().stopAllAndToast();
-                }
-            }
-        });
         AccessibilityService.getStickOnKeyObserver().addListener(new OnKeyListener() {
             @Override
             public void onKeyEvent(int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_VOLUME_UP && Pref.isRunningVolumeControlEnabled()) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN &&
+                        (keyCode == KeyEvent.KEYCODE_VOLUME_UP)
+                        && Pref.isRunningVolumeControlEnabled()) {
                     AutoJs.getInstance().getScriptEngineService().stopAllAndToast();
                 }
             }
         });
     }
 
-
-    public VolumeChangeObserver getVolumeChangeObserver() {
-        return mVolumeChangeObserver;
-    }
 
     public UiHandler getUiHandler() {
         return mUiHandler;

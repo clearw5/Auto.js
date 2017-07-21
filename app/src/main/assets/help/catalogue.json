@@ -55,6 +55,11 @@
       "path":"documentation"
     },
     {
+      "title": "定时器",
+      "type": "markdown",
+      "path":"documentation"
+    },
+    {
       "title": "shell命令",
       "type": "markdown",
       "path":"documentation"
