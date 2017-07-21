@@ -8,6 +8,8 @@ import com.stardust.autojs.runtime.api.AutomatorConfig;
 import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.scriptdroid.autojs.AutoJs;
 
+import org.mozilla.javascript.NativeArray;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -143,8 +145,6 @@ public class Pref {
                 }
                 def().edit().putLong(KEY_LAST_SHOW_AD_MILLIS, System.currentTimeMillis()).apply();
                 return true;
-            case "Off":
-                return false;
         }
         return true;
     }

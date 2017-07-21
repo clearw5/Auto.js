@@ -3,8 +3,8 @@ package com.stardust.scriptdroid.ui.edit.completion;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -15,21 +15,27 @@ import android.widget.Toast;
 import android.workground.WrapContentLinearLayoutManager;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.stardust.pio.UncheckedIOException;
-import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.tool.GsonUtils;
+import com.stardust.util.UnderuseExecutors;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Stardust on 2017/2/17.
  */
 
+// TODO: 2017/7/21 refactor
 public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletion.OnCodeCompletionChangeListener {
 
 
@@ -48,6 +54,14 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
         init();
     }
 
+    @Override
+    public void OnCodeCompletionChange(@NonNull Collection<CodeCompletion.CodeCompletionItem> list1, @NonNull Collection<CodeCompletion.CodeCompletionItem> list2) {
+        mCodeCompletionList.clear();
+        mCodeCompletionList.addAll(list1);
+        mCodeCompletionList.addAll(list2);
+        getAdapter().notifyDataSetChanged();
+    }
+
     public interface EditTextBridge {
         void appendText(CharSequence text);
 
@@ -55,6 +69,9 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
 
         com.jecelyin.editor.v2.core.widget.TextView getEditText();
     }
+
+    private static List<String> global;
+    private static Map<String, List<String>> variables = new HashMap<>();
 
     EditTextBridge mEditTextBridge;
     private CodeCompletion mCodeCompletion = new CodeCompletion(this);
@@ -83,22 +100,21 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
     private void init() {
         setAdapter(new CodeCompletionAdapter());
         setLayoutManager(new WrapContentLinearLayoutManager(getContext(), HORIZONTAL, false));
-        mCodeCompletion.setFunctions(readFunctions(getContext(), "js/functions.json"));
+        if (global == null) {
+            UnderuseExecutors.execute(new Runnable() {
+                @Override
+                public void run() {
+                    readCompletions(getContext(), "js/functions.json");
+                    mCodeCompletion.setGlobal(global);
+                    mCodeCompletion.setVariableProperties(variables);
+                }
+            });
+        }
     }
 
     public void setEditTextBridge(EditTextBridge editTextBridge) {
         mEditTextBridge = editTextBridge;
         mCodeCompletion.setEditText(mEditTextBridge.getEditText());
-    }
-
-    @Override
-    public void OnCodeCompletionChange(Collection<CodeCompletion.CodeCompletionItem>... lists) {
-        mCodeCompletionList.clear();
-        for (Collection<CodeCompletion.CodeCompletionItem> list : lists) {
-            mCodeCompletionList.addAll(list);
-        }
-        getAdapter().notifyDataSetChanged();
-
     }
 
 
@@ -129,13 +145,29 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
         }
     }
 
-    private static String[] readFunctions(Context context, String path) {
-        Gson gson = new Gson();
+    private static void readCompletions(Context context, String path) {
         try {
-            return gson.fromJson(new InputStreamReader(context.getAssets().open(path)), String[].class);
+            JsonParser parser = new JsonParser();
+            JsonObject object = parser.parse(new InputStreamReader(context.getAssets().open(path))).getAsJsonObject();
+            InputMethodEnhanceBar.global = readGlobal(object.remove("global").getAsJsonObject());
+            readModules(object);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    private static void readModules(JsonObject object) {
+        for (Map.Entry<String, JsonElement> module : object.entrySet()) {
+            variables.put(module.getKey(), GsonUtils.toStringList(module.getValue()));
+        }
+    }
+
+    private static List<String> readGlobal(JsonObject global) {
+        List<String> globalFunctions = new ArrayList<>();
+        for (Map.Entry<String, JsonElement> moduleGlobal : global.entrySet()) {
+            globalFunctions.addAll(GsonUtils.toStringList(moduleGlobal.getValue()));
+        }
+        return globalFunctions;
     }
 
 }

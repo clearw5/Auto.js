@@ -322,7 +322,7 @@ public class PFile {
         return new File(path).isDirectory();
     }
 
-    public static boolean isDirEmpty(String path) {
+    public static boolean isEmptyDir(String path) {
         File file = new File(path);
         return file.isDirectory() && file.list().length == 0;
     }

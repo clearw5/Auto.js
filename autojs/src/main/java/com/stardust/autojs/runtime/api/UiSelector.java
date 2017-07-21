@@ -20,6 +20,8 @@ import com.stardust.automator.filter.DfsFilter;
 import com.stardust.util.DeveloperUtils;
 import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
+import org.mozilla.javascript.NativeArray;
+
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_COLUMN_INT;
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_PROGRESS_VALUE;
@@ -57,21 +59,6 @@ import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.
  */
 
 public class UiSelector extends UiGlobalSelector {
-
-    @Deprecated
-    private class FindCommand extends AccessibilityEventCommandHost.AbstractCommand {
-
-        UiObjectCollection result;
-
-        @Override
-        public void execute(AccessibilityService service, AccessibilityEvent event) {
-            AccessibilityNodeInfo root = service.getRootInActiveWindow();
-            if (root != null) {
-                result = findOf(UiObject.createRoot(root, mAllocator));
-            }
-        }
-
-    }
 
     private static final String TAG = "UiSelector";
 
