@@ -22,14 +22,14 @@ public class Timers {
         mBridges = bridges;
     }
 
-    public int setTimeout(final Object listener, long delay, final Object... args) {
+    public int setTimeout(final Object callback, long delay, final Object... args) {
         prepareLoopIfNeeded();
         mCallbackMaxId++;
         final int id = mCallbackMaxId;
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                mBridges.callFunction(listener, null, args);
+                mBridges.callFunction(callback, null, args);
                 mHandlerCallbacks.remove(id);
             }
         };
@@ -98,7 +98,11 @@ public class Timers {
         if (Looper.myLooper() != null)
             return;
         Looper.prepare();
-        sLoopers.put(Thread.currentThread(), Looper.myLooper());
+        Looper looper = Looper.myLooper();
+        if (looper != null) {
+            // null check is not necessary, just to make Android Studio happy
+            sLoopers.put(Thread.currentThread(), looper);
+        }
         mHandler = new Handler();
     }
 

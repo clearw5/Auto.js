@@ -95,7 +95,6 @@ public class CodeCompletion implements TextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
         int position = mEditText.getSelectionStart();
-
         String[] str = parseWordBefore(s, position);
         if (str != null) {
             if (str[1] != null) {
@@ -163,8 +162,13 @@ public class CodeCompletion implements TextWatcher {
     private boolean searchCodeCompletionForVariable(String variable, String str) {
         List<String> properties = getPropertiesForVariable(variable);
         Collection<CodeCompletionItem> c = searchCodeCompletion(str, properties);
-        mOnCodeCompletionChangeListener.OnCodeCompletionChange(c, Collections.<CodeCompletionItem>emptyList());
-        return !c.isEmpty();
+        if (c.isEmpty()) {
+            mOnCodeCompletionChangeListener.OnCodeCompletionChange(DEFAULT_CODE_COMPLETION_LIST, Collections.<CodeCompletionItem>emptyList());
+            return false;
+        } else {
+            mOnCodeCompletionChangeListener.OnCodeCompletionChange(c, Collections.<CodeCompletionItem>emptyList());
+            return true;
+        }
     }
 
     private List<String> getPropertiesForVariable(String str) {

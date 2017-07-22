@@ -109,7 +109,11 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
                     mCodeCompletion.setVariableProperties(variables);
                 }
             });
+        }else {
+            mCodeCompletion.setGlobal(global);
+            mCodeCompletion.setVariableProperties(variables);
         }
+
     }
 
     public void setEditTextBridge(EditTextBridge editTextBridge) {
