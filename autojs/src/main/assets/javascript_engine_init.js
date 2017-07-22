@@ -13,6 +13,15 @@ if(__engine_name__ == "rhino"){
   }
 }
 
+__runtime__.bridges.setFunctionCaller(function(func, target, args){
+   var arr = [];
+   var len = args.length;
+   for(var i = 0; i < len; i++){
+      arr.push(args[i]);
+   }
+   return func.apply(target, arr);
+});
+
 var __that__ = this;
 
 var __asGlobal__ = function(obj, functions){
@@ -27,7 +36,7 @@ require("__general__")(__runtime__, this);
 
 
 (function(scope){
-    var modules = ['app', 'automator', 'console', 'dialogs', 'io', 'selector', 'shell', 'web', 'ui', "images"];
+    var modules = ['app', 'automator', 'console', 'dialogs', 'io', 'selector', 'shell', 'web', 'ui', "images", "timers", "events"];
     var len = modules.length;
     for(var i = 0; i < len; i++) {
         var m = modules[i];
@@ -35,5 +44,6 @@ require("__general__")(__runtime__, this);
     }
 })(__that__);
 
+__importClass__(android.view.KeyEvent);
 __importClass__(com.stardust.autojs.runtime.api.Shell);
 __importClass__(com.stardust.autojs.runtime.api.InputEventSender);

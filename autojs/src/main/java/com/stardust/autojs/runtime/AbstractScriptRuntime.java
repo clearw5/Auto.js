@@ -7,7 +7,10 @@ import android.support.annotation.CallSuper;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
+import com.stardust.autojs.runtime.api.ScriptBridges;
 import com.stardust.autojs.runtime.api.Console;
+import com.stardust.autojs.runtime.api.Events;
+import com.stardust.autojs.runtime.api.Timers;
 import com.stardust.autojs.runtime.api.UiSelector;
 import com.stardust.autojs.runtime.api.image.Images;
 import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
@@ -17,6 +20,8 @@ import com.stardust.autojs.runtime.simpleaction.SimpleActionAutomator;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
+
+import org.mozilla.javascript.annotations.JSFunction;
 
 import java.lang.ref.WeakReference;
 
@@ -41,9 +46,17 @@ public abstract class AbstractScriptRuntime {
     @ScriptVariable
     public UI ui;
 
-
     @ScriptVariable
     public Dialogs dialogs;
+
+    @ScriptVariable
+    public Events events;
+
+    @ScriptVariable
+    public ScriptBridges bridges = new ScriptBridges();
+
+    @ScriptVariable
+    public Timers timers = new Timers(bridges);
 
     private Images images;
 
@@ -54,11 +67,13 @@ public abstract class AbstractScriptRuntime {
         this.console = console;
         this.automator = new SimpleActionAutomator(bridge, this);
         this.info = bridge.getInfoProvider();
-        this.ui = new UI(uiHandler.getContext());
+        Context context = uiHandler.getContext();
+        this.ui = new UI(context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            images = new Images(uiHandler.getContext(), this, screenCaptureRequester);
+            images = new Images(context, this, screenCaptureRequester);
         }
         dialogs = new Dialogs(app, uiHandler);
+        events = new Events(context, bridge, bridges, timers);
     }
 
     public static void setApplicationContext(Context context) {
@@ -100,7 +115,7 @@ public abstract class AbstractScriptRuntime {
     public abstract void loadJar(String path);
 
     @ScriptInterface
-    public abstract void stop();
+    public abstract void exit();
 
     @ScriptInterface
     public abstract void setScreenMetrics(int width, int height);
@@ -111,10 +126,11 @@ public abstract class AbstractScriptRuntime {
     public abstract void ensureAccessibilityServiceEnabled();
 
     @CallSuper
-    public void onStop() {
+    public void onExit() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             images.releaseScreenCapturer();
         }
+        events.recycle();
     }
 
     public Object getImages() {

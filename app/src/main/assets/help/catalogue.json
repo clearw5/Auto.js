@@ -50,6 +50,16 @@
       "path":"documentation"
     },
     {
+      "title": "事件与按键、触摸监听",
+      "type": "markdown",
+      "path":"documentation"
+    },
+    {
+      "title": "定时器",
+      "type": "markdown",
+      "path":"documentation"
+    },
+    {
       "title": "shell命令",
       "type": "markdown",
       "path":"documentation"

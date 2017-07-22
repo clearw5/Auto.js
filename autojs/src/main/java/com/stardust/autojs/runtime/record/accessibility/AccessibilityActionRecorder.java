@@ -1,9 +1,9 @@
-package com.stardust.scriptdroid.external.floatingwindow.menu.record.accessibility;
+package com.stardust.autojs.runtime.record.accessibility;
 
 import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.stardust.scriptdroid.external.floatingwindow.menu.record.Recorder;
+import com.stardust.autojs.runtime.record.Recorder;
 import com.stardust.view.accessibility.AccessibilityDelegate;
 
 import java.util.Arrays;

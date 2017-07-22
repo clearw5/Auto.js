@@ -25,6 +25,8 @@ public interface ScriptEngine {
 
     void destroy();
 
+    boolean isDestroyed();
+
     void setTag(String key, Object value);
 
     Object getTag(String key);

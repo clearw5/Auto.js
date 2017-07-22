@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.external.floatingwindow.menu.record;
+package com.stardust.autojs.runtime.record;
 
 import java.util.Arrays;
 

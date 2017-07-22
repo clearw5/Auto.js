@@ -14,7 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.NodeInfo;
+import com.stardust.view.accessibility.NodeInfo;
 import com.stardust.util.ViewUtil;
 import com.stardust.widget.LevelBeamView;
 

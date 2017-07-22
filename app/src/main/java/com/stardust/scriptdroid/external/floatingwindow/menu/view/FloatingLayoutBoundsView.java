@@ -11,7 +11,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
-import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.NodeInfo;
+import com.stardust.view.accessibility.NodeInfo;
 import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.view.LayoutBoundsView;
 import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.view.NodeInfoView;
 import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.view.OnNodeInfoSelectListener;

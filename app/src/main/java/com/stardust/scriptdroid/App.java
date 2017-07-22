@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
+import android.view.KeyEvent;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
@@ -19,6 +20,8 @@ import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.UiHandler;
+import com.stardust.view.accessibility.AccessibilityService;
+import com.stardust.view.accessibility.OnKeyListener;
 
 import java.lang.ref.WeakReference;
 
@@ -36,8 +39,6 @@ public class App extends MultiDexApplication {
     public static App getApp() {
         return instance.get();
     }
-
-    private VolumeChangeObserver mVolumeChangeObserver = new VolumeChangeObserver();
 
     public void onCreate() {
         super.onCreate();
@@ -71,21 +72,18 @@ public class App extends MultiDexApplication {
     }
 
     private void initVolumeChangeObserver() {
-        registerReceiver(mVolumeChangeObserver, new IntentFilter(VolumeChangeObserver.ACTION_VOLUME_CHANGE));
-        mVolumeChangeObserver.addOnVolumeChangeListener(new VolumeChangeObserver.OnVolumeChangeListener() {
+        AccessibilityService.getStickOnKeyObserver().addListener(new OnKeyListener() {
             @Override
-            public void onVolumeChange() {
-                if (Pref.isRunningVolumeControlEnabled()) {
+            public void onKeyEvent(int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN &&
+                        (keyCode == KeyEvent.KEYCODE_VOLUME_UP)
+                        && Pref.isRunningVolumeControlEnabled()) {
                     AutoJs.getInstance().getScriptEngineService().stopAllAndToast();
                 }
             }
         });
     }
 
-
-    public VolumeChangeObserver getVolumeChangeObserver() {
-        return mVolumeChangeObserver;
-    }
 
     public UiHandler getUiHandler() {
         return mUiHandler;

@@ -4,24 +4,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.SwitchCompat;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.stardust.app.VolumeChangeObserver;
+import com.stardust.autojs.runtime.record.Recorder;
+import com.stardust.autojs.runtime.record.accessibility.AccessibilityActionRecorder;
+import com.stardust.autojs.runtime.record.inputevent.KeyObserver;
+import com.stardust.autojs.runtime.record.inputevent.TouchRecorder;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.accessibility.AccessibilityEventHelper;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
-import com.stardust.scriptdroid.external.floatingwindow.menu.record.Recorder;
-import com.stardust.scriptdroid.external.floatingwindow.menu.record.accessibility.AccessibilityActionRecorder;
-import com.stardust.scriptdroid.external.floatingwindow.menu.record.inputevent.KeyObserver;
-import com.stardust.scriptdroid.external.floatingwindow.menu.record.inputevent.TouchRecorder;
 import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.util.MessageEvent;
+import com.stardust.view.accessibility.AccessibilityService;
+import com.stardust.view.accessibility.OnKeyListener;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -62,10 +64,12 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     private Context mContext;
     private boolean mDiscard = false;
     private KeyObserver mKeyObserver;
-    private VolumeChangeObserver.OnVolumeChangeListener mOnVolumeChangeListener = new VolumeChangeObserver.OnVolumeChangeListener() {
+    private OnKeyListener mVolumeKeyListener = new OnKeyListener() {
         @Override
-        public void onVolumeChange() {
-            if (Pref.isRecordVolumeControlEnable()) {
+        public void onKeyEvent(int keyCode, KeyEvent event) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN &&
+                    (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
+                    && Pref.isRecordVolumeControlEnable()) {
                 if (mRecorder == null) {
                     startRecord();
                 } else if (alreadyStartedRecord()) {
@@ -80,7 +84,10 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
         mView = View.inflate(context, R.layout.floating_window_record, null);
         ButterKnife.bind(this, mView);
         HoverMenuService.getEventBus().register(this);
-        App.getApp().getVolumeChangeObserver().addOnVolumeChangeListener(mOnVolumeChangeListener);
+        AccessibilityService.getStickOnKeyObserver().addListener(mVolumeKeyListener);
+        if (Pref.isRecordVolumeControlEnable()) {
+            AutoJs.getInstance().ensureServiceEnabled();
+        }
         if (Pref.hasRecordTrigger()) {
             mKeyObserver = new KeyObserver(mContext);
             mKeyObserver.startListening();
@@ -181,7 +188,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
     public void onMenuExit() {
         HoverMenuService.getEventBus().unregister(this);
-        App.getApp().getVolumeChangeObserver().removeOnVolumeChangeListener(mOnVolumeChangeListener);
+        AccessibilityService.getStickOnKeyObserver().addListener(mVolumeKeyListener);
         if (mKeyObserver != null) {
             mKeyObserver.stopListening();
         }
