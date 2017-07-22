@@ -85,7 +85,6 @@ public class ScriptRuntime extends AbstractScriptRuntime {
 
     private UiHandler mUiHandler;
     private AccessibilityBridge mAccessibilityBridge;
-
     private AbstractShell mRootShell;
     private Supplier<AbstractShell> mShellSupplier;
     private ScreenMetrics mScreenMetrics = new ScreenMetrics();
@@ -186,10 +185,16 @@ public class ScriptRuntime extends AbstractScriptRuntime {
         }
     }
 
-    public void stop() {
+    public void exit() {
         Thread.currentThread().interrupt();
         throw new ScriptInterruptedException();
     }
+
+    @Deprecated
+    public void stop() {
+        exit();
+    }
+
 
     @Override
     public void setScreenMetrics(int width, int height) {
@@ -206,8 +211,8 @@ public class ScriptRuntime extends AbstractScriptRuntime {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onExit() {
+        super.onExit();
         if (mRootShell != null) {
             mRootShell.exit();
             mRootShell = null;

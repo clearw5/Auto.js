@@ -62,7 +62,7 @@ function isImage(item){
 function notLiked(likeIcon){
     var x = likeIcon.bounds().centerX();
     var y = likeIcon.bounds().centerY();
-    return images.detectsColor(capture, x, y, 0x767886);
+    return images.detectsColor(capture, 0x767886, x, y);
 }
 
 toast("请打开QQ空间并慢慢下滑");

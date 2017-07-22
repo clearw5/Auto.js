@@ -1,22 +1,20 @@
 package com.stardust.scriptdroid.ui.edit.completion;
 
-import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 
-import com.google.gson.Gson;
-import com.stardust.pio.PFile;
-import com.stardust.pio.UncheckedIOException;
-import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.jecelyin.editor.v2.core.widget.TextView;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -48,19 +46,26 @@ public class CodeCompletion implements TextWatcher {
         }
 
         @Override
-        public int compareTo(CodeCompletionItem o) {
+        public int compareTo(@NonNull CodeCompletionItem o) {
             return mDisplayText.compareTo(o.mDisplayText);
         }
     }
 
     interface OnCodeCompletionChangeListener {
-        void OnCodeCompletionChange(Collection<CodeCompletionItem>... list);
+        void OnCodeCompletionChange(@NonNull Collection<CodeCompletionItem> list1, @NonNull Collection<CodeCompletionItem> list2);
     }
 
     private static final String TAG = "CodeCompletion";
 
     private OnCodeCompletionChangeListener mOnCodeCompletionChangeListener;
     private TextView mEditText;
+    private static final List<String> KEYWORDS = Arrays.asList("arguments", "break", "case", "catch", "class", "continue", "default", "do", "else", "eval", "export", "false", "for", "function", "if", "import", "in", "int", "new", "null", "package", "return", "switch", "this", "throw", "throws", "true", "try", "typeof", "var", "volatile", "while", "with", "Array", "Date", "hasOwnProperty", "Infinity", "isFinite", "isNaN", "isPrototypeOf", "length", "Math", "NaN", "name", "Number", "Object", "prototype", "String", "toString", "undefined", "valueOf");
+    private static final int KEY_WORD_LENGTH_MAX = 15;
+
+
+    private List<String> mGlobal = Collections.emptyList();
+    private Map<String, List<String>> mVariableProperties = new HashMap<>();
+
 
     public CodeCompletion(OnCodeCompletionChangeListener listener) {
         mOnCodeCompletionChangeListener = listener;
@@ -69,6 +74,14 @@ public class CodeCompletion implements TextWatcher {
     public void setEditText(TextView editText) {
         mEditText = editText;
         mEditText.addTextChangedListener(this);
+    }
+
+    public void setGlobal(List<String> functions) {
+        mGlobal = functions;
+    }
+
+    public void setVariableProperties(Map<String, List<String>> variableProperties) {
+        mVariableProperties = variableProperties;
     }
 
     @Override
@@ -82,60 +95,98 @@ public class CodeCompletion implements TextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
         int position = mEditText.getSelectionStart();
-        String str = parseWordBefore(s, position);
-        if (!TextUtils.isEmpty(str))
-            searchCodeCompletion(str);
-        else
-            mOnCodeCompletionChangeListener.OnCodeCompletionChange(DEFAULT_CODE_COMPLETION_LIST);
+        String[] str = parseWordBefore(s, position);
+        if (str != null) {
+            if (str[1] != null) {
+                searchCodeCompletionForVariable(str[0], str[1]);
+            } else {
+                searchCodeCompletionForGlobal(str[0]);
+            }
+        } else {
+            mOnCodeCompletionChangeListener.OnCodeCompletionChange(DEFAULT_CODE_COMPLETION_LIST, Collections.<CodeCompletionItem>emptyList());
+        }
     }
 
-    private String parseWordBefore(Editable s, int position) {
+    private String[] parseWordBefore(Editable s, int position) {
+        int i;
+        for (i = position - 1; i >= 0; i--) {
+            if (position - i > KEY_WORD_LENGTH_MAX) {
+                return null;
+            }
+            char c = s.charAt(i);
+            if (c == '.') {
+                return new String[]{parseWordBeforeDot(s, i), s.subSequence(i + 1, position).toString()};
+            }
+            if (!Character.isLetter(s.charAt(i))) {
+                if (i < position - 1) {
+                    return new String[]{s.subSequence(i + 1, position).toString(), null};
+                } else {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    private String parseWordBeforeDot(Editable s, int position) {
         int i;
         for (i = position - 1; i >= 0; i--) {
             if (position - i > KEY_WORD_LENGTH_MAX) {
                 return null;
             }
             if (!Character.isLetter(s.charAt(i))) {
-                break;
+                if (i < position - 1) {
+                    return s.subSequence(i + 1, position).toString();
+                } else {
+                    return null;
+                }
             }
-        }
-        if (i < position - 1) {
-            return s.subSequence(i + 1, position).toString();
         }
         return null;
     }
 
 
-    private static final String[] KEYWORDS = {"arguments", "break", "case", "catch", "class", "continue", "default", "do", "else", "eval", "export", "false", "for", "function", "if", "import", "in", "int", "new", "null", "package", "return", "switch", "this", "throw", "throws", "true", "try", "typeof", "var", "volatile", "while", "with", "Array", "Date", "hasOwnProperty", "Infinity", "isFinite", "isNaN", "isPrototypeOf", "length", "Math", "NaN", "name", "Number", "Object", "prototype", "String", "toString", "undefined", "valueOf"};
-    private static final int KEY_WORD_LENGTH_MAX = 15;
-
-    public void setFunctions(String[] functions) {
-        mFunctions = functions;
-    }
-
-    private String[] mFunctions = new String[0];
-
-    private boolean searchCodeCompletion(String str) {
+    private boolean searchCodeCompletionForGlobal(String str) {
         Collection<CodeCompletionItem> c = searchWordCompletion(str);
-        c.addAll(searchCodeCompletion(str, mFunctions));
+        c.addAll(searchCodeCompletion(str, mGlobal));
         c.addAll(searchKeyWordCompletion(str));
         if (c.size() > 0) {
             mOnCodeCompletionChangeListener.OnCodeCompletionChange(c, DEFAULT_CODE_COMPLETION_LIST);
             return true;
         } else {
-            mOnCodeCompletionChangeListener.OnCodeCompletionChange(DEFAULT_CODE_COMPLETION_LIST);
+            mOnCodeCompletionChangeListener.OnCodeCompletionChange(DEFAULT_CODE_COMPLETION_LIST, Collections.<CodeCompletionItem>emptyList());
             return false;
         }
     }
 
+    private boolean searchCodeCompletionForVariable(String variable, String str) {
+        List<String> properties = getPropertiesForVariable(variable);
+        Collection<CodeCompletionItem> c = searchCodeCompletion(str, properties);
+        if (c.isEmpty()) {
+            mOnCodeCompletionChangeListener.OnCodeCompletionChange(DEFAULT_CODE_COMPLETION_LIST, Collections.<CodeCompletionItem>emptyList());
+            return false;
+        } else {
+            mOnCodeCompletionChangeListener.OnCodeCompletionChange(c, Collections.<CodeCompletionItem>emptyList());
+            return true;
+        }
+    }
+
+    private List<String> getPropertiesForVariable(String str) {
+        List<String> properties = mVariableProperties.get(str);
+        if (properties == null)
+            return Collections.emptyList();
+        return properties;
+    }
+
+
     private Collection<CodeCompletionItem> searchWordCompletion(String str) {
         if (mEditText.getEditableText().length() < Pref.getMaxTextLengthForCodeCompletion()) {
-            return searchCodeCompletion(str, splitWord(mEditText.getEditableText().toString()));
+            return searchCodeCompletion(str, Arrays.asList(splitWord(mEditText.getEditableText().toString())));
         }
         return new TreeSet<>();
     }
 
-    private Collection<CodeCompletionItem> searchCodeCompletion(String str, String[] words) {
+    private Collection<CodeCompletionItem> searchCodeCompletion(String str, Iterable<String> words) {
         Set<CodeCompletionItem> set = new TreeSet<>();
         for (String word : words) {
             // TODO: 2017/2/18 优化 字典树

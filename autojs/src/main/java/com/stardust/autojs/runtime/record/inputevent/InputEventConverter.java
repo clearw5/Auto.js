@@ -1,14 +1,10 @@
-package com.stardust.scriptdroid.external.floatingwindow.menu.record.inputevent;
+package com.stardust.autojs.runtime.record.inputevent;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
-import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.external.floatingwindow.menu.record.Recorder;
-import com.stardust.util.MapEntries;
+import com.stardust.autojs.runtime.record.Recorder;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,6 +62,9 @@ public abstract class InputEventConverter {
     }
 
 
+    private final static Pattern LAST_INT_PATTERN = Pattern.compile("[^0-9]+([0-9]+)$");
+
+
     protected boolean mConverting = false;
     private int mState = Recorder.STATE_NOT_START;
 
@@ -117,14 +116,21 @@ public abstract class InputEventConverter {
         } catch (EventFormatException e) {
             e.printStackTrace();
             if (mFirstEventFormatError) {
-                Toast.makeText(App.getApp(), R.string.text_record_format_error, Toast.LENGTH_SHORT).show();
                 mFirstEventFormatError = false;
-                FlurryAgent.logEvent("EventFormatException", new MapEntries<String, String>()
-                        .entry("message", e.getMessage())
-                        .map());
             }
             return null;
         }
+
     }
+
+    public static int parseDeviceNumber(String device) {
+        Matcher matcher = LAST_INT_PATTERN.matcher(device);
+        if (matcher.find()) {
+            String someNumberStr = matcher.group(1);
+            return Integer.parseInt(someNumberStr);
+        }
+        return -1;
+    }
+
 
 }

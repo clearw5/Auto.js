@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector;
+package com.stardust.view.accessibility;
 
 import android.os.Build;
 import android.support.annotation.RequiresApi;

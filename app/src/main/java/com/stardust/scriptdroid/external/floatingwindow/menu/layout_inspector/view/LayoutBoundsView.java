@@ -13,7 +13,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.NodeInfo;
+import com.stardust.view.accessibility.NodeInfo;
 import com.stardust.util.ViewUtil;
 
 import java.util.ArrayList;

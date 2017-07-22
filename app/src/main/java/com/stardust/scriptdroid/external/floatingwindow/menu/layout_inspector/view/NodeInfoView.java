@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.NodeInfo;
+import com.stardust.view.accessibility.NodeInfo;
 import com.stardust.util.ClipboardUtil;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -22,7 +22,6 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnLongClick;
 import butterknife.Optional;
 
 /**

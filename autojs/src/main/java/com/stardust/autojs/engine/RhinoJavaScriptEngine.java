@@ -1,10 +1,13 @@
 package com.stardust.autojs.engine;
 
+import android.os.Looper;
 import android.util.Log;
 
 import com.stardust.autojs.rhino.AndroidContextFactory;
 import com.stardust.autojs.rhino.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
+import com.stardust.autojs.runtime.api.Events;
+import com.stardust.autojs.runtime.api.Timers;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.pio.UncheckedIOException;
 
@@ -41,6 +44,7 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
     private Thread mThread;
     private RhinoJavaScriptEngineManager mEngineManager;
     private Map<String, Object> mTags = new ConcurrentHashMap<>();
+    private volatile boolean mDestroyed = false;
 
     public RhinoJavaScriptEngine(RhinoJavaScriptEngineManager engineManager) {
         mEngineManager = engineManager;
@@ -73,6 +77,7 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
     public void forceStop() {
         Log.d(LOG_TAG, "forceStop: interrupt Thread: " + mThread);
         mThread.interrupt();
+        Timers.quitLooperIfNeeded(mThread);
     }
 
     public RhinoJavaScriptEngineManager getEngineManager() {
@@ -86,6 +91,13 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
         contextCount--;
         Log.d(LOG_TAG, "contextCount = " + contextCount);
         mEngineManager.removeEngine(this);
+        Timers.removeThreadRecord(mThread);
+        mDestroyed = true;
+    }
+
+    @Override
+    public boolean isDestroyed() {
+        return mDestroyed;
     }
 
     @Override

@@ -17,7 +17,7 @@ import com.stardust.hover.SimpleHoverMenuTransitionListener;
 import com.stardust.hover.WindowHoverMenu;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.NodeInfo;
+import com.stardust.view.accessibility.NodeInfo;
 import com.stardust.scriptdroid.external.floatingwindow.menu.view.FloatingLayoutBoundsView;
 import com.stardust.scriptdroid.external.floatingwindow.menu.view.FloatingLayoutHierarchyView;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;

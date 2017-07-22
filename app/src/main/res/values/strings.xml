@@ -1,5 +1,5 @@
 <resources>
-    <string name="_app_name">AutoJs</string>
+    <string name="_app_name">Auto.js</string>
     <string name="action_settings">设置</string>
     <string name="text_new_file">新建文件</string>
     <string name="text_import_from_file">从文件导入</string>
@@ -81,8 +81,8 @@
     <string name="text_file_write_fail">文件写入失败</string>
     <string name="text_join_qq_group">加入QQ互赞&amp;交流群</string>
     <string name="text_copied">已复制到剪贴板</string>
-    <string name="text_use_volume_control_record">使用音量键控制</string>
-    <string name="summary_use_volume_control_record">开启后每次音量变化会开始或停止脚本录制</string>
+    <string name="text_use_volume_control_record">使用音量下键控制</string>
+    <string name="summary_use_volume_control_record">开启后每次音量下键会开始或停止脚本录制</string>
     <string name="key_use_volume_control_record">key_use_volume_control_record</string>
     <string name="text_mobile_qq_not_installed">未安装手机QQ</string>
     <string name="text_edit">编辑</string>
@@ -129,7 +129,7 @@
     <string name="go_to_accessibility_settings"><![CDATA[请打开设置->无障碍服务->AutoJs并开启]]></string>
     <string name="text_script_running">脚本运行</string>
     <string name="key_use_volume_control_running">key_use_volume_control_running</string>
-    <string name="text_use_volume_to_stop_running">每次音量键变化停止所有脚本</string>
+    <string name="text_use_volume_to_stop_running">音量上键停止所有脚本</string>
     <string name="text_need_to_enable_accessibility_service">需要启用无障碍服务</string>
     <string name="key_run_mode">运行方式</string>
     <string name="text_on">已开启</string>
@@ -208,6 +208,8 @@
     <string name="text_accessibility_settings">打开无障碍服务</string>
     <string name="text_discard_record">放弃录制</string>
     <string name="text_inspect_failed">布局抓取失败，请关闭悬浮窗后动一下页面重试</string>
+    <string name="script_anr">没有相应，要强制停止吗</string>
+
 
     <string-array name="record_control_keys">
         <item>无</item>
@@ -226,13 +228,11 @@
     <string-array name="ad_showing_mode_keys">
         <item>默认</item>
         <item>每天显示一次</item>
-        <item>关闭广告</item>
     </string-array>
 
     <string-array name="ad_showing_mode_values">
         <item>Default</item>
         <item>OncePerDay</item>
-        <item>Off</item>
     </string-array>
 
 </resources>

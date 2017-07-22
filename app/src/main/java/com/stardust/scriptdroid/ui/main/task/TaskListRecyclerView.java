@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.ui.main.task;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ThemeColorRecyclerView;
@@ -11,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.workground.WrapContentLinearLayoutManager;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
@@ -43,9 +46,19 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Abst
         @Override
         public void onClick(View v) {
             int position = getChildViewHolder((View) v.getParent()).getAdapterPosition();
-            if(position >= 0){
-                mScriptEngines.get(position).forceStop();
-            }else {
+            if (position >= 0) {
+                final ScriptEngine engine = mScriptEngines.get(position);
+                engine.forceStop();
+
+                postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!engine.isDestroyed()) {
+                            onScriptANR(engine);
+                        }
+                    }
+                }, 3000);
+            } else {
                 updateEngineList();
             }
         }
@@ -126,6 +139,10 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Abst
         super.onDetachedFromWindow();
         mScriptEngineService.unregisterEngineLifecycleCallback(this);
         AutoJs.getInstance().getScriptEngineService().unregisterGlobalScriptExecutionListener(mScriptExecutionListener);
+    }
+
+    private void onScriptANR(final ScriptEngine engine) {
+        // TODO: 2017/7/19 强制停止
     }
 
     @Override

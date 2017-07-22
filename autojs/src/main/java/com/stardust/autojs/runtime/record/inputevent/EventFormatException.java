@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.external.floatingwindow.menu.record.inputevent;
+package com.stardust.autojs.runtime.record.inputevent;
 
 /**
  * Created by Stardust on 2017/3/7.

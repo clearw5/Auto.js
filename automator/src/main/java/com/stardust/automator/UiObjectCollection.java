@@ -238,4 +238,5 @@ public class UiObjectCollection {
     public boolean nonEmpty() {
         return size() != 0;
     }
+
 }
