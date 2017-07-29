@@ -77,7 +77,6 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
     public void forceStop() {
         Log.d(LOG_TAG, "forceStop: interrupt Thread: " + mThread);
         mThread.interrupt();
-        Timers.quitLooperIfNeeded(mThread);
     }
 
     public RhinoJavaScriptEngineManager getEngineManager() {
@@ -91,7 +90,6 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
         contextCount--;
         Log.d(LOG_TAG, "contextCount = " + contextCount);
         mEngineManager.removeEngine(this);
-        Timers.removeThreadRecord(mThread);
         mDestroyed = true;
     }
 
@@ -108,6 +106,10 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
     @Override
     public synchronized Object getTag(String key) {
         return mTags.get(key);
+    }
+
+    public Thread getThread() {
+        return mThread;
     }
 
     @Override
@@ -128,7 +130,7 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
         for (String path : mRequirePath) {
             list.add(new File(path).toURI());
         }
-        AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(getEngineManager().getContext(), list);
+        AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(getEngineManager().getAndroidContext(), list);
         new RequireBuilder()
                 .setModuleScriptProvider(new SoftCachingModuleScriptProvider(provider))
                 .setSandboxed(false)
@@ -152,9 +154,9 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
 
     protected Context createContext() {
         if (!ContextFactory.hasExplicitGlobal()) {
-            ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mEngineManager.getContext().getCacheDir(), "classes")));
+            ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mEngineManager.getAndroidContext().getCacheDir(), "classes")));
         }
-        Context context = new RhinoAndroidHelper(mEngineManager.getContext()).enterContext();
+        Context context = new RhinoAndroidHelper(mEngineManager.getAndroidContext()).enterContext();
         contextCount++;
         context.setOptimizationLevel(-1);
         context.setLanguageVersion(Context.VERSION_ES6);

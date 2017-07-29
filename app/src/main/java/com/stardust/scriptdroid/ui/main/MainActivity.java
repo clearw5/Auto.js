@@ -293,6 +293,12 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        stopService(new Intent(this, DownloadService.class));
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         mVersionGuard.checkDeprecateAndUpdate();
@@ -477,6 +483,11 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         EventBus.getDefault().unregister(this);
     }
 
+    @NonNull
+    @Override
+    public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
+        return mActivityResultMediator;
+    }
 
     public static void onRecordStop(Context context, String script) {
         Intent intent = new Intent(context, MainActivity_.class)
@@ -486,12 +497,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 .put(ARGUMENT_SCRIPT, script)
                 .putInIntent(intent);
         context.startActivity(intent);
-    }
-
-    @NonNull
-    @Override
-    public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
-        return mActivityResultMediator;
     }
 
 

@@ -6,6 +6,7 @@ import android.graphics.Path;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.view.ViewConfiguration;
 
@@ -20,6 +21,11 @@ public class GlobalActionAutomator {
 
     private AccessibilityService mService;
     private ScreenMetrics mScreenMetrics;
+    private Handler mHandler;
+
+    public GlobalActionAutomator(@Nullable Handler handler) {
+        mHandler = handler;
+    }
 
     public void setService(AccessibilityService service) {
         mService = service;
@@ -95,10 +101,36 @@ public class GlobalActionAutomator {
         for (GestureDescription.StrokeDescription stroke : strokes) {
             builder.addStroke(stroke);
         }
+        if (mHandler == null) {
+            return gesturesWithoutHandler(builder.build());
+        } else {
+            return gesturesWithHandler(builder.build());
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private boolean gesturesWithHandler(GestureDescription description) {
+        final VolatileBox<Boolean> result = new VolatileBox<>(false);
+        mService.dispatchGesture(description, new AccessibilityService.GestureResultCallback() {
+            @Override
+            public void onCompleted(GestureDescription gestureDescription) {
+                result.setAndNotify(true);
+            }
+
+            @Override
+            public void onCancelled(GestureDescription gestureDescription) {
+                result.setAndNotify(false);
+            }
+        }, mHandler);
+        return result.blockedGet();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private boolean gesturesWithoutHandler(GestureDescription description) {
         prepareLooperIfNeeded();
         final VolatileBox<Boolean> result = new VolatileBox<>(false);
         Handler handler = new Handler(Looper.myLooper());
-        mService.dispatchGesture(builder.build(), new AccessibilityService.GestureResultCallback() {
+        mService.dispatchGesture(description, new AccessibilityService.GestureResultCallback() {
             @Override
             public void onCompleted(GestureDescription gestureDescription) {
                 result.set(true);
@@ -129,7 +161,7 @@ public class GlobalActionAutomator {
     private void quitLoop() {
         Looper looper = Looper.myLooper();
         if (looper != null) {
-            looper.quitSafely();
+            looper.quit();
         }
     }
 

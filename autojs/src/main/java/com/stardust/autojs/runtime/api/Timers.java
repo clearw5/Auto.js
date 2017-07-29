@@ -12,18 +12,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Timers {
 
-    private static ConcurrentHashMap<Thread, Looper> sLoopers = new ConcurrentHashMap<>();
-    private Handler mHandler;
     private SparseArray<Runnable> mHandlerCallbacks = new SparseArray<>();
     private int mCallbackMaxId = 0;
     private ScriptBridges mBridges;
+    private Handler mHandler;
 
     public Timers(ScriptBridges bridges) {
         mBridges = bridges;
     }
 
+    private void ensureHander(){
+        if(mHandler == null){
+            mHandler = new Handler();
+        }
+    }
+
     public int setTimeout(final Object callback, long delay, final Object... args) {
-        prepareLoopIfNeeded();
+        ensureHander();
         mCallbackMaxId++;
         final int id = mCallbackMaxId;
         Runnable r = new Runnable() {
@@ -39,6 +44,7 @@ public class Timers {
     }
 
     public void post(Runnable r) {
+        ensureHander();
         mHandler.post(r);
     }
 
@@ -47,7 +53,7 @@ public class Timers {
     }
 
     public int setInterval(final Object listener, final long interval, final Object... args) {
-        prepareLoopIfNeeded();
+        ensureHander();
         mCallbackMaxId++;
         final int id = mCallbackMaxId;
         Runnable r = new Runnable() {
@@ -67,7 +73,7 @@ public class Timers {
     }
 
     public int setImmediate(final Object listener, final Object... args) {
-        prepareLoopIfNeeded();
+        ensureHander();
         mCallbackMaxId++;
         final int id = mCallbackMaxId;
         Runnable r = new Runnable() {
@@ -91,33 +97,6 @@ public class Timers {
         if (callback != null) {
             mHandler.removeCallbacks(callback);
             mHandlerCallbacks.remove(id);
-        }
-    }
-
-    public void prepareLoopIfNeeded() {
-        if (Looper.myLooper() != null)
-            return;
-        Looper.prepare();
-        Looper looper = Looper.myLooper();
-        if (looper != null) {
-            // null check is not necessary, just to make Android Studio happy
-            sLoopers.put(Thread.currentThread(), looper);
-        }
-        mHandler = new Handler();
-    }
-
-    public void loop() {
-        Looper.loop();
-    }
-
-    public static void removeThreadRecord(Thread thread) {
-        sLoopers.remove(thread);
-    }
-
-    public static void quitLooperIfNeeded(Thread thread) {
-        Looper looper = sLoopers.get(thread);
-        if (looper != null) {
-            looper.quit();
         }
     }
 

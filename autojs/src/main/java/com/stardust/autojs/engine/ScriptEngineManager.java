@@ -26,8 +26,6 @@ public interface ScriptEngineManager {
 
     Set<ScriptEngine> getEngines();
 
-    String[] getGlobalFunctions();
-
     int stopAll();
 
 }

@@ -2,12 +2,6 @@ package com.stardust.autojs.engine;
 
 import android.content.Context;
 
-import com.stardust.autojs.BuildConfig;
-import com.stardust.autojs.script.ScriptSource;
-import com.stardust.autojs.script.StringScriptSource;
-import com.stardust.pio.PFile;
-
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -25,10 +19,10 @@ public abstract class AbstractScriptEngineManager implements ScriptEngineManager
     private final Set<ScriptEngine> mEngines = new HashSet<>();
     private EngineLifecycleCallback mEngineLifecycleCallback;
 
-    private android.content.Context mContext;
+    private android.content.Context mAndroidContext;
 
-    public AbstractScriptEngineManager(Context context) {
-        mContext = context;
+    public AbstractScriptEngineManager(Context androidContext) {
+        mAndroidContext = androidContext;
     }
 
     public ScriptEngine createEngine() {
@@ -61,10 +55,8 @@ public abstract class AbstractScriptEngineManager implements ScriptEngineManager
 
     protected abstract ScriptEngine createEngineInner();
 
-    public abstract String[] getGlobalFunctions();
-
-    public android.content.Context getContext() {
-        return mContext;
+    public android.content.Context getAndroidContext() {
+        return mAndroidContext;
     }
 
     protected void putProperties(ScriptEngine engine) {

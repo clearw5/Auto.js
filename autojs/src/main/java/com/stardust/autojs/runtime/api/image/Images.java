@@ -10,12 +10,14 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.media.Image;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.stardust.autojs.runtime.AbstractScriptRuntime;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.autojs.runtime.ScriptVariable;
+import com.stardust.autojs.runtime.api.Loopers;
 import com.stardust.concurrent.VolatileBox;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
@@ -45,6 +47,7 @@ public class Images {
         mContext = context;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean requestScreenCapture(final int width, final int height) {
         mScriptRuntime.requiresApi(21);
         colorFinder.prestartThreads();
@@ -54,7 +57,8 @@ public class Images {
             @Override
             public void onRequestResult(int result, Intent data) {
                 if (result == Activity.RESULT_OK) {
-                    mScreenCapturer = new ScreenCapturer(mContext, data, width, height);
+                    mScreenCapturer = new ScreenCapturer(mContext, data, width, height, ScreenMetrics.getDeviceScreenDensity(),
+                            new Handler(mScriptRuntime.loopers.getServantLooper()));
                     requestResult.setAndNotify(true);
                 } else {
                     requestResult.setAndNotify(false);
@@ -65,6 +69,7 @@ public class Images {
         return requestResult.blockedGetOrThrow(ScriptInterruptedException.class);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean requestScreenCapture() {
         return requestScreenCapture(ScreenMetrics.getDeviceScreenWidth(), ScreenMetrics.getDeviceScreenHeight());
     }
@@ -72,7 +77,7 @@ public class Images {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public Image captureScreen() {
         mScriptRuntime.requiresApi(21);
-        if(mScreenCapturer == null){
+        if (mScreenCapturer == null) {
             throw new SecurityException("No screen capture permission");
         }
         colorFinder.prestartThreads();

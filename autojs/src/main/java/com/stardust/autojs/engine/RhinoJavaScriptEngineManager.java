@@ -7,22 +7,7 @@ import com.stardust.autojs.script.SequenceScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.pio.PFile;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.commonjs.module.RequireBuilder;
-import org.mozilla.javascript.commonjs.module.provider.ModuleSource;
-import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider;
-import org.mozilla.javascript.commonjs.module.provider.UrlModuleSourceProvider;
-
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by Stardust on 2017/3/1.
@@ -40,7 +25,7 @@ public class RhinoJavaScriptEngineManager extends AbstractScriptEngineManager {
     }
 
     protected RhinoJavaScriptEngine createEngineInner() {
-        RhinoJavaScriptEngine engine = new RhinoJavaScriptEngine(this);
+        RhinoJavaScriptEngine engine = new LoopBasedJavaScriptEngine(this);
         return engine;
     }
 
@@ -58,7 +43,7 @@ public class RhinoJavaScriptEngineManager extends AbstractScriptEngineManager {
 
     private String readInitScript() {
         try {
-            return PFile.read(getContext().getAssets().open("javascript_engine_init.js"));
+            return PFile.read(getAndroidContext().getAssets().open("javascript_engine_init.js"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -75,29 +60,6 @@ public class RhinoJavaScriptEngineManager extends AbstractScriptEngineManager {
         }
         return mInitScript;
     }
-
-    @Override
-    public String[] getGlobalFunctions() {
-        if (mFunctions == null)
-            mFunctions = getGlobalFunctionsInner();
-        return mFunctions;
-    }
-
-    private String[] getGlobalFunctionsInner() {
-        ScriptEngine engine = createEngine();
-        ScriptSource source = new StringScriptSource("this", "this");
-        engine.setTag("script", source);
-        engine.init();
-        Scriptable scriptable = (Scriptable) engine.execute(source);
-        Object[] ids = scriptable.getIds();
-        String[] functions = new String[ids.length];
-        for (int i = 0; i < ids.length; i++) {
-            functions[i] = ids[i].toString();
-        }
-        engine.destroy();
-        return functions;
-    }
-
 
 
 }

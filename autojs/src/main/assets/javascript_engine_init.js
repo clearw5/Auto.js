@@ -1,4 +1,6 @@
 
+__runtime__.init();
+
 if(__engine_name__ == "rhino"){
   __importClass__ = importClass;
   var importClass = function(pack){

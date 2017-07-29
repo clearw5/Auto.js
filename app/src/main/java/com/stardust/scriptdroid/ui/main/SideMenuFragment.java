@@ -44,7 +44,6 @@ import java.util.concurrent.Executor;
 @EFragment(R.layout.fragment_side_menu)
 public class SideMenuFragment extends android.support.v4.app.Fragment {
 
-
     public static void setFragment(FragmentActivity activity, int viewId) {
         SideMenuFragment fragment = new SideMenuFragment_();
         activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).commit();

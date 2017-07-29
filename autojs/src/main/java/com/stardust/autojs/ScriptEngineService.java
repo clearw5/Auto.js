@@ -183,10 +183,6 @@ public class ScriptEngineService {
             mUiHandler.toast(mContext.getString(R.string.text_no_running_script));
     }
 
-    public String[] getGlobalFunctions() {
-        return mScriptEngineManager.getGlobalFunctions();
-    }
-
     public Set<ScriptEngine> getEngines() {
         return mScriptEngineManager.getEngines();
     }

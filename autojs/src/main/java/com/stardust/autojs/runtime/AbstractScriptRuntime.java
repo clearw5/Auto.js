@@ -2,11 +2,13 @@ package com.stardust.autojs.runtime;
 
 import android.content.Context;
 import android.os.Build;
+import android.os.Looper;
 import android.support.annotation.CallSuper;
 
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
+import com.stardust.autojs.runtime.api.Loopers;
 import com.stardust.autojs.runtime.api.ScriptBridges;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.Events;
@@ -20,8 +22,6 @@ import com.stardust.autojs.runtime.simpleaction.SimpleActionAutomator;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
-
-import org.mozilla.javascript.annotations.JSFunction;
 
 import java.lang.ref.WeakReference;
 
@@ -56,15 +56,22 @@ public abstract class AbstractScriptRuntime {
     public ScriptBridges bridges = new ScriptBridges();
 
     @ScriptVariable
-    public Timers timers = new Timers(bridges);
+    public Loopers loopers;
+
+    @ScriptVariable
+    public Timers timers;
 
     private Images images;
 
+    private UiHandler mUiHandler;
+    private AccessibilityBridge mAccessibilityBridge;
     private static WeakReference<Context> applicationContext;
 
     public AbstractScriptRuntime(UiHandler uiHandler, Console console, AccessibilityBridge bridge, AppUtils appUtils, ScreenCaptureRequester screenCaptureRequester) {
         this.app = appUtils;
         this.console = console;
+        mAccessibilityBridge = bridge;
+        mUiHandler = uiHandler;
         this.automator = new SimpleActionAutomator(bridge, this);
         this.info = bridge.getInfoProvider();
         Context context = uiHandler.getContext();
@@ -73,7 +80,18 @@ public abstract class AbstractScriptRuntime {
             images = new Images(context, this, screenCaptureRequester);
         }
         dialogs = new Dialogs(app, uiHandler);
-        events = new Events(context, bridge, bridges, timers);
+    }
+
+    /**
+     * Call in init.js
+     */
+    @CallSuper
+    public void init() {
+        if (loopers != null)
+            throw new IllegalStateException("already initialized");
+        loopers = new Loopers();
+        events = new Events(mUiHandler.getContext(), mAccessibilityBridge, bridges, loopers);
+        timers = new Timers(bridges);
     }
 
     public static void setApplicationContext(Context context) {
@@ -130,10 +148,15 @@ public abstract class AbstractScriptRuntime {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             images.releaseScreenCapturer();
         }
-        events.recycle();
+        if (events != null)
+            events.recycle();
+        if (loopers != null)
+            loopers.quitAll();
     }
 
     public Object getImages() {
         return images;
     }
+
+
 }

@@ -27,27 +27,29 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     private AccessibilityBridge mAccessibilityBridge;
     private Context mContext;
     private TouchObserver mTouchObserver;
-    private Timers mTimers;
     private long mLastTouchEventMillis;
     private long mTouchEventTimeout = 10;
     private boolean mListeningKey = false;
+    private Loopers mLoopers;
+    private Handler mHandler;
 
-    public Events(Context context, AccessibilityBridge accessibilityBridge, ScriptBridges bridges, Timers timers) {
+    public Events(Context context, AccessibilityBridge accessibilityBridge, ScriptBridges bridges, Loopers loopers) {
         super(bridges);
         mAccessibilityBridge = accessibilityBridge;
         mContext = context;
-        mTimers = timers;
+        mLoopers = loopers;
     }
 
-    public EventEmitter emitter(){
+    public EventEmitter emitter() {
         return new EventEmitter(mBridges);
     }
 
     public void observeKey() {
         if (mListeningKey)
             return;
+        ensureHandler();
+        mLoopers.waitWhenIdle(true);
         mListeningKey = true;
-        mTimers.prepareLoopIfNeeded();
         mAccessibilityBridge.ensureServiceEnabled();
         AccessibilityService service = mAccessibilityBridge.getService();
         if (service == null)
@@ -55,10 +57,17 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
         service.getOnKeyObserver().addListener(this);
     }
 
+    private void ensureHandler() {
+        if(mHandler == null){
+            mHandler = new Handler();
+        }
+    }
+
     public void observeTouch() {
-        mTimers.prepareLoopIfNeeded();
         if (mTouchObserver != null)
             return;
+        ensureHandler();
+        mLoopers.waitWhenIdle(true);
         mTouchObserver = new TouchObserver(mContext);
         mTouchObserver.setOnTouchEventListener(this);
         mTouchObserver.observe();
@@ -128,7 +137,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
 
     @Override
     public void onKeyEvent(final int keyCode, final KeyEvent event) {
-        mTimers.post(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 String keyName = KeyEvent.keyCodeToString(keyCode).substring(8).toLowerCase();
@@ -151,7 +160,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
             return;
         }
         mLastTouchEventMillis = System.currentTimeMillis();
-        mTimers.post(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 emit("touch", new Point(x, y));
