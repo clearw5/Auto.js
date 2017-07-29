@@ -23,6 +23,9 @@ import com.stardust.autojs.runtime.console.StardustConsole;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.util.SparseArrayEntries;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Stardust on 2017/5/2.
  */
@@ -155,9 +158,19 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
     private void refreshLog() {
         if (mConsole != null) {
             mTextView.setText("");
-            for (StardustConsole.Log log : mConsole.getLogs()) {
-                onNewLog(log);
-            }
+            final List<StardustConsole.Log> logs = new ArrayList<>(mConsole.getLogs());
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    for (StardustConsole.Log log : logs) {
+                        int color = getColorForLevel(log.level);
+                        final Spannable spannable = buildColorSpannable(log.content, color);
+                        mTextView.append(spannable);
+                    }
+                    mContentContainer.fullScroll(View.FOCUS_DOWN);
+                    mEditText.requestFocus();
+                }
+            });
         }
     }
 
