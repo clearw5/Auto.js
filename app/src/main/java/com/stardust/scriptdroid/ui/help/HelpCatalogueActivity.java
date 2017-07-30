@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +19,9 @@ import com.stardust.scriptdroid.ui.BaseActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.stardust.scriptdroid.R;
+import com.stardust.theme.ThemeColorManagerCompat;
+import com.stardust.util.UnderuseExecutors;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONObject;
 
@@ -48,7 +50,7 @@ public class HelpCatalogueActivity extends BaseActivity {
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
-    private static final Map<String, List<Item>> CATALOGUES;
+    private static Map<String, List<Item>> CATALOGUES;
 
     private static class Item extends JSONObject {
 
@@ -86,6 +88,7 @@ public class HelpCatalogueActivity extends BaseActivity {
 
     List<Item> mItems;
     private RecyclerView mRecyclerView;
+    private AVLoadingIndicatorView mLoadingIndicatorView;
     private String mTitle;
     private View.OnClickListener mOnItemClickListener = new View.OnClickListener() {
         @Override
@@ -100,8 +103,29 @@ public class HelpCatalogueActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        handleIntent();
         setUpUI();
+        if (CATALOGUES == null) {
+            readCatalogues();
+        } else {
+            mLoadingIndicatorView.hide();
+            handleIntent();
+        }
+    }
+
+    private void readCatalogues() {
+        UnderuseExecutors.execute(new Runnable() {
+            @Override
+            public void run() {
+                readCatalogues("help/catalogue.json");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLoadingIndicatorView.hide();
+                        handleIntent();
+                    }
+                });
+            }
+        });
     }
 
     private void handleIntent() {
@@ -112,19 +136,25 @@ public class HelpCatalogueActivity extends BaseActivity {
         if (mTitle == null)
             mTitle = getString(R.string.text_help);
         mItems = CATALOGUES.get(catalogue);
+        mRecyclerView.setAdapter(new Adapter());
     }
 
     private void setUpUI() {
         setContentView(R.layout.activity_help);
         setToolbarAsBack(mTitle);
         setUpRecyclerView();
+        setUpLoadingView();
     }
 
     private void setUpRecyclerView() {
         mRecyclerView = $(R.id.catalogue);
         mRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this));
-        mRecyclerView.setAdapter(new Adapter());
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, RecyclerView.VERTICAL));
+    }
+
+    private void setUpLoadingView() {
+        mLoadingIndicatorView = $(R.id.loading);
+        mLoadingIndicatorView.setIndicatorColor(ThemeColorManagerCompat.getColorPrimary());
     }
 
     private class Adapter extends RecyclerView.Adapter<ViewHolder> {
@@ -166,10 +196,10 @@ public class HelpCatalogueActivity extends BaseActivity {
         }
     }
 
-    static {
+    private static void readCatalogues(String path) {
         Map<String, List<Item>> fromJson;
         try {
-            String json = PFile.read(App.getApp().getAssets().open("help/catalogue.json"));
+            String json = PFile.read(App.getApp().getAssets().open(path));
             Gson gson = new Gson();
             Type type = new TypeToken<Map<String, List<Item>>>() {
             }.getType();

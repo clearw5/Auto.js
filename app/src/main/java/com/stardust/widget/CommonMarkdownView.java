@@ -28,6 +28,10 @@ import java.util.Collections;
 
 public class CommonMarkdownView extends WebView {
 
+    public interface OnPageFinishedListener {
+        void onPageFinished(WebView view, String url);
+    }
+
     private Parser mParser = Parser.builder().build();
     private HtmlRenderer mHtmlRender = HtmlRenderer.builder()
             .extensions(Collections.singleton(new HeadingAnchorExtension.Builder().build()))
@@ -35,6 +39,7 @@ public class CommonMarkdownView extends WebView {
 
     private String mMarkdownHtml;
     private String mPadding = "16px";
+    private OnPageFinishedListener mOnPageFinishedListener;
 
     public CommonMarkdownView(Context context) {
         super(context);
@@ -60,6 +65,9 @@ public class CommonMarkdownView extends WebView {
             @Override
             public void onPageFinished(WebView view, String url) {
                 loadUrl("javascript:document.body.style.margin=\"" + mPadding + "\"; void 0");
+                if (mOnPageFinishedListener != null) {
+                    mOnPageFinishedListener.onPageFinished(view, url);
+                }
             }
 
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -87,6 +95,10 @@ public class CommonMarkdownView extends WebView {
     public void loadMarkdown(String markdown) {
         mMarkdownHtml = renderMarkdown(markdown);
         loadHtml(mMarkdownHtml);
+    }
+
+    public void setOnPageFinishedListener(OnPageFinishedListener onPageFinishedListener) {
+        mOnPageFinishedListener = onPageFinishedListener;
     }
 
     private void loadHtml(String html) {
