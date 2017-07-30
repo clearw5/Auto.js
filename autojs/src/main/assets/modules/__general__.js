@@ -65,4 +65,5 @@ module.exports = function(__runtime__, scope){
     }
 
     scope.setScreenMetrics = __runtime__.setScreenMetrics.bind(__runtime__);
+
 }
