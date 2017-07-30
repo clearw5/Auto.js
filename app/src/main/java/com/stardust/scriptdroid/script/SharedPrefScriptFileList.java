@@ -78,7 +78,7 @@ public class SharedPrefScriptFileList extends ScriptFileList {
     public void rename(int position, String newName, boolean renameFile) {
         mScriptName.set(position, newName);
         if (renameFile) {
-            String newPath = PFile.renameWithoutExtension(mScriptPath.get(position), newName);
+            String newPath = PFile.renameWithoutExtensionAndReturnNewPath(mScriptPath.get(position), newName);
             mScriptPath.set(position, newPath);
         }
         syncWithSharedPref();
