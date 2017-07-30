@@ -19,6 +19,8 @@ module.exports = function(__runtime__, scope){
         return !isStopped();
     }
 
+    scope.isRunning = scope.notStopped;
+
     scope.exit = function(){
         __runtime__.exit();
     }
@@ -53,6 +55,13 @@ module.exports = function(__runtime__, scope){
         while(scope.currentPackage() != packageName){
             sleep(delay);
         }
+    }
+
+    scope.random = function(min, max){
+        if(arguments.length == 0){
+            return Math.random();
+        }
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
     scope.setScreenMetrics = __runtime__.setScreenMetrics.bind(__runtime__);
