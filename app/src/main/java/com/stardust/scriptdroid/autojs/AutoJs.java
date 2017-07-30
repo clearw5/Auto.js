@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.view.KeyEvent;
 
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
@@ -21,8 +20,6 @@ import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
-import com.stardust.automator.AccessibilityEventCommandHost;
-import com.stardust.automator.simple_action.SimpleActionPerformHost;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
@@ -57,8 +54,6 @@ public class AutoJs implements AccessibilityBridge {
         instance = new AutoJs(context);
     }
 
-    private final AccessibilityEventCommandHost mAccessibilityEventCommandHost = new AccessibilityEventCommandHost();
-    private final SimpleActionPerformHost mSimpleActionPerformHost = new SimpleActionPerformHost();
     private final AccessibilityActionRecorder mAccessibilityActionRecorder = new AccessibilityActionRecorder();
     private final LayoutInspector mLayoutInspector = new LayoutInspector();
     private final ScriptEngineService mScriptEngineService;
@@ -146,8 +141,6 @@ public class AutoJs implements AccessibilityBridge {
     private void addAccessibilityServiceDelegates() {
         AccessibilityService.addDelegate(100, mAccessibilityInfoProvider);
         AccessibilityService.addDelegate(300, mAccessibilityActionRecorder);
-        // AccessibilityService.addDelegate(400, mSimpleActionPerformHost);
-        //AccessibilityService.addDelegate(500, mAccessibilityEventCommandHost);
     }
 
     public AccessibilityActionRecorder getAccessibilityActionRecorder() {
@@ -164,16 +157,6 @@ public class AutoJs implements AccessibilityBridge {
 
     public LayoutInspector getLayoutInspector() {
         return mLayoutInspector;
-    }
-
-    @Override
-    public AccessibilityEventCommandHost getCommandHost() {
-        return mAccessibilityEventCommandHost;
-    }
-
-    @Override
-    public SimpleActionPerformHost getActionPerformHost() {
-        return mSimpleActionPerformHost;
     }
 
     @Nullable

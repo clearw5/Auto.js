@@ -20,13 +20,10 @@ import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.ScriptStopException;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
-import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.Shell;
 import com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity;
 import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
 import com.stardust.autojs.runtime.console.StardustConsole;
-import com.stardust.automator.AccessibilityEventCommandHost;
-import com.stardust.automator.simple_action.SimpleActionPerformHost;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
@@ -50,8 +47,6 @@ public class AutoJs implements AccessibilityBridge {
         instance = new AutoJs(context);
     }
 
-    private final AccessibilityEventCommandHost mAccessibilityEventCommandHost = new AccessibilityEventCommandHost();
-    private final SimpleActionPerformHost mSimpleActionPerformHost = new SimpleActionPerformHost();
     private final ScriptEngineService mScriptEngineService;
     private final AccessibilityInfoProvider mAccessibilityInfoProvider;
     private final UiHandler mUiHandler;
@@ -136,17 +131,6 @@ public class AutoJs implements AccessibilityBridge {
 
     private void addAccessibilityServiceDelegates() {
         AccessibilityService.addDelegate(100, mAccessibilityInfoProvider);
-    }
-
-
-    @Override
-    public AccessibilityEventCommandHost getCommandHost() {
-        return mAccessibilityEventCommandHost;
-    }
-
-    @Override
-    public SimpleActionPerformHost getActionPerformHost() {
-        return mSimpleActionPerformHost;
     }
 
     @Nullable
