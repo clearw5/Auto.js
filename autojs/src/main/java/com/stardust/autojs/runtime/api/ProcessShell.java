@@ -219,9 +219,9 @@ public class ProcessShell extends AbstractShell implements AutoCloseable {
                 if (successResult != null) successResult.close();
                 if (errorResult != null) errorResult.close();
             } catch (IOException e) {
-                String errmsg = e.getMessage();
-                if (errmsg != null) {
-                    Log.e(TAG, errmsg);
+                String errMsg = e.getMessage();
+                if (errMsg != null) {
+                    Log.e(TAG, errMsg);
                 } else {
                     e.printStackTrace();
                 }

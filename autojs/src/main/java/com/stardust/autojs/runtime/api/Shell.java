@@ -246,9 +246,9 @@ public class Shell extends AbstractShell implements AutoCloseable {
                     mCallback.onOutput(new String(data, offset, count));
                 }
                 mOutputStream.write(data, offset, count);
-
             } catch (IOException e) {
-                throw new UncheckedIOException(e);
+                e.printStackTrace();
+                finish();
             }
         }
 
