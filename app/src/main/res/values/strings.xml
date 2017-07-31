@@ -209,6 +209,8 @@
     <string name="text_discard_record">放弃录制</string>
     <string name="text_inspect_failed">布局抓取失败，请关闭悬浮窗后动一下页面重试</string>
     <string name="script_anr">没有相应，要强制停止吗</string>
+    <string name="text_enable_accessibitliy_service_by_root_failed">使用root权限开启失败</string>
+    <string name="text_on_progress">处理中</string>
 
 
     <string-array name="record_control_keys">

@@ -53,7 +53,8 @@ public class AccessibilityServiceTool {
             "else\n" +
             "enabled=$pkg:$enabled\n" +
             "settings put secure enabled_accessibility_services $enabled\n" +
-            "fi";
+            "fi\n" +
+            "settings put secure accessibility_enabled 1";
 
     public static boolean enableAccessibilityServiceByRoot(Class<? extends android.accessibilityservice.AccessibilityService> accessibilityService) {
         String serviceName = App.getApp().getPackageName() + "/" + accessibilityService.getName();
@@ -62,9 +63,9 @@ public class AccessibilityServiceTool {
 
     public static boolean enableAccessibilityServiceByRootAndWaitFor(long timeOut) {
         if (enableAccessibilityServiceByRoot(AccessibilityService.class)) {
-            AccessibilityService.waitForEnabled(timeOut);
+            return AccessibilityService.waitForEnabled(timeOut);
         }
-        return true;
+        return false;
     }
 
     public static void enableAccessibilityServiceByRootIfNeeded() {

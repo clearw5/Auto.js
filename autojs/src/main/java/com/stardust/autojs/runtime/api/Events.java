@@ -8,7 +8,7 @@ import android.util.SparseArray;
 import android.view.KeyEvent;
 
 import com.stardust.autojs.runtime.AccessibilityBridge;
-import com.stardust.autojs.runtime.ScriptStopException;
+import com.stardust.autojs.runtime.ScriptException;
 import com.stardust.autojs.runtime.record.inputevent.TouchObserver;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.OnKeyListener;
@@ -53,12 +53,12 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
         mAccessibilityBridge.ensureServiceEnabled();
         AccessibilityService service = mAccessibilityBridge.getService();
         if (service == null)
-            throw new ScriptStopException();
+            throw new ScriptException();
         service.getOnKeyObserver().addListener(this);
     }
 
     private void ensureHandler() {
-        if(mHandler == null){
+        if (mHandler == null) {
             mHandler = new Handler();
         }
     }

@@ -2,7 +2,8 @@ package com.stardust.autojs.runtime.api;
 
 import android.support.annotation.NonNull;
 
-import com.stardust.autojs.runtime.ScriptStopException;
+
+import com.stardust.autojs.runtime.ScriptException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +39,7 @@ public class EventEmitter {
 
         private void ensureListenersNotAtLimit() {
             if (mMaxListeners != 0 && mListenersMap.size() >= mMaxListeners) {
-                throw new ScriptStopException(new TooManyListenersException("max = " + mMaxListeners));
+                throw new ScriptException(new TooManyListenersException("max = " + mMaxListeners));
             }
         }
 

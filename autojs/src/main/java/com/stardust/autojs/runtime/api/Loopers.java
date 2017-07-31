@@ -82,7 +82,7 @@ public class Loopers {
     }
 
     public static void prepare() {
-        if(Looper.myLooper() == Looper.getMainLooper())
+        if (Looper.myLooper() == Looper.getMainLooper())
             return;
         if (Looper.myLooper() == null)
             Looper.prepare();

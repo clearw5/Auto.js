@@ -150,12 +150,15 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
         return false;
     }
 
-    public static void waitForEnabled(long timeOut) {
+    public static boolean waitForEnabled(long timeOut) {
+        if (instance != null)
+            return true;
         LOCK.lock();
         try {
-            ENABLED.await(timeOut, TimeUnit.MILLISECONDS);
+            return ENABLED.await(timeOut, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            return false;
         } finally {
             LOCK.unlock();
         }
