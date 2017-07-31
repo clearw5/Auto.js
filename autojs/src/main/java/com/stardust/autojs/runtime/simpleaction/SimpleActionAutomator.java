@@ -10,9 +10,9 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.stardust.autojs.runtime.AbstractScriptRuntime;
 import com.stardust.autojs.runtime.AccessibilityBridge;
 import com.stardust.autojs.runtime.ScriptInterface;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.AutomatorConfig;
 import com.stardust.autojs.runtime.api.Loopers;
 import com.stardust.automator.GlobalActionAutomator;
@@ -32,11 +32,11 @@ public class SimpleActionAutomator {
     private static final String TAG = "SimpleActionAutomator";
 
     private AccessibilityBridge mAccessibilityBridge;
-    private AbstractScriptRuntime mScriptRuntime;
+    private ScriptRuntime mScriptRuntime;
     private GlobalActionAutomator mGlobalActionAutomator;
     private ScreenMetrics mScreenMetrics;
 
-    public SimpleActionAutomator(AccessibilityBridge accessibilityBridge, AbstractScriptRuntime scriptRuntime) {
+    public SimpleActionAutomator(AccessibilityBridge accessibilityBridge, ScriptRuntime scriptRuntime) {
         mAccessibilityBridge = accessibilityBridge;
         mScriptRuntime = scriptRuntime;
     }

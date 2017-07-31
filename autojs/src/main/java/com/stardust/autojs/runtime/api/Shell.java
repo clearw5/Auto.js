@@ -5,8 +5,8 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.stardust.autojs.runtime.AbstractScriptRuntime;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.lang.ThreadCompat;
 import com.stardust.pio.UncheckedIOException;
 
@@ -84,7 +84,7 @@ public class Shell extends AbstractShell implements AutoCloseable {
     }
 
     public Shell(boolean root) {
-        this(AbstractScriptRuntime.getApplicationContext(), root);
+        this(ScriptRuntime.getApplicationContext(), root);
     }
 
     @Override

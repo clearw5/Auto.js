@@ -86,7 +86,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
         HoverMenuService.getEventBus().register(this);
         AccessibilityService.getStickOnKeyObserver().addListener(mVolumeKeyListener);
         if (Pref.isRecordVolumeControlEnable()) {
-            AutoJs.getInstance().ensureServiceEnabled();
+            AutoJs.getInstance().ensureAccessibilityServiceEnabled();
         }
         if (Pref.hasRecordTrigger()) {
             mKeyObserver = new KeyObserver(mContext);

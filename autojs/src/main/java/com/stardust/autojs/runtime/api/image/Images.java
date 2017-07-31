@@ -14,7 +14,7 @@ import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
-import com.stardust.autojs.runtime.AbstractScriptRuntime;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.autojs.runtime.ScriptVariable;
 import com.stardust.autojs.runtime.api.Loopers;
@@ -33,7 +33,7 @@ import java.util.Locale;
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class Images {
 
-    private AbstractScriptRuntime mScriptRuntime;
+    private ScriptRuntime mScriptRuntime;
     private ScreenCaptureRequester mScreenCaptureRequester;
     private ScreenCapturer mScreenCapturer;
     private Context mContext;
@@ -41,7 +41,7 @@ public class Images {
     @ScriptVariable
     public ColorFinder colorFinder = new ColorFinder();
 
-    public Images(Context context, AbstractScriptRuntime scriptRuntime, ScreenCaptureRequester screenCaptureRequester) {
+    public Images(Context context, ScriptRuntime scriptRuntime, ScreenCaptureRequester screenCaptureRequester) {
         mScriptRuntime = scriptRuntime;
         mScreenCaptureRequester = screenCaptureRequester;
         mContext = context;

@@ -13,7 +13,6 @@ import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.ScriptExecutionObserver;
 import com.stardust.autojs.execution.ScriptExecutionTask;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
-import com.stardust.autojs.runtime.AbstractScriptRuntime;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.script.ScriptSource;
@@ -88,7 +87,7 @@ public class ScriptEngineService {
         mScriptExecutionObserver.registerScriptExecutionListener(GLOBAL_LISTENER);
         EVENT_BUS.register(this);
         mScriptEngineManager.putGlobal("context", mUiHandler.getContext());
-        AbstractScriptRuntime.setApplicationContext(builder.mUiHandler.getContext());
+        ScriptRuntime.setApplicationContext(builder.mUiHandler.getContext().getApplicationContext());
     }
 
     public Console getGlobalConsole() {
