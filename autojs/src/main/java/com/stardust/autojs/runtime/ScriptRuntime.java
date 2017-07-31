@@ -226,9 +226,6 @@ public class ScriptRuntime {
 
     private void ensureRootShell() {
         if (mRootShell == null) {
-            if (mShellSupplier == null) {
-                throw new ScriptInterruptedException();
-            }
             mRootShell = mShellSupplier.get();
             mRootShell.SetScreenMetrics(mScreenMetrics);
             mShellSupplier = null;
@@ -249,7 +246,7 @@ public class ScriptRuntime {
 
     public void requiresApi(int i) {
         if (Build.VERSION.SDK_INT < i) {
-            throw new ScriptStopException(mUiHandler.getContext().getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
+            throw new ScriptException(mUiHandler.getContext().getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
         }
     }
 

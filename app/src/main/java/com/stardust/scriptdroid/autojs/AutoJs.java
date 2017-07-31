@@ -15,7 +15,7 @@ import com.stardust.autojs.engine.RhinoJavaScriptEngineManager;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.runtime.AccessibilityBridge;
 import com.stardust.autojs.runtime.ScriptRuntime;
-import com.stardust.autojs.runtime.ScriptStopException;
+import com.stardust.autojs.runtime.ScriptException;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
@@ -174,7 +174,7 @@ public class AutoJs {
             }
             if (errorMessage != null) {
                 AccessibilityServiceTool.goToAccessibilitySetting();
-                throw new ScriptStopException(errorMessage);
+                throw new ScriptException(errorMessage);
             }
         }
     }

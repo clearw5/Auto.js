@@ -1,5 +1,6 @@
 package com.stardust.autojs.engine;
 
+import com.stardust.autojs.runtime.ScriptException;
 import com.stardust.autojs.script.ScriptSource;
 
 /**
@@ -11,7 +12,7 @@ import com.stardust.autojs.script.ScriptSource;
  * When the execution finish successfully, the engine should be destroy in the thread that created it.
  * <p>
  * If you want to stop the engine in other threads, you should call {@link ScriptEngine#forceStop()}.
- * It will throw a {@link com.stardust.autojs.runtime.ScriptStopException}.
+ * It will throw a {@link ScriptException}.
  */
 
 public interface ScriptEngine {

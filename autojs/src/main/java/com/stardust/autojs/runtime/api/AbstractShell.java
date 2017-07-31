@@ -118,7 +118,7 @@ public abstract class AbstractShell {
     }
 
     public void Swipe(int x1, int y1, int x2, int y2, int time) {
-        exec(com.stardust.util.TextUtils.join(" ", "input", "tap", scaleX(x1), scaleY(y1), scaleX(x2), scaleY(y2), time));
+        exec(com.stardust.util.TextUtils.join(" ", "input", "swipe", scaleX(x1), scaleY(y1), scaleX(x2), scaleY(y2), time));
     }
 
     public void KeyCode(int keyCode) {
