@@ -2,7 +2,6 @@ package com.stardust.autojs.runtime;
 
 import android.content.Context;
 import android.os.Build;
-import android.os.Looper;
 import android.support.annotation.CallSuper;
 
 import com.stardust.autojs.engine.ScriptEngine;
@@ -24,6 +23,8 @@ import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 
 import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Stardust on 2017/5/4.
@@ -61,16 +62,19 @@ public abstract class AbstractScriptRuntime {
     @ScriptVariable
     public Timers timers;
 
+    @ScriptVariable
+    public AccessibilityBridge accessibilityBridge;
+
     private Images images;
 
     private UiHandler mUiHandler;
-    private AccessibilityBridge mAccessibilityBridge;
     private static WeakReference<Context> applicationContext;
+    private Map<String, Object> mProperties = new ConcurrentHashMap<>();
 
     public AbstractScriptRuntime(UiHandler uiHandler, Console console, AccessibilityBridge bridge, AppUtils appUtils, ScreenCaptureRequester screenCaptureRequester) {
         this.app = appUtils;
         this.console = console;
-        mAccessibilityBridge = bridge;
+        accessibilityBridge = bridge;
         mUiHandler = uiHandler;
         this.automator = new SimpleActionAutomator(bridge, this);
         this.info = bridge.getInfoProvider();
@@ -90,7 +94,7 @@ public abstract class AbstractScriptRuntime {
         if (loopers != null)
             throw new IllegalStateException("already initialized");
         loopers = new Loopers();
-        events = new Events(mUiHandler.getContext(), mAccessibilityBridge, bridges, loopers);
+        events = new Events(mUiHandler.getContext(), accessibilityBridge, bridges, loopers);
         timers = new Timers(bridges);
     }
 
@@ -158,5 +162,16 @@ public abstract class AbstractScriptRuntime {
         return images;
     }
 
+    public Object getProperty(String key) {
+        return mProperties.get(key);
+    }
+
+    public Object putProperty(String key, Object value) {
+        return mProperties.put(key, value);
+    }
+
+    public Object removeProperty(String key) {
+        return mProperties.remove(key);
+    }
 
 }

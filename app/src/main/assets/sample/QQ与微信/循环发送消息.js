@@ -1,4 +1,4 @@
-"auto";
+auto("fast");
 
 
 toast("请打开一个聊天窗口");

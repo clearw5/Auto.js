@@ -16,7 +16,8 @@ module.exports = function(__runtime__, scope){
     }
 
     return function(){
-        return __runtime__.selector(scope.__engine__);
+        var s = __runtime__.selector(scope.__engine__);
+        return s;
     };
 }
 

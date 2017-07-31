@@ -1,18 +1,17 @@
 
 __runtime__.init();
 
-if(__engine_name__ == "rhino"){
-  __importClass__ = importClass;
-  var importClass = function(pack){
+__importClass__ = importClass;
+var importClass = function(pack){
     if(typeof(pack) == "string"){
         __importClass__(Packages[pack]);
     }else{
         __importClass__(pack);
     }
-  }
-  var loadJar = function(path){
+}
+
+var loadJar = function(path){
     __runtime__.loadJar(path);
-  }
 }
 
 __runtime__.bridges.setFunctionCaller(function(func, target, args){

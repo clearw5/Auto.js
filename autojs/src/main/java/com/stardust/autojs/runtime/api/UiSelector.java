@@ -1,9 +1,9 @@
 package com.stardust.autojs.runtime.api;
 
-import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -17,6 +17,7 @@ import com.stardust.automator.UiObjectCollection;
 import com.stardust.automator.filter.DfsFilter;
 import com.stardust.util.DeveloperUtils;
 import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+import com.stardust.view.accessibility.AccessibilityService;
 
 import org.mozilla.javascript.NativeArray;
 
@@ -58,6 +59,8 @@ import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.
 
 public class UiSelector extends UiGlobalSelector {
 
+
+
     private static final String TAG = "UiSelector";
 
     private AccessibilityBridge mAccessibilityBridge;
@@ -80,15 +83,13 @@ public class UiSelector extends UiGlobalSelector {
             Log.d(TAG, "isSelfPackage return null");
             return UiObjectCollection.EMPTY;
         }
-        AccessibilityService service = mAccessibilityBridge.getService();
-        if (service != null) {
-            AccessibilityNodeInfo root = service.getRootInActiveWindow();
-            if (root != null) {
-                return findOf(UiObject.createRoot(root, mAllocator));
-            }
+        AccessibilityNodeInfo root = mAccessibilityBridge.getRootInActiveWindow();
+        if (root == null) {
+            return UiObjectCollection.EMPTY;
         }
-        return UiObjectCollection.EMPTY;
+        return findOf(UiObject.createRoot(root, mAllocator));
     }
+
 
     private void ensureAccessibilityServiceEnabled() {
         mAccessibilityBridge.ensureServiceEnabled();

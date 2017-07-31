@@ -35,7 +35,7 @@ import com.stardust.view.accessibility.AccessibilityServiceUtils;
  * Created by Stardust on 2017/7/1.
  */
 
-public class AutoJs implements AccessibilityBridge {
+public class AutoJs {
 
     private static AutoJs instance;
 
@@ -84,11 +84,12 @@ public class AutoJs implements AccessibilityBridge {
                 .runtime(new Supplier<ScriptRuntime>() {
 
                     @Override
-                    public com.stardust.autojs.runtime.ScriptRuntime get() {
+                    public ScriptRuntime get() {
                         return new ScriptRuntime.Builder()
                                 .setConsole(new StardustConsole(mUiHandler))
                                 .setScreenCaptureRequester(mScreenCaptureRequester)
-                                .setAccessibilityBridge(AutoJs.this)
+                                // TODO: 2017/7/31
+                                .setAccessibilityBridge(null)
                                 .setUiHandler(mUiHandler)
                                 .setAppUtils(mAppUtils)
                                 .setShellSupplier(new Supplier<AbstractShell>() {
@@ -134,12 +135,10 @@ public class AutoJs implements AccessibilityBridge {
     }
 
     @Nullable
-    @Override
     public AccessibilityService getService() {
         return AccessibilityService.getInstance();
     }
 
-    @Override
     public void ensureServiceEnabled() {
         Context context = mApplication.getApplicationContext();
         if (AccessibilityService.getInstance() == null) {
@@ -154,7 +153,6 @@ public class AutoJs implements AccessibilityBridge {
         }
     }
 
-    @Override
     public AccessibilityInfoProvider getInfoProvider() {
         return mAccessibilityInfoProvider;
     }

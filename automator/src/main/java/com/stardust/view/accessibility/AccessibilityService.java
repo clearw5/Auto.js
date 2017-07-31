@@ -3,6 +3,7 @@ package com.stardust.view.accessibility;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
@@ -39,8 +40,8 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     private static boolean containsAllEventTypes = false;
     private static final Set<Integer> eventTypes = new HashSet<>();
     private OnKeyListener.Observer mOnKeyObserver = new OnKeyListener.Observer();
-    private Handler mHandler;
     private ExecutorService mKeyEventExecutor;
+    private AccessibilityNodeInfo mFastRootInActiveWindow;
 
     public static void addDelegate(int uniquePriority, AccessibilityDelegate delegate) {
         mDelegates.put(uniquePriority, delegate);
@@ -64,6 +65,11 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
         Log.v(TAG, "onAccessibilityEvent: " + event);
         if (!containsAllEventTypes && !eventTypes.contains(event.getEventType()))
             return;
+        int type = event.getEventType();
+        if (type == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED || type == AccessibilityEvent.TYPE_VIEW_HOVER_ENTER
+                || type == AccessibilityEvent.TYPE_VIEW_HOVER_EXIT) {
+            mFastRootInActiveWindow = super.getRootInActiveWindow();
+        }
         for (Map.Entry<Integer, AccessibilityDelegate> entry : mDelegates.entrySet()) {
             AccessibilityDelegate delegate = entry.getValue();
             Set<Integer> types = delegate.getEventTypes();
@@ -127,17 +133,13 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
         LOCK.lock();
         ENABLED.signalAll();
         LOCK.unlock();
-        mHandler = new Handler();
         // FIXME: 2017/2/12 有时在无障碍中开启服务后这里不会调用服务也不会运行，安卓的BUG???
     }
 
-    private AccessibilityNodeInfo superGetRootInActiveWindow() {
-        try {
-            return super.getRootInActiveWindow();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-            return null;
-        }
+
+    @Nullable
+    public AccessibilityNodeInfo fastRootInActiveWindow() {
+        return mFastRootInActiveWindow;
     }
 
     public static boolean disable() {
@@ -162,4 +164,5 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     public static OnKeyListener.Observer getStickOnKeyObserver() {
         return stickOnKeyObserver;
     }
+
 }

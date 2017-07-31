@@ -5,6 +5,7 @@ import android.accessibilityservice.GestureDescription;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -254,10 +255,7 @@ public class SimpleActionAutomator {
             Log.d(TAG, "performAction: running package is self. return false");
             return false;
         }
-        AccessibilityService service = mAccessibilityBridge.getService();
-        if (service == null)
-            return false;
-        AccessibilityNodeInfo root = service.getRootInActiveWindow();
+        AccessibilityNodeInfo root = mAccessibilityBridge.getRootInActiveWindow();
         if (root == null)
             return false;
         Log.v(TAG, "performAction: " + simpleAction + " root = " + root);
