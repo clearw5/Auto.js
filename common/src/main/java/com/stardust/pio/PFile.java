@@ -142,7 +142,7 @@ public class PFile {
                     return false;
             FileOutputStream fos = new FileOutputStream(file);
             write(is, fos);
-            return false;
+            return true;
         } catch (IOException | UncheckedIOException e) {
             e.printStackTrace();
             return false;

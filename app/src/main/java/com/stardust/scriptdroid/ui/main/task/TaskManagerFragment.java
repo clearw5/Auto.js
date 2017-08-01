@@ -45,6 +45,8 @@ public class TaskManagerFragment extends Fragment {
                 mTaskListRecyclerView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        if (mNoRunningScriptNotice == null)
+                            return;
                         mNoRunningScriptNotice.setVisibility(noRunningScript ? View.VISIBLE : View.GONE);
                         mCloseAllView.setVisibility(noRunningScript ? View.GONE : View.VISIBLE);
                     }

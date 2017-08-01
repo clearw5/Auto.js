@@ -40,6 +40,7 @@ import com.stardust.scriptdroid.external.open.ImportIntentActivity;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.script.sample.Sample;
+import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
 import com.stardust.util.IntentExtras;
 import com.stardust.view.accessibility.AccessibilityService;
@@ -67,6 +68,7 @@ import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -221,22 +223,14 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Click(R.id.create_new_file)
     void createScriptFile() {
-        doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
-            @Override
-            public void call(MyScriptListFragment myScriptListFragment) {
-                myScriptListFragment.newScriptFile();
-            }
-        });
+        new ScriptOperations(this, mDrawerLayout)
+                .newScriptFile();
     }
 
     @Click(R.id.create_new_directory)
     void createNewDirectory() {
-        doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
-            @Override
-            public void call(MyScriptListFragment myScriptListFragment) {
-                myScriptListFragment.newDirectory();
-            }
-        });
+        new ScriptOperations(this, mDrawerLayout)
+                .newDirectory();
     }
 
     @Click(R.id.import_from_file)
@@ -249,12 +243,8 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                     public void onFileSelection(MaterialDialog dialog, final ScriptFile file) {
                         dialog.dismiss();
                         provider.clearCacheExceptInitialDirectory();
-                        doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
-                            @Override
-                            public void call(MyScriptListFragment myScriptListFragment) {
-                                myScriptListFragment.importFile(file.getPath());
-                            }
-                        });
+                        new ScriptOperations(MainActivity.this, mDrawerLayout)
+                                .importFile(file.getPath());
                     }
                 })
                 .title(R.string.text_please_choose_file_to_import)
@@ -324,48 +314,19 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
             case ACTION_IMPORT_SCRIPT:
                 handleImportScriptFile(intent);
                 break;
-            case ACTION_IMPORT_SAMPLE:
-                handleImportSample(intent);
-                break;
         }
     }
 
     private void handleImportScriptFile(Intent intent) {
-        mViewPager.setCurrentItem(0, true);
-        MyScriptListFragment fragment = getMyScriptListFragment();
-        if (fragment == null) {
-            mIntentToHandle = intent;
-        } else {
-            String path = intent.getStringExtra(ARGUMENT_PATH);
-            if (path != null) {
-                fragment.importFile(intent.getStringExtra(ARGUMENT_PATH));
-                return;
-            }
-            InputStream inputStream = IntentExtras.fromIntent(intent).getAndClear(ARGUMENT_INPUT_STREAM);
-            fragment.importFile("", inputStream);
+        String path = intent.getStringExtra(ARGUMENT_PATH);
+        if (path != null) {
+            new ScriptOperations(MainActivity.this, mDrawerLayout)
+                    .importFile(intent.getStringExtra(ARGUMENT_PATH));
+            return;
         }
-    }
-
-
-    private void handleImportSample(Intent intent) {
-        mViewPager.setCurrentItem(0, true);
-        MyScriptListFragment fragment = getMyScriptListFragment();
-        if (fragment == null) {
-            mIntentToHandle = intent;
-        } else {
-            final Sample sample = (Sample) intent.getSerializableExtra(ARGUMENT_SAMPLE);
-            doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
-                @Override
-                public void call(MyScriptListFragment myScriptListFragment) {
-                    try {
-                        myScriptListFragment.importFile(sample.name, getAssets().open(sample.path));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Snackbar.make(mDrawerLayout, R.string.text_import_fail, Snackbar.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        }
+        InputStream inputStream = IntentExtras.fromIntent(intent).getAndClear(ARGUMENT_INPUT_STREAM);
+        new ScriptOperations(MainActivity.this, mDrawerLayout)
+                .importFile("", inputStream);
     }
 
     private void handleRecordedScript(final String script) {
@@ -376,12 +337,8 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                     @Override
                     public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
                         if (position == 0) {
-                            doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
-                                @Override
-                                public void call(MyScriptListFragment myScriptListFragment) {
-                                    myScriptListFragment.newScriptFileForScript(script);
-                                }
-                            });
+                            new ScriptOperations(MainActivity.this, mDrawerLayout)
+                                    .newScriptFileForScript(script);
                         } else {
                             ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE))
                                     .setPrimaryClip(ClipData.newPlainText("script", script));
@@ -418,39 +375,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         context.startActivity(intent);
     }
 
-    public static void importSample(Context context, Sample sample) {
-        context.startActivity(new Intent(context, MainActivity_.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(EXTRA_ACTION, ACTION_IMPORT_SAMPLE)
-                .putExtra(ARGUMENT_SAMPLE, sample));
-    }
-
-    public void doWithMyScriptListFragment(final Callback<MyScriptListFragment> callback) {
-        MyScriptListFragment fragment = ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0));
-        if (fragment != null) {
-            callback.call(fragment);
-            return;
-        }
-        mViewPager.setCurrentItem(0);
-        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 0) {
-                    mViewPager.removeOnPageChangeListener(this);
-                    doWithMyScriptListFragment(callback);
-                }
-            }
-        });
-    }
-
-    @Nullable
-    public MyScriptListFragment getMyScriptListFragment() {
-        MyScriptListFragment fragment = ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0));
-        if (fragment == null) {
-            mViewPager.setCurrentItem(0);
-        }
-        return ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0));
-    }
 
     @Click(R.id.toolbar)
     public void OnToolbarClick() {

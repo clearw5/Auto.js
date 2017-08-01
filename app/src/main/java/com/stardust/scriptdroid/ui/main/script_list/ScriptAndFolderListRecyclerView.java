@@ -27,9 +27,18 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Stardust on 2017/3/27.
@@ -52,6 +61,12 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         void onFilesListing();
 
         void onFileListed();
+    }
+
+    public interface OnCurrentDirectoryChangeListener {
+
+        void onChange(ScriptFile oldDir, ScriptFile newDir);
+
     }
 
     public static final int VIEW_TYPE_DIRECTORY = 1;
@@ -143,8 +158,8 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
     private boolean mCanGoBack = false;
     private StorageScriptProvider mStorageScriptProvider;
     private FileProcessListener mFileProcessListener;
+    private OnCurrentDirectoryChangeListener mOnCurrentDirectoryChangeListener;
     private boolean mScriptFileOperationEnabled = true;
-    private Executor mFileListingExecutor = Executors.newSingleThreadExecutor();
 
     public ScriptAndFolderListRecyclerView(Context context) {
         super(context);
@@ -162,26 +177,31 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
     }
 
     private void setCurrentDirectory(final ScriptFile directory, boolean canGoBack) {
+        if (!directory.equals(mCurrentDirectory) && mOnCurrentDirectoryChangeListener != null) {
+            mOnCurrentDirectoryChangeListener.onChange(mCurrentDirectory, directory);
+        }
         mCurrentDirectory = directory;
         mCanGoBack = canGoBack;
         if (mFileProcessListener != null) {
             mFileProcessListener.onFilesListing();
         }
-        mFileListingExecutor.execute(new Runnable() {
+        Observable.fromPublisher(new Publisher<ScriptFile[]>() {
             @Override
-            public void run() {
-                final ScriptFile[] scriptFiles = mStorageScriptProvider.getDirectoryScriptFiles(directory);
-                post(new Runnable() {
+            public void subscribe(Subscriber<? super ScriptFile[]> s) {
+                s.onNext(mStorageScriptProvider.getDirectoryScriptFiles(directory));
+                s.onComplete();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ScriptFile[]>() {
                     @Override
-                    public void run() {
+                    public void accept(@NonNull ScriptFile[] scriptFiles) throws Exception {
                         mAdapter.setScripts(scriptFiles);
                         if (mFileProcessListener != null)
                             mFileProcessListener.onFileListed();
                         smoothScrollToPosition(0);
                     }
                 });
-            }
-        });
     }
 
     public void setCurrentDirectory(final ScriptFile directory) {
@@ -214,6 +234,10 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
 
     public void setOnItemLongClickListener(OnScriptFileLongClickListener onItemLongClickListener) {
         mOnItemLongClickListener = onItemLongClickListener;
+    }
+
+    public void setOnCurrentDirectoryChangeListener(OnCurrentDirectoryChangeListener onCurrentDirectoryChangeListener) {
+        mOnCurrentDirectoryChangeListener = onCurrentDirectoryChangeListener;
     }
 
     public ScriptFile getCurrentDirectory() {
@@ -297,7 +321,7 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         return false;
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDirectoryChange(StorageScriptProvider.DirectoryChangeEvent event) {
         if (event.directory.equals(mCurrentDirectory)) {
             updateCurrentDirectory();

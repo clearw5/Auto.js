@@ -118,6 +118,9 @@ dependencies {
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     compile 'com.ashokvarma.android:bottom-navigation-bar:2.0.1'
     compile 'com.wang.avi:library:2.1.3'
+    compile "io.reactivex.rxjava2:rxjava:2.1.0"
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+
     // Tasker Plugin
     compile 'com.twofortyfouram:android-plugin-client-sdk-for-locale:[4.0.2, 5.0['
     compile 'com.android.volley:volley:1.0.0'
