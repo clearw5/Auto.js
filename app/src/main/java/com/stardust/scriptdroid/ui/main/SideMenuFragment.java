@@ -133,7 +133,12 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
             AccessibilityServiceTool.goToAccessibilitySetting();
             return;
         }
-        final ProgressDialog progress = new ProgressDialog(getContext());
+        enableAccessibilityServiceByRoot();
+
+    }
+
+    private void enableAccessibilityServiceByRoot() {
+        final ProgressDialog progress = new ProgressDialog(getContext(), R.string.text_enable_accessibility_service_by_root_ing);
         UnderuseExecutors.execute(new Runnable() {
             @Override
             public void run() {
@@ -156,6 +161,9 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
     void setFloatingWindowEnable(CompoundButton button, boolean enable) {
         if (enable && !HoverMenuManger.isHoverMenuShowing()) {
             HoverMenuManger.showHoverMenu();
+            if (Pref.enableAccessibilityServiceByRoot()) {
+                enableAccessibilityServiceByRoot();
+            }
         } else if (!enable && HoverMenuManger.isHoverMenuShowing()) {
             HoverMenuManger.hideHoverMenu();
         }

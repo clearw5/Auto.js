@@ -47,4 +47,4 @@ require("__general__")(__runtime__, this);
 
 __importClass__(android.view.KeyEvent);
 __importClass__(com.stardust.autojs.runtime.api.Shell);
-__importClass__(com.stardust.autojs.runtime.api.InputEventSender);
+__importClass__(com.stardust.autojs.runtime.api.RootAutomator);

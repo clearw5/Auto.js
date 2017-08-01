@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.autojs;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.console.JraskaConsole;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 import com.stardust.view.accessibility.LayoutInspector;
+import com.stardust.view.accessibility.NotificationListener;
 
 
 /**
@@ -55,6 +57,7 @@ public class AutoJs {
     }
 
     private final AccessibilityActionRecorder mAccessibilityActionRecorder = new AccessibilityActionRecorder();
+    private final NotificationListener.Observer mNotificationObserver;
     private final LayoutInspector mLayoutInspector = new LayoutInspector();
     private final Context mContext;
     private final UiHandler mUiHandler;
@@ -68,6 +71,7 @@ public class AutoJs {
         mContext = context;
         mUiHandler = new UiHandler(context);
         mAppUtils = new AppUtils(context);
+        mNotificationObserver = new NotificationListener.Observer(context);
         mAccessibilityInfoProvider = new AccessibilityInfoProvider(context.getPackageManager());
         mScriptEngineService = buildScriptEngineService();
         addAccessibilityServiceDelegates();
@@ -130,6 +134,7 @@ public class AutoJs {
 
     private void addAccessibilityServiceDelegates() {
         AccessibilityService.addDelegate(100, mAccessibilityInfoProvider);
+        AccessibilityService.addDelegate(200, mNotificationObserver);
         AccessibilityService.addDelegate(300, mAccessibilityActionRecorder);
     }
 
@@ -196,6 +201,11 @@ public class AutoJs {
         @Override
         public AccessibilityInfoProvider getInfoProvider() {
             return mAccessibilityInfoProvider;
+        }
+
+        @Override
+        public NotificationListener.Observer getNotificationObserver() {
+            return mNotificationObserver;
         }
 
     }

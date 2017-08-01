@@ -14,10 +14,14 @@ public class ProgressDialog {
     private MaterialDialog mDialog;
 
     public ProgressDialog(Context context) {
+        this(context, R.string.text_on_progress);
+    }
+
+    public ProgressDialog(Context context, int resId) {
         mDialog = new MaterialDialog.Builder(context)
                 .progress(true, 0)
                 .cancelable(false)
-                .content(R.string.text_on_progress)
+                .content(resId)
                 .show();
     }
 

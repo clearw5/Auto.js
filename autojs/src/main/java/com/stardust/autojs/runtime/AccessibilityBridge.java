@@ -1,11 +1,13 @@
 package com.stardust.autojs.runtime;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 import com.stardust.view.accessibility.AccessibilityService;
+import com.stardust.view.accessibility.NotificationListener;
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -37,6 +39,7 @@ public abstract class AccessibilityBridge {
     }
 
 
+    @NonNull
     public abstract AccessibilityInfoProvider getInfoProvider();
 
 
@@ -44,4 +47,6 @@ public abstract class AccessibilityBridge {
         mMode = mode;
     }
 
+    @NonNull
+    public abstract NotificationListener.Observer getNotificationObserver();
 }
