@@ -2,7 +2,7 @@ package com.stardust.autojs.runtime.api;
 
 import android.content.Context;
 
-import com.stardust.pio.PFile;
+import com.stardust.autojs.engine.RootAutomatorEngine;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
 
@@ -18,10 +18,9 @@ import java.io.IOException;
 public class RootAutomator {
 
 
-    private static final int DATA_TYPE_SLEEP = 0;
-    private static final int DATA_TYPE_EVENT = 1;
+    public static final byte DATA_TYPE_SLEEP = 0;
+    public static final byte DATA_TYPE_EVENT = 1;
 
-    private static final String ROOT_AUTOMATOR_EXECUTABLE_ASSET = "binary/root_automator";
     private DataOutputStream mTmpFileOutputStream;
     private File mEventTmpFile;
     private ScreenMetrics mScreenMetrics;
@@ -88,24 +87,11 @@ public class RootAutomator {
     }
 
     public AbstractShell.Result writeToDevice(Context context) {
-        try {
-            mTmpFileOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (mDevicePath == null) {
+            return new RootAutomatorEngine(context).execute(mEventTmpFile.getAbsolutePath());
+        } else {
+            return new RootAutomatorEngine(context, mDevicePath).execute(mEventTmpFile.getAbsolutePath());
         }
-        String executablePath = getExecutablePath(context);
-        return ProcessShell.execCommand(new String[]{
-                "chmod 777 " + executablePath,
-                executablePath + " " + mEventTmpFile.getAbsolutePath() + " " + mDevicePath
-        }, true);
-    }
-
-    public static String getExecutablePath(Context context) {
-        File tmp = new File(context.getCacheDir(), "root_automator");
-        if (!tmp.exists()) {
-            PFile.copyAsset(context, ROOT_AUTOMATOR_EXECUTABLE_ASSET, tmp.getAbsolutePath());
-        }
-        return tmp.getAbsolutePath();
     }
 
 }

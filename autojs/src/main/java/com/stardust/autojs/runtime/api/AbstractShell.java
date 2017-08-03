@@ -106,7 +106,6 @@ public abstract class AbstractShell {
 
     private int scaleY(int y) {
         return mScreenMetrics.scaleY(y);
-
     }
 
     public void Tap(int x, int y) {
@@ -114,7 +113,7 @@ public abstract class AbstractShell {
     }
 
     public void Swipe(int x1, int y1, int x2, int y2) {
-        exec(com.stardust.util.TextUtils.join(" ", "input", "tap", scaleX(x1), scaleY(y1), scaleX(x2), scaleY(y2)));
+        exec(com.stardust.util.TextUtils.join(" ", "input", "swipe", scaleX(x1), scaleY(y1), scaleX(x2), scaleY(y2)));
     }
 
     public void Swipe(int x1, int y1, int x2, int y2, int time) {

@@ -19,7 +19,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:name=".App"
         android:allowBackup="false"
-        android:icon="@drawable/ic_android_eat_js"
+        android:icon="@drawable/autojs_material"
         android:label="@string/_app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"

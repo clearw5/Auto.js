@@ -32,7 +32,7 @@ public class InputEventToRootAutomatorConverter extends InputEventConverter {
     public void convertEvent(@NonNull Event event) {
         if (mLastEventTime == 0) {
             mLastEventTime = event.time;
-        } else if (event.time - mLastEventTime > 0.005) {
+        } else if (event.time - mLastEventTime > 0.001) {
             mCode.append("ra.sleep(").append((long) (1000L * (event.time - mLastEventTime))).append(");\n");
             mLastEventTime = event.time;
         }

@@ -12,14 +12,14 @@ import java.io.StringReader;
  * Created by Stardust on 2017/4/2.
  */
 
-public class SequenceScriptSource extends ScriptSource {
+public class SequenceScriptSource extends JavaScriptSource {
 
     private String mScript;
-    private ScriptSource mSecondScriptSource;
-    private ScriptSource mFirstScriptSource;
+    private JavaScriptSource mSecondScriptSource;
+    private JavaScriptSource mFirstScriptSource;
 
 
-    public SequenceScriptSource(String name, ScriptSource firstScriptSource, ScriptSource secondScriptSource) {
+    public SequenceScriptSource(String name, JavaScriptSource firstScriptSource, JavaScriptSource secondScriptSource) {
         super(name);
         mSecondScriptSource = secondScriptSource;
         mFirstScriptSource = firstScriptSource;

@@ -2,7 +2,6 @@ package com.stardust.scriptdroid.script;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 
 import com.stardust.autojs.execution.ExecutionConfig;
@@ -10,12 +9,10 @@ import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
-import com.stardust.autojs.script.FileScriptSource;
+import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.autojs.script.ScriptSource;
-import com.stardust.autojs.script.SequenceScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.CommonUtils;
@@ -26,8 +23,6 @@ import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.util.AssetsCache;
 
 import java.io.File;
-
-import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * Created by Stardust on 2017/5/3.
@@ -85,7 +80,7 @@ public class Scripts {
     }
 
     public static ScriptExecution run(ScriptFile file) {
-        return run(new FileScriptSource(file), file.getParent());
+        return run(file.toSource(), file.getParent());
     }
 
     public static ScriptExecution run(ScriptSource source, String directoryPath) {
@@ -114,7 +109,7 @@ public class Scripts {
     }
 
     public static ScriptExecution runRepeatedly(ScriptFile scriptFile, int loopTimes, long delay, long interval) {
-        ScriptSource source = new FileScriptSource(scriptFile);
+        ScriptSource source = new JavaScriptFileSource(scriptFile);
         String directoryPath = scriptFile.getParent();
         return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
                 .requirePath(directoryPath, StorageScriptProvider.DEFAULT_DIRECTORY_PATH)

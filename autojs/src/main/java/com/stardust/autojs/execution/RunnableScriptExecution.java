@@ -2,27 +2,24 @@ package com.stardust.autojs.execution;
 
 import android.util.Log;
 
-import com.stardust.autojs.ScriptEngineService;
-import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
+import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
-import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.script.ScriptSource;
 
 /**
  * Created by Stardust on 2017/5/1.
  */
 
-public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecution implements ScriptExecution, Runnable {
+public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecution implements Runnable {
 
-    private static final String TAG = "RunnableScriptExecution";
+    private static final String TAG = "RunnableJSExecution";
     private ScriptEngine mScriptEngine;
-    private ScriptRuntime mScriptRuntime;
-    private ScriptEngineService mScriptEngineService;
+    private ScriptEngineManager mScriptEngineManager;
 
-    public RunnableScriptExecution(ScriptEngineService service, ScriptExecutionTask task) {
+    public RunnableScriptExecution(ScriptEngineManager manager, ScriptExecutionTask task) {
         super(task);
-        mScriptEngineService = service;
+        mScriptEngineManager = manager;
     }
 
     @Override
@@ -31,14 +28,13 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
     }
 
     public Object execute() {
-        mScriptEngine = mScriptEngineService.createScriptEngine();
-        mScriptRuntime = mScriptEngineService.createScriptRuntime();
-        return execute(mScriptRuntime, mScriptEngine);
+        mScriptEngine = mScriptEngineManager.createEngineOfSourceOrThrow(getSource());
+        return execute(mScriptEngine);
     }
 
-    private Object execute(ScriptRuntime runtime, ScriptEngine engine) {
+    private Object execute(ScriptEngine engine) {
         try {
-            prepare(runtime, engine);
+            prepare(engine);
             return doExecution(engine);
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,17 +46,13 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
         return null;
     }
 
-    private void prepare(ScriptRuntime runtime, ScriptEngine engine) {
-        if ((getSource().getExecutionMode() & ScriptSource.EXECUTION_MODE_AUTO) != 0) {
-            runtime.ensureAccessibilityServiceEnabled();
-        }
-        engine.put("__runtime__", runtime);
-        engine.setTag("__require_path__", getConfig().getRequirePath());
+    private void prepare(ScriptEngine engine) {
+        engine.setTag(ScriptEngine.TAG_PATH, getConfig().getExecutePath());
         engine.init();
     }
 
     private Object doExecution(ScriptEngine engine) {
-        engine.setTag("script", getSource());
+        engine.setTag(ScriptEngine.TAG_SOURCE, getSource());
         getListener().onStart(this);
         Object result = null;
         long delay = getConfig().delay;
@@ -95,8 +87,4 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
         return mScriptEngine;
     }
 
-    @Override
-    public ScriptRuntime getRuntime() {
-        return mScriptRuntime;
-    }
 }

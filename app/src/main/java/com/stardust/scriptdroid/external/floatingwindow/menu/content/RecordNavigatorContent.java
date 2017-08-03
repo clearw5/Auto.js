@@ -159,9 +159,10 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
         mStopRecord.setVisibility(state == Recorder.STATE_STOPPED ? View.GONE : View.VISIBLE);
         mDiscardRecord.setVisibility(state == Recorder.STATE_STOPPED ? View.GONE : View.VISIBLE);
         mStartOrPauseRecordIcon.setImageResource(state == Recorder.STATE_RECORDING ? R.drawable.ic_pause_white_24dp : R.drawable.ic_play_arrow_white_48dp);
-        //我知道这样写代码会被打 但我懒...
-        mStartOrPauseRecordText.setText(state == Recorder.STATE_RECORDING ? R.string.text_pause_record :
-                state == Recorder.STATE_PAUSED ? R.string.text_resume_record : R.string.text_start_record);
+        mStartOrPauseRecordText.setText(
+                state == Recorder.STATE_RECORDING ? R.string.text_pause_record :
+                        state == Recorder.STATE_PAUSED ? R.string.text_resume_record :
+                                R.string.text_start_record);
 
     }
 
@@ -206,7 +207,11 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     @Override
     public void onStop() {
         if (!mDiscard) {
-            MainActivity.onRecordStop(mContext, mRecorder.getCode());
+            if (mRecorder instanceof TouchRecorder) {
+                MainActivity.importScriptFile(mContext, mRecorder.getCode());
+            } else {
+                MainActivity.onRecordStop(mContext, mRecorder.getCode());
+            }
         }
         mRecorder = null;
     }

@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.script.PathChecker;
-import com.stardust.autojs.script.FileScriptSource;
 import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.Scripts;

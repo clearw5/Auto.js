@@ -1,7 +1,6 @@
 package com.stardust.scriptdroid.autojs;
 
 import android.app.Activity;
-import android.app.Notification;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,7 +11,10 @@ import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.ScriptEngineServiceBuilder;
-import com.stardust.autojs.engine.RhinoJavaScriptEngineManager;
+import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
+import com.stardust.autojs.engine.RhinoJavaScriptEngine;
+import com.stardust.autojs.engine.RootAutomatorEngine;
+import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.runtime.AccessibilityBridge;
 import com.stardust.autojs.runtime.ScriptRuntime;
@@ -21,6 +23,8 @@ import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
+import com.stardust.autojs.script.AutoFileSource;
+import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
@@ -58,6 +62,7 @@ public class AutoJs {
 
     private final AccessibilityActionRecorder mAccessibilityActionRecorder = new AccessibilityActionRecorder();
     private final NotificationListener.Observer mNotificationObserver;
+    private ScriptEngineManager mScriptEngineManager;
     private final LayoutInspector mLayoutInspector = new LayoutInspector();
     private final Context mContext;
     private final UiHandler mUiHandler;
@@ -65,12 +70,14 @@ public class AutoJs {
     private final AccessibilityInfoProvider mAccessibilityInfoProvider;
     private final ScreenCaptureRequester mScreenCaptureRequester = new ScreenCaptureRequesterImpl();
     private final ScriptEngineService mScriptEngineService;
+    private final Console mGlobalConsole;
 
 
     private AutoJs(final Context context) {
         mContext = context;
         mUiHandler = new UiHandler(context);
         mAppUtils = new AppUtils(context);
+        mGlobalConsole = new JraskaConsole();
         mNotificationObserver = new NotificationListener.Observer(context);
         mAccessibilityInfoProvider = new AccessibilityInfoProvider(context.getPackageManager());
         mScriptEngineService = buildScriptEngineService();
@@ -80,31 +87,42 @@ public class AutoJs {
     }
 
     private ScriptEngineService buildScriptEngineService() {
-        ScriptEngineManager manager = createScriptEngineManager(mContext);
-        final Console globalConsole = new JraskaConsole();
+        initScriptEngineManager();
         return new ScriptEngineServiceBuilder()
                 .uiHandler(mUiHandler)
-                .globalConsole(globalConsole)
-                .engineManger(manager)
-                .runtime(new Supplier<com.stardust.autojs.runtime.ScriptRuntime>() {
-
-                    @Override
-                    public com.stardust.autojs.runtime.ScriptRuntime get() {
-                        return new ScriptRuntime.Builder()
-                                .setConsole(new StardustConsole(mUiHandler, globalConsole))
-                                .setScreenCaptureRequester(mScreenCaptureRequester)
-                                .setAccessibilityBridge(new AccessibilityBridgeImpl())
-                                .setUiHandler(mUiHandler)
-                                .setAppUtils(mAppUtils)
-                                .setShellSupplier(new Supplier<AbstractShell>() {
-                                    @Override
-                                    public AbstractShell get() {
-                                        return new Shell(mContext, true);
-                                    }
-                                }).build();
-                    }
-                })
+                .globalConsole(mGlobalConsole)
+                .engineManger(mScriptEngineManager)
                 .build();
+    }
+
+    private void initScriptEngineManager() {
+        mScriptEngineManager = new ScriptEngineManager(mContext);
+        mScriptEngineManager.registerEngine(JavaScriptSource.ENGINE, new Supplier<ScriptEngine>() {
+            @Override
+            public ScriptEngine get() {
+                LoopBasedJavaScriptEngine engine = new LoopBasedJavaScriptEngine(mContext);
+                engine.setRuntime(new ScriptRuntime.Builder()
+                        .setConsole(new StardustConsole(mUiHandler, mGlobalConsole))
+                        .setScreenCaptureRequester(mScreenCaptureRequester)
+                        .setAccessibilityBridge(new AccessibilityBridgeImpl())
+                        .setUiHandler(mUiHandler)
+                        .setAppUtils(mAppUtils)
+                        .setShellSupplier(new Supplier<AbstractShell>() {
+                            @Override
+                            public AbstractShell get() {
+                                return new Shell(mContext, true);
+                            }
+                        }).build());
+                return engine;
+            }
+        });
+        mScriptEngineManager.registerEngine(AutoFileSource.ENGINE, new Supplier<ScriptEngine>() {
+            @Override
+            public ScriptEngine get() {
+                return new RootAutomatorEngine(mContext);
+            }
+        });
+
     }
 
     private void registerActivityLifecycleCallbacks() {
@@ -126,10 +144,6 @@ public class AutoJs {
                 mAppUtils.setCurrentActivity(activity);
             }
         });
-    }
-
-    private ScriptEngineManager createScriptEngineManager(Context context) {
-        return new RhinoJavaScriptEngineManager(context);
     }
 
     private void addAccessibilityServiceDelegates() {

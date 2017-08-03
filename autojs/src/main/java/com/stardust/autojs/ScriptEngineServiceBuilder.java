@@ -1,6 +1,5 @@
 package com.stardust.autojs;
 
-import com.stardust.autojs.engine.AbstractScriptEngineManager;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.Console;
@@ -13,18 +12,12 @@ import com.stardust.util.UiHandler;
 
 public class ScriptEngineServiceBuilder {
 
-    Supplier<? extends ScriptRuntime> mRuntimeSupplier;
     ScriptEngineManager mScriptEngineManager;
     Console mGlobalConsole;
     UiHandler mUiHandler;
 
     public ScriptEngineServiceBuilder() {
 
-    }
-
-    public ScriptEngineServiceBuilder runtime(Supplier<? extends ScriptRuntime> runtimeSupplier) {
-        mRuntimeSupplier = runtimeSupplier;
-        return this;
     }
 
     public ScriptEngineServiceBuilder uiHandler(UiHandler uiHandler) {

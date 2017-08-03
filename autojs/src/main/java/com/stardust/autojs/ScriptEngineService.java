@@ -2,12 +2,12 @@ package com.stardust.autojs;
 
 import android.content.Context;
 
-import com.stardust.autojs.engine.AbstractScriptEngineManager;
+import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
-import com.stardust.autojs.execution.ScriptExecuteActivity;
 import com.stardust.autojs.execution.ExecutionConfig;
 import com.stardust.autojs.execution.RunnableScriptExecution;
+import com.stardust.autojs.execution.ScriptExecuteActivity;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.ScriptExecutionObserver;
@@ -15,9 +15,9 @@ import com.stardust.autojs.execution.ScriptExecutionTask;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.Console;
+import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.lang.ThreadCompat;
-import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
 
 import org.greenrobot.eventbus.EventBus;
@@ -44,7 +44,10 @@ public class ScriptEngineService {
     private static final ScriptExecutionListener GLOBAL_LISTENER = new SimpleScriptExecutionListener() {
         @Override
         public void onStart(ScriptExecution execution) {
-            execution.getRuntime().console.setTitle(execution.getSource().getName());
+            if (execution.getEngine() instanceof JavaScriptEngine) {
+                ((JavaScriptEngine) execution.getEngine()).getRuntime()
+                        .console.setTitle(execution.getSource().getName());
+            }
             EVENT_BUS.post(new ScriptExecutionEvent(ScriptExecutionEvent.ON_START, execution.getSource().toString()));
         }
 
@@ -54,7 +57,9 @@ public class ScriptEngineService {
         }
 
         private void onFinish(ScriptExecution execution) {
-            execution.getRuntime().onExit();
+            if (execution.getEngine() instanceof JavaScriptEngine) {
+                ((JavaScriptEngine) execution.getEngine()).getRuntime().onExit();
+            }
         }
 
         @Override
@@ -62,14 +67,16 @@ public class ScriptEngineService {
             e.printStackTrace();
             onFinish(execution);
             if (!causedByInterrupted(e)) {
-                execution.getRuntime().console.error(getScriptTrace(e));
+                if (execution.getEngine() instanceof JavaScriptEngine) {
+                    ((JavaScriptEngine) execution.getEngine()).getRuntime()
+                            .console.error(getScriptTrace(e));
+                }
                 EVENT_BUS.post(new ScriptExecutionEvent(ScriptExecutionEvent.ON_EXCEPTION, e.getMessage()));
             }
         }
     };
 
 
-    private final Supplier<? extends ScriptRuntime> mRuntimeSupplier;
     private final Context mContext;
     private UiHandler mUiHandler;
     private final Console mGlobalConsole;
@@ -78,7 +85,6 @@ public class ScriptEngineService {
     private ScriptExecutionObserver mScriptExecutionObserver = new ScriptExecutionObserver();
 
     ScriptEngineService(ScriptEngineServiceBuilder builder) {
-        mRuntimeSupplier = builder.mRuntimeSupplier;
         mUiHandler = builder.mUiHandler;
         mContext = mUiHandler.getContext();
         mScriptEngineManager = builder.mScriptEngineManager;
@@ -94,20 +100,11 @@ public class ScriptEngineService {
         return mGlobalConsole;
     }
 
-    public ScriptEngine createScriptEngine() {
-        ScriptEngine engine = mScriptEngineManager.createEngine();
-        return engine;
-    }
-
-    public ScriptRuntime createScriptRuntime() {
-        return mRuntimeSupplier.get();
-    }
-
-    public void registerEngineLifecycleCallback(AbstractScriptEngineManager.EngineLifecycleCallback engineLifecycleCallback) {
+    public void registerEngineLifecycleCallback(ScriptEngineManager.EngineLifecycleCallback engineLifecycleCallback) {
         mEngineLifecycleObserver.registerCallback(engineLifecycleCallback);
     }
 
-    public void unregisterEngineLifecycleCallback(AbstractScriptEngineManager.EngineLifecycleCallback engineLifecycleCallback) {
+    public void unregisterEngineLifecycleCallback(ScriptEngineManager.EngineLifecycleCallback engineLifecycleCallback) {
         mEngineLifecycleObserver.unregisterCallback(engineLifecycleCallback);
     }
 
@@ -125,23 +122,23 @@ public class ScriptEngineService {
         } else {
             task.setExecutionListener(mScriptExecutionObserver);
         }
-        if (isUiMode(task)) {
-            return ScriptExecuteActivity.execute(mContext, this, task);
+        ScriptSource source = task.getSource();
+        if (source instanceof JavaScriptSource && isUiMode((JavaScriptSource) source)) {
+            return ScriptExecuteActivity.execute(mContext, mScriptEngineManager, task);
         } else {
-            RunnableScriptExecution scriptExecution = new RunnableScriptExecution(this, task);
+            RunnableScriptExecution r = new RunnableScriptExecution(mScriptEngineManager, task);
             if (task.getConfig().runInNewThread) {
-                new ThreadCompat(scriptExecution).start();
+                new ThreadCompat(r).start();
             } else {
-                scriptExecution.run();
+                r.run();
             }
-            return scriptExecution;
+            return r;
         }
     }
 
-    private boolean isUiMode(ScriptExecutionTask task) {
-        ScriptSource source = task.getSource();
+    private boolean isUiMode(JavaScriptSource source) {
         int mode = source.getExecutionMode();
-        return (mode & ScriptSource.EXECUTION_MODE_UI) != 0;
+        return (mode & JavaScriptSource.EXECUTION_MODE_UI) != 0;
     }
 
     public ScriptExecution execute(ScriptSource source, ScriptExecutionListener listener, ExecutionConfig config) {
@@ -186,14 +183,14 @@ public class ScriptEngineService {
         return mScriptEngineManager.getEngines();
     }
 
-    private static class EngineLifecycleObserver implements AbstractScriptEngineManager.EngineLifecycleCallback {
+    private static class EngineLifecycleObserver implements ScriptEngineManager.EngineLifecycleCallback {
 
-        private final Set<AbstractScriptEngineManager.EngineLifecycleCallback> mEngineLifecycleCallbacks = new LinkedHashSet<>();
+        private final Set<ScriptEngineManager.EngineLifecycleCallback> mEngineLifecycleCallbacks = new LinkedHashSet<>();
 
         @Override
         public void onEngineCreate(ScriptEngine engine) {
             synchronized (mEngineLifecycleCallbacks) {
-                for (AbstractScriptEngineManager.EngineLifecycleCallback callback : mEngineLifecycleCallbacks) {
+                for (ScriptEngineManager.EngineLifecycleCallback callback : mEngineLifecycleCallbacks) {
                     callback.onEngineCreate(engine);
                 }
             }
@@ -202,20 +199,20 @@ public class ScriptEngineService {
         @Override
         public void onEngineRemove(ScriptEngine engine) {
             synchronized (mEngineLifecycleCallbacks) {
-                for (AbstractScriptEngineManager.EngineLifecycleCallback callback : mEngineLifecycleCallbacks) {
+                for (ScriptEngineManager.EngineLifecycleCallback callback : mEngineLifecycleCallbacks) {
                     callback.onEngineRemove(engine);
                 }
             }
         }
 
-        void registerCallback(AbstractScriptEngineManager.EngineLifecycleCallback callback) {
+        void registerCallback(ScriptEngineManager.EngineLifecycleCallback callback) {
             synchronized (mEngineLifecycleCallbacks) {
                 mEngineLifecycleCallbacks.add(callback);
             }
 
         }
 
-        void unregisterCallback(AbstractScriptEngineManager.EngineLifecycleCallback callback) {
+        void unregisterCallback(ScriptEngineManager.EngineLifecycleCallback callback) {
             synchronized (mEngineLifecycleCallbacks) {
                 mEngineLifecycleCallbacks.remove(callback);
             }

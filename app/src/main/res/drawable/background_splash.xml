@@ -6,7 +6,7 @@
 
     <item
         android:bottom="214dp"
-        android:drawable="@drawable/ic_android_eat_js"
+        android:drawable="@drawable/autojs_material"
         android:gravity="center"
         android:left="100dp"
         android:right="100dp"

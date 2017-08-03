@@ -3,9 +3,8 @@ package com.stardust.scriptdroid.external;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
-import com.stardust.autojs.script.FileScriptSource;
+import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.autojs.script.SequenceScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
@@ -36,7 +35,7 @@ public class CommonUtils {
         if (path == null && script != null) {
             source = new StringScriptSource(script);
         } else if (path != null && new PathChecker(context).checkAndToastError(path)) {
-            ScriptSource fileScriptSource = new FileScriptSource(path);
+            JavaScriptFileSource fileScriptSource = new JavaScriptFileSource(path);
             if (script != null) {
                 source = new SequenceScriptSource(fileScriptSource.getName(), new StringScriptSource(script), fileScriptSource);
             } else {

@@ -1,7 +1,6 @@
 package com.stardust.scriptdroid.ui.main.task;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ThemeColorRecyclerView;
@@ -12,14 +11,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.workground.WrapContentLinearLayoutManager;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.ScriptEngineService;
+import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.engine.ScriptEngine;
-import com.stardust.autojs.engine.AbstractScriptEngineManager;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
@@ -32,7 +29,7 @@ import java.util.List;
  * Created by Stardust on 2017/3/24.
  */
 
-public class TaskListRecyclerView extends ThemeColorRecyclerView implements AbstractScriptEngineManager.EngineLifecycleCallback {
+public class TaskListRecyclerView extends ThemeColorRecyclerView implements ScriptEngineManager.EngineLifecycleCallback {
 
 
     private final OnClickListener mOnItemClickListenerProxy = new OnClickListener() {
@@ -184,7 +181,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Abst
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.bind((ScriptSource) mScriptEngines.get(position).getTag("script"));
+            holder.bind((ScriptSource) mScriptEngines.get(position).getTag(ScriptEngine.TAG_SOURCE));
         }
 
         @Override

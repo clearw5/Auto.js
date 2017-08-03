@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.workground.WrapContentLinearLayoutManager;
@@ -412,13 +413,23 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
 
     private class FileViewHolder extends DefaultViewHolder {
 
+        private ImageView mIcon;
+
         FileViewHolder(View itemView) {
             super(itemView);
+            mIcon = (ImageView) itemView.findViewById(R.id.icon);
             if (mScriptFileOperationEnabled) {
                 itemView.findViewById(R.id.run).setOnClickListener(mOnRunClickListener);
             } else {
                 itemView.findViewById(R.id.run).setVisibility(GONE);
             }
+        }
+
+        @Override
+        public void bind(ScriptFile file) {
+            super.bind(file);
+            mIcon.setImageResource(file.getType() == ScriptFile.TYPE_AUTO ? R.drawable.record_icon_18
+                    : R.drawable.ic_node_js_black);
         }
     }
 

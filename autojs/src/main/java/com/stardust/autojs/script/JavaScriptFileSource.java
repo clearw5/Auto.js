@@ -1,6 +1,7 @@
 package com.stardust.autojs.script;
 
-import com.stardust.autojs.script.ScriptSource;
+import android.support.annotation.NonNull;
+
 import com.stardust.pio.PFile;
 import com.stardust.pio.UncheckedIOException;
 
@@ -13,25 +14,26 @@ import java.io.Reader;
  * Created by Stardust on 2017/4/2.
  */
 
-public class FileScriptSource extends ScriptSource {
+public class JavaScriptFileSource extends JavaScriptSource {
 
     private File mFile;
     private String mScript;
 
-    public FileScriptSource(File file) {
+    public JavaScriptFileSource(File file) {
         super(PFile.getNameWithoutExtension(file.getName()));
         mFile = file;
     }
 
-    public FileScriptSource(String path) {
+    public JavaScriptFileSource(String path) {
         this(new File(path));
     }
 
-    public FileScriptSource(String name, File file) {
+    public JavaScriptFileSource(String name, File file) {
         super(name);
         mFile = file;
     }
 
+    @NonNull
     @Override
     public String getScript() {
         if (mScript == null)
@@ -46,6 +48,10 @@ public class FileScriptSource extends ScriptSource {
         } catch (FileNotFoundException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    public File getFile() {
+        return mFile;
     }
 
     @Override

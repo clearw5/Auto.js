@@ -2,7 +2,7 @@ package com.stardust.scriptdroid.statics;
 
 import android.support.test.InstrumentationRegistry;
 
-import com.stardust.autojs.script.FileScriptSource;
+import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.util.MapEntries;
@@ -46,7 +46,7 @@ public class SQLiteStaticsStorageTest {
     public void testTwoRecord() {
         mStorage.clear();
         mStorage.record(new StringScriptSource("Name", "Script"));
-        mStorage.record(new FileScriptSource("/test/test.js"));
+        mStorage.record(new JavaScriptFileSource("/test/test.js"));
         assertEquals(mStorage.getAll(), new MapEntries<String, String>()
                 .entry("Name.js", "1")
                 .entry("/test/test.js", "1")
@@ -56,10 +56,10 @@ public class SQLiteStaticsStorageTest {
     @Test
     public void testRepeatedRecord() {
         mStorage.clear();
-        mStorage.record(new FileScriptSource("/test/test.js"));
+        mStorage.record(new JavaScriptFileSource("/test/test.js"));
         mStorage.record(new StringScriptSource("Name", "Script"));
-        mStorage.record(new FileScriptSource("/test/test.js"));
-        mStorage.record(new FileScriptSource("/test/test.js"));
+        mStorage.record(new JavaScriptFileSource("/test/test.js"));
+        mStorage.record(new JavaScriptFileSource("/test/test.js"));
         assertEquals(mStorage.getAll(), new MapEntries<String, String>()
                 .entry("Name.js", "1")
                 .entry("/test/test.js", "3")
@@ -70,7 +70,7 @@ public class SQLiteStaticsStorageTest {
     @Test
     public void getMax() throws Exception {
         mStorage.clear();
-        put(new FileScriptSource("/test/test.js"), 50);
+        put(new JavaScriptFileSource("/test/test.js"), 50);
         put(new StringScriptSource("Name4", "Script"), 10);
         put(new StringScriptSource("Name5", "Script"), 5);
         put(new StringScriptSource("Name6", "Script"), 4);

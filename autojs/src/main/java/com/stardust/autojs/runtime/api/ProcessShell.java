@@ -17,7 +17,7 @@ import java.io.Reader;
  * 来自网络~~
  */
 
-public class ProcessShell extends AbstractShell implements AutoCloseable {
+public class ProcessShell extends AbstractShell {
 
     private static final String TAG = "ProcessShell";
 
@@ -88,11 +88,6 @@ public class ProcessShell extends AbstractShell implements AutoCloseable {
     }
 
     @Override
-    public void close() {
-        exit();
-    }
-
-    @Override
     public void exitAndWaitFor() {
         exec(COMMAND_EXIT);
         waitFor();
@@ -158,7 +153,9 @@ public class ProcessShell extends AbstractShell implements AutoCloseable {
     }
 
     public static Result exec(String[] commands, boolean isRoot) {
-        try (ProcessShell shell = new ProcessShell(isRoot)) {
+        ProcessShell shell = null;
+        try {
+            shell = new ProcessShell(isRoot);
             for (String command : commands) {
                 shell.exec(command);
             }
@@ -170,6 +167,10 @@ public class ProcessShell extends AbstractShell implements AutoCloseable {
             result.result = shell.getSucceedOutput().toString();
             shell.exit();
             return result;
+        } finally {
+            if (shell != null) {
+                shell.exit();
+            }
         }
     }
 
@@ -195,7 +196,6 @@ public class ProcessShell extends AbstractShell implements AutoCloseable {
             os.writeBytes(COMMAND_EXIT);
             os.flush();
             commandResult.code = process.waitFor();
-            //获取错误信息
             successMsg = new StringBuilder();
             errorMsg = new StringBuilder();
             successResult = new BufferedReader(new InputStreamReader(process.getInputStream()));

@@ -29,7 +29,7 @@ public class ExecutionConfig implements Serializable {
         return this;
     }
 
-    public String[] getRequirePath() {
+    public String[] getExecutePath() {
         return mRequirePath;
     }
 

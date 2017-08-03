@@ -12,8 +12,6 @@ public interface ScriptExecution {
 
     ScriptEngine getEngine();
 
-    ScriptRuntime getRuntime();
-
     ScriptSource getSource();
 
     ScriptExecutionListener getListener();
@@ -30,9 +28,6 @@ public interface ScriptExecution {
 
         @Override
         public abstract ScriptEngine getEngine();
-
-        @Override
-        public abstract ScriptRuntime getRuntime();
 
         @Override
         public ScriptSource getSource() {

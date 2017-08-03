@@ -1,10 +1,12 @@
 package com.stardust.autojs.engine;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.MessageQueue;
 
 import com.stardust.autojs.runtime.api.Loopers;
+import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 
 /**
@@ -16,12 +18,12 @@ public class LoopBasedJavaScriptEngine extends RhinoJavaScriptEngine {
     private Handler mHandler;
     private boolean mLooping = false;
 
-    public LoopBasedJavaScriptEngine(RhinoJavaScriptEngineManager engineManager) {
-        super(engineManager);
+    public LoopBasedJavaScriptEngine(Context context) {
+        super(context);
     }
 
     @Override
-    public Object execute(final ScriptSource source) {
+    public Object execute(final JavaScriptSource source) {
         Runnable r = new Runnable() {
             @Override
             public void run() {

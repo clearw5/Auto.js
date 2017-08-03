@@ -9,8 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -36,10 +34,8 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
-import com.stardust.scriptdroid.external.open.ImportIntentActivity;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
-import com.stardust.scriptdroid.script.sample.Sample;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
 import com.stardust.util.IntentExtras;
@@ -54,7 +50,6 @@ import com.stardust.scriptdroid.ui.settings.SettingsActivity_;
 import com.stardust.scriptdroid.ui.update.VersionGuard;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.BackPressedHandler;
-import com.stardust.util.Callback;
 import com.stardust.util.MessageEvent;
 import com.stardust.view.DrawerAutoClose;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
@@ -68,8 +63,6 @@ import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 
 @EActivity(R.layout.activity_main)
@@ -80,13 +73,14 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private static final String LOG_TAG = "MainActivity";
     private static final String EXTRA_ACTION = "EXTRA_ACTION";
 
-    private static final String ACTION_ON_ACTION_RECORD_STOPPED = "ACTION_ON_ACTION_RECORD_STOPPED";
+    private static final String ACTION_ON_RECORD_STOP = "ACTION_ON_RECORD_STOP";
     private static final String ACTION_IMPORT_SCRIPT = "ACTION_IMPORT_SCRIPT";
     private static final String ARGUMENT_SCRIPT = "ARGUMENT_SCRIPT";
     private static final String ARGUMENT_PATH = "ARGUMENT_PATH";
     private static final String ACTION_IMPORT_SAMPLE = "I cannot find the way back to you...Eating...17.4.29";
     private static final String ARGUMENT_SAMPLE = "Take a chance on me...ok...?";
     private static final String ARGUMENT_INPUT_STREAM = "17.7.12, Hi...could we start all over again...";
+    private static final String ACTION_ON_ROOT_RECORD_STOP = "ACTION_ON_ROOT_RECORD_STOP";
 
 
     @ViewById(R.id.drawer_layout)
@@ -111,6 +105,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         mVersionGuard = new VersionGuard(this);
         showAnnunciationIfNeeded();
         //Stop download service of ad sdk
+        // FIXME: 2017/8/1 Service not stopped!
         stopService(new Intent(this, DownloadService.class));
     }
 
@@ -305,7 +300,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         if (action == null)
             return;
         switch (action) {
-            case ACTION_ON_ACTION_RECORD_STOPPED:
+            case ACTION_ON_RECORD_STOP:
                 IntentExtras extras = IntentExtras.fromIntent(intent);
                 String script = extras.get(ARGUMENT_SCRIPT);
                 extras.clear();
@@ -321,12 +316,14 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         String path = intent.getStringExtra(ARGUMENT_PATH);
         if (path != null) {
             new ScriptOperations(MainActivity.this, mDrawerLayout)
-                    .importFile(intent.getStringExtra(ARGUMENT_PATH));
+                    .importFile(intent.getStringExtra(ARGUMENT_PATH))
+                    .subscribe();
             return;
         }
         InputStream inputStream = IntentExtras.fromIntent(intent).getAndClear(ARGUMENT_INPUT_STREAM);
         new ScriptOperations(MainActivity.this, mDrawerLayout)
-                .importFile("", inputStream);
+                .importFile("", inputStream)
+                .subscribe();
     }
 
     private void handleRecordedScript(final String script) {
@@ -416,7 +413,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     public static void onRecordStop(Context context, String script) {
         Intent intent = new Intent(context, MainActivity_.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(EXTRA_ACTION, ACTION_ON_ACTION_RECORD_STOPPED);
+                .putExtra(EXTRA_ACTION, ACTION_ON_RECORD_STOP);
         IntentExtras.newExtras()
                 .put(ARGUMENT_SCRIPT, script)
                 .putInIntent(intent);
@@ -424,4 +421,11 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
 
+    public static void onRootRecordStop(Context context, String path) {
+        Intent intent = new Intent(context, MainActivity_.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(EXTRA_ACTION, ACTION_ON_ROOT_RECORD_STOP)
+                .putExtra(ARGUMENT_PATH, path);
+        context.startActivity(intent);
+    }
 }

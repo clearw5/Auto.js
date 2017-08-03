@@ -1,7 +1,11 @@
 package com.stardust.scriptdroid.script;
 
 import android.os.Environment;
+import android.renderscript.Script;
 
+import com.stardust.autojs.script.AutoFileSource;
+import com.stardust.autojs.script.JavaScriptFileSource;
+import com.stardust.autojs.script.ScriptSource;
 import com.stardust.pio.PFile;
 
 import java.io.File;
@@ -15,8 +19,15 @@ import java.util.ArrayList;
 
 public class ScriptFile extends File {
 
+    public static final int TYPE_UNKNOWN = 0;
+    public static final int TYPE_AUTO = 1;
+    public static final int TYPE_JAVA_SCRIPT = 2;
+
+    private int mType = -1;
+
     private String mSimplifyPath;
     private String mSimplifiedName;
+
 
     public ScriptFile(String path) {
         super(path);
@@ -51,6 +62,15 @@ public class ScriptFile extends File {
         return mSimplifyPath;
     }
 
+    public int getType() {
+        if (mType == -1) {
+            mType = getName().endsWith(".js") ? TYPE_JAVA_SCRIPT :
+                    getName().endsWith(".auto") ? TYPE_AUTO :
+                            TYPE_UNKNOWN;
+        }
+        return mType;
+    }
+
     @Override
     public ScriptFile getParentFile() {
         String p = this.getParent();
@@ -64,7 +84,8 @@ public class ScriptFile extends File {
         return listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {
-                return (file.isDirectory() || file.getName().endsWith(".js")) && !file.getName().startsWith(".");
+                return (file.getName().endsWith(".js") || file.getName().endsWith(".auto") ||
+                        file.isDirectory()) && !file.getName().startsWith(".");
             }
         });
     }
@@ -100,5 +121,13 @@ public class ScriptFile extends File {
 
     public boolean moveTo(ScriptFile to) {
         return renameTo(new File(to, getName()));
+    }
+
+    public ScriptSource toSource(){
+        if(getType() == TYPE_JAVA_SCRIPT){
+            return new JavaScriptFileSource(this);
+        }else {
+            return new AutoFileSource(this);
+        }
     }
 }

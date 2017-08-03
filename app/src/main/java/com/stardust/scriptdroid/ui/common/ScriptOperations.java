@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.ui.common;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.text.InputType;
@@ -64,11 +65,11 @@ public class ScriptOperations {
     }
 
     public void newScriptFileForScript(final String script) {
-        showFileNameInputDialog("")
+        showFileNameInputDialog("", "js")
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(@io.reactivex.annotations.NonNull String input) throws Exception {
-                        createScriptFile(getCurrentDirectoryPath() + input + ".js", script);
+                        createScriptFile(getCurrentDirectoryPath() + input + ".js", script, false);
                     }
                 });
     }
@@ -81,7 +82,7 @@ public class ScriptOperations {
         return mCurrentDirectory;
     }
 
-    public void createScriptFile(String path, String script) {
+    public void createScriptFile(String path, String script, boolean edit) {
         if (PFile.createIfNotExists(path)) {
             if (script != null) {
                 try {
@@ -91,7 +92,8 @@ public class ScriptOperations {
                 }
             }
             notifyScriptFileChanged();
-            Scripts.edit(path);
+            if (edit)
+                Scripts.edit(path);
         } else {
             Snackbar.make(mView, R.string.text_create_fail, Snackbar.LENGTH_LONG).show();
         }
@@ -102,16 +104,25 @@ public class ScriptOperations {
     }
 
     public Observable<String> importFile(final String pathFrom) {
-        try {
-            return importFile(PFile.getNameWithoutExtension(pathFrom), new FileInputStream(pathFrom));
-        } catch (FileNotFoundException e) {
-            showMessage(R.string.file_not_exists);
-            return Observable.error(e);
-        }
+        return showFileNameInputDialog(PFile.getNameWithoutExtension(pathFrom), PFile.getExtension(pathFrom))
+                .observeOn(Schedulers.io())
+                .map(new Function<String, String>() {
+                    @Override
+                    public String apply(@io.reactivex.annotations.NonNull String s) throws Exception {
+                        final String pathTo = getCurrentDirectoryPath() + s + "." + PFile.getExtension(pathFrom);
+                        if (PFile.copy(pathFrom, pathTo)) {
+                            showMessage(R.string.text_import_succeed);
+                        } else {
+                            showMessage(R.string.text_import_fail);
+                        }
+                        notifyScriptFileChanged();
+                        return pathTo;
+                    }
+                });
     }
 
     public Observable<String> importFile(String prefix, final InputStream inputStream) {
-        return showFileNameInputDialog(PFile.getNameWithoutExtension(prefix))
+        return showFileNameInputDialog(PFile.getNameWithoutExtension(prefix), "js")
                 .observeOn(Schedulers.io())
                 .map(new Function<String, String>() {
                     @Override
@@ -130,7 +141,7 @@ public class ScriptOperations {
 
 
     public void newDirectory() {
-        showNameInputDialog("", new InputCallback(true))
+        showNameInputDialog("", new InputCallback())
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(@io.reactivex.annotations.NonNull String path) throws Exception {
@@ -158,8 +169,8 @@ public class ScriptOperations {
     }
 
 
-    private Observable<String> showFileNameInputDialog(String prefix) {
-        return showNameInputDialog(prefix, new InputCallback(false));
+    private Observable<String> showFileNameInputDialog(String prefix, String ext) {
+        return showNameInputDialog(prefix, new InputCallback(ext));
     }
 
     private Observable<String> showNameInputDialog(String prefix, MaterialDialog.InputCallback textWatcher) {
@@ -196,7 +207,8 @@ public class ScriptOperations {
 
     public Observable<Boolean> rename(final ScriptFile file) {
         String originalName = file.getSimplifiedName();
-        return showNameInputDialog(originalName, new InputCallback(file.isDirectory(), originalName))
+        return showNameInputDialog(originalName, new InputCallback(file.isDirectory() ? null : PFile.getExtension(file.getName()),
+                originalName))
                 .map(new Function<String, Boolean>() {
                     @Override
                     public Boolean apply(@io.reactivex.annotations.NonNull String newName) throws Exception {
@@ -207,17 +219,21 @@ public class ScriptOperations {
 
     private class InputCallback implements MaterialDialog.InputCallback {
 
-        private boolean mIsDirectory = false;
         private String mExcluded;
         private boolean mIsFirstTextChanged = true;
+        private String mExtension;
 
-        InputCallback(boolean isDirectory, String excluded) {
-            mIsDirectory = isDirectory;
+        InputCallback(@Nullable String ext, String excluded) {
+            mExtension = "." + ext;
             mExcluded = excluded;
         }
 
-        InputCallback(boolean isDirectory) {
-            mIsDirectory = isDirectory;
+        InputCallback(String ext) {
+            this(ext, null);
+        }
+
+        public InputCallback() {
+            this(null);
         }
 
         @Override
@@ -233,7 +249,7 @@ public class ScriptOperations {
             if (input == null || input.length() == 0) {
                 errorResId = R.string.text_name_should_not_be_empty;
             } else if (!input.equals(mExcluded)) {
-                if (new File(getCurrentDirectory(), mIsDirectory ? input.toString() : input.toString() + ".js").exists()) {
+                if (new File(getCurrentDirectory(), mExtension == null ? input.toString() : input.toString() + mExtension).exists()) {
                     errorResId = R.string.text_file_exists;
                 }
             }

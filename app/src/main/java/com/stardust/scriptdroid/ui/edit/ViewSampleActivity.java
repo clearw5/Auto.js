@@ -16,6 +16,7 @@ import com.jecelyin.editor.v2.ui.EditorDelegate;
 import com.jecelyin.editor.v2.view.EditorView;
 import com.jecelyin.editor.v2.view.menu.MenuDef;
 import com.stardust.app.OnActivityResultDelegate;
+import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.scriptdroid.R;
@@ -27,7 +28,6 @@ import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Utils;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
-import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.AssetsCache;
 import com.stardust.util.SparseArrayEntries;
@@ -182,7 +182,7 @@ public class ViewSampleActivity extends Editor920Activity implements OnActivityR
 
     private void showConsole() {
         if (mScriptExecution != null) {
-            mScriptExecution.getRuntime().console.show();
+            ((JavaScriptEngine) mScriptExecution.getEngine()).getRuntime().console.show();
         }
     }
 

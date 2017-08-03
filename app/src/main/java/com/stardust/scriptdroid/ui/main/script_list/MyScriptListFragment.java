@@ -94,7 +94,12 @@ public class MyScriptListFragment extends Fragment {
         mScriptListRecyclerView.setOnItemClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileClickListener() {
             @Override
             public void onClick(ScriptFile file, int position) {
-                EditActivity.editFile(getContext(), file);
+                if (file.getType() == ScriptFile.TYPE_JAVA_SCRIPT) {
+                    Scripts.edit(file);
+                } else {
+                    mSelectedScriptFile = file;
+                    mScriptFileOperationDialog.show();
+                }
             }
         });
         mScriptListRecyclerView.setOnItemLongClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileLongClickListener() {
