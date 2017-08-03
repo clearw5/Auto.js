@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.ProcessShell;
+import com.stardust.autojs.runtime.api.Shell;
 import com.stardust.autojs.runtime.record.inputevent.InputDevices;
 import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptFileSource;
@@ -31,6 +32,7 @@ public class RootAutomatorEngine extends ScriptEngine.AbstractScriptEngine<AutoF
     private Context mContext;
     private String mDeviceNameOrPath;
     private Thread mThread;
+    private String mExecutablePath;
 
     public RootAutomatorEngine(Context context, String deviceNameOrPath) {
         mContext = context;
@@ -54,10 +56,10 @@ public class RootAutomatorEngine extends ScriptEngine.AbstractScriptEngine<AutoF
     }
 
     public AbstractShell.Result execute(String autoFile) {
-        String executablePath = getExecutablePath(mContext);
+        mExecutablePath = getExecutablePath(mContext);
         AbstractShell.Result r = ProcessShell.execCommand(new String[]{
-                "chmod 777 " + executablePath,
-                executablePath + " " + autoFile + " -d " + mDeviceNameOrPath
+                "chmod 777 " + mExecutablePath,
+                mExecutablePath + " \"" + autoFile + "\" -d " + mDeviceNameOrPath
         }, true);
         Log.d(LOG_TAG, "exec: " + autoFile + " result:" + r);
         return r;
@@ -91,6 +93,7 @@ public class RootAutomatorEngine extends ScriptEngine.AbstractScriptEngine<AutoF
 
     @Override
     public void forceStop() {
+        ProcessShell.exec("killall " + mExecutablePath, true);
         mThread.interrupt();
     }
 

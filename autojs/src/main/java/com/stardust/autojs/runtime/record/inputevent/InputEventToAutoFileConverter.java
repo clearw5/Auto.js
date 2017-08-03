@@ -1,5 +1,6 @@
 package com.stardust.autojs.runtime.record.inputevent;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.stardust.autojs.engine.RootAutomatorEngine;
@@ -11,6 +12,8 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Stardust on 2017/8/2.
@@ -23,9 +26,10 @@ public class InputEventToAutoFileConverter extends InputEventConverter {
     private DataOutputStream mDataOutputStream;
     private File mTmpFile;
 
-    public InputEventToAutoFileConverter() {
+    public InputEventToAutoFileConverter(Context context) {
         try {
-            mTmpFile = File.createTempFile("Record" + System.currentTimeMillis(), ".auto");
+            mTmpFile = new File(context.getCacheDir(), SimpleDateFormat.getDateTimeInstance().format(new Date()) + ".auto");
+            mTmpFile.deleteOnExit();
             mDataOutputStream = new DataOutputStream(new FileOutputStream(mTmpFile));
             writeFileHeader();
         } catch (IOException e) {

@@ -3,6 +3,7 @@ package com.stardust.autojs.runtime.api;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.stardust.autojs.engine.RootAutomatorEngine;
 import com.stardust.util.ScreenMetrics;
 
 /**
@@ -33,7 +34,7 @@ public abstract class AbstractShell {
     static final String COMMAND_LINE_END = "\n";
 
 
-    private int mTouchDevice;
+    private int mTouchDevice = -1;
     private ScreenMetrics mScreenMetrics;
 
     private boolean mRoot;
@@ -50,6 +51,8 @@ public abstract class AbstractShell {
     public AbstractShell(Context context, boolean root) {
         mContext = context;
         mRoot = root;
+        if (context != null)
+            mTouchDevice = RootAutomatorEngine.getTouchDevice(context);
         init(root ? COMMAND_SU : COMMAND_SH);
     }
 
@@ -64,6 +67,8 @@ public abstract class AbstractShell {
     public abstract void exit();
 
     public void SetTouchDevice(int touchDevice) {
+        if (mTouchDevice > 0)
+            return;
         mTouchDevice = touchDevice;
     }
 

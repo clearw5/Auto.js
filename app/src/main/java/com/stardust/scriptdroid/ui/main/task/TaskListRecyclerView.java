@@ -8,18 +8,23 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.workground.WrapContentLinearLayoutManager;
 
 import com.stardust.autojs.ScriptEngineService;
+import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.engine.ScriptEngine;
+import com.stardust.autojs.script.AutoFileSource;
+import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.script.ScriptFile;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
@@ -139,7 +144,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
     }
 
     private void onScriptANR(final ScriptEngine engine) {
-        // TODO: 2017/7/19 强制停止
+        // TODO: 2017/7/19 强制停止aq1sws2
     }
 
     @Override
@@ -192,6 +197,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
 
     private class ViewHolder extends RecyclerView.ViewHolder {
 
+        ImageView icon;
         TextView name, detail;
         View stop;
 
@@ -200,6 +206,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
             itemView.setOnClickListener(mOnItemClickListenerProxy);
             name = (TextView) itemView.findViewById(R.id.name);
             detail = (TextView) itemView.findViewById(R.id.detail);
+            icon = (ImageView) itemView.findViewById(R.id.icon);
             stop = itemView.findViewById(R.id.stop);
             stop.setOnClickListener(mOnStopClickListener);
         }
@@ -209,6 +216,9 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
                 return;
             name.setText(source.getName());
             detail.setText(source.toString());
+            //ignore android studio warning: use equals to compare string
+            icon.setImageResource(source.getEngineName() == AutoFileSource.ENGINE ? R.drawable.record_icon_18
+                    : R.drawable.ic_node_js_black);
         }
     }
 

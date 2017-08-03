@@ -109,7 +109,7 @@ public class Scripts {
     }
 
     public static ScriptExecution runRepeatedly(ScriptFile scriptFile, int loopTimes, long delay, long interval) {
-        ScriptSource source = new JavaScriptFileSource(scriptFile);
+        ScriptSource source = scriptFile.toSource();
         String directoryPath = scriptFile.getParent();
         return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
                 .requirePath(directoryPath, StorageScriptProvider.DEFAULT_DIRECTORY_PATH)

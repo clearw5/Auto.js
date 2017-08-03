@@ -3,12 +3,15 @@ package com.stardust.autojs.runtime.api;
 
 import android.util.Log;
 
+import com.stardust.autojs.util.ProcessUtils;
 import com.stardust.pio.UncheckedIOException;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 
 /**
@@ -176,13 +179,10 @@ public class ProcessShell extends AbstractShell {
 
     public static Result execCommand(String[] commands, boolean isRoot) {
         Result commandResult = new Result();
-        if (commands == null || commands.length == 0) return commandResult;
+        if (commands == null || commands.length == 0)
+            throw new IllegalArgumentException("command is empty");
         Process process = null;
         DataOutputStream os = null;
-        BufferedReader successResult = null;
-        BufferedReader errorResult = null;
-        StringBuilder successMsg = null;
-        StringBuilder errorMsg = null;
         try {
             process = Runtime.getRuntime().exec(isRoot ? COMMAND_SU : COMMAND_SH);
             os = new DataOutputStream(process.getOutputStream());
@@ -196,39 +196,36 @@ public class ProcessShell extends AbstractShell {
             os.writeBytes(COMMAND_EXIT);
             os.flush();
             commandResult.code = process.waitFor();
-            successMsg = new StringBuilder();
-            errorMsg = new StringBuilder();
-            successResult = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            errorResult = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            String s;
-            while ((s = successResult.readLine()) != null) successMsg.append(s);
-            while ((s = errorResult.readLine()) != null) errorMsg.append(s);
-            commandResult.result = successMsg.toString();
-            commandResult.error = errorMsg.toString();
-            Log.i(TAG, commandResult.toString());
+            commandResult.result = readAll(process.getInputStream());
+            commandResult.error = readAll(process.getErrorStream());
+            Log.d(TAG, commandResult.toString());
         } catch (Exception e) {
-            String errmsg = e.getMessage();
-            if (errmsg != null) {
-                Log.e(TAG, errmsg);
-            } else {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
         } finally {
             try {
                 if (os != null) os.close();
-                if (successResult != null) successResult.close();
-                if (errorResult != null) errorResult.close();
-            } catch (IOException e) {
-                String errMsg = e.getMessage();
-                if (errMsg != null) {
-                    Log.e(TAG, errMsg);
-                } else {
-                    e.printStackTrace();
+                if (process != null) {
+                    process.getInputStream().close();
+                    process.getOutputStream().close();
                 }
+            } catch (IOException ignored) {
+
             }
-            if (process != null) process.destroy();
+            if (process != null) {
+                process.destroy();
+            }
         }
         return commandResult;
+    }
+
+    private static String readAll(InputStream inputStream) throws IOException {
+        String line;
+        StringBuilder builder = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        while ((line = reader.readLine()) != null) {
+            builder.append(line);
+        }
+        return builder.toString();
     }
 
     public static Result execCommand(String command, boolean isRoot) {

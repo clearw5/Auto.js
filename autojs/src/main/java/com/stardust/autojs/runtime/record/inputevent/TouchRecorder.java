@@ -9,7 +9,7 @@ import android.content.Context;
 public class TouchRecorder extends InputEventRecorder {
 
     public TouchRecorder(Context context) {
-        super(context, new InputEventToAutoFileConverter());
+        super(context, new InputEventToAutoFileConverter(context));
         listen();
     }
 

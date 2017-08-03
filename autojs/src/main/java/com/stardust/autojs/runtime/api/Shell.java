@@ -25,7 +25,7 @@ import jackpal.androidterm.util.TermSettings;
  * Created by Stardust on 2017/4/24.
  */
 
-public class Shell extends AbstractShell implements AutoCloseable {
+public class Shell extends AbstractShell {
 
     public interface Callback {
 
@@ -181,10 +181,6 @@ public class Shell extends AbstractShell implements AutoCloseable {
         }
     }
 
-    @Override
-    public void close() {
-        exit();
-    }
 
     private class MyShellTermSession extends ShellTermSession {
 
