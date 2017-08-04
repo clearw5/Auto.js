@@ -35,4 +35,8 @@ public class AutoFileSource extends ScriptSource {
         return mFile;
     }
 
+    @Override
+    public String toString() {
+        return mFile.toString();
+    }
 }

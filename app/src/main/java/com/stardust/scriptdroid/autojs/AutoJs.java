@@ -23,6 +23,7 @@ import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
+import com.stardust.autojs.runtime.record.inputevent.InputEventObserver;
 import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.scriptdroid.App;
@@ -84,6 +85,7 @@ public class AutoJs {
         addAccessibilityServiceDelegates();
         mScriptEngineService.registerGlobalScriptExecutionListener(new ScriptExecutionGlobalListener());
         registerActivityLifecycleCallbacks();
+        InputEventObserver.initGlobal(context);
     }
 
     private ScriptEngineService buildScriptEngineService() {
@@ -107,6 +109,7 @@ public class AutoJs {
                         .setAccessibilityBridge(new AccessibilityBridgeImpl())
                         .setUiHandler(mUiHandler)
                         .setAppUtils(mAppUtils)
+                        .setEngineService(mScriptEngineService)
                         .setShellSupplier(new Supplier<AbstractShell>() {
                             @Override
                             public AbstractShell get() {

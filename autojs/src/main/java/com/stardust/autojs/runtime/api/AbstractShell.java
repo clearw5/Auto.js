@@ -102,6 +102,8 @@ public abstract class AbstractShell {
     }
 
     private int scaleX(int x) {
+        if (mScreenMetrics == null)
+            return x;
         return mScreenMetrics.scaleX(x);
     }
 
@@ -110,6 +112,8 @@ public abstract class AbstractShell {
     }
 
     private int scaleY(int y) {
+        if (mScreenMetrics == null)
+            return y;
         return mScreenMetrics.scaleY(y);
     }
 

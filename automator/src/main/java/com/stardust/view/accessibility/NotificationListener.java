@@ -7,9 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.stardust.util.ArrayUtils;
-
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +19,59 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public interface NotificationListener {
 
-    void onNotification(AccessibilityEvent event, String[] notification);
+    class NotificationInfo {
+
+        private String mPackageName;
+        private String mText;
+        private List<String> mTexts;
+
+        public NotificationInfo(String packageName, List<String> texts) {
+            mPackageName = packageName;
+            mTexts = texts;
+            if (mTexts.size() > 0) {
+                mText = mTexts.get(0);
+            }
+        }
+
+        public NotificationInfo(CharSequence packageName, List<CharSequence> list) {
+            mPackageName = packageName.toString();
+            mTexts = new ArrayList<>(list.size());
+            for (CharSequence text : list) {
+                mTexts.add(text.toString());
+            }
+            if (mTexts.size() > 0) {
+                mText = mTexts.get(0);
+            }
+        }
+
+
+        public static NotificationInfo fromEvent(AccessibilityEvent event) {
+            return new NotificationInfo(event.getPackageName(), event.getText());
+        }
+
+        public String getPackageName() {
+            return mPackageName;
+        }
+
+        public String getText() {
+            return mText;
+        }
+
+        public List<String> getTexts() {
+            return mTexts;
+        }
+
+        @Override
+        public String toString() {
+            return "NotificationInfo{" +
+                    "packageName='" + mPackageName + '\'' +
+                    ", text='" + mText + '\'' +
+                    ", texts=" + mTexts +
+                    '}';
+        }
+    }
+
+    void onNotification(AccessibilityEvent event, NotificationInfo notification);
 
     void onNotification(AccessibilityEvent event, Notification notification);
 
@@ -40,12 +90,12 @@ public interface NotificationListener {
         }
 
         @Override
-        public void onNotification(AccessibilityEvent event, String[] notification) {
+        public void onNotification(AccessibilityEvent event, NotificationInfo notification) {
             for (NotificationListener listener : mNotificationListeners) {
                 try {
                     listener.onNotification(event, notification);
                 } catch (Exception e) {
-                    Log.e(TAG, "Error onNotification: " + Arrays.toString(notification) + " Listener: " + listener, e);
+                    Log.e(TAG, "Error onNotification: " + notification + " Listener: " + listener, e);
                 }
             }
         }
@@ -82,7 +132,7 @@ public interface NotificationListener {
                     return false;
                 }
                 if (list != null) {
-                    onNotification(event, ArrayUtils.toStringArray(list));
+                    onNotification(event, new NotificationInfo(event.getPackageName(), list));
                 }
             }
             return false;

@@ -5,11 +5,13 @@ import android.os.Build;
 import android.os.Looper;
 
 import com.stardust.autojs.R;
+import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.rhino.AndroidClassLoader;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
+import com.stardust.autojs.runtime.api.Engines;
 import com.stardust.autojs.runtime.api.Events;
 import com.stardust.autojs.runtime.api.Loopers;
 import com.stardust.autojs.runtime.api.ScriptBridges;
@@ -55,6 +57,7 @@ public class ScriptRuntime {
         private Supplier<AbstractShell> mShellSupplier;
         private ScreenCaptureRequester mScreenCaptureRequester;
         private AppUtils mAppUtils;
+        private ScriptEngineService mEngineService;
 
         public Builder() {
 
@@ -89,6 +92,12 @@ public class ScriptRuntime {
             mAppUtils = appUtils;
             return this;
         }
+
+        public Builder setEngineService(ScriptEngineService service) {
+            mEngineService = service;
+            return this;
+        }
+
 
         public ScriptRuntime build() {
             return new ScriptRuntime(this);
@@ -130,6 +139,9 @@ public class ScriptRuntime {
     @ScriptVariable
     public final AccessibilityBridge accessibilityBridge;
 
+    @ScriptVariable
+    public final Engines engines;
+
     private Images images;
 
     private static WeakReference<Context> applicationContext;
@@ -154,6 +166,7 @@ public class ScriptRuntime {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             images = new Images(context, this, builder.mScreenCaptureRequester);
         }
+        engines = new Engines(builder.mEngineService);
         dialogs = new Dialogs(app, mUiHandler);
     }
 

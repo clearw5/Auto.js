@@ -2,6 +2,7 @@ package com.stardust.autojs.runtime.record.inputevent;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.stardust.autojs.engine.RootAutomatorEngine;
 import com.stardust.autojs.runtime.api.RootAutomator;
@@ -19,14 +20,15 @@ import java.util.Date;
  * Created by Stardust on 2017/8/2.
  */
 
-public class InputEventToAutoFileConverter extends InputEventConverter {
+public class InputEventToAutoFileRecorder extends InputEventRecorder {
 
+    private static final String LOG_TAG = "InputEventToAutoFileRec";
     private double mLastEventTime;
     private int mTouchDevice = -1;
     private DataOutputStream mDataOutputStream;
     private File mTmpFile;
 
-    public InputEventToAutoFileConverter(Context context) {
+    public InputEventToAutoFileRecorder(Context context) {
         try {
             mTmpFile = new File(context.getCacheDir(), SimpleDateFormat.getDateTimeInstance().format(new Date()) + ".auto");
             mTmpFile.deleteOnExit();
@@ -49,16 +51,17 @@ public class InputEventToAutoFileConverter extends InputEventConverter {
 
 
     @Override
-    public void convertEvent(@NonNull InputEventConverter.Event event) {
+    public void recordInputEvent(@NonNull InputEventObserver.InputEvent event) {
         try {
             convertEventOrThrow(event);
+            Log.d(LOG_TAG, "recordInputEvent: " + event);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
-    private void convertEventOrThrow(Event event) throws IOException {
+    private void convertEventOrThrow(InputEventObserver.InputEvent event) throws IOException {
         if (mLastEventTime == 0) {
             mLastEventTime = event.time;
         } else if (event.time - mLastEventTime > 0.001) {
@@ -84,12 +87,6 @@ public class InputEventToAutoFileConverter extends InputEventConverter {
         mDataOutputStream.writeShort(type);
         mDataOutputStream.writeShort(code);
         mDataOutputStream.writeInt(value);
-    }
-
-
-    @Override
-    public String getGetEventCommand() {
-        return "getevent -t";
     }
 
     public String getCode() {

@@ -9,6 +9,7 @@ import android.view.accessibility.AccessibilityEvent;
 
 import com.stardust.autojs.runtime.AccessibilityBridge;
 import com.stardust.autojs.runtime.ScriptException;
+import com.stardust.autojs.runtime.record.inputevent.InputEventObserver;
 import com.stardust.autojs.runtime.record.inputevent.TouchObserver;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.NotificationListener;
@@ -68,7 +69,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
             return;
         ensureHandler();
         mLoopers.waitWhenIdle(true);
-        mTouchObserver = new TouchObserver(mContext);
+        mTouchObserver = new TouchObserver(InputEventObserver.getGlobal());
         mTouchObserver.setOnTouchEventListener(this);
         mTouchObserver.observe();
     }
@@ -126,6 +127,9 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
         if (mListeningNotification)
             return;
         mListeningNotification = true;
+        ensureHandler();
+        mLoopers.waitWhenIdle(true);
+        mAccessibilityBridge.ensureServiceEnabled();
         mAccessibilityBridge.getNotificationObserver()
                 .addListener(this);
     }
@@ -192,11 +196,11 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
 
 
     @Override
-    public void onNotification(final AccessibilityEvent event, final String[] notification) {
+    public void onNotification(final AccessibilityEvent event, final NotificationInfo notification) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                emit("toast", new Object[]{notification});
+                emit("toast", notification);
             }
         });
     }
@@ -206,7 +210,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                emit("notification", notification);
+                emit("notification", NotificationInfo.fromEvent(event), notification);
             }
         });
 

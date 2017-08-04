@@ -63,6 +63,18 @@ public class AppUtils {
     }
 
     @ScriptInterface
+    public String getAppName(String packageName) {
+        PackageManager packageManager = mContext.getPackageManager();
+        try {
+            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(packageName, 0);
+            CharSequence appName = packageManager.getApplicationLabel(applicationInfo);
+            return appName == null ? null : appName.toString();
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
+    }
+
+    @ScriptInterface
     public boolean openAppSetting(String packageName) {
         return IntentUtil.goToAppDetailSettings(mContext, packageName);
     }

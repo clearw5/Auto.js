@@ -2,9 +2,6 @@ package com.stardust.autojs.runtime.record.inputevent;
 
 import android.support.annotation.NonNull;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static com.stardust.util.ScreenMetrics.getDeviceScreenHeight;
 import static com.stardust.util.ScreenMetrics.getDeviceScreenWidth;
 
@@ -12,7 +9,7 @@ import static com.stardust.util.ScreenMetrics.getDeviceScreenWidth;
  * Created by Stardust on 2017/8/1.
  */
 
-public class InputEventToRootAutomatorConverter extends InputEventConverter {
+public class InputEventToRootAutomatorRecorder extends InputEventRecorder {
 
 
     private double mLastEventTime;
@@ -21,7 +18,7 @@ public class InputEventToRootAutomatorConverter extends InputEventConverter {
     private int mLastTouchX = -1;
     private int mLastTouchY = -1;
 
-    public InputEventToRootAutomatorConverter() {
+    public InputEventToRootAutomatorRecorder() {
         mCode.append("var ra = new RootAutomator();\n")
                 .append("ra.setScreenMetrics(").append(getDeviceScreenWidth()).append(", ")
                 .append(getDeviceScreenHeight()).append(");\n");
@@ -29,7 +26,7 @@ public class InputEventToRootAutomatorConverter extends InputEventConverter {
 
 
     @Override
-    public void convertEvent(@NonNull Event event) {
+    public void recordInputEvent(@NonNull InputEventObserver.InputEvent event) {
         if (mLastEventTime == 0) {
             mLastEventTime = event.time;
         } else if (event.time - mLastEventTime > 0.001) {
@@ -99,11 +96,6 @@ public class InputEventToRootAutomatorConverter extends InputEventConverter {
     private void setTouchDevice(int i) {
         mCode.append("ra.setInputDevice(").append(i).append(");\n");
         mTouchDevice = i;
-    }
-
-    @Override
-    public String getGetEventCommand() {
-        return "getevent -t";
     }
 
     public String getCode() {

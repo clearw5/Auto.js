@@ -47,7 +47,7 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
     }
 
     private void prepare(ScriptEngine engine) {
-        engine.setTag(ScriptEngine.TAG_PATH, getConfig().getExecutePath());
+        engine.setTag(ScriptEngine.TAG_PATH, getConfig().getPath());
         engine.init();
     }
 

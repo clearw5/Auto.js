@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.stardust.autojs.runtime.record.Recorder;
 import com.stardust.autojs.runtime.record.accessibility.AccessibilityActionRecorder;
+import com.stardust.autojs.runtime.record.inputevent.InputEventObserver;
 import com.stardust.autojs.runtime.record.inputevent.KeyObserver;
 import com.stardust.autojs.runtime.record.inputevent.TouchRecorder;
 import com.stardust.scriptdroid.App;
@@ -61,9 +62,11 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
 
     private Recorder mRecorder;
+    private TouchRecorder mTouchRecorder;
     private Context mContext;
     private boolean mDiscard = false;
     private KeyObserver mKeyObserver;
+    private InputEventObserver mInputEventObserver = InputEventObserver.getGlobal();
     private OnKeyListener mVolumeKeyListener = new OnKeyListener() {
         @Override
         public void onKeyEvent(int keyCode, KeyEvent event) {
@@ -72,7 +75,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
                     && Pref.isRecordVolumeControlEnable()) {
                 if (mRecorder == null) {
                     startRecord();
-                } else if (alreadyStartedRecord()) {
+                } else if (alreadyStartRecord()) {
                     stopRecord();
                 }
             }
@@ -85,9 +88,10 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
         ButterKnife.bind(this, mView);
         HoverMenuService.getEventBus().register(this);
         AccessibilityService.getStickOnKeyObserver().addListener(mVolumeKeyListener);
+        mTouchRecorder = TouchRecorder.getGlobal(context);
         if (Pref.hasRecordTrigger()) {
-            mKeyObserver = new KeyObserver(mContext);
-            mKeyObserver.startListening();
+            mKeyObserver = new KeyObserver();
+            mInputEventObserver.addListener(mKeyObserver);
             mKeyObserver.setKeyListener(this);
         }
     }
@@ -148,7 +152,12 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
     private void startRecord() {
         mDiscard = false;
-        mRecorder = mRecordedByRootSwitch.isChecked() ? new TouchRecorder(mContext) : AutoJs.getInstance().getAccessibilityActionRecorder();
+        if (mRecordedByRootSwitch.isChecked()) {
+            mTouchRecorder.reset();
+            mRecorder = mTouchRecorder;
+        } else {
+            mRecorder = AutoJs.getInstance().getAccessibilityActionRecorder();
+        }
         mRecorder.setOnStateChangedListener(this);
         mRecorder.start();
         setState(Recorder.STATE_RECORDING);
@@ -187,9 +196,8 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     public void onMenuExit() {
         HoverMenuService.getEventBus().unregister(this);
         AccessibilityService.getStickOnKeyObserver().addListener(mVolumeKeyListener);
-        if (mKeyObserver != null) {
-            mKeyObserver.stopListening();
-        }
+        mInputEventObserver.recycle();
+        mInputEventObserver.removeListener(mKeyObserver);
     }
 
     @Subscribe
@@ -228,7 +236,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     @Override
     public void onKeyDown(String keyName) {
         if (keyName.equals(Pref.getStopRecordTrigger())) {
-            if (alreadyStartedRecord())
+            if (alreadyStartRecord())
                 stopRecord();
         } else if (keyName.equals(Pref.getStartRecordTrigger())) {
             if (mRecorder == null)
@@ -236,7 +244,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
         }
     }
 
-    private boolean alreadyStartedRecord() {
+    private boolean alreadyStartRecord() {
         return mRecorder != null && mRecorder.getState() == Recorder.STATE_RECORDING && mRecorder.getState() == Recorder.STATE_PAUSED;
     }
 

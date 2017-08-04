@@ -68,7 +68,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
 
     private void prepare() {
         mScriptEngine.put("activity", this);
-        mScriptEngine.setTag(ScriptEngine.TAG_PATH, mScriptExecution.getConfig().getExecutePath());
+        mScriptEngine.setTag(ScriptEngine.TAG_PATH, mScriptExecution.getConfig().getPath());
         mScriptEngine.init();
     }
 

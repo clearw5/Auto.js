@@ -244,6 +244,7 @@
     "emitter",
     "observeKey",
     "observeTouch",
+    "observeNotification",
     "onKeyDown",
     "onKeyUp",
     "onceKeyDown",
