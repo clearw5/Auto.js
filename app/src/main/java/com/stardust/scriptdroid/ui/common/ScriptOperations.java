@@ -1,44 +1,40 @@
 package com.stardust.scriptdroid.ui.common;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.DrawerLayout;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.jecelyin.common.utils.L;
+import com.stardust.app.DialogUtils;
+import com.stardust.autojs.runtime.api.ui.Dialogs;
 import com.stardust.pio.PFile;
 import com.stardust.pio.UncheckedIOException;
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.script.sample.Sample;
-import com.stardust.scriptdroid.ui.edit.EditActivity;
-import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.scriptdroid.ui.main.script_list.MyScriptListFragment;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
-import com.stardust.util.UnderuseExecutors;
-
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -50,18 +46,18 @@ import io.reactivex.subjects.PublishSubject;
 
 public class ScriptOperations {
 
-    private Activity mActivity;
+    private Context mContext;
     private View mView;
     private ScriptFile mCurrentDirectory;
 
-    public ScriptOperations(Activity activity, View view, ScriptFile currentDirectory) {
-        mActivity = activity;
+    public ScriptOperations(Context context, View view, ScriptFile currentDirectory) {
+        mContext = context;
         mView = view;
         mCurrentDirectory = currentDirectory;
     }
 
-    public ScriptOperations(Activity activity, View view) {
-        this(activity, view, MyScriptListFragment.getCurrentDirectory());
+    public ScriptOperations(Context context, View view) {
+        this(context, view, MyScriptListFragment.getCurrentDirectory());
     }
 
     public void newScriptFileForScript(final String script) {
@@ -88,14 +84,14 @@ public class ScriptOperations {
                 try {
                     PFile.write(path, script);
                 } catch (UncheckedIOException e) {
-                    Snackbar.make(mView, R.string.text_file_write_fail, Snackbar.LENGTH_LONG).show();
+                    showMessage(R.string.text_file_write_fail);
                 }
             }
             notifyScriptFileChanged();
             if (edit)
                 Scripts.edit(path);
         } else {
-            Snackbar.make(mView, R.string.text_create_fail, Snackbar.LENGTH_LONG).show();
+            showMessage(R.string.text_create_fail);
         }
     }
 
@@ -160,12 +156,23 @@ public class ScriptOperations {
     }
 
     private void showMessage(final int resId) {
-        mActivity.runOnUiThread(new Runnable() {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            showMessageDirectly(resId);
+        }
+        App.getApp().getUiHandler().post(new Runnable() {
             @Override
             public void run() {
-                Snackbar.make(mView, resId, Snackbar.LENGTH_SHORT).show();
+                showMessageDirectly(resId);
             }
         });
+    }
+
+    private void showMessageDirectly(int resId) {
+        if (mView != null) {
+            Snackbar.make(mView, resId, Snackbar.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(mContext, resId, Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -175,7 +182,7 @@ public class ScriptOperations {
 
     private Observable<String> showNameInputDialog(String prefix, MaterialDialog.InputCallback textWatcher) {
         final PublishSubject<String> input = PublishSubject.create();
-        new ThemeColorMaterialDialogBuilder(mActivity).title(R.string.text_name)
+        DialogUtils.showDialog(new ThemeColorMaterialDialogBuilder(mContext).title(R.string.text_name)
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .alwaysCallInputCallback()
                 .input(getString(R.string.text_please_input_name), prefix, false, textWatcher)
@@ -186,21 +193,22 @@ public class ScriptOperations {
                         input.onComplete();
                     }
                 })
-                .show();
+                .build());
         return input;
     }
 
 
+
     private CharSequence getString(int resId) {
-        return mActivity.getString(resId);
+        return mContext.getString(resId);
     }
 
     public Observable<String> importSample(Sample sample) {
         try {
-            return importFile(sample.name, mActivity.getAssets().open(sample.path));
+            return importFile(sample.name, mContext.getAssets().open(sample.path));
         } catch (IOException e) {
             e.printStackTrace();
-            Snackbar.make(mView, R.string.text_import_fail, Snackbar.LENGTH_SHORT).show();
+            showMessage(R.string.text_import_fail);
             return Observable.error(e);
         }
     }

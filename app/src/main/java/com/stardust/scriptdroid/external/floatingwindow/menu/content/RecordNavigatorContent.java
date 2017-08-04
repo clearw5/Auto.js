@@ -1,15 +1,21 @@
 package com.stardust.scriptdroid.external.floatingwindow.menu.content;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.SwitchCompat;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.app.DialogUtils;
 import com.stardust.autojs.runtime.record.Recorder;
 import com.stardust.autojs.runtime.record.accessibility.AccessibilityActionRecorder;
 import com.stardust.autojs.runtime.record.inputevent.InputEventObserver;
@@ -21,7 +27,10 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.accessibility.AccessibilityEventHelper;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
+import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.main.MainActivity;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.util.ClipboardUtil;
 import com.stardust.util.MessageEvent;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.OnKeyListener;
@@ -33,6 +42,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.mattcarroll.hover.Navigator;
 import io.mattcarroll.hover.NavigatorContent;
+
+import static android.content.Context.CLIPBOARD_SERVICE;
 
 
 /**
@@ -83,7 +94,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     };
 
     public RecordNavigatorContent(Context context) {
-        mContext = context;
+        mContext = new ContextThemeWrapper(context, R.style.AppTheme);
         mView = View.inflate(context, R.layout.floating_window_record, null);
         ButterKnife.bind(this, mView);
         HoverMenuService.getEventBus().register(this);
@@ -216,12 +227,45 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     public void onStop() {
         if (!mDiscard) {
             if (mRecorder instanceof TouchRecorder) {
-                MainActivity.importScriptFile(mContext, mRecorder.getCode());
+                new ScriptOperations(mContext, null)
+                        .importFile(mRecorder.getCode())
+                        .subscribe();
             } else {
-                MainActivity.onRecordStop(mContext, mRecorder.getCode());
+                handleRecordedScript(mRecorder.getCode());
             }
         }
         mRecorder = null;
+    }
+
+    private void handleRecordedScript(final String script) {
+        DialogUtils.showDialog(new ThemeColorMaterialDialogBuilder(mContext)
+                .title(R.string.text_recorded)
+                .items(getString(R.string.text_new_file), getString(R.string.text_copy_to_clip))
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
+                        if (position == 0) {
+                            new ScriptOperations(mContext, null)
+                                    .newScriptFileForScript(script);
+                        } else {
+                            ClipboardUtil.setClip(mContext, script);
+                            Toast.makeText(mContext, R.string.text_already_copy_to_clip, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .negativeText(R.string.text_cancel)
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .canceledOnTouchOutside(false)
+                .build());
+    }
+
+    private String getString(int res) {
+        return mContext.getString(res);
     }
 
     @Override

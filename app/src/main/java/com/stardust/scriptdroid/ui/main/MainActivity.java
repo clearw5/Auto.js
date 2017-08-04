@@ -300,12 +300,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         if (action == null)
             return;
         switch (action) {
-            case ACTION_ON_RECORD_STOP:
-                IntentExtras extras = IntentExtras.fromIntent(intent);
-                String script = extras.get(ARGUMENT_SCRIPT);
-                extras.clear();
-                handleRecordedScript(script);
-                break;
+
             case ACTION_IMPORT_SCRIPT:
                 handleImportScriptFile(intent);
                 break;
@@ -326,33 +321,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 .subscribe();
     }
 
-    private void handleRecordedScript(final String script) {
-        new ThemeColorMaterialDialogBuilder(this)
-                .title(R.string.text_recorded)
-                .items(getString(R.string.text_new_file), getString(R.string.text_copy_to_clip))
-                .itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                        if (position == 0) {
-                            new ScriptOperations(MainActivity.this, mDrawerLayout)
-                                    .newScriptFileForScript(script);
-                        } else {
-                            ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE))
-                                    .setPrimaryClip(ClipData.newPlainText("script", script));
-                            Toast.makeText(MainActivity.this, R.string.text_already_copy_to_clip, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-                .negativeText(R.string.text_cancel)
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                })
-                .canceledOnTouchOutside(false)
-                .show();
-    }
+
 
 
     public static void importScriptFile(Context context, String path) {

@@ -298,15 +298,17 @@ public class ScriptRuntime {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             images.releaseScreenCapturer();
         }
-        if (events != null)
-            events.recycle();
-        if (loopers != null)
-            loopers.quitAll();
         if (mRootShell != null) {
-            mRootShell.exit();
-            mRootShell = null;
+            mRootShell.exitAndWaitFor();
         }
+        mRootShell = null;
         mShellSupplier = null;
+        if (events != null) {
+            events.recycle();
+        }
+        if (loopers != null) {
+            loopers.quitAll();
+        }
     }
 
     public Object getImages() {
