@@ -19,7 +19,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:name=".App"
         android:allowBackup="false"
-        android:icon="@drawable/ic_android_eat_js"
+        android:icon="@drawable/autojs_material"
         android:label="@string/_app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
@@ -129,7 +129,7 @@
         <activity
             android:name=".external.open.EditIntentActivity"
             android:icon="@drawable/ic_edit_green_48dp"
-            android:label="编辑脚本">
+            android:label="@string/text_edit_script">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -168,7 +168,7 @@
         <activity
             android:name=".external.open.RunIntentActivity"
             android:icon="@drawable/ic_ali_run"
-            android:label="运行脚本"
+            android:label="@string/text_run_script"
             android:taskAffinity="com.stardust.scriptdroid.external.open.RunIntentActivity"
             android:theme="@android:style/Theme.NoDisplay">
 
@@ -186,6 +186,7 @@
                 <data android:mimeType="application/plain"/>
                 <data android:mimeType="application/x-javascript"/>
                 <data android:mimeType="text/*"/>
+                <data android:mimeType="*/*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>
@@ -209,8 +210,9 @@
 
         <activity
             android:name=".external.open.ImportIntentActivity"
+            android:theme="@style/AppTheme.Transparent"
             android:icon="@drawable/ic_import"
-            android:label="导入脚本文件">
+            android:label="@string/text_import_script">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -226,6 +228,8 @@
                 <data android:mimeType="application/plain"/>
                 <data android:mimeType="application/x-javascript"/>
                 <data android:mimeType="text/*"/>
+                <data android:mimeType="*/*" />
+                <data android:mimeType="application/*" android:host="*" android:pathPattern=".*.auto" android:scheme="content" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>

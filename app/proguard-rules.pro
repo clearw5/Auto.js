@@ -127,3 +127,8 @@
 -keepnames class * implements android.os.Parcelable {
     public static final ** CREATOR;
 }
+
+# AVLoadingView
+
+-keep class com.wang.avi.** { *; }
+-keep class com.wang.avi.indicators.** { *; }

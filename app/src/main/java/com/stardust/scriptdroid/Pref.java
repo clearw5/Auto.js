@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.stardust.autojs.runtime.api.AutomatorConfig;
-import com.stardust.automator.AccessibilityEventCommandHost;
 import com.stardust.scriptdroid.autojs.AutoJs;
 
 import org.mozilla.javascript.NativeArray;
@@ -25,9 +24,7 @@ public class Pref {
     private static SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if (key.equals(getString(R.string.key_run_mode))) {
-                AutoJs.getInstance().getCommandHost().setRunMode(getRunModeFromValue(sharedPreferences.getString(key, null)));
-            } else if (key.equals(getString(R.string.key_guard_mode))) {
+            if (key.equals(getString(R.string.key_guard_mode))) {
                 AutomatorConfig.setIsUnintendedGuardEnabled(sharedPreferences.getBoolean(getString(R.string.key_guard_mode), false));
             }
         }
@@ -35,19 +32,6 @@ public class Pref {
 
     static {
         AutomatorConfig.setIsUnintendedGuardEnabled(def().getBoolean(getString(R.string.key_guard_mode), false));
-    }
-
-    private static int getRunModeFromValue(String value) {
-        if (value == null)
-            return AccessibilityEventCommandHost.RUN_MODE_THREAD_POOL;
-        switch (value) {
-            case "KEY_THREAD_POOL":
-                return AccessibilityEventCommandHost.RUN_MODE_THREAD_POOL;
-            case "KEY_NEW_THREAD_EVERY_TIME":
-                return AccessibilityEventCommandHost.RUN_MODE_NEW_THREAD_EVERY_TIME;
-            default:
-                return AccessibilityEventCommandHost.RUN_MODE_SINGLE_THREAD;
-        }
     }
 
     private static SharedPreferences def() {

@@ -142,7 +142,7 @@ public class PFile {
                     return false;
             FileOutputStream fos = new FileOutputStream(file);
             write(is, fos);
-            return false;
+            return true;
         } catch (IOException | UncheckedIOException e) {
             e.printStackTrace();
             return false;
@@ -215,11 +215,27 @@ public class PFile {
         }
     }
 
-    public static String renameWithoutExtension(String path, String newName) {
+    public static String renameWithoutExtensionAndReturnNewPath(String path, String newName) {
         File file = new File(path);
         File newFile = new File(file.getParent(), newName + "." + getExtension(file.getName()));
         file.renameTo(newFile);
         return newFile.getAbsolutePath();
+    }
+
+    public static boolean renameWithoutExtension(String path, String newName) {
+        File file = new File(path);
+        File newFile = new File(file.getParent(), newName + "." + getExtension(file.getName()));
+        return file.renameTo(newFile);
+    }
+
+    public static boolean rename(String path, String newName) {
+        File f = new File(path);
+        return f.renameTo(new File(f.getParent(), newName));
+    }
+
+    public static boolean move(String path, String newPath) {
+        File f = new File(path);
+        return f.renameTo(new File(newPath));
     }
 
     public static String getExtension(String fileName) {

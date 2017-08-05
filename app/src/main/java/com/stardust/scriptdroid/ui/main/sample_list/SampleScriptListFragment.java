@@ -12,6 +12,7 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.script.sample.Sample;
 import com.stardust.scriptdroid.script.sample.SampleFileManager;
+import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.edit.ViewSampleActivity;
 import com.stardust.scriptdroid.ui.main.MainActivity;
 
@@ -66,7 +67,9 @@ public class SampleScriptListFragment extends Fragment {
     }
 
     private void copySampleToMyScripts(Sample sample) {
-        MainActivity.importSample(getActivity(), sample);
+        new ScriptOperations(getActivity(), getView())
+                .importSample(sample)
+                .subscribe();
     }
 
     private void viewSample(Sample sample) {

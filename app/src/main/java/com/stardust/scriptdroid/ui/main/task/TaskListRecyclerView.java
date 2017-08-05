@@ -1,7 +1,6 @@
 package com.stardust.scriptdroid.ui.main.task;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ThemeColorRecyclerView;
@@ -9,20 +8,23 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.workground.WrapContentLinearLayoutManager;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.ScriptEngineService;
+import com.stardust.autojs.engine.JavaScriptEngine;
+import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.engine.ScriptEngine;
-import com.stardust.autojs.engine.AbstractScriptEngineManager;
+import com.stardust.autojs.script.AutoFileSource;
+import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.script.ScriptFile;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
@@ -32,7 +34,7 @@ import java.util.List;
  * Created by Stardust on 2017/3/24.
  */
 
-public class TaskListRecyclerView extends ThemeColorRecyclerView implements AbstractScriptEngineManager.EngineLifecycleCallback {
+public class TaskListRecyclerView extends ThemeColorRecyclerView implements ScriptEngineManager.EngineLifecycleCallback {
 
 
     private final OnClickListener mOnItemClickListenerProxy = new OnClickListener() {
@@ -142,7 +144,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Abst
     }
 
     private void onScriptANR(final ScriptEngine engine) {
-        // TODO: 2017/7/19 强制停止
+        // TODO: 2017/7/19 强制停止aq1sws2
     }
 
     @Override
@@ -184,7 +186,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Abst
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.bind((ScriptSource) mScriptEngines.get(position).getTag("script"));
+            holder.bind((ScriptSource) mScriptEngines.get(position).getTag(ScriptEngine.TAG_SOURCE));
         }
 
         @Override
@@ -195,6 +197,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Abst
 
     private class ViewHolder extends RecyclerView.ViewHolder {
 
+        ImageView icon;
         TextView name, detail;
         View stop;
 
@@ -203,6 +206,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Abst
             itemView.setOnClickListener(mOnItemClickListenerProxy);
             name = (TextView) itemView.findViewById(R.id.name);
             detail = (TextView) itemView.findViewById(R.id.detail);
+            icon = (ImageView) itemView.findViewById(R.id.icon);
             stop = itemView.findViewById(R.id.stop);
             stop.setOnClickListener(mOnStopClickListener);
         }
@@ -212,6 +216,9 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Abst
                 return;
             name.setText(source.getName());
             detail.setText(source.toString());
+            //ignore android studio warning: use equals to compare string
+            icon.setImageResource(source.getEngineName() == AutoFileSource.ENGINE ? R.drawable.record_icon_18
+                    : R.drawable.ic_node_js_black);
         }
     }
 

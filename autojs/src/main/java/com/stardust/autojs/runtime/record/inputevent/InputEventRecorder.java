@@ -1,79 +1,60 @@
 package com.stardust.autojs.runtime.record.inputevent;
 
-import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
-import com.stardust.autojs.runtime.api.Shell;
 import com.stardust.autojs.runtime.record.Recorder;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
- * Created by Stardust on 2017/3/6.
+ * Created by Stardust on 2017/3/7.
  */
 
-public class InputEventRecorder extends Recorder.AbstractRecorder {
-
-    private static final String TAG = "InputEventRecorder";
-    private String mGetEventCommand;
-    private Shell mShell;
-    protected InputEventConverter mInputEventConverter;
-    private Context mContext;
+public abstract class InputEventRecorder extends Recorder.AbstractRecorder implements InputEventObserver.InputEventListener {
 
 
-    protected InputEventRecorder(Context context, InputEventConverter inputEventConverter) {
-        mGetEventCommand = inputEventConverter.getGetEventCommand();
-        mInputEventConverter = inputEventConverter;
-        mContext = context;
-    }
+    private final static Pattern LAST_INT_PATTERN = Pattern.compile("[^0-9]+([0-9]+)$");
 
-    public void listen() {
-        mShell = new Shell(mContext, true);
-        mShell.setCallback(new Shell.SimpleCallback() {
-            @Override
-            public void onNewLine(String str) {
-                if (mShell.isInitialized()) {
-                    convertEvent(str);
-                }
-            }
 
-            @Override
-            public void onInitialized() {
-                mShell.exec(mGetEventCommand);
-            }
+    protected boolean mRecording = false;
 
-            @Override
-            public void onInterrupted(InterruptedException e) {
-                stop();
-            }
-        });
-    }
-
-    @Override
     protected void startImpl() {
-        mInputEventConverter.start();
+        mRecording = true;
     }
 
-    @Override
-    protected void pauseImpl() {
-        mInputEventConverter.pause();
-    }
-
-    @Override
     protected void resumeImpl() {
-        mInputEventConverter.resume();
+        mRecording = true;
     }
 
-    @Override
+    protected void pauseImpl() {
+        mRecording = false;
+    }
+
     protected void stopImpl() {
-        mShell.exit();
-        mInputEventConverter.stop();
+        mRecording = false;
     }
+
+    public abstract String getCode();
+
+    static int parseDeviceNumber(String device) {
+        Matcher matcher = LAST_INT_PATTERN.matcher(device);
+        if (matcher.find()) {
+            String someNumberStr = matcher.group(1);
+            return Integer.parseInt(someNumberStr);
+        }
+        return -1;
+    }
+
 
     @Override
-    public String getCode() {
-        return mInputEventConverter.getCode();
+    public void onInputEvent(@NonNull InputEventObserver.InputEvent e) {
+        if (!mRecording) {
+            return;
+        }
+        recordInputEvent(e);
     }
 
-    protected void convertEvent(String eventStr) {
-        mInputEventConverter.convertEventIfFormatCorrect(eventStr);
-    }
-
+    protected abstract void recordInputEvent(InputEventObserver.InputEvent e);
 }

@@ -50,7 +50,7 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_android_eat_js">
+            android:src="@drawable/autojs_material">
 
         </ImageView>
 

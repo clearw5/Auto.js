@@ -24,12 +24,12 @@ public class ExecutionConfig implements Serializable {
         return this;
     }
 
-    public ExecutionConfig requirePath(String... requirePath) {
+    public ExecutionConfig path(String... requirePath) {
         mRequirePath = requirePath;
         return this;
     }
 
-    public String[] getRequirePath() {
+    public String[] getPath() {
         return mRequirePath;
     }
 

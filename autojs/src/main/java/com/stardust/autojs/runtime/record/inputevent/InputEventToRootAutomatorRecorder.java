@@ -2,17 +2,15 @@ package com.stardust.autojs.runtime.record.inputevent;
 
 import android.support.annotation.NonNull;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static com.stardust.util.ScreenMetrics.getDeviceScreenHeight;
 import static com.stardust.util.ScreenMetrics.getDeviceScreenWidth;
 
 /**
- * Created by Stardust on 2017/5/3.
+ * Created by Stardust on 2017/8/1.
  */
 
-public class InputEventToSendEventJsConverter extends InputEventConverter {
+public class InputEventToRootAutomatorRecorder extends InputEventRecorder {
+
 
     private double mLastEventTime;
     private StringBuilder mCode = new StringBuilder();
@@ -20,19 +18,19 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
     private int mLastTouchX = -1;
     private int mLastTouchY = -1;
 
-    public InputEventToSendEventJsConverter() {
-        mCode.append("var sh = new Shell(true);\n")
-                .append("sh.SetScreenMetrics(").append(getDeviceScreenWidth()).append(", ")
+    public InputEventToRootAutomatorRecorder() {
+        mCode.append("var ra = new RootAutomator();\n")
+                .append("ra.setScreenMetrics(").append(getDeviceScreenWidth()).append(", ")
                 .append(getDeviceScreenHeight()).append(");\n");
     }
 
 
     @Override
-    public void convertEvent(@NonNull Event event) {
+    public void recordInputEvent(@NonNull InputEventObserver.InputEvent event) {
         if (mLastEventTime == 0) {
             mLastEventTime = event.time;
-        } else if (event.time - mLastEventTime > 0.03) {
-            mCode.append("sh.usleep(").append((long) (1000000 * (event.time - mLastEventTime))).append(");\n");
+        } else if (event.time - mLastEventTime > 0.001) {
+            mCode.append("ra.sleep(").append((long) (1000L * (event.time - mLastEventTime))).append(");\n");
             mLastEventTime = event.time;
         }
         int device = parseDeviceNumber(event.device);
@@ -50,10 +48,14 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
             }
         }
         checkLastTouch();
-        mCode.append("sh.SendEvent(");
         if (device != mTouchDevice) {
-            mCode.append(device).append(", ");
+            return;
         }
+        if (type == 0 && code == 0 && value == 0) {
+            mCode.append("ra.sendSync();\n");
+            return;
+        }
+        mCode.append("ra.sendEvent(");
         mCode.append(type).append(", ")
                 .append(code).append(", ")
                 .append(value).append(");\n");
@@ -61,15 +63,14 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
 
     private void checkLastTouch() {
         if (mLastTouchX >= 0) {
-            mCode.append("sh.TouchX(").append(mLastTouchX).append(");\n");
+            mCode.append("ra.touchX(").append(mLastTouchX).append(");\n");
             mLastTouchX = -1;
         }
         if (mLastTouchY >= 0) {
-            mCode.append("sh.TouchY(").append(mLastTouchY).append(");\n");
+            mCode.append("ra.touchY(").append(mLastTouchY).append(");\n");
             mLastTouchY = -1;
         }
     }
-
 
     private void onTouchX(int device, int value) {
         if (mTouchDevice == -1) {
@@ -83,7 +84,7 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
             setTouchDevice(device);
         }
         if (mLastTouchX >= 0) {
-            mCode.append("sh.Touch(")
+            mCode.append("ra.touch(")
                     .append(mLastTouchX).append(", ")
                     .append(value).append(");\n");
             mLastTouchX = -1;
@@ -93,13 +94,8 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
     }
 
     private void setTouchDevice(int i) {
-        mCode.append("sh.SetTouchDevice(").append(i).append(");\n");
+        mCode.append("ra.setInputDevice(").append(i).append(");\n");
         mTouchDevice = i;
-    }
-
-    @Override
-    public String getGetEventCommand() {
-        return "getevent -t";
     }
 
     public String getCode() {
@@ -109,7 +105,8 @@ public class InputEventToSendEventJsConverter extends InputEventConverter {
     @Override
     public void stop() {
         super.stop();
-        mCode.append("sh.exitAndWaitFor();");
+        mCode.append("log(ra.writeToDevice(context));");
     }
+
 
 }

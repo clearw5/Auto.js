@@ -5,8 +5,8 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.stardust.autojs.runtime.AbstractScriptRuntime;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.lang.ThreadCompat;
 import com.stardust.pio.UncheckedIOException;
 
@@ -25,7 +25,7 @@ import jackpal.androidterm.util.TermSettings;
  * Created by Stardust on 2017/4/24.
  */
 
-public class Shell extends AbstractShell implements AutoCloseable {
+public class Shell extends AbstractShell {
 
     public interface Callback {
 
@@ -84,7 +84,7 @@ public class Shell extends AbstractShell implements AutoCloseable {
     }
 
     public Shell(boolean root) {
-        this(AbstractScriptRuntime.getApplicationContext(), root);
+        this(ScriptRuntime.getApplicationContext(), root);
     }
 
     @Override
@@ -181,10 +181,6 @@ public class Shell extends AbstractShell implements AutoCloseable {
         }
     }
 
-    @Override
-    public void close() {
-        exit();
-    }
 
     private class MyShellTermSession extends ShellTermSession {
 
@@ -246,9 +242,9 @@ public class Shell extends AbstractShell implements AutoCloseable {
                     mCallback.onOutput(new String(data, offset, count));
                 }
                 mOutputStream.write(data, offset, count);
-
             } catch (IOException e) {
-                throw new UncheckedIOException(e);
+                e.printStackTrace();
+                finish();
             }
         }
 

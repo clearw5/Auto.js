@@ -8,15 +8,18 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.qq.e.comm.DownloadService;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
+import com.stardust.scriptdroid.ui.common.ProgressDialog;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.sublime.SublimePluginClient;
 import com.stardust.scriptdroid.sublime.SublimePluginService;
@@ -43,7 +46,6 @@ import java.util.concurrent.Executor;
  */
 @EFragment(R.layout.fragment_side_menu)
 public class SideMenuFragment extends android.support.v4.app.Fragment {
-
 
     public static void setFragment(FragmentActivity activity, int viewId) {
         SideMenuFragment fragment = new SideMenuFragment_();
@@ -118,7 +120,7 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
     void setAutoOperateServiceEnable(CompoundButton button, boolean enable) {
         boolean isAccessibilityServiceEnabled = AccessibilityService.isEnabled(App.getApp());
         if (enable && !isAccessibilityServiceEnabled) {
-            AccessibilityServiceTool.enableAccessibilityService();
+            enableAccessibilityService();
         } else if (!enable && isAccessibilityServiceEnabled) {
             if (!AccessibilityService.disable()) {
                 AccessibilityServiceTool.goToAccessibilitySetting();
@@ -126,10 +128,42 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
         }
     }
 
+    private void enableAccessibilityService() {
+        if (!Pref.enableAccessibilityServiceByRoot()) {
+            AccessibilityServiceTool.goToAccessibilitySetting();
+            return;
+        }
+        enableAccessibilityServiceByRoot();
+
+    }
+
+    private void enableAccessibilityServiceByRoot() {
+        final ProgressDialog progress = new ProgressDialog(getContext(), R.string.text_enable_accessibility_service_by_root_ing);
+        UnderuseExecutors.execute(new Runnable() {
+            @Override
+            public void run() {
+                final boolean succeed = AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(4000);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!succeed) {
+                            Toast.makeText(getContext(), R.string.text_enable_accessibitliy_service_by_root_failed, Toast.LENGTH_SHORT).show();
+                            AccessibilityServiceTool.goToAccessibilitySetting();
+                        }
+                        progress.dismiss();
+                    }
+                });
+            }
+        });
+    }
+
     @CheckedChange(R.id.sw_floating_window)
     void setFloatingWindowEnable(CompoundButton button, boolean enable) {
         if (enable && !HoverMenuManger.isHoverMenuShowing()) {
             HoverMenuManger.showHoverMenu();
+            if (Pref.enableAccessibilityServiceByRoot()) {
+                enableAccessibilityServiceByRoot();
+            }
         } else if (!enable && HoverMenuManger.isHoverMenuShowing()) {
             HoverMenuManger.hideHoverMenu();
         }

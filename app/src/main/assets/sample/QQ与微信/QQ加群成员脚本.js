@@ -1,4 +1,4 @@
-"auto";
+auto();
 
 var 好友验证信息 = "AutoJs自动添加群好友";
 var 延迟 = 500;

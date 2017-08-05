@@ -3,7 +3,7 @@ package com.stardust.autojs.runtime.api;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.stardust.autojs.runtime.ScriptStopException;
+import com.stardust.autojs.runtime.ScriptException;
 
 /**
  * Created by Stardust on 2017/5/1.
@@ -59,7 +59,7 @@ public abstract class AbstractConsole implements Console {
     public void assertTrue(boolean value, @Nullable Object data, Object... options) {
         if (!value) {
             printf(Log.ASSERT, data, options);
-            throw new ScriptStopException(new AssertionError(format(data, options)));
+            throw new ScriptException(new AssertionError(format(data, options)));
         }
     }
 

@@ -22,8 +22,9 @@ import com.jecelyin.editor.v2.ui.EditorDelegate;
 import com.jecelyin.editor.v2.view.EditorView;
 import com.jecelyin.editor.v2.view.menu.MenuDef;
 import com.stardust.app.OnActivityResultDelegate;
+import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
-import com.stardust.autojs.script.FileScriptSource;
+import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.autojs.script.JsBeautifier;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
@@ -211,7 +212,7 @@ public class EditActivity extends Editor920Activity implements OnActivityResultD
     private void run() {
         Snackbar.make(mView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         setMenuStatus(R.id.run, MenuDef.STATUS_DISABLED);
-        mScriptExecution = Scripts.runWithBroadcastSender(new FileScriptSource(mName, mFile), mFile.getParent());
+        mScriptExecution = Scripts.runWithBroadcastSender(new JavaScriptFileSource(mName, mFile), mFile.getParent());
     }
 
 
@@ -288,7 +289,7 @@ public class EditActivity extends Editor920Activity implements OnActivityResultD
 
     private void showConsole() {
         if (mScriptExecution != null) {
-            mScriptExecution.getRuntime().console.show();
+            ((JavaScriptEngine) mScriptExecution.getEngine()).getRuntime().console.show();
         }
     }
 

@@ -40,7 +40,7 @@ module.exports = function(__runtime__, scope){
 
     app.launch = app.launchPackage;
 
-    scope.__asGlobal__(app, ['launchPackage', 'launch', 'launchApp', 'getPackageName', 'openAppSetting']);
+    scope.__asGlobal__(app, ['launchPackage', 'launch', 'launchApp', 'getPackageName', 'getAppName', 'openAppSetting']);
 
     return app;
 }

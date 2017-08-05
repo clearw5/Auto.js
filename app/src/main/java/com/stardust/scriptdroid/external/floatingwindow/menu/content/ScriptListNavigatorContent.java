@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.workground.WrapContentLinearLayoutManager;
 
 import com.stardust.scriptdroid.R;
@@ -90,9 +91,14 @@ public class ScriptListNavigatorContent implements NavigatorContent {
 
     private class FileViewHolder extends DirectoryViewHolder {
 
+        private ImageView mIcon;
+        private View mEdit;
+
         FileViewHolder(final View itemView) {
             super(itemView);
-            itemView.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener() {
+            mIcon = (ImageView) itemView.findViewById(R.id.icon);
+            mEdit = itemView.findViewById(R.id.edit);
+            mEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     EditActivity.editFile(v.getContext(), getScriptFile());
@@ -109,6 +115,14 @@ public class ScriptListNavigatorContent implements NavigatorContent {
                     return true;
                 }
             });
+        }
+
+        @Override
+        public void bind(ScriptFile file) {
+            super.bind(file);
+            mIcon.setImageResource(file.getType() == ScriptFile.TYPE_AUTO ? R.drawable.record_icon_18
+                    : R.drawable.ic_node_js_black);
+            mEdit.setVisibility(file.getType() == ScriptFile.TYPE_JAVA_SCRIPT ? View.VISIBLE : View.INVISIBLE);
         }
 
         private ScriptFile getScriptFile() {

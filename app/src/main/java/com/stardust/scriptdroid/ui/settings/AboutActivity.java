@@ -110,32 +110,6 @@ public class AboutActivity extends BaseActivity {
                 .show();
     }
 
-    private void uiObjectCreateTest() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int i = 0;
-                while (true) {
-                    AccessibilityNodeInfo root = AccessibilityService.getInstance().getRootInActiveWindow();
-                    if (root != null) {
-                        UiObject uiObject = UiObject.createRoot(root);
-                        UiObject child = uiObject.child(0);
-                        if (i % 1000 == 0) {
-                            Log.v(TAG, String.valueOf(i));
-                            Log.v(TAG, Runtime.getRuntime().totalMemory() + "/" + Runtime.getRuntime().maxMemory());
-                            if (child != null)
-                                Log.v(TAG, String.valueOf(child.getChildCount()));
-                        }
-                        if (child != null)
-                            child.recycle();
-                        i++;
-                    }
-                }
-            }
-        }).start();
-
-    }
-
     private void crashTest() {
         new ThemeColorMaterialDialogBuilder(this)
                 .title("Crash Test")

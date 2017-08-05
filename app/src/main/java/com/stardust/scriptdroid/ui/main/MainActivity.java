@@ -9,8 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -36,10 +34,9 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
-import com.stardust.scriptdroid.external.open.ImportIntentActivity;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
-import com.stardust.scriptdroid.script.sample.Sample;
+import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
 import com.stardust.util.IntentExtras;
 import com.stardust.view.accessibility.AccessibilityService;
@@ -53,7 +50,6 @@ import com.stardust.scriptdroid.ui.settings.SettingsActivity_;
 import com.stardust.scriptdroid.ui.update.VersionGuard;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.BackPressedHandler;
-import com.stardust.util.Callback;
 import com.stardust.util.MessageEvent;
 import com.stardust.view.DrawerAutoClose;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
@@ -67,7 +63,6 @@ import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 @EActivity(R.layout.activity_main)
@@ -78,13 +73,14 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private static final String LOG_TAG = "MainActivity";
     private static final String EXTRA_ACTION = "EXTRA_ACTION";
 
-    private static final String ACTION_ON_ACTION_RECORD_STOPPED = "ACTION_ON_ACTION_RECORD_STOPPED";
+    private static final String ACTION_ON_RECORD_STOP = "ACTION_ON_RECORD_STOP";
     private static final String ACTION_IMPORT_SCRIPT = "ACTION_IMPORT_SCRIPT";
     private static final String ARGUMENT_SCRIPT = "ARGUMENT_SCRIPT";
     private static final String ARGUMENT_PATH = "ARGUMENT_PATH";
     private static final String ACTION_IMPORT_SAMPLE = "I cannot find the way back to you...Eating...17.4.29";
     private static final String ARGUMENT_SAMPLE = "Take a chance on me...ok...?";
     private static final String ARGUMENT_INPUT_STREAM = "17.7.12, Hi...could we start all over again...";
+    private static final String ACTION_ON_ROOT_RECORD_STOP = "ACTION_ON_ROOT_RECORD_STOP";
 
 
     @ViewById(R.id.drawer_layout)
@@ -98,17 +94,17 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private OnActivityResultDelegate.Mediator mActivityResultMediator = new OnActivityResultDelegate.Mediator();
     private DrawableSaver mDrawerHeaderBackgroundSaver, mAppbarBackgroundSaver;
     private VersionGuard mVersionGuard;
-    private Intent mIntentToHandle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkPermissions();
-        mIntentToHandle = getIntent();
         EventBus.getDefault().register(this);
         mVersionGuard = new VersionGuard(this);
         showAnnunciationIfNeeded();
         //Stop download service of ad sdk
+        // FIXME: 2017/8/1 Service not stopped!
         stopService(new Intent(this, DownloadService.class));
     }
 
@@ -203,15 +199,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 .build();
         mViewPager.setAdapter(mPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
-        mPagerAdapter.setOnFragmentInstantiateListener(new FragmentPagerAdapterBuilder.OnFragmentInstantiateListener() {
-            @Override
-            public void OnInstantiate(Fragment fragment) {
-                if (fragment instanceof MyScriptListFragment && mIntentToHandle != null) {
-                    handleIntent(mIntentToHandle);
-                    mIntentToHandle = null;
-                }
-            }
-        });
     }
 
     @Click(R.id.add)
@@ -221,22 +208,14 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Click(R.id.create_new_file)
     void createScriptFile() {
-        doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
-            @Override
-            public void call(MyScriptListFragment myScriptListFragment) {
-                myScriptListFragment.newScriptFile();
-            }
-        });
+        new ScriptOperations(this, mDrawerLayout)
+                .newScriptFile();
     }
 
     @Click(R.id.create_new_directory)
     void createNewDirectory() {
-        doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
-            @Override
-            public void call(MyScriptListFragment myScriptListFragment) {
-                myScriptListFragment.newDirectory();
-            }
-        });
+        new ScriptOperations(this, mDrawerLayout)
+                .newDirectory();
     }
 
     @Click(R.id.import_from_file)
@@ -249,12 +228,9 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                     public void onFileSelection(MaterialDialog dialog, final ScriptFile file) {
                         dialog.dismiss();
                         provider.clearCacheExceptInitialDirectory();
-                        doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
-                            @Override
-                            public void call(MyScriptListFragment myScriptListFragment) {
-                                myScriptListFragment.importFile(file.getPath());
-                            }
-                        });
+                        new ScriptOperations(MainActivity.this, mDrawerLayout)
+                                .importFile(file.getPath())
+                                .subscribe();
                     }
                 })
                 .title(R.string.text_please_choose_file_to_import)
@@ -293,157 +269,15 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mVersionGuard.checkDeprecateAndUpdate();
+    protected void onPause() {
+        super.onPause();
+        stopService(new Intent(this, DownloadService.class));
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        handleIntent(intent);
-    }
-
-    private void handleIntent(Intent intent) {
-        String action = intent.getStringExtra(EXTRA_ACTION);
-        if (action == null)
-            return;
-        switch (action) {
-            case ACTION_ON_ACTION_RECORD_STOPPED:
-                IntentExtras extras = IntentExtras.fromIntent(intent);
-                String script = extras.get(ARGUMENT_SCRIPT);
-                extras.clear();
-                handleRecordedScript(script);
-                break;
-            case ACTION_IMPORT_SCRIPT:
-                handleImportScriptFile(intent);
-                break;
-            case ACTION_IMPORT_SAMPLE:
-                handleImportSample(intent);
-                break;
-        }
-    }
-
-    private void handleImportScriptFile(Intent intent) {
-        mViewPager.setCurrentItem(0, true);
-        MyScriptListFragment fragment = getMyScriptListFragment();
-        if (fragment == null) {
-            mIntentToHandle = intent;
-        } else {
-            String path = intent.getStringExtra(ARGUMENT_PATH);
-            if (path != null) {
-                fragment.importFile(intent.getStringExtra(ARGUMENT_PATH));
-                return;
-            }
-            InputStream inputStream = IntentExtras.fromIntent(intent).getAndClear(ARGUMENT_INPUT_STREAM);
-            fragment.importFile("", inputStream);
-        }
-    }
-
-
-    private void handleImportSample(Intent intent) {
-        mViewPager.setCurrentItem(0, true);
-        MyScriptListFragment fragment = getMyScriptListFragment();
-        if (fragment == null) {
-            mIntentToHandle = intent;
-        } else {
-            final Sample sample = (Sample) intent.getSerializableExtra(ARGUMENT_SAMPLE);
-            doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
-                @Override
-                public void call(MyScriptListFragment myScriptListFragment) {
-                    try {
-                        myScriptListFragment.importFile(sample.name, getAssets().open(sample.path));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Snackbar.make(mDrawerLayout, R.string.text_import_fail, Snackbar.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        }
-    }
-
-    private void handleRecordedScript(final String script) {
-        new ThemeColorMaterialDialogBuilder(this)
-                .title(R.string.text_recorded)
-                .items(getString(R.string.text_new_file), getString(R.string.text_copy_to_clip))
-                .itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                        if (position == 0) {
-                            doWithMyScriptListFragment(new Callback<MyScriptListFragment>() {
-                                @Override
-                                public void call(MyScriptListFragment myScriptListFragment) {
-                                    myScriptListFragment.newScriptFileForScript(script);
-                                }
-                            });
-                        } else {
-                            ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE))
-                                    .setPrimaryClip(ClipData.newPlainText("script", script));
-                            Toast.makeText(MainActivity.this, R.string.text_already_copy_to_clip, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-                .negativeText(R.string.text_cancel)
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                })
-                .canceledOnTouchOutside(false)
-                .show();
-    }
-
-
-    public static void importScriptFile(Context context, String path) {
-        context.startActivity(new Intent(context, MainActivity_.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(EXTRA_ACTION, ACTION_IMPORT_SCRIPT)
-                .putExtra(ARGUMENT_PATH, path));
-    }
-
-    public static void importScriptFileByInputStream(Context context, InputStream inputStream) {
-        Intent intent = new Intent(context, MainActivity_.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(EXTRA_ACTION, ACTION_IMPORT_SCRIPT);
-        IntentExtras.newExtras()
-                .put(ARGUMENT_INPUT_STREAM, inputStream)
-                .putInIntent(intent);
-        context.startActivity(intent);
-    }
-
-    public static void importSample(Context context, Sample sample) {
-        context.startActivity(new Intent(context, MainActivity_.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(EXTRA_ACTION, ACTION_IMPORT_SAMPLE)
-                .putExtra(ARGUMENT_SAMPLE, sample));
-    }
-
-    public void doWithMyScriptListFragment(final Callback<MyScriptListFragment> callback) {
-        MyScriptListFragment fragment = ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0));
-        if (fragment != null) {
-            callback.call(fragment);
-            return;
-        }
-        mViewPager.setCurrentItem(0);
-        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 0) {
-                    mViewPager.removeOnPageChangeListener(this);
-                    doWithMyScriptListFragment(callback);
-                }
-            }
-        });
-    }
-
-    @Nullable
-    public MyScriptListFragment getMyScriptListFragment() {
-        MyScriptListFragment fragment = ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0));
-        if (fragment == null) {
-            mViewPager.setCurrentItem(0);
-        }
-        return ((MyScriptListFragment) mPagerAdapter.getStoredFragment(0));
+    protected void onResume() {
+        super.onResume();
+        mVersionGuard.checkDeprecateAndUpdate();
     }
 
     @Click(R.id.toolbar)
@@ -477,22 +311,28 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         EventBus.getDefault().unregister(this);
     }
 
-
-    public static void onRecordStop(Context context, String script) {
-        Intent intent = new Intent(context, MainActivity_.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(EXTRA_ACTION, ACTION_ON_ACTION_RECORD_STOPPED);
-        IntentExtras.newExtras()
-                .put(ARGUMENT_SCRIPT, script)
-                .putInIntent(intent);
-        context.startActivity(intent);
-    }
-
     @NonNull
     @Override
     public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
         return mActivityResultMediator;
     }
 
+    public static void onRecordStop(Context context, String script) {
+        Intent intent = new Intent(context, MainActivity_.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(EXTRA_ACTION, ACTION_ON_RECORD_STOP);
+        IntentExtras.newExtras()
+                .put(ARGUMENT_SCRIPT, script)
+                .putInIntent(intent);
+        context.startActivity(intent);
+    }
 
+
+    public static void onRootRecordStop(Context context, String path) {
+        Intent intent = new Intent(context, MainActivity_.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(EXTRA_ACTION, ACTION_ON_ROOT_RECORD_STOP)
+                .putExtra(ARGUMENT_PATH, path);
+        context.startActivity(intent);
+    }
 }

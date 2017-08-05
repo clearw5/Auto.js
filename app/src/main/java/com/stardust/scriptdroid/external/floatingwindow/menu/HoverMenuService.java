@@ -20,7 +20,6 @@ import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.view.accessibility.NodeInfo;
 import com.stardust.scriptdroid.external.floatingwindow.menu.view.FloatingLayoutBoundsView;
 import com.stardust.scriptdroid.external.floatingwindow.menu.view.FloatingLayoutHierarchyView;
-import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.theme.ThemeColorManagerCompat;
 import com.stardust.util.IntentUtil;
 import com.stardust.util.MessageEvent;
@@ -189,7 +188,6 @@ public class HoverMenuService extends Service {
             tryInitViews();
         if (mWindowHoverMenu != null)
             mWindowHoverMenu.show();
-        AccessibilityServiceTool.enableAccessibilityServiceByRootIfNeeded();
         return START_STICKY;
     }
 
@@ -200,6 +198,8 @@ public class HoverMenuService extends Service {
         if (eventBus.isRegistered(this))
             eventBus.unregister(this);
         setIsRunning(false);
+        if (mWindowViewController == null)
+            return;
         mWindowViewController.removeView(mFloatingLayoutBoundsView);
         mWindowViewController.removeView(mFloatingLayoutHierarchyView);
     }

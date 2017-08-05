@@ -1,16 +1,26 @@
 package com.stardust.autojs.runtime;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
 
 import com.stardust.autojs.R;
+import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.rhino.AndroidClassLoader;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
+import com.stardust.autojs.runtime.api.Engines;
+import com.stardust.autojs.runtime.api.Events;
+import com.stardust.autojs.runtime.api.Loopers;
+import com.stardust.autojs.runtime.api.ScriptBridges;
+import com.stardust.autojs.runtime.api.Timers;
 import com.stardust.autojs.runtime.api.UiSelector;
+import com.stardust.autojs.runtime.api.image.Images;
 import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
+import com.stardust.autojs.runtime.api.ui.Dialogs;
+import com.stardust.autojs.runtime.simpleaction.SimpleActionAutomator;
 import com.stardust.concurrent.VolatileBox;
 import com.stardust.autojs.runtime.api.ui.UI;
 import com.stardust.pio.UncheckedIOException;
@@ -20,20 +30,25 @@ import com.stardust.util.ScreenMetrics;
 import com.stardust.util.SdkVersionUtil;
 import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
+import com.stardust.view.accessibility.AccessibilityInfoProvider;
 
 import org.mozilla.javascript.ContextFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
  * Created by Stardust on 2017/1/27.
  */
 
-public class ScriptRuntime extends AbstractScriptRuntime {
+public class ScriptRuntime {
 
     private static final String TAG = "ScriptRuntime";
+
 
     public static class Builder {
         private UiHandler mUiHandler;
@@ -42,6 +57,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
         private Supplier<AbstractShell> mShellSupplier;
         private ScreenCaptureRequester mScreenCaptureRequester;
         private AppUtils mAppUtils;
+        private ScriptEngineService mEngineService;
 
         public Builder() {
 
@@ -77,26 +93,100 @@ public class ScriptRuntime extends AbstractScriptRuntime {
             return this;
         }
 
+        public Builder setEngineService(ScriptEngineService service) {
+            mEngineService = service;
+            return this;
+        }
+
+
         public ScriptRuntime build() {
             return new ScriptRuntime(this);
         }
 
     }
 
+
+    @ScriptVariable
+    public final AppUtils app;
+
+    @ScriptVariable
+    public final Console console;
+
+    @ScriptVariable
+    public final SimpleActionAutomator automator;
+
+    @ScriptVariable
+    public final AccessibilityInfoProvider info;
+
+    @ScriptVariable
+    public final UI ui;
+
+    @ScriptVariable
+    public final Dialogs dialogs;
+
+    @ScriptVariable
+    public Events events;
+
+    @ScriptVariable
+    public final ScriptBridges bridges = new ScriptBridges();
+
+    @ScriptVariable
+    public Loopers loopers;
+
+    @ScriptVariable
+    public Timers timers;
+
+    @ScriptVariable
+    public final AccessibilityBridge accessibilityBridge;
+
+    @ScriptVariable
+    public final Engines engines;
+
+    private Images images;
+
+    private static WeakReference<Context> applicationContext;
+    private Map<String, Object> mProperties = new ConcurrentHashMap<>();
     private UiHandler mUiHandler;
-    private AccessibilityBridge mAccessibilityBridge;
     private AbstractShell mRootShell;
     private Supplier<AbstractShell> mShellSupplier;
     private ScreenMetrics mScreenMetrics = new ScreenMetrics();
 
 
     protected ScriptRuntime(Builder builder) {
-        super(builder.mUiHandler, builder.mConsole, builder.mAccessibilityBridge, builder.mAppUtils, builder.mScreenCaptureRequester);
-        mAccessibilityBridge = builder.mAccessibilityBridge;
+        app = builder.mAppUtils;
         mUiHandler = builder.mUiHandler;
+        console = builder.mConsole;
+        accessibilityBridge = builder.mAccessibilityBridge;
         mShellSupplier = builder.mShellSupplier;
         ui = new UI(mUiHandler.getContext());
+        this.automator = new SimpleActionAutomator(accessibilityBridge, this);
         automator.setScreenMetrics(mScreenMetrics);
+        this.info = accessibilityBridge.getInfoProvider();
+        Context context = mUiHandler.getContext();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            images = new Images(context, this, builder.mScreenCaptureRequester);
+        }
+        engines = new Engines(builder.mEngineService);
+        dialogs = new Dialogs(app, mUiHandler);
+    }
+
+    public void init() {
+        if (loopers != null)
+            throw new IllegalStateException("already initialized");
+        loopers = new Loopers();
+        events = new Events(mUiHandler.getContext(), accessibilityBridge, bridges, loopers);
+        timers = new Timers(bridges);
+    }
+
+    public static void setApplicationContext(Context context) {
+        applicationContext = new WeakReference<>(context);
+    }
+
+    public static Context getApplicationContext() {
+        if (applicationContext == null || applicationContext.get() == null) {
+            throw new ScriptEnvironmentException("No application context");
+        }
+        return applicationContext.get();
     }
 
     public UiHandler getUiHandler() {
@@ -104,7 +194,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
     }
 
     public AccessibilityBridge getAccessibilityBridge() {
-        return mAccessibilityBridge;
+        return accessibilityBridge;
     }
 
     public void toast(final String text) {
@@ -142,7 +232,6 @@ public class ScriptRuntime extends AbstractScriptRuntime {
         return clip.blockedGetOrThrow(ScriptInterruptedException.class);
     }
 
-    @Override
     public AbstractShell getRootShell() {
         ensureRootShell();
         return mRootShell;
@@ -150,9 +239,6 @@ public class ScriptRuntime extends AbstractScriptRuntime {
 
     private void ensureRootShell() {
         if (mRootShell == null) {
-            if (mShellSupplier == null) {
-                throw new ScriptInterruptedException();
-            }
             mRootShell = mShellSupplier.get();
             mRootShell.SetScreenMetrics(mScreenMetrics);
             mShellSupplier = null;
@@ -164,7 +250,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
     }
 
     public UiSelector selector(ScriptEngine engine) {
-        return new UiSelector(mAccessibilityBridge);
+        return new UiSelector(accessibilityBridge);
     }
 
     public boolean isStopped() {
@@ -173,7 +259,7 @@ public class ScriptRuntime extends AbstractScriptRuntime {
 
     public void requiresApi(int i) {
         if (Build.VERSION.SDK_INT < i) {
-            throw new ScriptStopException(mUiHandler.getContext().getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
+            throw new ScriptException(mUiHandler.getContext().getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
         }
     }
 
@@ -196,27 +282,49 @@ public class ScriptRuntime extends AbstractScriptRuntime {
     }
 
 
-    @Override
     public void setScreenMetrics(int width, int height) {
         mScreenMetrics.setScreenMetrics(width, height);
     }
 
-    @Override
     public ScreenMetrics getScreenMetrics() {
         return mScreenMetrics;
     }
 
     public void ensureAccessibilityServiceEnabled() {
-        mAccessibilityBridge.ensureServiceEnabled();
+        accessibilityBridge.ensureServiceEnabled();
     }
 
-    @Override
     public void onExit() {
-        super.onExit();
-        if (mRootShell != null) {
-            mRootShell.exit();
-            mRootShell = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            images.releaseScreenCapturer();
         }
+        if (mRootShell != null) {
+            mRootShell.exitAndWaitFor();
+        }
+        mRootShell = null;
         mShellSupplier = null;
+        if (events != null) {
+            events.recycle();
+        }
+        if (loopers != null) {
+            loopers.quitAll();
+        }
     }
+
+    public Object getImages() {
+        return images;
+    }
+
+    public Object getProperty(String key) {
+        return mProperties.get(key);
+    }
+
+    public Object putProperty(String key, Object value) {
+        return mProperties.put(key, value);
+    }
+
+    public Object removeProperty(String key) {
+        return mProperties.remove(key);
+    }
+
 }

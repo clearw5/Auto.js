@@ -4,14 +4,17 @@ import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.stardust.autojs.runtime.AbstractScriptRuntime;
 import com.stardust.autojs.runtime.AccessibilityBridge;
 import com.stardust.autojs.runtime.ScriptInterface;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.AutomatorConfig;
+import com.stardust.autojs.runtime.api.Loopers;
 import com.stardust.automator.GlobalActionAutomator;
 import com.stardust.automator.UiObject;
 import com.stardust.automator.simple_action.ActionFactory;
@@ -29,10 +32,11 @@ public class SimpleActionAutomator {
     private static final String TAG = "SimpleActionAutomator";
 
     private AccessibilityBridge mAccessibilityBridge;
-    private AbstractScriptRuntime mScriptRuntime;
-    private GlobalActionAutomator mGlobalActionAutomator = new GlobalActionAutomator();
+    private ScriptRuntime mScriptRuntime;
+    private GlobalActionAutomator mGlobalActionAutomator;
+    private ScreenMetrics mScreenMetrics;
 
-    public SimpleActionAutomator(AccessibilityBridge accessibilityBridge, AbstractScriptRuntime scriptRuntime) {
+    public SimpleActionAutomator(AccessibilityBridge accessibilityBridge, ScriptRuntime scriptRuntime) {
         mAccessibilityBridge = accessibilityBridge;
         mScriptRuntime = scriptRuntime;
     }
@@ -190,6 +194,10 @@ public class SimpleActionAutomator {
     private void prepareForGesture() {
         ensureAccessibilityServiceEnabled();
         mScriptRuntime.requiresApi(24);
+        if (mGlobalActionAutomator != null)
+            return;
+        mGlobalActionAutomator = new GlobalActionAutomator(new Handler(mScriptRuntime.loopers.getServantLooper()));
+        mGlobalActionAutomator.setScreenMetrics(mScreenMetrics);
         mGlobalActionAutomator.setService(mAccessibilityBridge.getService());
     }
 
@@ -229,8 +237,10 @@ public class SimpleActionAutomator {
         return service.performGlobalAction(action);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @ScriptInterface
     public boolean paste(ActionTarget target) {
+        mScriptRuntime.requiresApi(18);
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_PASTE));
     }
 
@@ -245,10 +255,7 @@ public class SimpleActionAutomator {
             Log.d(TAG, "performAction: running package is self. return false");
             return false;
         }
-        AccessibilityService service = mAccessibilityBridge.getService();
-        if (service == null)
-            return false;
-        AccessibilityNodeInfo root = service.getRootInActiveWindow();
+        AccessibilityNodeInfo root = mAccessibilityBridge.getRootInActiveWindow();
         if (root == null)
             return false;
         Log.v(TAG, "performAction: " + simpleAction + " root = " + root);
@@ -260,7 +267,9 @@ public class SimpleActionAutomator {
     }
 
     public void setScreenMetrics(ScreenMetrics metrics) {
-        mGlobalActionAutomator.setScreenMetrics(metrics);
+        mScreenMetrics = metrics;
+        if (mGlobalActionAutomator != null)
+            mGlobalActionAutomator.setScreenMetrics(metrics);
     }
 
 }

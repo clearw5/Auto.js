@@ -21,7 +21,7 @@ import java.util.TreeSet;
 /**
  * Created by Stardust on 2017/2/17.
  */
-
+// TODO: 2017/8/1 refactor
 public class CodeCompletion implements TextWatcher {
 
 
@@ -108,6 +108,8 @@ public class CodeCompletion implements TextWatcher {
     }
 
     private String[] parseWordBefore(Editable s, int position) {
+        if (position == 0)
+            return null;
         int i;
         for (i = position - 1; i >= 0; i--) {
             if (position - i > KEY_WORD_LENGTH_MAX) {
@@ -125,10 +127,12 @@ public class CodeCompletion implements TextWatcher {
                 }
             }
         }
-        return null;
+        return new String[]{s.subSequence(0, position).toString(), null};
     }
 
     private String parseWordBeforeDot(Editable s, int position) {
+        if (position == 0)
+            return null;
         int i;
         for (i = position - 1; i >= 0; i--) {
             if (position - i > KEY_WORD_LENGTH_MAX) {
@@ -142,7 +146,7 @@ public class CodeCompletion implements TextWatcher {
                 }
             }
         }
-        return null;
+        return s.subSequence(0, position).toString();
     }
 
 

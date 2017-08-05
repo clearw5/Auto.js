@@ -28,12 +28,22 @@
                 android:orientation="horizontal">
 
                 <com.stardust.widget.ToolbarMenuItem
+                    android:id="@+id/edit"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    app:icon="@drawable/ic_edit_white_24dp"
+                    app:icon_color="@android:color/white"
+                    app:text="@string/text_edit"/>
+
+                <com.stardust.widget.ToolbarMenuItem
                     android:id="@+id/run"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
                     app:icon="@drawable/ic_play_arrow_white_48dp"
                     app:icon_color="@android:color/white"
                     app:text="@string/text_run"/>
+
+
 
             </LinearLayout>
 

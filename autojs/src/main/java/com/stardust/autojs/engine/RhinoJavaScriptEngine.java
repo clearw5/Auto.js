@@ -1,14 +1,14 @@
 package com.stardust.autojs.engine;
 
-import android.os.Looper;
 import android.util.Log;
 
+import com.stardust.autojs.BuildConfig;
 import com.stardust.autojs.rhino.AndroidContextFactory;
 import com.stardust.autojs.rhino.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
-import com.stardust.autojs.runtime.api.Events;
-import com.stardust.autojs.runtime.api.Timers;
-import com.stardust.autojs.script.ScriptSource;
+import com.stardust.autojs.script.JavaScriptSource;
+import com.stardust.autojs.script.StringScriptSource;
+import com.stardust.pio.PFile;
 import com.stardust.pio.UncheckedIOException;
 
 import org.mozilla.javascript.Context;
@@ -25,30 +25,26 @@ import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Stardust on 2017/4/2.
  */
 
-public class RhinoJavaScriptEngine implements ScriptEngine {
+public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
 
     private static int contextCount = 0;
+    private static StringScriptSource sInitScript;
     private String[] mRequirePath = new String[0];
 
     private Context mContext;
     private Scriptable mScriptable;
     private Thread mThread;
-    private RhinoJavaScriptEngineManager mEngineManager;
-    private Map<String, Object> mTags = new ConcurrentHashMap<>();
-    private volatile boolean mDestroyed = false;
+    private android.content.Context mAndroidContext;
 
-    public RhinoJavaScriptEngine(RhinoJavaScriptEngineManager engineManager) {
-        mEngineManager = engineManager;
-        mThread = Thread.currentThread();
+    public RhinoJavaScriptEngine(android.content.Context context) {
+        mAndroidContext = context;
         mContext = createContext();
         mScriptable = createScope(mContext);
     }
@@ -59,7 +55,7 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
     }
 
     @Override
-    public Object execute(ScriptSource source) {
+    public Object execute(JavaScriptSource source) {
         Reader reader = source.getNonNullScriptReader();
         try {
             reader = preprocess(reader);
@@ -77,50 +73,43 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
     public void forceStop() {
         Log.d(LOG_TAG, "forceStop: interrupt Thread: " + mThread);
         mThread.interrupt();
-        Timers.quitLooperIfNeeded(mThread);
     }
 
-    public RhinoJavaScriptEngineManager getEngineManager() {
-        return mEngineManager;
-    }
 
     @Override
     public synchronized void destroy() {
+        super.destroy();
         Log.d(LOG_TAG, "on destroy");
         Context.exit();
         contextCount--;
         Log.d(LOG_TAG, "contextCount = " + contextCount);
-        mEngineManager.removeEngine(this);
-        Timers.removeThreadRecord(mThread);
-        mDestroyed = true;
     }
 
-    @Override
-    public boolean isDestroyed() {
-        return mDestroyed;
-    }
-
-    @Override
-    public synchronized void setTag(String key, Object value) {
-        mTags.put(key, value);
-    }
-
-    @Override
-    public synchronized Object getTag(String key) {
-        return mTags.get(key);
+    public Thread getThread() {
+        return mThread;
     }
 
     @Override
     public void init() {
-        ScriptableObject.putProperty(mScriptable, "__engine_name__", "rhino");
+        mThread = Thread.currentThread();
         ScriptableObject.putProperty(mScriptable, "__engine__", this);
-        mRequirePath = (String[]) getTag("__require_path__");
+        mRequirePath = (String[]) getTag(TAG_PATH);
         initRequireBuilder(mContext, mScriptable);
-        mContext.evaluateString(mScriptable, mEngineManager.getInitScript().getScript(), "<init>", 1, null);
+        mContext.evaluateString(mScriptable, getInitScript().getScript(), "<init>", 1, null);
     }
 
-    public void setRequirePath(String... requirePath) {
-        setTag("__require_path__", requirePath);
+    private JavaScriptSource getInitScript() {
+        if (sInitScript == null || BuildConfig.DEBUG)
+            sInitScript = new StringScriptSource(readInitScript());
+        return sInitScript;
+    }
+
+    private String readInitScript() {
+        try {
+            return PFile.read(mAndroidContext.getAssets().open("javascript_engine_init.js"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     void initRequireBuilder(Context context, Scriptable scope) {
@@ -128,10 +117,10 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
         for (String path : mRequirePath) {
             list.add(new File(path).toURI());
         }
-        AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(getEngineManager().getContext(), list);
+        AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(mAndroidContext, list);
         new RequireBuilder()
                 .setModuleScriptProvider(new SoftCachingModuleScriptProvider(provider))
-                .setSandboxed(false)
+                .setSandboxed(true)
                 .createRequire(context, scope)
                 .install(scope);
     }
@@ -152,9 +141,9 @@ public class RhinoJavaScriptEngine implements ScriptEngine {
 
     protected Context createContext() {
         if (!ContextFactory.hasExplicitGlobal()) {
-            ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mEngineManager.getContext().getCacheDir(), "classes")));
+            ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mAndroidContext.getCacheDir(), "classes")));
         }
-        Context context = new RhinoAndroidHelper(mEngineManager.getContext()).enterContext();
+        Context context = new RhinoAndroidHelper(mAndroidContext).enterContext();
         contextCount++;
         context.setOptimizationLevel(-1);
         context.setLanguageVersion(Context.VERSION_ES6);

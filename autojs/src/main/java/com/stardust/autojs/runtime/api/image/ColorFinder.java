@@ -1,11 +1,11 @@
 package com.stardust.autojs.runtime.api.image;
 
-import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.Image;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.view.Display;
 
 import com.stardust.autojs.runtime.ScriptInterruptedException;
 import com.stardust.concurrent.VolatileBox;
@@ -31,9 +31,11 @@ public class ColorFinder {
     }
 
     private ThreadPoolExecutor mThreadPoolExecutor;
+    private ScreenMetrics mScreenMetrics;
 
     public ColorFinder(ThreadPoolExecutor threadPoolExecutor) {
         mThreadPoolExecutor = threadPoolExecutor;
+        mScreenMetrics = new ScreenMetrics();
     }
 
     public ColorFinder() {
@@ -75,10 +77,9 @@ public class ColorFinder {
     private Point scalePoint(Point point, int width, int height) {
         if (point == null)
             return null;
-        if (ScreenMetrics.getDeviceScreenHeight() == height && ScreenMetrics.getDeviceScreenWidth() == height) {
-            return point;
-        }
-        point.set(ScreenMetrics.scaleX(point.x, width), ScreenMetrics.scaleY(point.y, height));
+        mScreenMetrics.setDesignHeight(height);
+        mScreenMetrics.setDesignWidth(width);
+        point.set(mScreenMetrics.scaleX(point.x), mScreenMetrics.scaleY(point.y));
         return point;
     }
 

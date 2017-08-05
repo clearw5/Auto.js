@@ -22,10 +22,14 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
+import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.UnderuseExecutors;
 import com.stardust.widget.SimpleAdapterDataObserver;
+
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,6 +38,10 @@ import java.io.InputStream;
 
 import butterknife.OnClick;
 import butterknife.Optional;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Stardust on 2017/3/13.
@@ -45,13 +53,14 @@ public class MyScriptListFragment extends Fragment {
 
     private static final String TAG = "MyScriptListFragment";
 
+    private static ScriptFile sCurrentDirectory = StorageScriptProvider.DEFAULT_DIRECTORY;
+
     private ScriptAndFolderListRecyclerView mScriptListRecyclerView;
     private ScriptListWithProgressBarView mScriptListWithProgressBarView;
     private View mNoScriptHint;
     private MaterialDialog mScriptFileOperationDialog;
     private MaterialDialog mDirectoryOperationDialog;
     private ScriptFile mSelectedScriptFile;
-    private String mFilePathToImport;
 
     @Nullable
     @Override
@@ -68,10 +77,6 @@ public class MyScriptListFragment extends Fragment {
         mNoScriptHint = $(R.id.hint_no_script);
         initScriptListRecyclerView();
         initDialogs();
-        if (mFilePathToImport != null) {
-            importFile(mFilePathToImport);
-            mFilePathToImport = null;
-        }
     }
 
     private void initScriptListRecyclerView() {
@@ -89,7 +94,12 @@ public class MyScriptListFragment extends Fragment {
         mScriptListRecyclerView.setOnItemClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileClickListener() {
             @Override
             public void onClick(ScriptFile file, int position) {
-                EditActivity.editFile(getContext(), file);
+                if (file.getType() == ScriptFile.TYPE_JAVA_SCRIPT) {
+                    Scripts.edit(file);
+                } else {
+                    mSelectedScriptFile = file;
+                    mScriptFileOperationDialog.show();
+                }
             }
         });
         mScriptListRecyclerView.setOnItemLongClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileLongClickListener() {
@@ -103,8 +113,13 @@ public class MyScriptListFragment extends Fragment {
                 }
             }
         });
+        mScriptListRecyclerView.setOnCurrentDirectoryChangeListener(new ScriptAndFolderListRecyclerView.OnCurrentDirectoryChangeListener() {
+            @Override
+            public void onChange(ScriptFile oldDir, ScriptFile newDir) {
+                sCurrentDirectory = newDir;
+            }
+        });
     }
-
 
     private void initDialogs() {
         mScriptFileOperationDialog = new OperationDialogBuilder(getContext())
@@ -122,107 +137,11 @@ public class MyScriptListFragment extends Fragment {
                 .build();
     }
 
-    public void newScriptFileForScript(final String script) {
-        showFileNameInputDialog("", new MaterialDialog.InputCallback() {
-            @Override
-            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                createScriptFile(getCurrentDirectoryPath() + input + ".js", script);
-            }
-        });
+
+    public static ScriptFile getCurrentDirectory() {
+        return sCurrentDirectory;
     }
 
-    private String getCurrentDirectoryPath() {
-        return getCurrentDirectory().getPath() + "/";
-    }
-
-    public void createScriptFile(String path, String script) {
-        if (PFile.createIfNotExists(path)) {
-            if (script != null) {
-                try {
-                    PFile.write(path, script);
-                } catch (UncheckedIOException e) {
-                    Snackbar.make(getView(), R.string.text_file_write_fail, Snackbar.LENGTH_LONG).show();
-                }
-            }
-            notifyScriptFileChanged();
-            Scripts.edit(path);
-        } else {
-            Snackbar.make(getView(), R.string.text_create_fail, Snackbar.LENGTH_LONG).show();
-        }
-    }
-
-    public void newScriptFile() {
-        newScriptFileForScript(null);
-    }
-
-    public void importFile(final String pathFrom) {
-        if (getActivity() == null) {
-            mFilePathToImport = pathFrom;
-            return;
-        }
-        try {
-            importFile(PFile.getNameWithoutExtension(pathFrom), new FileInputStream(pathFrom));
-        } catch (FileNotFoundException e) {
-            showMessage(R.string.file_not_exists);
-        }
-    }
-
-    public void importFile(String prefix, final InputStream inputStream) {
-        showFileNameInputDialog(PFile.getNameWithoutExtension(prefix), new MaterialDialog.InputCallback() {
-            @Override
-            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                final String pathTo = getCurrentDirectoryPath() + input + ".js";
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (PFile.copyStream(inputStream, pathTo)) {
-                            showMessage(R.string.text_import_succeed);
-                        } else {
-                            showMessage(R.string.text_import_fail);
-                        }
-                        notifyScriptFileChanged();
-                    }
-                }).start();
-            }
-        });
-    }
-
-
-    public void newDirectory() {
-        showNameInputDialog("", new InputCallback(true), new MaterialDialog.InputCallback() {
-            @Override
-            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                if (new ScriptFile(getCurrentDirectory(), input.toString()).mkdirs()) {
-                    showMessage(R.string.text_already_create);
-                    notifyScriptFileChanged();
-                } else {
-                    showMessage(R.string.text_create_fail);
-                }
-            }
-        });
-    }
-
-    private ScriptFile getCurrentDirectory() {
-        return mScriptListRecyclerView.getCurrentDirectory();
-    }
-
-    private void showFileNameInputDialog(String prefix, final MaterialDialog.InputCallback callback) {
-        showNameInputDialog(prefix, new InputCallback(false), callback);
-    }
-
-    private void showNameInputDialog(String prefix, MaterialDialog.InputCallback textWatcher, final MaterialDialog.InputCallback callback) {
-        new ThemeColorMaterialDialogBuilder(getActivity()).title(R.string.text_name)
-                .inputType(InputType.TYPE_CLASS_TEXT)
-                .alwaysCallInputCallback()
-                .input(getString(R.string.text_please_input_name), prefix, false, textWatcher)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        callback.onInput(dialog, dialog.getInputEditText().getText());
-                    }
-                })
-                .show();
-    }
 
     private void notifyScriptFileChanged() {
         getActivity().runOnUiThread(new Runnable() {
@@ -245,15 +164,15 @@ public class MyScriptListFragment extends Fragment {
     @OnClick(R.id.rename)
     void renameScriptFile() {
         dismissDialogs();
-        String originalName = mSelectedScriptFile.getSimplifiedName();
-        showNameInputDialog(originalName, new InputCallback(mSelectedScriptFile.isDirectory(), originalName), new MaterialDialog.InputCallback() {
-            @Override
-            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                mSelectedScriptFile.renameTo(input.toString());
-                StorageScriptProvider.getDefault().notifyDirectoryChanged(mScriptListRecyclerView.getCurrentDirectory());
-                onScriptFileOperated();
-            }
-        });
+        new ScriptOperations(getActivity(), getView())
+                .rename(mSelectedScriptFile)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(@io.reactivex.annotations.NonNull Boolean renamed) throws Exception {
+                        StorageScriptProvider.getDefault().notifyDirectoryChanged(mScriptListRecyclerView.getCurrentDirectory());
+                        onScriptFileOperated();
+                    }
+                });
     }
 
     private void dismissDialogs() {
@@ -274,7 +193,7 @@ public class MyScriptListFragment extends Fragment {
 
     private void onScriptFileOperated() {
         mSelectedScriptFile = null;
-        getView().post(new Runnable() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mScriptListWithProgressBarView.hideProgressBar();
@@ -310,18 +229,21 @@ public class MyScriptListFragment extends Fragment {
 
     private void doDeletingScriptFile() {
         mScriptListWithProgressBarView.showProgressBar();
-        UnderuseExecutors.execute(new Runnable() {
+        Observable.fromPublisher(new Publisher<Boolean>() {
             @Override
-            public void run() {
-                if (PFile.deleteRecursively(mSelectedScriptFile)) {
-                    showMessage(R.string.text_already_delete);
-                    notifyScriptFileChanged();
-                } else {
-                    showMessage(R.string.text_already_delete);
-                }
-                onScriptFileOperated();
+            public void subscribe(Subscriber<? super Boolean> s) {
+                s.onNext(PFile.deleteRecursively(mSelectedScriptFile));
             }
-        });
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(@io.reactivex.annotations.NonNull Boolean deleted) throws Exception {
+                        showMessage(deleted ? R.string.text_already_delete : R.string.text_delete_failed);
+                        notifyScriptFileChanged();
+                        onScriptFileOperated();
+                    }
+                });
     }
 
     private void showMessage(final int resId) {

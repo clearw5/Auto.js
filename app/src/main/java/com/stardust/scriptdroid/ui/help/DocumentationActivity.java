@@ -3,11 +3,15 @@ package com.stardust.scriptdroid.ui.help;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.webkit.WebView;
 
 import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.ui.BaseActivity;
+import com.stardust.theme.ThemeColorManagerCompat;
+import com.stardust.util.UnderuseExecutors;
 import com.stardust.widget.CommonMarkdownView;
 import com.stardust.scriptdroid.R;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.io.IOException;
 
@@ -27,46 +31,60 @@ public class DocumentationActivity extends BaseActivity {
                 .putExtra("path", assetPath));
     }
 
-    public static void openDocumentation(Context context, String title, int rawResId) {
-        context.startActivity(new Intent(context, DocumentationActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra("title", title)
-                .putExtra("resId", rawResId));
-    }
-
-    private String mDocumentation;
+    private volatile String mDocumentation;
     private String mTitle;
+    private AVLoadingIndicatorView mLoadingIndicatorView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        handleIntent(getIntent());
         setUpUI();
+        handleIntent(getIntent());
     }
 
     private void handleIntent(Intent intent) {
         mTitle = intent.getStringExtra("title");
-        String path = intent.getStringExtra("path");
-        int rawId = intent.getIntExtra("resId", 0);
-        if (path != null) {
-            try {
-                mDocumentation = PFile.read(getAssets().open("help/" + path));
-            } catch (IOException e) {
-                e.printStackTrace();
+        final String path = intent.getStringExtra("path");
+        if (path == null)
+            return;
+        UnderuseExecutors.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mDocumentation = PFile.read(getAssets().open("help/" + path));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadDocument();
+                    }
+                });
             }
-        } else if (rawId != 0) {
-            mDocumentation = PFile.read(getResources().openRawResource(rawId));
-        }
+        });
+
     }
 
     private void setUpUI() {
         setContentView(R.layout.activity_document);
         setToolbarAsBack(mTitle);
-        loadDocument();
+        setUpLoadingView();
+    }
+
+    private void setUpLoadingView() {
+        mLoadingIndicatorView = $(R.id.loading);
+        mLoadingIndicatorView.setIndicatorColor(ThemeColorManagerCompat.getColorPrimary());
     }
 
     private void loadDocument() {
         mCommonMarkdownView = $(R.id.markdown);
+        mCommonMarkdownView.setOnPageFinishedListener(new CommonMarkdownView.OnPageFinishedListener() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                mLoadingIndicatorView.hide();
+            }
+        });
         try {
             mCommonMarkdownView.loadMarkdown(mDocumentation);
         } catch (Exception e) {

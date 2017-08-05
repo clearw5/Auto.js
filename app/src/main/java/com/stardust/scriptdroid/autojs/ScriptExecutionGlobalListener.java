@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.autojs;
 
+import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.scriptdroid.App;
@@ -29,7 +30,8 @@ public class ScriptExecutionGlobalListener implements ScriptExecutionListener {
         if (millis == null)
             return;
         double seconds = (System.currentTimeMillis() - millis) / 1000.0;
-        execution.getRuntime().console.verbose(App.getApp().getString(R.string.text_execution_finished), execution.getSource().toString(), seconds);
+        AutoJs.getInstance().getScriptEngineService().getGlobalConsole()
+                .verbose(App.getApp().getString(R.string.text_execution_finished), execution.getSource().toString(), seconds);
     }
 
     @Override

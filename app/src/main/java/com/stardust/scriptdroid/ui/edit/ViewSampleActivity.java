@@ -16,6 +16,7 @@ import com.jecelyin.editor.v2.ui.EditorDelegate;
 import com.jecelyin.editor.v2.view.EditorView;
 import com.jecelyin.editor.v2.view.menu.MenuDef;
 import com.stardust.app.OnActivityResultDelegate;
+import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.scriptdroid.R;
@@ -23,21 +24,21 @@ import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.script.sample.Sample;
 import com.stardust.scriptdroid.ui.BaseActivity;
+import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
 import com.stardust.scriptdroid.ui.edit.editor920.Editor920Utils;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
-import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.AssetsCache;
 import com.stardust.util.SparseArrayEntries;
 import com.stardust.widget.ToolbarMenuItem;
 
 
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
 
 import static com.stardust.scriptdroid.script.Scripts.ACTION_ON_EXECUTION_FINISHED;
 import static com.stardust.scriptdroid.script.Scripts.EXTRA_EXCEPTION_MESSAGE;
@@ -118,6 +119,20 @@ public class ViewSampleActivity extends Editor920Activity implements OnActivityR
         mScriptExecution = Scripts.runWithBroadcastSender(new StringScriptSource(mSample.name, mEditorDelegate.getText()));
     }
 
+    @OnClick(R.id.edit)
+    void edit() {
+        new ScriptOperations(this, mView)
+                .importSample(mSample)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(@NonNull String path) throws Exception {
+                        EditActivity.editFile(ViewSampleActivity.this, path);
+                        finish();
+                    }
+                });
+    }
+
     private void initMenuItem() {
         mMenuMap = new SparseArrayEntries<ToolbarMenuItem>()
                 .entry(R.id.run, (ToolbarMenuItem) findViewById(R.id.run))
@@ -152,7 +167,9 @@ public class ViewSampleActivity extends Editor920Activity implements OnActivityR
                 HelpCatalogueActivity.showMainCatalogue(this);
                 return true;
             case R.id.action_import:
-                MainActivity.importSample(this, mSample);
+                new ScriptOperations(this, mView)
+                        .importSample(mSample)
+                        .subscribe();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -165,7 +182,7 @@ public class ViewSampleActivity extends Editor920Activity implements OnActivityR
 
     private void showConsole() {
         if (mScriptExecution != null) {
-            mScriptExecution.getRuntime().console.show();
+            ((JavaScriptEngine) mScriptExecution.getEngine()).getRuntime().console.show();
         }
     }
 

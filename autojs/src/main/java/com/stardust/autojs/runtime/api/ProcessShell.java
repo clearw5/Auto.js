@@ -3,12 +3,15 @@ package com.stardust.autojs.runtime.api;
 
 import android.util.Log;
 
+import com.stardust.autojs.util.ProcessUtils;
 import com.stardust.pio.UncheckedIOException;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 
 /**
@@ -17,7 +20,7 @@ import java.io.Reader;
  * 来自网络~~
  */
 
-public class ProcessShell extends AbstractShell implements AutoCloseable {
+public class ProcessShell extends AbstractShell {
 
     private static final String TAG = "ProcessShell";
 
@@ -88,11 +91,6 @@ public class ProcessShell extends AbstractShell implements AutoCloseable {
     }
 
     @Override
-    public void close() {
-        exit();
-    }
-
-    @Override
     public void exitAndWaitFor() {
         exec(COMMAND_EXIT);
         waitFor();
@@ -158,7 +156,9 @@ public class ProcessShell extends AbstractShell implements AutoCloseable {
     }
 
     public static Result exec(String[] commands, boolean isRoot) {
-        try (ProcessShell shell = new ProcessShell(isRoot)) {
+        ProcessShell shell = null;
+        try {
+            shell = new ProcessShell(isRoot);
             for (String command : commands) {
                 shell.exec(command);
             }
@@ -170,18 +170,19 @@ public class ProcessShell extends AbstractShell implements AutoCloseable {
             result.result = shell.getSucceedOutput().toString();
             shell.exit();
             return result;
+        } finally {
+            if (shell != null) {
+                shell.exit();
+            }
         }
     }
 
     public static Result execCommand(String[] commands, boolean isRoot) {
         Result commandResult = new Result();
-        if (commands == null || commands.length == 0) return commandResult;
+        if (commands == null || commands.length == 0)
+            throw new IllegalArgumentException("command is empty");
         Process process = null;
         DataOutputStream os = null;
-        BufferedReader successResult = null;
-        BufferedReader errorResult = null;
-        StringBuilder successMsg = null;
-        StringBuilder errorMsg = null;
         try {
             process = Runtime.getRuntime().exec(isRoot ? COMMAND_SU : COMMAND_SH);
             os = new DataOutputStream(process.getOutputStream());
@@ -195,40 +196,36 @@ public class ProcessShell extends AbstractShell implements AutoCloseable {
             os.writeBytes(COMMAND_EXIT);
             os.flush();
             commandResult.code = process.waitFor();
-            //获取错误信息
-            successMsg = new StringBuilder();
-            errorMsg = new StringBuilder();
-            successResult = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            errorResult = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            String s;
-            while ((s = successResult.readLine()) != null) successMsg.append(s);
-            while ((s = errorResult.readLine()) != null) errorMsg.append(s);
-            commandResult.result = successMsg.toString();
-            commandResult.error = errorMsg.toString();
-            Log.i(TAG, commandResult.toString());
+            commandResult.result = readAll(process.getInputStream());
+            commandResult.error = readAll(process.getErrorStream());
+            Log.d(TAG, commandResult.toString());
         } catch (Exception e) {
-            String errmsg = e.getMessage();
-            if (errmsg != null) {
-                Log.e(TAG, errmsg);
-            } else {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
         } finally {
             try {
                 if (os != null) os.close();
-                if (successResult != null) successResult.close();
-                if (errorResult != null) errorResult.close();
-            } catch (IOException e) {
-                String errmsg = e.getMessage();
-                if (errmsg != null) {
-                    Log.e(TAG, errmsg);
-                } else {
-                    e.printStackTrace();
+                if (process != null) {
+                    process.getInputStream().close();
+                    process.getOutputStream().close();
                 }
+            } catch (IOException ignored) {
+
             }
-            if (process != null) process.destroy();
+            if (process != null) {
+                process.destroy();
+            }
         }
         return commandResult;
+    }
+
+    private static String readAll(InputStream inputStream) throws IOException {
+        String line;
+        StringBuilder builder = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        while ((line = reader.readLine()) != null) {
+            builder.append(line);
+        }
+        return builder.toString();
     }
 
     public static Result execCommand(String command, boolean isRoot) {

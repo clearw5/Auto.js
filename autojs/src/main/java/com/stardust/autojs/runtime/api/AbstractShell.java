@@ -3,6 +3,7 @@ package com.stardust.autojs.runtime.api;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.stardust.autojs.engine.RootAutomatorEngine;
 import com.stardust.util.ScreenMetrics;
 
 /**
@@ -33,7 +34,7 @@ public abstract class AbstractShell {
     static final String COMMAND_LINE_END = "\n";
 
 
-    private int mTouchDevice;
+    private int mTouchDevice = -1;
     private ScreenMetrics mScreenMetrics;
 
     private boolean mRoot;
@@ -50,6 +51,8 @@ public abstract class AbstractShell {
     public AbstractShell(Context context, boolean root) {
         mContext = context;
         mRoot = root;
+        if (context != null)
+            mTouchDevice = RootAutomatorEngine.getTouchDevice(context);
         init(root ? COMMAND_SU : COMMAND_SH);
     }
 
@@ -64,6 +67,8 @@ public abstract class AbstractShell {
     public abstract void exit();
 
     public void SetTouchDevice(int touchDevice) {
+        if (mTouchDevice > 0)
+            return;
         mTouchDevice = touchDevice;
     }
 
@@ -97,6 +102,8 @@ public abstract class AbstractShell {
     }
 
     private int scaleX(int x) {
+        if (mScreenMetrics == null)
+            return x;
         return mScreenMetrics.scaleX(x);
     }
 
@@ -105,8 +112,9 @@ public abstract class AbstractShell {
     }
 
     private int scaleY(int y) {
+        if (mScreenMetrics == null)
+            return y;
         return mScreenMetrics.scaleY(y);
-
     }
 
     public void Tap(int x, int y) {
@@ -114,11 +122,11 @@ public abstract class AbstractShell {
     }
 
     public void Swipe(int x1, int y1, int x2, int y2) {
-        exec(com.stardust.util.TextUtils.join(" ", "input", "tap", scaleX(x1), scaleY(y1), scaleX(x2), scaleY(y2)));
+        exec(com.stardust.util.TextUtils.join(" ", "input", "swipe", scaleX(x1), scaleY(y1), scaleX(x2), scaleY(y2)));
     }
 
     public void Swipe(int x1, int y1, int x2, int y2, int time) {
-        exec(com.stardust.util.TextUtils.join(" ", "input", "tap", scaleX(x1), scaleY(y1), scaleX(x2), scaleY(y2), time));
+        exec(com.stardust.util.TextUtils.join(" ", "input", "swipe", scaleX(x1), scaleY(y1), scaleX(x2), scaleY(y2), time));
     }
 
     public void KeyCode(int keyCode) {
