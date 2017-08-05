@@ -1,8 +1,11 @@
 package com.stardust.autojs.runtime.record.inputevent;
 
 import android.content.Context;
+import android.hardware.input.InputManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.InputDevice;
+import android.view.MotionEvent;
 
 import com.stardust.autojs.engine.RootAutomatorEngine;
 import com.stardust.autojs.runtime.api.RootAutomator;
@@ -54,7 +57,7 @@ public class InputEventToAutoFileRecorder extends InputEventRecorder {
     public void recordInputEvent(@NonNull InputEventObserver.InputEvent event) {
         try {
             convertEventOrThrow(event);
-            Log.d(LOG_TAG, "recordInputEvent: " + event);
+            //Log.d(LOG_TAG, "recordInputEvent: " + event);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -65,20 +68,24 @@ public class InputEventToAutoFileRecorder extends InputEventRecorder {
         if (mLastEventTime == 0) {
             mLastEventTime = event.time;
         } else if (event.time - mLastEventTime > 0.001) {
-            mDataOutputStream.writeByte(RootAutomator.DATA_TYPE_SLEEP);
-            int n = (int) (1000L * (event.time - mLastEventTime));
-            mDataOutputStream.writeInt(n);
+            writeSleep((int) (1000L * (event.time - mLastEventTime)));
             mLastEventTime = event.time;
         }
         int device = parseDeviceNumber(event.device);
         short type = (short) Long.parseLong(event.type, 16);
         short code = (short) Long.parseLong(event.code, 16);
         int value = (int) Long.parseLong(event.value, 16);
-        if (type == 3) {
-            if (code == 53 || code == 54) {
+        if (type == InputEventCodes.EV_ABS) {
+            if (code == InputEventCodes.ABS_MT_POSITION_X || code == InputEventCodes.ABS_MT_POSITION_Y) {
                 mTouchDevice = device;
                 RootAutomatorEngine.setTouchDevice(device);
+                writeTouch(code, value);
+                return;
             }
+        }
+        if (type == InputEventCodes.EV_SYN && code == InputEventCodes.SYN_REPORT && value == 0) {
+            writeSyncReport();
+            return;
         }
         if (device != mTouchDevice) {
             return;
@@ -86,6 +93,29 @@ public class InputEventToAutoFileRecorder extends InputEventRecorder {
         mDataOutputStream.writeByte(RootAutomator.DATA_TYPE_EVENT);
         mDataOutputStream.writeShort(type);
         mDataOutputStream.writeShort(code);
+        mDataOutputStream.writeInt(value);
+        Log.d(LOG_TAG, "write event: " + event);
+    }
+
+    private void writeSleep(int millis) throws IOException {
+        mDataOutputStream.writeByte(RootAutomator.DATA_TYPE_SLEEP);
+        mDataOutputStream.writeInt(millis);
+        Log.d(LOG_TAG, "write sleep: " + millis);
+    }
+
+    private void writeSyncReport() throws IOException {
+        mDataOutputStream.writeByte(RootAutomator.DATA_TYPE_EVENT_SYNC_REPORT);
+        Log.d(LOG_TAG, "write sync report");
+    }
+
+    private void writeTouch(short code, int value) throws IOException {
+        if (code == InputEventCodes.ABS_MT_POSITION_X) {
+            mDataOutputStream.writeByte(RootAutomator.DATA_TYPE_EVENT_TOUCH_X);
+            Log.d(LOG_TAG, "write touch x: " + value);
+        } else {
+            mDataOutputStream.writeByte(RootAutomator.DATA_TYPE_EVENT_TOUCH_Y);
+            Log.d(LOG_TAG, "write touch y: " + value);
+        }
         mDataOutputStream.writeInt(value);
     }
 

@@ -3,6 +3,7 @@ package com.stardust.autojs.runtime.api;
 import android.content.Context;
 
 import com.stardust.autojs.engine.RootAutomatorEngine;
+import com.stardust.autojs.runtime.record.inputevent.InputEventCodes;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
 
@@ -10,6 +11,8 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import static com.stardust.autojs.runtime.record.inputevent.InputEventCodes.*;
 
 /**
  * Created by Stardust on 2017/7/16.
@@ -20,6 +23,9 @@ public class RootAutomator {
 
     public static final byte DATA_TYPE_SLEEP = 0;
     public static final byte DATA_TYPE_EVENT = 1;
+    public static final byte DATA_TYPE_EVENT_SYNC_REPORT = 2;
+    public static final byte DATA_TYPE_EVENT_TOUCH_X = 3;
+    public static final byte DATA_TYPE_EVENT_TOUCH_Y = 4;
 
     private DataOutputStream mTmpFileOutputStream;
     private File mEventTmpFile;
@@ -84,6 +90,23 @@ public class RootAutomator {
     public void sleep(int n) throws IOException {
         mTmpFileOutputStream.writeByte(DATA_TYPE_SLEEP);
         mTmpFileOutputStream.writeInt(n);
+    }
+
+    public void tap(int x, int y) throws IOException {
+        //sendEvent(EV_ABS, ABS_MT_TRACKING_ID, 0x0000398c);
+        sendEvent(EV_KEY, BTN_TOUCH, 0x00000001);
+        sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000001);
+        sendEvent(EV_ABS, ABS_MT_POSITION_X, x);
+        sendEvent(EV_ABS, ABS_MT_POSITION_Y, y);
+        sendEvent(EV_SYN, SYN_REPORT, 0x00000000);
+        //sendEvent(EV_ABS, ABS_MT_TRACKING_ID, 0xffffffff);
+        sendEvent(EV_KEY, BTN_TOUCH, 0x00000000);
+        sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000000);
+        sendEvent(EV_SYN, SYN_REPORT, 0x00000000);
+    }
+
+    public void swipe(int x, int y, int duration){
+
     }
 
     public AbstractShell.Result writeToDevice(Context context) {

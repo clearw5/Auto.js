@@ -110,6 +110,7 @@ public class HelpCatalogueActivity extends BaseActivity {
             mLoadingIndicatorView.hide();
             handleIntent();
         }
+        setToolbarAsBack(mTitle);
     }
 
     private void readCatalogues() {
@@ -141,7 +142,6 @@ public class HelpCatalogueActivity extends BaseActivity {
 
     private void setUpUI() {
         setContentView(R.layout.activity_help);
-        setToolbarAsBack(mTitle);
         setUpRecyclerView();
         setUpLoadingView();
     }

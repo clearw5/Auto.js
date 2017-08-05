@@ -213,6 +213,9 @@
     <string name="text_on_progress">处理中</string>
     <string name="text_delete_failed">删除失败</string>
     <string name="text_enable_accessibility_service_by_root_ing">正在使用root权限启用无障碍服务</string>
+    <string name="text_edit_script">编辑脚本</string>
+    <string name="text_run_script">运行脚本</string>
+    <string name="text_import_script">导入脚本文件</string>
 
 
     <string-array name="record_control_keys">

@@ -13,6 +13,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
+import android.view.Display;
+import android.view.Surface;
+import android.view.WindowManager;
 
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.ScriptInterruptedException;
@@ -37,14 +40,17 @@ public class Images {
     private ScreenCaptureRequester mScreenCaptureRequester;
     private ScreenCapturer mScreenCapturer;
     private Context mContext;
+    private Display mDisplay;
 
     @ScriptVariable
-    public ColorFinder colorFinder = new ColorFinder();
+    public final ColorFinder colorFinder;
 
     public Images(Context context, ScriptRuntime scriptRuntime, ScreenCaptureRequester screenCaptureRequester) {
         mScriptRuntime = scriptRuntime;
         mScreenCaptureRequester = screenCaptureRequester;
         mContext = context;
+        mDisplay = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        colorFinder = new ColorFinder();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -71,7 +77,10 @@ public class Images {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean requestScreenCapture() {
-        return requestScreenCapture(ScreenMetrics.getDeviceScreenWidth(), ScreenMetrics.getDeviceScreenHeight());
+        if (mDisplay.getRotation() == Surface.ROTATION_0 || mDisplay.getRotation() == Surface.ROTATION_180)
+            return requestScreenCapture(ScreenMetrics.getDeviceScreenWidth(), ScreenMetrics.getDeviceScreenHeight());
+        else
+            return requestScreenCapture(ScreenMetrics.getDeviceScreenHeight(), ScreenMetrics.getDeviceScreenWidth());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -116,8 +125,9 @@ public class Images {
     public static int pixel(Image image, int x, int y) {
         int originX = x;
         int originY = y;
-        x = ScreenMetrics.rescaleX(x, image.getWidth());
-        y = ScreenMetrics.rescaleY(y, image.getHeight());
+        ScreenMetrics metrics = new ScreenMetrics(image.getWidth(), image.getHeight());
+        x = metrics.rescaleX(x);
+        y = metrics.rescaleY(y);
         Image.Plane plane = image.getPlanes()[0];
         int offset = y * plane.getRowStride() + x * plane.getPixelStride();
         int c = plane.getBuffer().getInt(offset);

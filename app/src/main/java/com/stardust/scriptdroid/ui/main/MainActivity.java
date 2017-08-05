@@ -94,13 +94,12 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private OnActivityResultDelegate.Mediator mActivityResultMediator = new OnActivityResultDelegate.Mediator();
     private DrawableSaver mDrawerHeaderBackgroundSaver, mAppbarBackgroundSaver;
     private VersionGuard mVersionGuard;
-    private Intent mIntentToHandle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkPermissions();
-        mIntentToHandle = getIntent();
         EventBus.getDefault().register(this);
         mVersionGuard = new VersionGuard(this);
         showAnnunciationIfNeeded();
@@ -200,15 +199,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 .build();
         mViewPager.setAdapter(mPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
-        mPagerAdapter.setOnFragmentInstantiateListener(new FragmentPagerAdapterBuilder.OnFragmentInstantiateListener() {
-            @Override
-            public void OnInstantiate(Fragment fragment) {
-                if (fragment instanceof MyScriptListFragment && mIntentToHandle != null) {
-                    handleIntent(mIntentToHandle);
-                    mIntentToHandle = null;
-                }
-            }
-        });
     }
 
     @Click(R.id.add)
@@ -239,7 +229,8 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                         dialog.dismiss();
                         provider.clearCacheExceptInitialDirectory();
                         new ScriptOperations(MainActivity.this, mDrawerLayout)
-                                .importFile(file.getPath());
+                                .importFile(file.getPath())
+                                .subscribe();
                     }
                 })
                 .title(R.string.text_please_choose_file_to_import)
@@ -288,59 +279,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         super.onResume();
         mVersionGuard.checkDeprecateAndUpdate();
     }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        handleIntent(intent);
-    }
-
-    private void handleIntent(Intent intent) {
-        String action = intent.getStringExtra(EXTRA_ACTION);
-        if (action == null)
-            return;
-        switch (action) {
-
-            case ACTION_IMPORT_SCRIPT:
-                handleImportScriptFile(intent);
-                break;
-        }
-    }
-
-    private void handleImportScriptFile(Intent intent) {
-        String path = intent.getStringExtra(ARGUMENT_PATH);
-        if (path != null) {
-            new ScriptOperations(MainActivity.this, mDrawerLayout)
-                    .importFile(intent.getStringExtra(ARGUMENT_PATH))
-                    .subscribe();
-            return;
-        }
-        InputStream inputStream = IntentExtras.fromIntent(intent).getAndClear(ARGUMENT_INPUT_STREAM);
-        new ScriptOperations(MainActivity.this, mDrawerLayout)
-                .importFile("", inputStream)
-                .subscribe();
-    }
-
-
-
-
-    public static void importScriptFile(Context context, String path) {
-        context.startActivity(new Intent(context, MainActivity_.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(EXTRA_ACTION, ACTION_IMPORT_SCRIPT)
-                .putExtra(ARGUMENT_PATH, path));
-    }
-
-    public static void importScriptFileByInputStream(Context context, InputStream inputStream) {
-        Intent intent = new Intent(context, MainActivity_.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(EXTRA_ACTION, ACTION_IMPORT_SCRIPT);
-        IntentExtras.newExtras()
-                .put(ARGUMENT_INPUT_STREAM, inputStream)
-                .putInIntent(intent);
-        context.startActivity(intent);
-    }
-
 
     @Click(R.id.toolbar)
     public void OnToolbarClick() {

@@ -60,7 +60,6 @@ import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.
 public class UiSelector extends UiGlobalSelector {
 
 
-
     private static final String TAG = "UiSelector";
 
     private AccessibilityBridge mAccessibilityBridge;
@@ -133,6 +132,11 @@ public class UiSelector extends UiGlobalSelector {
     public UiObject untilFindOne() {
         UiObjectCollection collection = untilFind();
         return new UiObject(collection.get(0).getInfo());
+    }
+
+    @ScriptInterface
+    public void waitFor() {
+        untilFind();
     }
 
     @ScriptInterface
