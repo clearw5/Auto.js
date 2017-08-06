@@ -1,7 +1,5 @@
 package com.stardust.scriptdroid.external.floatingwindow.menu.content;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -16,11 +14,11 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.DialogUtils;
-import com.stardust.autojs.runtime.record.Recorder;
-import com.stardust.autojs.runtime.record.accessibility.AccessibilityActionRecorder;
-import com.stardust.autojs.runtime.record.inputevent.InputEventObserver;
-import com.stardust.autojs.runtime.record.inputevent.KeyObserver;
-import com.stardust.autojs.runtime.record.inputevent.TouchRecorder;
+import com.stardust.autojs.core.record.Recorder;
+import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;
+import com.stardust.autojs.core.inputevent.InputEventObserver;
+import com.stardust.autojs.core.inputevent.ShellKeyObserver;
+import com.stardust.autojs.core.record.inputevent.TouchRecorder;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
@@ -28,7 +26,6 @@ import com.stardust.scriptdroid.accessibility.AccessibilityEventHelper;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
-import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.MessageEvent;
@@ -43,14 +40,12 @@ import butterknife.OnClick;
 import io.mattcarroll.hover.Navigator;
 import io.mattcarroll.hover.NavigatorContent;
 
-import static android.content.Context.CLIPBOARD_SERVICE;
-
 
 /**
  * Created by Stardust on 2017/3/12.
  */
 
-public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStateChangedListener, KeyObserver.KeyListener {
+public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStateChangedListener, ShellKeyObserver.KeyListener {
 
     private View mView;
     @BindView(R.id.sw_recorded_by_root)
@@ -76,7 +71,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     private TouchRecorder mTouchRecorder;
     private Context mContext;
     private boolean mDiscard = false;
-    private KeyObserver mKeyObserver;
+    private ShellKeyObserver mKeyObserver;
     private InputEventObserver mInputEventObserver = InputEventObserver.getGlobal();
     private OnKeyListener mVolumeKeyListener = new OnKeyListener() {
         @Override
@@ -101,7 +96,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
         AccessibilityService.getStickOnKeyObserver().addListener(mVolumeKeyListener);
         mTouchRecorder = TouchRecorder.getGlobal(context);
         if (Pref.hasRecordTrigger()) {
-            mKeyObserver = new KeyObserver();
+            mKeyObserver = new ShellKeyObserver();
             mInputEventObserver.addListener(mKeyObserver);
             mKeyObserver.setKeyListener(this);
         }

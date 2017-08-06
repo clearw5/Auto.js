@@ -1,15 +1,13 @@
 package com.stardust.autojs.runtime.api;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.stardust.autojs.runtime.AccessibilityBridge;
-import com.stardust.autojs.runtime.ScriptInterface;
-import com.stardust.autojs.runtime.ScriptInterruptedException;
+import com.stardust.autojs.core.accessibility.AccessibilityBridge;
+import com.stardust.autojs.annotation.ScriptInterface;
+import com.stardust.autojs.runtime.accessibility.AutomatorConfig;
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.automator.ActionArgument;
 import com.stardust.automator.UiGlobalSelector;
 import com.stardust.automator.UiObject;
@@ -17,9 +15,6 @@ import com.stardust.automator.UiObjectCollection;
 import com.stardust.automator.filter.DfsFilter;
 import com.stardust.util.DeveloperUtils;
 import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
-import com.stardust.view.accessibility.AccessibilityService;
-
-import org.mozilla.javascript.NativeArray;
 
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_COLUMN_INT;

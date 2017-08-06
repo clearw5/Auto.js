@@ -2,15 +2,14 @@ package com.stardust.autojs.runtime.api.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.stardust.autojs.R;
-import com.stardust.autojs.runtime.ScriptInterface;
-import com.stardust.autojs.runtime.ScriptInterruptedException;
+import com.stardust.autojs.annotation.ScriptInterface;
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.concurrent.VolatileBox;
 import com.stardust.util.ArrayUtils;

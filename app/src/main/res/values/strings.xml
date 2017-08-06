@@ -216,6 +216,7 @@
     <string name="text_edit_script">编辑脚本</string>
     <string name="text_run_script">运行脚本</string>
     <string name="text_import_script">导入脚本文件</string>
+    <string name="key_record_with_root">key_record_with_root</string>
 
 
     <string-array name="record_control_keys">
@@ -235,11 +236,13 @@
     <string-array name="ad_showing_mode_keys">
         <item>默认</item>
         <item>每天显示一次</item>
+        <item>关闭广告(╥﹏╥)</item>
     </string-array>
 
     <string-array name="ad_showing_mode_values">
         <item>Default</item>
         <item>OncePerDay</item>
+        <item>Off</item>
     </string-array>
 
 </resources>

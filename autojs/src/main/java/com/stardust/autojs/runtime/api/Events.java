@@ -7,10 +7,11 @@ import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.stardust.autojs.runtime.AccessibilityBridge;
-import com.stardust.autojs.runtime.ScriptException;
-import com.stardust.autojs.runtime.record.inputevent.InputEventObserver;
-import com.stardust.autojs.runtime.record.inputevent.TouchObserver;
+import com.stardust.autojs.core.accessibility.AccessibilityBridge;
+import com.stardust.autojs.runtime.ScriptBridges;
+import com.stardust.autojs.runtime.exception.ScriptException;
+import com.stardust.autojs.core.inputevent.InputEventObserver;
+import com.stardust.autojs.core.inputevent.TouchObserver;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.NotificationListener;
 import com.stardust.view.accessibility.OnKeyListener;

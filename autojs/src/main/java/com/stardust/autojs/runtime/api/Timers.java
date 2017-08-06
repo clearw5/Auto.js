@@ -1,10 +1,9 @@
 package com.stardust.autojs.runtime.api;
 
 import android.os.Handler;
-import android.os.Looper;
 import android.util.SparseArray;
 
-import java.util.concurrent.ConcurrentHashMap;
+import com.stardust.autojs.runtime.ScriptBridges;
 
 /**
  * Created by Stardust on 2017/7/21.

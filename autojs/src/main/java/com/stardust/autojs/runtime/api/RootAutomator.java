@@ -3,7 +3,6 @@ package com.stardust.autojs.runtime.api;
 import android.content.Context;
 
 import com.stardust.autojs.engine.RootAutomatorEngine;
-import com.stardust.autojs.runtime.record.inputevent.InputEventCodes;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
 
@@ -12,7 +11,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static com.stardust.autojs.runtime.record.inputevent.InputEventCodes.*;
+import static com.stardust.autojs.core.inputevent.InputEventCodes.*;
 
 /**
  * Created by Stardust on 2017/7/16.

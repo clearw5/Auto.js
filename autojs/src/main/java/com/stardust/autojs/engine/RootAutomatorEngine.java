@@ -6,11 +6,8 @@ import android.util.Log;
 
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.ProcessShell;
-import com.stardust.autojs.runtime.api.Shell;
-import com.stardust.autojs.runtime.record.inputevent.InputDevices;
+import com.stardust.autojs.core.inputevent.InputDevices;
 import com.stardust.autojs.script.AutoFileSource;
-import com.stardust.autojs.script.JavaScriptFileSource;
-import com.stardust.autojs.script.ScriptSource;
 import com.stardust.pio.PFile;
 
 import java.io.File;

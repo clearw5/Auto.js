@@ -15,6 +15,8 @@ module.exports = function(__runtime__, scope){
         return __runtime__.isStopped();
     }
 
+    scope.isShuttingDown = scope.isShopped;
+
     scope.notStopped = function(){
         return !isStopped();
     }

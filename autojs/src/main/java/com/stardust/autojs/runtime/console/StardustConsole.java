@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.WindowManager;
 
-import com.stardust.autojs.runtime.ScriptInterface;
-import com.stardust.autojs.runtime.ScriptInterruptedException;
+import com.stardust.autojs.annotation.ScriptInterface;
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.runtime.api.AbstractConsole;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.enhancedfloaty.FloatyService;

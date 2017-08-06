@@ -31,7 +31,7 @@ import java.io.PrintWriter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import static com.stardust.autojs.runtime.ScriptInterruptedException.causedByInterrupted;
+import static com.stardust.autojs.runtime.exception.ScriptInterruptedException.causedByInterrupted;
 
 /**
  * Created by Stardust on 2017/1/23.
