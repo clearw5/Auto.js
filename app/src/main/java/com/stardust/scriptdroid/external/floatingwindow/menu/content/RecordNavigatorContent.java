@@ -24,6 +24,7 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.accessibility.AccessibilityEventHelper;
 import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.autojs.record.GlobalRecorder;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
@@ -31,6 +32,8 @@ import com.stardust.util.ClipboardUtil;
 import com.stardust.util.MessageEvent;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.OnKeyListener;
+import com.stardust.widget.PrefSwitch;
+import com.stardust.widget.ViewSwitcher;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -45,61 +48,36 @@ import io.mattcarroll.hover.NavigatorContent;
  * Created by Stardust on 2017/3/12.
  */
 
-public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStateChangedListener, ShellKeyObserver.KeyListener {
+public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStateChangedListener {
 
     private View mView;
     @BindView(R.id.sw_recorded_by_root)
-    SwitchCompat mRecordedByRootSwitch;
+    PrefSwitch mRecordedByRootSwitch;
 
     @BindView(R.id.sw_record_toast)
     SwitchCompat mRecordToastSwitch;
 
-    @BindView(R.id.img_start_or_pause)
-    ImageView mStartOrPauseRecordIcon;
+    @BindView(R.id.img_pause_or_resume)
+    ImageView mPauseOrResumeImage;
 
-    @BindView(R.id.text_start_or_pause)
-    TextView mStartOrPauseRecordText;
+    @BindView(R.id.text_pause_or_resume)
+    TextView mPauseOrResumeText;
 
-    @BindView(R.id.stop_record)
-    View mStopRecord;
+    @BindView(R.id.view_switcher)
+    ViewSwitcher mViewSwitcher;
 
-    @BindView(R.id.discard_record)
-    View mDiscardRecord;
-
-
-    private Recorder mRecorder;
-    private TouchRecorder mTouchRecorder;
+    private GlobalRecorder mRecorder;
     private Context mContext;
-    private boolean mDiscard = false;
-    private ShellKeyObserver mKeyObserver;
-    private InputEventObserver mInputEventObserver = InputEventObserver.getGlobal();
-    private OnKeyListener mVolumeKeyListener = new OnKeyListener() {
-        @Override
-        public void onKeyEvent(int keyCode, KeyEvent event) {
-            if (event.getAction() == KeyEvent.ACTION_DOWN &&
-                    (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
-                    && Pref.isRecordVolumeControlEnable()) {
-                if (mRecorder == null) {
-                    startRecord();
-                } else if (alreadyStartRecord()) {
-                    stopRecord();
-                }
-            }
-        }
-    };
+
 
     public RecordNavigatorContent(Context context) {
         mContext = new ContextThemeWrapper(context, R.style.AppTheme);
         mView = View.inflate(context, R.layout.floating_window_record, null);
         ButterKnife.bind(this, mView);
         HoverMenuService.getEventBus().register(this);
-        AccessibilityService.getStickOnKeyObserver().addListener(mVolumeKeyListener);
-        mTouchRecorder = TouchRecorder.getGlobal(context);
-        if (Pref.hasRecordTrigger()) {
-            mKeyObserver = new ShellKeyObserver();
-            mInputEventObserver.addListener(mKeyObserver);
-            mKeyObserver.setKeyListener(this);
-        }
+        mRecorder = GlobalRecorder.getSingleton(context);
+        mRecorder.addOnStateChangedListener(this);
+        setState(mRecorder.getState());
     }
 
     @NonNull
@@ -128,57 +106,38 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
         mRecordToastSwitch.toggle();
     }
 
-    @OnClick(R.id.start_or_pause)
-    void startOrPauseRecord() {
-        if (mRecorder == null) {
-            startRecord();
-        } else if (mRecorder.getState() == Recorder.STATE_PAUSED) {
-            resumeRecord();
-        } else {
-            pauseRecord();
-        }
+    @OnClick(R.id.start_record)
+    void startRecord() {
+        mRecorder.start();
+        HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
     }
 
     @OnClick(R.id.discard_record)
     void discardRecord() {
-        mDiscard = true;
-        stopRecord();
+        mRecorder.discard();
     }
 
-    private void resumeRecord() {
-        mRecorder.resume();
-        setState(Recorder.STATE_RECORDING);
-        HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
-    }
 
-    private void pauseRecord() {
-        mRecorder.pause();
-        setState(Recorder.STATE_PAUSED);
-    }
-
-    private void startRecord() {
-        mDiscard = false;
-        if (mRecordedByRootSwitch.isChecked()) {
-            mTouchRecorder.reset();
-            mRecorder = mTouchRecorder;
+    @OnClick(R.id.pause_or_resume_record)
+    void pauseOrResumeRecord() {
+        if (mRecorder.getState() == Recorder.STATE_PAUSED) {
+            mRecorder.resume();
         } else {
-            mRecorder = AutoJs.getInstance().getAccessibilityActionRecorder();
+            mRecorder.pause();
         }
-        mRecorder.setOnStateChangedListener(this);
-        mRecorder.start();
-        setState(Recorder.STATE_RECORDING);
         HoverMenuService.postIntent(new Intent(HoverMenuService.ACTION_COLLAPSE_MENU));
     }
 
     private void setState(int state) {
-        mStopRecord.setVisibility(state == Recorder.STATE_STOPPED ? View.GONE : View.VISIBLE);
-        mDiscardRecord.setVisibility(state == Recorder.STATE_STOPPED ? View.GONE : View.VISIBLE);
-        mStartOrPauseRecordIcon.setImageResource(state == Recorder.STATE_RECORDING ? R.drawable.ic_pause_white_24dp : R.drawable.ic_play_arrow_white_48dp);
-        mStartOrPauseRecordText.setText(
-                state == Recorder.STATE_RECORDING ? R.string.text_pause_record :
-                        state == Recorder.STATE_PAUSED ? R.string.text_resume_record :
-                                R.string.text_start_record);
-
+        if (state == Recorder.STATE_NOT_START || state == Recorder.STATE_STOPPED) {
+            mViewSwitcher.showFirst();
+        } else {
+            mViewSwitcher.showSecond();
+        }
+        mPauseOrResumeImage.setImageResource(state == Recorder.STATE_RECORDING ? R.drawable.ic_pause_white_24dp :
+                R.drawable.ic_play_arrow_white_48dp);
+        mPauseOrResumeText.setText(
+                state == Recorder.STATE_RECORDING ? R.string.text_pause_record : R.string.text_resume_record);
     }
 
     @OnClick(R.id.stop_record)
@@ -192,8 +151,8 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     @Subscribe
     public void onMessageEvent(MessageEvent event) {
         if (event.message.equals(HoverMenuService.ACTION_MENU_EXPANDING)) {
-            if (mRecorder != null && mRecorder.getState() == Recorder.STATE_RECORDING)
-                pauseRecord();
+            if (mRecorder.getState() == Recorder.STATE_RECORDING)
+                mRecorder.pause();
         } else if (event.message.equals(HoverMenuService.ACTION_MENU_EXIT)) {
             onMenuExit();
         }
@@ -201,9 +160,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
     public void onMenuExit() {
         HoverMenuService.getEventBus().unregister(this);
-        AccessibilityService.getStickOnKeyObserver().addListener(mVolumeKeyListener);
-        mInputEventObserver.recycle();
-        mInputEventObserver.removeListener(mKeyObserver);
+        mRecorder.removeOnStateChangedListener(this);
     }
 
     @Subscribe
@@ -215,80 +172,21 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
     @Override
     public void onStart() {
-        App.getApp().getUiHandler().toast(R.string.text_start_record);
+        setState(Recorder.STATE_RECORDING);
     }
 
     @Override
     public void onStop() {
-        if (!mDiscard) {
-            if (mRecorder instanceof TouchRecorder) {
-                new ScriptOperations(mContext, null)
-                        .importFile(mRecorder.getCode())
-                        .subscribe();
-            } else {
-                handleRecordedScript(mRecorder.getCode());
-            }
-        }
-        mRecorder = null;
-    }
-
-    private void handleRecordedScript(final String script) {
-        DialogUtils.showDialog(new ThemeColorMaterialDialogBuilder(mContext)
-                .title(R.string.text_recorded)
-                .items(getString(R.string.text_new_file), getString(R.string.text_copy_to_clip))
-                .itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                        if (position == 0) {
-                            new ScriptOperations(mContext, null)
-                                    .newScriptFileForScript(script);
-                        } else {
-                            ClipboardUtil.setClip(mContext, script);
-                            Toast.makeText(mContext, R.string.text_already_copy_to_clip, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-                .negativeText(R.string.text_cancel)
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                })
-                .canceledOnTouchOutside(false)
-                .build());
-    }
-
-    private String getString(int res) {
-        return mContext.getString(res);
+        setState(Recorder.STATE_STOPPED);
     }
 
     @Override
     public void onPause() {
+        setState(Recorder.STATE_PAUSED);
     }
 
     @Override
     public void onResume() {
-
-    }
-
-    @Override
-    public void onKeyDown(String keyName) {
-        if (keyName.equals(Pref.getStopRecordTrigger())) {
-            if (alreadyStartRecord())
-                stopRecord();
-        } else if (keyName.equals(Pref.getStartRecordTrigger())) {
-            if (mRecorder == null)
-                startRecord();
-        }
-    }
-
-    private boolean alreadyStartRecord() {
-        return mRecorder != null && mRecorder.getState() == Recorder.STATE_RECORDING && mRecorder.getState() == Recorder.STATE_PAUSED;
-    }
-
-    @Override
-    public void onKeyUp(String keyName) {
-
+        setState(Recorder.STATE_RECORDING);
     }
 }

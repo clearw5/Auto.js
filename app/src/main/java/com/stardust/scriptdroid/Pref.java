@@ -59,21 +59,6 @@ public class Pref {
         return def().getBoolean(getString(R.string.key_use_volume_control_running), false);
     }
 
-    public static String getStartRecordTrigger() {
-        return def().getString(getString(R.string.key_start_record_trigger), null);
-    }
-
-    public static String getStopRecordTrigger() {
-        return def().getString(getString(R.string.key_stop_record_trigger), null);
-    }
-
-    public static boolean hasRecordTrigger() {
-        String startTrigger = getStartRecordTrigger();
-        String stopTrigger = getStartRecordTrigger();
-        return startTrigger != null && !startTrigger.equals("NONE")
-                && stopTrigger != null && !startTrigger.equals("NONE");
-    }
-
     public static boolean enableAccessibilityServiceByRoot() {
         return def().getBoolean(getString(R.string.key_enable_accessibility_service_by_root), false);
     }
@@ -134,5 +119,9 @@ public class Pref {
 
     public static boolean isFirstShowingAd() {
         return getDisposableBoolean(KEY_FIRST_SHOW_AD, true);
+    }
+
+    public static boolean isRecordWithRootEnabled() {
+        return def().getBoolean(getString(R.string.key_record_with_root), false);
     }
 }

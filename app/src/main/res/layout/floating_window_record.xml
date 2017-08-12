@@ -11,7 +11,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:divider="@drawable/floating_menu_divider"
+        android:orientation="vertical"
+        android:showDividers="middle">
 
         <TextView
             android:layout_width="match_parent"
@@ -21,10 +23,6 @@
             android:textColor="@android:color/primary_text_dark"
             android:textSize="20sp"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#c4c4c4"/>
 
         <RelativeLayout
             android:id="@+id/sw_root_container"
@@ -49,16 +47,12 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@id/sw_recorded_by_root"
+                android:gravity="center_vertical"
                 android:text="@string/text_record_with_root"
                 android:textColor="@android:color/primary_text_dark"
                 android:textSize="16sp"/>
 
         </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#c4c4c4"/>
 
         <RelativeLayout
             android:id="@+id/sw_record_toast_container"
@@ -87,104 +81,18 @@
 
         </RelativeLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#c4c4c4"/>
-
-        <LinearLayout
-            android:id="@+id/start_or_pause"
+        <com.stardust.widget.ViewSwitcher
+            android:id="@+id/view_switcher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:paddingBottom="16dp"
-            android:paddingLeft="8dp"
-            android:paddingTop="16dp">
+            android:measureAllChildren="false">
 
-            <ImageView
-                android:id="@+id/img_start_or_pause"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginRight="8dp"
-                android:src="@drawable/ic_play_arrow_white_48dp"/>
+            <include layout="@layout/floating_window_record_start"/>
 
-            <TextView
-                android:id="@+id/text_start_or_pause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/text_start_record"
-                android:textColor="@android:color/primary_text_dark"
-                android:textSize="16sp"/>
+            <include layout="@layout/floating_window_record_pause"/>
 
-        </LinearLayout>
+        </com.stardust.widget.ViewSwitcher>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#c4c4c4"/>
-
-        <LinearLayout
-            android:id="@+id/stop_record"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:paddingBottom="16dp"
-            android:paddingLeft="8dp"
-            android:paddingTop="16dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginRight="8dp"
-                android:src="@drawable/ic_stop_white_36pt"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/text_stop_record"
-                android:textColor="@android:color/primary_text_dark"
-                android:textSize="16sp"/>
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#c4c4c4"/>
-
-        <LinearLayout
-            android:id="@+id/discard_record"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:paddingBottom="16dp"
-            android:paddingLeft="8dp"
-            android:paddingTop="16dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginRight="8dp"
-                android:src="@drawable/ic_close_white_24dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/text_discard_record"
-                android:textColor="@android:color/primary_text_dark"
-                android:textSize="16sp"/>
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#c4c4c4"/>
     </LinearLayout>
 
 

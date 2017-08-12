@@ -11,6 +11,7 @@ import com.squareup.leakcanary.LeakCanary;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.app.VolumeChangeObserver;
 import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.autojs.record.GlobalRecorder;
 import com.stardust.scriptdroid.statics.ScriptStatics;
 import com.stardust.scriptdroid.tool.CrashHandler;
 import com.stardust.scriptdroid.tool.JsBeautifierFactory;
@@ -69,6 +70,7 @@ public class App extends MultiDexApplication {
         AutoJs.initInstance(this);
         JsBeautifierFactory.initJsBeautify(this, "js/jsbeautify.js");
         initVolumeChangeObserver();
+        GlobalRecorder.initSingleton(this);
     }
 
     private void initVolumeChangeObserver() {

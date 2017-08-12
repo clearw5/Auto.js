@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import static com.stardust.autojs.core.record.inputevent.InputEventRecorder.parseDeviceNumber;
 
+
 /**
  * Created by Stardust on 2017/7/20.
  */

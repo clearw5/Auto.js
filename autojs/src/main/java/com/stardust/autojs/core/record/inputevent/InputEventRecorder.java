@@ -38,7 +38,7 @@ public abstract class InputEventRecorder extends Recorder.AbstractRecorder imple
 
     public abstract String getCode();
 
-    protected static int parseDeviceNumber(String device) {
+    public static int parseDeviceNumber(String device) {
         Matcher matcher = LAST_INT_PATTERN.matcher(device);
         if (matcher.find()) {
             String someNumberStr = matcher.group(1);

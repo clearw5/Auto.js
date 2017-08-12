@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:divider="@drawable/floating_menu_divider"
+              android:orientation="vertical"
+              android:showDividers="middle|end">
+
+
+    <LinearLayout
+        android:id="@+id/pause_or_resume_record"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingBottom="16dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="16dp">
+
+        <ImageView
+            android:id="@+id/img_pause_or_resume"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/ic_pause_white_24dp"/>
+
+        <TextView
+            android:id="@+id/text_pause_or_resume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_pause_record"
+            android:textColor="@android:color/primary_text_dark"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/stop_record"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingBottom="16dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="16dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/ic_stop_white_36pt"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_stop_record"
+            android:textColor="@android:color/primary_text_dark"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/discard_record"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingBottom="16dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="16dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/ic_close_white_24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_discard_record"
+            android:textColor="@android:color/primary_text_dark"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+</LinearLayout>
