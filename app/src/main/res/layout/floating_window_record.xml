@@ -62,13 +62,15 @@
             android:gravity="center_vertical"
             android:padding="16dp">
 
-            <android.support.v7.widget.SwitchCompat
+            <com.stardust.widget.PrefSwitch
                 android:id="@+id/sw_record_toast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:textOff="@string/text_off"
-                android:textOn="@string/text_on"/>
+                android:textOn="@string/text_on"
+                app:defaultValue="true"
+                app:key="@string/key_record_toast"/>
 
             <TextView
                 android:layout_width="wrap_content"
