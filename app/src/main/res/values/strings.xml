@@ -217,6 +217,7 @@
     <string name="text_run_script">运行脚本</string>
     <string name="text_import_script">导入脚本文件</string>
     <string name="key_record_with_root">key_record_with_root</string>
+    <string name="key_record_toast">key_record_toast</string>
 
 
     <string-array name="record_control_keys">

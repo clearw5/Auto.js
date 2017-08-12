@@ -14,17 +14,22 @@ import com.stardust.app.DialogUtils;
 import com.stardust.autojs.core.inputevent.InputEventCodes;
 import com.stardust.autojs.core.inputevent.ShellKeyObserver;
 import com.stardust.autojs.core.record.Recorder;
+import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;
 import com.stardust.autojs.core.record.inputevent.TouchRecorder;
 import com.stardust.autojs.runtime.api.Shell;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.accessibility.AccessibilityEventHelper;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.OnKeyListener;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -59,6 +64,7 @@ public class GlobalRecorder implements Recorder.OnStateChangedListener {
         mContext = new ContextThemeWrapper(context.getApplicationContext(), R.style.AppTheme);
         mTouchRecorder = new TouchRecorder(context);
         addKeyListeners();
+        EventBus.getDefault().register(this);
     }
 
     private void addKeyListeners() {
@@ -90,6 +96,9 @@ public class GlobalRecorder implements Recorder.OnStateChangedListener {
 
 
     private void onVolumeDown() {
+        if (!Pref.isRecordVolumeControlEnable()) {
+            return;
+        }
         if (System.currentTimeMillis() - mLastVolumeDownEventTime < 300) {
             return;
         }
@@ -147,7 +156,8 @@ public class GlobalRecorder implements Recorder.OnStateChangedListener {
 
     @Override
     public void onStart() {
-        App.getApp().getUiHandler().toast(R.string.text_start_record);
+        if (Pref.isRecordToastEnabled())
+            App.getApp().getUiHandler().toast(R.string.text_start_record);
         for (Recorder.OnStateChangedListener listener : mOnStateChangedListeners) {
             listener.onStart();
         }
@@ -180,6 +190,13 @@ public class GlobalRecorder implements Recorder.OnStateChangedListener {
     public void discard() {
         mDiscard = true;
         stop();
+    }
+
+    @Subscribe
+    public void onAccessibilityActionRecordEvent(AccessibilityActionRecorder.AccessibilityActionRecordEvent event) {
+        if (Pref.isRecordToastEnabled()) {
+            App.getApp().getUiHandler().toast(AccessibilityEventHelper.getEventTypeNameResId(event.getAccessibilityEvent()));
+        }
     }
 
     private void handleRecordedScript(final String script) {

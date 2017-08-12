@@ -55,7 +55,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     PrefSwitch mRecordedByRootSwitch;
 
     @BindView(R.id.sw_record_toast)
-    SwitchCompat mRecordToastSwitch;
+    PrefSwitch mRecordToastSwitch;
 
     @BindView(R.id.img_pause_or_resume)
     ImageView mPauseOrResumeImage;
@@ -161,13 +161,6 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     public void onMenuExit() {
         HoverMenuService.getEventBus().unregister(this);
         mRecorder.removeOnStateChangedListener(this);
-    }
-
-    @Subscribe
-    public void onAccessibilityActionRecordEvent(AccessibilityActionRecorder.AccessibilityActionRecordEvent event) {
-        if (mRecordToastSwitch.isChecked()) {
-            Toast.makeText(mContext, AccessibilityEventHelper.getEventTypeNameResId(event.getAccessibilityEvent()), Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override

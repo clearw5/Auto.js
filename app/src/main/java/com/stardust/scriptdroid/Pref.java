@@ -124,4 +124,8 @@ public class Pref {
     public static boolean isRecordWithRootEnabled() {
         return def().getBoolean(getString(R.string.key_record_with_root), false);
     }
+
+    public static boolean isRecordToastEnabled() {
+        return def().getBoolean(getString(R.string.key_record_toast), true);
+    }
 }
