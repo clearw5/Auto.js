@@ -55,7 +55,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     }
 
     @Override
-    public Object execute(JavaScriptSource source) {
+    public Object doExecution(JavaScriptSource source) {
         Reader reader = source.getNonNullScriptReader();
         try {
             reader = preprocess(reader);

@@ -123,22 +123,19 @@ public class ScriptEngineService {
             task.setExecutionListener(mScriptExecutionObserver);
         }
         ScriptSource source = task.getSource();
-        if (source instanceof JavaScriptSource && isUiMode((JavaScriptSource) source)) {
-            return ScriptExecuteActivity.execute(mContext, mScriptEngineManager, task);
-        } else {
-            RunnableScriptExecution r = new RunnableScriptExecution(mScriptEngineManager, task);
-            if (task.getConfig().runInNewThread) {
-                new ThreadCompat(r).start();
-            } else {
-                r.run();
+        if (source instanceof JavaScriptSource) {
+            int mode = ((JavaScriptSource) source).getExecutionMode();
+            if ((mode & JavaScriptSource.EXECUTION_MODE_UI) != 0) {
+                return ScriptExecuteActivity.execute(mContext, mScriptEngineManager, task);
             }
-            return r;
         }
-    }
-
-    private boolean isUiMode(JavaScriptSource source) {
-        int mode = source.getExecutionMode();
-        return (mode & JavaScriptSource.EXECUTION_MODE_UI) != 0;
+        RunnableScriptExecution r = new RunnableScriptExecution(mScriptEngineManager, task);
+        if (task.getConfig().runInNewThread) {
+            new ThreadCompat(r).start();
+        } else {
+            r.run();
+        }
+        return r;
     }
 
     public ScriptExecution execute(ScriptSource source, ScriptExecutionListener listener, ExecutionConfig config) {
