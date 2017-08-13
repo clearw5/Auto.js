@@ -37,7 +37,7 @@ public class RootAutomator {
     @Nullable
     private ScreenMetrics mScreenMetrics;
     private AbstractShell mShell;
-    private int mDefaultId = -1;
+    private int mDefaultId = 1;
 
     public RootAutomator(Context context) {
         mShell = new ProcessShell(true);
