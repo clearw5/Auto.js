@@ -15,6 +15,9 @@ import com.stardust.autojs.core.inputevent.InputEventCodes;
 import com.stardust.autojs.core.inputevent.ShellKeyObserver;
 import com.stardust.autojs.core.record.Recorder;
 import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;
+import com.stardust.autojs.core.record.inputevent.InputEventRecorder;
+import com.stardust.autojs.core.record.inputevent.InputEventToAutoFileRecorder;
+import com.stardust.autojs.core.record.inputevent.InputEventToRootAutomatorRecorder;
 import com.stardust.autojs.core.record.inputevent.TouchRecorder;
 import com.stardust.autojs.runtime.api.Shell;
 import com.stardust.scriptdroid.App;
@@ -45,8 +48,6 @@ public class GlobalRecorder implements Recorder.OnStateChangedListener {
     private TouchRecorder mTouchRecorder;
     private Context mContext;
     private boolean mDiscard = false;
-    private long mLastVolumeDownEventTime;
-    private ShellKeyObserver mShellKeyObserver;
 
     public static GlobalRecorder getSingleton(Context context) {
         if (sSingleton == null) {
@@ -55,61 +56,25 @@ public class GlobalRecorder implements Recorder.OnStateChangedListener {
         return sSingleton;
     }
 
-
     public static void initSingleton(Context context) {
         getSingleton(context);
     }
 
     public GlobalRecorder(Context context) {
         mContext = new ContextThemeWrapper(context.getApplicationContext(), R.style.AppTheme);
-        mTouchRecorder = new TouchRecorder(context);
-        addKeyListeners();
+        mTouchRecorder = new TouchRecorder(context) {
+            @Override
+            protected InputEventRecorder createInputEventRecorder() {
+                if (Pref.rootRecordGeneratesBinary())
+                    return new InputEventToAutoFileRecorder(mContext);
+                else
+                    return new InputEventToRootAutomatorRecorder();
+            }
+        };
         EventBus.getDefault().register(this);
     }
 
-    private void addKeyListeners() {
-        AccessibilityService.getStickOnKeyObserver().addListener(new OnKeyListener() {
-            @Override
-            public void onKeyEvent(int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN &&
-                        (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
-                    onVolumeDown();
-                }
-            }
 
-        });
-        mShellKeyObserver = new ShellKeyObserver();
-        mShellKeyObserver.setKeyListener(new ShellKeyObserver.KeyListener() {
-            @Override
-            public void onKeyDown(String keyName) {
-                if ("KEY_VOLUMEDOWN".equals(keyName)) {
-                    onVolumeDown();
-                }
-            }
-
-            @Override
-            public void onKeyUp(String keyName) {
-
-            }
-        });
-    }
-
-
-    private void onVolumeDown() {
-        if (!Pref.isRecordVolumeControlEnable()) {
-            return;
-        }
-        if (System.currentTimeMillis() - mLastVolumeDownEventTime < 300) {
-            return;
-        }
-        mLastVolumeDownEventTime = System.currentTimeMillis();
-        int state = getState();
-        if (state == Recorder.STATE_RECORDING || state == Recorder.STATE_PAUSED) {
-            stop();
-        } else {
-            start();
-        }
-    }
 
     public void start() {
         if (Pref.isRecordWithRootEnabled()) {
@@ -139,6 +104,10 @@ public class GlobalRecorder implements Recorder.OnStateChangedListener {
         return mRecorder.getCode();
     }
 
+    public String getPath() {
+        return mRecorder.getPath();
+    }
+
     public int getState() {
         if (mRecorder == null)
             return Recorder.STATE_NOT_START;
@@ -166,7 +135,11 @@ public class GlobalRecorder implements Recorder.OnStateChangedListener {
     @Override
     public void onStop() {
         if (!mDiscard) {
-            handleRecordedScript(getCode());
+            String code = getCode();
+            if (code != null)
+                handleRecordedScript(code);
+            else
+                handleRecordedFile(getPath());
         }
         for (Recorder.OnStateChangedListener listener : mOnStateChangedListeners) {
             listener.onStop();
@@ -211,6 +184,23 @@ public class GlobalRecorder implements Recorder.OnStateChangedListener {
             });
         }
     }
+
+    private void handleRecordedFile(final String path) {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            App.getApp().getUiHandler().post(new Runnable() {
+                @Override
+                public void run() {
+                    handleRecordedFile(path);
+                }
+            });
+            return;
+        }
+        new ScriptOperations(mContext, null)
+                .importFile(path)
+                .subscribe();
+
+    }
+
 
     private void showRecordHandleDialog(final String script) {
         DialogUtils.showDialog(new ThemeColorMaterialDialogBuilder(mContext)

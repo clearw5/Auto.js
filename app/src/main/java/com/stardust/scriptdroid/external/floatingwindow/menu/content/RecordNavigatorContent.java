@@ -48,7 +48,7 @@ import io.mattcarroll.hover.NavigatorContent;
  * Created by Stardust on 2017/3/12.
  */
 
-public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStateChangedListener {
+public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStateChangedListener, OnKeyListener {
 
     private View mView;
     @BindView(R.id.sw_recorded_by_root)
@@ -68,17 +68,35 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
     private GlobalRecorder mRecorder;
     private Context mContext;
-
+    private long mLastVolumeDownEventTime;
 
     public RecordNavigatorContent(Context context) {
         mContext = new ContextThemeWrapper(context, R.style.AppTheme);
-        mView = View.inflate(context, R.layout.floating_window_record, null);
+        mView = View.inflate(mContext, R.layout.floating_window_record, null);
         ButterKnife.bind(this, mView);
         HoverMenuService.getEventBus().register(this);
         mRecorder = GlobalRecorder.getSingleton(context);
         mRecorder.addOnStateChangedListener(this);
         setState(mRecorder.getState());
+        AccessibilityService.getStickOnKeyObserver().addListener(this);
     }
+
+    private void onVolumeDown() {
+        if (!Pref.isRecordVolumeControlEnable()) {
+            return;
+        }
+        if (System.currentTimeMillis() - mLastVolumeDownEventTime < 300) {
+            return;
+        }
+        mLastVolumeDownEventTime = System.currentTimeMillis();
+        int state = mRecorder.getState();
+        if (state == Recorder.STATE_RECORDING || state == Recorder.STATE_PAUSED) {
+            mRecorder.stop();
+        } else {
+            mRecorder.start();
+        }
+    }
+
 
     @NonNull
     @Override
@@ -161,6 +179,7 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     public void onMenuExit() {
         HoverMenuService.getEventBus().unregister(this);
         mRecorder.removeOnStateChangedListener(this);
+        AccessibilityService.getStickOnKeyObserver().removeListener(this);
     }
 
     @Override
@@ -182,4 +201,13 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     public void onResume() {
         setState(Recorder.STATE_RECORDING);
     }
+
+    @Override
+    public void onKeyEvent(int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN &&
+                (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+            onVolumeDown();
+        }
+    }
+
 }

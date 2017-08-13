@@ -33,18 +33,8 @@ public class RootAutomatorEngine extends ScriptEngine.AbstractScriptEngine<AutoF
 
     public RootAutomatorEngine(Context context, String deviceNameOrPath) {
         mContext = context;
-        if (sTouchDevice < 0) {
-            sTouchDevice = PreferenceManager.getDefaultSharedPreferences(context).getInt(KEY_TOUCH_DEVICE, -1);
-        }
-        if (sTouchDevice >= 0) {
-            mDeviceNameOrPath = "/dev/input/event" + sTouchDevice;
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .edit()
-                    .putInt(KEY_TOUCH_DEVICE, sTouchDevice)
-                    .apply();
-        } else {
-            mDeviceNameOrPath = deviceNameOrPath;
-        }
+        mDeviceNameOrPath = getDeviceNameOrPath(context, deviceNameOrPath);
+
     }
 
 
@@ -62,7 +52,22 @@ public class RootAutomatorEngine extends ScriptEngine.AbstractScriptEngine<AutoF
         return r;
     }
 
-    private static String getExecutablePath(Context context) {
+
+    public static String getDeviceNameOrPath(Context context, String deviceNameOrPath) {
+        if (sTouchDevice < 0) {
+            sTouchDevice = PreferenceManager.getDefaultSharedPreferences(context).getInt(KEY_TOUCH_DEVICE, -1);
+        }
+        if (sTouchDevice >= 0) {
+            deviceNameOrPath = "/dev/input/event" + sTouchDevice;
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .edit()
+                    .putInt(KEY_TOUCH_DEVICE, sTouchDevice)
+                    .apply();
+        }
+        return deviceNameOrPath;
+    }
+
+    public static String getExecutablePath(Context context) {
         File tmp = new File(context.getCacheDir(), "root_automator");
         PFile.copyAsset(context, ROOT_AUTOMATOR_EXECUTABLE_ASSET, tmp.getAbsolutePath());
         return tmp.getAbsolutePath();

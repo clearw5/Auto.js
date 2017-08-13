@@ -21,7 +21,7 @@ public class InputEventToRootAutomatorRecorder extends InputEventRecorder {
     private int mLastTouchY = -1;
 
     public InputEventToRootAutomatorRecorder() {
-        mCode.append("var ra = new RootAutomator();\n")
+        mCode.append("var ra = new RootAutomator(context);\n")
                 .append("ra.setScreenMetrics(").append(getDeviceScreenWidth()).append(", ")
                 .append(getDeviceScreenHeight()).append(");\n");
     }
@@ -32,7 +32,7 @@ public class InputEventToRootAutomatorRecorder extends InputEventRecorder {
         if (mLastEventTime == 0) {
             mLastEventTime = event.time;
         } else if (event.time - mLastEventTime > 0.001) {
-            mCode.append("ra.sleep(").append((long) (1000L * (event.time - mLastEventTime))).append(");\n");
+            mCode.append("sleep(").append((long) (1000L * (event.time - mLastEventTime))).append(");\n");
             mLastEventTime = event.time;
         }
         int device = parseDeviceNumber(event.device);
@@ -96,7 +96,7 @@ public class InputEventToRootAutomatorRecorder extends InputEventRecorder {
     }
 
     private void setTouchDevice(int i) {
-        mCode.append("ra.setInputDevice(").append(i).append(");\n");
+        //mCode.append("ra.setInputDevice(").append(i).append(");\n");
         mTouchDevice = i;
     }
 
@@ -107,7 +107,7 @@ public class InputEventToRootAutomatorRecorder extends InputEventRecorder {
     @Override
     public void stop() {
         super.stop();
-        mCode.append("log(ra.writeToDevice(context));");
+        mCode.append("ra.exit();");
     }
 
 

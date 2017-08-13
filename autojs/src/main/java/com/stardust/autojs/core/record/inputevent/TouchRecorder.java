@@ -11,7 +11,6 @@ import com.stardust.autojs.core.record.Recorder;
 
 public class TouchRecorder extends Recorder.AbstractRecorder {
 
-    private static TouchRecorder sInstance;
     private InputEventRecorder mInputEventRecorder;
     private Context mContext;
     private InputEventObserver mInputEventObserver;
@@ -27,17 +26,15 @@ public class TouchRecorder extends Recorder.AbstractRecorder {
         mInputEventObserver.observe();
     }
 
-    public static TouchRecorder getGlobal(Context context) {
-        if (sInstance == null)
-            sInstance = new TouchRecorder(context);
-        return sInstance;
-    }
-
     @Override
     protected void startImpl() {
-        mInputEventRecorder = new InputEventToAutoFileRecorder(mContext);
+        mInputEventRecorder = createInputEventRecorder();
         mInputEventObserver.addListener(mInputEventRecorder);
         mInputEventRecorder.start();
+    }
+
+    protected InputEventRecorder createInputEventRecorder() {
+        return new InputEventToAutoFileRecorder(mContext);
     }
 
     @Override
@@ -63,6 +60,11 @@ public class TouchRecorder extends Recorder.AbstractRecorder {
         return mInputEventRecorder.getCode();
     }
 
+
+    @Override
+    public String getPath() {
+        return mInputEventRecorder.getPath();
+    }
 
     public void reset() {
         setState(STATE_NOT_START);

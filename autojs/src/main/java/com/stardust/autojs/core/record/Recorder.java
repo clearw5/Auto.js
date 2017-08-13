@@ -55,6 +55,8 @@ public interface Recorder {
 
     String getCode();
 
+    String getPath();
+
     int getState();
 
     void setOnStateChangedListener(OnStateChangedListener onStateChangedListener);
@@ -171,5 +173,9 @@ public interface Recorder {
             mOnStateChangedListener = onStateChangedListener == null ? NO_OPERATION_LISTENER : onStateChangedListener;
         }
 
+        @Override
+        public String getPath() {
+            return null;
+        }
     }
 }

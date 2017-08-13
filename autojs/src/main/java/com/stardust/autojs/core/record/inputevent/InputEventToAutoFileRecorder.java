@@ -119,6 +119,11 @@ public class InputEventToAutoFileRecorder extends InputEventRecorder {
     }
 
     public String getCode() {
+        return null;
+    }
+
+    @Override
+    public String getPath() {
         return mTmpFile.getAbsolutePath();
     }
 

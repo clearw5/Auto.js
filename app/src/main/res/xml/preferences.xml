@@ -18,6 +18,14 @@
             android:defaultValue="true"
             android:key="@string/key_record_toast"
             android:title="@string/text_record_msg"/>
+
+        <com.afollestad.materialdialogs.prefs.MaterialListPreference
+            android:defaultValue="@string/text_binary"
+            android:entries="@array/root_record_out_file_type_keys"
+            android:entryValues="@array/root_record_out_file_type_values"
+            android:key="@string/key_root_record_out_file_type"
+            android:title="@string/text_root_record_out_file_type"
+            />
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
     <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_script_running">

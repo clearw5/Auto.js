@@ -96,7 +96,13 @@ public class ScriptOperations {
     }
 
     public void newScriptFile() {
-        newScriptFileForScript(null);
+        showFileNameInputDialog("", "js")
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(@io.reactivex.annotations.NonNull String input) throws Exception {
+                        createScriptFile(getCurrentDirectoryPath() + input + ".js", null, true);
+                    }
+                });
     }
 
     public Observable<String> importFile(final String pathFrom) {
@@ -117,13 +123,13 @@ public class ScriptOperations {
                 });
     }
 
-    public Observable<String> importFile(String prefix, final InputStream inputStream) {
-        return showFileNameInputDialog(PFile.getNameWithoutExtension(prefix), "js")
+    public Observable<String> importFile(String prefix, final InputStream inputStream, final String ext) {
+        return showFileNameInputDialog(PFile.getNameWithoutExtension(prefix), ext)
                 .observeOn(Schedulers.io())
                 .map(new Function<String, String>() {
                     @Override
                     public String apply(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        final String pathTo = getCurrentDirectoryPath() + s + ".js";
+                        final String pathTo = getCurrentDirectoryPath() + s + "." + ext;
                         if (PFile.copyStream(inputStream, pathTo)) {
                             showMessage(R.string.text_import_succeed);
                         } else {
@@ -198,14 +204,13 @@ public class ScriptOperations {
     }
 
 
-
     private CharSequence getString(int resId) {
         return mContext.getString(resId);
     }
 
     public Observable<String> importSample(Sample sample) {
         try {
-            return importFile(sample.name, mContext.getAssets().open(sample.path));
+            return importFile(sample.name, mContext.getAssets().open(sample.path), PFile.getExtension(sample.path));
         } catch (IOException e) {
             e.printStackTrace();
             showMessage(R.string.text_import_fail);

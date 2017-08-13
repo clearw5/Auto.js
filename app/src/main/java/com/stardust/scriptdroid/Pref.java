@@ -128,4 +128,9 @@ public class Pref {
     public static boolean isRecordToastEnabled() {
         return def().getBoolean(getString(R.string.key_record_toast), true);
     }
+
+    public static boolean rootRecordGeneratesBinary() {
+        return def().getString(getString(R.string.key_root_record_out_file_type), "binary")
+                .equals("binary");
+    }
 }
