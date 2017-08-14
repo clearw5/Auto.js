@@ -247,6 +247,19 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name="com.stardust.scriptdroid.accessibility.AccessibilityService"
+            android:label="@string/_app_name"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config"/>
+
+        </service>
+
         <receiver android:name=".external.widget.ScriptWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>

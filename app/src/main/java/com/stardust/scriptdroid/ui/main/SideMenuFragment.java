@@ -83,7 +83,7 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
                         if (mAccessibilityServiceSwitch == null) {
                             return;
                         }
-                        final boolean checked = AccessibilityService.isEnabled(App.getApp());
+                        final boolean checked = AccessibilityServiceTool.isAccessibilityServiceEnabled(App.getApp());
                         mAccessibilityServiceSwitch.post(new Runnable() {
                             @Override
                             public void run() {
@@ -118,7 +118,7 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
 
     @CheckedChange(R.id.sw_accessibility_service)
     void setAutoOperateServiceEnable(CompoundButton button, boolean enable) {
-        boolean isAccessibilityServiceEnabled = AccessibilityService.isEnabled(App.getApp());
+        boolean isAccessibilityServiceEnabled = AccessibilityServiceTool.isAccessibilityServiceEnabled(App.getApp());
         if (enable && !isAccessibilityServiceEnabled) {
             enableAccessibilityService();
         } else if (!enable && isAccessibilityServiceEnabled) {

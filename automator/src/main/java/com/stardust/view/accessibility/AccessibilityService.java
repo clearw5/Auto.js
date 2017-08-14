@@ -52,10 +52,6 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
             eventTypes.addAll(set);
     }
 
-    public static boolean isEnabled(Context context) {
-        return AccessibilityServiceUtils.isAccessibilityServiceEnabled(context, AccessibilityService.class);
-    }
-
     public static AccessibilityService getInstance() {
         return instance;
     }

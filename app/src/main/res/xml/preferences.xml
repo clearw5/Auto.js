@@ -58,6 +58,13 @@
             android:key="@string/key_enable_accessibility_service_by_root"
             android:summary="@string/summary_enable_accessibility_service_by_root"
             android:title="@string/text_enable_accessibility_service_by_root"/>
+
+        <com.stardust.theme.preference.ThemeColorSwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_stable_mode"
+            android:summary="@string/summary_stable_mode"
+            android:title="@string/text_stable_mode"/>
+
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
     <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_appearance">

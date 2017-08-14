@@ -153,7 +153,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     private void showAccessibilitySettingPromptIfDisabled() {
-        if (!AccessibilityServiceUtils.isAccessibilityServiceEnabled(this, AccessibilityService.class)) {
+        if (!AccessibilityServiceTool.isAccessibilityServiceEnabled(this)) {
             new NotAskAgainDialog.Builder(this, "Eating...love you...miss you...17.4.12")
                     .title(R.string.text_need_to_enable_accessibility_service)
                     .content(R.string.explain_accessibility_permission)

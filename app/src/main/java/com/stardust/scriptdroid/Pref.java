@@ -133,4 +133,13 @@ public class Pref {
         return def().getString(getString(R.string.key_root_record_out_file_type), "binary")
                 .equals("binary");
     }
+
+    public static boolean isObservingKeyEnabled() {
+        return def().getBoolean(getString(R.string.key_enable_observe_key), false);
+    }
+
+    public static boolean isStableModeEnabled() {
+        return def().getBoolean(getString(R.string.key_stable_mode), false);
+    }
+
 }

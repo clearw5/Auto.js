@@ -221,6 +221,12 @@
     <string name="key_root_record_out_file_type">key_root_record_out_file_type</string>
     <string name="text_root_record_out_file_type">Root录制生成文件类型</string>
     <string name="text_binary">binary</string>
+    <string name="key_stable_mode">key_stable_mode</string>
+    <string name="summary_stable_mode">开启后布局分析更稳定，但小部分脚本可能无法正常运行。重启无障碍服务生效</string>
+    <string name="text_stable_mode">稳定模式</string>
+    <string name="key_enable_observe_key">key_enable_observe_key</string>
+    <string name="summary_enable_observe_key">不启动则无法使用events的按键事件; 启用后软件崩溃等情况会造成按键失灵。重启无障碍服务生效</string>
+    <string name="text_enable_observe_key">启用按键监听</string>
 
 
     <string-array name="record_control_keys">

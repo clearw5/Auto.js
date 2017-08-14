@@ -182,7 +182,7 @@ public class AutoJs {
     public void ensureAccessibilityServiceEnabled() {
         if (AccessibilityService.getInstance() == null) {
             String errorMessage = null;
-            if (AccessibilityServiceUtils.isAccessibilityServiceEnabled(App.getApp(), AccessibilityService.class)) {
+            if (AccessibilityServiceTool.isAccessibilityServiceEnabled(App.getApp())) {
                 errorMessage = App.getApp().getString(R.string.text_auto_operate_service_enabled_but_not_running);
             } else {
                 if (Pref.enableAccessibilityServiceByRoot()) {
