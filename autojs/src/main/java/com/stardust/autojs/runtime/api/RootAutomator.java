@@ -3,22 +3,26 @@ package com.stardust.autojs.runtime.api;
 import android.content.Context;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.InputDevice;
+import android.view.ViewConfiguration;
 
 import com.stardust.autojs.core.inputevent.InputDevices;
 import com.stardust.autojs.engine.RootAutomatorEngine;
-import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
-import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static com.stardust.autojs.core.inputevent.InputEventCodes.*;
+import static com.stardust.autojs.core.inputevent.InputEventCodes.ABS_MT_POSITION_X;
+import static com.stardust.autojs.core.inputevent.InputEventCodes.ABS_MT_POSITION_Y;
+import static com.stardust.autojs.core.inputevent.InputEventCodes.ABS_MT_TOUCH_MAJOR;
+import static com.stardust.autojs.core.inputevent.InputEventCodes.ABS_MT_TRACKING_ID;
+import static com.stardust.autojs.core.inputevent.InputEventCodes.BTN_TOOL_FINGER;
+import static com.stardust.autojs.core.inputevent.InputEventCodes.BTN_TOUCH;
+import static com.stardust.autojs.core.inputevent.InputEventCodes.EV_ABS;
+import static com.stardust.autojs.core.inputevent.InputEventCodes.EV_KEY;
+import static com.stardust.autojs.core.inputevent.InputEventCodes.EV_SYN;
+import static com.stardust.autojs.core.inputevent.InputEventCodes.SYN_MT_REPORT;
+import static com.stardust.autojs.core.inputevent.InputEventCodes.SYN_REPORT;
 
 /**
  * Created by Stardust on 2017/7/16.
@@ -124,6 +128,24 @@ public class RootAutomator {
         swipe(x1, y1, x2, y2, 300, mDefaultId);
     }
 
+    public void press(int x, int y, int duration, int id) throws IOException {
+        touchDown(x, y, id);
+        sleep(duration);
+        touchUp(id);
+    }
+
+    public void press(int x, int y, int duration) throws IOException {
+        press(x, y, duration, getDefaultId());
+    }
+
+    public void longPress(int x, int y, int id) throws IOException {
+        press(x, y, ViewConfiguration.getLongPressTimeout() + 200, id);
+    }
+
+    public void longPress(int x, int y) throws IOException {
+        press(x, y, ViewConfiguration.getLongPressTimeout() + 200, getDefaultId());
+    }
+
     public void touchDown(int x, int y, int id) throws IOException {
         sendEvent(EV_ABS, ABS_MT_TRACKING_ID, id);
         sendEvent(EV_KEY, BTN_TOUCH, 0x00000001);
@@ -168,10 +190,11 @@ public class RootAutomator {
         mDefaultId = defaultId;
     }
 
-    private void sleep(long duration) {
+    private void sleep(long duration) throws IOException {
         try {
             Thread.sleep(duration);
         } catch (InterruptedException e) {
+            exit();
             throw new ScriptInterruptedException();
         }
     }

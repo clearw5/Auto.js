@@ -24,7 +24,7 @@ public class ProcessUtils {
 
     }
 
-    private static int getProcessPid(Process process) {
+    public static int getProcessPid(Process process) {
         try {
             Field pid = process.getClass().getDeclaredField("pid");
             pid.setAccessible(true);

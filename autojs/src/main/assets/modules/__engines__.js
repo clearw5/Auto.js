@@ -5,18 +5,19 @@ module.exports = function(__runtime__, scope){
     var engines = {};
 
     engines.execScript = function(name, script, config){
-        config = fillConfig(config);
-        return rtEngines.execScript(name, script, config);
+        return rtEngines.execScript(name, script, fillConfig(config));
     }
 
     engines.execScriptFile = function(path, config){
-        config = fillConfig(config);
-        return rtEngines.execScriptFile(path, config);
+        return rtEngines.execScriptFile(path, fillConfig(config));
     }
 
     engines.execAutoFile = function(path, config){
-        config = fillConfig(config);
-        return rtEngines.execAutoFile(path, config);
+        return rtEngines.execAutoFile(path, fillConfig(config));
+    }
+
+    engines.myEngine = function(){
+        return scope.__engine__;
     }
 
     engines.stopAll = rtEngines.stopAll.bind(rtEngines);

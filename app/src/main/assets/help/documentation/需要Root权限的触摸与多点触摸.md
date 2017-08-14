@@ -10,7 +10,7 @@ var ra = RootAutomator(context);
 ### RootAutomator.tap(x, y\[, id\])
 * x \<Number\> 横坐标
 * y \<Number\> 纵坐标
-* id \<Number\> 多点触摸id。默认值为1，可以通过setDefaultId指定。
+* id \<Number\> 多点触摸id，可选，默认为1，可以通过setDefaultId指定。
 
 点击位置(x, y)。其中id是一个整数值，用于区分多点触摸，不同的id表示不同的"手指"，例如：
 ```
@@ -29,7 +29,7 @@ ra.exit();
 * x2 \<Number\> 滑动终点横坐标
 * y2 \<Number\> 滑动终点纵坐标
 * duration \<Number\> 滑动时长，单位毫秒，默认值为300
-* id \<Number\> 多点触摸id
+* id \<Number\> 多点触摸id，可选，默认为1
 
 模拟一次从(x1, y1)到(x2, y2)的时间为duration毫秒的滑动。
 
@@ -37,28 +37,36 @@ ra.exit();
 * x \<Number\> 横坐标
 * y \<Number\> 纵坐标
 * duration \<Number\> 按下时长
-* id \<Number\> 多点触摸id
+* id \<Number\> 多点触摸id，可选，默认为1
 
 模拟按下位置(x, y)，时长为duration毫秒。
+
+### RootAutomator.longPress(x, y[\, id\])
+* x \<Number\> 横坐标
+* y \<Number\> 纵坐标
+* duration \<Number\> 按下时长
+* id \<Number\> 多点触摸id，可选，默认为1
+
+模拟长按位置(x, y)。
 
 以上为简单模拟触摸操作的函数。如果要模拟一些复杂的手势，需要更底层的函数。
 
 ### RootAutomator.touchDown(x, y[\, id\])
 * x \<Number\> 横坐标
 * y \<Number\> 纵坐标
-* id \<Number\> 多点触摸id
+* id \<Number\> 多点触摸id，可选，默认为1
 
 模拟手指按下位置(x, y)。
 
 ### RootAutomator.touchMove(x, y[\, id\])
 * x \<Number\> 横坐标
 * y \<Number\> 纵坐标
-* id \<Number\> 多点触摸id
+* id \<Number\> 多点触摸id，可选，默认为1
 
 模拟移动手指到位置(x, y)。
 
-### RootAutomator.touchUp([\id\])
-* id \<Number\> 多点触摸id
+### RootAutomator.touchUp(\[id\])
+* id \<Number\> 多点触摸id，可选，默认为1
 
 模拟手指弹起。
 

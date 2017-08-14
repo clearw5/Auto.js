@@ -68,6 +68,7 @@ public class ProcessShell extends AbstractShell {
     @Override
     public void exit() {
         if (mProcess != null) {
+            Log.d(TAG, "exit: pid = " + ProcessUtils.getProcessPid(mProcess));
             mProcess.destroy();
             mProcess = null;
         }
@@ -195,11 +196,14 @@ public class ProcessShell extends AbstractShell {
             }
             os.writeBytes(COMMAND_EXIT);
             os.flush();
+            Log.d(TAG, "pid = " + ProcessUtils.getProcessPid(process));
             commandResult.code = process.waitFor();
             commandResult.result = readAll(process.getInputStream());
             commandResult.error = readAll(process.getErrorStream());
             Log.d(TAG, commandResult.toString());
         } catch (Exception e) {
+            commandResult.code = -1;
+            commandResult.error = e.getMessage();
             e.printStackTrace();
         } finally {
             try {

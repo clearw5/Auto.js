@@ -45,17 +45,17 @@ module.exports = function(__runtime__, scope){
         return __runtime__.info.getLatestActivity();
     }
 
-    scope.waitForActivity = function(activity, delay){
-        delay = delay || 200;
+    scope.waitForActivity = function(activity, period){
+        period = period || 200;
         while(scope.currentActivity() != activity){
-            sleep(delay);
+            sleep(period);
         }
     }
 
-    scope.waitForPackage = function(packageName, delay){
-        delay = delay || 200;
+    scope.waitForPackage = function(packageName, period){
+        period = period || 200;
         while(scope.currentPackage() != packageName){
-            sleep(delay);
+            sleep(period);
         }
     }
 

@@ -69,6 +69,7 @@ public class Shell extends AbstractShell {
     private volatile RuntimeException mInitException;
     private volatile boolean mInitialized = false;
     private volatile boolean mWaitingExit = false;
+    private final boolean mShouldReadOutput;
     private Callback mCallback;
 
     public Shell(Context context) {
@@ -76,7 +77,12 @@ public class Shell extends AbstractShell {
     }
 
     public Shell(Context context, boolean root) {
+        this(context, root, true);
+    }
+
+    public Shell(Context context, boolean root, boolean shouldReadOutput) {
         super(context, root);
+        mShouldReadOutput = shouldReadOutput;
     }
 
     public Shell() {
@@ -96,7 +102,7 @@ public class Shell extends AbstractShell {
                 TermSettings settings = new TermSettings(mContext.getResources(), PreferenceManager.getDefaultSharedPreferences(mContext));
                 try {
                     mTermSession = new MyShellTermSession(settings, initialCommand);
-                    mTermSession.initializeEmulator(40, 40);
+                    mTermSession.initializeEmulator(1024, 40);
                 } catch (IOException e) {
                     mInitException = new UncheckedIOException(e);
                 }
@@ -181,6 +187,9 @@ public class Shell extends AbstractShell {
         }
     }
 
+    public TermSession getTermSession() {
+        return mTermSession;
+    }
 
     private class MyShellTermSession extends ShellTermSession {
 
@@ -193,7 +202,9 @@ public class Shell extends AbstractShell {
             PipedInputStream pipedInputStream = new PipedInputStream(8192);
             mBufferedReader = new BufferedReader(new InputStreamReader(pipedInputStream));
             mOutputStream = new PipedOutputStream(pipedInputStream);
-            startReadingThread();
+            if (mShouldReadOutput) {
+                startReadingThread();
+            }
         }
 
         private void startReadingThread() {
@@ -215,7 +226,7 @@ public class Shell extends AbstractShell {
         }
 
         private void onNewLine(String line) {
-            Log.d(TAG, line);
+            //Log.d(TAG, line);
             if (!mInitialized) {
                 if (isRoot() && line.endsWith(" $ su")) {
                     notifyInitialized();
@@ -277,6 +288,8 @@ public class Shell extends AbstractShell {
         @Override
         public void finish() {
             super.finish();
+            if (!mShouldReadOutput)
+                return;
             mReadingThread.interrupt();
             try {
                 mBufferedReader.close();

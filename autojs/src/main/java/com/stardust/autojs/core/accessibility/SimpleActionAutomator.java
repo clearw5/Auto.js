@@ -245,6 +245,7 @@ public class SimpleActionAutomator {
         mAccessibilityBridge.ensureServiceEnabled();
     }
 
+
     @SuppressWarnings("unchecked")
     private boolean performAction(SimpleAction simpleAction) {
         ensureAccessibilityServiceEnabled();
