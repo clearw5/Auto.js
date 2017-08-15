@@ -24,6 +24,7 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.accessibility.AccessibilityEventHelper;
 import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.autojs.key.GlobalKeyObserver;
 import com.stardust.scriptdroid.autojs.record.GlobalRecorder;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
@@ -48,7 +49,7 @@ import io.mattcarroll.hover.NavigatorContent;
  * Created by Stardust on 2017/3/12.
  */
 
-public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStateChangedListener, OnKeyListener {
+public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStateChangedListener, GlobalKeyObserver.OnVolumeDownListener {
 
     private View mView;
     @BindView(R.id.sw_recorded_by_root)
@@ -78,10 +79,10 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
         mRecorder = GlobalRecorder.getSingleton(context);
         mRecorder.addOnStateChangedListener(this);
         setState(mRecorder.getState());
-        AccessibilityService.getStickOnKeyObserver().addListener(this);
+        GlobalKeyObserver.getSingleton().addVolumeDownListener(this);
     }
 
-    private void onVolumeDown() {
+    public void onVolumeDown() {
         if (!Pref.isRecordVolumeControlEnable()) {
             return;
         }
@@ -106,7 +107,6 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
 
     @Override
     public void onShown(@NonNull Navigator navigator) {
-
     }
 
     @Override
@@ -179,7 +179,6 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
     public void onMenuExit() {
         HoverMenuService.getEventBus().unregister(this);
         mRecorder.removeOnStateChangedListener(this);
-        AccessibilityService.getStickOnKeyObserver().removeListener(this);
     }
 
     @Override
@@ -202,12 +201,5 @@ public class RecordNavigatorContent implements NavigatorContent, Recorder.OnStat
         setState(Recorder.STATE_RECORDING);
     }
 
-    @Override
-    public void onKeyEvent(int keyCode, KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN &&
-                (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
-            onVolumeDown();
-        }
-    }
 
 }

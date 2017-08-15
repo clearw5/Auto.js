@@ -11,6 +11,7 @@ import com.squareup.leakcanary.LeakCanary;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.app.VolumeChangeObserver;
 import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.autojs.key.GlobalKeyObserver;
 import com.stardust.scriptdroid.autojs.record.GlobalRecorder;
 import com.stardust.scriptdroid.statics.ScriptStatics;
 import com.stardust.scriptdroid.tool.CrashHandler;
@@ -69,22 +70,10 @@ public class App extends MultiDexApplication {
         ThemeColorManager.init(this);
         AutoJs.initInstance(this);
         JsBeautifierFactory.initJsBeautify(this, "js/jsbeautify.js");
-        initVolumeChangeObserver();
+        GlobalKeyObserver.getSingleton();
         GlobalRecorder.initSingleton(this);
     }
 
-    private void initVolumeChangeObserver() {
-        AccessibilityService.getStickOnKeyObserver().addListener(new OnKeyListener() {
-            @Override
-            public void onKeyEvent(int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN &&
-                        (keyCode == KeyEvent.KEYCODE_VOLUME_UP)
-                        && Pref.isRunningVolumeControlEnabled()) {
-                    AutoJs.getInstance().getScriptEngineService().stopAllAndToast();
-                }
-            }
-        });
-    }
 
 
     public UiHandler getUiHandler() {
