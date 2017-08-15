@@ -47,8 +47,6 @@ public class DeveloperUtils {
      * 为了开源社区的发展，请善用源码:-)
      */
     public static boolean checkSignature(Context context) {
-        if (BuildConfig.DEBUG)
-            return true;
         return SIGNATURE.equals(getSignature(context));
     }
 

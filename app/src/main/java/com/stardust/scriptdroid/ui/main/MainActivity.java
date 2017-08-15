@@ -309,7 +309,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     @Override
     protected void onStart() {
         super.onStart();
-        if (!DeveloperUtils.checkSignature(this)) {
+        if (!BuildConfig.DEBUG && !DeveloperUtils.checkSignature(this)) {
             finish();
         }
     }
