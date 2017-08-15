@@ -6,6 +6,14 @@ package com.stardust.autojs.runtime.exception;
 
 public class ScriptInterruptedException extends ScriptException {
 
+    public ScriptInterruptedException(){
+
+    }
+
+    public ScriptInterruptedException(Throwable e) {
+        super(e);
+    }
+
     public static boolean causedByInterrupted(Throwable e) {
         return e instanceof ScriptInterruptedException || e.getCause() instanceof ScriptInterruptedException;
     }

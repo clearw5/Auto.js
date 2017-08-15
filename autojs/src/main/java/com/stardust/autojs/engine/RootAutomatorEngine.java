@@ -110,6 +110,5 @@ public class RootAutomatorEngine extends ScriptEngine.AbstractScriptEngine<AutoF
     @Override
     public synchronized void destroy() {
         super.destroy();
-        Log.d(LOG_TAG, "Shell exit");
     }
 }
