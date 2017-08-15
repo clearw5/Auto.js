@@ -15,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -38,6 +39,7 @@ import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageScriptProvider;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
+import com.stardust.util.DeveloperUtils;
 import com.stardust.util.IntentExtras;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
@@ -304,6 +306,13 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         StorageScriptProvider.getDefault().notifyStoragePermissionGranted();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!DeveloperUtils.checkSignature(this)) {
+            finish();
+        }
+    }
 
     @Override
     protected void onDestroy() {
