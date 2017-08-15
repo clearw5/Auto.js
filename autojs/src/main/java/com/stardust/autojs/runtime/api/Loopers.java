@@ -6,6 +6,7 @@ import android.os.MessageQueue;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.lang.ThreadCompat;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -14,24 +15,35 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Loopers {
 
+    public volatile boolean waitWhenIdle = false;
     private volatile Looper mServantLooper;
     private static volatile ConcurrentHashMap<Thread, Looper> sLoopers = new ConcurrentHashMap<>();
+    private static Field MESSAGE_QUEUE_MESSAGE;
+    private Timers mTimers;
+    private MessageQueue mMessageQueue;
 
-    public volatile boolean waitWhenIdle = false;
-
-    public Loopers() {
+    public Loopers(Timers timers) {
+        mTimers = timers;
         if (Looper.myLooper() == Looper.getMainLooper()) {
             waitWhenIdle = true;
         }
-        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
+        mMessageQueue = Looper.myQueue();
+        mMessageQueue.addIdleHandler(new MessageQueue.IdleHandler() {
             @Override
             public boolean queueIdle() {
                 Looper l = Looper.myLooper();
-                if (l != null && !waitWhenIdle)
+                if (l != null && shouldQuitLooper())
                     l.quit();
                 return true;
             }
         });
+    }
+
+    private boolean shouldQuitLooper() {
+        if (mTimers.hasPendingCallback()) {
+            return false;
+        }
+        return !waitWhenIdle;
     }
 
 

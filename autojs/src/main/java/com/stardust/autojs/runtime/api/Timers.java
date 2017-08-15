@@ -1,6 +1,7 @@
 package com.stardust.autojs.runtime.api;
 
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.SparseArray;
 
 import com.stardust.autojs.runtime.ScriptBridges;
@@ -15,19 +16,20 @@ public class Timers {
     private int mCallbackMaxId = 0;
     private ScriptBridges mBridges;
     private Handler mHandler;
+    private long mFutureCallbackUptimeMillis = 0;
 
     public Timers(ScriptBridges bridges) {
         mBridges = bridges;
     }
 
-    private void ensureHander(){
-        if(mHandler == null){
+    private void ensureHandler() {
+        if (mHandler == null) {
             mHandler = new Handler();
         }
     }
 
     public int setTimeout(final Object callback, long delay, final Object... args) {
-        ensureHander();
+        ensureHandler();
         mCallbackMaxId++;
         final int id = mCallbackMaxId;
         Runnable r = new Runnable() {
@@ -38,41 +40,44 @@ public class Timers {
             }
         };
         mHandlerCallbacks.put(id, r);
-        mHandler.postDelayed(r, delay);
+        postDelayed(r, delay);
         return id;
     }
 
-    public void post(Runnable r) {
-        ensureHander();
-        mHandler.post(r);
-    }
-
-    public void clearTimeout(int id) {
-        clearCallback(id);
+    public boolean clearTimeout(int id) {
+        return clearCallback(id);
     }
 
     public int setInterval(final Object listener, final long interval, final Object... args) {
-        ensureHander();
+        ensureHandler();
         mCallbackMaxId++;
         final int id = mCallbackMaxId;
-        Runnable r = new Runnable() {
+        final Runnable r = new Runnable() {
             @Override
             public void run() {
+                if (mHandlerCallbacks.get(id) == null)
+                    return;
                 mBridges.callFunction(listener, null, args);
-                mHandler.postDelayed(this, interval);
+                postDelayed(this, interval);
             }
         };
         mHandlerCallbacks.put(id, r);
-        mHandler.postDelayed(r, interval);
+        postDelayed(r, interval);
         return id;
     }
 
-    public void clearInterval(int id) {
-        clearTimeout(id);
+    private void postDelayed(Runnable r, long interval) {
+        long uptime = SystemClock.uptimeMillis() + interval;
+        mHandler.postAtTime(r, uptime);
+        mFutureCallbackUptimeMillis = Math.max(mFutureCallbackUptimeMillis, uptime);
+    }
+
+    public boolean clearInterval(int id) {
+        return clearCallback(id);
     }
 
     public int setImmediate(final Object listener, final Object... args) {
-        ensureHander();
+        ensureHandler();
         mCallbackMaxId++;
         final int id = mCallbackMaxId;
         Runnable r = new Runnable() {
@@ -83,21 +88,26 @@ public class Timers {
             }
         };
         mHandlerCallbacks.put(id, r);
-        mHandler.post(r);
+        postDelayed(r, 0);
         return id;
     }
 
-    public void clearImmediate(int id) {
-        clearCallback(id);
+    public boolean clearImmediate(int id) {
+        return clearCallback(id);
     }
 
-    private void clearCallback(int id) {
+    private boolean clearCallback(int id) {
         Runnable callback = mHandlerCallbacks.get(id);
         if (callback != null) {
             mHandler.removeCallbacks(callback);
             mHandlerCallbacks.remove(id);
+            return true;
         }
+        return false;
     }
 
 
+    public boolean hasPendingCallback() {
+        return mFutureCallbackUptimeMillis > SystemClock.uptimeMillis();
+    }
 }
