@@ -6,11 +6,11 @@ import android.util.Log;
 
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.ProcessShell;
+import com.stardust.autojs.core.inputevent.InputDevices;
 import com.stardust.autojs.runtime.api.Shell;
-import com.stardust.autojs.runtime.record.inputevent.InputDevices;
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.AutoFileSource;
-import com.stardust.autojs.script.JavaScriptFileSource;
-import com.stardust.autojs.script.ScriptSource;
+import com.stardust.concurrent.VolatileBox;
 import com.stardust.pio.PFile;
 
 import java.io.File;
@@ -36,18 +36,7 @@ public class RootAutomatorEngine extends ScriptEngine.AbstractScriptEngine<AutoF
 
     public RootAutomatorEngine(Context context, String deviceNameOrPath) {
         mContext = context;
-        if (sTouchDevice < 0) {
-            sTouchDevice = PreferenceManager.getDefaultSharedPreferences(context).getInt(KEY_TOUCH_DEVICE, -1);
-        }
-        if (sTouchDevice >= 0) {
-            mDeviceNameOrPath = "/dev/input/event" + sTouchDevice;
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .edit()
-                    .putInt(KEY_TOUCH_DEVICE, sTouchDevice)
-                    .apply();
-        } else {
-            mDeviceNameOrPath = deviceNameOrPath;
-        }
+        mDeviceNameOrPath = getDeviceNameOrPath(context, deviceNameOrPath);
     }
 
 
@@ -55,17 +44,32 @@ public class RootAutomatorEngine extends ScriptEngine.AbstractScriptEngine<AutoF
         this(context, InputDevices.getTouchDeviceName());
     }
 
-    public AbstractShell.Result execute(String autoFile) {
+    public void execute(String autoFile) {
         mExecutablePath = getExecutablePath(mContext);
-        AbstractShell.Result r = ProcessShell.execCommand(new String[]{
+        Log.d(LOG_TAG, "exec: " + autoFile);
+        AbstractShell.Result result = ProcessShell.execCommand(new String[]{
                 "chmod 777 " + mExecutablePath,
                 mExecutablePath + " \"" + autoFile + "\" -d " + mDeviceNameOrPath
         }, true);
-        Log.d(LOG_TAG, "exec: " + autoFile + " result:" + r);
-        return r;
+        Log.d(LOG_TAG, "result = " + result);
     }
 
-    private static String getExecutablePath(Context context) {
+
+    public static String getDeviceNameOrPath(Context context, String deviceNameOrPath) {
+        if (sTouchDevice < 0) {
+            sTouchDevice = PreferenceManager.getDefaultSharedPreferences(context).getInt(KEY_TOUCH_DEVICE, -1);
+        }
+        if (sTouchDevice >= 0) {
+            deviceNameOrPath = "/dev/input/event" + sTouchDevice;
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .edit()
+                    .putInt(KEY_TOUCH_DEVICE, sTouchDevice)
+                    .apply();
+        }
+        return deviceNameOrPath;
+    }
+
+    public static String getExecutablePath(Context context) {
         File tmp = new File(context.getCacheDir(), "root_automator");
         PFile.copyAsset(context, ROOT_AUTOMATOR_EXECUTABLE_ASSET, tmp.getAbsolutePath());
         return tmp.getAbsolutePath();
@@ -88,17 +92,23 @@ public class RootAutomatorEngine extends ScriptEngine.AbstractScriptEngine<AutoF
 
     @Override
     public Object execute(AutoFileSource source) {
-        return execute(source.getFile().getAbsolutePath());
+        execute(source.getFile().getAbsolutePath());
+        return null;
     }
 
     @Override
     public void forceStop() {
-        ProcessShell.exec("killall " + mExecutablePath, true);
         mThread.interrupt();
+        ProcessShell.exec("killall " + mExecutablePath, true);
     }
 
     @Override
     public void init() {
         mThread = Thread.currentThread();
+    }
+
+    @Override
+    public synchronized void destroy() {
+        super.destroy();
     }
 }

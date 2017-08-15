@@ -12,18 +12,17 @@ import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.ScriptEngineServiceBuilder;
 import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
-import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.engine.RootAutomatorEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
-import com.stardust.autojs.runtime.AccessibilityBridge;
+import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.runtime.ScriptRuntime;
-import com.stardust.autojs.runtime.ScriptException;
+import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
-import com.stardust.autojs.runtime.record.inputevent.InputEventObserver;
+import com.stardust.autojs.core.inputevent.InputEventObserver;
 import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.scriptdroid.App;
@@ -36,7 +35,7 @@ import com.stardust.util.ScreenMetrics;
 import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
-import com.stardust.autojs.runtime.record.accessibility.AccessibilityActionRecorder;
+import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.console.JraskaConsole;
@@ -183,7 +182,7 @@ public class AutoJs {
     public void ensureAccessibilityServiceEnabled() {
         if (AccessibilityService.getInstance() == null) {
             String errorMessage = null;
-            if (AccessibilityServiceUtils.isAccessibilityServiceEnabled(App.getApp(), AccessibilityService.class)) {
+            if (AccessibilityServiceTool.isAccessibilityServiceEnabled(App.getApp())) {
                 errorMessage = App.getApp().getString(R.string.text_auto_operate_service_enabled_but_not_running);
             } else {
                 if (Pref.enableAccessibilityServiceByRoot()) {

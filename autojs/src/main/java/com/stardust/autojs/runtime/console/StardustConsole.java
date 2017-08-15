@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.WindowManager;
 
-import com.stardust.autojs.runtime.ScriptInterface;
-import com.stardust.autojs.runtime.ScriptInterruptedException;
+import com.stardust.autojs.annotation.ScriptInterface;
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.runtime.api.AbstractConsole;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.enhancedfloaty.FloatyService;
@@ -124,14 +124,9 @@ public class StardustConsole extends AbstractConsole {
     @Override
     public void show() {
         if (!SettingsCompat.canDrawOverlays(mUiHandler.getContext())) {
-            mUiHandler.post(new Runnable() {
-                @Override
-                public void run() {
-
-                }
-            });
             SettingsCompat.manageDrawOverlays(mUiHandler.getContext());
             mUiHandler.toast(R.string.text_no_floating_window_permission);
+            return;
         }
         startFloatyService();
         mUiHandler.post(new Runnable() {

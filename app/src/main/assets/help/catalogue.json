@@ -70,6 +70,11 @@
       "path":"documentation"
     },
     {
+      "title": "需要Root权限的触摸与多点触摸",
+      "type": "markdown",
+      "path":"documentation"
+    },
+    {
       "title": "UI(用户界面)",
       "type": "markdown",
       "path":"documentation"

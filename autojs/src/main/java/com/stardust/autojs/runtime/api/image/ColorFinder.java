@@ -5,9 +5,8 @@ import android.graphics.Rect;
 import android.media.Image;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.view.Display;
 
-import com.stardust.autojs.runtime.ScriptInterruptedException;
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.concurrent.VolatileBox;
 import com.stardust.util.ScreenMetrics;
 

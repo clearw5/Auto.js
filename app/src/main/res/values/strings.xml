@@ -82,7 +82,7 @@
     <string name="text_join_qq_group">加入QQ互赞&amp;交流群</string>
     <string name="text_copied">已复制到剪贴板</string>
     <string name="text_use_volume_control_record">使用音量下键控制</string>
-    <string name="summary_use_volume_control_record">开启后每次音量下键会开始或停止脚本录制</string>
+    <string name="summary_use_volume_control_record">开启悬浮窗后每次音量下键会开始或停止脚本录制</string>
     <string name="key_use_volume_control_record">key_use_volume_control_record</string>
     <string name="text_mobile_qq_not_installed">未安装手机QQ</string>
     <string name="text_edit">编辑</string>
@@ -216,6 +216,17 @@
     <string name="text_edit_script">编辑脚本</string>
     <string name="text_run_script">运行脚本</string>
     <string name="text_import_script">导入脚本文件</string>
+    <string name="key_record_with_root">key_record_with_root</string>
+    <string name="key_record_toast">key_record_toast</string>
+    <string name="key_root_record_out_file_type">key_root_record_out_file_type</string>
+    <string name="text_root_record_out_file_type">Root录制生成文件类型</string>
+    <string name="text_binary">binary</string>
+    <string name="key_stable_mode">key_stable_mode</string>
+    <string name="summary_stable_mode">开启后布局分析更稳定，但小部分脚本可能无法正常运行。重启无障碍服务生效</string>
+    <string name="text_stable_mode">稳定模式</string>
+    <string name="key_enable_observe_key">key_enable_observe_key</string>
+    <string name="summary_enable_observe_key">不启动则无法使用events的按键事件; 启用后软件崩溃等情况会造成按键失灵。重启无障碍服务生效</string>
+    <string name="text_enable_observe_key">启用按键监听</string>
 
 
     <string-array name="record_control_keys">
@@ -235,11 +246,23 @@
     <string-array name="ad_showing_mode_keys">
         <item>默认</item>
         <item>每天显示一次</item>
+        <item>关闭广告(╥﹏╥)</item>
     </string-array>
 
     <string-array name="ad_showing_mode_values">
         <item>Default</item>
         <item>OncePerDay</item>
+        <item>Off</item>
     </string-array>
 
+
+    <string-array name="root_record_out_file_type_keys">
+        <item>可编辑的js文件</item>
+        <item>不可编辑的二进制文件</item>
+    </string-array>
+
+    <string-array name="root_record_out_file_type_values">
+        <item>js</item>
+        <item>binary</item>
+    </string-array>
 </resources>

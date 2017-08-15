@@ -1,14 +1,11 @@
 package com.stardust.autojs.runtime.api;
 
-import android.graphics.Paint;
-import android.os.Handler;
 import android.os.Looper;
 import android.os.MessageQueue;
 
-import com.stardust.autojs.runtime.ScriptInterruptedException;
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.lang.ThreadCompat;
 
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**

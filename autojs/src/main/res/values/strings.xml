@@ -14,6 +14,7 @@
     <string name="text_no_floating_window_permission">没有悬浮窗权限</string>
     <string name="text_accessibility_service_description">使脚本自动操作(点击、长按、滑动等)所需，若关闭则只能执行不涉及自动操作的脚本。</string>
     <string name="_app_name">AutoJs</string>
+    <string name="text_should_enable_key_observing">按键监听未启用，请在软件设置中开启</string>
 
 
 </resources>

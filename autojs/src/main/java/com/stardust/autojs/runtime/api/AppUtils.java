@@ -11,7 +11,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
-import com.stardust.autojs.runtime.ScriptInterface;
+import com.stardust.autojs.annotation.ScriptInterface;
 import com.stardust.util.IntentUtil;
 
 import java.lang.ref.WeakReference;

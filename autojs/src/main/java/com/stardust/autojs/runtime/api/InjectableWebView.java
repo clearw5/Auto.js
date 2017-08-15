@@ -4,8 +4,8 @@ import android.content.Context;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 
-import com.stardust.autojs.runtime.ScriptClass;
-import com.stardust.autojs.runtime.ScriptInterface;
+import com.stardust.autojs.annotation.ScriptClass;
+import com.stardust.autojs.annotation.ScriptInterface;
 
 import org.mozilla.javascript.Scriptable;
 

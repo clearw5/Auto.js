@@ -3,16 +3,12 @@ package com.stardust.scriptdroid.tool;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.text.TextUtils;
-import android.widget.Toast;
 
-import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.scriptdroid.Pref;
-import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.util.UiHandler;
-import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.autojs.runtime.api.ProcessShell;
+import com.stardust.scriptdroid.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
 import java.util.Locale;
@@ -23,9 +19,11 @@ import java.util.Locale;
 
 public class AccessibilityServiceTool {
 
+    private static final Class<AccessibilityService> sAccessibilityServiceClass = AccessibilityService.class;
+
     public static void enableAccessibilityService() {
         if (Pref.enableAccessibilityServiceByRoot()) {
-            if (!enableAccessibilityServiceByRoot(AccessibilityService.class)) {
+            if (!enableAccessibilityServiceByRoot(sAccessibilityServiceClass)) {
                 goToAccessibilitySetting();
             }
         } else {
@@ -62,7 +60,7 @@ public class AccessibilityServiceTool {
     }
 
     public static boolean enableAccessibilityServiceByRootAndWaitFor(long timeOut) {
-        if (enableAccessibilityServiceByRoot(AccessibilityService.class)) {
+        if (enableAccessibilityServiceByRoot(sAccessibilityServiceClass)) {
             return AccessibilityService.waitForEnabled(timeOut);
         }
         return false;
@@ -71,7 +69,11 @@ public class AccessibilityServiceTool {
     public static void enableAccessibilityServiceByRootIfNeeded() {
         if (AccessibilityService.getInstance() == null)
             if (Pref.enableAccessibilityServiceByRoot()) {
-                AccessibilityServiceTool.enableAccessibilityServiceByRoot(AccessibilityService.class);
+                AccessibilityServiceTool.enableAccessibilityServiceByRoot(sAccessibilityServiceClass);
             }
+    }
+
+    public static boolean isAccessibilityServiceEnabled(Context context) {
+        return AccessibilityServiceUtils.isAccessibilityServiceEnabled(context, sAccessibilityServiceClass);
     }
 }

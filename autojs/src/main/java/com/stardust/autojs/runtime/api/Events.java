@@ -1,5 +1,6 @@
 package com.stardust.autojs.runtime.api;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Point;
@@ -7,10 +8,12 @@ import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.stardust.autojs.runtime.AccessibilityBridge;
-import com.stardust.autojs.runtime.ScriptException;
-import com.stardust.autojs.runtime.record.inputevent.InputEventObserver;
-import com.stardust.autojs.runtime.record.inputevent.TouchObserver;
+import com.stardust.autojs.R;
+import com.stardust.autojs.core.accessibility.AccessibilityBridge;
+import com.stardust.autojs.runtime.ScriptBridges;
+import com.stardust.autojs.runtime.exception.ScriptException;
+import com.stardust.autojs.core.inputevent.InputEventObserver;
+import com.stardust.autojs.core.inputevent.TouchObserver;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.NotificationListener;
 import com.stardust.view.accessibility.OnKeyListener;
@@ -48,13 +51,16 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     public void observeKey() {
         if (mListeningKey)
             return;
+        AccessibilityService service = mAccessibilityBridge.getService();
+        if (service == null)
+            throw new ScriptException("AccessibilityService = null");
+        if ((service.getServiceInfo().flags & AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS) == 0) {
+            throw new ScriptException(mContext.getString(R.string.text_should_enable_key_observing));
+        }
         ensureHandler();
         mLoopers.waitWhenIdle(true);
         mListeningKey = true;
         mAccessibilityBridge.ensureServiceEnabled();
-        AccessibilityService service = mAccessibilityBridge.getService();
-        if (service == null)
-            throw new ScriptException();
         service.getOnKeyObserver().addListener(this);
     }
 

@@ -3,6 +3,7 @@ package com.stardust.autojs.runtime.api;
 
 import android.util.Log;
 
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.util.ProcessUtils;
 import com.stardust.pio.UncheckedIOException;
 
@@ -68,6 +69,7 @@ public class ProcessShell extends AbstractShell {
     @Override
     public void exit() {
         if (mProcess != null) {
+            Log.d(TAG, "exit: pid = " + ProcessUtils.getProcessPid(mProcess));
             mProcess.destroy();
             mProcess = null;
         }
@@ -195,12 +197,13 @@ public class ProcessShell extends AbstractShell {
             }
             os.writeBytes(COMMAND_EXIT);
             os.flush();
+            Log.d(TAG, "pid = " + ProcessUtils.getProcessPid(process));
             commandResult.code = process.waitFor();
             commandResult.result = readAll(process.getInputStream());
             commandResult.error = readAll(process.getErrorStream());
             Log.d(TAG, commandResult.toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new ScriptInterruptedException(e);
         } finally {
             try {
                 if (os != null) os.close();

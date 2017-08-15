@@ -7,6 +7,12 @@
         <attr name="icon_color" format="color|reference"/>
     </declare-styleable>
 
+    <declare-styleable name="PrefSwitch">
+        <attr name="key" format="string|reference"/>
+        <attr name="defaultValue" format="boolean"/>
+    </declare-styleable>
+
+
 
     <declare-styleable name="MaterialEditText">
         <attr name="met_baseColor" format="color"/>

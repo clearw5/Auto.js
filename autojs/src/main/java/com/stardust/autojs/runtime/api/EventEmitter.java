@@ -3,7 +3,8 @@ package com.stardust.autojs.runtime.api;
 import android.support.annotation.NonNull;
 
 
-import com.stardust.autojs.runtime.ScriptException;
+import com.stardust.autojs.runtime.ScriptBridges;
+import com.stardust.autojs.runtime.exception.ScriptException;
 
 import java.util.ArrayList;
 import java.util.HashMap;

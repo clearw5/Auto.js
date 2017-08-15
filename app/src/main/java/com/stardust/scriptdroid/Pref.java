@@ -4,10 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.stardust.autojs.runtime.api.AutomatorConfig;
-import com.stardust.scriptdroid.autojs.AutoJs;
-
-import org.mozilla.javascript.NativeArray;
+import com.stardust.autojs.runtime.accessibility.AutomatorConfig;
 
 import java.util.concurrent.TimeUnit;
 
@@ -62,21 +59,6 @@ public class Pref {
         return def().getBoolean(getString(R.string.key_use_volume_control_running), false);
     }
 
-    public static String getStartRecordTrigger() {
-        return def().getString(getString(R.string.key_start_record_trigger), null);
-    }
-
-    public static String getStopRecordTrigger() {
-        return def().getString(getString(R.string.key_stop_record_trigger), null);
-    }
-
-    public static boolean hasRecordTrigger() {
-        String startTrigger = getStartRecordTrigger();
-        String stopTrigger = getStartRecordTrigger();
-        return startTrigger != null && !startTrigger.equals("NONE")
-                && stopTrigger != null && !startTrigger.equals("NONE");
-    }
-
     public static boolean enableAccessibilityServiceByRoot() {
         return def().getBoolean(getString(R.string.key_enable_accessibility_service_by_root), false);
     }
@@ -129,6 +111,8 @@ public class Pref {
                 }
                 def().edit().putLong(KEY_LAST_SHOW_AD_MILLIS, System.currentTimeMillis()).apply();
                 return true;
+            case "Off":
+                return false;
         }
         return true;
     }
@@ -136,4 +120,26 @@ public class Pref {
     public static boolean isFirstShowingAd() {
         return getDisposableBoolean(KEY_FIRST_SHOW_AD, true);
     }
+
+    public static boolean isRecordWithRootEnabled() {
+        return def().getBoolean(getString(R.string.key_record_with_root), false);
+    }
+
+    public static boolean isRecordToastEnabled() {
+        return def().getBoolean(getString(R.string.key_record_toast), true);
+    }
+
+    public static boolean rootRecordGeneratesBinary() {
+        return def().getString(getString(R.string.key_root_record_out_file_type), "binary")
+                .equals("binary");
+    }
+
+    public static boolean isObservingKeyEnabled() {
+        return def().getBoolean(getString(R.string.key_enable_observe_key), false);
+    }
+
+    public static boolean isStableModeEnabled() {
+        return def().getBoolean(getString(R.string.key_stable_mode), false);
+    }
+
 }
