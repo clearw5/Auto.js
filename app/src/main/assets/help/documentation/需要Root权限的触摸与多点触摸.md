@@ -2,9 +2,8 @@
 
 RootAutomator是一个使用Root权限来模拟触摸的对象，用它可以完成触摸与多点触摸，并且这些动作的执行没有延迟。
 
-构造RootAutomator需要一个context参数。
 ```
-var ra = RootAutomator(context);
+var ra = RootAutomator();
 ```
 
 ### RootAutomator.tap(x, y\[, id\])
@@ -14,7 +13,7 @@ var ra = RootAutomator(context);
 
 点击位置(x, y)。其中id是一个整数值，用于区分多点触摸，不同的id表示不同的"手指"，例如：
 ```
-var ra = RootAutomator(context);
+var ra = RootAutomator();
 //让"手指1"点击位置(100, 100)
 ra.tap(100, 100, 1);
 //让"手指2"点击位置(200, 200);
