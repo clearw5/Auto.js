@@ -107,9 +107,13 @@ public class HelpCatalogueActivity extends BaseActivity {
         if (CATALOGUES == null) {
             readCatalogues();
         } else {
-            mLoadingIndicatorView.hide();
-            handleIntent();
+            onCataloguesAvailable();
         }
+    }
+
+    private void onCataloguesAvailable(){
+        mLoadingIndicatorView.hide();
+        handleIntent();
         setToolbarAsBack(mTitle);
     }
 
@@ -121,8 +125,7 @@ public class HelpCatalogueActivity extends BaseActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mLoadingIndicatorView.hide();
-                        handleIntent();
+                        onCataloguesAvailable();
                     }
                 });
             }

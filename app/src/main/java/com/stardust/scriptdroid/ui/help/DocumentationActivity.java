@@ -40,6 +40,7 @@ public class DocumentationActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setUpUI();
         handleIntent(getIntent());
+        setToolbarAsBack(mTitle);
     }
 
     private void handleIntent(Intent intent) {
@@ -68,7 +69,6 @@ public class DocumentationActivity extends BaseActivity {
 
     private void setUpUI() {
         setContentView(R.layout.activity_document);
-        setToolbarAsBack(mTitle);
         setUpLoadingView();
     }
 
