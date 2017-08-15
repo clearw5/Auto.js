@@ -144,7 +144,12 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
 
     @Override
     public void onLogClear() {
-        mTextView.setText("");
+        post(new Runnable() {
+            @Override
+            public void run() {
+                mTextView.setText("");
+            }
+        });
     }
 
     @Override
