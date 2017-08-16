@@ -1,16 +1,16 @@
 ﻿{
-  "versionCode": 151,
-  "versionName": "2.0.14 Beta2",
-  "releaseNotes": "* 修复 QQ加群成员、群成员点赞脚本（完美版）\n* 新增 互赞交流群（设置页面末尾）\n* 新增 批量同意好友验证脚本\n* 新增 文件读写、图色处理、控制台、一般常用函数等部分的文档\n* 修复 无障碍授权跳转失败的问题",
+  "versionCode": 163,
+  "versionName": "2.0.16 Beta2",
+  "releaseNotes": "* 优化root录制，录制脚本接近完美，可自行录制游戏脚本\n* 提高部分脚本的运行速度\n* 新增 按键事件、通知事件监听\n*修复 一些问题",
   "downloads" : [
-    {
-	  "name": "酷安",
-	  "url": "http://www.coolapk.com/apk/com.stardust.scriptdroid"
-	},
 	{
 	  "name": "应用宝",
 	  "url": "http://a.app.qq.com/o/simple.jsp?pkgname=com.stardust.scriptdroid"
-	}
+	},
+	{
+	  "name": "百度手机助手",
+	  "url": "http://shouji.baidu.com/software/22060055.html"
+	},
   ],
   "oldVersions": [
     {
