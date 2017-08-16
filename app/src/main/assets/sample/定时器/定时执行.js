@@ -12,4 +12,3 @@ setInterval(function(){
     toast(i * 5 + "秒");
 }, 5000);
 
-loop();

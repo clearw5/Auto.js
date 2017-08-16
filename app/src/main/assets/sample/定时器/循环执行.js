@@ -8,4 +8,3 @@ setInterval(function(){
     }
 }, 4000);
 
-loop();

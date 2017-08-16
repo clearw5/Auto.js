@@ -19,7 +19,7 @@
         <license>Apache Software License 2.0</license>
     </notice>
     <notice>
-        <name>StorIO </name>
+        <name>StorIO</name>
         <url>https://github.com/pushtorefresh/storio</url>
         <license>Apache Software License 2.0</license>
     </notice>
@@ -85,7 +85,7 @@
     </notice>
     <notice>
         <name>Expandable RecyclerView</name>
-        <copyright>Copyright (c) 2014 Big Nerd Ranch</copyright>
+        <copyright>Copyright (c) 2015 Big Nerd Ranch</copyright>
         <url>https://github.com/bignerdranch/expandable-recycler-view</url>
         <license>MIT License</license>
     </notice>
@@ -105,6 +105,18 @@
         <name>Volley</name>
         <copyright/>
         <url>https://github.com/google/volley</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>Settings Compat</name>
+        <copyright>Copyright 2016 czy1121</copyright>
+        <url>https://github.com/czy1121/settingscompat</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>Zip4j</name>
+        <copyright/>
+        <url>http://www.lingala.net/zip4j/</url>
         <license>Apache Software License 2.0</license>
     </notice>
 </notices>

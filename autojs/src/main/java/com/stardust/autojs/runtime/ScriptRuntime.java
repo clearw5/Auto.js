@@ -177,9 +177,9 @@ public class ScriptRuntime {
     public void init() {
         if (loopers != null)
             throw new IllegalStateException("already initialized");
-        loopers = new Loopers();
-        events = new Events(mUiHandler.getContext(), accessibilityBridge, bridges, loopers);
         timers = new Timers(bridges);
+        loopers = new Loopers(timers);
+        events = new Events(mUiHandler.getContext(), accessibilityBridge, bridges, loopers);
     }
 
     public static void setApplicationContext(Context context) {

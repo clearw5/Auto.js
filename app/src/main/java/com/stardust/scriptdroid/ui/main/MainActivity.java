@@ -326,22 +326,4 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         return mActivityResultMediator;
     }
 
-    public static void onRecordStop(Context context, String script) {
-        Intent intent = new Intent(context, MainActivity_.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(EXTRA_ACTION, ACTION_ON_RECORD_STOP);
-        IntentExtras.newExtras()
-                .put(ARGUMENT_SCRIPT, script)
-                .putInIntent(intent);
-        context.startActivity(intent);
-    }
-
-
-    public static void onRootRecordStop(Context context, String path) {
-        Intent intent = new Intent(context, MainActivity_.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(EXTRA_ACTION, ACTION_ON_ROOT_RECORD_STOP)
-                .putExtra(ARGUMENT_PATH, path);
-        context.startActivity(intent);
-    }
 }
