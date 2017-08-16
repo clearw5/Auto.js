@@ -108,6 +108,7 @@ public class Timers {
 
 
     public boolean hasPendingCallback() {
+
         return mFutureCallbackUptimeMillis > SystemClock.uptimeMillis();
     }
 }

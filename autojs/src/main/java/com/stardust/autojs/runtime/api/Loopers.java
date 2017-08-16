@@ -18,17 +18,14 @@ public class Loopers {
     public volatile boolean waitWhenIdle = false;
     private volatile Looper mServantLooper;
     private static volatile ConcurrentHashMap<Thread, Looper> sLoopers = new ConcurrentHashMap<>();
-    private static Field MESSAGE_QUEUE_MESSAGE;
     private Timers mTimers;
-    private MessageQueue mMessageQueue;
 
     public Loopers(Timers timers) {
         mTimers = timers;
         if (Looper.myLooper() == Looper.getMainLooper()) {
             waitWhenIdle = true;
         }
-        mMessageQueue = Looper.myQueue();
-        mMessageQueue.addIdleHandler(new MessageQueue.IdleHandler() {
+        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
             @Override
             public boolean queueIdle() {
                 Looper l = Looper.myLooper();
