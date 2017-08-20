@@ -16,8 +16,7 @@
             android:id="@+id/app_bar_bg"
             android:layout_width="match_parent"
             android:layout_height="128.5dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/toolbar_bg"/>
+            android:scaleType="fitXY"/>
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"

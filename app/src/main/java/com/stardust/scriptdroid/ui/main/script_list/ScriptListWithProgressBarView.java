@@ -10,12 +10,11 @@ import android.support.annotation.RequiresApi;
 import android.support.annotation.StyleRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.ScriptFile;
-import com.stardust.scriptdroid.script.StorageScriptProvider;
+import com.stardust.scriptdroid.script.StorageFileProvider;
 
 /**
  * Created by Stardust on 2017/4/3.
@@ -23,7 +22,7 @@ import com.stardust.scriptdroid.script.StorageScriptProvider;
 
 public class ScriptListWithProgressBarView extends FrameLayout {
 
-    private ScriptAndFolderListRecyclerView mScriptAndFolderListRecyclerView;
+    private ScriptListRecyclerView mScriptAndFolderListRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public ScriptListWithProgressBarView(@NonNull Context context) {
@@ -50,8 +49,8 @@ public class ScriptListWithProgressBarView extends FrameLayout {
     private void init() {
         inflate(getContext(), R.layout.script_and_folder_list_view, this);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        mScriptAndFolderListRecyclerView = (ScriptAndFolderListRecyclerView) findViewById(R.id.script_list_recycler_view);
-        mScriptAndFolderListRecyclerView.setFileProcessListener(new ScriptAndFolderListRecyclerView.FileProcessListener() {
+        mScriptAndFolderListRecyclerView = (ScriptListRecyclerView) findViewById(R.id.script_list_recycler_view);
+        mScriptAndFolderListRecyclerView.setFileProcessListener(new ScriptListRecyclerView.FileProcessListener() {
             @Override
             public void onFilesListing() {
                 showProgressBar();
@@ -65,22 +64,22 @@ public class ScriptListWithProgressBarView extends FrameLayout {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mScriptAndFolderListRecyclerView.getStorageScriptProvider().refreshAll();
+                mScriptAndFolderListRecyclerView.getStorageFileProvider().refreshAll();
             }
         });
     }
 
 
-    public ScriptAndFolderListRecyclerView getScriptAndFolderListRecyclerView() {
+    public ScriptListRecyclerView getScriptAndFolderListRecyclerView() {
         return mScriptAndFolderListRecyclerView;
     }
 
 
-    public void setStorageScriptProvider(StorageScriptProvider storageScriptProvider) {
-        mScriptAndFolderListRecyclerView.setStorageScriptProvider(storageScriptProvider);
+    public void setStorageScriptProvider(StorageFileProvider storageFileProvider) {
+        mScriptAndFolderListRecyclerView.setStorageFileProvider(storageFileProvider);
     }
 
-    public void setOnItemClickListener(ScriptAndFolderListRecyclerView.OnScriptFileClickListener onItemClickListener) {
+    public void setOnItemClickListener(ScriptListRecyclerView.OnScriptFileClickListener onItemClickListener) {
         mScriptAndFolderListRecyclerView.setOnItemClickListener(onItemClickListener);
     }
 

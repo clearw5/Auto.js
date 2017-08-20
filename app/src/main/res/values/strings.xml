@@ -227,6 +227,8 @@
     <string name="key_enable_observe_key">key_enable_observe_key</string>
     <string name="summary_enable_observe_key">不启动则无法使用events的按键事件; 启用后软件崩溃等情况会造成按键失灵。重启无障碍服务生效</string>
     <string name="text_enable_observe_key">启用按键监听</string>
+    <string name="text_directory">文件夹</string>
+    <string name="text_file">文件</string>
 
 
     <string-array name="record_control_keys">

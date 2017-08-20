@@ -3,24 +3,18 @@ package com.stardust.scriptdroid.ui.main;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -36,12 +30,11 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
 import com.stardust.scriptdroid.script.ScriptFile;
-import com.stardust.scriptdroid.script.StorageScriptProvider;
+import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
+import com.stardust.scriptdroid.ui.main.script_list.MyScriptListFragment_;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
 import com.stardust.util.DeveloperUtils;
-import com.stardust.util.IntentExtras;
-import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.DrawableSaver;
 import com.stardust.scriptdroid.ui.BaseActivity;
@@ -50,11 +43,9 @@ import com.stardust.scriptdroid.ui.main.script_list.MyScriptListFragment;
 import com.stardust.scriptdroid.ui.main.script_list.ScriptFileChooserDialogBuilder;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity_;
 import com.stardust.scriptdroid.ui.update.VersionGuard;
-import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.BackPressedHandler;
 import com.stardust.util.MessageEvent;
 import com.stardust.view.DrawerAutoClose;
-import com.stardust.view.accessibility.AccessibilityServiceUtils;
 import com.stardust.widget.CommonMarkdownView;
 import com.stardust.widget.SlidingUpPanel;
 
@@ -64,8 +55,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-
-import java.io.InputStream;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost {
@@ -195,7 +184,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private void setUpTabViewPager() {
         TabLayout tabLayout = $(R.id.tab);
         mPagerAdapter = new FragmentPagerAdapterBuilder(this)
-                .add(new MyScriptListFragment(), R.string.text_my_script)
+                .add(new MyScriptListFragment_(), R.string.text_my_script)
                 .add(new SampleScriptListFragment(), R.string.text_sample_script)
                 .add(new TaskManagerFragment_(), R.string.text_task_manage)
                 .build();
@@ -222,14 +211,14 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Click(R.id.import_from_file)
     void showFileChooser() {
-        final StorageScriptProvider provider = StorageScriptProvider.getExternalStorageProvider();
+        final StorageFileProvider provider = StorageFileProvider.getExternalStorageProvider();
         new ScriptFileChooserDialogBuilder(this)
                 .scriptProvider(provider)
                 .fileCallback(new ScriptFileChooserDialogBuilder.FileCallback() {
                     @Override
                     public void onFileSelection(MaterialDialog dialog, final ScriptFile file) {
                         dialog.dismiss();
-                        provider.clearCacheExceptInitialDirectory();
+                        provider.refreshAll();
                         new ScriptOperations(MainActivity.this, mDrawerLayout)
                                 .importFile(file.getPath())
                                 .subscribe();
@@ -303,7 +292,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        StorageScriptProvider.getDefault().notifyStoragePermissionGranted();
+        StorageFileProvider.getDefault().notifyStoragePermissionGranted();
     }
 
     @Override

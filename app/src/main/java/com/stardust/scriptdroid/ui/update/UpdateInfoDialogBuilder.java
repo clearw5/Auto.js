@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.script.StorageScriptProvider;
+import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.scriptdroid.tool.UpdateChecker;
 import com.stardust.util.DownloadTask;
@@ -117,7 +117,7 @@ public class UpdateInfoDialogBuilder extends MaterialDialog.Builder {
                 .title(R.string.text_downloading)
                 .progress(false, 100)
                 .show();
-        final String path = StorageScriptProvider.DEFAULT_DIRECTORY_PATH + "AutoJs.apk";
+        final String path = StorageFileProvider.DEFAULT_DIRECTORY_PATH + "AutoJs.apk";
         final DownloadTask task = new DownloadTask() {
             @Override
             protected void onProgressUpdate(Integer... values) {

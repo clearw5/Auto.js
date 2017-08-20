@@ -1,31 +1,25 @@
 package com.stardust.scriptdroid.ui.common;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.text.InputType;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.jecelyin.common.utils.L;
 import com.stardust.app.DialogUtils;
-import com.stardust.autojs.runtime.api.ui.Dialogs;
 import com.stardust.pio.PFile;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.Scripts;
-import com.stardust.scriptdroid.script.StorageScriptProvider;
+import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.script.sample.Sample;
 import com.stardust.scriptdroid.ui.main.script_list.MyScriptListFragment;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
@@ -158,7 +152,7 @@ public class ScriptOperations {
     }
 
     private void notifyScriptFileChanged() {
-        StorageScriptProvider.getDefault().notifyDirectoryChanged(mCurrentDirectory);
+        StorageFileProvider.getDefault().notifyDirectoryChanged(mCurrentDirectory);
     }
 
     private void showMessage(final int resId) {

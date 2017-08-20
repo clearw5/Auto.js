@@ -1,24 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:orientation="vertical">
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                              android:id="@+id/swipe_refresh_layout"
+                                              android:layout_width="match_parent"
+                                              android:layout_height="match_parent">
 
-    <com.stardust.scriptdroid.ui.main.script_list.ScriptListWithProgressBarView
-        android:id="@+id/script_list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/script_file_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#f2f3f5"/>
-
-    <TextView
-        android:id="@+id/hint_no_script"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/hint_no_script"
-        android:textColor="#adadad"
-        android:textSize="16sp"
-        android:visibility="gone"/>
-
-</FrameLayout>
+        android:layout_height="wrap_content"/>
+</android.support.v4.widget.SwipeRefreshLayout>

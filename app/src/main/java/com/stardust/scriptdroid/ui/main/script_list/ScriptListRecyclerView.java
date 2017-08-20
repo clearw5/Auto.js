@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -19,8 +18,7 @@ import android.workground.WrapContentLinearLayoutManager;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.Scripts;
-import com.stardust.scriptdroid.script.StorageScriptProvider;
-import com.stardust.util.ViewUtil;
+import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.util.ViewUtils;
 import com.stardust.widget.ViewHolderMutableAdapter;
 import com.stardust.widget.ViewHolderSupplier;
@@ -32,8 +30,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -45,7 +42,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Stardust on 2017/3/27.
  */
 
-public class ScriptAndFolderListRecyclerView extends RecyclerView {
+public class ScriptListRecyclerView extends RecyclerView {
 
     public interface OnScriptFileClickListener {
 
@@ -157,22 +154,22 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
     private ScriptFile mRootDirectory;
     private Adapter mAdapter;
     private boolean mCanGoBack = false;
-    private StorageScriptProvider mStorageScriptProvider;
+    private StorageFileProvider mStorageFileProvider;
     private FileProcessListener mFileProcessListener;
     private OnCurrentDirectoryChangeListener mOnCurrentDirectoryChangeListener;
     private boolean mScriptFileOperationEnabled = true;
 
-    public ScriptAndFolderListRecyclerView(Context context) {
+    public ScriptListRecyclerView(Context context) {
         super(context);
         init();
     }
 
-    public ScriptAndFolderListRecyclerView(Context context, @Nullable AttributeSet attrs) {
+    public ScriptListRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public ScriptAndFolderListRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public ScriptListRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
@@ -186,18 +183,14 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         if (mFileProcessListener != null) {
             mFileProcessListener.onFilesListing();
         }
-        Observable.fromPublisher(new Publisher<ScriptFile[]>() {
-            @Override
-            public void subscribe(Subscriber<? super ScriptFile[]> s) {
-                s.onNext(mStorageScriptProvider.getDirectoryScriptFiles(directory));
-                s.onComplete();
-            }
-        }).subscribeOn(Schedulers.io())
+        mStorageFileProvider.getDirectoryScriptFiles(directory)
+                .subscribeOn(Schedulers.io())
+                .toList()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ScriptFile[]>() {
+                .subscribe(new Consumer<List<ScriptFile>>() {
                     @Override
-                    public void accept(@NonNull ScriptFile[] scriptFiles) throws Exception {
-                        mAdapter.setScripts(scriptFiles);
+                    public void accept(@NonNull List<ScriptFile> scriptFiles) throws Exception {
+                        mAdapter.setScripts(scriptFiles.toArray(new ScriptFile[0]));
                         if (mFileProcessListener != null)
                             mFileProcessListener.onFileListed();
                         smoothScrollToPosition(0);
@@ -217,16 +210,16 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
         mFileProcessListener = fileProcessListener;
     }
 
-    public void setStorageScriptProvider(StorageScriptProvider storageScriptProvider) {
-        if (mStorageScriptProvider != null)
-            mStorageScriptProvider.unregisterDirectoryChangeListener(this);
-        mStorageScriptProvider = storageScriptProvider;
-        mStorageScriptProvider.registerDirectoryChangeListener(this);
-        setRootDirectory(mStorageScriptProvider.getInitialDirectory());
+    public void setStorageFileProvider(StorageFileProvider storageFileProvider) {
+        if (mStorageFileProvider != null)
+            mStorageFileProvider.unregisterDirectoryChangeListener(this);
+        mStorageFileProvider = storageFileProvider;
+        mStorageFileProvider.registerDirectoryChangeListener(this);
+        setRootDirectory(mStorageFileProvider.getInitialDirectory());
     }
 
-    public StorageScriptProvider getStorageScriptProvider() {
-        return mStorageScriptProvider;
+    public StorageFileProvider getStorageFileProvider() {
+        return mStorageFileProvider;
     }
 
     public void setOnItemClickListener(OnScriptFileClickListener onItemClickListener) {
@@ -300,15 +293,15 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (mStorageScriptProvider != null)
-            mStorageScriptProvider.registerDirectoryChangeListener(this);
+        if (mStorageFileProvider != null)
+            mStorageFileProvider.registerDirectoryChangeListener(this);
 
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mStorageScriptProvider.unregisterDirectoryChangeListener(this);
+        mStorageFileProvider.unregisterDirectoryChangeListener(this);
     }
 
     @Override
@@ -323,7 +316,7 @@ public class ScriptAndFolderListRecyclerView extends RecyclerView {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDirectoryChange(StorageScriptProvider.DirectoryChangeEvent event) {
+    public void onDirectoryChange(StorageFileProvider.DirectoryChangeEvent event) {
         if (event.directory.equals(mCurrentDirectory)) {
             updateCurrentDirectory();
         }

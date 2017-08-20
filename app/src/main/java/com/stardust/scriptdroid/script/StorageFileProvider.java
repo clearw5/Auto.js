@@ -11,11 +11,17 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.Map;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * Created by Stardust on 2017/3/31.
  */
 
-public class StorageScriptProvider {
+public class StorageFileProvider {
 
 
     public static class DirectoryChangeEvent {
@@ -31,17 +37,17 @@ public class StorageScriptProvider {
     public static final ScriptFile DEFAULT_DIRECTORY = new ScriptFile(DEFAULT_DIRECTORY_PATH);
 
 
-    private static StorageScriptProvider defaultProvider = new StorageScriptProvider();
+    private static StorageFileProvider defaultProvider = new StorageFileProvider();
 
-    public static StorageScriptProvider getDefault() {
+    public static StorageFileProvider getDefault() {
         return defaultProvider;
     }
 
-    private static StorageScriptProvider externalStorageProvider;
+    private static StorageFileProvider externalStorageProvider;
 
-    public static StorageScriptProvider getExternalStorageProvider() {
+    public static StorageFileProvider getExternalStorageProvider() {
         if (externalStorageProvider == null) {
-            externalStorageProvider = new StorageScriptProvider(Environment.getExternalStorageDirectory().getPath(), 5);
+            externalStorageProvider = new StorageFileProvider(Environment.getExternalStorageDirectory().getPath(), 5);
         }
         return externalStorageProvider;
     }
@@ -51,25 +57,21 @@ public class StorageScriptProvider {
     private ScriptFile mInitialDirectory;
     private ScriptFile[] mInitialDirectoryScriptFiles;
 
-    public StorageScriptProvider(String path, int cacheSize) {
+    public StorageFileProvider(String path, int cacheSize) {
         this(new ScriptFile(path), cacheSize);
     }
 
-    public StorageScriptProvider(ScriptFile initialDirectory, int cacheSize) {
+    public StorageFileProvider(ScriptFile initialDirectory, int cacheSize) {
         mInitialDirectory = initialDirectory;
         mScriptFileCache = new LimitedHashMap<>(cacheSize);
     }
 
-    public StorageScriptProvider() {
+    public StorageFileProvider() {
         this(DEFAULT_DIRECTORY, 10);
     }
 
     public void notifyDirectoryChanged(ScriptFile directory) {
-        if (directory.equals(mInitialDirectory)) {
-            mInitialDirectoryScriptFiles = getInitialDirectoryScriptFilesInner();
-        } else {
-            clearCache(directory);
-        }
+        clearCache(directory);
         mDirectoryEventBus.post(new DirectoryChangeEvent(directory));
     }
 
@@ -94,30 +96,16 @@ public class StorageScriptProvider {
         return mInitialDirectory;
     }
 
-    public ScriptFile[] getInitialDirectoryScriptFiles() {
-        if (mInitialDirectoryScriptFiles == null) {
-            mInitialDirectoryScriptFiles = getInitialDirectoryScriptFilesInner();
-        }
-        return mInitialDirectoryScriptFiles;
+    public Observable<ScriptFile> getInitialDirectoryScriptFiles() {
+        return getDirectoryScriptFiles(mInitialDirectory);
     }
 
-    private ScriptFile[] getInitialDirectoryScriptFilesInner() {
-        return listAndSortFiles(mInitialDirectory);
-    }
-
-    public ScriptFile[] getDirectoryScriptFiles(ScriptFile directory) {
-        if (directory.equals(mInitialDirectory)) {
-            return getInitialDirectoryScriptFiles();
-        }
+    public Observable<ScriptFile> getDirectoryScriptFiles(ScriptFile directory) {
         ScriptFile[] scriptFiles = getScriptFilesFromCache(directory);
         if (scriptFiles == null) {
-            scriptFiles = getScriptFiles(directory);
+            return listAndSortFiles(directory);
         }
-        return scriptFiles;
-    }
-
-    public void clearCacheExceptInitialDirectory() {
-        mScriptFileCache.clear();
+        return Observable.fromArray(scriptFiles);
     }
 
     private void clearCache(ScriptFile directory) {
@@ -125,19 +113,24 @@ public class StorageScriptProvider {
     }
 
 
-    private ScriptFile[] getScriptFiles(ScriptFile directory) {
-        ScriptFile[] scriptFiles = listAndSortFiles(directory);
-        mScriptFileCache.put(directory.getPath(), scriptFiles);
-        return scriptFiles;
-    }
+    private Observable<ScriptFile> listAndSortFiles(ScriptFile directory) {
+        return Observable.just(directory)
+                .observeOn(Schedulers.computation())
+                .flatMap(new Function<ScriptFile, Observable<ScriptFile>>() {
 
-    private ScriptFile[] listAndSortFiles(ScriptFile directory) {
-        ScriptFile[] scriptFiles = directory.listFiles();
-        if (scriptFiles == null)
-            scriptFiles = new ScriptFile[0];
-        else
-            FileSorter.sort(scriptFiles);
-        return scriptFiles;
+
+                    @Override
+                    public Observable<ScriptFile> apply(@NonNull ScriptFile dir) throws Exception {
+                        ScriptFile[] scriptFiles = dir.listFiles();
+                        if (scriptFiles == null) {
+                            return Observable.empty();
+                        } else {
+                            FileSorter.sort(scriptFiles);
+                            mScriptFileCache.put(dir.getPath(), scriptFiles);
+                            return Observable.fromArray(scriptFiles);
+                        }
+                    }
+                });
     }
 
     private ScriptFile[] getScriptFilesFromCache(ScriptFile directory) {

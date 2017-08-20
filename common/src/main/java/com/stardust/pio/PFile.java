@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.Locale;
 
 /**
  * Created by Stardust on 2017/4/1.
@@ -345,5 +346,13 @@ public class PFile {
 
     public static String join(String parent, String child) {
         return new File(parent, child).getPath();
+    }
+
+    public static String getHumanReadableSize(long bytes) {
+        int unit = 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = "KMGTPE".substring(exp - 1, exp);
+        return String.format(Locale.getDefault(), "%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 }

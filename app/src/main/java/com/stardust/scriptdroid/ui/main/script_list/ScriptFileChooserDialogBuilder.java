@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.script.ScriptFile;
-import com.stardust.scriptdroid.script.StorageScriptProvider;
+import com.stardust.scriptdroid.script.StorageFileProvider;
 
 /**
  * Created by Stardust on 2017/4/3.
@@ -18,7 +18,7 @@ public class ScriptFileChooserDialogBuilder extends MaterialDialog.Builder {
     }
 
     private ScriptListWithProgressBarView mScriptListWithProgressBarView;
-    private StorageScriptProvider mStorageScriptProvider;
+    private StorageFileProvider mStorageFileProvider;
     private FileCallback mFileCallback;
 
     public ScriptFileChooserDialogBuilder(@NonNull Context context) {
@@ -34,23 +34,23 @@ public class ScriptFileChooserDialogBuilder extends MaterialDialog.Builder {
     }
 
     public ScriptFileChooserDialogBuilder initialPath(String initialPath) {
-        mStorageScriptProvider = new StorageScriptProvider(initialPath, 5);
+        mStorageFileProvider = new StorageFileProvider(initialPath, 5);
         return this;
     }
 
-    public ScriptFileChooserDialogBuilder scriptProvider(StorageScriptProvider storageScriptProvider) {
-        mStorageScriptProvider = storageScriptProvider;
+    public ScriptFileChooserDialogBuilder scriptProvider(StorageFileProvider storageFileProvider) {
+        mStorageFileProvider = storageFileProvider;
         return this;
     }
 
     public MaterialDialog build() {
-        if (mStorageScriptProvider != null) {
-            mScriptListWithProgressBarView.setStorageScriptProvider(mStorageScriptProvider);
+        if (mStorageFileProvider != null) {
+            mScriptListWithProgressBarView.setStorageScriptProvider(mStorageFileProvider);
         }
         customView(mScriptListWithProgressBarView, false);
         final MaterialDialog dialog = super.build();
         if (mFileCallback != null) {
-            mScriptListWithProgressBarView.setOnItemClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileClickListener() {
+            mScriptListWithProgressBarView.setOnItemClickListener(new ScriptListRecyclerView.OnScriptFileClickListener() {
                 @Override
                 public void onClick(ScriptFile file, int position) {
                     mFileCallback.onFileSelection(dialog, file);
