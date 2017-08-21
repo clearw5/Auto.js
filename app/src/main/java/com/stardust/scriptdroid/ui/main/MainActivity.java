@@ -83,7 +83,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private FragmentPagerAdapterBuilder.StoredFragmentPagerAdapter mPagerAdapter;
 
     private OnActivityResultDelegate.Mediator mActivityResultMediator = new OnActivityResultDelegate.Mediator();
-    private DrawableSaver mDrawerHeaderBackgroundSaver, mAppbarBackgroundSaver;
+    private DrawableSaver mDrawerHeaderBackgroundSaver;
     private VersionGuard mVersionGuard;
 
 
@@ -178,7 +178,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 R.string.text_drawer_close);
         drawerToggle.syncState();
         mDrawerLayout.addDrawerListener(drawerToggle);
-        mAppbarBackgroundSaver = new DrawableSaver.ImageSaver(this, "appbar_background", (ImageView) $(R.id.app_bar_bg));
     }
 
     private void setUpTabViewPager() {
@@ -190,11 +189,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 .build();
         mViewPager.setAdapter(mPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
-    }
-
-    @Click(R.id.add)
-    void showAddFilePanel() {
-        mAddBottomMenuPanel.show();
     }
 
     @Click(R.id.create_new_file)
@@ -271,15 +265,9 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         mVersionGuard.checkDeprecateAndUpdate();
     }
 
-    @Click(R.id.toolbar)
-    public void OnToolbarClick() {
-        mAppbarBackgroundSaver.select(this, mActivityResultMediator);
-    }
-
     @Subscribe
     public void onMessageEvent(MessageEvent event) {
         if (event.message.equals(MESSAGE_CLEAR_BACKGROUND_SETTINGS)) {
-            mAppbarBackgroundSaver.reset();
             mDrawerHeaderBackgroundSaver.reset();
         }
     }

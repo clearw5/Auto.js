@@ -107,10 +107,9 @@ public class MyScriptListFragment extends Fragment {
         mScriptFiles.clear();
         mDirectories.clear();
         StorageFileProvider.getDefault().getInitialDirectoryScriptFiles()
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SimpleObserver<ScriptFile>() {
-
 
                     @Override
                     public void onNext(@io.reactivex.annotations.NonNull ScriptFile file) {
