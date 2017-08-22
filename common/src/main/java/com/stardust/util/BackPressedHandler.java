@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by Stardust on 2017/2/3.
@@ -14,9 +15,15 @@ public interface BackPressedHandler {
 
     boolean onBackPressed(Activity activity);
 
+    interface HostActivity {
+
+        Observer getBackPressedObserver();
+
+    }
+
     class Observer implements BackPressedHandler {
 
-        private List<BackPressedHandler> mBackPressedHandlers = new ArrayList<>();
+        private CopyOnWriteArrayList<BackPressedHandler> mBackPressedHandlers = new CopyOnWriteArrayList<>();
 
         @Override
         public boolean onBackPressed(Activity activity) {
@@ -31,6 +38,10 @@ public interface BackPressedHandler {
         public void registerHandler(BackPressedHandler handler) {
             mBackPressedHandlers.add(handler);
         }
+
+        public void unregisterHandler(BackPressedHandler handler) {
+            mBackPressedHandlers.remove(handler);
+        }
     }
 
 
@@ -42,7 +53,7 @@ public interface BackPressedHandler {
         private String mNotice;
 
         public DoublePressExit(Activity activity, int noticeResId) {
-           this(activity, activity.getString(noticeResId));
+            this(activity, activity.getString(noticeResId));
         }
 
         public DoublePressExit(Activity activity, String notice) {

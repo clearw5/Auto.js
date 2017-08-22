@@ -26,7 +26,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
  * Created by Stardust on 2017/1/23.
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements BackPressedHandler.HostActivity {
 
 
     protected static final int PERMISSION_REQUEST_CODE = 11186;
@@ -122,5 +122,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public BackPressedHandler.Observer getBackPressedObserver() {
+        return mBackPressObserver;
     }
 }

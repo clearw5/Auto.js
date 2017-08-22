@@ -5,10 +5,10 @@
                                     android:id="@+id/item"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginLeft="2dp"
+                                    android:layout_marginRight="2dp"
                                     android:clickable="true"
                                     android:foreground="?selectableItemBackground"
-                                    android:paddingLeft="6dp"
-                                    android:paddingRight="6dp"
                                     app:cardBackgroundColor="#ffffff"
                                     app:cardElevation="1dp"
                                     app:cardUseCompatPadding="true">
@@ -27,7 +27,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:src="@drawable/ic_folder_yellow_100px"
-            android:tint="#ffde69"/>
+            android:tint="#ffda93"/>
 
         <TextView
             android:id="@+id/name"
@@ -44,6 +44,7 @@
 
 
         <ImageView
+            android:id="@+id/more"
             android:layout_width="52dp"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"

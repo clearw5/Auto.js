@@ -11,6 +11,7 @@
         android:background="#EDEEEF"/>
 
     <LinearLayout
+        android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
@@ -59,10 +60,9 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:text="2017年2月3日11:56"
                 android:textColor="#9DA0A2"
                 android:textSize="11sp"
-                tools:text="正在运行的服务"/>
+                tools:text="18 KB"/>
 
         </LinearLayout>
 
@@ -85,6 +85,7 @@
                 android:tint="#A9AAAB"/>
 
             <ImageView
+                android:id="@+id/edit"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -96,6 +97,7 @@
                 android:tint="#A9AAAB"/>
 
             <ImageView
+                android:id="@+id/more"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

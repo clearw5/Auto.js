@@ -32,6 +32,9 @@ import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
+import com.stardust.scriptdroid.ui.main.community.CommunityFragment;
+import com.stardust.scriptdroid.ui.main.doc.OnlineDocsFragment;
+import com.stardust.scriptdroid.ui.main.doc.OnlineDocsFragment_;
 import com.stardust.scriptdroid.ui.main.script_list.MyScriptListFragment_;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
 import com.stardust.util.DeveloperUtils;
@@ -62,17 +65,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     public static final String MESSAGE_CLEAR_BACKGROUND_SETTINGS = "MESSAGE_CLEAR_BACKGROUND_SETTINGS";
 
     private static final String LOG_TAG = "MainActivity";
-    private static final String EXTRA_ACTION = "EXTRA_ACTION";
-
-    private static final String ACTION_ON_RECORD_STOP = "ACTION_ON_RECORD_STOP";
-    private static final String ACTION_IMPORT_SCRIPT = "ACTION_IMPORT_SCRIPT";
-    private static final String ARGUMENT_SCRIPT = "ARGUMENT_SCRIPT";
-    private static final String ARGUMENT_PATH = "ARGUMENT_PATH";
-    private static final String ACTION_IMPORT_SAMPLE = "I cannot find the way back to you...Eating...17.4.29";
-    private static final String ARGUMENT_SAMPLE = "Take a chance on me...ok...?";
-    private static final String ARGUMENT_INPUT_STREAM = "17.7.12, Hi...could we start all over again...";
-    private static final String ACTION_ON_ROOT_RECORD_STOP = "ACTION_ON_ROOT_RECORD_STOP";
-
 
     @ViewById(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
@@ -183,9 +175,10 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private void setUpTabViewPager() {
         TabLayout tabLayout = $(R.id.tab);
         mPagerAdapter = new FragmentPagerAdapterBuilder(this)
-                .add(new MyScriptListFragment_(), R.string.text_my_script)
-                .add(new SampleScriptListFragment(), R.string.text_sample_script)
-                .add(new TaskManagerFragment_(), R.string.text_task_manage)
+                .add(new MyScriptListFragment_(), R.string.text_script)
+                .add(new OnlineDocsFragment_(), R.string.text_tutorial)
+                .add(new CommunityFragment(), R.string.text_community)
+                .add(new TaskManagerFragment_(), R.string.text_manage)
                 .build();
         mViewPager.setAdapter(mPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);

@@ -229,6 +229,10 @@
     <string name="text_enable_observe_key">启用按键监听</string>
     <string name="text_directory">文件夹</string>
     <string name="text_file">文件</string>
+    <string name="text_tutorial">教程</string>
+    <string name="text_script">脚本</string>
+    <string name="text_community">社区</string>
+    <string name="text_manage">管理</string>
 
 
     <string-array name="record_control_keys">
