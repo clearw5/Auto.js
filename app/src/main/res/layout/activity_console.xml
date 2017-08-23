@@ -20,9 +20,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <view
+    <com.stardust.scriptdroid.ui.console.LogView
         android:id="@+id/console"
-        class="com.stardust.scriptdroid.ui.console.LogActivity$ConsoleView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

@@ -1,8 +1,11 @@
 package com.stardust.scriptdroid.ui.main.script_list;
 
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -14,6 +17,7 @@ import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.edit.ScriptEditView;
+import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -32,7 +36,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Stardust on 2017/3/13.
  */
 @EFragment(R.layout.fragment_my_script_list)
-public class MyScriptListFragment extends Fragment {
+public class MyScriptListFragment extends Fragment implements ViewPagerFragment {
 
     private static final String TAG = "MyScriptListFragment";
 
@@ -140,4 +144,16 @@ public class MyScriptListFragment extends Fragment {
     }
 
 
+    @Override
+    public void setUpWithFab(ViewPager pager, FloatingActionButton fab) {
+        if (fab.getVisibility() != View.VISIBLE) {
+            fab.show();
+            return;
+        }
+        fab.animate()
+                .rotation(0)
+                .setDuration(300)
+                .setInterpolator(new FastOutSlowInInterpolator())
+                .start();
+    }
 }

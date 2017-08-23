@@ -6,7 +6,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -33,7 +35,6 @@ import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment;
-import com.stardust.scriptdroid.ui.main.doc.OnlineDocsFragment;
 import com.stardust.scriptdroid.ui.main.doc.OnlineDocsFragment_;
 import com.stardust.scriptdroid.ui.main.script_list.MyScriptListFragment_;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
@@ -41,8 +42,6 @@ import com.stardust.util.DeveloperUtils;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.DrawableSaver;
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.ui.main.sample_list.SampleScriptListFragment;
-import com.stardust.scriptdroid.ui.main.script_list.MyScriptListFragment;
 import com.stardust.scriptdroid.ui.main.script_list.ScriptFileChooserDialogBuilder;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity_;
 import com.stardust.scriptdroid.ui.update.VersionGuard;
@@ -72,8 +71,10 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     SlidingUpPanel mAddBottomMenuPanel;
     @ViewById(R.id.viewpager)
     ViewPager mViewPager;
-    private FragmentPagerAdapterBuilder.StoredFragmentPagerAdapter mPagerAdapter;
+    @ViewById(R.id.fab)
+    FloatingActionButton mFab;
 
+    private FragmentPagerAdapterBuilder.StoredFragmentPagerAdapter mPagerAdapter;
     private OnActivityResultDelegate.Mediator mActivityResultMediator = new OnActivityResultDelegate.Mediator();
     private DrawableSaver mDrawerHeaderBackgroundSaver;
     private VersionGuard mVersionGuard;
@@ -182,6 +183,15 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 .build();
         mViewPager.setAdapter(mPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
+        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                Fragment fragment = mPagerAdapter.getStoredFragment(position);
+                if (fragment == null)
+                    return;
+                ((ViewPagerFragment) fragment).setUpWithFab(mViewPager, mFab);
+            }
+        });
     }
 
     @Click(R.id.create_new_file)

@@ -39,33 +39,4 @@ public class LogActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static class ConsoleView extends Console {
-
-        public ConsoleView(Context context) {
-            super(context);
-            init();
-        }
-
-        public ConsoleView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-            init();
-        }
-
-        public ConsoleView(Context context, AttributeSet attrs, int defStyleAttr) {
-            super(context, attrs, defStyleAttr);
-            init();
-        }
-
-        public ConsoleView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-            super(context, attrs, defStyleAttr, defStyleRes);
-            init();
-        }
-
-        private void init() {
-            findViewById(R.id.console_scroll_view).setBackgroundColor(Color.WHITE);
-            ((TextView) findViewById(R.id.console_text)).setTextIsSelectable(true);
-        }
-
-    }
-
 }

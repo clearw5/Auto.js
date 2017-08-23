@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.widget.Toast;
 
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -50,15 +48,15 @@ public interface BackPressedHandler {
         private final Activity mActivity;
         private long mLastPressedMillis;
         private long mDoublePressInterval = 1000;
-        private String mNotice;
+        private String mToast;
 
         public DoublePressExit(Activity activity, int noticeResId) {
             this(activity, activity.getString(noticeResId));
         }
 
-        public DoublePressExit(Activity activity, String notice) {
+        public DoublePressExit(Activity activity, String toast) {
             mActivity = activity;
-            mNotice = notice;
+            mToast = toast;
         }
 
         public DoublePressExit doublePressInterval(long doublePressInterval) {
@@ -72,7 +70,7 @@ public interface BackPressedHandler {
                 mActivity.finish();
             } else {
                 mLastPressedMillis = System.currentTimeMillis();
-                Toast.makeText(mActivity, mNotice, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, mToast, Toast.LENGTH_SHORT).show();
             }
             return true;
         }

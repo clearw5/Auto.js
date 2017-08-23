@@ -12,10 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.stardust.widget.AppWithStatusBarLayout
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#5cab7d"
+            android:paddingTop="16dp"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <android.support.v7.widget.Toolbar
@@ -33,8 +34,7 @@
                 app:tabGravity="fill"
                 app:tabIndicatorColor="@android:color/white"
                 app:tabMode="scrollable"/>
-        </com.stardust.widget.AppWithStatusBarLayout>
-
+        </android.support.design.widget.AppBarLayout>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpager"
@@ -43,6 +43,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -57,7 +58,6 @@
             android:id="@+id/bottom_menu"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
 
             <LinearLayout
                 android:layout_width="match_parent"

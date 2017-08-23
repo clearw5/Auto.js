@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.ScriptFile;
@@ -178,7 +179,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         }
     }
 
-    class ScriptFileViewHolder extends BindableViewHolder<ScriptFile>  {
+    class ScriptFileViewHolder extends BindableViewHolder<ScriptFile> {
 
 
         @BindView(R.id.name)
@@ -203,17 +204,16 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
             mDesc.setText(PFile.getHumanReadableSize(file.length()));
             if (file.getType() == ScriptFile.TYPE_JAVA_SCRIPT) {
                 mFirstChar.setText("J");
-                //什么？裸写颜色代码？！不影响代码可读性和重构成本的情况下，这样子修改起来方便多啦
-                mFirstCharBackground.setColor(0xFF99CC99);
+                mFirstCharBackground.setColor(getResources().getColor(R.color.color_j));
             } else {
                 mFirstChar.setText("R");
-                mFirstCharBackground.setColor(0xFFFD999A);
+                mFirstCharBackground.setColor(getResources().getColor(R.color.color_r));
             }
         }
 
         @OnClick(R.id.item)
         void onItemClick() {
-            if(mOnScriptFileClickListener != null){
+            if (mOnScriptFileClickListener != null) {
                 mOnScriptFileClickListener.onScriptFileClick(itemView, mScriptFile);
             }
         }

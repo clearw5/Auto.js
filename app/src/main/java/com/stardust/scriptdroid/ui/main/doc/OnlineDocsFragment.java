@@ -2,10 +2,14 @@ package com.stardust.scriptdroid.ui.main.doc;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.view.View;
 import android.webkit.WebView;
 
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
 import com.stardust.util.BackPressedHandler;
 import com.stardust.widget.EWebView;
 
@@ -17,7 +21,7 @@ import org.androidannotations.annotations.ViewById;
  * Created by Stardust on 2017/8/22.
  */
 @EFragment(R.layout.fragment_online_docs)
-public class OnlineDocsFragment extends Fragment implements BackPressedHandler {
+public class OnlineDocsFragment extends Fragment implements BackPressedHandler, ViewPagerFragment {
 
     @ViewById(R.id.eweb_view)
     EWebView mEWebView;
@@ -52,5 +56,12 @@ public class OnlineDocsFragment extends Fragment implements BackPressedHandler {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void setUpWithFab(ViewPager pager, FloatingActionButton fab) {
+        if (fab.getVisibility() == View.VISIBLE) {
+            fab.hide();
+        }
     }
 }
