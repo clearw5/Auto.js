@@ -5,16 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
-import com.stardust.scriptdroid.Pref;
-import com.stardust.scriptdroid.tool.UpdateChecker;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.error.IssueReporterActivity;
-import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.scriptdroid.ui.splash.SplashActivity;
 import com.stardust.scriptdroid.ui.splash.SplashActivity_;
 import com.stardust.scriptdroid.ui.update.UpdateCheckDialog;
@@ -23,11 +19,9 @@ import com.stardust.util.MapEntries;
 import com.stardust.scriptdroid.R;
 import com.stardust.theme.app.ColorSelectActivity;
 import com.stardust.theme.util.ListBuilder;
-import com.stardust.util.MessageEvent;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 import java.util.Map;
@@ -112,7 +106,7 @@ public class SettingsActivity extends BaseActivity {
                     .entry(getString(R.string.text_reset_background), new Runnable() {
                         @Override
                         public void run() {
-                            EventBus.getDefault().post(new MessageEvent(MainActivity.MESSAGE_CLEAR_BACKGROUND_SETTINGS));
+                           // EventBus.getDefault().post(new MessageEvent(MainActivity.MESSAGE_CLEAR_BACKGROUND_SETTINGS));
                             Toast.makeText(getActivity(), R.string.text_already_reset, Toast.LENGTH_SHORT).show();
                         }
                     })
@@ -125,7 +119,7 @@ public class SettingsActivity extends BaseActivity {
                                     .start();
                         }
                     })
-                    .entry(getString(R.string.text_check_update), new Runnable() {
+                    .entry(getString(R.string.text_check_for_updates), new Runnable() {
                         @Override
                         public void run() {
                             new UpdateCheckDialog(getActivity()).show();

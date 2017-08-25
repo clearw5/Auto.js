@@ -1,22 +1,19 @@
-package com.stardust.scriptdroid.ui.main;
+package com.stardust.scriptdroid.ui.main.drawer;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.SwitchCompat;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.qq.e.comm.DownloadService;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
 import com.stardust.scriptdroid.ui.common.ProgressDialog;
@@ -25,8 +22,6 @@ import com.stardust.scriptdroid.sublime.SublimePluginClient;
 import com.stardust.scriptdroid.sublime.SublimePluginService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.WifiTool;
-import com.stardust.scriptdroid.ui.console.LogActivity_;
-import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.util.IntentUtil;
 import com.stardust.util.UnderuseExecutors;
 
@@ -44,19 +39,11 @@ import java.util.concurrent.Executor;
 /**
  * Created by Stardust on 2017/1/30.
  */
-@EFragment(R.layout.fragment_side_menu)
-public class SideMenuFragment extends android.support.v4.app.Fragment {
+@EFragment(R.layout.fragment_drawer)
+public class DrawerFragment extends android.support.v4.app.Fragment {
 
-    public static void setFragment(FragmentActivity activity, int viewId) {
-        SideMenuFragment fragment = new SideMenuFragment_();
-        activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).commit();
-    }
-
-    @ViewById(R.id.sw_accessibility_service)
     SwitchCompat mAccessibilityServiceSwitch;
-    @ViewById(R.id.sw_floating_window)
     SwitchCompat mFloatingWindowSwitch;
-    @ViewById(R.id.sw_debug)
     SwitchCompat mDebugSwitch;
     private Executor mExecutor = UnderuseExecutors.getExecutor();
 
@@ -69,7 +56,7 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        syncSwitchState();
+        //syncSwitchState();
     }
 
 
@@ -100,23 +87,6 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
         mFloatingWindowSwitch.setChecked(HoverMenuManger.isHoverMenuShowing());
     }
 
-
-    @Click(R.id.console)
-    void startConsoleActivity() {
-        startActivity(new Intent(getActivity(), LogActivity_.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-    }
-
-    @Click(R.id.syntax_and_api)
-    void startSyntaxHelpActivity() {
-        HelpCatalogueActivity.showMainCatalogue(getActivity());
-    }
-
-    @Click(R.id.auto_operate_service)
-    void clickAutoOperateServiceSwitch() {
-        mAccessibilityServiceSwitch.toggle();
-    }
-
-    @CheckedChange(R.id.sw_accessibility_service)
     void setAutoOperateServiceEnable(CompoundButton button, boolean enable) {
         boolean isAccessibilityServiceEnabled = AccessibilityServiceTool.isAccessibilityServiceEnabled(App.getApp());
         if (enable && !isAccessibilityServiceEnabled) {
@@ -157,7 +127,6 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
         });
     }
 
-    @CheckedChange(R.id.sw_floating_window)
     void setFloatingWindowEnable(CompoundButton button, boolean enable) {
         if (enable && !HoverMenuManger.isHoverMenuShowing()) {
             HoverMenuManger.showHoverMenu();
@@ -169,17 +138,6 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    @Click(R.id.floating_window)
-    void toggleAssistServiceSwitch() {
-        mFloatingWindowSwitch.toggle();
-    }
-
-    @Click(R.id.debug)
-    void toggleDebugSwitch() {
-        mDebugSwitch.toggle();
-    }
-
-    @CheckedChange(R.id.sw_debug)
     void setDebugEnabled(CompoundButton button, boolean enabled) {
         if (enabled && !SublimePluginService.isConnected()) {
             new MaterialDialog.Builder(getActivity())
@@ -206,15 +164,6 @@ public class SideMenuFragment extends android.support.v4.app.Fragment {
 
     private CharSequence getServerAddress() {
         return Pref.getServerAddressOrDefault(WifiTool.getWifiAddress(getActivity()));
-    }
-
-    @Click(R.id.stop_all_running_scripts)
-    void stopAllRunningScripts() {
-        int n = AutoJs.getInstance().getScriptEngineService().stopAll();
-        if (n > 0)
-            Snackbar.make(getView(), String.format(getString(R.string.text_already_stop_n_scripts), n), Snackbar.LENGTH_SHORT).show();
-        else
-            Snackbar.make(getView(), R.string.text_no_running_script, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

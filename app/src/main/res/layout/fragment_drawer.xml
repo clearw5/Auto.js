@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="304dp"
               android:layout_height="match_parent"
@@ -11,39 +12,45 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_marginBottom="5dp">
+        android:layout_height="170dp"
+        android:layout_marginBottom="5dp"
+        android:background="#5cab7d">
 
-        <ImageView
-            android:id="@+id/drawer_header_img"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="true"
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/avatar"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_above="@+id/username"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="8dp"
             android:scaleType="fitXY"
-            android:src="@drawable/side_menu_bg"/>
+            android:src="@drawable/profile_avatar_placeholder"
+            app:riv_border_color="#77f2f3f5"
+            app:riv_border_width="0.5dp"
+            app:riv_corner_radius="40dp"/>
 
         <TextView
-            android:id="@+id/version"
+            android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="12dp"
             android:gravity="center"
+            android:text="@string/not_login"
             android:textColor="@android:color/white"
             android:textSize="14sp"/>
 
-
-        <TextView
-            android:id="@+id/app_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/version"
-            android:layout_marginLeft="8dp"
-            android:gravity="center"
-            android:text="@string/_app_name"
-            android:textColor="@android:color/white"
-            android:textSize="28sp"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="118dp"
+            android:layout_marginLeft="-12dp"
+            android:layout_toRightOf="@+id/avatar"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/android_eating_half"
+            android:alpha="0.08"
+            android:tint="#000000"/>
 
 
     </RelativeLayout>
@@ -54,15 +61,20 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/fragment_slide_menu"
+        <include
+            layout="@layout/drawer_menu"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#f2f3f5"/>
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="44dp"
             android:layout_gravity="bottom"
             android:baselineAligned="false">
 
@@ -75,15 +87,18 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <com.stardust.theme.widget.ThemeColorImageViewCompat
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:padding="6dp"
-                    android:src="@drawable/ic_settings"/>
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="12dp"
+                    android:src="@drawable/ic_ali_settings"
+                    android:tint="#666666"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:gravity="center"
                     android:text="@string/text_setting"
                     android:textSize="15sp"/>
@@ -98,15 +113,18 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <com.stardust.theme.widget.ThemeColorImageViewCompat
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:padding="6dp"
-                    android:src="@drawable/ic_exit"/>
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="12dp"
+                    android:src="@drawable/ic_ali_exit"
+                    android:tint="#666666"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:gravity="center"
                     android:text="@string/text_exit"
                     android:textSize="15sp"/>

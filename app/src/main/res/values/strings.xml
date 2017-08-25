@@ -152,7 +152,7 @@
     <string name="text_checking_update">正在检查更新</string>
     <string name="text_new_version">新版本</string>
     <string name="text_check_update_error">检查更新失败Orz</string>
-    <string name="text_check_update">检查更新</string>
+    <string name="text_check_for_updates">检查更新</string>
     <string name="text_is_latest_version">已经是最新版本</string>
     <string name="text_version_too_old">版本过低</string>
     <string name="warning_version_too_old">当然版本为公测版，显现和潜在的问题很多，不再适合继续使用，</string>
@@ -233,6 +233,9 @@
     <string name="text_script">脚本</string>
     <string name="text_community">社区</string>
     <string name="text_manage">管理</string>
+    <string name="not_login">未登录</string>
+    <string name="text_volume_down_control">音量下键控制</string>
+    <string name="text_others">其他</string>
 
 
     <string-array name="record_control_keys">

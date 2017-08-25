@@ -150,7 +150,7 @@
     <string name="text_root_script_record"></string>
     <string name="text_processing">Processing</string>
     <string name="text_pre_execute_script">Pre-execute script</string>
-    <string name="text_check_update">Check for updates</string>
+    <string name="text_check_for_updates">Check for updates</string>
     <string name="text_new_directory">New Directory</string>
     <string name="text_already_reset">已重置</string>
     <string name="text_layout_inspector_is_dumping">布局分析中，请稍后点击</string>

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <attr name="title" format="string|reference"/>
+    <attr name="icon" format="reference"/>
+
     <declare-styleable name="ToolbarMenuItem">
         <attr name="text" format="string|reference"/>
-        <attr name="icon" format="reference"/>
+        <attr name="icon"/>
         <attr name="icon_color" format="color|reference"/>
     </declare-styleable>
 
@@ -12,6 +15,15 @@
         <attr name="defaultValue" format="boolean"/>
     </declare-styleable>
 
+    <declare-styleable name="DrawerMenuItem">
+        <attr name="title"/>
+        <attr name="icon"/>
+        <attr name="with_switch" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="DrawerMenuGroup">
+        <attr name="title"/>
+    </declare-styleable>
 
 
     <declare-styleable name="MaterialEditText">

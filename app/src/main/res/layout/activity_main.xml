@@ -150,13 +150,12 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <include
-        android:id="@+id/drawer"
-        layout="@layout/drawer"
-        android:layout_width="304dp"
+    <fragment
+        android:name="com.stardust.scriptdroid.ui.main.drawer.DrawerFragment_"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="false"
-        />
+        android:fitsSystemWindows="false"/>
+
 </android.support.v4.widget.DrawerLayout>
 

@@ -36,6 +36,7 @@ import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment;
 import com.stardust.scriptdroid.ui.main.doc.OnlineDocsFragment_;
+import com.stardust.scriptdroid.ui.main.drawer.DrawerFragment;
 import com.stardust.scriptdroid.ui.main.script_list.MyScriptListFragment_;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
 import com.stardust.util.DeveloperUtils;
@@ -61,8 +62,6 @@ import org.greenrobot.eventbus.Subscribe;
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost {
 
-    public static final String MESSAGE_CLEAR_BACKGROUND_SETTINGS = "MESSAGE_CLEAR_BACKGROUND_SETTINGS";
-
     private static final String LOG_TAG = "MainActivity";
 
     @ViewById(R.id.drawer_layout)
@@ -76,7 +75,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     private FragmentPagerAdapterBuilder.StoredFragmentPagerAdapter mPagerAdapter;
     private OnActivityResultDelegate.Mediator mActivityResultMediator = new OnActivityResultDelegate.Mediator();
-    private DrawableSaver mDrawerHeaderBackgroundSaver;
     private VersionGuard mVersionGuard;
 
 
@@ -84,20 +82,14 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkPermissions();
-        EventBus.getDefault().register(this);
         mVersionGuard = new VersionGuard(this);
         showAnnunciationIfNeeded();
-        //Stop download service of ad sdk
-        // FIXME: 2017/8/1 Service not stopped!
-        stopService(new Intent(this, DownloadService.class));
     }
 
     @AfterViews
     void setUpViews() {
         setUpToolbar();
         setUpTabViewPager();
-        setUpDrawerHeader();
-        setUpFragment();
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         registerBackPressHandlers();
     }
@@ -150,17 +142,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                         }
                     }).show();
         }
-    }
-
-    private void setUpFragment() {
-        SideMenuFragment.setFragment(this, R.id.fragment_slide_menu);
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void setUpDrawerHeader() {
-        TextView version = $(R.id.version);
-        version.setText("Version " + BuildConfig.VERSION_NAME);
-        mDrawerHeaderBackgroundSaver = new DrawableSaver.ImageSaver(this, "drawer_header_background", (ImageView) $(R.id.drawer_header_img));
     }
 
     private void setUpToolbar() {
@@ -251,11 +232,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         finish();
     }
 
-    @Click(R.id.drawer_header_img)
-    public void selectHeaderImage() {
-        mDrawerHeaderBackgroundSaver.select(this, mActivityResultMediator);
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -266,13 +242,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     protected void onResume() {
         super.onResume();
         mVersionGuard.checkDeprecateAndUpdate();
-    }
-
-    @Subscribe
-    public void onMessageEvent(MessageEvent event) {
-        if (event.message.equals(MESSAGE_CLEAR_BACKGROUND_SETTINGS)) {
-            mDrawerHeaderBackgroundSaver.reset();
-        }
     }
 
     @Override
@@ -294,11 +263,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
 
     @NonNull
     @Override
