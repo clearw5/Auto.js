@@ -39,6 +39,8 @@ import com.stardust.scriptdroid.ui.main.doc.OnlineDocsFragment_;
 import com.stardust.scriptdroid.ui.main.drawer.DrawerFragment;
 import com.stardust.scriptdroid.ui.main.script_list.MyScriptListFragment_;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
+import com.stardust.theme.ThemeColorManager;
+import com.stardust.theme.ThemeColorManagerCompat;
 import com.stardust.util.DeveloperUtils;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.DrawableSaver;
@@ -92,6 +94,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         setUpTabViewPager();
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         registerBackPressHandlers();
+        ThemeColorManager.addViewBackground(findViewById(R.id.app_bar));
     }
 
     private void showAnnunciationIfNeeded() {
@@ -164,13 +167,22 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 .build();
         mViewPager.setAdapter(mPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
+        mPagerAdapter.setOnFragmentInstantiateListener(new FragmentPagerAdapterBuilder.OnFragmentInstantiateListener() {
+            @Override
+            public void OnInstantiate(int pos, Fragment fragment) {
+                ((ViewPagerFragment) fragment).setFab(mFab);
+                if (pos == mViewPager.getCurrentItem()) {
+                    ((ViewPagerFragment) fragment).onPageSelected();
+                }
+            }
+        });
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 Fragment fragment = mPagerAdapter.getStoredFragment(position);
                 if (fragment == null)
                     return;
-                ((ViewPagerFragment) fragment).setUpWithFab(mViewPager, mFab);
+                ((ViewPagerFragment) fragment).onPageSelected();
             }
         });
     }

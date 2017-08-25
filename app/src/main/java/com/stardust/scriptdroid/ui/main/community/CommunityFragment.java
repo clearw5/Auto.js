@@ -13,17 +13,14 @@ import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
  * Created by Stardust on 2017/8/22.
  */
 
-public class CommunityFragment extends Fragment implements ViewPagerFragment {
+public class CommunityFragment extends ViewPagerFragment {
+
+    public CommunityFragment() {
+        super(0);
+    }
+
     @Override
-    public void setUpWithFab(ViewPager pager, FloatingActionButton fab) {
-        if (fab.getVisibility() != View.VISIBLE) {
-            fab.show();
-            return;
-        }
-        fab.animate()
-                .rotation(0)
-                .setDuration(300)
-                .setInterpolator(new FastOutSlowInInterpolator())
-                .start();
+    protected void onFabClick(FloatingActionButton fab) {
+
     }
 }

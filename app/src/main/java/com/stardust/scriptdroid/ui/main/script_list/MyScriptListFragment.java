@@ -17,6 +17,7 @@ import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.edit.ScriptEditView;
+import com.stardust.scriptdroid.ui.main.NewFileDialogBuilder;
 import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
 
 import org.androidannotations.annotations.AfterViews;
@@ -36,11 +37,15 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Stardust on 2017/3/13.
  */
 @EFragment(R.layout.fragment_my_script_list)
-public class MyScriptListFragment extends Fragment implements ViewPagerFragment {
+public class MyScriptListFragment extends ViewPagerFragment {
 
     private static final String TAG = "MyScriptListFragment";
 
     private static ScriptFile sCurrentDirectory = StorageFileProvider.DEFAULT_DIRECTORY;
+
+    public MyScriptListFragment(){
+        super(0);
+    }
 
     @ViewById(R.id.script_file_list)
     ScriptListView mScriptFileList;
@@ -145,15 +150,8 @@ public class MyScriptListFragment extends Fragment implements ViewPagerFragment 
 
 
     @Override
-    public void setUpWithFab(ViewPager pager, FloatingActionButton fab) {
-        if (fab.getVisibility() != View.VISIBLE) {
-            fab.show();
-            return;
-        }
-        fab.animate()
-                .rotation(0)
-                .setDuration(300)
-                .setInterpolator(new FastOutSlowInInterpolator())
-                .start();
+    protected void onFabClick(FloatingActionButton fab) {
+        new NewFileDialogBuilder(getContext())
+                .show();
     }
 }

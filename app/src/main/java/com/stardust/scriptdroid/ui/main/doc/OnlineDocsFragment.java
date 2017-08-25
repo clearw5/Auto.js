@@ -21,11 +21,16 @@ import org.androidannotations.annotations.ViewById;
  * Created by Stardust on 2017/8/22.
  */
 @EFragment(R.layout.fragment_online_docs)
-public class OnlineDocsFragment extends Fragment implements BackPressedHandler, ViewPagerFragment {
+public class OnlineDocsFragment extends ViewPagerFragment implements BackPressedHandler {
 
     @ViewById(R.id.eweb_view)
     EWebView mEWebView;
     WebView mWebView;
+
+
+    public OnlineDocsFragment() {
+        super(ROTATION_GONE);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -59,9 +64,7 @@ public class OnlineDocsFragment extends Fragment implements BackPressedHandler, 
     }
 
     @Override
-    public void setUpWithFab(ViewPager pager, FloatingActionButton fab) {
-        if (fab.getVisibility() == View.VISIBLE) {
-            fab.hide();
-        }
+    protected void onFabClick(FloatingActionButton fab) {
+
     }
 }

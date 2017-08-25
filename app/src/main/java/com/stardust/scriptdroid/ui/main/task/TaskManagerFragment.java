@@ -33,7 +33,7 @@ import butterknife.OnClick;
  * Created by Stardust on 2017/3/24.
  */
 @EFragment(R.layout.fragment_task_manager)
-public class TaskManagerFragment extends Fragment implements PopupMenu.OnMenuItemClickListener, ViewPagerFragment {
+public class TaskManagerFragment extends ViewPagerFragment implements PopupMenu.OnMenuItemClickListener {
 
     @ViewById(R.id.task_list)
     TaskListRecyclerView mTaskListRecyclerView;
@@ -56,18 +56,9 @@ public class TaskManagerFragment extends Fragment implements PopupMenu.OnMenuIte
     @ViewById(R.id.spinner_current_item)
     TextView mSpinnerCurrentItem;
 
-    private FloatingActionButton mFab;
-
-    private View.OnClickListener mOnFabClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (mLogView.getVisibility() == View.VISIBLE) {
-                Console.clear();
-            } else {
-                AutoJs.getInstance().getScriptEngineService().stopAll();
-            }
-        }
-    };
+    public TaskManagerFragment() {
+        super(45);
+    }
 
 
     @AfterViews
@@ -140,35 +131,13 @@ public class TaskManagerFragment extends Fragment implements PopupMenu.OnMenuIte
         mSpinnerCurrentItem.setText(R.string.text_task_manage);
     }
 
-    @Override
-    public void setUpWithFab(ViewPager pager, final FloatingActionButton fab) {
-        mFab = fab;
-        fab.setOnClickListener(mOnFabClickListener);
-        if (fab.getVisibility() != View.VISIBLE) {
-            fab.show();
-            return;
-        }
-        fab.animate()
-                .rotation(45)
-                .setDuration(300)
-                .setInterpolator(new FastOutSlowInInterpolator())
-                .start();
-
-    }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        if (mFab != null) {
-            mFab.setOnClickListener(null);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mFab != null) {
-            mFab.setOnClickListener(mOnFabClickListener);
+    protected void onFabClick(FloatingActionButton fab) {
+        if (mLogView.getVisibility() == View.VISIBLE) {
+            Console.clear();
+        } else {
+            AutoJs.getInstance().getScriptEngineService().stopAll();
         }
     }
 }

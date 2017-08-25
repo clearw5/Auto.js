@@ -11,10 +11,10 @@
               android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="170dp"
-        android:layout_marginBottom="5dp"
-        android:background="#5cab7d">
+        android:layout_marginBottom="5dp">
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/avatar"

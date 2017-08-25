@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
 import com.stardust.scriptdroid.ui.common.ProgressDialog;
+import com.stardust.theme.ThemeColorManager;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.sublime.SublimePluginClient;
 import com.stardust.scriptdroid.sublime.SublimePluginService;
@@ -25,6 +27,7 @@ import com.stardust.scriptdroid.tool.WifiTool;
 import com.stardust.util.IntentUtil;
 import com.stardust.util.UnderuseExecutors;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.CheckedChange;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
@@ -45,7 +48,10 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     SwitchCompat mAccessibilityServiceSwitch;
     SwitchCompat mFloatingWindowSwitch;
     SwitchCompat mDebugSwitch;
+    @ViewById(R.id.header)
+    View mHeaderView;
     private Executor mExecutor = UnderuseExecutors.getExecutor();
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +63,11 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     public void onStart() {
         super.onStart();
         //syncSwitchState();
+    }
+
+    @AfterViews
+    void setUpViews(){
+        ThemeColorManager.addViewBackground(mHeaderView);
     }
 
 
