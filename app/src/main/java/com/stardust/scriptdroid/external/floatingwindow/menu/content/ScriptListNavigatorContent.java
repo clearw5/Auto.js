@@ -18,8 +18,8 @@ import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
-import com.stardust.scriptdroid.ui.main.script_list.ScriptListRecyclerView;
-import com.stardust.scriptdroid.ui.main.script_list.ScriptListWithProgressBarView;
+import com.stardust.scriptdroid.ui.main.scripts.ScriptListRecyclerView;
+import com.stardust.scriptdroid.ui.main.scripts.ScriptListWithProgressBarView;
 import com.stardust.widget.ViewHolderSupplier;
 
 import io.mattcarroll.hover.Navigator;

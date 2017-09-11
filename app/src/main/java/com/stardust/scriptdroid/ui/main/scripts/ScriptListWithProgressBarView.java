@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.ui.main.script_list;
+package com.stardust.scriptdroid.ui.main.scripts;
 
 import android.content.Context;
 import android.os.Build;

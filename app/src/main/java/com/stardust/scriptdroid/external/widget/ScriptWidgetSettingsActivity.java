@@ -11,8 +11,8 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.ui.main.script_list.ScriptListRecyclerView;
-import com.stardust.scriptdroid.ui.main.script_list.ScriptListWithProgressBarView;
+import com.stardust.scriptdroid.ui.main.scripts.ScriptListRecyclerView;
+import com.stardust.scriptdroid.ui.main.scripts.ScriptListWithProgressBarView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;

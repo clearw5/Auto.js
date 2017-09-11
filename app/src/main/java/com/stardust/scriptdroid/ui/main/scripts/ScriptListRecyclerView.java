@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.ui.main.script_list;
+package com.stardust.scriptdroid.ui.main.scripts;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -27,12 +27,9 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
 
 import java.util.List;
 
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;

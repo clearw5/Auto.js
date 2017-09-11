@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.ui.main.script_list;
+package com.stardust.scriptdroid.ui.main.scripts;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
@@ -8,21 +8,22 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.tool.SimpleObserver;
+import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
+import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.widget.BindableViewHolder;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -35,7 +36,8 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Stardust on 2017/8/21.
  */
 
-public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLayout.OnRefreshListener {
+public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
+
 
     public interface OnScriptFileClickListener {
         void onScriptFileClick(View view, ScriptFile file);
@@ -47,6 +49,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
     private ArrayList<ScriptFile> mDirectories = new ArrayList<>();
     private ScriptFile mCurrentDirectory;
     private OnScriptFileClickListener mOnScriptFileClickListener;
+    private ScriptFile mSelectedScriptFile;
 
     public ScriptListView(Context context) {
         super(context);
@@ -127,6 +130,35 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         loadScriptList();
     }
 
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.rename:
+                new ScriptOperations(getContext(), this)
+                        .rename(mSelectedScriptFile)
+                        .subscribe();
+                break;
+            case R.id.delete:
+                new ScriptOperations(getContext(), this)
+                        .delete(mSelectedScriptFile);
+                break;
+            case R.id.run_repeatedly:
+                new ScriptLoopDialog(getContext(), mSelectedScriptFile)
+                        .show();
+                break;
+            case R.id.create_shortcut:
+                new ScriptOperations(getContext(), this)
+                        .createShortcut(mSelectedScriptFile);
+                break;
+            case R.id.open_by_other_apps:
+                Scripts.openByOtherApps(mSelectedScriptFile);
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
     private class ScriptListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private final int VIEW_TYPE_FILE = 0;
@@ -188,6 +220,10 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         TextView mFirstChar;
         @BindView(R.id.desc)
         TextView mDesc;
+        @BindView(R.id.more)
+        View mOptions;
+        @BindView(R.id.edit)
+        View mEdit;
         GradientDrawable mFirstCharBackground;
         private ScriptFile mScriptFile;
 
@@ -205,9 +241,11 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
             if (file.getType() == ScriptFile.TYPE_JAVA_SCRIPT) {
                 mFirstChar.setText("J");
                 mFirstCharBackground.setColor(getResources().getColor(R.color.color_j));
+                mEdit.setVisibility(VISIBLE);
             } else {
                 mFirstChar.setText("R");
                 mFirstCharBackground.setColor(getResources().getColor(R.color.color_r));
+                mEdit.setVisibility(GONE);
             }
         }
 
@@ -230,7 +268,11 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
 
         @OnClick(R.id.more)
         void showOptionMenu() {
-
+            mSelectedScriptFile = mScriptFile;
+            PopupMenu popupMenu = new PopupMenu(getContext(), mOptions);
+            popupMenu.inflate(R.menu.menu_script_options);
+            popupMenu.setOnMenuItemClickListener(ScriptListView.this);
+            popupMenu.show();
         }
     }
 
@@ -238,6 +280,9 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
 
         @BindView(R.id.name)
         TextView mName;
+        @BindView(R.id.more)
+        View mOptions;
+
         private ScriptFile mScriptFile;
 
         DirectoryViewHolder(View itemView) {
@@ -258,7 +303,11 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
 
         @OnClick(R.id.more)
         void showOptionMenu() {
-
+            mSelectedScriptFile = mScriptFile;
+            PopupMenu popupMenu = new PopupMenu(getContext(), mOptions);
+            popupMenu.inflate(R.menu.menu_dir_options);
+            popupMenu.setOnMenuItemClickListener(ScriptListView.this);
+            popupMenu.show();
         }
     }
 
@@ -276,5 +325,6 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         public void bind(Boolean isDirCategory, int position) {
             mTitle.setText(isDirCategory ? R.string.text_directory : R.string.text_file);
         }
+
     }
 }

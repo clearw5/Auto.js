@@ -1,20 +1,14 @@
 package com.stardust.scriptdroid.ui.main;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.support.annotation.IdRes;
 import android.view.View;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.stardust.scriptdroid.R;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 /**

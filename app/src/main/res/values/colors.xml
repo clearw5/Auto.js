@@ -7,4 +7,6 @@
     <color name="bubble_bg">#eef2f3f9</color>
     <color name="color_r">#FD999A</color>
     <color name="color_j">#99CC99</color>
+    <color name="prefTextColorSecondary">#9DA0A2</color>
+    <color name="prefTextColorPrimary">#282C2F</color>
 </resources>

@@ -1,8 +1,6 @@
 package com.stardust.scriptdroid.ui.main;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,8 +13,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -31,35 +27,26 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
-import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageFileProvider;
-import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment;
+import com.stardust.scriptdroid.ui.main.community.CommunityFragment_;
 import com.stardust.scriptdroid.ui.main.doc.OnlineDocsFragment_;
-import com.stardust.scriptdroid.ui.main.drawer.DrawerFragment;
-import com.stardust.scriptdroid.ui.main.script_list.MyScriptListFragment_;
+import com.stardust.scriptdroid.ui.main.scripts.MyScriptListFragment_;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
 import com.stardust.theme.ThemeColorManager;
-import com.stardust.theme.ThemeColorManagerCompat;
 import com.stardust.util.DeveloperUtils;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
-import com.stardust.scriptdroid.tool.DrawableSaver;
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.ui.main.script_list.ScriptFileChooserDialogBuilder;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity_;
 import com.stardust.scriptdroid.ui.update.VersionGuard;
 import com.stardust.util.BackPressedHandler;
-import com.stardust.util.MessageEvent;
 import com.stardust.view.DrawerAutoClose;
 import com.stardust.widget.CommonMarkdownView;
-import com.stardust.widget.SlidingUpPanel;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost {
@@ -68,10 +55,10 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @ViewById(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
-    @ViewById(R.id.bottom_menu)
-    SlidingUpPanel mAddBottomMenuPanel;
+
     @ViewById(R.id.viewpager)
     ViewPager mViewPager;
+
     @ViewById(R.id.fab)
     FloatingActionButton mFab;
 
@@ -92,7 +79,8 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     void setUpViews() {
         setUpToolbar();
         setUpTabViewPager();
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         registerBackPressHandlers();
         ThemeColorManager.addViewBackground(findViewById(R.id.app_bar));
     }
@@ -112,16 +100,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
 
     private void registerBackPressHandlers() {
-        registerBackPressedHandler(new BackPressedHandler() {
-            @Override
-            public boolean onBackPressed(Activity activity) {
-                if (mAddBottomMenuPanel.isShowing()) {
-                    mAddBottomMenuPanel.dismiss();
-                    return true;
-                }
-                return false;
-            }
-        });
         registerBackPressedHandler(new DrawerAutoClose(mDrawerLayout, Gravity.START));
         registerBackPressedHandler(new BackPressedHandler.DoublePressExit(this, R.string.text_press_again_to_exit));
     }
@@ -132,19 +110,20 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     private void showAccessibilitySettingPromptIfDisabled() {
-        if (!AccessibilityServiceTool.isAccessibilityServiceEnabled(this)) {
-            new NotAskAgainDialog.Builder(this, "Eating...love you...miss you...17.4.12")
-                    .title(R.string.text_need_to_enable_accessibility_service)
-                    .content(R.string.explain_accessibility_permission)
-                    .positiveText(R.string.text_go_to_setting)
-                    .negativeText(R.string.text_cancel)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            AccessibilityServiceTool.enableAccessibilityService();
-                        }
-                    }).show();
+        if (AccessibilityServiceTool.isAccessibilityServiceEnabled(this)) {
+            return;
         }
+        new NotAskAgainDialog.Builder(this, "Eating...love you...miss you...17.4.12")
+                .title(R.string.text_need_to_enable_accessibility_service)
+                .content(R.string.explain_accessibility_permission)
+                .positiveText(R.string.text_go_to_setting)
+                .negativeText(R.string.text_cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        AccessibilityServiceTool.enableAccessibilityService();
+                    }
+                }).show();
     }
 
     private void setUpToolbar() {
@@ -162,11 +141,15 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         mPagerAdapter = new FragmentPagerAdapterBuilder(this)
                 .add(new MyScriptListFragment_(), R.string.text_script)
                 .add(new OnlineDocsFragment_(), R.string.text_tutorial)
-                .add(new CommunityFragment(), R.string.text_community)
+                .add(new CommunityFragment_(), R.string.text_community)
                 .add(new TaskManagerFragment_(), R.string.text_manage)
                 .build();
         mViewPager.setAdapter(mPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
+        setUpViewPagerFragmentBehaviors();
+    }
+
+    private void setUpViewPagerFragmentBehaviors() {
         mPagerAdapter.setOnFragmentInstantiateListener(new FragmentPagerAdapterBuilder.OnFragmentInstantiateListener() {
             @Override
             public void OnInstantiate(int pos, Fragment fragment) {
@@ -187,53 +170,10 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         });
     }
 
-    @Click(R.id.create_new_file)
-    void createScriptFile() {
-        new ScriptOperations(this, mDrawerLayout)
-                .newScriptFile();
-    }
-
-    @Click(R.id.create_new_directory)
-    void createNewDirectory() {
-        new ScriptOperations(this, mDrawerLayout)
-                .newDirectory();
-    }
-
-    @Click(R.id.import_from_file)
-    void showFileChooser() {
-        final StorageFileProvider provider = StorageFileProvider.getExternalStorageProvider();
-        new ScriptFileChooserDialogBuilder(this)
-                .scriptProvider(provider)
-                .fileCallback(new ScriptFileChooserDialogBuilder.FileCallback() {
-                    @Override
-                    public void onFileSelection(MaterialDialog dialog, final ScriptFile file) {
-                        dialog.dismiss();
-                        provider.refreshAll();
-                        new ScriptOperations(MainActivity.this, mDrawerLayout)
-                                .importFile(file.getPath())
-                                .subscribe();
-                    }
-                })
-                .title(R.string.text_please_choose_file_to_import)
-                .autoDismiss(false)
-                .positiveText(R.string.cancel)
-                .neutralText(R.string.text_refresh)
-                .onAny(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        if (which == DialogAction.POSITIVE) {
-                            dialog.dismiss();
-                        } else {
-                            provider.refreshAll();
-                        }
-                    }
-                })
-                .show();
-    }
 
     @Click(R.id.setting)
     void startSettingActivity() {
-        startActivity(new Intent(this, SettingsActivity_.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        startActivity(new Intent(this, SettingsActivity_.class));
     }
 
     @Click(R.id.exit)
@@ -247,6 +187,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     @Override
     protected void onPause() {
         super.onPause();
+        //not working
         stopService(new Intent(this, DownloadService.class));
     }
 

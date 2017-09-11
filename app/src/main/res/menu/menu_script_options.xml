@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/run_repeatedly"
+        android:title="@string/text_run_repeatedly"/>
+
+    <item
+        android:id="@+id/rename"
+        android:title="@string/text_rename"/>
+
+    <item
+        android:id="@+id/delete"
+        android:title="@string/text_delete"/>
+
+    <item
+        android:id="@+id/create_shortcut"
+        android:title="@string/text_send_shortcut"/>
+    <item
+        android:id="@+id/open_by_other_apps"
+        android:title="@string/text_open_by_other_apps"/>
+
+</menu>

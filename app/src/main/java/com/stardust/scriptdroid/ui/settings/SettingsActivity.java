@@ -14,6 +14,7 @@ import com.stardust.scriptdroid.ui.error.IssueReporterActivity;
 import com.stardust.scriptdroid.ui.splash.SplashActivity;
 import com.stardust.scriptdroid.ui.splash.SplashActivity_;
 import com.stardust.scriptdroid.ui.update.UpdateCheckDialog;
+import com.stardust.theme.preference.ThemeColorPreferenceFragment;
 import com.stardust.util.IntentUtil;
 import com.stardust.util.MapEntries;
 import com.stardust.scriptdroid.R;
@@ -82,7 +83,7 @@ public class SettingsActivity extends BaseActivity {
     }
 
 
-    public static class PreferenceFragment extends android.preference.PreferenceFragment {
+    public static class PreferenceFragment extends ThemeColorPreferenceFragment {
 
         private Map<String, Runnable> ACTION_MAP;
 
