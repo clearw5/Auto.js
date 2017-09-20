@@ -11,7 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.tool.VersionInfo;
+import com.stardust.scriptdroid.network.VersionService;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.BackPressedHandler;
 
@@ -44,18 +44,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BackPres
             ThemeColorManager.addActivityStatusBar(this);
         }
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        VersionInfo.getInstance().setOnReceiveUpdateResultCallback(null);
     }
 
     @SuppressWarnings("unchecked")

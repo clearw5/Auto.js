@@ -45,11 +45,11 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="118dp"
+            android:layout_alignParentBottom="true"
             android:layout_marginLeft="-12dp"
             android:layout_toRightOf="@+id/avatar"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/android_eating_half"
             android:alpha="0.08"
+            android:src="@drawable/android_eating_half"
             android:tint="#000000"/>
 
 

@@ -3,15 +3,10 @@ package com.stardust.widget;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
-import android.graphics.Paint;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.SwitchCompat;
 import android.util.AttributeSet;
-import android.widget.CompoundButton;
 
 import com.stardust.scriptdroid.R;
-
-import java.util.Objects;
 
 /**
  * Created by Stardust on 2017/8/6.
@@ -38,20 +33,20 @@ public class PrefSwitch extends SwitchCompat implements SharedPreferences.OnShar
     }
 
     private void init(AttributeSet attrs) {
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        if (attrs != null) {
-            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.PrefSwitch);
-            mPrefKey = a.getString(R.styleable.PrefSwitch_key);
-            boolean defaultValue = a.getBoolean(R.styleable.PrefSwitch_defaultValue, false);
-            if (mPrefKey != null)
-                setChecked(mSharedPreferences.getBoolean(mPrefKey, defaultValue), false);
-            else
-                setChecked(defaultValue, false);
-            a.recycle();
+        if (attrs == null)
+            return;
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.PrefSwitch);
+        mPrefKey = a.getString(R.styleable.PrefSwitch_key);
+        boolean defaultValue = a.getBoolean(R.styleable.PrefSwitch_defaultValue, false);
+        if (mPrefKey != null) {
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
+            setChecked(mSharedPreferences.getBoolean(mPrefKey, defaultValue), false);
+        } else {
+            setChecked(defaultValue, false);
         }
-        mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        a.recycle();
     }
-
 
     private void notifyPrefChanged(boolean isChecked) {
         if (mPrefKey == null)
@@ -61,6 +56,13 @@ public class PrefSwitch extends SwitchCompat implements SharedPreferences.OnShar
                 .apply();
     }
 
+    public void setPrefKey(String prefKey) {
+        mPrefKey = prefKey;
+        if (mSharedPreferences == null) {
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        }
+    }
 
     @Override
     public void setChecked(boolean checked) {

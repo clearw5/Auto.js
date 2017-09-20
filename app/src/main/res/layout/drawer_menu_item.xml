@@ -1,18 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="48dp"
               android:background="?selectableItemBackground"
               android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/icon"
+    <FrameLayout
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_margin="16dp"
-        android:tint="#999999"
-        tools:src="@drawable/ic_service_green"/>
+        android:layout_margin="16dp">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:tint="#999999"
+            tools:src="@drawable/ic_service_green"/>
+
+        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:backgroundTint="#999999"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
 
     <TextView
         android:id="@+id/title"
@@ -24,7 +39,7 @@
         android:textSize="14sp"
         tools:text="@string/text_auto_operate_service"/>
 
-    <com.stardust.theme.widget.ThemeColorSwitch
+    <com.stardust.widget.PrefSwitch
         android:id="@+id/sw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

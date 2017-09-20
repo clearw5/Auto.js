@@ -21,6 +21,7 @@
                 android:id="@+id/accessibility_service"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:anti_shake="true"
                 app:icon="@drawable/ic_service_green"
                 app:title="@string/text_accessibility_service"
                 app:with_switch="true"/>
@@ -30,6 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:icon="@drawable/ic_stable"
+                app:pref_key="@string/key_stable_mode"
                 app:title="@string/text_stable_mode"
                 app:with_switch="true"/>
 
@@ -46,6 +48,7 @@
                 android:id="@+id/floating_window"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:anti_shake="true"
                 app:icon="@drawable/ic_robot_64"
                 app:title="@string/text_floating_window"
                 app:with_switch="true"/>
@@ -55,6 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:icon="@drawable/ic_volume"
+                app:pref_key="@string/key_use_volume_control_record"
                 app:title="@string/text_volume_down_control"
                 app:with_switch="true"/>
 
@@ -71,6 +75,7 @@
                 android:id="@+id/debug"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:anti_shake="true"
                 app:icon="@drawable/ic_debug"
                 app:title="@string/debug"
                 app:with_switch="true"/>

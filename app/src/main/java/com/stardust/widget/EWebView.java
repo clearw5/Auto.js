@@ -1,5 +1,6 @@
 package com.stardust.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -53,7 +54,7 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
         settings.setUseWideViewPort(true);
         settings.setBuiltInZoomControls(true);
         settings.setLoadWithOverviewMode(true);
-        //settings.setJavaScriptEnabled(true);
+        settings.setJavaScriptEnabled(true);
         mWebView.setWebViewClient(new MyWebViewClient());
         mWebView.setWebChromeClient(new MyWebChromeClient());
     }

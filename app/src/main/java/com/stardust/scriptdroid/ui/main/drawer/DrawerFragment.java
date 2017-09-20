@@ -1,13 +1,10 @@
 package com.stardust.scriptdroid.ui.main.drawer;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.SwitchCompat;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -17,10 +14,15 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
+import com.stardust.scriptdroid.network.UpdateCheckApi;
+import com.stardust.scriptdroid.network.VersionService;
+import com.stardust.scriptdroid.network.entity.VersionInfo;
+import com.stardust.scriptdroid.tool.SimpleObserver;
 import com.stardust.scriptdroid.ui.common.ProgressDialog;
+import com.stardust.scriptdroid.ui.settings.SettingsActivity;
+import com.stardust.scriptdroid.ui.update.UpdateInfoDialogBuilder;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.view.accessibility.AccessibilityService;
-import com.stardust.scriptdroid.sublime.SublimePluginClient;
 import com.stardust.scriptdroid.sublime.SublimePluginService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.WifiTool;
@@ -28,15 +30,18 @@ import com.stardust.util.IntentUtil;
 import com.stardust.util.UnderuseExecutors;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.CheckedChange;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -45,68 +50,194 @@ import java.util.concurrent.Executor;
 @EFragment(R.layout.fragment_drawer)
 public class DrawerFragment extends android.support.v4.app.Fragment {
 
-    SwitchCompat mAccessibilityServiceSwitch;
-    SwitchCompat mFloatingWindowSwitch;
-    SwitchCompat mDebugSwitch;
+    private static final String URL_SUBLIME_PLUGIN_HELP = "https://github.com/hyb1996/AutoJs-Sublime-Plugin/blob/master/Readme.md";
+
+    @ViewById(R.id.debug)
+    DrawerMenuItem mConnectionItem;
+
+    @ViewById(R.id.accessibility_service)
+    DrawerMenuItem mAccessibilityServiceItem;
+
+    @ViewById(R.id.floating_window)
+    DrawerMenuItem mFloatingWindowItem;
+
+    @ViewById(R.id.check_for_updates)
+    DrawerMenuItem mCheckForUpdatesItem;
+
     @ViewById(R.id.header)
     View mHeaderView;
-    private Executor mExecutor = UnderuseExecutors.getExecutor();
+
+
+    private Disposable mConnectionStateDisposable;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
+        mConnectionStateDisposable = SublimePluginService.getConnectionState()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(@io.reactivex.annotations.NonNull Boolean connected) throws Exception {
+                        mConnectionItem.getSwitchCompat().setChecked(connected);
+                    }
+                })
+                .subscribe();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        //syncSwitchState();
+        syncSwitchState();
     }
 
     @AfterViews
-    void setUpViews(){
+    void setUpViews() {
         ThemeColorManager.addViewBackground(mHeaderView);
     }
 
-
-    private void syncSwitchState() {
-        mAccessibilityServiceSwitch.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mAccessibilityServiceSwitch == null) {
-                            return;
-                        }
-                        final boolean checked = AccessibilityServiceTool.isAccessibilityServiceEnabled(App.getApp());
-                        mAccessibilityServiceSwitch.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mAccessibilityServiceSwitch == null) {
-                                    return;
-                                }
-                                mAccessibilityServiceSwitch.setChecked(checked);
-                            }
-                        });
-                    }
-                });
-            }
-        }, 450);
-        mFloatingWindowSwitch.setChecked(HoverMenuManger.isHoverMenuShowing());
-    }
-
-    void setAutoOperateServiceEnable(CompoundButton button, boolean enable) {
-        boolean isAccessibilityServiceEnabled = AccessibilityServiceTool.isAccessibilityServiceEnabled(App.getApp());
-        if (enable && !isAccessibilityServiceEnabled) {
+    @Click(R.id.accessibility_service)
+    void enableOrDisableAccessibilityService() {
+        boolean isAccessibilityServiceEnabled = isAccessibilityServiceEnabled();
+        boolean checked = mAccessibilityServiceItem.getSwitchCompat().isChecked();
+        if (checked && !isAccessibilityServiceEnabled) {
             enableAccessibilityService();
-        } else if (!enable && isAccessibilityServiceEnabled) {
+        } else if (!checked && isAccessibilityServiceEnabled) {
             if (!AccessibilityService.disable()) {
                 AccessibilityServiceTool.goToAccessibilitySetting();
             }
         }
+    }
+
+    private boolean isAccessibilityServiceEnabled() {
+        return AccessibilityServiceTool.isAccessibilityServiceEnabled(getActivity());
+    }
+
+    @Click(R.id.floating_window)
+    void showOrDismissFloatingWindow() {
+        boolean isFloatingWindowShowing = HoverMenuManger.isHoverMenuShowing();
+        boolean checked = mFloatingWindowItem.getSwitchCompat().isChecked();
+        if (checked && !isFloatingWindowShowing) {
+            HoverMenuManger.showHoverMenu();
+            enableAccessibilityServiceByRootIfNeeded();
+        } else if (!checked && isFloatingWindowShowing) {
+            HoverMenuManger.hideHoverMenu();
+        }
+    }
+
+    @Click(R.id.theme_color)
+    void openThemeColorSettings() {
+        SettingsActivity.selectThemeColor(getActivity());
+    }
+
+    private void enableAccessibilityServiceByRootIfNeeded() {
+        Observable.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return Pref.enableAccessibilityServiceByRoot() && !isAccessibilityServiceEnabled();
+            }
+        })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(@io.reactivex.annotations.NonNull Boolean needed) throws Exception {
+                        if (needed) {
+                            enableAccessibilityServiceByRoot();
+                        }
+                    }
+                });
+
+    }
+
+    @Click(R.id.debug)
+    void connectOrDisconnectToRemote() {
+        boolean checked = mConnectionItem.getSwitchCompat().isChecked();
+        boolean connected = SublimePluginService.isConnected();
+        if (checked && !connected) {
+            inputRemoteHost();
+        } else if (!checked && connected) {
+            SublimePluginService.disconnectIfNeeded();
+        }
+    }
+
+    private void inputRemoteHost() {
+        String host = Pref.getServerAddressOrDefault(WifiTool.getWifiAddress(getActivity()));
+        new MaterialDialog.Builder(getActivity())
+                .title(R.string.text_server_address)
+                .input("", host, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                        Pref.saveServerAddress(input.toString());
+                        connectToRemote(input.toString());
+                    }
+                })
+                .neutralText(R.string.text_help)
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        IntentUtil.browse(getActivity(), URL_SUBLIME_PLUGIN_HELP);
+                    }
+                })
+                .cancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        mConnectionItem.getSwitchCompat().toggle(false);
+                    }
+                })
+                .show();
+    }
+
+    private void connectToRemote(String host) {
+        mConnectionItem.setProgress(true);
+        Toast.makeText(App.getApp(), R.string.text_connecting, Toast.LENGTH_SHORT).show();
+        SublimePluginService.connect(host)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleObserver<Void>() {
+
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        Toast.makeText(App.getApp(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        mConnectionItem.getSwitchCompat().setChecked(false, false);
+                        mConnectionItem.setProgress(false);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        mConnectionItem.setProgress(false);
+                    }
+                });
+    }
+
+    @Click(R.id.check_for_updates)
+    void checkForUpdates() {
+        mCheckForUpdatesItem.setProgress(true);
+        VersionService.getInstance().checkForUpdates()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleObserver<VersionInfo>() {
+
+                    @Override
+                    public void onNext(@io.reactivex.annotations.NonNull VersionInfo versionInfo) {
+                        new UpdateInfoDialogBuilder(getActivity(), versionInfo)
+                                .show();
+                        mCheckForUpdatesItem.setProgress(false);
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        e.printStackTrace();
+                        Toast.makeText(App.getApp(), R.string.text_check_update_error, Toast.LENGTH_SHORT).show();
+                        mCheckForUpdatesItem.setProgress(false);
+                    }
+                });
+    }
+
+
+    private void syncSwitchState() {
+        mAccessibilityServiceItem.getSwitchCompat().setChecked(
+                AccessibilityServiceTool.isAccessibilityServiceEnabled(getActivity()));
+        mFloatingWindowItem.getSwitchCompat().setChecked(HoverMenuManger.isHoverMenuShowing());
     }
 
     private void enableAccessibilityService() {
@@ -115,83 +246,38 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
             return;
         }
         enableAccessibilityServiceByRoot();
-
     }
 
     private void enableAccessibilityServiceByRoot() {
-        final ProgressDialog progress = new ProgressDialog(getContext(), R.string.text_enable_accessibility_service_by_root_ing);
-        UnderuseExecutors.execute(new Runnable() {
+        mAccessibilityServiceItem.setProgress(true);
+        Observable.fromCallable(new Callable<Boolean>() {
             @Override
-            public void run() {
-                final boolean succeed = AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(4000);
-                getActivity().runOnUiThread(new Runnable() {
+            public Boolean call() throws Exception {
+                return AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(4000);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void run() {
+                    public void accept(@io.reactivex.annotations.NonNull Boolean succeed) throws Exception {
                         if (!succeed) {
                             Toast.makeText(getContext(), R.string.text_enable_accessibitliy_service_by_root_failed, Toast.LENGTH_SHORT).show();
                             AccessibilityServiceTool.goToAccessibilitySetting();
                         }
-                        progress.dismiss();
+                        mAccessibilityServiceItem.setProgress(false);
                     }
                 });
-            }
-        });
-    }
-
-    void setFloatingWindowEnable(CompoundButton button, boolean enable) {
-        if (enable && !HoverMenuManger.isHoverMenuShowing()) {
-            HoverMenuManger.showHoverMenu();
-            if (Pref.enableAccessibilityServiceByRoot()) {
-                enableAccessibilityServiceByRoot();
-            }
-        } else if (!enable && HoverMenuManger.isHoverMenuShowing()) {
-            HoverMenuManger.hideHoverMenu();
-        }
-    }
-
-    void setDebugEnabled(CompoundButton button, boolean enabled) {
-        if (enabled && !SublimePluginService.isConnected()) {
-            new MaterialDialog.Builder(getActivity())
-                    .title(R.string.text_server_address)
-                    .input("", getServerAddress(), new MaterialDialog.InputCallback() {
-                        @Override
-                        public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                            Pref.saveServerAddress(input.toString());
-                            SublimePluginService.connect(input.toString());
-                        }
-                    })
-                    .neutralText(R.string.text_help)
-                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            IntentUtil.browse(getActivity(), "https://github.com/hyb1996/AutoJs-Sublime-Plugin/blob/master/Readme.md");
-                        }
-                    })
-                    .show();
-        } else if (!enabled) {
-            SublimePluginService.disconnectIfNeeded();
-        }
-    }
-
-    private CharSequence getServerAddress() {
-        return Pref.getServerAddressOrDefault(WifiTool.getWifiAddress(getActivity()));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        mConnectionStateDisposable.dispose();
     }
 
     @Subscribe
     public void onHoverMenuServiceStateChanged(HoverMenuService.ServiceStateChangedEvent event) {
-        mFloatingWindowSwitch.setChecked(event.state);
+        mAccessibilityServiceItem.getSwitchCompat().setChecked(event.state);
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSublimeClientStateChange(SublimePluginClient.ConnectionStateChangeEvent event) {
-        mDebugSwitch.setChecked(event.isConnected());
-        App.getApp().getUiHandler().toast(event.isConnected() ? R.string.text_connected : R.string.text_disconnected);
-    }
-
 }

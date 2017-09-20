@@ -5,15 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
+import com.stardust.scriptdroid.network.VersionService;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.error.IssueReporterActivity;
 import com.stardust.scriptdroid.ui.splash.SplashActivity;
 import com.stardust.scriptdroid.ui.splash.SplashActivity_;
-import com.stardust.scriptdroid.ui.update.UpdateCheckDialog;
 import com.stardust.theme.preference.ThemeColorPreferenceFragment;
 import com.stardust.util.IntentUtil;
 import com.stardust.util.MapEntries;
@@ -24,6 +25,7 @@ import com.stardust.theme.util.ListBuilder;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -37,30 +39,35 @@ import de.psdev.licensesdialog.licenses.License;
 @EActivity(R.layout.activity_settings)
 public class SettingsActivity extends BaseActivity {
 
-    private static final List<ColorSelectActivity.ColorItem> COLOR_ITEMS;
+    private static final List<Pair<Integer, Integer>> COLOR_ITEMS = new ListBuilder<Pair<Integer, Integer>>()
+            .add(new Pair<>(R.color.theme_color_red, R.string.theme_color_red))
+            .add(new Pair<>(R.color.theme_color_pink, R.string.theme_color_pink))
+            .add(new Pair<>(R.color.theme_color_purple, R.string.theme_color_purple))
+            .add(new Pair<>(R.color.theme_color_dark_purple, R.string.theme_color_dark_purple))
+            .add(new Pair<>(R.color.theme_color_indigo, R.string.theme_color_indigo))
+            .add(new Pair<>(R.color.theme_color_blue, R.string.theme_color_blue))
+            .add(new Pair<>(R.color.theme_color_light_blue, R.string.theme_color_light_blue))
+            .add(new Pair<>(R.color.theme_color_blue_green, R.string.theme_color_blue_green))
+            .add(new Pair<>(R.color.theme_color_cyan, R.string.theme_color_cyan))
+            .add(new Pair<>(R.color.theme_color_green, R.string.theme_color_green))
+            .add(new Pair<>(R.color.theme_color_light_green, R.string.theme_color_light_green))
+            .add(new Pair<>(R.color.theme_color_yellow_green, R.string.theme_color_yellow_green))
+            .add(new Pair<>(R.color.theme_color_yellow, R.string.theme_color_yellow))
+            .add(new Pair<>(R.color.theme_color_amber, R.string.theme_color_amber))
+            .add(new Pair<>(R.color.theme_color_orange, R.string.theme_color_orange))
+            .add(new Pair<>(R.color.theme_color_dark_orange, R.string.theme_color_dark_orange))
+            .add(new Pair<>(R.color.theme_color_brown, R.string.theme_color_brown))
+            .add(new Pair<>(R.color.theme_color_gray, R.string.theme_color_gray))
+            .add(new Pair<>(R.color.theme_color_blue_gray, R.string.theme_color_blue_gray))
+            .list();
 
-    static {
-        COLOR_ITEMS = new ListBuilder<ColorSelectActivity.ColorItem>()
-                .add(new ColorSelectActivity.ColorItem("基佬红", 0xFFF44336))
-                .add(new ColorSelectActivity.ColorItem("基佬粉", 0xFFE91E63))
-                .add(new ColorSelectActivity.ColorItem("基佬紫", 0xFF9C27B0))
-                .add(new ColorSelectActivity.ColorItem("基深紫", 0xFF673AB7))
-                .add(new ColorSelectActivity.ColorItem("基靛蓝", 0xFF3F51B5))
-                .add(new ColorSelectActivity.ColorItem("基佬蓝", 0xFF2196F3))
-                .add(new ColorSelectActivity.ColorItem("基亮蓝", 0xFF03A9F4))
-                .add(new ColorSelectActivity.ColorItem("基蓝绿", 0xFF00BCD4))
-                .add(new ColorSelectActivity.ColorItem("基佬青", 0xFF009688))
-                .add(new ColorSelectActivity.ColorItem("基佬绿", 0xFF4CAF50))
-                .add(new ColorSelectActivity.ColorItem("基亮绿", 0xFF8BC34A))
-                .add(new ColorSelectActivity.ColorItem("基黄绿", 0xFFCDDC39))
-                .add(new ColorSelectActivity.ColorItem("基佬黄", 0xFFFFEB3B))
-                .add(new ColorSelectActivity.ColorItem("基琥珀", 0xFFFFC107))
-                .add(new ColorSelectActivity.ColorItem("基佬橙", 0xFFFF9800))
-                .add(new ColorSelectActivity.ColorItem("基深橙", 0xFFFF5722))
-                .add(new ColorSelectActivity.ColorItem("基佬棕", 0xFF795548))
-                .add(new ColorSelectActivity.ColorItem("基佬灰", 0xFF9E9E9E))
-                .add(new ColorSelectActivity.ColorItem("基南灰", 0xFF607D8B))
-                .list();
+    public static void selectThemeColor(Context context) {
+        List<ColorSelectActivity.ColorItem> colorItems = new ArrayList<>(COLOR_ITEMS.size());
+        for (Pair<Integer, Integer> item : COLOR_ITEMS) {
+            colorItems.add(new ColorSelectActivity.ColorItem(context.getString(item.second),
+                    context.getResources().getColor(item.first)));
+        }
+        ColorSelectActivity.startColorSelect(context, context.getString(R.string.mt_color_picker_title), colorItems);
     }
 
     @AfterViews
@@ -101,13 +108,13 @@ public class SettingsActivity extends BaseActivity {
                     .entry(getString(R.string.text_theme_color), new Runnable() {
                         @Override
                         public void run() {
-                            ColorSelectActivity.startColorSelect(getActivity(), getString(R.string.mt_color_picker_title), COLOR_ITEMS);
+                            selectThemeColor(getActivity());
                         }
                     })
                     .entry(getString(R.string.text_reset_background), new Runnable() {
                         @Override
                         public void run() {
-                           // EventBus.getDefault().post(new MessageEvent(MainActivity.MESSAGE_CLEAR_BACKGROUND_SETTINGS));
+                            // EventBus.getDefault().post(new MessageEvent(MainActivity.MESSAGE_CLEAR_BACKGROUND_SETTINGS));
                             Toast.makeText(getActivity(), R.string.text_already_reset, Toast.LENGTH_SHORT).show();
                         }
                     })
@@ -123,7 +130,7 @@ public class SettingsActivity extends BaseActivity {
                     .entry(getString(R.string.text_check_for_updates), new Runnable() {
                         @Override
                         public void run() {
-                            new UpdateCheckDialog(getActivity()).show();
+                            VersionService.getInstance().checkForUpdatesAndShow(getActivity());
                         }
                     })
                     .entry(getString(R.string.text_issue_report), new Runnable() {

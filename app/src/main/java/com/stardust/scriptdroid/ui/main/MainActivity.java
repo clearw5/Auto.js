@@ -28,7 +28,6 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
 import com.stardust.scriptdroid.script.StorageFileProvider;
-import com.stardust.scriptdroid.ui.main.community.CommunityFragment;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment_;
 import com.stardust.scriptdroid.ui.main.doc.OnlineDocsFragment_;
 import com.stardust.scriptdroid.ui.main.scripts.MyScriptListFragment_;
@@ -194,7 +193,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     @Override
     protected void onResume() {
         super.onResume();
-        mVersionGuard.checkDeprecateAndUpdate();
+        mVersionGuard.checkForDeprecatesAndUpdates();
     }
 
     @Override

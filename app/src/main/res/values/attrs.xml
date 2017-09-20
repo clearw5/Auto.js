@@ -19,6 +19,8 @@
         <attr name="title"/>
         <attr name="icon"/>
         <attr name="with_switch" format="boolean"/>
+        <attr name="pref_key" format="string|reference"/>
+        <attr name="anti_shake" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="DrawerMenuGroup">

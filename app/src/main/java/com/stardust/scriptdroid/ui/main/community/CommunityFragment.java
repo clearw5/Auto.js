@@ -44,7 +44,7 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
     @AfterViews
     void setUpViews() {
         mWebView = mEWebView.getWebView();
-        mWebView.loadUrl("http://39.108.231.37/");
+        mWebView.loadUrl("http://www.autojs.org/");
     }
 
     @Override
