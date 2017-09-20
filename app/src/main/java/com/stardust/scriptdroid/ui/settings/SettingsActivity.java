@@ -15,6 +15,7 @@ import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.error.IssueReporterActivity;
 import com.stardust.scriptdroid.ui.splash.SplashActivity;
 import com.stardust.scriptdroid.ui.splash.SplashActivity_;
+import com.stardust.scriptdroid.ui.update.UpdateCheckDialog;
 import com.stardust.theme.preference.ThemeColorPreferenceFragment;
 import com.stardust.util.IntentUtil;
 import com.stardust.util.MapEntries;
@@ -130,7 +131,8 @@ public class SettingsActivity extends BaseActivity {
                     .entry(getString(R.string.text_check_for_updates), new Runnable() {
                         @Override
                         public void run() {
-                            VersionService.getInstance().checkForUpdatesAndShow(getActivity());
+                            new UpdateCheckDialog(getActivity())
+                                    .show();
                         }
                     })
                     .entry(getString(R.string.text_issue_report), new Runnable() {

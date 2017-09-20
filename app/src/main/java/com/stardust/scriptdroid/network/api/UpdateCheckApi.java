@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.network;
+package com.stardust.scriptdroid.network.api;
 
 import com.stardust.scriptdroid.network.entity.VersionInfo;
 
@@ -11,7 +11,7 @@ import retrofit2.http.GET;
 
 public interface UpdateCheckApi {
 
-    @GET("/hyb1996/NoRootScriptDroid/master/version.json")
+    @GET("/hyb1996/NoRootScriptDroid/new_ui/version.json")
     Observable<VersionInfo> checkForUpdates();
 
 }

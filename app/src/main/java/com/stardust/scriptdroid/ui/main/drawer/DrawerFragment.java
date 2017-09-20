@@ -14,11 +14,9 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
-import com.stardust.scriptdroid.network.UpdateCheckApi;
 import com.stardust.scriptdroid.network.VersionService;
 import com.stardust.scriptdroid.network.entity.VersionInfo;
 import com.stardust.scriptdroid.tool.SimpleObserver;
-import com.stardust.scriptdroid.ui.common.ProgressDialog;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity;
 import com.stardust.scriptdroid.ui.update.UpdateInfoDialogBuilder;
 import com.stardust.theme.ThemeColorManager;
@@ -27,7 +25,6 @@ import com.stardust.scriptdroid.sublime.SublimePluginService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.WifiTool;
 import com.stardust.util.IntentUtil;
-import com.stardust.util.UnderuseExecutors;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -219,8 +216,14 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
 
                     @Override
                     public void onNext(@io.reactivex.annotations.NonNull VersionInfo versionInfo) {
-                        new UpdateInfoDialogBuilder(getActivity(), versionInfo)
-                                .show();
+                        if (getActivity() == null)
+                            return;
+                        if (versionInfo.isNewer()) {
+                            new UpdateInfoDialogBuilder(getActivity(), versionInfo)
+                                    .show();
+                        } else {
+                            Toast.makeText(App.getApp(), R.string.text_is_latest_version, Toast.LENGTH_SHORT).show();
+                        }
                         mCheckForUpdatesItem.setProgress(false);
                     }
 

@@ -3,6 +3,8 @@ package com.stardust.scriptdroid.network.entity;
 import android.text.TextUtils;
 
 
+import com.stardust.scriptdroid.BuildConfig;
+
 import org.json.JSONObject;
 
 import java.util.List;
@@ -35,6 +37,10 @@ public class VersionInfo {
         return null;
     }
 
+    public boolean isNewer() {
+        return versionCode > BuildConfig.VERSION_CODE;
+    }
+
     @Override
     public String toString() {
         return "UpdateInfo{" +
@@ -47,6 +53,7 @@ public class VersionInfo {
                 ", downloadUrl='" + downloadUrl + '\'' +
                 '}';
     }
+
 
     public static class OldVersion extends JSONObject {
 

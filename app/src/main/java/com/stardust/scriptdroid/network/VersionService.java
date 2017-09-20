@@ -10,6 +10,7 @@ import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.network.api.UpdateCheckApi;
 import com.stardust.scriptdroid.network.entity.VersionInfo;
 import com.stardust.scriptdroid.tool.SimpleObserver;
 import com.stardust.scriptdroid.ui.update.UpdateInfoDialogBuilder;
@@ -57,23 +58,6 @@ public class VersionService {
                 .subscribeOn(Schedulers.io());
     }
 
-    public void checkForUpdatesAndShow(final Context context) {
-        checkForUpdates().observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleObserver<VersionInfo>() {
-
-                    @Override
-                    public void onNext(@io.reactivex.annotations.NonNull VersionInfo versionInfo) {
-                        new UpdateInfoDialogBuilder(context, versionInfo)
-                                .show();
-                    }
-
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        Toast.makeText(App.getApp(), R.string.text_check_update_error, Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
 
     private void readDeprecatedFromPref(Context context) {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -94,10 +78,6 @@ public class VersionService {
 
     public boolean isCurrentVersionDeprecated() {
         return mDeprecated;
-    }
-
-    public VersionInfo getVersionInfo() {
-        return mVersionInfo;
     }
 
     public String getCurrentVersionIssues() {

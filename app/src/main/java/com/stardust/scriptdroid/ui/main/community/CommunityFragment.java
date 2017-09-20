@@ -33,14 +33,6 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
         super(0);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        ((BackPressedHandler.HostActivity) getActivity())
-                .getBackPressedObserver()
-                .registerHandler(this);
-    }
-
     @AfterViews
     void setUpViews() {
         mWebView = mEWebView.getWebView();
@@ -48,8 +40,16 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
+    public void onResume() {
+        super.onResume();
+        ((BackPressedHandler.HostActivity) getActivity())
+                .getBackPressedObserver()
+                .registerHandlerAtFront(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
         ((BackPressedHandler.HostActivity) getActivity())
                 .getBackPressedObserver()
                 .unregisterHandler(this);

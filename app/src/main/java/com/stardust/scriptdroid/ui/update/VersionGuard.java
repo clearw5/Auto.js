@@ -80,7 +80,8 @@ public class VersionGuard {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         if (which == DialogAction.POSITIVE) {
-                            VersionService.getInstance().checkForUpdatesAndShow(mActivity);
+                            new UpdateCheckDialog(mActivity)
+                                    .show();
                         } else {
                             mActivity.finish();
                         }

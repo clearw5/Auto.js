@@ -32,23 +32,24 @@ public class OnlineDocsFragment extends ViewPagerFragment implements BackPressed
         super(ROTATION_GONE);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        ((BackPressedHandler.HostActivity) getActivity())
-                .getBackPressedObserver()
-                .registerHandler(this);
-    }
-
     @AfterViews
     void setUpViews() {
         mWebView = mEWebView.getWebView();
         mWebView.loadUrl("https://hyb1996.github.io/AutoJs-Docs/");
     }
 
+
     @Override
-    public void onDetach() {
-        super.onDetach();
+    public void onResume() {
+        super.onResume();
+        ((BackPressedHandler.HostActivity) getActivity())
+                .getBackPressedObserver()
+                .registerHandlerAtFront(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
         ((BackPressedHandler.HostActivity) getActivity())
                 .getBackPressedObserver()
                 .unregisterHandler(this);
