@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.stardust.scriptdroid.ui.main.script_list.ScriptAndFolderListRecyclerView
+        <com.stardust.scriptdroid.ui.main.scripts.ScriptListRecyclerView
             android:id="@+id/script_list_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

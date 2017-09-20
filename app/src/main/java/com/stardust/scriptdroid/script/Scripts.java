@@ -84,17 +84,17 @@ public class Scripts {
 
     public static ScriptExecution run(ScriptSource source, String directoryPath) {
         return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
-                .path(directoryPath, StorageScriptProvider.DEFAULT_DIRECTORY_PATH));
+                .path(directoryPath, StorageFileProvider.DEFAULT_DIRECTORY_PATH));
     }
 
     public static ScriptExecution run(ScriptSource source) {
         return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
-                .path(StorageScriptProvider.DEFAULT_DIRECTORY_PATH));
+                .path(StorageFileProvider.DEFAULT_DIRECTORY_PATH));
     }
 
     public static ScriptExecution runWithBroadcastSender(ScriptSource scriptSource, String directoryPath) {
         return AutoJs.getInstance().getScriptEngineService().execute(scriptSource, BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER,
-                new ExecutionConfig().path(directoryPath, StorageScriptProvider.DEFAULT_DIRECTORY_PATH));
+                new ExecutionConfig().path(directoryPath, StorageFileProvider.DEFAULT_DIRECTORY_PATH));
     }
 
     public static ScriptExecution run(Context context, Sample file) {
@@ -104,14 +104,14 @@ public class Scripts {
 
     public static ScriptExecution runWithBroadcastSender(ScriptSource source) {
         return AutoJs.getInstance().getScriptEngineService().execute(source, BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER,
-                new ExecutionConfig().path(StorageScriptProvider.DEFAULT_DIRECTORY_PATH));
+                new ExecutionConfig().path(StorageFileProvider.DEFAULT_DIRECTORY_PATH));
     }
 
     public static ScriptExecution runRepeatedly(ScriptFile scriptFile, int loopTimes, long delay, long interval) {
         ScriptSource source = scriptFile.toSource();
         String directoryPath = scriptFile.getParent();
         return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
-                .path(directoryPath, StorageScriptProvider.DEFAULT_DIRECTORY_PATH)
+                .path(directoryPath, StorageFileProvider.DEFAULT_DIRECTORY_PATH)
                 .loop(delay, loopTimes, interval));
     }
 }

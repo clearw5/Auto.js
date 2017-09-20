@@ -214,12 +214,23 @@ public class ScriptRuntime {
     }
 
     public void setClip(final String text) {
+        final Object lock = new Object();
         mUiHandler.post(new Runnable() {
             @Override
             public void run() {
                 ClipboardUtil.setClip(mUiHandler.getContext(), text);
+                synchronized (lock) {
+                    lock.notify();
+                }
             }
         });
+        synchronized (lock) {
+            try {
+                lock.wait();
+            } catch (InterruptedException e) {
+                throw new ScriptInterruptedException();
+            }
+        }
     }
 
     public String getClip() {

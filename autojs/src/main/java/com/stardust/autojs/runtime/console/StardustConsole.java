@@ -165,7 +165,7 @@ public class StardustConsole extends AbstractConsole {
             if (!mShown) {
                 show();
             }
-            waitConsoleView();
+            waitForConsoleView();
         }
         mConsoleView.showEditText();
         try {
@@ -175,7 +175,7 @@ public class StardustConsole extends AbstractConsole {
         }
     }
 
-    private void waitConsoleView() {
+    private void waitForConsoleView() {
         synchronized (this) {
             try {
                 this.wait();

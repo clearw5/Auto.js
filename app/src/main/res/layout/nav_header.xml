@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="170dp"
+    android:layout_marginBottom="5dp"
+    android:background="@drawable/profile_bg">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/avatar"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_above="@+id/username"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/profile_avatar_placeholder"
+        app:riv_border_color="@android:color/white"
+        app:riv_border_width="1dp"
+        app:riv_corner_radius="32dp"/>
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="8dp"
+        android:gravity="center"
+        android:text="@string/not_login"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"/>
+
+
+</RelativeLayout>
+

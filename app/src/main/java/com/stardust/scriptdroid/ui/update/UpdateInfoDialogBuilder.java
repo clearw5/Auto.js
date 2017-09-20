@@ -16,9 +16,9 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.script.StorageScriptProvider;
+import com.stardust.scriptdroid.network.entity.VersionInfo;
+import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.tool.IntentTool;
-import com.stardust.scriptdroid.tool.UpdateChecker;
 import com.stardust.util.DownloadTask;
 import com.stardust.util.IntentUtil;
 import com.stardust.widget.CommonMarkdownView;
@@ -32,16 +32,16 @@ public class UpdateInfoDialogBuilder extends MaterialDialog.Builder {
     private static final String KEY_DO_NOT_ASK_AGAIN_FOR_VERSION = "I cannot forget you...cannot help missing you...";
     private View mView;
     private SharedPreferences mSharedPreferences;
-    private UpdateChecker.UpdateInfo mUpdateInfo;
+    private VersionInfo mVersionInfo;
 
-    public UpdateInfoDialogBuilder(@NonNull Context context, UpdateChecker.UpdateInfo info) {
+    public UpdateInfoDialogBuilder(@NonNull Context context, VersionInfo info) {
         super(context);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         updateInfo(info);
     }
 
-    public UpdateInfoDialogBuilder updateInfo(UpdateChecker.UpdateInfo info) {
-        mUpdateInfo = info;
+    public UpdateInfoDialogBuilder updateInfo(VersionInfo info) {
+        mVersionInfo = info;
         mView = View.inflate(context, R.layout.dialog_update_info, null);
         setReleaseNotes(mView, info);
         setCurrentVersionIssues(mView, info);
@@ -57,7 +57,7 @@ public class UpdateInfoDialogBuilder extends MaterialDialog.Builder {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mSharedPreferences.edit().putBoolean(KEY_DO_NOT_ASK_AGAIN_FOR_VERSION + mUpdateInfo.versionCode, isChecked).apply();
+                mSharedPreferences.edit().putBoolean(KEY_DO_NOT_ASK_AGAIN_FOR_VERSION + mVersionInfo.versionCode, isChecked).apply();
             }
         });
         return this;
@@ -65,15 +65,15 @@ public class UpdateInfoDialogBuilder extends MaterialDialog.Builder {
 
     @Override
     public MaterialDialog show() {
-        if (mSharedPreferences.getBoolean(KEY_DO_NOT_ASK_AGAIN_FOR_VERSION + mUpdateInfo.versionCode, false)) {
+        if (mSharedPreferences.getBoolean(KEY_DO_NOT_ASK_AGAIN_FOR_VERSION + mVersionInfo.versionCode, false)) {
             return null;
         }
         return super.show();
     }
 
-    private void setCurrentVersionIssues(View view, UpdateChecker.UpdateInfo info) {
+    private void setCurrentVersionIssues(View view, VersionInfo info) {
         TextView issues = (TextView) view.findViewById(R.id.issues);
-        UpdateChecker.OldVersion currentVersion = info.getOldVersion(BuildConfig.VERSION_CODE);
+        VersionInfo.OldVersion currentVersion = info.getOldVersion(BuildConfig.VERSION_CODE);
         if (currentVersion == null) {
             issues.setVisibility(View.GONE);
         } else {
@@ -81,10 +81,10 @@ public class UpdateInfoDialogBuilder extends MaterialDialog.Builder {
         }
     }
 
-    private void setUpdateDownloadButtons(View view, UpdateChecker.UpdateInfo info) {
+    private void setUpdateDownloadButtons(View view, VersionInfo info) {
         LinearLayout downloads = (LinearLayout) view.findViewById(R.id.downloads);
         setDirectlyDownloadButton(downloads, info);
-        for (final UpdateChecker.Download download : info.downloads) {
+        for (final VersionInfo.Download download : info.downloads) {
             Button button = (Button) View.inflate(getContext(), R.layout.dialog_update_info_btn, null);
             button.setText(download.name);
             downloads.addView(button);
@@ -97,7 +97,7 @@ public class UpdateInfoDialogBuilder extends MaterialDialog.Builder {
         }
     }
 
-    private void setDirectlyDownloadButton(LinearLayout container, final UpdateChecker.UpdateInfo info) {
+    private void setDirectlyDownloadButton(LinearLayout container, final VersionInfo info) {
         if (TextUtils.isEmpty(info.downloadUrl)) {
             return;
         }
@@ -117,7 +117,7 @@ public class UpdateInfoDialogBuilder extends MaterialDialog.Builder {
                 .title(R.string.text_downloading)
                 .progress(false, 100)
                 .show();
-        final String path = StorageScriptProvider.DEFAULT_DIRECTORY_PATH + "AutoJs.apk";
+        final String path = StorageFileProvider.DEFAULT_DIRECTORY_PATH + "AutoJs.apk";
         final DownloadTask task = new DownloadTask() {
             @Override
             protected void onProgressUpdate(Integer... values) {
@@ -139,7 +139,7 @@ public class UpdateInfoDialogBuilder extends MaterialDialog.Builder {
         task.execute(downloadUrl, path);
     }
 
-    private void setReleaseNotes(View view, UpdateChecker.UpdateInfo info) {
+    private void setReleaseNotes(View view, VersionInfo info) {
         CommonMarkdownView markdownView = (CommonMarkdownView) view.findViewById(R.id.release_notes);
         markdownView.loadMarkdown(info.releaseNotes);
     }

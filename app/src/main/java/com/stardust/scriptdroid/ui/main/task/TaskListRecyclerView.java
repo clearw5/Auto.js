@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.ui.main.task;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ThemeColorRecyclerView;
@@ -8,27 +9,27 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.workground.WrapContentLinearLayoutManager;
 
 import com.stardust.autojs.ScriptEngineService;
-import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.script.AutoFileSource;
-import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.script.ScriptFile;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Stardust on 2017/3/24.
@@ -43,29 +44,6 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
 
         }
     };
-
-    private final OnClickListener mOnStopClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int position = getChildViewHolder((View) v.getParent()).getAdapterPosition();
-            if (position >= 0) {
-                final ScriptEngine engine = mScriptEngines.get(position);
-                engine.forceStop();
-
-                postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!engine.isDestroyed()) {
-                            onScriptANR(engine);
-                        }
-                    }
-                }, 3000);
-            } else {
-                updateEngineList();
-            }
-        }
-    };
-
 
     private final List<ScriptEngine> mScriptEngines = new ArrayList<>();
     private Adapter mAdapter;
@@ -106,7 +84,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
     private void init() {
         setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
         addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext())
-                .color(0xffd9d9d9)
+                .color(0xffEDEEEF)
                 .size(2)
                 .marginResId(R.dimen.script_and_folder_list_divider_left_margin, R.dimen.script_and_folder_list_divider_right_margin)
                 .showLastDivider()
@@ -186,7 +164,9 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.bind((ScriptSource) mScriptEngines.get(position).getTag(ScriptEngine.TAG_SOURCE));
+            ScriptEngine engine = mScriptEngines.get(position);
+            ScriptSource source = (ScriptSource) mScriptEngines.get(position).getTag(ScriptEngine.TAG_SOURCE);
+            holder.bind(source, engine);
         }
 
         @Override
@@ -195,30 +175,46 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
         }
     }
 
-    private class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView icon;
-        TextView name, detail;
-        View stop;
+        @BindView(R.id.first_char)
+        TextView mFirstChar;
+        @BindView(R.id.name)
+        TextView mName;
+        @BindView(R.id.desc)
+        TextView mDesc;
+
+        private ScriptEngine mScriptEngine;
+        private GradientDrawable mFirstCharBackground;
 
         ViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(mOnItemClickListenerProxy);
-            name = (TextView) itemView.findViewById(R.id.name);
-            detail = (TextView) itemView.findViewById(R.id.detail);
-            icon = (ImageView) itemView.findViewById(R.id.icon);
-            stop = itemView.findViewById(R.id.stop);
-            stop.setOnClickListener(mOnStopClickListener);
+            ButterKnife.bind(this, itemView);
+            mFirstCharBackground = (GradientDrawable) mFirstChar.getBackground();
         }
 
-        public void bind(ScriptSource source) {
+        public void bind(ScriptSource source, ScriptEngine engine) {
+            mScriptEngine = engine;
             if (source == null)
                 return;
-            name.setText(source.getName());
-            detail.setText(source.toString());
+            mName.setText(source.getName());
+            mDesc.setText(source.toString());
             //ignore android studio warning: use equals to compare string
-            icon.setImageResource(source.getEngineName() == AutoFileSource.ENGINE ? R.drawable.record_icon_18
-                    : R.drawable.ic_node_js_black);
+            if (source.getEngineName() == AutoFileSource.ENGINE) {
+                mFirstChar.setText("R");
+                mFirstCharBackground.setColor(getResources().getColor(R.color.color_r));
+            } else {
+                mFirstChar.setText("J");
+                mFirstCharBackground.setColor(getResources().getColor(R.color.color_j));
+            }
+        }
+
+        @OnClick(R.id.stop)
+        void stop() {
+            if (mScriptEngine != null) {
+                mScriptEngine.forceStop();
+            }
         }
     }
 

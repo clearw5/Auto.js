@@ -2,7 +2,8 @@ package com.stardust.scriptdroid.sublime;
 
 import com.google.gson.JsonObject;
 
-import java.io.IOException;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * Created by Stardust on 2017/5/11.
@@ -11,6 +12,7 @@ import java.io.IOException;
 public class SublimePluginService {
 
     private static SublimePluginClient client;
+    private static final PublishSubject<Boolean> CONNECTION_STATE = PublishSubject.create();
 
     public static boolean isConnected() {
         return client != null && client.isListening();
@@ -25,17 +27,21 @@ public class SublimePluginService {
     public static void disconnect() {
         try {
             client.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             client = null;
         }
     }
 
-    public static void connect(String host) {
-        client = new SublimePluginClient(host, 1209);
+    public static PublishSubject<Boolean> getConnectionState() {
+        return CONNECTION_STATE;
+    }
+
+    public static Observable<Void> connect(String host) {
+        client = new SublimePluginClient(host, 1209, CONNECTION_STATE);
         client.setResponseHandler(new SublimeResponseHandler());
-        client.listen();
+        return client.listen();
     }
 
     public static void log(String log) {
@@ -46,8 +52,9 @@ public class SublimePluginService {
         object.addProperty("log", log);
         try {
             client.send(object);
-        } catch (IllegalStateException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            disconnect();
         }
     }
 }

@@ -106,9 +106,9 @@ public class EditActivity extends Editor920Activity implements OnActivityResultD
     @ViewById(R.id.content_view)
     View mView;
     private String mName;
-    private File mFile;
-    private EditorDelegate mEditorDelegate;
     private SparseArray<ToolbarMenuItem> mMenuMap;
+    private EditorDelegate mEditorDelegate;
+    private File mFile;
     private boolean mReadOnly = false;
     private OnActivityResultDelegate.Mediator mActivityResultMediator = new OnActivityResultDelegate.Mediator();
     private BroadcastReceiver mOnRunFinishedReceiver = new BroadcastReceiver() {

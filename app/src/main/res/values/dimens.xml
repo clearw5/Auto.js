@@ -6,7 +6,7 @@
     <dimen name="level_beam_view_line_width">6dp</dimen>
     <dimen name="level_beam_view_line_offset">2dp</dimen>
     <dimen name="level_beam_view_padding_right">-4dp</dimen>
-    <dimen name="script_and_folder_list_divider_left_margin">56dp</dimen>
+    <dimen name="script_and_folder_list_divider_left_margin">0dp</dimen>
     <dimen name="script_and_folder_list_divider_right_margin">0dp</dimen>
     <dimen name="floating_icon_size">56dp</dimen>
     <dimen name="floating_icon_margin">0dp</dimen>

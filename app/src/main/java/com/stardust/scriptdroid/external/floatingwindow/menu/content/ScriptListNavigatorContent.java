@@ -15,11 +15,11 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.Scripts;
-import com.stardust.scriptdroid.script.StorageScriptProvider;
+import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
-import com.stardust.scriptdroid.ui.main.script_list.ScriptAndFolderListRecyclerView;
-import com.stardust.scriptdroid.ui.main.script_list.ScriptListWithProgressBarView;
+import com.stardust.scriptdroid.ui.main.scripts.ScriptListRecyclerView;
+import com.stardust.scriptdroid.ui.main.scripts.ScriptListWithProgressBarView;
 import com.stardust.widget.ViewHolderSupplier;
 
 import io.mattcarroll.hover.Navigator;
@@ -31,20 +31,20 @@ import io.mattcarroll.hover.NavigatorContent;
 
 public class ScriptListNavigatorContent implements NavigatorContent {
 
-    private ViewHolderSupplier<ScriptAndFolderListRecyclerView.ViewHolder> mViewHolderSupplier = new ViewHolderSupplier<ScriptAndFolderListRecyclerView.ViewHolder>() {
+    private ViewHolderSupplier<ScriptListRecyclerView.ViewHolder> mViewHolderSupplier = new ViewHolderSupplier<ScriptListRecyclerView.ViewHolder>() {
         @Override
-        public ScriptAndFolderListRecyclerView.ViewHolder createViewHolder(ViewGroup parent, int viewType) {
+        public ScriptListRecyclerView.ViewHolder createViewHolder(ViewGroup parent, int viewType) {
             switch (viewType) {
-                case ScriptAndFolderListRecyclerView.VIEW_TYPE_FILE:
+                case ScriptListRecyclerView.VIEW_TYPE_FILE:
                     return new FileViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.floating_script_list_recycler_view_file, parent, false));
-                case ScriptAndFolderListRecyclerView.VIEW_TYPE_DIRECTORY:
+                case ScriptListRecyclerView.VIEW_TYPE_DIRECTORY:
                     return new DirectoryViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.floating_script_list_recycler_view_directory, parent, false));
 
             }
             return null;
         }
     };
-    private ScriptAndFolderListRecyclerView mFloatingScriptFileListView;
+    private ScriptListRecyclerView mFloatingScriptFileListView;
     private ScriptListWithProgressBarView mScriptListWithProgressBarView;
 
     public ScriptListNavigatorContent(Context context) {
@@ -52,8 +52,8 @@ public class ScriptListNavigatorContent implements NavigatorContent {
         mFloatingScriptFileListView = mScriptListWithProgressBarView.getScriptAndFolderListRecyclerView();
         mFloatingScriptFileListView.setViewHolderSupplier(mViewHolderSupplier);
         mFloatingScriptFileListView.setLayoutManager(new WrapContentLinearLayoutManager(context));
-        mFloatingScriptFileListView.setStorageScriptProvider(StorageScriptProvider.getDefault());
-        mFloatingScriptFileListView.setOnItemClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileClickListener() {
+        mFloatingScriptFileListView.setStorageFileProvider(StorageFileProvider.getDefault());
+        mFloatingScriptFileListView.setOnItemClickListener(new ScriptListRecyclerView.OnScriptFileClickListener() {
 
             @Override
             public void onClick(ScriptFile file, int position) {
@@ -80,7 +80,7 @@ public class ScriptListNavigatorContent implements NavigatorContent {
 
     }
 
-    private class DirectoryViewHolder extends ScriptAndFolderListRecyclerView.ViewHolder {
+    private class DirectoryViewHolder extends ScriptListRecyclerView.ViewHolder {
 
         DirectoryViewHolder(View itemView) {
             super(itemView);

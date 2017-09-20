@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:widgetLayout="@layout/preference_custom">
 
-    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_script_record">
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory
+        android:layout="@layout/preference_category_custom"
+        android:title="@string/text_script_record"
+        android:widgetLayout="@layout/preference_custom">
+
 
         <com.stardust.theme.preference.ThemeColorSwitchPreference
             android:defaultValue="false"
             android:key="@string/key_use_volume_control_record"
+            android:layout="@layout/preference_custom"
             android:summary="@string/summary_use_volume_control_record"
             android:title="@string/text_use_volume_control_record"/>
 
         <com.stardust.theme.preference.ThemeColorSwitchPreference
             android:defaultValue="false"
             android:key="@string/key_record_with_root"
+            android:layout="@layout/preference_custom"
             android:title="@string/text_record_with_root"/>
 
         <com.stardust.theme.preference.ThemeColorSwitchPreference
             android:defaultValue="true"
             android:key="@string/key_record_toast"
+            android:layout="@layout/preference_custom"
             android:title="@string/text_record_msg"/>
 
         <com.afollestad.materialdialogs.prefs.MaterialListPreference
@@ -24,76 +32,119 @@
             android:entries="@array/root_record_out_file_type_keys"
             android:entryValues="@array/root_record_out_file_type_values"
             android:key="@string/key_root_record_out_file_type"
+            android:layout="@layout/preference_custom"
             android:title="@string/text_root_record_out_file_type"
             />
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
-    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_script_running">
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory
+        android:layout="@layout/preference_category_custom"
+        android:title="@string/text_script_running">
 
         <com.stardust.theme.preference.ThemeColorSwitchPreference
             android:defaultValue="false"
             android:key="@string/key_use_volume_control_running"
+            android:layout="@layout/preference_custom"
             android:title="@string/text_use_volume_to_stop_running"/>
 
         <com.stardust.theme.preference.ThemeColorSwitchPreference
             android:defaultValue="false"
             android:key="@string/key_guard_mode"
+            android:layout="@layout/preference_custom"
             android:summary="@string/summary_guard_mode"
             android:title="@string/text_guard_mode"/>
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
-    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_edit">
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory
+        android:layout="@layout/preference_category_custom"
+        android:title="@string/text_edit">
 
         <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
             android:defaultValue="2000"
             android:inputType="number"
             android:key="@string/key_max_length_for_code_completion"
+            android:layout="@layout/preference_custom"
             android:title="@string/text_max_length_for_code_completion"/>
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
-    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_accessibility_service">
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory
+        android:layout="@layout/preference_category_custom"
+        android:title="@string/text_accessibility_service">
 
         <com.stardust.theme.preference.ThemeColorSwitchPreference
             android:defaultValue="false"
             android:key="@string/key_enable_accessibility_service_by_root"
+            android:layout="@layout/preference_custom"
             android:summary="@string/summary_enable_accessibility_service_by_root"
             android:title="@string/text_enable_accessibility_service_by_root"/>
 
         <com.stardust.theme.preference.ThemeColorSwitchPreference
             android:defaultValue="false"
             android:key="@string/key_stable_mode"
+            android:layout="@layout/preference_custom"
             android:summary="@string/summary_stable_mode"
             android:title="@string/text_stable_mode"/>
 
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
-    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_appearance">
-        <Preference android:title="@string/text_theme_color"/>
-        <Preference android:title="@string/text_reset_background"/>
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory
+        android:layout="@layout/preference_category_custom"
+        android:title="@string/text_appearance">
+        <Preference
+            android:layout="@layout/preference_custom"
+            android:title="@string/text_theme_color"
+            />
+        <Preference
+            android:layout="@layout/preference_custom"
+            android:title="@string/text_reset_background"
+            />
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
-    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_ad">
-        <Preference android:title="@string/show_ad"/>
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory
+        android:layout="@layout/preference_category_custom"
+        android:title="@string/text_ad">
+        <Preference
+            android:layout="@layout/preference_custom"
+            android:title="@string/show_ad"
+            />
         <com.afollestad.materialdialogs.prefs.MaterialListPreference
             android:defaultValue="@string/text_default"
             android:entries="@array/ad_showing_mode_keys"
             android:entryValues="@array/ad_showing_mode_values"
             android:key="@string/key_ad_showing_mode"
+            android:layout="@layout/preference_custom"
             android:title="@string/text_ad_showing_settings"
             />
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
-    <com.stardust.theme.preference.ThemeColorPreferenceCategory android:title="@string/text_about">
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory
+        android:layout="@layout/preference_category_custom"
+        android:title="@string/text_about">
 
-        <Preference android:title="@string/text_check_update"/>
+        <Preference
+            android:layout="@layout/preference_custom"
+            android:title="@string/text_check_for_updates"
+            />
 
-        <Preference android:title="@string/text_join_qq_group"/>
+        <Preference
+            android:layout="@layout/preference_custom"
+            android:title="@string/text_join_qq_group"
+            />
 
-        <Preference android:title="@string/text_issue_report"/>
+        <Preference
+            android:layout="@layout/preference_custom"
+            android:title="@string/text_issue_report"
+            />
 
-        <Preference android:title="@string/text_about_me_and_repo"/>
+        <Preference
+            android:layout="@layout/preference_custom"
+            android:title="@string/text_about_me_and_repo"
+            />
 
-        <Preference android:title="@string/text_licenses"/>
+        <Preference
+            android:layout="@layout/preference_custom"
+            android:title="@string/text_licenses"
+            />
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
 </PreferenceScreen>

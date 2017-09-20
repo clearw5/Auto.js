@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:icon="@drawable/ic_settings"
+        android:title="@string/text_setting"/>
+
+    <item
+        android:icon="@drawable/ic_debug"
+        android:actionLayout="@layout/about_activity"
+        android:title="@string/debug"/>
+
+    <item
+        android:icon="@drawable/ic_service_green"
+        android:title="@string/text_accessibility_service"/>
+</menu>
