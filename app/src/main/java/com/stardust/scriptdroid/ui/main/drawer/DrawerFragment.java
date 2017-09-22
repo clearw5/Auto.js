@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -14,9 +16,14 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
 import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
+import com.stardust.scriptdroid.network.NodeBB;
 import com.stardust.scriptdroid.network.VersionService;
+import com.stardust.scriptdroid.network.api.UserApi;
+import com.stardust.scriptdroid.network.entity.User;
 import com.stardust.scriptdroid.network.entity.VersionInfo;
 import com.stardust.scriptdroid.tool.SimpleObserver;
+import com.stardust.scriptdroid.ui.login.LoginActivity;
+import com.stardust.scriptdroid.ui.login.LoginActivity_;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity;
 import com.stardust.scriptdroid.ui.update.UpdateInfoDialogBuilder;
 import com.stardust.theme.ThemeColorManager;
@@ -64,6 +71,12 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     @ViewById(R.id.header)
     View mHeaderView;
 
+    @ViewById(R.id.username)
+    TextView mUserName;
+
+    @ViewById(R.id.avatar)
+    ImageView mAvatar;
+
 
     private Disposable mConnectionStateDisposable;
 
@@ -88,10 +101,45 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         syncSwitchState();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        syncUserInfo();
+    }
+
     @AfterViews
     void setUpViews() {
         ThemeColorManager.addViewBackground(mHeaderView);
     }
+
+    private void syncUserInfo() {
+        NodeBB.getInstance().getRetrofit()
+                .create(UserApi.class)
+                .me()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleObserver<User>() {
+                    @Override
+                    public void onNext(@io.reactivex.annotations.NonNull User user) {
+                        setUpUserInfo(user);
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    private void setUpUserInfo(User user) {
+        mUserName.setText(user.getUsername());
+    }
+
+    @Click(R.id.avatar)
+    void loginOrShowUserInfo() {
+        LoginActivity_.intent(getActivity()).start();
+    }
+
 
     @Click(R.id.accessibility_service)
     void enableOrDisableAccessibilityService() {
@@ -173,13 +221,14 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 .onNeutral(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        mConnectionItem.getSwitchCompat().setChecked(false, false);
                         IntentUtil.browse(getActivity(), URL_SUBLIME_PLUGIN_HELP);
                     }
                 })
                 .cancelListener(new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
-                        mConnectionItem.getSwitchCompat().toggle(false);
+                        mConnectionItem.getSwitchCompat().setChecked(false, false);
                     }
                 })
                 .show();

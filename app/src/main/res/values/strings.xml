@@ -243,6 +243,12 @@
     <string name="text_choose_file">选择文件</string>
     <string name="text_click_too_frequently">您的操作太快啦ヽ(#`Д´)ﾉ</string>
     <string name="text_connecting">连接中…</string>
+    <string name="text_username">用户名</string>
+    <string name="text_password">密码</string>
+    <string name="text_login">登录</string>
+    <string name="text_forgot_password">忘记密码</string>
+    <string name="text_username_cannot_be_empty">用户名不能为空</string>
+    <string name="text_password_cannot_be_empty">密码不能为空</string>
 
 
     <string-array name="record_control_keys">

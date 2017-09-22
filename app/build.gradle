@@ -9,8 +9,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 200
-        versionName "3.0.0 Alpha1"
+        versionCode 201
+        versionName "3.0.0 Alpha2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -132,6 +132,8 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
+    //Picasso
+    compile 'com.squareup.picasso:picasso:2.5.2'
     // Tasker Plugin
     compile 'com.twofortyfouram:android-plugin-client-sdk-for-locale:[4.0.2, 5.0['
     compile 'com.flurry.android:analytics:7.0.0@aar'

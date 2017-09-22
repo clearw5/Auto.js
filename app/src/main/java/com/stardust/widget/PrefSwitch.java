@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.preference.PreferenceManager;
+import android.support.annotation.IntDef;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.stardust.scriptdroid.R;
 
@@ -16,6 +18,7 @@ public class PrefSwitch extends SwitchCompat implements SharedPreferences.OnShar
 
     private String mPrefKey;
     private SharedPreferences mSharedPreferences;
+    private boolean mDefaultChecked;
 
     public PrefSwitch(Context context) {
         super(context);
@@ -37,15 +40,21 @@ public class PrefSwitch extends SwitchCompat implements SharedPreferences.OnShar
             return;
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.PrefSwitch);
         mPrefKey = a.getString(R.styleable.PrefSwitch_key);
-        boolean defaultValue = a.getBoolean(R.styleable.PrefSwitch_defaultValue, false);
+        mDefaultChecked = a.getBoolean(R.styleable.PrefSwitch_defaultValue, false);
         if (mPrefKey != null) {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
             mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
-            setChecked(mSharedPreferences.getBoolean(mPrefKey, defaultValue), false);
+            readInitialState();
         } else {
-            setChecked(defaultValue, false);
+            setChecked(mDefaultChecked, false);
         }
         a.recycle();
+    }
+
+    private void readInitialState() {
+        if (mPrefKey == null || mSharedPreferences == null)
+            return;
+        setChecked(mSharedPreferences.getBoolean(mPrefKey, mDefaultChecked), false);
     }
 
     private void notifyPrefChanged(boolean isChecked) {
@@ -81,6 +90,13 @@ public class PrefSwitch extends SwitchCompat implements SharedPreferences.OnShar
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (mPrefKey != null && mPrefKey.equals(key)) {
             setChecked(mSharedPreferences.getBoolean(mPrefKey, isChecked()), false);
+        }
+    }
+
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        if (visibility == VISIBLE) {
+            readInitialState();
         }
     }
 }

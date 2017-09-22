@@ -3,6 +3,7 @@ package com.stardust.auojs.inrt;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.stardust.auojs.inrt.rt.AutoJs;
 import com.stardust.autojs.script.StringScriptSource;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
             is.read(data);
             String js = new String(data);
             StringScriptSource source = new StringScriptSource("<script>", js);
-            //AutoJs.getInstance().getScriptEngineService().execute(source);
+            AutoJs.getInstance().getScriptEngineService().execute(source);
         } catch (IOException e) {
             e.printStackTrace();
         }
