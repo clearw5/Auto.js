@@ -2,4 +2,5 @@
     <string name="app_name">inrt</string>
     <string name="text_no_accessibility_permission">无障碍服务未启动</string>
     <string name="text_auto_operate_service_enabled_but_not_running">无障碍服务已启用但没有运行，您可以尝试重新启用或重启手机</string>
+    <string name="text_enable_accessibility_service_by_root_timeout">使用root权限启用无障碍服务失败</string>
 </resources>

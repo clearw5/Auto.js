@@ -82,6 +82,7 @@
         <activity android:name=".ui.help.LocalWebViewActivity"/>
         <activity android:name=".external.tasker.TaskerScriptEditActivity_"/>
         <activity android:name=".ui.edit.ViewSampleActivity"/>
+        <activity android:name=".ui.login.LoginActivity_"/>
         <activity android:name=".external.widget.ScriptWidgetSettingsActivity_">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>

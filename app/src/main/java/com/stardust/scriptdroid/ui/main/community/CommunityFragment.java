@@ -1,12 +1,7 @@
 package com.stardust.scriptdroid.ui.main.community;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
-import android.view.View;
 import android.webkit.WebView;
 
 import com.stardust.scriptdroid.R;
@@ -18,12 +13,16 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.regex.Pattern;
+
 /**
  * Created by Stardust on 2017/8/22.
  */
 @EFragment(R.layout.fragment_community)
 public class CommunityFragment extends ViewPagerFragment implements BackPressedHandler {
 
+
+    private static final String POSTS_PAGE_PATTERN = "[\\S\\s]+/topic/[0-9]+/[\\S\\s]+";
 
     @ViewById(R.id.eweb_view)
     EWebView mEWebView;
@@ -67,6 +66,15 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
 
     @Override
     protected void onFabClick(FloatingActionButton fab) {
+        if (isInPostsPage()) {
+            mWebView.loadUrl("javascript:$('button[component=\"topic/reply\"]').click()");
+        } else {
+            mWebView.loadUrl("javascript:$('.new_topic').click()");
+        }
+    }
 
+    private boolean isInPostsPage() {
+        String url = mWebView.getUrl();
+        return url.matches(POSTS_PAGE_PATTERN);
     }
 }

@@ -2,8 +2,11 @@ package com.stardust.auojs.inrt.rt;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
+import android.content.Intent;
+import android.provider.Settings;
 import android.text.TextUtils;
 
+import com.stardust.auojs.inrt.App;
 import com.stardust.autojs.runtime.api.ProcessShell;
 
 import java.util.Locale;
@@ -34,6 +37,10 @@ public class AccessibilityServiceTool {
             com.stardust.view.accessibility.AccessibilityService.waitForEnabled(timeOut);
         }
         return true;
+    }
+
+    public static void goToAccessibilitySetting() {
+        App.getApp().startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
 }
