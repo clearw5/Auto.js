@@ -18,6 +18,7 @@ import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.lang.ThreadCompat;
+import com.stardust.util.TextUtils;
 import com.stardust.util.UiHandler;
 
 import org.greenrobot.eventbus.EventBus;
@@ -248,7 +249,7 @@ public class ScriptEngineService {
             writer.close();
             BufferedReader bufferedReader = new BufferedReader(reader);
             String line;
-            StringBuilder scriptTrace = new StringBuilder(e.getMessage());
+            StringBuilder scriptTrace = new StringBuilder(TextUtils.toEmptyIfNull(e.getMessage()));
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.trim().startsWith("at script"))
                     scriptTrace.append("\n").append(line);
