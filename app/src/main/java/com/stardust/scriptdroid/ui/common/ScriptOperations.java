@@ -55,7 +55,7 @@ public class ScriptOperations {
     }
 
     public ScriptOperations(Context context, View view) {
-        this(context, view, MyScriptListFragment.getCurrentDirectory());
+        this(context, view, StorageFileProvider.DEFAULT_DIRECTORY);
     }
 
     public void newScriptFileForScript(final String script) {

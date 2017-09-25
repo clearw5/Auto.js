@@ -31,6 +31,7 @@
             android:layout_marginTop="@dimen/air_baseline"
             android:checked="true"
             android:paddingLeft="16dp"
+            android:button="@null"
             android:text="@string/text_file"
             android:textSize="16sp"/>
 

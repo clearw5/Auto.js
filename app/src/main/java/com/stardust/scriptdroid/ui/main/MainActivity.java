@@ -154,17 +154,23 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
             public void OnInstantiate(int pos, Fragment fragment) {
                 ((ViewPagerFragment) fragment).setFab(mFab);
                 if (pos == mViewPager.getCurrentItem()) {
-                    ((ViewPagerFragment) fragment).onPageSelected();
+                    ((ViewPagerFragment) fragment).onPageShow();
                 }
             }
         });
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            private ViewPagerFragment mPreviousFragment;
+
             @Override
             public void onPageSelected(int position) {
                 Fragment fragment = mPagerAdapter.getStoredFragment(position);
                 if (fragment == null)
                     return;
-                ((ViewPagerFragment) fragment).onPageSelected();
+                if (mPreviousFragment != null) {
+                    mPreviousFragment.onPageHide();
+                }
+                mPreviousFragment = (ViewPagerFragment) fragment;
+                mPreviousFragment.onPageShow();
             }
         });
     }

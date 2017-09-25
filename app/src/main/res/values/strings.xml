@@ -236,7 +236,7 @@
     <string name="not_login">未登录</string>
     <string name="text_volume_down_control">音量下键控制</string>
     <string name="text_others">其他</string>
-    <string name="text_import">导入…</string>
+    <string name="text_import">导入</string>
     <string name="text_auto_mode">auto模式</string>
     <string name="text_ui_mode">ui模式</string>
     <string name="text_new">新建</string>

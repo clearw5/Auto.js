@@ -244,6 +244,9 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
 
                     @Override
                     public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        if(isHidden()){
+                            return;
+                        }
                         Toast.makeText(App.getApp(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         mConnectionItem.getSwitchCompat().setChecked(false, false);
                         mConnectionItem.setProgress(false);
