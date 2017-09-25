@@ -125,7 +125,8 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
     @Override
     public void onDetach() {
         super.onDetach();
-        mFloatingActionMenu.setOnFloatingActionButtonClickListener(null);
+        if (mFloatingActionMenu != null)
+            mFloatingActionMenu.setOnFloatingActionButtonClickListener(null);
     }
 
     @Override

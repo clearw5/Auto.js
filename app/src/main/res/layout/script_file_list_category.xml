@@ -35,6 +35,7 @@
 
 
     <ImageView
+        android:id="@+id/order"
         android:layout_width="32dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
@@ -45,6 +46,7 @@
         android:tint="#828384"/>
 
     <ImageView
+        android:id="@+id/sort"
         android:layout_width="32dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"

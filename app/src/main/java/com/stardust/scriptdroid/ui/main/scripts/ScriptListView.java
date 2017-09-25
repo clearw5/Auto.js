@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -316,6 +317,9 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         @BindView(R.id.title)
         TextView mTitle;
 
+        @BindView(R.id.sort)
+        ImageView mSort;
+
         CategoryViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -326,5 +330,17 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
             mTitle.setText(isDirCategory ? R.string.text_directory : R.string.text_file);
         }
 
+        @OnClick(R.id.order)
+        void changeSortOrder() {
+
+        }
+
+        @OnClick(R.id.sort)
+        void showSortOptions() {
+            PopupMenu popupMenu = new PopupMenu(getContext(), mSort);
+            popupMenu.inflate(R.menu.menu_sort_options);
+            popupMenu.setOnMenuItemClickListener(ScriptListView.this);
+            popupMenu.show();
+        }
     }
 }

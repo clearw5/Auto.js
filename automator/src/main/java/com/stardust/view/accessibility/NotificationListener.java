@@ -34,10 +34,12 @@ public interface NotificationListener {
         }
 
         public NotificationInfo(CharSequence packageName, List<CharSequence> list) {
-            mPackageName = packageName.toString();
+            mPackageName = packageName == null ? "" : packageName.toString();
             mTexts = new ArrayList<>(list.size());
             for (CharSequence text : list) {
-                mTexts.add(text.toString());
+                if (text != null) {
+                    mTexts.add(text.toString());
+                }
             }
             if (mTexts.size() > 0) {
                 mText = mTexts.get(0);

@@ -249,6 +249,9 @@
     <string name="text_forgot_password">忘记密码</string>
     <string name="text_username_cannot_be_empty">用户名不能为空</string>
     <string name="text_password_cannot_be_empty">密码不能为空</string>
+    <string name="text_time">时间</string>
+    <string name="text_size">大小</string>
+    <string name="text_type">类型</string>
 
 
     <string-array name="record_control_keys">

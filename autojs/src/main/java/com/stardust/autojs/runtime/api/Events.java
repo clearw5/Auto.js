@@ -213,10 +213,11 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
 
     @Override
     public void onNotification(final AccessibilityEvent event, final Notification notification) {
+        final NotificationInfo info = NotificationInfo.fromEvent(event);
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                emit("notification", NotificationInfo.fromEvent(event), notification);
+                emit("notification", info, notification);
             }
         });
 
