@@ -25,6 +25,8 @@ import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.widget.BindableViewHolder;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -51,6 +53,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
     private ScriptFile mCurrentDirectory;
     private OnScriptFileClickListener mOnScriptFileClickListener;
     private ScriptFile mSelectedScriptFile;
+    private StorageFileProvider mStorageFileProvider;
 
     public ScriptListView(Context context) {
         super(context);
@@ -80,7 +83,9 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         mScriptListView = new RecyclerView(getContext());
         addView(mScriptListView);
         initScriptListRecyclerView();
-        setCurrentDirectory(StorageFileProvider.getDefault().getInitialDirectory());
+        mStorageFileProvider = StorageFileProvider.getDefault();
+        setCurrentDirectory(mStorageFileProvider.getInitialDirectory());
+        mStorageFileProvider.registerDirectoryChangeListener(this);
     }
 
     private void initScriptListRecyclerView() {
@@ -104,7 +109,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
     private void loadScriptList() {
         mScriptFiles.clear();
         mDirectories.clear();
-        StorageFileProvider.getDefault().getDirectoryScriptFiles(mCurrentDirectory)
+        mStorageFileProvider.getDirectoryScriptFiles(mCurrentDirectory)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SimpleObserver<ScriptFile>() {
@@ -124,6 +129,13 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
                         setRefreshing(false);
                     }
                 });
+    }
+
+    @Subscribe
+    void onDirectoryChange(StorageFileProvider.DirectoryChangeEvent event) {
+        if (event.directory.equals(mCurrentDirectory)) {
+            loadScriptList();
+        }
     }
 
     @Override
@@ -158,6 +170,12 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
                 return false;
         }
         return true;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mStorageFileProvider.unregisterDirectoryChangeListener(this);
     }
 
     private class ScriptListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
