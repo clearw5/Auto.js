@@ -21,6 +21,7 @@ import com.google.gson.JsonParser;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.tool.GsonUtils;
+import com.stardust.util.ClipboardUtil;
 import com.stardust.util.UnderuseExecutors;
 
 import java.io.IOException;
@@ -36,8 +37,38 @@ import java.util.Map;
  */
 
 // TODO: 2017/7/21 refactor
-public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletion.OnCodeCompletionChangeListener {
+public class InputMethodEnhanceBar extends RecyclerView {
 
+    public interface OnHintClickListener {
+        void onHintClick(CodeCompletions completions, int pos);
+    }
+
+    private CodeCompletions mCodeCompletions;
+    private OnHintClickListener mOnHintClickListener;
+    private final OnClickListener mOnCodeCompletionItemClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int position = getChildViewHolder(v).getAdapterPosition();
+            if (position >= 0 && position < mCodeCompletions.getHints().size()) {
+                if (mOnHintClickListener != null) {
+                    mOnHintClickListener.onHintClick(mCodeCompletions, position);
+                }
+            }
+
+        }
+    };
+
+    private final OnLongClickListener mOnCodeCompletionItemLongClickListener = new OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            int position = getChildViewHolder(v).getAdapterPosition();
+            if (position < 0 || position >= mCodeCompletions.getHints().size())
+                return false;
+            ClipboardUtil.setClip(getContext(), mCodeCompletions.getHints().get(position));
+            Toast.makeText(getContext(), R.string.text_copied, Toast.LENGTH_SHORT).show();
+            return true;
+        }
+    };
 
     public InputMethodEnhanceBar(Context context) {
         super(context);
@@ -54,73 +85,19 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
         init();
     }
 
-    @Override
-    public void OnCodeCompletionChange(@NonNull Collection<CodeCompletion.CodeCompletionItem> list1, @NonNull Collection<CodeCompletion.CodeCompletionItem> list2) {
-        mCodeCompletionList.clear();
-        mCodeCompletionList.addAll(list1);
-        mCodeCompletionList.addAll(list2);
+    public void setOnHintClickListener(OnHintClickListener onHintClickListener) {
+        mOnHintClickListener = onHintClickListener;
+    }
+
+    public void setCodeCompletions(CodeCompletions codeCompletions) {
+        mCodeCompletions = codeCompletions;
         getAdapter().notifyDataSetChanged();
     }
-
-    public interface EditTextBridge {
-        void appendText(CharSequence text);
-
-        void backspace(int count);
-
-        com.jecelyin.editor.v2.core.widget.TextView getEditText();
-    }
-
-    private static List<String> global;
-    private static Map<String, List<String>> variables = new HashMap<>();
-
-    EditTextBridge mEditTextBridge;
-    private CodeCompletion mCodeCompletion = new CodeCompletion(this);
-    private List<CodeCompletion.CodeCompletionItem> mCodeCompletionList = new ArrayList<>();
-    private final OnClickListener mOnCodeCompletionItemClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int position = getChildViewHolder(v).getAdapterPosition();
-            if (position >= 0 && position < mCodeCompletionList.size())
-                mEditTextBridge.appendText(mCodeCompletionList.get(position).getAppendText());
-        }
-    };
-
-    private final OnLongClickListener mOnCodeCompletionItemLongClickListener = new OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View v) {
-            int position = getChildViewHolder(v).getAdapterPosition();
-            if (position < 0 || position >= mCodeCompletionList.size())
-                return false;
-            ((ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("", mCodeCompletionList.get(position).getDisplayText()));
-            Toast.makeText(getContext(), R.string.text_copied, Toast.LENGTH_SHORT).show();
-            return true;
-        }
-    };
 
     private void init() {
         setAdapter(new CodeCompletionAdapter());
         setLayoutManager(new WrapContentLinearLayoutManager(getContext(), HORIZONTAL, false));
-        if (global == null) {
-            UnderuseExecutors.execute(new Runnable() {
-                @Override
-                public void run() {
-                    readCompletions(getContext(), "js/functions.json");
-                    mCodeCompletion.setGlobal(global);
-                    mCodeCompletion.setVariableProperties(variables);
-                }
-            });
-        }else {
-            mCodeCompletion.setGlobal(global);
-            mCodeCompletion.setVariableProperties(variables);
-        }
-
     }
-
-    public void setEditTextBridge(EditTextBridge editTextBridge) {
-        mEditTextBridge = editTextBridge;
-        mCodeCompletion.setEditText(mEditTextBridge.getEditText());
-    }
-
 
     private class CodeCompletionAdapter extends RecyclerView.Adapter<ViewHolder> {
 
@@ -131,12 +108,12 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            ((TextView) holder.itemView).setText(mCodeCompletionList.get(position).getDisplayText());
+            ((TextView) holder.itemView).setText(mCodeCompletions.getHints().get(position));
         }
 
         @Override
         public int getItemCount() {
-            return mCodeCompletionList.size();
+            return mCodeCompletions == null ? 0 : mCodeCompletions.getHints().size();
         }
     }
 
@@ -153,7 +130,7 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
         try {
             JsonParser parser = new JsonParser();
             JsonObject object = parser.parse(new InputStreamReader(context.getAssets().open(path))).getAsJsonObject();
-            InputMethodEnhanceBar.global = readGlobal(object.remove("global").getAsJsonObject());
+            //InputMethodEnhanceBar.global = readGlobal(object.remove("global").getAsJsonObject());
             readModules(object);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -162,7 +139,7 @@ public class InputMethodEnhanceBar extends RecyclerView implements CodeCompletio
 
     private static void readModules(JsonObject object) {
         for (Map.Entry<String, JsonElement> module : object.entrySet()) {
-            variables.put(module.getKey(), GsonUtils.toStringList(module.getValue()));
+            //variables.put(module.getKey(), GsonUtils.toStringList(module.getValue()));
         }
     }
 

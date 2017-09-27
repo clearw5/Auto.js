@@ -9,8 +9,8 @@ import android.widget.CompoundButton;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.R;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.util.HashUtils;
 
-import static com.jecelyin.common.utils.StringUtils.md5;
 
 /**
  * Created by Stardust on 2017/1/30.
@@ -64,7 +64,7 @@ public class NotAskAgainDialog extends MaterialDialog {
 
         private void generatePreferenceKeyIfNeeded() {
             if (mKeyRemind == null)
-                mKeyRemind = md5(TextUtils.join("", Thread.currentThread().getStackTrace()));
+                mKeyRemind = HashUtils.md5(TextUtils.join("", Thread.currentThread().getStackTrace()));
         }
     }
 }

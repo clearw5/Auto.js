@@ -1,0 +1,52 @@
+<html>
+<link href="codemirror/lib/codemirror.css" rel="stylesheet" type="text/css">
+<link href="codemirror/theme/monokai.css" rel="stylesheet" type="text/css">
+<link href="codemirror/addon/display/fullscreen.css" rel="stylesheet" type="text/css">
+
+<!-- 引入CodeMirror核心文件 -->
+<script type="text/javascript" src="codemirror/lib/codemirror.js"></script>
+
+<!-- 主题 -->
+<link rel="stylesheet" href="codemirror/theme/neo.css">
+
+<!-- CodeMirror支持不同语言，根据需要引入JS文件 -->
+<!-- 因为HTML混合语言依赖Javascript、XML、CSS语言支持，所以都要引入 -->
+<script type="text/javascript" src="codemirror/mode/javascript/javascript.js"></script>
+<script type="text/javascript" src="codemirror/mode/xml/xml.js"></script>
+
+<!-- 下面分别为显示行数、括号匹配和全屏插件 -->
+<script type="text/javascript" src="codemirror/addon/selection/active-line.js"></script>
+<script type="text/javascript" src="codemirror/addon/edit/matchbrackets.js"></script>
+<script type="text/javascript" src="codemirror/addon/display/fullscreen.js"></script>
+
+<!-- 代码补全 -->
+<link rel="stylesheet" href="codemirror/addon/hint/show-hint.css">
+<script src="codemirror/addon/hint/javascript-hint.js"></script>
+<script src="codemirror/addon/hint/show-hint.js"></script>
+
+<!-- 代码格式化 -->
+<script type="text/javascript" src="beautify/beautify.min.js"></script>
+
+<head>
+<title>CodeMirrorEditor</title>
+</head>
+<body>
+<textarea id="code"></textarea>
+</body>
+<script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,     // 显示行数
+        indentUnit: 4,         // 缩进单位为4
+        styleActiveLine: true, // 当前行背景高亮
+        matchBrackets: true,   // 括号匹配
+        mode: 'javascript',     // HMTL混合模式
+        lineWrapping: false,    // 自动换行
+        theme: 'neo'      // 使用neo模版
+    });
+    editor.setOption("fullScreen", true);
+    editor.setOption("hintOptions", {completeSingle: false});
+    editor.on("keyup", function(cm, e) {
+        editor.execCommand("autocomplete")
+    })
+</script>
+</html>

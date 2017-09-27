@@ -64,6 +64,25 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_edit"/>
+
+    <com.stardust.scriptdroid.ui.edit.CodeMirrorEditor
+        android:id="@+id/editor"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@null"
+        android:bufferType="spannable"
+        android:cursorVisible="true"
+        android:gravity="top|start"
+        android:text=""
+        android:textCursorDrawable="@null"
+        android:textIsSelectable="true"/>
+
+    <com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhanceBar
+        android:id="@+id/input_method_enhance_bar"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="#e7ebec"/>
+
 
 </LinearLayout>

@@ -27,9 +27,9 @@
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/action_help"
+        android:id="@+id/action_editor_theme"
         android:orderInCategory="300"
-        android:title="@string/text_help"
+        android:title="@string/text_editor_theme"
         app:showAsAction="never"/>
 
     <item

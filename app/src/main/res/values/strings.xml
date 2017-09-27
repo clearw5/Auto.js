@@ -252,6 +252,8 @@
     <string name="text_time">时间</string>
     <string name="text_size">大小</string>
     <string name="text_type">类型</string>
+    <string name="text_donate">捐赠</string>
+    <string name="text_editor_theme">编辑器主题</string>
 
 
     <string-array name="record_control_keys">

@@ -73,7 +73,7 @@ public class AboutActivity extends BaseActivity {
     @Click(R.id.donate)
     void showDonateMeDialog() {
         new ThemeColorMaterialDialogBuilder(this)
-                .title(R.string.donate)
+                .title(R.string.text_donate)
                 .items("支付宝")
                 .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
