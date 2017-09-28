@@ -109,7 +109,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
     @Override
     public boolean onBackPressed(Activity activity) {
         if (mFloatingActionMenu != null && mFloatingActionMenu.isExpanded()) {
-            mFloatingActionMenu.expand();
+            mFloatingActionMenu.collapse();
             return true;
         }
         return false;

@@ -48,7 +48,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.activity_main)
-public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost {
+public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, BackPressedHandler.HostActivity {
 
     private static final String LOG_TAG = "MainActivity";
 
@@ -64,6 +64,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private FragmentPagerAdapterBuilder.StoredFragmentPagerAdapter mPagerAdapter;
     private OnActivityResultDelegate.Mediator mActivityResultMediator = new OnActivityResultDelegate.Mediator();
     private VersionGuard mVersionGuard;
+    private BackPressedHandler.Observer mBackPressObserver = new BackPressedHandler.Observer();
 
 
     @Override
@@ -99,8 +100,8 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
 
     private void registerBackPressHandlers() {
-        registerBackPressedHandler(new DrawerAutoClose(mDrawerLayout, Gravity.START));
-        registerBackPressedHandler(new BackPressedHandler.DoublePressExit(this, R.string.text_press_again_to_exit));
+        mBackPressObserver.registerHandler(new DrawerAutoClose(mDrawerLayout, Gravity.START));
+        mBackPressObserver.registerHandler(new BackPressedHandler.DoublePressExit(this, R.string.text_press_again_to_exit));
     }
 
     private void checkPermissions() {
@@ -226,6 +227,19 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     @Override
     public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
         return mActivityResultMediator;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (!mBackPressObserver.onBackPressed(this)) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public BackPressedHandler.Observer getBackPressedObserver() {
+        return mBackPressObserver;
     }
 
 }

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.BaseActivity;
+import com.stardust.scriptdroid.ui.edit.EditorView;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.widget.ToolbarMenuItem;
 
@@ -16,59 +17,50 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+
+import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_CONTENT;
+import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_NAME;
+import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_RUN_ENABLED;
+import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_SAVE_ENABLED;
+
 /**
  * Created by Stardust on 2017/4/5.
  */
 @EActivity(R.layout.activity_tasker_script_edit)
-public class TaskerScriptEditActivity extends AppCompatActivity {
+public class TaskerScriptEditActivity extends BaseActivity {
 
     public static final int REQUEST_CODE = "Love you. Can we go back?".hashCode() >> 16;
-    public static final String EXTRA_CONTENT = "Still Love Eating 17.4.5";
 
     public static void edit(Activity activity, String title, String summary, String content) {
         activity.startActivityForResult(new Intent(activity, TaskerScriptEditActivity_.class)
                 .putExtra(EXTRA_CONTENT, content)
                 .putExtra("summary", summary)
-                .putExtra("title", title), REQUEST_CODE);
+                .putExtra(EXTRA_NAME, title), REQUEST_CODE);
     }
 
-    private String mTitle, mSummary;
-    @ViewById(R.id.redo)
-    ToolbarMenuItem mRedo;
-    @ViewById(R.id.undo)
-    ToolbarMenuItem mUndo;
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-       // setTheme(R.style.EditorTheme);
-        handleIntent(getIntent());
-    }
+    @ViewById(R.id.editor_view)
+    EditorView mEditorView;
 
     @AfterViews
     void setUpViews() {
-        ((TextView) findViewById(R.id.summary)).setText(mSummary);
-        ThemeColorManager.addActivityStatusBar(this);
-        BaseActivity.setToolbarAsBack(this, R.id.toolbar, mTitle);
-        setUpEditor();
+        mEditorView.handleIntent(getIntent()
+                .putExtra(EXTRA_RUN_ENABLED, false)
+                .putExtra(EXTRA_SAVE_ENABLED, false));
+        BaseActivity.setToolbarAsBack(this, R.id.toolbar, mEditorView.getName());
     }
 
-    private void handleIntent(Intent intent) {
-        mTitle = intent.getStringExtra("title");
-        mSummary = intent.getStringExtra("summary");
-        String content = intent.getStringExtra(EXTRA_CONTENT);
-    }
-
-    private void setUpEditor() {
-
-    }
 
     @Override
     public void finish() {
-        super.finish();
+        mEditorView.getEditor().getText().subscribe(new Consumer<String>() {
+            @Override
+            public void accept(@NonNull String s) throws Exception {
+                setResult(RESULT_OK, new Intent().putExtra(EXTRA_CONTENT, s));
+                TaskerScriptEditActivity.super.finish();
+            }
+        });
     }
 
-    public void setMenuStatus(int menuResId, int status) {
-
-    }
 }
