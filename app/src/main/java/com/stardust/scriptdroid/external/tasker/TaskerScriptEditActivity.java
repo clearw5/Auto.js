@@ -2,16 +2,10 @@ package com.stardust.scriptdroid.external.tasker;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
 
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.edit.EditorView;
-import com.stardust.theme.ThemeColorManager;
-import com.stardust.widget.ToolbarMenuItem;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;

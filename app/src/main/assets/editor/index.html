@@ -19,6 +19,15 @@
 <script type="text/javascript" src="codemirror/addon/edit/matchbrackets.js"></script>
 <script type="text/javascript" src="codemirror/addon/display/fullscreen.js"></script>
 
+<!--代码折叠-->
+<link rel="stylesheet" href="codemirror/addon/fold/foldgutter.css"/>
+<script src="codemirror/addon/fold/foldcode.js"></script>
+<script src="codemirror/addon/fold/foldgutter.js"></script>
+<script src="codemirror/addon/fold/brace-fold.js"></script>
+<script src="codemirror/addon/fold/xml-fold.js"></script>
+<script src="codemirror/addon/fold/indent-fold.js"></script>
+<script src="codemirror/addon/fold/comment-fold.js"></script>
+
 <!-- 代码补全 -->
 <link rel="stylesheet" href="codemirror/addon/hint/show-hint.css">
 <script src="codemirror/addon/hint/javascript-hint.js"></script>
@@ -38,6 +47,8 @@
         lineNumbers: true,     // 显示行数
         indentUnit: 4,         // 缩进单位为4
         styleActiveLine: true, // 当前行背景高亮
+        foldGutter: true,
+        gutters:["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
         matchBrackets: true,   // 括号匹配
         mode: 'javascript',     // HMTL混合模式
         lineWrapping: false,    // 自动换行
