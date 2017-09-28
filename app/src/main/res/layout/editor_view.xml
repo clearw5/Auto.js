@@ -114,10 +114,27 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhanceBar
+    <LinearLayout
         android:id="@+id/input_method_enhance_bar"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:background="#77f2f3f7"/>
+        android:background="#77f2f3f7"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/symbols"
+            android:layout_width="40dp"
+            android:layout_height="35dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="6dp"
+            android:src="@drawable/ic_ali_symbol"
+            android:tint="#222329"/>
+
+        <com.stardust.scriptdroid.ui.edit.completion.CodeCompletionBar
+            android:id="@+id/code_completion_bar"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"/>
+    </LinearLayout>
+
 
 </LinearLayout>

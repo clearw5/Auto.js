@@ -36,12 +36,13 @@ import java.util.Map;
  * Created by Stardust on 2017/2/17.
  */
 
-public class InputMethodEnhanceBar extends RecyclerView {
+public class CodeCompletionBar extends RecyclerView {
 
     public interface OnHintClickListener {
         void onHintClick(CodeCompletions completions, int pos);
     }
 
+    private int mTextColor;
     private CodeCompletions mCodeCompletions;
     private OnHintClickListener mOnHintClickListener;
     private final OnClickListener mOnCodeCompletionItemClickListener = new OnClickListener() {
@@ -69,17 +70,17 @@ public class InputMethodEnhanceBar extends RecyclerView {
         }
     };
 
-    public InputMethodEnhanceBar(Context context) {
+    public CodeCompletionBar(Context context) {
         super(context);
         init();
     }
 
-    public InputMethodEnhanceBar(Context context, @Nullable AttributeSet attrs) {
+    public CodeCompletionBar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public InputMethodEnhanceBar(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public CodeCompletionBar(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
@@ -92,6 +93,16 @@ public class InputMethodEnhanceBar extends RecyclerView {
         mCodeCompletions = codeCompletions;
         getAdapter().notifyDataSetChanged();
     }
+
+    public CodeCompletions getCodeCompletions() {
+        return mCodeCompletions;
+    }
+
+    public void setTextColor(int textColor) {
+        mTextColor = textColor;
+        getAdapter().notifyDataSetChanged();
+    }
+
 
     private void init() {
         setAdapter(new CodeCompletionAdapter());
@@ -107,7 +118,11 @@ public class InputMethodEnhanceBar extends RecyclerView {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            ((TextView) holder.itemView).setText(mCodeCompletions.getHints().get(position));
+            TextView textView = ((TextView) holder.itemView);
+            textView.setText(mCodeCompletions.getHints().get(position));
+            if(mTextColor != 0){
+                textView.setTextColor(mTextColor);
+            }
         }
 
         @Override

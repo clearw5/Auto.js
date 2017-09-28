@@ -41,6 +41,8 @@
 <script type="text/javascript" src="codemirror/addon/search/search.js"></script>
 <script type="text/javascript" src="codemirror/addon/search/searchcursor.js"></script>
 
+<!-- Auto.js -->
+<script type="text/javascript" src="codemirror/addon/autojs/autojs.js"></script>
 
 <head>
 <title>CodeMirrorEditor</title>
@@ -61,7 +63,10 @@
         theme: 'neo'      // 使用neo模版
     });
     editor.setOption("fullScreen", true);
-    editor.setOption("hintOptions", {completeSingle: false});
+    editor.setOption("hintOptions", {
+        completeSingle: false,
+        globalScope: autoJsGlobalScope()
+    });
     editor.on("keyup", function(cm, e) {
         editor.execCommand("autocomplete")
     })

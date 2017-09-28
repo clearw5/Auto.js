@@ -4,12 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.ColorStateList;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.engine.JavaScriptEngine;
@@ -19,7 +21,9 @@ import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.ui.edit.completion.CodeCompletions;
-import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhanceBar;
+import com.stardust.scriptdroid.ui.edit.completion.CodeCompletionBar;
+import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhancedBarColors;
+import com.stardust.scriptdroid.ui.edit.completion.Symbols;
 import com.stardust.widget.ToolbarMenuItem;
 import com.stardust.widget.ViewSwitcher;
 
@@ -54,14 +58,20 @@ public class EditorView extends FrameLayout {
     @ViewById(R.id.editor)
     CodeMirrorEditor mEditor;
 
-    @ViewById(R.id.input_method_enhance_bar)
-    InputMethodEnhanceBar mInputMethodEnhanceBar;
+    @ViewById(R.id.code_completion_bar)
+    CodeCompletionBar mCodeCompletionBar;
 
     @ViewById(R.id.toolbar_switcher)
     ViewSwitcher mToolbarSwitcher;
 
     @ViewById(R.id.replace)
     ToolbarMenuItem mReplaceMenuItem;
+
+    @ViewById(R.id.input_method_enhance_bar)
+    View mInputMethodEnhanceBar;
+
+    @ViewById(R.id.symbols)
+    ImageView mSymbols;
 
     private static final String KEY_EDITOR_THEME = "我...深爱着...你呀...17.9.28";
 
@@ -71,6 +81,8 @@ public class EditorView extends FrameLayout {
 
     private ScriptExecution mScriptExecution;
     private boolean mTextChanged = false;
+    private CodeCompletions mCodeCompletions;
+    private boolean mSymbolsShown = false;
     private BroadcastReceiver mOnRunFinishedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -150,10 +162,27 @@ public class EditorView extends FrameLayout {
     @AfterViews
     void init() {
         setUpEditor();
+        setUpInputMethodEnhancedBar();
     }
 
+    private void setUpInputMethodEnhancedBar() {
+        mCodeCompletionBar.setOnHintClickListener(new CodeCompletionBar.OnHintClickListener() {
+            @Override
+            public void onHintClick(CodeCompletions completions, int pos) {
+                if (completions.shouldBeInserted()) {
+                    mEditor.insert(completions.getHints().get(pos));
+                    showOrHideSymbols();
+                    return;
+                }
+                mEditor.replace(completions.getHints().get(pos), completions.getFrom().line, completions.getFrom().ch,
+                        completions.getTo().line, completions.getTo().ch);
+            }
+        });
+    }
+
+
     private void setUpEditor() {
-        mEditor.setTheme(PreferenceManager.getDefaultSharedPreferences(getContext())
+        setTheme(PreferenceManager.getDefaultSharedPreferences(getContext())
                 .getString(KEY_EDITOR_THEME, mEditor.getTheme()));
         mEditor.setCallback(new CodeMirrorEditor.Callback() {
             @Override
@@ -165,23 +194,36 @@ public class EditorView extends FrameLayout {
 
             @Override
             public void updateCodeCompletion(int fromLine, int fromCh, int toLine, int toCh, final String[] list) {
-                mInputMethodEnhanceBar.setCodeCompletions(new CodeCompletions(
+                mCodeCompletionBar.setCodeCompletions(new CodeCompletions(
                         new CodeCompletions.Pos(fromLine, fromCh),
                         new CodeCompletions.Pos(toLine, toCh),
                         Arrays.asList(list)
                 ));
             }
         });
-        mInputMethodEnhanceBar.setOnHintClickListener(new InputMethodEnhanceBar.OnHintClickListener() {
-            @Override
-            public void onHintClick(CodeCompletions completions, int pos) {
-                mEditor.replace(completions.getHints().get(pos), completions.getFrom().line, completions.getFrom().ch,
-                        completions.getTo().line, completions.getTo().ch);
-            }
-        });
+
 
     }
 
+    public void setTheme(String theme) {
+        mEditor.setTheme(theme);
+        mInputMethodEnhanceBar.setBackgroundColor(InputMethodEnhancedBarColors.getBackgroundColor(theme));
+        int textColor = InputMethodEnhancedBarColors.getTextColor(theme);
+        mCodeCompletionBar.setTextColor(textColor);
+        mSymbols.setColorFilter(textColor);
+    }
+
+    @Click(R.id.symbols)
+    void showOrHideSymbols() {
+        if (mSymbolsShown) {
+            mCodeCompletionBar.setCodeCompletions(mCodeCompletions);
+            mCodeCompletions = null;
+        } else {
+            mCodeCompletions = mCodeCompletionBar.getCodeCompletions();
+            mCodeCompletionBar.setCodeCompletions(Symbols.getSymbols());
+        }
+        mSymbolsShown = !mSymbolsShown;
+    }
 
     @Click(R.id.run)
     public void runAndSaveFileIfNeeded() {
@@ -296,7 +338,7 @@ public class EditorView extends FrameLayout {
                         PreferenceManager.getDefaultSharedPreferences(getContext()).edit()
                                 .putString(KEY_EDITOR_THEME, text.toString())
                                 .apply();
-                        mEditor.setTheme(text.toString());
+                        setTheme(text.toString());
                         return true;
                     }
                 })

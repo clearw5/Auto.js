@@ -28,6 +28,10 @@ public class CodeCompletions {
         mHints = hints;
     }
 
+    public static CodeCompletions just(List<String> hints) {
+        return new CodeCompletions(null, null, hints);
+    }
+
     public Pos getFrom() {
         return mFrom;
     }
@@ -39,4 +43,10 @@ public class CodeCompletions {
     public List<String> getHints() {
         return mHints;
     }
+
+
+    public boolean shouldBeInserted() {
+        return mFrom == null && mTo == null;
+    }
+
 }

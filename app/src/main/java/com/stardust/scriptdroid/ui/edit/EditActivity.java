@@ -12,7 +12,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhanceBar;
+import com.stardust.scriptdroid.ui.edit.completion.CodeCompletionBar;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import org.androidannotations.annotations.AfterViews;
@@ -31,9 +31,6 @@ public class EditActivity extends BaseActivity {
 
     @ViewById(R.id.editor_view)
     EditorView mEditor;
-
-    @ViewById(R.id.input_method_enhance_bar)
-    InputMethodEnhanceBar mInputMethodEnhanceBar;
 
     private EditorMenu mEditorMenu;
 

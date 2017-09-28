@@ -129,7 +129,7 @@
           this.pick(data, 0);
         } else {
           //Modified By Stardust
-          if(__bridge__){
+          if(typeof __bridge__ != 'undefined'){
             __bridge__.updateCodeCompletion(data.from.line, data.from.ch, data.to.line, data.to.ch, data.list);
           }else{
             this.widget = new Widget(this, data);
