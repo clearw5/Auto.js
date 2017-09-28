@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 
 import com.stardust.pio.PFile;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.jdeferred.Deferred;
 import org.jdeferred.DoneCallback;
 import org.jdeferred.impl.DeferredObject;
@@ -40,6 +41,7 @@ public class CodeMirrorEditor extends FrameLayout {
 
     private static final String LOG_TAG = "CodeMirrorEditor";
 
+
     public interface Callback {
         void onChange();
 
@@ -53,6 +55,11 @@ public class CodeMirrorEditor extends FrameLayout {
     private JavaScriptBridge mJavaScriptBridge = new JavaScriptBridge();
     private Callback mCallback;
     private Deferred<Void, Void, Void> mPageFinished = new DeferredObject<>();
+
+    private PublishSubject<String> mStringFromJs;
+    private PublishSubject<Integer> mIntFromJs;
+    private String mTextFromAndroid;
+
 
     public CodeMirrorEditor(Context context) {
         super(context);
@@ -143,9 +150,9 @@ public class CodeMirrorEditor extends FrameLayout {
         WebSettings settings = mWebView.getSettings();
         settings.setUseWideViewPort(true);
         settings.setBuiltInZoomControls(true);
-        settings.setLoadWithOverviewMode(true);
+        //settings.setLoadWithOverviewMode(true);
         settings.setJavaScriptEnabled(true);
-        settings.setUseWideViewPort(true);
+        //settings.setUseWideViewPort(true);
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setDomStorageEnabled(true);
         settings.setNeedInitialFocus(true);
@@ -159,15 +166,24 @@ public class CodeMirrorEditor extends FrameLayout {
     }
 
     public void setText(final String text) {
-        mJavaScriptBridge.mTextFromAndroid = text;
+        mTextFromAndroid = text;
         mPageFinished.promise().done(new DoneCallback<Void>() {
             @Override
             public void onDone(Void result) {
-                evalJavaScript("editor.setValue(__bridge__.getText());");
+                evalJavaScript("editor.setValue(__bridge__.getStringFromAndroid());");
             }
         });
     }
 
+    public void insert(String text) {
+        mTextFromAndroid = text;
+        mPageFinished.promise().done(new DoneCallback<Void>() {
+            @Override
+            public void onDone(Void result) {
+                evalJavaScript("editor.replaceSelection(__bridge__.getStringFromAndroid());");
+            }
+        });
+    }
 
     public void loadFile(final File file) {
         setProgress(true);
@@ -188,9 +204,26 @@ public class CodeMirrorEditor extends FrameLayout {
     }
 
     public Observable<String> getText() {
-        mJavaScriptBridge.mTextFromJs = PublishSubject.create();
-        evalJavaScript("__bridge__.setText(editor.getValue());");
-        return mJavaScriptBridge.mTextFromJs;
+        mStringFromJs = PublishSubject.create();
+        evalJavaScript("__bridge__.setStringFromJs(editor.getValue());");
+        return mStringFromJs;
+    }
+
+    public Observable<String> getLine() {
+        mStringFromJs = PublishSubject.create();
+        evalJavaScript("__bridge__.setStringFromJs(editor.getLine(editor.getCursor().line))");
+        return mStringFromJs;
+    }
+
+    public void deleteLine() {
+        evalJavaScript("editor.replaceRange('', {line: editor.getCursor().line, ch: 0}," +
+                " {line: editor.getCursor().line + 1, ch: 0});");
+    }
+
+    public Observable<Integer> getLineCount() {
+        mIntFromJs = PublishSubject.create();
+        evalJavaScript("__bridge__.setIntFromJs(editor.lineCount())");
+        return mIntFromJs;
     }
 
 
@@ -200,6 +233,50 @@ public class CodeMirrorEditor extends FrameLayout {
 
     public void redo() {
         evalJavaScript("editor.redo();");
+    }
+
+    public void jumpTo(int line, int col) {
+        evalJavaScript("editor.setCursor({line: " + line + ", ch: " + col + "});");
+    }
+
+    public void find(String keywords, boolean usingRegex) {
+        setQuery(keywords, usingRegex);
+        findNext();
+    }
+
+    private void setQuery(String keywords, boolean usingRegex) {
+        keywords = keywords.replace("'", "\'");
+        if (usingRegex) {
+            keywords = "/" + keywords + "/";
+        }
+        evalJavaScript("editor.execCommand('clearSearch'); editor.state.search.query = '" +
+                keywords + "';");
+    }
+
+    public void findNext() {
+        evalJavaScript("editor.execCommand('findNext');");
+    }
+
+    public void findPrev() {
+        evalJavaScript("editor.execCommand('findPrev');");
+    }
+
+    public void replaceAll(String keywords, String replacement, boolean usingRegex) {
+        setQuery(keywords, usingRegex);
+        replacement = replacement.replace("'", "\'");
+        evalJavaScript("editor.state.search.text = '" + replacement + "';");
+        evalJavaScript("editor.execCommand('replaceAll');");
+    }
+
+    public void replace(String keywords, String replacement, boolean usingRegex) {
+        setQuery(keywords, usingRegex);
+        replacement = replacement.replace("'", "\'");
+        evalJavaScript("editor.state.search.text = '" + replacement + "';");
+        findNext();
+    }
+
+    public void replaceSelection() {
+        evalJavaScript("editor.execCommand('replace');");
     }
 
     private void evalJavaScript(String script) {
@@ -217,27 +294,33 @@ public class CodeMirrorEditor extends FrameLayout {
 
     public class JavaScriptBridge {
 
-        private PublishSubject<String> mTextFromJs;
-        private String mTextFromAndroid;
-
         @JavascriptInterface
-        public void setText(String text) {
-            if (mTextFromJs != null) {
-                mTextFromJs.onNext(text);
-                mTextFromJs.onComplete();
-                mTextFromJs = null;
+        public void setStringFromJs(String text) {
+            if (mStringFromJs != null) {
+                mStringFromJs.onNext(text);
+                mStringFromJs.onComplete();
+                mStringFromJs = null;
             }
         }
 
         @JavascriptInterface
-        public String getText() {
+        public void setIntFromJs(int i) {
+            if (mIntFromJs != null) {
+                mIntFromJs.onNext(i);
+                mIntFromJs.onComplete();
+                mIntFromJs = null;
+            }
+        }
+
+        @JavascriptInterface
+        public String getStringFromAndroid() {
             String t = mTextFromAndroid;
             mTextFromAndroid = null;
             return t;
         }
 
         @JavascriptInterface
-        public void onChange() {
+        public void onTextChange() {
             if (mCallback != null) {
                 mWebView.post(new Runnable() {
                     @Override
@@ -260,12 +343,11 @@ public class CodeMirrorEditor extends FrameLayout {
             }
         }
 
-
     }
 
     private class MyWebViewClient extends WebViewClient {
 
-        private final String INIT_SCRIPT = "editor.on('change', function(){__bridge__.onChange();});";
+        private final String INIT_SCRIPT = "editor.on('change', function(){__bridge__.onTextChange();});";
 
         @Override
         public void onPageFinished(WebView view, String url) {

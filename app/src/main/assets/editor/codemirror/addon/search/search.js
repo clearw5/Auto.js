@@ -166,10 +166,13 @@
 
   function findNext(cm, rev, callback) {cm.operation(function() {
     var state = getSearchState(cm);
-    var cursor = getSearchCursor(cm, state.query, rev ? state.posFrom : state.posTo);
-    if (!cursor.find(rev)) {
-      cursor = getSearchCursor(cm, state.query, rev ? CodeMirror.Pos(cm.lastLine()) : CodeMirror.Pos(cm.firstLine(), 0));
-      if (!cursor.find(rev)) return;
+    var query = parseQuery(state.query);
+    var cursor = getSearchCursor(cm, query, rev ? state.posFrom : state.posTo);
+    var match = cursor.find(rev);
+    if (!match) {
+      cursor = getSearchCursor(cm, query, rev ? CodeMirror.Pos(cm.lastLine()) : CodeMirror.Pos(cm.firstLine(), 0));
+      match = cursor.find(rev);
+      if (!match) return;
     }
     cm.setSelection(cursor.from(), cursor.to());
     cm.scrollIntoView({from: cursor.from(), to: cursor.to()}, 20);
@@ -202,42 +205,12 @@
     });
   }
 
-  function replace(cm, all) {
-    if (cm.getOption("readOnly")) return;
-    var query = cm.getSelection() || getSearchState(cm).lastQuery;
-    var dialogText = '<span class="CodeMirror-search-label">' + (all ? 'Replace all:' : 'Replace:') + '</span>';
-    dialog(cm, dialogText + replaceQueryDialog, dialogText, query, function(query) {
-      if (!query) return;
-      query = parseQuery(query);
-      dialog(cm, replacementQueryDialog, "Replace with:", "", function(text) {
-        text = parseString(text)
-        if (all) {
-          replaceAll(cm, query, text)
-        } else {
-          clearSearch(cm);
-          var cursor = getSearchCursor(cm, query, cm.getCursor("from"));
-          var advance = function() {
-            var start = cursor.from(), match;
-            if (!(match = cursor.findNext())) {
-              cursor = getSearchCursor(cm, query);
-              if (!(match = cursor.findNext()) ||
-                  (start && cursor.from().line == start.line && cursor.from().ch == start.ch)) return;
-            }
-            cm.setSelection(cursor.from(), cursor.to());
-            cm.scrollIntoView({from: cursor.from(), to: cursor.to()});
-            confirmDialog(cm, doReplaceConfirm, "Replace?",
-                          [function() {doReplace(match);}, advance,
-                           function() {replaceAll(cm, query, text)}]);
-          };
-          var doReplace = function(match) {
-            cursor.replace(typeof query == "string" ? text :
-                           text.replace(/\$(\d)/g, function(_, i) {return match[i];}));
-            advance();
-          };
-          advance();
-        }
-      });
-    });
+  function replaceSelection(cm) {
+    var text = parseString(cm.state.search.text);
+    var query = parseQuery(cm.state.search.query);
+    var match = cm.getRange(cm.state.search.posFrom, cm.state.search.posTo).match(query);
+    cm.replaceSelection(typeof query == "string" ? text :
+                          text.replace(/\$(\d)/g, function(_, i) {return match[i];}));
   }
 
   CodeMirror.commands.find = function(cm) {clearSearch(cm); doSearch(cm);};
@@ -247,6 +220,13 @@
   CodeMirror.commands.findNext = doSearch;
   CodeMirror.commands.findPrev = function(cm) {doSearch(cm, true);};
   CodeMirror.commands.clearSearch = clearSearch;
-  CodeMirror.commands.replace = replace;
-  CodeMirror.commands.replaceAll = function(cm) {replace(cm, true);};
+  CodeMirror.commands.replace = replaceSelection;
+  CodeMirror.commands.replaceAll = function(cm) {
+        if (cm.getOption("readOnly")) return;
+        var query = cm.state.search.query;
+        var text = cm.state.search.text;
+        query = parseQuery(query);
+        text = parseString(text);
+        replaceAll(cm, query, text);
+  };
 });

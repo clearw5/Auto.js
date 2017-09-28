@@ -28,6 +28,7 @@
 <script src="codemirror/addon/fold/indent-fold.js"></script>
 <script src="codemirror/addon/fold/comment-fold.js"></script>
 
+
 <!-- 代码补全 -->
 <link rel="stylesheet" href="codemirror/addon/hint/show-hint.css">
 <script src="codemirror/addon/hint/javascript-hint.js"></script>
@@ -35,6 +36,11 @@
 
 <!-- 代码格式化 -->
 <script type="text/javascript" src="beautify/beautify.min.js"></script>
+
+<!-- 查找替换 -->
+<script type="text/javascript" src="codemirror/addon/search/search.js"></script>
+<script type="text/javascript" src="codemirror/addon/search/searchcursor.js"></script>
+
 
 <head>
 <title>CodeMirrorEditor</title>
@@ -59,5 +65,6 @@
     editor.on("keyup", function(cm, e) {
         editor.execCommand("autocomplete")
     })
+    editor.setCursor({line: 0, ch: 0});
 </script>
 </html>

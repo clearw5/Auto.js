@@ -20,6 +20,8 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.ui.edit.completion.CodeCompletions;
 import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhanceBar;
+import com.stardust.widget.ToolbarMenuItem;
+import com.stardust.widget.ViewSwitcher;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -55,6 +57,12 @@ public class EditorView extends FrameLayout {
     @ViewById(R.id.input_method_enhance_bar)
     InputMethodEnhanceBar mInputMethodEnhanceBar;
 
+    @ViewById(R.id.toolbar_switcher)
+    ViewSwitcher mToolbarSwitcher;
+
+    @ViewById(R.id.replace)
+    ToolbarMenuItem mReplaceMenuItem;
+
     private static final String KEY_EDITOR_THEME = "我...深爱着...你呀...17.9.28";
 
     private String mName;
@@ -70,6 +78,11 @@ public class EditorView extends FrameLayout {
                 mScriptExecution = null;
                 setMenuItemStatus(R.id.run, true);
                 String msg = intent.getStringExtra(Scripts.EXTRA_EXCEPTION_MESSAGE);
+                int line = intent.getIntExtra(Scripts.EXTRA_EXCEPTION_LINE_NUMBER, -1);
+                int col = intent.getIntExtra(Scripts.EXTRA_EXCEPTION_COLUMN_NUMBER, 0);
+                if (line >= 1) {
+                    mEditor.jumpTo(line - 1, col);
+                }
                 if (msg != null) {
                     Snackbar.make(EditorView.this, getResources().getString(R.string.text_error) + ": " + msg, Snackbar.LENGTH_LONG).show();
                 }
@@ -228,6 +241,26 @@ public class EditorView extends FrameLayout {
         save().subscribe();
     }
 
+    @Click(R.id.find_next)
+    void findNext() {
+        mEditor.findNext();
+    }
+
+    @Click(R.id.find_prev)
+    void findPrev() {
+        mEditor.findPrev();
+    }
+
+    @Click(R.id.cancel)
+    void cancelSearch() {
+        mToolbarSwitcher.showFirst();
+    }
+
+    @Click(R.id.replace)
+    void replace() {
+        mEditor.replaceSelection();
+    }
+
     public String getName() {
         return mName;
     }
@@ -272,5 +305,21 @@ public class EditorView extends FrameLayout {
 
     public CodeMirrorEditor getEditor() {
         return mEditor;
+    }
+
+    public void find(String keywords, boolean usingRegex) {
+        mEditor.find(keywords, usingRegex);
+        mReplaceMenuItem.setVisibility(GONE);
+        mToolbarSwitcher.showSecond();
+    }
+
+    public void replace(String keywords, String replacement, boolean usingRegex) {
+        mEditor.replace(keywords, replacement, usingRegex);
+        mReplaceMenuItem.setVisibility(VISIBLE);
+        mToolbarSwitcher.showSecond();
+    }
+
+    public void replaceAll(String keywords, String replacement, boolean usingRegex) {
+        mEditor.replaceAll(keywords, replacement, usingRegex);
     }
 }
