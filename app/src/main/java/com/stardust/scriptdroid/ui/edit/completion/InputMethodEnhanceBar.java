@@ -36,7 +36,6 @@ import java.util.Map;
  * Created by Stardust on 2017/2/17.
  */
 
-// TODO: 2017/7/21 refactor
 public class InputMethodEnhanceBar extends RecyclerView {
 
     public interface OnHintClickListener {

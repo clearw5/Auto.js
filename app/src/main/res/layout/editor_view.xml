@@ -71,6 +71,6 @@
         android:id="@+id/input_method_enhance_bar"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:background="#e7ebec"/>
+        android:background="#77f2f3f7"/>
 
 </LinearLayout>

@@ -130,7 +130,7 @@ public class EditorView extends FrameLayout {
             if (mName == null) {
                 mName = mFile.getName();
             }
-            mEditor.setText(PFile.read(mFile));
+            mEditor.loadFile(mFile);
         }
     }
 

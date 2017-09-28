@@ -4,30 +4,33 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
-import android.widget.ScrollView;
 
 import com.stardust.pio.PFile;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.jdeferred.Deferred;
 import org.jdeferred.DoneCallback;
 import org.jdeferred.impl.DeferredObject;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Locale;
+import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by Stardust on 2017/9/27.
@@ -35,9 +38,7 @@ import io.reactivex.subjects.PublishSubject;
 
 public class CodeMirrorEditor extends FrameLayout {
 
-
-    private static String[] sAvailableThemes;
-    private String mTheme = "neo";
+    private static final String LOG_TAG = "CodeMirrorEditor";
 
     public interface Callback {
         void onChange();
@@ -45,6 +46,9 @@ public class CodeMirrorEditor extends FrameLayout {
         void updateCodeCompletion(int fromLine, int fromCh, int toLine, int toCh, String[] list);
     }
 
+    private static String[] sAvailableThemes;
+    private String mTheme = "neo";
+    private MaterialProgressBar mProgressBar;
     private WebView mWebView;
     private JavaScriptBridge mJavaScriptBridge = new JavaScriptBridge();
     private Callback mCallback;
@@ -116,7 +120,16 @@ public class CodeMirrorEditor extends FrameLayout {
 
     private void init() {
         setupWebView();
+        setupProgress();
         mWebView.loadUrl("file:///android_asset/editor/index.html");
+    }
+
+    private void setupProgress() {
+        mProgressBar = new MaterialProgressBar(getContext());
+        int dp50 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(dp50, dp50);
+        params.gravity = Gravity.CENTER;
+        addView(mProgressBar, params);
     }
 
     private void setupWebView() {
@@ -141,20 +154,43 @@ public class CodeMirrorEditor extends FrameLayout {
         mWebView.setWebChromeClient(new WebChromeClient());
     }
 
+    public void setProgress(boolean onProgress) {
+        mProgressBar.setVisibility(onProgress ? VISIBLE : GONE);
+    }
+
     public void setText(final String text) {
+        mJavaScriptBridge.mTextFromAndroid = text;
         mPageFinished.promise().done(new DoneCallback<Void>() {
             @Override
             public void onDone(Void result) {
-                String escapedString = StringEscapeUtils.escapeEcmaScript(text);
-                evalJavaScript("editor.setValue('" + escapedString + "');");
+                evalJavaScript("editor.setValue(__bridge__.getText());");
             }
         });
     }
 
+
+    public void loadFile(final File file) {
+        setProgress(true);
+        Observable.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return PFile.read(file);
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(@NonNull String s) throws Exception {
+                        setText(s);
+                        setProgress(false);
+                    }
+                });
+    }
+
     public Observable<String> getText() {
-        mJavaScriptBridge.mText = PublishSubject.create();
+        mJavaScriptBridge.mTextFromJs = PublishSubject.create();
         evalJavaScript("__bridge__.setText(editor.getValue());");
-        return mJavaScriptBridge.mText;
+        return mJavaScriptBridge.mTextFromJs;
     }
 
 
@@ -167,7 +203,11 @@ public class CodeMirrorEditor extends FrameLayout {
     }
 
     private void evalJavaScript(String script) {
-        mWebView.loadUrl("javascript:" + script);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            mWebView.evaluateJavascript(script, null);
+        } else {
+            mWebView.loadUrl("javascript:" + script);
+        }
     }
 
     public void replace(String text, int fromLine, int fromCh, int toLine, int toCh) {
@@ -177,15 +217,23 @@ public class CodeMirrorEditor extends FrameLayout {
 
     public class JavaScriptBridge {
 
-        private PublishSubject<String> mText;
+        private PublishSubject<String> mTextFromJs;
+        private String mTextFromAndroid;
 
         @JavascriptInterface
         public void setText(String text) {
-            if (mText != null) {
-                mText.onNext(text);
-                mText.onComplete();
-                mText = null;
+            if (mTextFromJs != null) {
+                mTextFromJs.onNext(text);
+                mTextFromJs.onComplete();
+                mTextFromJs = null;
             }
+        }
+
+        @JavascriptInterface
+        public String getText() {
+            String t = mTextFromAndroid;
+            mTextFromAndroid = null;
+            return t;
         }
 
         @JavascriptInterface
@@ -224,7 +272,8 @@ public class CodeMirrorEditor extends FrameLayout {
             super.onPageFinished(view, url);
             mPageFinished.resolve(null);
             evalJavaScript(INIT_SCRIPT);
-           // evalJavaScript("editor.setSize(" + mWebView.getMeasuredWidth() + ", " + mWebView.getMeasuredHeight() + ");");
+            setProgress(false);
+            // evalJavaScript("editor.setSize(" + mWebView.getMeasuredWidth() + ", " + mWebView.getMeasuredHeight() + ");");
         }
     }
 }
