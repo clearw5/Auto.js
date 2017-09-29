@@ -21,6 +21,9 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 
+import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_CONTENT;
+
+
 /**
  * Created by Stardust on 2017/3/27.
  */
@@ -115,7 +118,7 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            mPreExecuteScript = data.getStringExtra(TaskerScriptEditActivity.EXTRA_CONTENT);
+            mPreExecuteScript = data.getStringExtra(EXTRA_CONTENT);
         }
     }
 }

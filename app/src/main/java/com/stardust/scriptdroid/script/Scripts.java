@@ -3,7 +3,9 @@ package com.stardust.scriptdroid.script;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 
+import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.execution.ExecutionConfig;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
@@ -21,6 +23,8 @@ import com.stardust.scriptdroid.script.sample.Sample;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.util.AssetsCache;
 
+import org.mozilla.javascript.RhinoException;
+
 import java.io.File;
 
 /**
@@ -31,6 +35,8 @@ public class Scripts {
 
     public static final String ACTION_ON_EXECUTION_FINISHED = "Don't leave me alone...";
     public static final String EXTRA_EXCEPTION_MESSAGE = "Say something...Eating...17.5.3";
+    public static final String EXTRA_EXCEPTION_LINE_NUMBER = "Can we fall in love with each other again...17.9.28";
+    public static final String EXTRA_EXCEPTION_COLUMN_NUMBER = "I lost myself....";
 
     private static final ScriptExecutionListener BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER = new SimpleScriptExecutionListener() {
 
@@ -41,11 +47,21 @@ public class Scripts {
 
         @Override
         public void onException(ScriptExecution execution, Exception e) {
+            RhinoException rhinoException = getRhinoException(e);
+            int line = -1, col = 0;
+            if (rhinoException != null) {
+                line = rhinoException.lineNumber();
+                col = rhinoException.columnNumber();
+            }
             if (ScriptInterruptedException.causedByInterrupted(e)) {
-                App.getApp().sendBroadcast(new Intent(ACTION_ON_EXECUTION_FINISHED));
+                App.getApp().sendBroadcast(new Intent(ACTION_ON_EXECUTION_FINISHED)
+                        .putExtra(EXTRA_EXCEPTION_LINE_NUMBER, line)
+                        .putExtra(EXTRA_EXCEPTION_COLUMN_NUMBER, col));
             } else {
                 App.getApp().sendBroadcast(new Intent(ACTION_ON_EXECUTION_FINISHED)
-                        .putExtra(EXTRA_EXCEPTION_MESSAGE, e.getMessage()));
+                        .putExtra(EXTRA_EXCEPTION_MESSAGE, e.getMessage())
+                        .putExtra(EXTRA_EXCEPTION_LINE_NUMBER, line)
+                        .putExtra(EXTRA_EXCEPTION_COLUMN_NUMBER, col));
             }
         }
 
@@ -113,5 +129,16 @@ public class Scripts {
         return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
                 .path(directoryPath, StorageFileProvider.DEFAULT_DIRECTORY_PATH)
                 .loop(delay, loopTimes, interval));
+    }
+
+    @Nullable
+    public static RhinoException getRhinoException(Throwable e) {
+        while (e != null) {
+            if (e instanceof RhinoException) {
+                return (RhinoException) e;
+            }
+            e = e.getCause();
+        }
+        return null;
     }
 }

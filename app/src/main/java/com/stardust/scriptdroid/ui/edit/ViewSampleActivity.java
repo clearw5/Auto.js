@@ -6,33 +6,25 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.jecelyin.editor.v2.common.Command;
-import com.jecelyin.editor.v2.ui.EditorDelegate;
-import com.jecelyin.editor.v2.view.EditorView;
-import com.jecelyin.editor.v2.view.menu.MenuDef;
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
-import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.script.sample.Sample;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
-import com.stardust.scriptdroid.ui.edit.editor920.Editor920Activity;
-import com.stardust.scriptdroid.ui.edit.editor920.Editor920Utils;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.AssetsCache;
 import com.stardust.util.SparseArrayEntries;
 import com.stardust.widget.ToolbarMenuItem;
-
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -47,7 +39,7 @@ import static com.stardust.scriptdroid.script.Scripts.EXTRA_EXCEPTION_MESSAGE;
 /**
  * Created by Stardust on 2017/4/29.
  */
-public class ViewSampleActivity extends Editor920Activity implements OnActivityResultDelegate.DelegateHost {
+public class ViewSampleActivity extends AppCompatActivity implements OnActivityResultDelegate.DelegateHost {
 
 
     public static void view(Context context, Sample sample) {
@@ -59,7 +51,6 @@ public class ViewSampleActivity extends Editor920Activity implements OnActivityR
     private View mView;
     private Sample mSample;
     private ScriptExecution mScriptExecution;
-    private EditorDelegate mEditorDelegate;
     private SparseArray<ToolbarMenuItem> mMenuMap;
     private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
     private BroadcastReceiver mOnRunFinishedReceiver = new BroadcastReceiver() {
@@ -67,7 +58,6 @@ public class ViewSampleActivity extends Editor920Activity implements OnActivityR
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(ACTION_ON_EXECUTION_FINISHED)) {
                 mScriptExecution = null;
-                setMenuStatus(R.id.run, MenuDef.STATUS_NORMAL);
                 String msg = intent.getStringExtra(EXTRA_EXCEPTION_MESSAGE);
                 if (msg != null) {
                     Snackbar.make(mView, getString(R.string.text_error) + ": " + msg, Snackbar.LENGTH_LONG).show();
@@ -78,7 +68,6 @@ public class ViewSampleActivity extends Editor920Activity implements OnActivityR
 
     public void onCreate(Bundle b) {
         super.onCreate(b);
-        setTheme(R.style.EditorTheme);
         mView = View.inflate(this, R.layout.activity_view_sample, null);
         setContentView(mView);
         handleIntent(getIntent());
@@ -90,7 +79,6 @@ public class ViewSampleActivity extends Editor920Activity implements OnActivityR
     private void handleIntent(Intent intent) {
         mSample = (Sample) intent.getSerializableExtra("sample");
         String content = AssetsCache.get(this, mSample.path);
-        mEditorDelegate = new EditorDelegate(0, mSample.name, content);
     }
 
     private void setUpUI() {
@@ -101,11 +89,7 @@ public class ViewSampleActivity extends Editor920Activity implements OnActivityR
     }
 
     private void setUpEditor() {
-        final EditorView editorView = (EditorView) findViewById(R.id.editor);
-        mEditorDelegate.setEditorView(editorView);
-        Editor920Utils.setLang(mEditorDelegate, "JavaScript");
-        editorView.getEditText().setReadOnly(true);
-        editorView.getEditText().setHorizontallyScrolling(true);
+
     }
 
     private void setUpToolbar() {
@@ -115,8 +99,7 @@ public class ViewSampleActivity extends Editor920Activity implements OnActivityR
     @OnClick(R.id.run)
     void run() {
         Snackbar.make(mView, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
-        setMenuStatus(R.id.run, MenuDef.STATUS_DISABLED);
-        mScriptExecution = Scripts.runWithBroadcastSender(new StringScriptSource(mSample.name, mEditorDelegate.getText()));
+        //mScriptExecution = Scripts.runWithBroadcastSender(new StringScriptSource(mSample.name, mEditorDelegate.getText()));
     }
 
     @OnClick(R.id.edit)
@@ -143,8 +126,6 @@ public class ViewSampleActivity extends Editor920Activity implements OnActivityR
         ToolbarMenuItem menuItem = mMenuMap.get(menuResId);
         if (menuItem == null)
             return;
-        boolean disabled = status == MenuDef.STATUS_DISABLED;
-        menuItem.setEnabled(!disabled);
     }
 
 
@@ -184,11 +165,6 @@ public class ViewSampleActivity extends Editor920Activity implements OnActivityR
         if (mScriptExecution != null) {
             ((JavaScriptEngine) mScriptExecution.getEngine()).getRuntime().console.show();
         }
-    }
-
-    @Override
-    public void doCommand(Command command) {
-        mEditorDelegate.doCommand(command);
     }
 
     @Override

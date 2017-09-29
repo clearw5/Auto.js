@@ -252,6 +252,33 @@
     <string name="text_time">时间</string>
     <string name="text_size">大小</string>
     <string name="text_type">类型</string>
+    <string name="text_donate">捐赠</string>
+    <string name="text_editor_theme">编辑器主题</string>
+    <string name="text_util">工具</string>
+    <string name="text_jump_to_line">跳转到行</string>
+    <string name="text_info">信息</string>
+    <string name="text_find_or_replace">查找/替换</string>
+    <string name="text_paste">粘贴</string>
+    <string name="text_copy_all">复制全部</string>
+    <string name="text_copy_line">复制行</string>
+    <string name="text_delete_line">删除行</string>
+    <string name="format_editor_info" formatted="false">字符数: %d\n行数: %d\n大小: %s</string>
+    <string name="text_find">查找</string>
+    <string name="text_replace">替换</string>
+    <string name="text_regex">正则表达式</string>
+    <string name="text_replace_all">全部替换</string>
+    <string name="text_find_next">向下</string>
+    <string name="text_find_prev">向上</string>
+    <string name="hint_regex">正则语法与JavaScript中相同, 可使用$1~9代替被捕获的匹配</string>
+    <string name="text_jump">跳转</string>
+    <string name="text_jump_to_def">转到定义</string>
+    <string name="text_jump_to_end">转到文件末尾</string>
+    <string name="text_jump_to_start">转到文件开始</string>
+    <string name="text_jump_to_line_start">转到行首</string>
+    <string name="text_jump_to_line_end">转到行尾</string>
+    <string name="text_refactor">重构</string>
+    <string name="text_select_variable">选择变量</string>
+    <string name="text_show_type">显示变量类型</string>
 
 
     <string-array name="record_control_keys">

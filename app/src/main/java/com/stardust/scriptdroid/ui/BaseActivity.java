@@ -26,11 +26,10 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
  * Created by Stardust on 2017/1/23.
  */
 
-public abstract class BaseActivity extends AppCompatActivity implements BackPressedHandler.HostActivity {
+public abstract class BaseActivity extends AppCompatActivity  {
 
 
     protected static final int PERMISSION_REQUEST_CODE = 11186;
-    private BackPressedHandler.Observer mBackPressObserver = new BackPressedHandler.Observer();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,17 +79,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BackPres
         setToolbarAsBack(this, R.id.toolbar, title);
     }
 
-    public void registerBackPressedHandler(BackPressedHandler handler) {
-        mBackPressObserver.registerHandler(handler);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (!mBackPressObserver.onBackPressed(this)) {
-            super.onBackPressed();
-        }
-    }
-
     public static void setToolbarAsBack(final AppCompatActivity activity, int id, String title) {
         Toolbar toolbar = (Toolbar) activity.findViewById(id);
         toolbar.setTitle(title);
@@ -112,8 +100,4 @@ public abstract class BaseActivity extends AppCompatActivity implements BackPres
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    @Override
-    public BackPressedHandler.Observer getBackPressedObserver() {
-        return mBackPressObserver;
-    }
 }

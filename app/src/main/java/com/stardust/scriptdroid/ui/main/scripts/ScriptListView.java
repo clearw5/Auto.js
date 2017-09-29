@@ -85,7 +85,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         initScriptListRecyclerView();
         mStorageFileProvider = StorageFileProvider.getDefault();
         setCurrentDirectory(mStorageFileProvider.getInitialDirectory());
-        mStorageFileProvider.registerDirectoryChangeListener(this);
+        //mStorageFileProvider.registerDirectoryChangeListener(this);
     }
 
     private void initScriptListRecyclerView() {
@@ -175,7 +175,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mStorageFileProvider.unregisterDirectoryChangeListener(this);
+      //  mStorageFileProvider.unregisterDirectoryChangeListener(this);
     }
 
     private class ScriptListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
