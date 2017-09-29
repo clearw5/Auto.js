@@ -1,338 +1,61 @@
-function autoJsGlobalScope(){
-    var globals = {
-      "modules": [
-        "app",
-        "automator",
-        "console",
-        "dialogs",
-        "events",
-        "images",
-        "files",
-        "timers",
-        "ui",
-      ],
-      "app": [
-        "launchPackage",
-        "launch",
-        "launchApp",
-        "getPackageName",
-        "openAppSetting"
-      ],
-      "automator": [
-        "click",
-        "longClick",
-        "press",
-        "swipe",
-        "gesture",
-        "gestures",
-        "gestureAsync",
-        "gesturesAsync",
-        "scrollDown",
-        "scrollUp",
-        "input",
-        "setText"
-      ],
-      "console": [
-        "print",
-        "log",
-        "err",
-        "openConsole",
-        "clearConsole"
-      ],
-      "dialogs": [
-        "rawInput",
-        "input",
-        "alert",
-        "confirm",
-        "prompt"
-      ],
-      "images": [
-        "requestScreenCapture",
-        "captureScreen",
-        "findColor",
-        "findColorInRegion",
-        "findColorEquals"
-      ],
-      "files": [
-        "open"
-      ],
-      "selector": [
-        "id",
-        "idContains",
-        "idStartsWith",
-        "idEndsWith",
-        "idMatches",
-        "text",
-        "textContains",
-        "textStartsWith",
-        "textEndsWith",
-        "textMatches",
-        "desc",
-        "descContains",
-        "descStartsWith",
-        "descEndsWith",
-        "descMatches",
-        "className",
-        "classNameContains",
-        "classNameStartsWith",
-        "classNameEndsWith",
-        "classNameMatches",
-        "packageName",
-        "packageNameContains",
-        "packageNameStartsWith",
-        "packageNameEndsWith",
-        "packageNameMatches",
-        "bounds",
-        "boundsInside",
-        "boundsContains",
-        "drawingOrder",
-        "checkable",
-        "checked",
-        "focusable",
-        "focused",
-        "visibleToUser",
-        "accessibilityFocused",
-        "selected",
-        "clickable",
-        "longClickable",
-        "enabled",
-        "password",
-        "scrollable",
-        "editable",
-        "contentInvalid",
-        "contextClickable",
-        "multiLine",
-        "dismissable",
-        "checkable",
-        "checked",
-        "focusable",
-        "focused",
-        "visibleToUser",
-        "accessibilityFocused",
-        "selected",
-        "clickable",
-        "longClickable",
-        "enabled",
-        "password",
-        "scrollable",
-        "editable",
-        "contentInvalid",
-        "contextClickable",
-        "multiLine",
-        "dismissable"
-      ],
-      "shell": [
-        "SetScreenMetrics",
-        "Tap",
-        "Swipe",
-        "Screencap",
-        "KeyCode",
-        "Home",
-        "Back",
-        "Power",
-        "Up",
-        "Down",
-        "Left",
-        "Right",
-        "OK",
-        "VolumeUp",
-        "VolumeDown",
-        "Menu",
-        "Camera",
-        "Text"
-      ],
-      "timers": [
-        "loop",
-        "setTimeout",
-        "clearTimeout",
-        "setInterval",
-        "clearInterval",
-        "setImmediate",
-        "clearImmediate"
-      ],
-      "web": [
-        "newInjectableWebClient",
-        "newInjectableWebView"
-      ],
-      "general": [
-        "toast",
-        "toastLog",
-        "sleep",
-        "isStopped",
-        "notStopped",
-        "exit",
-        "setClip",
-        "getClip",
-        "currentPackage",
-        "currentActivity",
-        "waitForActivity",
-        "waitForPackage",
-        "setScreenMetrics"
-      ],
-      "variables": [
-        "context",
-        "activity"
-      ]
-    };
-    var modules = {
-      "app": [
-        "uninstall",
-        "viewFile",
-        "editFile",
-        "openUrl",
-        "launchPackage",
-        "launch",
-        "launchApp",
-        "getPackageName",
-        "openAppSetting"
-      ],
-      "automator": [
-        "click",
-        "longClick",
-        "press",
-        "swipe",
-        "gesture",
-        "gestures",
-        "gestureAsync",
-        "gesturesAsync",
-        "scrollDown",
-        "scrollUp",
-        "input",
-        "setText"
-      ],
-      "console": [
-        "show",
-        "hide",
-        "clear",
-        "verbose",
-        "print",
-        "info",
-        "log",
-        "warn",
-        "error",
-        "assert"
-      ],
-      "dialogs": [
-        "select",
-        "singleChoice",
-        "multiChoice",
-        "rawInput",
-        "input",
-        "alert",
-        "confirm",
-        "prompt"
-      ],
-      "images": [
-        "saveImage",
-        "pixel",
-        "read",
-        "requestScreenCapture",
-        "captureScreen",
-        "findColor",
-        "findColorInRegion",
-        "findColorEquals"
-      ],
-      "colors": [
-        "red",
-        "green",
-        "blue",
-        "alpha",
-        "toString",
-        "rgb",
-        "argb"
-      ],
-      "events": [
-        "emitter",
-        "observeKey",
-        "observeTouch",
-        "observeNotification",
-        "onKeyDown",
-        "onKeyUp",
-        "onceKeyDown",
-        "onceKeyUp",
-        "onToast",
-        "onNotification",
-        "removeAllKeyDownListeners",
-        "removeAllKeyUpListeners",
-        "onTouch",
-        "removeAllTouchListeners",
-        "getTouchEventTimeout",
-        "setTouchEventTimeout",
-        "on",
-        "once",
-        "emit",
-        "getListeners",
-        "addListener",
-        "eventNames",
-        "listenerCount",
-        "listeners",
-        "prependListener",
-        "prependOnceListener",
-        "removeAllListeners",
-        "removeAllListeners",
-        "removeListener",
-        "setMaxListeners",
-        "getMaxListeners",
-        "defaultMaxListeners"
-      ],
-      "files": [
-        "open",
-        "isFile",
-        "isDir",
-        "isEmptyDir",
-        "join",
-        "create",
-        "createIfNotExists",
-        "exists",
-        "ensureDir",
-        "read",
-        "write",
-        "copy",
-        "rename",
-        "renameWithoutExtension",
-        "getName",
-        "getExtension",
-        "remove",
-        "removeDir",
-        "getSdcardPath",
-        "listDir"
-      ],
-      "timers": [
-        "loop",
-        "setTimeout",
-        "clearTimeout",
-        "setInterval",
-        "clearInterval",
-        "setImmediate",
-        "clearImmediate"
-      ]
-    };
-    function for_each(obj, func){
-        for(var key in obj){
-            if(!obj.hasOwnProperty(key)){
-                continue;
-            }
-            func(key, obj[key]);
+function autojs(editor){
+    function loadJs(url){
+        var script = document.createElement("script");
+        // This script has a callback function that will run when the script has
+        // finished loading.
+        script.src = url;
+        script.type = "text/javascript";
+        document.getElementsByTagName("head")[0].appendChild(script);
+    }
+    var server = null;
+    var getURL = function(url, c) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", url, true);
+        xhr.send();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState != 4) return;
+            if (xhr.status < 400) return c(null, xhr.responseText);
+            var e = new Error(xhr.responseText || "No response");
+            e.status = xhr.status;
+            c(e);
+        };
+    }
+    connect();
+    editor.tern = {};
+    editor.tern.showType = function(){
+        checkServer();
+        server.showType(editor);
+    }
+    editor.tern.jumpToDef = function(){
+        checkServer();
+        server.jumpToDef(editor);
+    }
+    editor.tern.rename = function(){
+        checkServer();
+        server.rename(editor);
+    }
+    editor.tern.selectName = function(){
+        checkServer();
+        server.selectName(editor);
+    }
+    editor.tern.jumpBack = function(){
+        checkServer();
+        server.jumpBack(editor);
+    }
+
+    function connect(){
+        getURL("http://ternjs.net/defs/ecmascript.json", function(err, code) {
+            if (err) throw new Error("Request for ecmascript.json: " + err);
+            server = new CodeMirror.TernServer({defs: [JSON.parse(code)]});
+            editor.tern.server = server;
+            editor.on("cursorActivity", function(cm) { server.updateArgHints(cm); });
+        });
+    }
+
+    function checkServer(){
+        if(!server){
+            alert("Error: cannot connect to tern server\n联网获取编辑器增强服务失败:(\n");
+            connect();
         }
     }
-    var __global__ = {};
-    for_each(modules, function(moduleName, moduleVariables){
-        if(!__global__[moduleName]){
-            __global__[moduleName] = {};
-        }
-        for(var i = 0; i < moduleVariables.length; i++){
-            if(!__global__[moduleName][moduleVariables[i]]){
-                __global__[moduleName][moduleVariables[i]] = '';
-            }
-        }
-    });
-    for_each(globals, function(moduleName, moduleVariables){
-        for(var i = 0; i < moduleVariables.length; i++){
-            if(!__global__[moduleVariables[i]]){
-                __global__[moduleVariables[i]] = '';
-            }
-        }
-    })
-    return __global__;
-  }
-
+}

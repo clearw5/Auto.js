@@ -1,19 +1,26 @@
 package com.stardust.scriptdroid.ui.edit;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.webkit.JavascriptInterface;
+import android.webkit.JsPromptResult;
+import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.pio.PFile;
+import com.stardust.scriptdroid.R;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.jdeferred.Deferred;
@@ -24,6 +31,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -32,6 +41,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
+import retrofit2.http.GET;
 
 /**
  * Created by Stardust on 2017/9/27.
@@ -40,7 +50,6 @@ import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 public class CodeMirrorEditor extends FrameLayout {
 
     private static final String LOG_TAG = "CodeMirrorEditor";
-
 
     public interface Callback {
         void onChange();
@@ -158,7 +167,7 @@ public class CodeMirrorEditor extends FrameLayout {
         settings.setNeedInitialFocus(true);
         settings.setDisplayZoomControls(false);
         mWebView.setWebViewClient(new MyWebViewClient());
-        mWebView.setWebChromeClient(new WebChromeClient());
+        mWebView.setWebChromeClient(new MyWebChromeClient());
     }
 
     public void setProgress(boolean onProgress) {
@@ -268,11 +277,52 @@ public class CodeMirrorEditor extends FrameLayout {
         evalJavaScript("editor.execCommand('replaceAll');");
     }
 
+    public void jumpToDef() {
+        evalJavaScript("editor.tern.jumpToDef();");
+    }
+
+
+    public void jumpToLineStart() {
+        evalJavaScript("editor.execCommand('goLineStart');");
+    }
+
+    public void jumpToLineEnd() {
+        evalJavaScript("editor.execCommand('goLineEnd')");
+    }
+
+    public void jumpToStart() {
+        evalJavaScript("editor.execCommand('goDocStart');");
+    }
+
+    public void jumpToEnd() {
+        evalJavaScript("editor.execCommand('goDocEnd');");
+    }
+
+
+    public void showType() {
+        evalJavaScript("editor.tern.showType();");
+    }
+
+    public void rename() {
+        evalJavaScript("editor.tern.rename();");
+    }
+
+    public void selectName() {
+        evalJavaScript("editor.tern.selectName();");
+    }
+
+
     public void replace(String keywords, String replacement, boolean usingRegex) {
         setQuery(keywords, usingRegex);
         replacement = replacement.replace("'", "\'");
         evalJavaScript("editor.state.search.text = '" + replacement + "';");
         findNext();
+    }
+
+    public Observable<String> getSelection() {
+        mStringFromJs = PublishSubject.create();
+        evalJavaScript("__bridge__.setStringFromJs(editor.getSelection());");
+        return mStringFromJs;
     }
 
     public void replaceSelection() {
@@ -355,7 +405,61 @@ public class CodeMirrorEditor extends FrameLayout {
             mPageFinished.resolve(null);
             evalJavaScript(INIT_SCRIPT);
             setProgress(false);
-            // evalJavaScript("editor.setSize(" + mWebView.getMeasuredWidth() + ", " + mWebView.getMeasuredHeight() + ");");
+        }
+
+    }
+
+    private class MyWebChromeClient extends WebChromeClient {
+
+        private final Pattern RENAME = Pattern.compile("New name for ([a-zA-Z]+)");
+
+        @Override
+        public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
+            Matcher m = RENAME.matcher(message);
+            if (m.matches() && m.groupCount() >= 1) {
+                showRenamePrompt(m.group(1), defaultValue, result);
+                return true;
+            }
+            return super.onJsPrompt(view, url, message, defaultValue, result);
+        }
+
+        private void showRenamePrompt(String name, String defaultValue, final JsPromptResult result) {
+            new ThemeColorMaterialDialogBuilder(getContext())
+                    .title(getResources().getString(R.string.text_rename) + name)
+                    .input("", defaultValue, new MaterialDialog.InputCallback() {
+                        @Override
+                        public void onInput(@android.support.annotation.NonNull MaterialDialog dialog, CharSequence input) {
+                            result.confirm(input.toString());
+                        }
+                    })
+                    .show();
+        }
+
+        @Override
+        public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
+            new ThemeColorMaterialDialogBuilder(getContext())
+                    .title(R.string.text_alert)
+                    .content(message)
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@android.support.annotation.NonNull MaterialDialog dialog, @android.support.annotation.NonNull DialogAction which) {
+                            result.confirm();
+                        }
+                    })
+                    .cancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            result.cancel();
+                        }
+                    })
+                    .positiveText(R.string.ok)
+                    .show();
+            return true;
+        }
+
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            mProgressBar.setVisibility(newProgress == 100 ? VISIBLE : GONE);
         }
     }
 }

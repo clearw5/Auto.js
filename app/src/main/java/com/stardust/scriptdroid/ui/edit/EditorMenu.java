@@ -38,20 +38,20 @@ public class EditorMenu {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_console:
-                showConsole();
-                return true;
             case R.id.action_log:
                 showLog();
                 return true;
             case R.id.action_force_stop:
                 forceStop();
                 return true;
-            case R.id.action_jump:
-                jump();
-                return true;
             default:
                 if (onEditOptionsSelected(item)) {
+                    return true;
+                }
+                if (onRefactorOptionsSelected(item)) {
+                    return true;
+                }
+                if (onJumpOptionsSelected(item)) {
                     return true;
                 }
                 if (onMoreOptionsSelected(item)) {
@@ -61,11 +61,53 @@ public class EditorMenu {
         return false;
     }
 
+    private boolean onJumpOptionsSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_jump_to_line:
+                jumpToLine();
+                return true;
+            case R.id.action_jump_to_def:
+                mEditor.jumpToDef();
+                return true;
+            case R.id.action_jump_to_start:
+                mEditor.jumpToStart();
+                return true;
+            case R.id.action_jump_to_end:
+                mEditor.jumpToEnd();
+                return true;
+            case R.id.action_jump_to_line_start:
+                mEditor.jumpToLineStart();
+                return true;
+            case R.id.action_jump_to_line_end:
+                mEditor.jumpToLineEnd();
+                return true;
+        }
+        return false;
+    }
 
-    private boolean onMoreOptionsSelected(MenuItem item) {
+    private boolean onRefactorOptionsSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_beautify:
                 beautifyCode();
+                return true;
+            case R.id.action_rename:
+                mEditor.rename();
+                return true;
+            case R.id.action_select_variable:
+                mEditor.selectName();
+                return true;
+        }
+        return false;
+    }
+
+
+    private boolean onMoreOptionsSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_console:
+                showConsole();
+                return true;
+            case R.id.action_show_type:
+                mEditor.showType();
                 return true;
             case R.id.action_editor_theme:
                 mEditorView.selectEditorTheme();
@@ -106,7 +148,7 @@ public class EditorMenu {
         return false;
     }
 
-    private void jump() {
+    private void jumpToLine() {
         mEditor.getLineCount()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Integer>() {
@@ -180,8 +222,17 @@ public class EditorMenu {
     }
 
     private void findOrReplace() {
-        new FindOrReplaceDialogBuilder(mContext, mEditorView)
-                .show();
+        mEditor.getSelection()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(@NonNull String s) throws Exception {
+                        new FindOrReplaceDialogBuilder(mContext, mEditorView)
+                                .setQueryIfNotEmpty(s)
+                                .show();
+                    }
+                });
+
     }
 
     private void copyAll() {

@@ -120,4 +120,10 @@ public class FindOrReplaceDialogBuilder extends ThemeColorMaterialDialogBuilder 
         }
 
     }
+
+    public FindOrReplaceDialogBuilder setQueryIfNotEmpty(String s) {
+        if (!TextUtils.isEmpty(s))
+            mKeywordsEditText.setText(s);
+        return this;
+    }
 }

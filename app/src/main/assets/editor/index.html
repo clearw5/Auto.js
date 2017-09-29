@@ -42,6 +42,7 @@
 <script type="text/javascript" src="codemirror/addon/search/searchcursor.js"></script>
 
 <!-- Auto.js -->
+<script type="text/javascript" src="codemirror/addon/autojs/autojs-global-scope.js"></script>
 <script type="text/javascript" src="codemirror/addon/autojs/autojs.js"></script>
 
 <head>
@@ -50,26 +51,20 @@
 <body>
 <textarea id="code"></textarea>
 </body>
-<script>
-    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-        lineNumbers: true,     // 显示行数
-        indentUnit: 4,         // 缩进单位为4
-        styleActiveLine: true, // 当前行背景高亮
-        foldGutter: true,
-        gutters:["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-        matchBrackets: true,   // 括号匹配
-        mode: 'javascript',     // HMTL混合模式
-        lineWrapping: false,    // 自动换行
-        theme: 'neo'      // 使用neo模版
-    });
-    editor.setOption("fullScreen", true);
-    editor.setOption("hintOptions", {
-        completeSingle: false,
-        globalScope: autoJsGlobalScope()
-    });
-    editor.on("keyup", function(cm, e) {
-        editor.execCommand("autocomplete")
-    })
-    editor.setCursor({line: 0, ch: 0});
-</script>
+
+<!-- Tern -->
+<script src="codemirror/addon/tern/tern.js"></script>
+<link rel="stylesheet" href="codemirror/addon/tern/tern.css">
+<script src="http://ternjs.net/node_modules/acorn/dist/acorn.js"></script>
+<script src="http://ternjs.net/node_modules/acorn/dist/acorn_loose.js"></script>
+<script src="http://ternjs.net/node_modules/acorn/dist/walk.js"></script>
+<script src="http://ternjs.net/doc/demo/polyfill.js"></script>
+<script src="http://ternjs.net/lib/signal.js"></script>
+<script src="http://ternjs.net/lib/tern.js"></script>
+<script src="http://ternjs.net/lib/def.js"></script>
+<script src="http://ternjs.net/lib/comment.js"></script>
+<script src="http://ternjs.net/lib/infer.js"></script>
+<script src="http://ternjs.net/plugin/doc_comment.js"></script>
+
+<script src="index.js"></script>
 </html>

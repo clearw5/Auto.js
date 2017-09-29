@@ -46,15 +46,64 @@
     </item>
 
     <item
-        android:id="@+id/action_jump"
-        android:title="@string/text_jump_to_line"
-        app:showAsAction="never"/>
+        android:title="@string/text_jump"
+        app:showAsAction="never">
+
+        <menu>
+
+            <item
+                android:id="@+id/action_jump_to_def"
+                android:title="@string/text_jump_to_def"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_jump_to_line"
+                android:title="@string/text_jump_to_line"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_jump_to_start"
+                android:title="@string/text_jump_to_start"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_jump_to_end"
+                android:title="@string/text_jump_to_end"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_jump_to_line_start"
+                android:title="@string/text_jump_to_line_start"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_jump_to_line_end"
+                android:title="@string/text_jump_to_line_end"
+                app:showAsAction="never"/>
+        </menu>
+
+    </item>
 
 
-    <item
-        android:id="@+id/action_console"
-        android:title="@string/text_console"
-        app:showAsAction="never"/>
+    <item android:title="@string/text_refactor">
+        <menu>
+            <item
+                android:id="@+id/action_rename"
+                android:title="@string/text_rename"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_select_variable"
+                android:title="@string/text_select_variable"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_beautify"
+                android:title="@string/text_code_beautify"
+                app:showAsAction="never"/>
+
+        </menu>
+    </item>
 
     <item
         android:id="@+id/action_log"
@@ -63,10 +112,14 @@
 
     <item android:title="@string/text_more">
         <menu>
+            <item
+                android:id="@+id/action_console"
+                android:title="@string/text_console"
+                app:showAsAction="never"/>
 
             <item
-                android:id="@+id/action_beautify"
-                android:title="@string/text_code_beautify"
+                android:id="@+id/action_show_type"
+                android:title="@string/text_show_type"
                 app:showAsAction="never"/>
 
             <item
