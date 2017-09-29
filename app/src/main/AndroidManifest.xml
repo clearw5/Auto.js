@@ -74,12 +74,15 @@
         <activity android:name=".ui.help.DocumentationActivity"/>
         <activity android:name=".ui.help.HelpCatalogueActivity"/>
         <activity android:name=".ui.settings.AboutActivity_"/>
-        <activity android:name=".ui.settings.SettingsActivity_"/>
+        <activity
+            android:name=".ui.settings.SettingsActivity_"
+            android:theme="@style/AppTheme.Settings"/>
         <activity android:name=".ui.console.LogActivity_"/>
         <activity android:name=".ui.error.ErrorReportActivity"/>
         <activity android:name=".ui.help.LocalWebViewActivity"/>
         <activity android:name=".external.tasker.TaskerScriptEditActivity_"/>
         <activity android:name=".ui.edit.ViewSampleActivity"/>
+        <activity android:name=".ui.login.LoginActivity_"/>
         <activity android:name=".external.widget.ScriptWidgetSettingsActivity_">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>

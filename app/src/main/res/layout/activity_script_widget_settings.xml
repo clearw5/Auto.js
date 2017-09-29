@@ -24,7 +24,7 @@
         </com.stardust.theme.widget.ThemeColorToolbar>
     </android.support.design.widget.AppBarLayout>
 
-    <com.stardust.scriptdroid.ui.main.script_list.ScriptListWithProgressBarView
+    <com.stardust.scriptdroid.ui.main.scripts.ScriptListWithProgressBarView
         android:id="@+id/script_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

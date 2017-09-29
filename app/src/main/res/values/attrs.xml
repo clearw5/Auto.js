@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <attr name="title" format="string|reference"/>
+    <attr name="icon" format="reference"/>
+
     <declare-styleable name="ToolbarMenuItem">
         <attr name="text" format="string|reference"/>
-        <attr name="icon" format="reference"/>
+        <attr name="icon"/>
         <attr name="icon_color" format="color|reference"/>
     </declare-styleable>
 
@@ -12,91 +15,16 @@
         <attr name="defaultValue" format="boolean"/>
     </declare-styleable>
 
-
-
-    <declare-styleable name="MaterialEditText">
-        <attr name="met_baseColor" format="color"/>
-        <attr name="met_primaryColor" format="color"/>
-        <attr name="met_floatingLabel">
-            <enum name="none" value="0"/>
-            <enum name="normal" value="1"/>
-            <enum name="highlight" value="2"/>
-        </attr>
-        <attr name="met_errorColor" format="color"/>
-        <attr name="met_minCharacters" format="integer"/>
-        <attr name="met_maxCharacters" format="integer"/>
-        <attr name="met_singleLineEllipsis" format="boolean"/>
-        <attr name="met_minBottomTextLines" format="integer"/>
-        <attr name="met_helperText" format="string"/>
-        <attr name="met_helperTextColor" format="color"/>
-        <attr name="met_accentTypeface" format="string"/>
-        <attr name="met_typeface" format="string"/>
-        <attr name="met_floatingLabelText" format="string"/>
-        <attr name="met_floatingLabelPadding" format="dimension"/>
-        <attr name="met_hideUnderline" format="boolean"/>
-        <attr name="met_underlineColor" format="color"/>
-        <attr name="met_autoValidate" format="boolean"/>
-        <attr name="met_iconLeft" format="reference"/>
-        <attr name="met_iconRight" format="reference"/>
-        <attr name="met_iconPadding" format="dimension"/>
-        <attr name="met_clearButton" format="boolean"/>
-        <attr name="met_floatingLabelTextSize" format="dimension"/>
-        <attr name="met_floatingLabelTextColor" format="color"/>
-        <attr name="met_bottomTextSize" format="dimension"/>
-        <attr name="met_floatingLabelAlwaysShown" format="boolean"/>
-        <attr name="met_helperTextAlwaysShown" format="boolean"/>
-        <attr name="met_floatingLabelAnimating" format="boolean"/>
-        <attr name="met_textColor" format="color"/>
-        <attr name="met_textColorHint" format="color"/>
+    <declare-styleable name="DrawerMenuItem">
+        <attr name="title"/>
+        <attr name="icon"/>
+        <attr name="with_switch" format="boolean"/>
+        <attr name="pref_key" format="string|reference"/>
+        <attr name="anti_shake" format="boolean"/>
     </declare-styleable>
-    <!-- From: file:/Users/rengwuxian/projects/MaterialEditText/library/src/main/res/values/dimens.xml -->
-    <eat-comment/>
-    <dimen name="bottom_ellipsis_height">4dp</dimen>
-    <dimen name="bottom_text_size">12sp</dimen>
-    <dimen name="default_padding_bottom">8dp</dimen>
-    <dimen name="default_padding_top">8dp</dimen>
-    <dimen name="floating_label_text_size">12sp</dimen>
-    <dimen name="inner_components_spacing">8dp</dimen>
-    <dimen name="inner_padding_left">0dp</dimen>
-    <dimen name="inner_padding_right">0dp</dimen>
 
-    <declare-styleable name="RoundedImageView">
-        <attr name="riv_corner_radius" format="dimension"/>
-        <attr name="riv_corner_radius_top_left" format="dimension"/>
-        <attr name="riv_corner_radius_top_right" format="dimension"/>
-        <attr name="riv_corner_radius_bottom_left" format="dimension"/>
-        <attr name="riv_corner_radius_bottom_right" format="dimension"/>
-        <attr name="riv_border_width" format="dimension"/>
-        <attr name="riv_border_color" format="color"/>
-        <attr name="riv_mutate_background" format="boolean"/>
-        <attr name="riv_oval" format="boolean"/>
-        <attr name="android:scaleType"/>
-        <attr name="riv_tile_mode">
-            <enum name="clamp" value="0"/>
-            <enum name="repeat" value="1"/>
-            <enum name="mirror" value="2"/>
-        </attr>
-        <attr name="riv_tile_mode_x">
-            <enum name="clamp" value="0"/>
-            <enum name="repeat" value="1"/>
-            <enum name="mirror" value="2"/>
-        </attr>
-        <attr name="riv_tile_mode_y">
-            <enum name="clamp" value="0"/>
-            <enum name="repeat" value="1"/>
-            <enum name="mirror" value="2"/>
-        </attr>
+    <declare-styleable name="DrawerMenuGroup">
+        <attr name="title"/>
     </declare-styleable>
-    <!-- From: file:/Users/vince/Documents/vinc3m1/RoundedImageView/roundedimageview/src/main/res/values/about_libraries_def.xml -->
-    <eat-comment/>
-    <string name="define_roundedimageview"/>
-    <string name="library_roundedimageview_author">Vince Mi</string>
-    <string name="library_roundedimageview_authorWebsite">https://github.com/vinc3m1</string>
-    <string name="library_roundedimageview_isOpenSource">true</string>
-    <string name="library_roundedimageview_libraryDescription">A fast ImageView (and Drawable) that supports rounded corners (and ovals or circles) based on the original example from Romain Guy.</string>
-    <string name="library_roundedimageview_libraryName">RoundedImageView</string>
-    <string name="library_roundedimageview_libraryVersion">1.3.0</string>
-    <string name="library_roundedimageview_libraryWebsite">https://github.com/vinc3m1/RoundedImageView</string>
-    <string name="library_roundedimageview_licenseId">apache_2_0</string>
-    <string name="library_roundedimageview_repositoryLink">https://github.com/vinc3m1/RoundedImageView.git</string>
+
 </resources>

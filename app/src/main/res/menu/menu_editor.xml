@@ -3,39 +3,139 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_beautify"
-        android:orderInCategory="100"
-        android:title="@string/text_code_beautify"
-        app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/action_console"
-        android:orderInCategory="200"
-        android:title="@string/text_console"
-        app:showAsAction="never"/>
-
-    <item
         android:id="@+id/action_force_stop"
-        android:orderInCategory="250"
         android:title="@string/text_force_stop"
         app:showAsAction="never"/>
 
+    <item android:title="@string/text_edit">
+
+        <menu>
+
+            <item
+                android:id="@+id/action_find_or_replace"
+                android:title="@string/text_find_or_replace"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_copy_all"
+                android:title="@string/text_copy_all"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_paste"
+                android:title="@string/text_paste"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_copy_line"
+                android:title="@string/text_copy_line"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_delete_line"
+                android:title="@string/text_delete_line"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_clear"
+                android:title="@string/text_clear"
+                app:showAsAction="never"/>
+
+        </menu>
+
+    </item>
+
+    <item
+        android:title="@string/text_jump"
+        app:showAsAction="never">
+
+        <menu>
+
+            <item
+                android:id="@+id/action_jump_to_def"
+                android:title="@string/text_jump_to_def"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_jump_to_line"
+                android:title="@string/text_jump_to_line"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_jump_to_start"
+                android:title="@string/text_jump_to_start"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_jump_to_end"
+                android:title="@string/text_jump_to_end"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_jump_to_line_start"
+                android:title="@string/text_jump_to_line_start"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_jump_to_line_end"
+                android:title="@string/text_jump_to_line_end"
+                app:showAsAction="never"/>
+        </menu>
+
+    </item>
+
+
+    <item android:title="@string/text_refactor">
+        <menu>
+            <item
+                android:id="@+id/action_rename"
+                android:title="@string/text_rename"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_select_variable"
+                android:title="@string/text_select_variable"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_beautify"
+                android:title="@string/text_code_beautify"
+                app:showAsAction="never"/>
+
+        </menu>
+    </item>
+
     <item
         android:id="@+id/action_log"
-        android:orderInCategory="280"
         android:title="@string/text_log"
         app:showAsAction="never"/>
 
-    <item
-        android:id="@+id/action_help"
-        android:orderInCategory="300"
-        android:title="@string/text_help"
-        app:showAsAction="never"/>
+    <item android:title="@string/text_more">
+        <menu>
+            <item
+                android:id="@+id/action_console"
+                android:title="@string/text_console"
+                app:showAsAction="never"/>
 
-    <item
-        android:id="@+id/action_open_by_other_apps"
-        android:orderInCategory="400"
-        android:title="@string/text_open_by_other_apps"
-        app:showAsAction="never"/>
+            <item
+                android:id="@+id/action_show_type"
+                android:title="@string/text_show_type"
+                app:showAsAction="never"/>
 
+            <item
+                android:id="@+id/action_info"
+                android:title="@string/text_info"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_editor_theme"
+                android:title="@string/text_editor_theme"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_open_by_other_apps"
+                android:title="@string/text_open_by_other_apps"
+                app:showAsAction="never"/>
+        </menu>
+    </item>
 </menu>

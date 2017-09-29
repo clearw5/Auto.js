@@ -11,15 +11,18 @@ import android.view.MenuItem;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.script.ScriptFile;
-import com.stardust.scriptdroid.script.StorageScriptProvider;
+import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.ui.main.script_list.ScriptAndFolderListRecyclerView;
-import com.stardust.scriptdroid.ui.main.script_list.ScriptListWithProgressBarView;
+import com.stardust.scriptdroid.ui.main.scripts.ScriptListRecyclerView;
+import com.stardust.scriptdroid.ui.main.scripts.ScriptListWithProgressBarView;
 import com.twofortyfouram.locale.sdk.client.ui.activity.AbstractAppCompatPluginActivity;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+
+import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_CONTENT;
+
 
 /**
  * Created by Stardust on 2017/3/27.
@@ -29,7 +32,7 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
 
     private String mSelectedScriptFilePath;
     private String mPreExecuteScript;
-    private StorageScriptProvider mStorageScriptProvider;
+    private StorageFileProvider mStorageFileProvider;
 
     @AfterViews
     void setUpViews() {
@@ -39,12 +42,12 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
 
 
     private void initScriptListRecyclerView() {
-        mStorageScriptProvider = StorageScriptProvider.getExternalStorageProvider();
+        mStorageFileProvider = StorageFileProvider.getExternalStorageProvider();
         ScriptListWithProgressBarView scriptList = (ScriptListWithProgressBarView) findViewById(R.id.script_list);
         scriptList.setScriptFileOperationEnabled(false);
-        scriptList.setStorageScriptProvider(mStorageScriptProvider);
-        scriptList.setCurrentDirectory(StorageScriptProvider.DEFAULT_DIRECTORY);
-        scriptList.setOnItemClickListener(new ScriptAndFolderListRecyclerView.OnScriptFileClickListener() {
+        scriptList.setStorageScriptProvider(mStorageFileProvider);
+        scriptList.setCurrentDirectory(StorageFileProvider.DEFAULT_DIRECTORY);
+        scriptList.setOnItemClickListener(new ScriptListRecyclerView.OnScriptFileClickListener() {
             @Override
             public void onClick(ScriptFile file, int position) {
                 mSelectedScriptFilePath = file.getPath();
@@ -62,7 +65,7 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_refresh) {
-            mStorageScriptProvider.refreshAll();
+            mStorageFileProvider.refreshAll();
         } else if (item.getItemId() == R.id.action_clear_file_selection) {
             mSelectedScriptFilePath = null;
         } else {
@@ -115,7 +118,7 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            mPreExecuteScript = data.getStringExtra(TaskerScriptEditActivity.EXTRA_CONTENT);
+            mPreExecuteScript = data.getStringExtra(EXTRA_CONTENT);
         }
     }
 }

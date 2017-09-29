@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="theme_color_red">基佬红</string>
+    <string name="theme_color_pink">基佬粉</string>
+    <string name="theme_color_purple">基佬紫</string>
+    <string name="theme_color_dark_purple">基深紫</string>
+    <string name="theme_color_indigo">基靛蓝</string>
+    <string name="theme_color_blue">基佬蓝</string>
+    <string name="theme_color_light_blue">基亮蓝</string>
+    <string name="theme_color_blue_green">基蓝绿</string>
+    <string name="theme_color_cyan">基佬青</string>
+    <string name="theme_color_green">基佬绿</string>
+    <string name="theme_color_light_green">基亮绿</string>
+    <string name="theme_color_yellow_green">基黄绿</string>
+    <string name="theme_color_yellow">基佬黄</string>
+    <string name="theme_color_amber">基琥珀</string>
+    <string name="theme_color_orange">基佬橙</string>
+    <string name="theme_color_dark_orange">基深橙</string>
+    <string name="theme_color_brown">基佬棕</string>
+    <string name="theme_color_gray">基佬灰</string>
+    <string name="theme_color_blue_gray">基蓝灰</string>
+
+
+    <color name="theme_color_red">#F44336</color>
+    <color name="theme_color_pink">#E91E63</color>
+    <color name="theme_color_purple">#9C27B0</color>
+    <color name="theme_color_dark_purple">#673AB7</color>
+    <color name="theme_color_indigo">#3F51B5</color>
+    <color name="theme_color_blue">#2196F3</color>
+    <color name="theme_color_light_blue">#03A9F4</color>
+    <color name="theme_color_blue_green">#00BCD4</color>
+    <color name="theme_color_cyan">#009688</color>
+    <color name="theme_color_green">#4CAF50</color>
+    <color name="theme_color_light_green">#8BC34A</color>
+    <color name="theme_color_yellow_green">#CDDC39</color>
+    <color name="theme_color_yellow">#FFEB3B</color>
+    <color name="theme_color_amber">#FFC107</color>
+    <color name="theme_color_orange">#FF9800</color>
+    <color name="theme_color_dark_orange">#FF5722</color>
+    <color name="theme_color_brown">#795548</color>
+    <color name="theme_color_gray">#9E9E9E</color>
+    <color name="theme_color_blue_gray">#607D8B</color>
+</resources>

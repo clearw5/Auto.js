@@ -17,7 +17,7 @@ import java.util.List;
 public class FragmentPagerAdapterBuilder {
 
     public interface OnFragmentInstantiateListener {
-        void OnInstantiate(Fragment fragment);
+        void OnInstantiate(int pos, Fragment fragment);
     }
 
     private List<Fragment> mFragments = new ArrayList<>();
@@ -71,7 +71,7 @@ public class FragmentPagerAdapterBuilder {
             Fragment fragment = (Fragment) super.instantiateItem(container, position);
             mStoredFragments.put(position, fragment);
             if(mOnFragmentInstantiateListener != null){
-                mOnFragmentInstantiateListener.OnInstantiate(fragment);
+                mOnFragmentInstantiateListener.OnInstantiate(position, fragment);
             }
             return fragment;
         }

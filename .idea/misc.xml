@@ -2,7 +2,7 @@
 <project version="4">
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
-    <list size="9">
+    <list size="10">
       <item index="0" class="java.lang.String" itemvalue="android.support.annotation.Keep" />
       <item index="1" class="java.lang.String" itemvalue="android.webkit.JavascriptInterface" />
       <item index="2" class="java.lang.String" itemvalue="butterknife.OnClick" />
@@ -11,7 +11,8 @@
       <item index="5" class="java.lang.String" itemvalue="com.stardust.view.ViewBind.Click" />
       <item index="6" class="java.lang.String" itemvalue="com.stardust.view.ViewBinding.Check" />
       <item index="7" class="java.lang.String" itemvalue="com.stardust.view.ViewBinding.Click" />
-      <item index="8" class="java.lang.String" itemvalue="org.greenrobot.eventbus.Subscribe" />
+      <item index="8" class="java.lang.String" itemvalue="org.androidannotations.annotations.Click" />
+      <item index="9" class="java.lang.String" itemvalue="org.greenrobot.eventbus.Subscribe" />
     </list>
   </component>
   <component name="NullableNotNullManager">

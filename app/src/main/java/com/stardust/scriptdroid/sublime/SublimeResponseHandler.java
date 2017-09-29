@@ -13,7 +13,7 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.script.Scripts;
-import com.stardust.scriptdroid.script.StorageScriptProvider;
+import com.stardust.scriptdroid.script.StorageFileProvider;
 
 /**
  * Created by Stardust on 2017/5/11.
@@ -114,7 +114,7 @@ public class SublimeResponseHandler implements Handler {
         } else {
             name = "<remote>" + name;
         }
-        PFile.write(StorageScriptProvider.DEFAULT_DIRECTORY_PATH + name, script);
+        PFile.write(StorageFileProvider.DEFAULT_DIRECTORY_PATH + name, script);
         App.getApp().getUiHandler().toast(R.string.text_script_save_successfully);
     }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:checkable="true"
+        android:title="@string/text_name"/>
+    <item
+        android:checkable="true"
+        android:title="@string/text_time"
+        />
+    <item
+        android:checkable="true"
+        android:title="@string/text_size"
+        />
+    <item
+        android:checkable="true"
+        android:title="@string/text_type"
+        />
+</menu>

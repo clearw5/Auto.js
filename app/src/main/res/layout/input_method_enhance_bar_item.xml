@@ -4,7 +4,7 @@
           android:layout_height="match_parent"
           android:background="@drawable/btn_selector"
           android:gravity="center"
-          android:paddingLeft="16dp"
-          android:paddingRight="16dp"
+          android:paddingLeft="12dp"
+          android:paddingRight="12dp"
           android:textColor="@android:color/secondary_text_light"
           android:textSize="16sp"/>
