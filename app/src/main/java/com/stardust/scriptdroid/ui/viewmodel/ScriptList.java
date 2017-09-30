@@ -77,10 +77,10 @@ public class ScriptList {
     }
 
     public void add(ScriptFile file) {
-        if (file.isFile()) {
-            mScriptFiles.add(file);
-        } else {
+        if (file.isDirectory()) {
             mDirectories.add(file);
+        } else {
+            mScriptFiles.add(file);
         }
     }
 

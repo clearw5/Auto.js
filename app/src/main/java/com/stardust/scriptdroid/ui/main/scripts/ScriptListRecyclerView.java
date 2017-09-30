@@ -314,7 +314,7 @@ public class ScriptListRecyclerView extends RecyclerView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDirectoryChange(StorageFileProvider.DirectoryChangeEvent event) {
-        if (event.directory.equals(mCurrentDirectory)) {
+        if (event.getDir().equals(mCurrentDirectory)) {
             updateCurrentDirectory();
         }
     }

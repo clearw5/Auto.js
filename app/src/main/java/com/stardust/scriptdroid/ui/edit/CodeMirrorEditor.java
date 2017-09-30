@@ -2,11 +2,13 @@ package com.stardust.scriptdroid.ui.edit;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
@@ -59,7 +61,7 @@ public class CodeMirrorEditor extends FrameLayout {
 
     private static String[] sAvailableThemes;
     private String mTheme = "neo";
-    private MaterialProgressBar mProgressBar;
+    private FrameLayout mProgressBarContainer;
     private WebView mWebView;
     private JavaScriptBridge mJavaScriptBridge = new JavaScriptBridge();
     private Callback mCallback;
@@ -141,11 +143,15 @@ public class CodeMirrorEditor extends FrameLayout {
     }
 
     private void setupProgress() {
-        mProgressBar = new MaterialProgressBar(getContext());
+        mProgressBarContainer = new FrameLayout(getContext());
+        mProgressBarContainer.setBackgroundColor(Color.WHITE);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        addView(mProgressBarContainer, params);
+        MaterialProgressBar progressBar = new MaterialProgressBar(getContext());
         int dp50 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(dp50, dp50);
-        params.gravity = Gravity.CENTER;
-        addView(mProgressBar, params);
+        FrameLayout.LayoutParams p = new FrameLayout.LayoutParams(dp50, dp50);
+        p.gravity = Gravity.CENTER;
+        mProgressBarContainer.addView(progressBar, p);
     }
 
     private void setupWebView() {
@@ -171,7 +177,7 @@ public class CodeMirrorEditor extends FrameLayout {
     }
 
     public void setProgress(boolean onProgress) {
-        mProgressBar.setVisibility(onProgress ? VISIBLE : GONE);
+        mProgressBarContainer.setVisibility(onProgress ? VISIBLE : GONE);
     }
 
     public void setText(final String text) {
@@ -464,7 +470,7 @@ public class CodeMirrorEditor extends FrameLayout {
 
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
-            mProgressBar.setVisibility(newProgress == 100 ? GONE : VISIBLE);
+            setProgress(newProgress != 100);
         }
     }
 }

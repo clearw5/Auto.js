@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.script;
 
 import android.os.Environment;
 import android.renderscript.Script;
+import android.support.annotation.Nullable;
 
 import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptFileSource;
@@ -34,6 +35,11 @@ public class ScriptFile extends File {
         init();
     }
 
+    public ScriptFile(String parent, String name) {
+        super(parent, name);
+        init();
+    }
+
     private void init() {
         mSimplifiedName = PFile.getNameWithoutExtension(getName());
         mSimplifyPath = getPath();
@@ -52,6 +58,17 @@ public class ScriptFile extends File {
             return renameTo(new File(getParent(), newName));
         else
             return renameTo(new File(getParent(), newName + "." + getExtension()));
+    }
+
+    @Nullable
+    public ScriptFile renameAndReturnNewFile(String newName) {
+        ScriptFile newFile = isDirectory() ? new ScriptFile(getParent(), newName) :
+                new ScriptFile(getParent(), newName + "." + getExtension());
+        if (renameTo(newFile)) {
+            return newFile;
+        } else {
+            return null;
+        }
     }
 
     private String getExtension() {
@@ -123,10 +140,10 @@ public class ScriptFile extends File {
         return renameTo(new File(to, getName()));
     }
 
-    public ScriptSource toSource(){
-        if(getType() == TYPE_JAVA_SCRIPT){
+    public ScriptSource toSource() {
+        if (getType() == TYPE_JAVA_SCRIPT) {
             return new JavaScriptFileSource(this);
-        }else {
+        } else {
             return new AutoFileSource(this);
         }
     }

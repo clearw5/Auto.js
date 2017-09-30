@@ -47,11 +47,13 @@ public class ScriptOperations {
     private Context mContext;
     private View mView;
     private ScriptFile mCurrentDirectory;
+    private StorageFileProvider mStorageFileProvider;
 
     public ScriptOperations(Context context, View view, ScriptFile currentDirectory) {
         mContext = context;
         mView = view;
         mCurrentDirectory = currentDirectory;
+        mStorageFileProvider = StorageFileProvider.getDefault();
     }
 
     public ScriptOperations(Context context, View view) {
@@ -83,9 +85,10 @@ public class ScriptOperations {
                     PFile.write(path, script);
                 } catch (UncheckedIOException e) {
                     showMessage(R.string.text_file_write_fail);
+                    return;
                 }
             }
-            notifyScriptFileChanged();
+            mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(path));
             if (edit)
                 Scripts.edit(path);
         } else {
@@ -115,7 +118,7 @@ public class ScriptOperations {
                         } else {
                             showMessage(R.string.text_import_fail);
                         }
-                        notifyScriptFileChanged();
+                        mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(pathTo));
                         return pathTo;
                     }
                 });
@@ -133,7 +136,7 @@ public class ScriptOperations {
                         } else {
                             showMessage(R.string.text_import_fail);
                         }
-                        notifyScriptFileChanged();
+                        mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(pathTo));
                         return pathTo;
                     }
                 });
@@ -147,16 +150,12 @@ public class ScriptOperations {
                     public void accept(@io.reactivex.annotations.NonNull String path) throws Exception {
                         if (new ScriptFile(getCurrentDirectory(), path).mkdirs()) {
                             showMessage(R.string.text_already_create);
-                            notifyScriptFileChanged();
+                            mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(path));
                         } else {
                             showMessage(R.string.text_create_fail);
                         }
                     }
                 });
-    }
-
-    private void notifyScriptFileChanged() {
-        StorageFileProvider.getDefault().notifyDirectoryChanged(mCurrentDirectory);
     }
 
     private void showMessage(final int resId) {
@@ -218,13 +217,18 @@ public class ScriptOperations {
     }
 
     public Observable<Boolean> rename(final ScriptFile file) {
+        final ScriptFile oldFile = new ScriptFile(file.getPath());
         String originalName = file.getSimplifiedName();
         return showNameInputDialog(originalName, new InputCallback(file.isDirectory() ? null : PFile.getExtension(file.getName()),
                 originalName))
                 .map(new Function<String, Boolean>() {
                     @Override
                     public Boolean apply(@io.reactivex.annotations.NonNull String newName) throws Exception {
-                        return file.renameTo(newName);
+                        ScriptFile newFile = file.renameAndReturnNewFile(newName);
+                        if (newFile != null) {
+                            mStorageFileProvider.notifyFileChanged(mCurrentDirectory, oldFile, newFile);
+                        }
+                        return newFile != null;
                     }
                 });
     }
@@ -246,7 +250,8 @@ public class ScriptOperations {
                     @Override
                     public void accept(@io.reactivex.annotations.NonNull Boolean deleted) throws Exception {
                         showMessage(deleted ? R.string.text_already_delete : R.string.text_delete_failed);
-                        notifyScriptFileChanged();
+                        if (deleted)
+                            mStorageFileProvider.notifyFileRemoved(mCurrentDirectory, scriptFile);
                     }
                 });
     }

@@ -30,6 +30,7 @@ import com.stardust.widget.BindableViewHolder;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.concurrent.Callable;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -104,7 +105,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         initScriptListRecyclerView();
         mStorageFileProvider = StorageFileProvider.getDefault();
         setCurrentDirectory(mStorageFileProvider.getInitialDirectory());
-        //mStorageFileProvider.registerDirectoryChangeListener(this);
+        mStorageFileProvider.registerDirectoryChangeListener(this);
     }
 
     private void initScriptListRecyclerView() {
@@ -158,9 +159,10 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
 
     @Subscribe
     void onDirectoryChange(StorageFileProvider.DirectoryChangeEvent event) {
-        if (event.directory.equals(mCurrentDirectory)) {
-            loadScriptList();
+        if (!event.getDir().equals(mCurrentDirectory)) {
+            return;
         }
+        loadScriptList();
     }
 
     @Override
@@ -238,7 +240,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        //  mStorageFileProvider.unregisterDirectoryChangeListener(this);
+        mStorageFileProvider.unregisterDirectoryChangeListener(this);
     }
 
     private class ScriptListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -404,6 +406,9 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         @BindView(R.id.order)
         ImageView mSortOrder;
 
+        @BindView(R.id.back)
+        ImageView mGoBack;
+
         private boolean mIsDir;
 
         CategoryViewHolder(View itemView) {
@@ -415,6 +420,11 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         public void bind(Boolean isDirCategory, int position) {
             mTitle.setText(isDirCategory ? R.string.text_directory : R.string.text_file);
             mIsDir = isDirCategory;
+            if (isDirCategory && canGoBack()) {
+                mGoBack.setVisibility(VISIBLE);
+            } else {
+                mGoBack.setVisibility(GONE);
+            }
         }
 
         @OnClick(R.id.order)
@@ -440,6 +450,13 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
             mDirSortMenuShowing = mIsDir;
             popupMenu.show();
 
+        }
+
+        @OnClick(R.id.back)
+        void back() {
+            if (canGoBack()) {
+                goBack();
+            }
         }
     }
 }

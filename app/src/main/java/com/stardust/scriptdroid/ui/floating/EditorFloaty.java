@@ -7,9 +7,11 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 
 import com.stardust.enhancedfloaty.FloatyService;
+import com.stardust.enhancedfloaty.FloatyWindow;
 import com.stardust.enhancedfloaty.ResizableFloaty;
 import com.stardust.enhancedfloaty.ResizableFloatyWindow;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.external.floatingwindow.FloatyWindowManger;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.ui.edit.EditActivity_;
 import com.stardust.scriptdroid.ui.edit.EditorView;
@@ -41,8 +43,7 @@ public class EditorFloaty implements ResizableFloaty {
     }
 
     public static void floatingEdit(Context context, Intent intent) {
-        FloatyService.addWindow(new ResizableFloatyWindow(new EditorFloaty(intent)));
-        context.startService(new Intent(context, FloatyService.class));
+        FloatyWindowManger.addWindow(context, new ResizableFloatyWindow(new EditorFloaty(intent)));
     }
 
     public static void floatingEdit(Context context, String path) {
