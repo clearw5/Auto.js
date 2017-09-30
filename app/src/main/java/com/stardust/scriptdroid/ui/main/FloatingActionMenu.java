@@ -74,9 +74,19 @@ public class FloatingActionMenu extends FrameLayout implements View.OnClickListe
         int h = mFabs[0].getHeight();
         for (int i = 0; i < mFabContainers.length; i++) {
             animateY(mFabContainers[i], -(h + mInterval) * (i + 1), null);
+            rotate(mFabs[i]);
         }
         mExpanded = true;
         mState.onNext(true);
+    }
+
+    private void rotate(FloatingActionButton fab) {
+        fab.setRotation(0);
+        fab.animate()
+                .rotation(360)
+                .setDuration(mDuration)
+                .setInterpolator(mInterpolator)
+                .start();
     }
 
 
@@ -98,6 +108,7 @@ public class FloatingActionMenu extends FrameLayout implements View.OnClickListe
         });
         for (int i = 1; i < mFabContainers.length; i++) {
             animateY(mFabContainers[i], 0, null);
+            rotate(mFabs[i]);
         }
         mExpanded = false;
         mState.onNext(false);

@@ -10,7 +10,9 @@
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar"
@@ -46,6 +48,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             app:layout_anchor="@id/viewpager"
             app:layout_anchorGravity="bottom|right|end"
             >
@@ -55,6 +59,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|end|bottom"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:visibility="invisible"/>
 
             <com.stardust.theme.widget.ThemeColorFloatingActionButton

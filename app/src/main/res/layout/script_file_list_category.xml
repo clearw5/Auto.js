@@ -5,6 +5,7 @@
               android:orientation="horizontal">
 
     <LinearLayout
+        android:id="@+id/title_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -15,6 +16,7 @@
         android:paddingTop="8dp">
 
         <ImageView
+            android:id="@+id/collapse"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_gravity="center_vertical"
