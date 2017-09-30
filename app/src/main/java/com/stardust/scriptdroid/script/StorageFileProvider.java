@@ -125,7 +125,7 @@ public class StorageFileProvider {
                         if (scriptFiles == null) {
                             return Observable.empty();
                         } else {
-                            FileSorter.sort(scriptFiles);
+                            FileSorter.sort(scriptFiles, FileSorter.NAME);
                             mScriptFileCache.put(dir.getPath(), scriptFiles);
                             return Observable.fromArray(scriptFiles);
                         }

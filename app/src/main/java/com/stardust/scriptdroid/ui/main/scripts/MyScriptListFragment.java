@@ -16,6 +16,7 @@ import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.tool.SimpleObserver;
 import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
+import com.stardust.scriptdroid.ui.floating.EditorFloaty;
 import com.stardust.scriptdroid.ui.main.FloatingActionMenu;
 import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
 import com.stardust.util.BackPressedHandler;
@@ -56,7 +57,8 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
         mScriptFileList.setOnScriptFileClickListener(new ScriptListView.OnScriptFileClickListener() {
             @Override
             public void onScriptFileClick(View view, ScriptFile file) {
-                Scripts.edit(file);
+                //Scripts.edit(file);
+                EditorFloaty.floatingEdit(getContext(), file);
             }
         });
     }
@@ -110,6 +112,10 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
     public boolean onBackPressed(Activity activity) {
         if (mFloatingActionMenu != null && mFloatingActionMenu.isExpanded()) {
             mFloatingActionMenu.collapse();
+            return true;
+        }
+        if(mScriptFileList.canGoBack()){
+            mScriptFileList.goBack();
             return true;
         }
         return false;

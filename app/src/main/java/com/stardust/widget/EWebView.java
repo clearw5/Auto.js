@@ -59,6 +59,7 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
         settings.setJavaScriptEnabled(true);
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setDomStorageEnabled(true);
+        settings.setDisplayZoomControls(false);
         mWebView.setWebViewClient(new MyWebViewClient());
         mWebView.setWebChromeClient(new MyWebChromeClient());
     }

@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:checkable="true"
+        android:id="@+id/action_sort_by_name"
         android:title="@string/text_name"/>
     <item
-        android:checkable="true"
+        android:id="@+id/action_sort_by_date"
         android:title="@string/text_time"
         />
     <item
-        android:checkable="true"
+        android:id="@+id/action_sort_by_size"
         android:title="@string/text_size"
         />
     <item
-        android:checkable="true"
+        android:id="@+id/action_sort_by_type"
         android:title="@string/text_type"
         />
 </menu>

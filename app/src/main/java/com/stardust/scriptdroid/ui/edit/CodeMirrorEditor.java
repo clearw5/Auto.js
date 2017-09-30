@@ -196,6 +196,7 @@ public class CodeMirrorEditor extends FrameLayout {
 
     public void loadFile(final File file) {
         setProgress(true);
+        // TODO: 2017/9/29 handle error
         Observable.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
@@ -346,20 +347,22 @@ public class CodeMirrorEditor extends FrameLayout {
 
         @JavascriptInterface
         public void setStringFromJs(String text) {
-            if (mStringFromJs != null) {
-                mStringFromJs.onNext(text);
-                mStringFromJs.onComplete();
-                mStringFromJs = null;
+            if (mStringFromJs == null) {
+                return;
             }
+            mStringFromJs.onNext(text);
+            mStringFromJs.onComplete();
+            mStringFromJs = null;
         }
 
         @JavascriptInterface
         public void setIntFromJs(int i) {
-            if (mIntFromJs != null) {
-                mIntFromJs.onNext(i);
-                mIntFromJs.onComplete();
-                mIntFromJs = null;
+            if (mIntFromJs == null) {
+                return;
             }
+            mIntFromJs.onNext(i);
+            mIntFromJs.onComplete();
+            mIntFromJs = null;
         }
 
         @JavascriptInterface
@@ -371,26 +374,28 @@ public class CodeMirrorEditor extends FrameLayout {
 
         @JavascriptInterface
         public void onTextChange() {
-            if (mCallback != null) {
-                mWebView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mCallback.onChange();
-                    }
-                });
+            if (mCallback == null) {
+                return;
             }
+            mWebView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mCallback.onChange();
+                }
+            });
         }
 
         @JavascriptInterface
         public void updateCodeCompletion(final int fromLine, final int fromCh, final int toLine, final int toCh, final String[] list) {
-            if (mCallback != null) {
-                mWebView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mCallback.updateCodeCompletion(fromLine, fromCh, toLine, toCh, list);
-                    }
-                });
+            if (mCallback == null) {
+                return;
             }
+            mWebView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mCallback.updateCodeCompletion(fromLine, fromCh, toLine, toCh, list);
+                }
+            });
         }
 
     }
@@ -459,7 +464,7 @@ public class CodeMirrorEditor extends FrameLayout {
 
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
-            mProgressBar.setVisibility(newProgress == 100 ? VISIBLE : GONE);
+            mProgressBar.setVisibility(newProgress == 100 ? GONE : VISIBLE);
         }
     }
 }
