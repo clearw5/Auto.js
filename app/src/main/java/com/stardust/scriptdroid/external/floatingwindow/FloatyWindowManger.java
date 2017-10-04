@@ -20,7 +20,7 @@ public class FloatyWindowManger {
 
     public static void addWindow(Context context, FloatyWindow window) {
         context.startService(new Intent(context, FloatyService.class));
-        if (SettingsCompat.canDrawOverlays(context)) {
+        if (!SettingsCompat.canDrawOverlays(context)) {
             Toast.makeText(context, R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
             manageDrawOverlays(context);
             return;

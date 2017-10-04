@@ -184,6 +184,9 @@ public class StorageFileProvider {
                     @Override
                     public ObservableSource<ScriptFile> apply(@NonNull ScriptFile dir) throws Exception {
                         ScriptFile[] scriptFiles = dir.listFiles();
+                        if (scriptFiles == null) {
+                            return Observable.empty();
+                        }
                         mScriptFileCache.put(dir.getPath(), new ArrayList<>(Arrays.asList(scriptFiles)));
                         return Observable.fromArray(scriptFiles);
                     }

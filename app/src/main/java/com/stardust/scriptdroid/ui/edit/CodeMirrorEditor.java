@@ -163,11 +163,9 @@ public class CodeMirrorEditor extends FrameLayout {
 
     private void setupWebSettings() {
         WebSettings settings = mWebView.getSettings();
-        settings.setUseWideViewPort(true);
         settings.setBuiltInZoomControls(true);
         //settings.setLoadWithOverviewMode(true);
         settings.setJavaScriptEnabled(true);
-        //settings.setUseWideViewPort(true);
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setDomStorageEnabled(true);
         settings.setNeedInitialFocus(true);

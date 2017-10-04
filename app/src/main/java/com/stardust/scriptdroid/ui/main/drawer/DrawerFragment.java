@@ -39,6 +39,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.IOException;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
@@ -46,6 +47,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
+import okhttp3.WebSocket;
 
 
 /**
@@ -244,7 +250,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
 
                     @Override
                     public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        if(isHidden()){
+                        if (isHidden()) {
                             return;
                         }
                         Toast.makeText(App.getApp(), e.getMessage(), Toast.LENGTH_SHORT).show();

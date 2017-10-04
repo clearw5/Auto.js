@@ -7,6 +7,16 @@ import android.content.ContextWrapper;
 import android.view.Window;
 import android.view.WindowManager;
 
+import java.io.IOException;
+
+import javax.annotation.Nullable;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okio.BufferedSink;
+
 /**
  * Created by Stardust on 2017/8/4.
  */

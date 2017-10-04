@@ -34,6 +34,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Response;
 
 /**
  * Created by Stardust on 2017/3/13.
@@ -57,8 +58,8 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
         mScriptFileList.setOnScriptFileClickListener(new ScriptListView.OnScriptFileClickListener() {
             @Override
             public void onScriptFileClick(View view, ScriptFile file) {
-                //Scripts.edit(file);
-                EditorFloaty.floatingEdit(getContext(), file);
+                Scripts.edit(file);
+                //EditorFloaty.floatingEdit(getContext(), file);
             }
         });
     }
@@ -114,7 +115,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
             mFloatingActionMenu.collapse();
             return true;
         }
-        if(mScriptFileList.canGoBack()){
+        if (mScriptFileList.canGoBack()) {
             mScriptFileList.goBack();
             return true;
         }

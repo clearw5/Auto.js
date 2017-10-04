@@ -159,7 +159,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
     }
 
     @Subscribe
-    void onDirectoryChange(StorageFileProvider.DirectoryChangeEvent event) {
+    public void onDirectoryChange(StorageFileProvider.DirectoryChangeEvent event) {
         if (!event.getDir().equals(mCurrentDirectory)) {
             return;
         }

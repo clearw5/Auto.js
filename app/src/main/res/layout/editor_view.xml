@@ -57,6 +57,7 @@
                         android:id="@+id/save"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
+                        android:enabled="false"
                         app:icon="@drawable/ic_save_white_48dp"
                         app:text="@string/text_save"/>
 

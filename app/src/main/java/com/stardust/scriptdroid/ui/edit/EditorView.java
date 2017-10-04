@@ -102,11 +102,6 @@ public class EditorView extends FrameLayout {
         }
     };
 
-    private void setMenuItemStatus(int id, boolean enabled) {
-        findViewById(id).setEnabled(enabled);
-    }
-
-
     public EditorView(Context context) {
         super(context);
     }
@@ -159,10 +154,17 @@ public class EditorView extends FrameLayout {
         }
     }
 
+
+    private void setMenuItemStatus(int id, boolean enabled) {
+        findViewById(id).setEnabled(enabled);
+    }
+
+
     @AfterViews
     void init() {
         setUpEditor();
         setUpInputMethodEnhancedBar();
+        setMenuItemStatus(R.id.save, false);
     }
 
     private void setUpInputMethodEnhancedBar() {
