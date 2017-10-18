@@ -26,8 +26,9 @@ import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
+import com.stardust.scriptdroid.external.floatingwindow.FloatyWindowManger;
 import com.stardust.scriptdroid.script.StorageFileProvider;
+import com.stardust.scriptdroid.ui.floating.CircularMenu;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment_;
 import com.stardust.scriptdroid.ui.main.doc.OnlineDocsFragment_;
 import com.stardust.scriptdroid.ui.main.scripts.MyScriptListFragment_;
@@ -184,7 +185,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Click(R.id.exit)
     public void exitCompletely() {
-        HoverMenuManger.hideHoverMenu();
+        FloatyWindowManger.hideCircularMenu();
         stopService(new Intent(this, FloatyService.class));
         AutoJs.getInstance().getScriptEngineService().stopAll();
         finish();

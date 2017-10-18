@@ -2,13 +2,16 @@ package com.stardust.scriptdroid.external.floatingwindow;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.FloatyWindow;
 import com.stardust.enhancedfloaty.util.FloatingWindowPermissionUtil;
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.ui.floating.CircularMenu;
+
+import java.lang.ref.WeakReference;
 
 import ezy.assist.compat.SettingsCompat;
 
@@ -17,6 +20,8 @@ import ezy.assist.compat.SettingsCompat;
  */
 
 public class FloatyWindowManger {
+
+    private static WeakReference<CircularMenu> sCircularMenu;
 
     public static void addWindow(Context context, FloatyWindow window) {
         context.startService(new Intent(context, FloatyService.class));
@@ -48,5 +53,24 @@ public class FloatyWindowManger {
 
     public static void closeWindow(FloatyWindow window) {
         window.close();
+    }
+
+
+    public static boolean isCircularMenuShowing() {
+        return sCircularMenu != null && sCircularMenu.get() != null;
+    }
+
+    public static void showCircularMenu() {
+        App.getApp().startService(new Intent(App.getApp(), FloatyService.class));
+        CircularMenu menu = new CircularMenu(App.getApp());
+        sCircularMenu = new WeakReference<>(menu);
+    }
+
+    public static void hideCircularMenu() {
+        if (sCircularMenu == null)
+            return;
+        CircularMenu menu = sCircularMenu.get();
+        menu.close();
+        sCircularMenu = null;
     }
 }

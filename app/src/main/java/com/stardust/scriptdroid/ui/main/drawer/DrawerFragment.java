@@ -14,15 +14,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
-import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
+import com.stardust.scriptdroid.external.floatingwindow.FloatyWindowManger;
 import com.stardust.scriptdroid.network.NodeBB;
 import com.stardust.scriptdroid.network.VersionService;
 import com.stardust.scriptdroid.network.api.UserApi;
 import com.stardust.scriptdroid.network.entity.User;
 import com.stardust.scriptdroid.network.entity.VersionInfo;
 import com.stardust.scriptdroid.tool.SimpleObserver;
-import com.stardust.scriptdroid.ui.login.LoginActivity;
 import com.stardust.scriptdroid.ui.login.LoginActivity_;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity;
 import com.stardust.scriptdroid.ui.update.UpdateInfoDialogBuilder;
@@ -39,7 +37,6 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.IOException;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
@@ -47,11 +44,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Response;
-import okhttp3.WebSocket;
 
 
 /**
@@ -166,13 +158,13 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
 
     @Click(R.id.floating_window)
     void showOrDismissFloatingWindow() {
-        boolean isFloatingWindowShowing = HoverMenuManger.isHoverMenuShowing();
+        boolean isFloatingWindowShowing = FloatyWindowManger.isCircularMenuShowing();
         boolean checked = mFloatingWindowItem.getSwitchCompat().isChecked();
         if (checked && !isFloatingWindowShowing) {
-            HoverMenuManger.showHoverMenu();
+            FloatyWindowManger.showCircularMenu();
             enableAccessibilityServiceByRootIfNeeded();
         } else if (!checked && isFloatingWindowShowing) {
-            HoverMenuManger.hideHoverMenu();
+            FloatyWindowManger.hideCircularMenu();
         }
     }
 
@@ -298,7 +290,6 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     private void syncSwitchState() {
         mAccessibilityServiceItem.getSwitchCompat().setChecked(
                 AccessibilityServiceTool.isAccessibilityServiceEnabled(getActivity()));
-        mFloatingWindowItem.getSwitchCompat().setChecked(HoverMenuManger.isHoverMenuShowing());
     }
 
     private void enableAccessibilityService() {
@@ -337,8 +328,4 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         mConnectionStateDisposable.dispose();
     }
 
-    @Subscribe
-    public void onHoverMenuServiceStateChanged(HoverMenuService.ServiceStateChangedEvent event) {
-        mAccessibilityServiceItem.getSwitchCompat().setChecked(event.state);
-    }
 }

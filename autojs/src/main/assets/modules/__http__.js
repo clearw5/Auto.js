@@ -31,7 +31,7 @@ module.exports = function(runtime, scope){
     }
 
     http.request = function(url, options, callback){
-        var call = http.newCall(buildRequest(url, options));
+        var call = http.client().newCall(http.buildRequest(url, options));
         if(!callback){
             return wrapResponse(call.execute());
         }
@@ -74,7 +74,7 @@ module.exports = function(runtime, scope){
         }else if(options.contentType == "application/json"){
             options.body = JSON.stringify(data);
         }else{
-            //todo what?
+            options.body = data;
         }
     }
 

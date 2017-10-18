@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.external.floatingwindow.menu.layout_inspector.view;
+package com.stardust.scriptdroid.ui.floating.layoutinspector;
 
 import android.content.Context;
 import android.graphics.Canvas;
