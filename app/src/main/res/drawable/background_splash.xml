@@ -6,7 +6,7 @@
 
     <item
         android:bottom="214dp"
-        android:drawable="@drawable/autojs_material"
+        android:drawable="@drawable/autojs_logo"
         android:gravity="center"
         android:left="100dp"
         android:right="100dp"

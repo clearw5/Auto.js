@@ -28,7 +28,7 @@ public class OperationDialogBuilder extends MaterialDialog.Builder {
     private RecyclerView mOperations;
     private ArrayList<Integer> mIds = new ArrayList<>();
     private ArrayList<Integer> mIcons = new ArrayList<>();
-    private ArrayList<Integer> mTexts = new ArrayList<>();
+    private ArrayList<String> mTexts = new ArrayList<>();
     private Object mOnItemClickTarget;
 
     public OperationDialogBuilder(@NonNull Context context) {
@@ -61,9 +61,13 @@ public class OperationDialogBuilder extends MaterialDialog.Builder {
     }
 
     public OperationDialogBuilder item(int id, int iconRes, int textRes) {
+        return item(id, iconRes, getContext().getString(textRes));
+    }
+
+    public OperationDialogBuilder item(int id, int iconRes, String text) {
         mIds.add(id);
         mIcons.add(iconRes);
-        mTexts.add(textRes);
+        mTexts.add(text);
         return this;
     }
 

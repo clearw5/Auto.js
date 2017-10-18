@@ -14,7 +14,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.external.floatingwindow.FloatyWindowManger;
+import com.stardust.scriptdroid.ui.floating.CircularMenu;
+import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
 import com.stardust.scriptdroid.network.NodeBB;
 import com.stardust.scriptdroid.network.VersionService;
 import com.stardust.scriptdroid.network.api.UserApi;
@@ -35,6 +36,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.concurrent.Callable;
@@ -91,6 +93,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                     }
                 })
                 .subscribe();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -286,6 +289,11 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 });
     }
 
+    @Subscribe
+    void onCircularMenuStateChange(CircularMenu.StateChangeEvent event) {
+        mFloatingWindowItem.getSwitchCompat().setChecked(event.getCurrentState() != CircularMenu.STATE_CLOSED);
+    }
+
 
     private void syncSwitchState() {
         mAccessibilityServiceItem.getSwitchCompat().setChecked(
@@ -326,6 +334,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     public void onDestroy() {
         super.onDestroy();
         mConnectionStateDisposable.dispose();
+        EventBus.getDefault().unregister(this);
     }
 
 }

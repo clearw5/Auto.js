@@ -281,6 +281,7 @@
     <string name="text_show_type">显示变量类型</string>
     <string name="text_close">关闭</string>
     <string name="text_adjust">调整</string>
+    <string name="text_exit_floating_window">退出悬浮窗</string>
 
 
     <string-array name="record_control_keys">

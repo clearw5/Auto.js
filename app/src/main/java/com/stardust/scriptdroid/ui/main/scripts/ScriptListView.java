@@ -51,17 +51,23 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         void onScriptFileClick(View view, ScriptFile file);
     }
 
+    public interface OnItemOperatedListener {
+        void OnItemOperated(ScriptFile file);
+    }
+
     private static final int positionOfCategoryDir = 0;
     private ScriptList mScriptList = new ScriptList();
     private RecyclerView mScriptListView;
     private ScriptListAdapter mScriptListAdapter = new ScriptListAdapter();
     private ScriptFile mCurrentDirectory;
     private OnScriptFileClickListener mOnScriptFileClickListener;
+    private OnItemOperatedListener mOnItemOperatedListener;
     private ScriptFile mSelectedScriptFile;
     private StorageFileProvider mStorageFileProvider;
     private boolean mDirSortMenuShowing = false;
     private boolean mDirsCollapsed;
     private boolean mFilesCollapsed;
+    private int mDirectorySpanSize = 1;
 
     public ScriptListView(Context context) {
         super(context);
@@ -88,6 +94,13 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         mOnScriptFileClickListener = onScriptFileClickListener;
     }
 
+    public void setStorageFileProvider(StorageFileProvider storageFileProvider) {
+        mStorageFileProvider = storageFileProvider;
+    }
+
+    public void setOnItemOperatedListener(OnItemOperatedListener onItemOperatedListener) {
+        mOnItemOperatedListener = onItemOperatedListener;
+    }
 
     public boolean canGoBack() {
         return !mCurrentDirectory.equals(mStorageFileProvider.getInitialDirectory());
@@ -95,6 +108,10 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
 
     public void goBack() {
         setCurrentDirectory(mCurrentDirectory.getParentFile());
+    }
+
+    public void setDirectorySpanSize(int directorySpanSize) {
+        mDirectorySpanSize = directorySpanSize;
     }
 
     private void init() {
@@ -115,7 +132,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
             public int getSpanSize(int position) {
                 //For directories
                 if (position > positionOfCategoryDir && position < positionOfCategoryFile()) {
-                    return 1;
+                    return mDirectorySpanSize;
                 }
                 //For files and category
                 return 2;
@@ -186,6 +203,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
             case R.id.run_repeatedly:
                 new ScriptLoopDialog(getContext(), mSelectedScriptFile)
                         .show();
+                notifyOperated();
                 break;
             case R.id.create_shortcut:
                 new ScriptOperations(getContext(), this)
@@ -193,6 +211,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
                 break;
             case R.id.open_by_other_apps:
                 Scripts.openByOtherApps(mSelectedScriptFile);
+                notifyOperated();
                 break;
             case R.id.action_sort_by_date:
                 sort(ScriptList.SORT_TYPE_DATE, mDirSortMenuShowing);
@@ -210,6 +229,12 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
                 return false;
         }
         return true;
+    }
+
+    private void notifyOperated() {
+        if (mOnItemOperatedListener != null) {
+            mOnItemOperatedListener.OnItemOperated(mSelectedScriptFile);
+        }
     }
 
     private void sort(final int sortType, final boolean isDir) {
@@ -348,16 +373,19 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
             if (mOnScriptFileClickListener != null) {
                 mOnScriptFileClickListener.onScriptFileClick(itemView, mScriptFile);
             }
+            notifyOperated();
         }
 
         @OnClick(R.id.run)
         void run() {
             Scripts.run(mScriptFile);
+            notifyOperated();
         }
 
         @OnClick(R.id.edit)
         void edit() {
             Scripts.edit(mScriptFile);
+            notifyOperated();
         }
 
         @OnClick(R.id.more)

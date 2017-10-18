@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.external.floatingwindow;
+package com.stardust.scriptdroid.ui.floating;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import com.stardust.enhancedfloaty.util.FloatingWindowPermissionUtil;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.floating.CircularMenu;
+import com.stardust.util.IntentUtil;
 
 import java.lang.ref.WeakReference;
 
@@ -61,9 +62,14 @@ public class FloatyWindowManger {
     }
 
     public static void showCircularMenu() {
-        App.getApp().startService(new Intent(App.getApp(), FloatyService.class));
-        CircularMenu menu = new CircularMenu(App.getApp());
-        sCircularMenu = new WeakReference<>(menu);
+        if (!SettingsCompat.canDrawOverlays(App.getApp())) {
+            Toast.makeText(App.getApp(), R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
+            manageDrawOverlays(App.getApp());
+        } else {
+            App.getApp().startService(new Intent(App.getApp(), FloatyService.class));
+            CircularMenu menu = new CircularMenu(App.getApp());
+            sCircularMenu = new WeakReference<>(menu);
+        }
     }
 
     public static void hideCircularMenu() {
