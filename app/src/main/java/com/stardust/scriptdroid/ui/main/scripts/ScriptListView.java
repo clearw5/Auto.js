@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
@@ -29,16 +28,11 @@ import com.stardust.widget.BindableViewHolder;
 
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.concurrent.Callable;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.BiConsumer;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -55,6 +49,11 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
     public interface OnItemOperatedListener {
         void OnItemOperated(ScriptFile file);
     }
+
+    protected static final int VIEW_TYPE_FILE = 0;
+    protected static final int VIEW_TYPE_DIRECTORY = 1;
+    //category是类别，也即"文件", "文件夹"那两个
+    protected static final int VIEW_TYPE_CATEGORY = 2;
 
     private static final int positionOfCategoryDir = 0;
     private ScriptList mScriptList = new ScriptList();
@@ -96,7 +95,16 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
     }
 
     public void setStorageFileProvider(StorageFileProvider storageFileProvider) {
-        mStorageFileProvider = storageFileProvider;
+        setStorageFileProvider(storageFileProvider, new ScriptFile(storageFileProvider.getInitialDirectory()));
+    }
+
+
+    public void setStorageFileProvider(StorageFileProvider fileProvider, ScriptFile currentDirectory) {
+        if (mStorageFileProvider != null)
+            mStorageFileProvider.unregisterDirectoryChangeListener(this);
+        mStorageFileProvider = fileProvider;
+        setCurrentDirectory(currentDirectory);
+        mStorageFileProvider.registerDirectoryChangeListener(this);
     }
 
     public void setOnItemOperatedListener(OnItemOperatedListener onItemOperatedListener) {
@@ -120,9 +128,6 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         mScriptListView = new RecyclerView(getContext());
         addView(mScriptListView);
         initScriptListRecyclerView();
-        mStorageFileProvider = StorageFileProvider.getDefault();
-        setCurrentDirectory(new ScriptFile(mStorageFileProvider.getInitialDirectory()));
-        mStorageFileProvider.registerDirectoryChangeListener(this);
     }
 
     private void initScriptListRecyclerView() {
@@ -149,12 +154,13 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
     }
 
     private void loadScriptList() {
+        setRefreshing(true);
         mScriptList.clear();
         mStorageFileProvider.getDirectoryFiles(mCurrentDirectory)
                 .subscribeOn(Schedulers.io())
-                .collectInto(mScriptList, (list, file) -> {
-                    mScriptList.add(new ScriptFile(file));
-                })
+                .collectInto(mScriptList, (list, file) ->
+                        mScriptList.add(new ScriptFile(file))
+                )
                 .observeOn(Schedulers.computation())
                 .doOnSuccess(ScriptList::sort)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -177,6 +183,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
     public void onRefresh() {
         loadScriptList();
     }
+
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
@@ -229,26 +236,20 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
 
     private void sort(final int sortType, final boolean isDir) {
         setRefreshing(true);
-        Observable.fromCallable(new Callable<ScriptList>() {
-            @Override
-            public ScriptList call() throws Exception {
-                if (isDir) {
-                    mScriptList.sortDir(sortType);
-                } else {
-                    mScriptList.sortFile(sortType);
-                }
-                return mScriptList;
+        Observable.fromCallable(() -> {
+            if (isDir) {
+                mScriptList.sortDir(sortType);
+            } else {
+                mScriptList.sortFile(sortType);
             }
+            return mScriptList;
         })
 
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ScriptList>() {
-                    @Override
-                    public void accept(@NonNull ScriptList o) throws Exception {
-                        mScriptListAdapter.notifyDataSetChanged();
-                        setRefreshing(false);
-                    }
+                .subscribe(o -> {
+                    mScriptListAdapter.notifyDataSetChanged();
+                    setRefreshing(false);
                 });
     }
 
@@ -259,29 +260,32 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         mStorageFileProvider.unregisterDirectoryChangeListener(this);
     }
 
-    private class ScriptListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private final int VIEW_TYPE_FILE = 0;
-        private final int VIEW_TYPE_DIRECTORY = 1;
-        //category是类别，也即"文件", "文件夹"那两个
-        private final int VIEW_TYPE_CATEGORY = 2;
+    protected BindableViewHolder<?> onCreateViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
+        if (viewType == VIEW_TYPE_FILE) {
+            return new ScriptFileViewHolder(inflater.inflate(R.layout.script_file_list_file, parent, false));
+        } else if (viewType == VIEW_TYPE_DIRECTORY) {
+            return new DirectoryViewHolder(inflater.inflate(R.layout.script_file_list_directory, parent, false));
+        } else {
+            return new CategoryViewHolder(inflater.inflate(R.layout.script_file_list_category, parent, false));
+        }
+    }
 
+    protected RecyclerView getScriptListView() {
+        return mScriptListView;
+    }
+
+    private class ScriptListAdapter extends RecyclerView.Adapter<BindableViewHolder<?>> {
 
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public BindableViewHolder<?> onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            if (viewType == VIEW_TYPE_FILE) {
-                return new ScriptFileViewHolder(inflater.inflate(R.layout.script_file_list_file, parent, false));
-            } else if (viewType == VIEW_TYPE_DIRECTORY) {
-                return new DirectoryViewHolder(inflater.inflate(R.layout.script_file_list_directory, parent, false));
-            } else {
-                return new CategoryViewHolder(inflater.inflate(R.layout.script_file_list_category, parent, false));
-            }
+            return ScriptListView.this.onCreateViewHolder(inflater, parent, viewType);
         }
 
         @SuppressWarnings("unchecked")
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(BindableViewHolder<?> holder, int position) {
             int positionOfCategoryFile = positionOfCategoryFile();
             BindableViewHolder bindableViewHolder = (BindableViewHolder) holder;
             if (position == positionOfCategoryDir || position == positionOfCategoryFile) {

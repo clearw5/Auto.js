@@ -7,6 +7,7 @@ import android.view.View;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
+import com.stardust.scriptdroid.model.script.StorageFileProvider;
 import com.stardust.scriptdroid.tool.SimpleObserver;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.main.FloatingActionMenu;
@@ -38,6 +39,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
 
     @AfterViews
     void setUpViews() {
+        mScriptFileList.setStorageFileProvider(StorageFileProvider.getDefault());
         mScriptFileList.setOnScriptFileClickListener(new ScriptListView.OnScriptFileClickListener() {
             @Override
             public void onScriptFileClick(View view, ScriptFile file) {

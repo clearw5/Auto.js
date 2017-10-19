@@ -42,7 +42,11 @@ public class PFile extends File {
 
 
     private void init() {
-        mSimplifiedName = PFiles.getNameWithoutExtension(getName());
+        if (isDirectory()) {
+            mSimplifiedName = getName();
+        } else {
+            mSimplifiedName = PFiles.getNameWithoutExtension(getName());
+        }
         mSimplifyPath = getPath();
         if (mSimplifyPath.startsWith(Environment.getExternalStorageDirectory().getPath())) {
             mSimplifyPath = mSimplifyPath.substring(Environment.getExternalStorageDirectory().getPath().length());
