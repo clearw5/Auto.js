@@ -290,7 +290,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     }
 
     @Subscribe
-    void onCircularMenuStateChange(CircularMenu.StateChangeEvent event) {
+    public void onCircularMenuStateChange(CircularMenu.StateChangeEvent event) {
         mFloatingWindowItem.getSwitchCompat().setChecked(event.getCurrentState() != CircularMenu.STATE_CLOSED);
     }
 

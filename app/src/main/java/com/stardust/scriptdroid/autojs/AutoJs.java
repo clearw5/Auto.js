@@ -39,7 +39,6 @@ import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.console.JraskaConsole;
-import com.stardust.view.accessibility.AccessibilityServiceUtils;
 import com.stardust.view.accessibility.LayoutInspector;
 import com.stardust.view.accessibility.NotificationListener;
 

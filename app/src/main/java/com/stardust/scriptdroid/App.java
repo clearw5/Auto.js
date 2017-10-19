@@ -1,29 +1,18 @@
 package com.stardust.scriptdroid;
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.IntentFilter;
-import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
-import android.view.KeyEvent;
 
+import com.flurry.android.FlurryAgent;
 import com.squareup.leakcanary.LeakCanary;
-import com.stardust.app.SimpleActivityLifecycleCallbacks;
-import com.stardust.app.VolumeChangeObserver;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.autojs.key.GlobalKeyObserver;
 import com.stardust.scriptdroid.autojs.record.GlobalRecorder;
-import com.stardust.scriptdroid.statics.ScriptStatics;
 import com.stardust.scriptdroid.tool.CrashHandler;
 import com.stardust.scriptdroid.tool.JsBeautifierFactory;
-import com.stardust.scriptdroid.tool.Logcat;
 import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
 import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
-import com.stardust.util.ScreenMetrics;
 import com.stardust.util.UiHandler;
-import com.stardust.view.accessibility.AccessibilityService;
-import com.stardust.view.accessibility.OnKeyListener;
 
 import java.lang.ref.WeakReference;
 
@@ -52,7 +41,9 @@ public class App extends MultiDexApplication {
     }
 
     private void setUpStaticsTool() {
-        ScriptStatics.init(this);
+        new FlurryAgent.Builder()
+                .withLogEnabled(BuildConfig.DEBUG)
+                .build(this, "D42MH48ZN4PJC5TKNYZD");
     }
 
 

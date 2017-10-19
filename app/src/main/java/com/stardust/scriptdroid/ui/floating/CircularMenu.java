@@ -23,13 +23,11 @@ import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.floating.layoutinspector.LayoutBoundsFloatyWindow;
 import com.stardust.scriptdroid.ui.floating.layoutinspector.LayoutHierarchyFloatyWindow;
-import com.stardust.scriptdroid.ui.floating.layoutinspector.LayoutHierarchyView;
 import com.stardust.scriptdroid.ui.main.scripts.ScriptListView;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.view.accessibility.LayoutInspector;
 
-import org.androidannotations.annotations.Click;
 import org.greenrobot.eventbus.EventBus;
 
 import butterknife.ButterKnife;

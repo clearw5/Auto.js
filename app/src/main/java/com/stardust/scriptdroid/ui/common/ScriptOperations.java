@@ -21,7 +21,6 @@ import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.Scripts;
 import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.script.sample.Sample;
-import com.stardust.scriptdroid.ui.main.scripts.MyScriptListFragment;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import org.reactivestreams.Publisher;

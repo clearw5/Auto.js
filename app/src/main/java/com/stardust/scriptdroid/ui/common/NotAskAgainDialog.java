@@ -1,4 +1,4 @@
-package com.stardust.app;
+package com.stardust.scriptdroid.ui.common;
 
 import android.content.Context;
 import android.preference.PreferenceManager;

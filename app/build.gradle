@@ -9,8 +9,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 208
-        versionName "3.0.0 Alpha9"
+        versionCode 209
+        versionName "3.0.0 Alpha10"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -82,9 +82,6 @@ dependencies {
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    // Storio (Sqlite api library)
-    annotationProcessor 'com.pushtorefresh.storio:sqlite-annotations-processor:1.12.3'
-    compile 'com.pushtorefresh.storio:sqlite-annotations:1.12.3'
     // Android Annotations
     annotationProcessor "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"

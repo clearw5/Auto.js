@@ -1,9 +1,7 @@
 <resources>
     <string name="_app_name">Auto.js</string>
-    <string name="action_settings">Settings</string>
     <string name="text_accessibility_service_description">Required by the script automatic operation (click, long press, slide, etc.).</string>
     <string name="text_new_file">New File</string>
-    <string name="text_import_from_file">Import File</string>
     <string name="text_create_fail">Creation failed</string>
     <string name="text_please_input_name">Input name</string>
     <string name="text_name">Name</string>
@@ -27,8 +25,6 @@
     <string name="text_setting">Settings</string>
     <string name="text_exit">Exit</string>
     <string name="text_auto_operate_service">Accessibility Service</string>
-    <string name="text_syntax_and_api">Help</string>
-    <string name="text_close_all_running_scripts">Stop all running scripts</string>
     <string name="text_about">About</string>
     <string name="text_licenses">Open Sources Licenses</string>
     <string name="text_do_not_remind_again">Don\'t show again</string>
@@ -42,7 +38,6 @@
     <string name="text_floating_window">Floating Window</string>
     <string name="text_error_report">Bug Report</string>
     <string name="text_press_again_to_exit">Press again to exit</string>
-    <string name="text_common_function">Common using functions</string>
     <string name="text_no_running_script">No running scipts</string>
     <string name="text_already_stop_n_scripts">%d script(s) is(are) stopped</string>
     <string name="text_start_running">Running</string>
@@ -70,9 +65,6 @@
     <string name="text_issue_report">Feedback</string>
     <string name="text_script_record">Record touches</string>
     <string name="text_start_record">Start</string>
-    <string name="text_stop_record">Stop</string>
-    <string name="text_pause_record">Pause</string>
-    <string name="text_resume_record">Resume</string>
     <string name="text_recorded">Recording stopped</string>
     <string name="text_copy_to_clip">Copy</string>
     <string name="text_file_write_fail">File writing failed</string>
@@ -97,29 +89,15 @@
     <string name="text_select_image">Choose a picture</string>
     <string name="text_help">Help</string>
     <string name="text_no_floating_window_permission">No floating window permission</string>
-    <string name="text_layout_hierarchy">View layout hierarchy</string>
-    <string name="text_layout_bounds">View layout bounds</string>
     <string name="text_no_accessibility_permission_to_capture">Accessibility service is not activated</string>
-    <string name="text_sample_script">Samples</string>
-    <string name="text_my_script">My Scripts</string>
-    <string name="hint_no_script">Click ADD to create your first script~(。・・)ノ</string>
     <string name="text_reset_background">Reset background settings</string>
-    <string name="text_record_with_root">Recording with Rooting</string>
     <string name="text_record_msg">Recording Prompt</string>
     <string name="text_text_changed">Text Changed</string>
     <string name="text_scrolled">Scrolled</string>
     <string name="text_long_clicked">Long Clicked</string>
     <string name="text_clicked">Clicked</string>
-    <string name="text_open_launcher">Open Application</string>
     <string name="text_copy_to_my_scripts">Import to my scripts</string>
     <string name="text_import_succeed">Import successful</string>
-    <string name="text_no_root_script_record">Record without root</string>
-    <string name="text_script_record_with_root">Record with root</string>
-    <string name="text_use_key_to_start_record">Key to start</string>
-    <string name="text_use_key_to_stop_record">Key to stop</string>
-    <string name="text_none">NONE</string>
-    <string name="key_start_record_trigger">key_start_record_trigger</string>
-    <string name="key_stop_record_trigger">key_stop_record_trigger</string>
     <string name="text_current_activity">Current Activity:</string>
     <string name="text_current_package">Current Package:</string>
     <string name="go_to_accessibility_settings"><![CDATA[Settings->Accessibility Services->UiAutomator]]></string>
@@ -127,9 +105,6 @@
     <string name="key_use_volume_control_running">key_use_volume_control_running</string>
     <string name="text_use_volume_to_stop_running">Stop all scripts when volume changes</string>
     <string name="text_need_to_enable_accessibility_service">Need to enable Accessibility Service</string>
-    <string name="text_on">ON</string>
-    <string name="text_off">OFF</string>
-    <string name="text_please_choose_file_to_import">Select script file to import</string>
     <string name="text_refresh">Refresh</string>
     <string name="notice_no_running_script"><![CDATA[No running script φ(>ω<*)]]></string>
     <string name="text_checking_update">Checking for updates</string>
@@ -138,20 +113,12 @@
     <string name="text_version_too_old">Version too old</string>
     <string name="warning_version_too_old">This version is deprecated</string>
     <string name="text_release_notes">Release Notes</string>
-    <string-array name="record_control_keys">
-        <item>None</item>
-        <item>Volume Up</item>
-        <item>Volume Down</item>
-        <item>Camera</item>
-    </string-array>
 
     <string name="text_update">Update</string>
     <string name="text_task_manage">Tasks</string>
-    <string name="text_root_script_record"></string>
     <string name="text_processing">Processing</string>
     <string name="text_pre_execute_script">Pre-execute script</string>
     <string name="text_check_for_updates">Check for updates</string>
-    <string name="text_new_directory">New Directory</string>
     <string name="text_already_reset">已重置</string>
     <string name="text_layout_inspector_is_dumping">布局分析中，请稍后点击</string>
 

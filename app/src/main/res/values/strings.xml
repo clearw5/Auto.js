@@ -1,8 +1,6 @@
 <resources>
     <string name="_app_name">Auto.js</string>
-    <string name="action_settings">设置</string>
     <string name="text_new_file">新建文件</string>
-    <string name="text_import_from_file">从文件导入</string>
     <string name="text_create_fail">创建失败</string>
     <string name="text_please_input_name">请输入名称</string>
     <string name="text_name">名称</string>
@@ -26,8 +24,6 @@
     <string name="text_setting">设置</string>
     <string name="text_exit">退出</string>
     <string name="text_auto_operate_service">无障碍服务</string>
-    <string name="text_syntax_and_api">帮助</string>
-    <string name="text_close_all_running_scripts">关闭所有正在运行的脚本</string>
     <string name="text_about">关于</string>
     <string name="text_licenses">开放源代码许可</string>
     <string name="text_do_not_remind_again">不再提示</string>
@@ -43,7 +39,6 @@
     <string name="text_floating_window">悬浮窗</string>
     <string name="text_error_report">错误报告</string>
     <string name="text_press_again_to_exit">再按一次退出程序</string>
-    <string name="text_common_function">常用函数</string>
     <string name="sorry_for_crash">很抱歉(ಥ _ ಥ)程序遇到未知错误，即将停止运行\n错误代码：</string>
     <string name="text_no_running_script">没有正在运行的脚本</string>
     <string name="text_already_stop_n_scripts">已停止%d个正在运行的脚本</string>
@@ -73,9 +68,6 @@
     <string name="text_issue_report">问题反馈</string>
     <string name="text_script_record">录制脚本</string>
     <string name="text_start_record">开始录制</string>
-    <string name="text_stop_record">停止录制</string>
-    <string name="text_pause_record">暂停录制</string>
-    <string name="text_resume_record">继续录制</string>
     <string name="text_recorded">录制结束</string>
     <string name="text_copy_to_clip">复制到剪贴板</string>
     <string name="text_file_write_fail">文件写入失败</string>
@@ -99,31 +91,16 @@
     <string name="text_theme_color">主题色</string>
     <string name="text_select_image">选择图片</string>
     <string name="text_help">帮助</string>
-    <string name="text_root_script_record">录制脚本(root)</string>
     <string name="text_no_floating_window_permission">没有悬浮窗权限</string>
-    <string name="text_layout_hierarchy">布局层次分析</string>
-    <string name="text_layout_bounds">布局范围查看</string>
     <string name="text_no_accessibility_permission_to_capture">无障碍服务未启动</string>
-    <string name="text_sample_script">示例脚本</string>
-    <string name="text_my_script">我的脚本</string>
-    <string name="hint_no_script">点击右上角新建第一个脚本吧~(。・・)ノ</string>
     <string name="text_reset_background">重置背景图片设置</string>
-    <string name="text_record_with_root">使用root权限录制</string>
     <string name="text_record_msg">录制提示</string>
     <string name="text_text_changed">文字改变</string>
     <string name="text_scrolled">滑动</string>
     <string name="text_long_clicked">长按</string>
     <string name="text_clicked">点击</string>
-    <string name="text_open_launcher">打开主界面</string>
     <string name="text_copy_to_my_scripts">导入到我的脚本</string>
     <string name="text_import_succeed">导入成功</string>
-    <string name="text_no_root_script_record">免Root脚本录制</string>
-    <string name="text_script_record_with_root">Root脚本录制</string>
-    <string name="text_use_key_to_start_record">开始录制按键</string>
-    <string name="text_use_key_to_stop_record">结束录制按键</string>
-    <string name="text_none">NONE</string>
-    <string name="key_start_record_trigger">key_start_record_trigger</string>
-    <string name="key_stop_record_trigger">key_stop_record_trigger</string>
     <string name="text_current_activity">当前活动:</string>
     <string name="text_current_package">当前应用包名:</string>
     <string name="go_to_accessibility_settings"><![CDATA[请打开设置->无障碍服务->AutoJs并开启]]></string>
@@ -131,16 +108,10 @@
     <string name="key_use_volume_control_running">key_use_volume_control_running</string>
     <string name="text_use_volume_to_stop_running">音量上键停止所有脚本</string>
     <string name="text_need_to_enable_accessibility_service">需要启用无障碍服务</string>
-    <string name="key_run_mode">运行方式</string>
-    <string name="text_on">已开启</string>
-    <string name="text_off">已关闭</string>
     <string name="text_task_manage">任务管理</string>
     <string name="text_name_should_not_be_empty">名称不能为空</string>
-    <string name="text_new_directory">新文件夹</string>
     <string name="text_import_fail">导入失败</string>
-    <string name="delete_confirm">确定要删除吗</string>
     <string name="text_no_brower">没有浏览器耶o(╯□╰)o快去安装一个吧</string>
-    <string name="text_please_choose_file_to_import">请选择要导入的脚本</string>
     <string name="text_refresh">刷新</string>
     <string name="notice_no_running_script"><![CDATA[没有正在运行的脚本 φ(>ω<*)]]></string>
     <string name="text_please_choose_a_script">请选择脚本</string>
@@ -172,14 +143,11 @@
     <string name="text_layout_inspector_is_dumping">布局分析中，请稍后点击</string>
     <string name="text_force_stop">强制停止</string>
     <string name="text_execution_finished" formatted="false">\n------------\n[%s]运行结束，用时%f秒</string>
-    <string name="text_record_format_error">录制格式错误</string>
     <string name="text_again">又</string>
     <string name="text_again_and_again">又双</string>
     <string name="text_again_and_again_again">又双叒</string>
     <string name="text_again_and_again_again_again">又双叒叕</string>
     <string name="debug">连接电脑</string>
-    <string name="text_connected">已连接</string>
-    <string name="text_disconnected">已断开连接</string>
     <string name="text_server_address">服务器地址</string>
     <string name="text_annunciation">声明</string>
     <string name="text_about_me_and_repo">关于项目与开发者</string>
@@ -189,9 +157,7 @@
     <string name="text_show_layout_hierarchy">在布局层次中查看</string>
     <string name="text_show_layout_bounds">在布局范围中查看</string>
     <string name="text_more">更多</string>
-    <string name="text_share">分享</string>
     <string name="format_skip">跳过 %d</string>
-    <string name="text_can_close_ad_in_settings">广告可以在设置中关闭</string>
     <string name="key_ad_showing_mode">key_ad_showing_mode</string>
     <string name="text_ad">广告</string>
     <string name="show_ad">欣赏广告</string>
@@ -206,17 +172,13 @@
     <string name="hint_loop_delay">延迟多少秒后开始循环</string>
     <string name="text_number_format_error">格式错误</string>
     <string name="text_accessibility_settings">打开无障碍服务</string>
-    <string name="text_discard_record">放弃录制</string>
     <string name="text_inspect_failed">布局抓取失败，请关闭悬浮窗后动一下页面重试</string>
-    <string name="script_anr">没有相应，要强制停止吗</string>
     <string name="text_enable_accessibitliy_service_by_root_failed">使用root权限开启失败</string>
     <string name="text_on_progress">处理中</string>
     <string name="text_delete_failed">删除失败</string>
-    <string name="text_enable_accessibility_service_by_root_ing">正在使用root权限启用无障碍服务</string>
     <string name="text_edit_script">编辑脚本</string>
     <string name="text_run_script">运行脚本</string>
     <string name="text_import_script">导入脚本文件</string>
-    <string name="key_record_with_root">key_record_with_root</string>
     <string name="key_record_toast">key_record_toast</string>
     <string name="key_root_record_out_file_type">key_root_record_out_file_type</string>
     <string name="text_root_record_out_file_type">Root录制生成文件类型</string>
@@ -225,8 +187,6 @@
     <string name="summary_stable_mode">开启后布局分析更稳定，但小部分脚本可能无法正常运行。重启无障碍服务生效</string>
     <string name="text_stable_mode">稳定模式</string>
     <string name="key_enable_observe_key">key_enable_observe_key</string>
-    <string name="summary_enable_observe_key">不启动则无法使用events的按键事件; 启用后软件崩溃等情况会造成按键失灵。重启无障碍服务生效</string>
-    <string name="text_enable_observe_key">启用按键监听</string>
     <string name="text_directory">文件夹</string>
     <string name="text_file">文件</string>
     <string name="text_tutorial">教程</string>
@@ -237,10 +197,6 @@
     <string name="text_volume_down_control">音量下键控制</string>
     <string name="text_others">其他</string>
     <string name="text_import">导入</string>
-    <string name="text_auto_mode">auto模式</string>
-    <string name="text_ui_mode">ui模式</string>
-    <string name="text_new">新建</string>
-    <string name="text_choose_file">选择文件</string>
     <string name="text_click_too_frequently">您的操作太快啦ヽ(#`Д´)ﾉ</string>
     <string name="text_connecting">连接中…</string>
     <string name="text_username">用户名</string>
@@ -254,7 +210,6 @@
     <string name="text_type">类型</string>
     <string name="text_donate">捐赠</string>
     <string name="text_editor_theme">编辑器主题</string>
-    <string name="text_util">工具</string>
     <string name="text_jump_to_line">跳转到行</string>
     <string name="text_info">信息</string>
     <string name="text_find_or_replace">查找/替换</string>
@@ -283,20 +238,6 @@
     <string name="text_adjust">调整</string>
     <string name="text_exit_floating_window">退出悬浮窗</string>
 
-
-    <string-array name="record_control_keys">
-        <item>无</item>
-        <item>音量上键</item>
-        <item>音量下键</item>
-        <item>照相键</item>
-    </string-array>
-
-    <string-array name="record_control_values">
-        <item>NONE</item>
-        <item>KEY_VOLUMEUP</item>
-        <item>KEY_VOLUMEDOWN</item>
-        <item>KEY_CAMERA</item>
-    </string-array>
 
     <string-array name="ad_showing_mode_keys">
         <item>默认</item>
