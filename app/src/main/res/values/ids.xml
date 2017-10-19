@@ -4,5 +4,6 @@
     <item name="open_by_other_apps" type="id"/>
     <item name="create_shortcut" type="id"/>
     <item name="delete" type="id"/>
-    <item name="loop" type="id"/>
+    <item name="package_name" type="id"/>
+    <item name="class_name" type="id"/>
 </resources>

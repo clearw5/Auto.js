@@ -29,7 +29,11 @@ public class AccessibilityServiceTool {
 
     public static boolean enableAccessibilityServiceByRoot(Context context, Class<? extends AccessibilityService> accessibilityService) {
         String serviceName = context.getPackageName() + "/" + accessibilityService.getName();
-        return TextUtils.isEmpty(ProcessShell.execCommand(String.format(Locale.getDefault(), cmd, serviceName), true).error);
+        try {
+            return TextUtils.isEmpty(ProcessShell.execCommand(String.format(Locale.getDefault(), cmd, serviceName), true).error);
+        } catch (Exception ignored) {
+            return false;
+        }
     }
 
     public static boolean enableAccessibilityServiceByRootAndWaitFor(Context context, long timeOut) {

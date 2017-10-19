@@ -14,15 +14,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
-import com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService;
+import com.stardust.scriptdroid.ui.floating.CircularMenu;
+import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
 import com.stardust.scriptdroid.network.NodeBB;
 import com.stardust.scriptdroid.network.VersionService;
 import com.stardust.scriptdroid.network.api.UserApi;
 import com.stardust.scriptdroid.network.entity.User;
 import com.stardust.scriptdroid.network.entity.VersionInfo;
 import com.stardust.scriptdroid.tool.SimpleObserver;
-import com.stardust.scriptdroid.ui.login.LoginActivity;
 import com.stardust.scriptdroid.ui.login.LoginActivity_;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity;
 import com.stardust.scriptdroid.ui.update.UpdateInfoDialogBuilder;
@@ -37,6 +36,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.concurrent.Callable;
@@ -93,6 +93,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                     }
                 })
                 .subscribe();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -160,13 +161,13 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
 
     @Click(R.id.floating_window)
     void showOrDismissFloatingWindow() {
-        boolean isFloatingWindowShowing = HoverMenuManger.isHoverMenuShowing();
+        boolean isFloatingWindowShowing = FloatyWindowManger.isCircularMenuShowing();
         boolean checked = mFloatingWindowItem.getSwitchCompat().isChecked();
         if (checked && !isFloatingWindowShowing) {
-            HoverMenuManger.showHoverMenu();
+            FloatyWindowManger.showCircularMenu();
             enableAccessibilityServiceByRootIfNeeded();
         } else if (!checked && isFloatingWindowShowing) {
-            HoverMenuManger.hideHoverMenu();
+            FloatyWindowManger.hideCircularMenu();
         }
     }
 
@@ -244,6 +245,9 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
 
                     @Override
                     public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        if (isHidden()) {
+                            return;
+                        }
                         Toast.makeText(App.getApp(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         mConnectionItem.getSwitchCompat().setChecked(false, false);
                         mConnectionItem.setProgress(false);
@@ -285,11 +289,15 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 });
     }
 
+    @Subscribe
+    public void onCircularMenuStateChange(CircularMenu.StateChangeEvent event) {
+        mFloatingWindowItem.getSwitchCompat().setChecked(event.getCurrentState() != CircularMenu.STATE_CLOSED);
+    }
+
 
     private void syncSwitchState() {
         mAccessibilityServiceItem.getSwitchCompat().setChecked(
                 AccessibilityServiceTool.isAccessibilityServiceEnabled(getActivity()));
-        mFloatingWindowItem.getSwitchCompat().setChecked(HoverMenuManger.isHoverMenuShowing());
     }
 
     private void enableAccessibilityService() {
@@ -326,10 +334,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     public void onDestroy() {
         super.onDestroy();
         mConnectionStateDisposable.dispose();
+        EventBus.getDefault().unregister(this);
     }
 
-    @Subscribe
-    public void onHoverMenuServiceStateChanged(HoverMenuService.ServiceStateChangedEvent event) {
-        mAccessibilityServiceItem.getSwitchCompat().setChecked(event.state);
-    }
 }

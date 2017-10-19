@@ -7,19 +7,22 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.script.ScriptFile;
 import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.ui.main.scripts.ScriptListRecyclerView;
-import com.stardust.scriptdroid.ui.main.scripts.ScriptListWithProgressBarView;
+import com.stardust.scriptdroid.ui.main.scripts.ScriptListView;
 import com.twofortyfouram.locale.sdk.client.ui.activity.AbstractAppCompatPluginActivity;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+
+import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_CONTENT;
+
 
 /**
  * Created by Stardust on 2017/3/27.
@@ -40,13 +43,12 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
 
     private void initScriptListRecyclerView() {
         mStorageFileProvider = StorageFileProvider.getExternalStorageProvider();
-        ScriptListWithProgressBarView scriptList = (ScriptListWithProgressBarView) findViewById(R.id.script_list);
-        scriptList.setScriptFileOperationEnabled(false);
-        scriptList.setStorageScriptProvider(mStorageFileProvider);
+        ScriptListView scriptList = (ScriptListView) findViewById(R.id.script_list);
+        scriptList.setStorageFileProvider(mStorageFileProvider);
         scriptList.setCurrentDirectory(StorageFileProvider.DEFAULT_DIRECTORY);
-        scriptList.setOnItemClickListener(new ScriptListRecyclerView.OnScriptFileClickListener() {
+        scriptList.setOnScriptFileClickListener(new ScriptListView.OnScriptFileClickListener() {
             @Override
-            public void onClick(ScriptFile file, int position) {
+            public void onScriptFileClick(View view, ScriptFile file) {
                 mSelectedScriptFilePath = file.getPath();
                 finish();
             }
@@ -115,7 +117,7 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            mPreExecuteScript = data.getStringExtra(TaskerScriptEditActivity.EXTRA_CONTENT);
+            mPreExecuteScript = data.getStringExtra(EXTRA_CONTENT);
         }
     }
 }

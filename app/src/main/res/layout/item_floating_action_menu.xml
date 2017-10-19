@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="bottom|right|end"
+              android:clipChildren="false"
+              android:clipToPadding="false"
+              android:gravity="end|right"
+              android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="12dp"
+        android:background="@drawable/floating_action_menu_label_bg"
+        android:gravity="center_vertical"
+        android:paddingBottom="2dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="2dp"
+        android:textColor="#f2f3f7"
+        tools:text="文件夹"/>
+
+    <com.stardust.theme.widget.ThemeColorFloatingActionButton
+        android:id="@+id/floating_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_floating_action_menu_dir"
+        android:tint="@android:color/white"/>
+
+</LinearLayout>

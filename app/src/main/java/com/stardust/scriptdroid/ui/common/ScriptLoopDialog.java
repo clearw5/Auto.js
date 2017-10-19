@@ -5,10 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.view.View;
 import android.view.Window;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.app.DialogUtils;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.script.ScriptFile;
@@ -73,7 +73,7 @@ public class ScriptLoopDialog {
     }
 
     public void show() {
-        mDialog.show();
+        DialogUtils.showDialog(mDialog);
     }
 
 }

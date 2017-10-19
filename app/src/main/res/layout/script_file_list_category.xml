@@ -5,6 +5,7 @@
               android:orientation="horizontal">
 
     <LinearLayout
+        android:id="@+id/title_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -15,6 +16,7 @@
         android:paddingTop="8dp">
 
         <ImageView
+            android:id="@+id/collapse"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_gravity="center_vertical"
@@ -35,6 +37,18 @@
 
 
     <ImageView
+        android:id="@+id/back"
+        android:layout_width="32dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:background="?selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:padding="9dp"
+        android:src="@drawable/ic_dir_up"
+        android:tint="#828384"/>
+
+    <ImageView
+        android:id="@+id/order"
         android:layout_width="32dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
@@ -45,6 +59,7 @@
         android:tint="#828384"/>
 
     <ImageView
+        android:id="@+id/sort"
         android:layout_width="32dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"

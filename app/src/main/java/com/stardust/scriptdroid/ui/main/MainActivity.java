@@ -18,7 +18,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.qq.e.comm.DownloadService;
 import com.stardust.app.FragmentPagerAdapterBuilder;
-import com.stardust.app.NotAskAgainDialog;
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.pio.PFile;
@@ -26,7 +25,8 @@ import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.external.floatingwindow.HoverMenuManger;
+import com.stardust.scriptdroid.ui.common.NotAskAgainDialog;
+import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
 import com.stardust.scriptdroid.script.StorageFileProvider;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment_;
 import com.stardust.scriptdroid.ui.main.doc.OnlineDocsFragment_;
@@ -48,7 +48,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.activity_main)
-public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost {
+public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, BackPressedHandler.HostActivity {
 
     private static final String LOG_TAG = "MainActivity";
 
@@ -64,6 +64,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private FragmentPagerAdapterBuilder.StoredFragmentPagerAdapter mPagerAdapter;
     private OnActivityResultDelegate.Mediator mActivityResultMediator = new OnActivityResultDelegate.Mediator();
     private VersionGuard mVersionGuard;
+    private BackPressedHandler.Observer mBackPressObserver = new BackPressedHandler.Observer();
 
 
     @Override
@@ -99,8 +100,8 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
 
     private void registerBackPressHandlers() {
-        registerBackPressedHandler(new DrawerAutoClose(mDrawerLayout, Gravity.START));
-        registerBackPressedHandler(new BackPressedHandler.DoublePressExit(this, R.string.text_press_again_to_exit));
+        mBackPressObserver.registerHandler(new DrawerAutoClose(mDrawerLayout, Gravity.START));
+        mBackPressObserver.registerHandler(new BackPressedHandler.DoublePressExit(this, R.string.text_press_again_to_exit));
     }
 
     private void checkPermissions() {
@@ -154,17 +155,23 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
             public void OnInstantiate(int pos, Fragment fragment) {
                 ((ViewPagerFragment) fragment).setFab(mFab);
                 if (pos == mViewPager.getCurrentItem()) {
-                    ((ViewPagerFragment) fragment).onPageSelected();
+                    ((ViewPagerFragment) fragment).onPageShow();
                 }
             }
         });
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            private ViewPagerFragment mPreviousFragment;
+
             @Override
             public void onPageSelected(int position) {
                 Fragment fragment = mPagerAdapter.getStoredFragment(position);
                 if (fragment == null)
                     return;
-                ((ViewPagerFragment) fragment).onPageSelected();
+                if (mPreviousFragment != null) {
+                    mPreviousFragment.onPageHide();
+                }
+                mPreviousFragment = (ViewPagerFragment) fragment;
+                mPreviousFragment.onPageShow();
             }
         });
     }
@@ -177,7 +184,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Click(R.id.exit)
     public void exitCompletely() {
-        HoverMenuManger.hideHoverMenu();
+        FloatyWindowManger.hideCircularMenu();
         stopService(new Intent(this, FloatyService.class));
         AutoJs.getInstance().getScriptEngineService().stopAll();
         finish();
@@ -220,6 +227,19 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     @Override
     public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
         return mActivityResultMediator;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (!mBackPressObserver.onBackPressed(this)) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public BackPressedHandler.Observer getBackPressedObserver() {
+        return mBackPressObserver;
     }
 
 }

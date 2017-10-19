@@ -1,8 +1,12 @@
 package com.stardust.scriptdroid.sublime;
 
+import android.graphics.BitmapFactory;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.stardust.enhancedfloaty.FloatyWindow;
+import com.stardust.enhancedfloaty.ResizableFloaty;
 
 import org.greenrobot.eventbus.EventBus;
 import org.reactivestreams.Publisher;
@@ -62,24 +66,19 @@ public class SublimePluginClient {
     }
 
     private void listenInternal(final Subscriber<? super Void> s) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    mSocket = new Socket(host, port);
-                    mConnectionState.onNext(true);
-                    mSocket.setTcpNoDelay(true);
-                    mOutputStream = mSocket.getOutputStream();
-                    s.onComplete();
-                    readLoop(mSocket.getInputStream());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    s.onError(e);
-                } finally {
-                    tryClose();
-                }
-            }
-        }).start();
+        try {
+            mSocket = new Socket(host, port);
+            mConnectionState.onNext(true);
+            mSocket.setTcpNoDelay(true);
+            mOutputStream = mSocket.getOutputStream();
+            s.onComplete();
+            readLoop(mSocket.getInputStream());
+        } catch (IOException e) {
+            s.onError(e);
+        } finally {
+            tryClose();
+        }
+
     }
 
     public PublishSubject<Boolean> getConnectionState() {

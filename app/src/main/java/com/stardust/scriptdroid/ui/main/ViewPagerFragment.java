@@ -32,7 +32,7 @@ public abstract class ViewPagerFragment extends Fragment {
 
     protected abstract void onFabClick(FloatingActionButton fab);
 
-    public void onPageSelected() {
+    public void onPageShow() {
         if (mFabRotation == ROTATION_GONE) {
             if (mFab.getVisibility() == View.VISIBLE) {
                 mFab.hide();
@@ -54,4 +54,7 @@ public abstract class ViewPagerFragment extends Fragment {
     }
 
 
+    public void onPageHide() {
+
+    }
 }

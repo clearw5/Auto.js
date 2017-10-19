@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.stardust.floatingcircularactionmenu.CircularActionMenu xmlns:android="http://schemas.android.com/apk/res/android"
+                                                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                            android:layout_width="wrap_content"
+                                                            android:layout_height="wrap_content"
+                                                            android:clickable="false"
+                                                            app:cam_angle="165"
+                                                            app:cam_radius="80dp">
+
+    <ImageView
+        android:id="@+id/script_list"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_green"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:padding="8dp"
+        android:src="@drawable/ic_menu"
+        android:tint="@android:color/white"/>
+
+    <ImageView
+        android:id="@+id/record"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_red"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:padding="8dp"
+        android:src="@drawable/ic_ali_record"/>
+
+    <ImageView
+        android:id="@+id/layout_bounds"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_blue"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:padding="8dp"
+        android:src="@drawable/ic_circular_menu_bounds"
+        android:tint="@android:color/white"/>
+
+    <ImageView
+        android:id="@+id/layout_hierarchy"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_yellow"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:padding="10dp"
+        android:src="@drawable/ic_circular_menu_hierarchy"
+        android:tint="@android:color/white"/>
+
+
+    <ImageView
+        android:id="@+id/settings"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_gray"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:padding="8dp"
+        android:src="@drawable/ic_circular_menu_settings"
+        android:tint="@android:color/white"/>
+
+
+</com.stardust.floatingcircularactionmenu.CircularActionMenu>

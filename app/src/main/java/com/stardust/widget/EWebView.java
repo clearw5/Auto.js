@@ -2,7 +2,9 @@ package com.stardust.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -57,6 +59,7 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
         settings.setJavaScriptEnabled(true);
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setDomStorageEnabled(true);
+        settings.setDisplayZoomControls(false);
         mWebView.setWebViewClient(new MyWebViewClient());
         mWebView.setWebChromeClient(new MyWebChromeClient());
     }
@@ -98,13 +101,16 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            view.loadUrl(request.getUrl().toString());
-            return true;
+            return shouldOverrideUrlLoading(view, request.getUrl().toString());
         }
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
+            if (url.startsWith("http://") || url.startsWith("https://")) {
+                view.loadUrl(url);
+            } else {
+                getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            }
             return true;
         }
     }

@@ -28,7 +28,7 @@
             android:layout_height="16dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="8dp"
-            android:src="@drawable/ic_arrow_drop_down_black"
+            android:src="@drawable/ic_arrow_drop_down_black_36dp"
             android:tint="#484C4F"/>
 
     </LinearLayout>

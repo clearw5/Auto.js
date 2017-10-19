@@ -19,7 +19,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:name=".App"
         android:allowBackup="false"
-        android:icon="@drawable/autojs_material"
+        android:icon="@drawable/autojs_logo"
         android:label="@string/_app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
@@ -99,7 +99,6 @@
 
 
         <service android:name="com.stardust.scriptdroid.external.ScriptExecutionIntentService"/>
-        <service android:name="com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService"/>
 
         <activity android:name=".external.tasker.TaskPrefEditActivity_"/>
 
