@@ -86,12 +86,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         super.onCreate(savedInstanceState);
         mConnectionStateDisposable = SublimePluginService.getConnectionState()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(@io.reactivex.annotations.NonNull Boolean connected) throws Exception {
-                        mConnectionItem.getSwitchCompat().setChecked(connected);
-                    }
-                })
+                .doOnNext(connected -> mConnectionItem.getSwitchCompat().setChecked(connected))
                 .subscribe();
         EventBus.getDefault().register(this);
     }
@@ -177,20 +172,12 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     }
 
     private void enableAccessibilityServiceByRootIfNeeded() {
-        Observable.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return Pref.enableAccessibilityServiceByRoot() && !isAccessibilityServiceEnabled();
-            }
-        })
+        Observable.fromCallable(() -> Pref.enableAccessibilityServiceByRoot() && !isAccessibilityServiceEnabled())
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(@io.reactivex.annotations.NonNull Boolean needed) throws Exception {
-                        if (needed) {
-                            enableAccessibilityServiceByRoot();
-                        }
+                .subscribe(needed -> {
+                    if (needed) {
+                        enableAccessibilityServiceByRoot();
                     }
                 });
 
@@ -211,27 +198,16 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         String host = Pref.getServerAddressOrDefault(WifiTool.getWifiAddress(getActivity()));
         new MaterialDialog.Builder(getActivity())
                 .title(R.string.text_server_address)
-                .input("", host, new MaterialDialog.InputCallback() {
-                    @Override
-                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                        Pref.saveServerAddress(input.toString());
-                        connectToRemote(input.toString());
-                    }
+                .input("", host, (dialog, input) -> {
+                    Pref.saveServerAddress(input.toString());
+                    connectToRemote(input.toString());
                 })
                 .neutralText(R.string.text_help)
-                .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        mConnectionItem.getSwitchCompat().setChecked(false, false);
-                        IntentUtil.browse(getActivity(), URL_SUBLIME_PLUGIN_HELP);
-                    }
+                .onNeutral((dialog, which) -> {
+                    mConnectionItem.getSwitchCompat().setChecked(false, false);
+                    IntentUtil.browse(getActivity(), URL_SUBLIME_PLUGIN_HELP);
                 })
-                .cancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        mConnectionItem.getSwitchCompat().setChecked(false, false);
-                    }
-                })
+                .cancelListener(dialog -> mConnectionItem.getSwitchCompat().setChecked(false, false))
                 .show();
     }
 
@@ -310,23 +286,15 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
 
     private void enableAccessibilityServiceByRoot() {
         mAccessibilityServiceItem.setProgress(true);
-        Observable.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(4000);
-            }
-        })
+        Observable.fromCallable(() -> AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(4000))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(@io.reactivex.annotations.NonNull Boolean succeed) throws Exception {
-                        if (!succeed) {
-                            Toast.makeText(getContext(), R.string.text_enable_accessibitliy_service_by_root_failed, Toast.LENGTH_SHORT).show();
-                            AccessibilityServiceTool.goToAccessibilitySetting();
-                        }
-                        mAccessibilityServiceItem.setProgress(false);
+                .subscribe(succeed -> {
+                    if (!succeed) {
+                        Toast.makeText(getContext(), R.string.text_enable_accessibitliy_service_by_root_failed, Toast.LENGTH_SHORT).show();
+                        AccessibilityServiceTool.goToAccessibilitySetting();
                     }
+                    mAccessibilityServiceItem.setProgress(false);
                 });
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
  * Created by Stardust on 2017/4/1.
  */
 
-public class PReadableTextFile extends PFile implements Closeable {
+public class PReadableTextFile implements Closeable {
 
     private BufferedReader mBufferedReader;
     private FileInputStream mFileInputStream;
@@ -16,7 +16,7 @@ public class PReadableTextFile extends PFile implements Closeable {
     private String mEncoding;
 
     public PReadableTextFile(String path) {
-        this(path, PFile.DEFAULT_ENCODING);
+        this(path, PFiles.DEFAULT_ENCODING);
     }
 
     public PReadableTextFile(String path, String encoding) {

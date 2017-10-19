@@ -7,11 +7,8 @@ import android.util.Log;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.ProcessShell;
 import com.stardust.autojs.core.inputevent.InputDevices;
-import com.stardust.autojs.runtime.api.Shell;
-import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.AutoFileSource;
-import com.stardust.concurrent.VolatileBox;
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 
 import java.io.File;
 
@@ -71,7 +68,7 @@ public class RootAutomatorEngine extends ScriptEngine.AbstractScriptEngine<AutoF
 
     public static String getExecutablePath(Context context) {
         File tmp = new File(context.getCacheDir(), "root_automator");
-        PFile.copyAsset(context, ROOT_AUTOMATOR_EXECUTABLE_ASSET, tmp.getAbsolutePath());
+        PFiles.copyAsset(context, ROOT_AUTOMATOR_EXECUTABLE_ASSET, tmp.getAbsolutePath());
         return tmp.getAbsolutePath();
     }
 

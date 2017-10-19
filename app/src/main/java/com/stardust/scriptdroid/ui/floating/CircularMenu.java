@@ -19,7 +19,7 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.autojs.record.GlobalRecorder;
-import com.stardust.scriptdroid.script.ScriptFile;
+import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.floating.layoutinspector.LayoutBoundsFloatyWindow;
 import com.stardust.scriptdroid.ui.floating.layoutinspector.LayoutHierarchyFloatyWindow;

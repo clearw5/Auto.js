@@ -1,11 +1,10 @@
-package com.stardust.scriptdroid.script;
+package com.stardust.scriptdroid.model.script;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
-import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.execution.ExecutionConfig;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
@@ -19,7 +18,7 @@ import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.external.shortcut.Shortcut;
 import com.stardust.scriptdroid.external.shortcut.ShortcutActivity;
-import com.stardust.scriptdroid.script.sample.Sample;
+import com.stardust.scriptdroid.model.sample.Sample;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.util.AssetsCache;
 

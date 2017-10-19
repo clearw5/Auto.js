@@ -20,11 +20,10 @@ import android.widget.FrameLayout;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.jdeferred.Deferred;
 import org.jdeferred.DoneCallback;
 import org.jdeferred.impl.DeferredObject;
@@ -43,7 +42,6 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
-import retrofit2.http.GET;
 
 /**
  * Created by Stardust on 2017/9/27.
@@ -106,7 +104,7 @@ public class CodeMirrorEditor extends FrameLayout {
             try {
                 sAvailableThemes = getResources().getAssets().list("editor/codemirror/theme");
                 for (int i = 0; i < sAvailableThemes.length; i++) {
-                    sAvailableThemes[i] = PFile.getNameWithoutExtension(sAvailableThemes[i]);
+                    sAvailableThemes[i] = PFiles.getNameWithoutExtension(sAvailableThemes[i]);
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -204,7 +202,7 @@ public class CodeMirrorEditor extends FrameLayout {
         Observable.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return PFile.read(file);
+                return PFiles.read(file);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

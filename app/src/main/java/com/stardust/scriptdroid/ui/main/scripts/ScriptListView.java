@@ -17,10 +17,11 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.script.ScriptFile;
-import com.stardust.scriptdroid.script.Scripts;
-import com.stardust.scriptdroid.script.StorageFileProvider;
+import com.stardust.scriptdroid.model.script.ScriptFile;
+import com.stardust.scriptdroid.model.script.Scripts;
+import com.stardust.scriptdroid.model.script.StorageFileProvider;
 import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.viewmodel.ScriptList;
@@ -120,7 +121,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         addView(mScriptListView);
         initScriptListRecyclerView();
         mStorageFileProvider = StorageFileProvider.getDefault();
-        setCurrentDirectory(mStorageFileProvider.getInitialDirectory());
+        setCurrentDirectory(new ScriptFile(mStorageFileProvider.getInitialDirectory()));
         mStorageFileProvider.registerDirectoryChangeListener(this);
     }
 
@@ -149,29 +150,18 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
 
     private void loadScriptList() {
         mScriptList.clear();
-        mStorageFileProvider.getDirectoryScriptFiles(mCurrentDirectory)
+        mStorageFileProvider.getDirectoryFiles(mCurrentDirectory)
                 .subscribeOn(Schedulers.io())
-                .collectInto(mScriptList, new BiConsumer<ScriptList, ScriptFile>() {
-                    @Override
-                    public void accept(ScriptList list, ScriptFile file) throws Exception {
-                        list.add(file);
-                    }
+                .collectInto(mScriptList, (list, file) -> {
+                    mScriptList.add(new ScriptFile(file));
                 })
                 .observeOn(Schedulers.computation())
-                .doOnSuccess(new Consumer<ScriptList>() {
-                    @Override
-                    public void accept(@NonNull ScriptList list) throws Exception {
-                        list.sort();
-                    }
-                })
+                .doOnSuccess(ScriptList::sort)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ScriptList>() {
-                    @Override
-                    public void accept(@NonNull ScriptList list) throws Exception {
-                        mScriptList = list;
-                        mScriptListAdapter.notifyDataSetChanged();
-                        setRefreshing(false);
-                    }
+                .subscribe(list -> {
+                    mScriptList = list;
+                    mScriptListAdapter.notifyDataSetChanged();
+                    setRefreshing(false);
                 });
     }
 
@@ -356,7 +346,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         public void bind(ScriptFile file, int position) {
             mScriptFile = file;
             mName.setText(file.getSimplifiedName());
-            mDesc.setText(PFile.getHumanReadableSize(file.length()));
+            mDesc.setText(PFiles.getHumanReadableSize(file.length()));
             if (file.getType() == ScriptFile.TYPE_JAVA_SCRIPT) {
                 mFirstChar.setText("J");
                 mFirstCharBackground.setColor(ResourcesCompat.getColor(getResources(), R.color.color_j, getContext().getTheme()));

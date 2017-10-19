@@ -10,9 +10,8 @@ import android.view.MenuItem;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.script.ScriptFile;
+import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.scriptdroid.ui.edit.completion.CodeCompletionBar;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import org.androidannotations.annotations.AfterViews;

@@ -11,8 +11,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.DialogUtils;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.script.ScriptFile;
-import com.stardust.scriptdroid.script.Scripts;
+import com.stardust.scriptdroid.model.script.ScriptFile;
+import com.stardust.scriptdroid.model.script.Scripts;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

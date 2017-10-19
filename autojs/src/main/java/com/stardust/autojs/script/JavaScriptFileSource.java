@@ -2,7 +2,7 @@ package com.stardust.autojs.script;
 
 import android.support.annotation.NonNull;
 
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 
 import java.io.File;
@@ -20,7 +20,7 @@ public class JavaScriptFileSource extends JavaScriptSource {
     private String mScript;
 
     public JavaScriptFileSource(File file) {
-        super(PFile.getNameWithoutExtension(file.getName()));
+        super(PFiles.getNameWithoutExtension(file.getName()));
         mFile = file;
     }
 
@@ -37,7 +37,7 @@ public class JavaScriptFileSource extends JavaScriptSource {
     @Override
     public String getScript() {
         if (mScript == null)
-            mScript = PFile.read(mFile);
+            mScript = PFiles.read(mFile);
         return mScript;
     }
 

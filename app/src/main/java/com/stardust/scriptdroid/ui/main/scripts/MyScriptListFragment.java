@@ -1,22 +1,14 @@
 package com.stardust.scriptdroid.ui.main.scripts;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.script.ScriptFile;
-import com.stardust.scriptdroid.script.Scripts;
-import com.stardust.scriptdroid.script.StorageFileProvider;
+import com.stardust.scriptdroid.model.script.ScriptFile;
+import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.tool.SimpleObserver;
-import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
-import com.stardust.scriptdroid.ui.floating.EditorFloaty;
 import com.stardust.scriptdroid.ui.main.FloatingActionMenu;
 import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
 import com.stardust.util.BackPressedHandler;
@@ -24,17 +16,8 @@ import com.stardust.util.BackPressedHandler;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
 
-import butterknife.OnClick;
-import butterknife.Optional;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.Response;
 
 /**
  * Created by Stardust on 2017/3/13.

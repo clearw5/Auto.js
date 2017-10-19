@@ -6,7 +6,7 @@ import android.text.InputType;
 import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
@@ -178,7 +178,7 @@ public class EditorMenu {
         Observable.zip(mEditor.getText(), mEditor.getLineCount(), new BiFunction<String, Integer, String>() {
             @Override
             public String apply(@NonNull String text, @NonNull Integer lineCount) throws Exception {
-                String size = PFile.getHumanReadableSize(text.length());
+                String size = PFiles.getHumanReadableSize(text.length());
                 return String.format(Locale.getDefault(), mContext.getString(R.string.format_editor_info),
                         text.length(), lineCount, size);
             }

@@ -25,6 +25,8 @@
 -dontwarn com.iwebpp.nodeandroid.**
 -dontwarn org.msgpack.core.**
 -dontwarn com.pushtorefresh.storio.**
+-dontwarn java.lang.invoke.*
+-dontwarn **$$Lambda$*
 
 -keep class org.mozilla.javascript.** { *; }
 -keep class com.jecelyin.editor.** { *; }

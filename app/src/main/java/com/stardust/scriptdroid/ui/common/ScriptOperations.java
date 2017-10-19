@@ -14,13 +14,14 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.DialogUtils;
 import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.script.ScriptFile;
-import com.stardust.scriptdroid.script.Scripts;
-import com.stardust.scriptdroid.script.StorageFileProvider;
-import com.stardust.scriptdroid.script.sample.Sample;
+import com.stardust.scriptdroid.model.script.ScriptFile;
+import com.stardust.scriptdroid.model.script.Scripts;
+import com.stardust.scriptdroid.model.script.StorageFileProvider;
+import com.stardust.scriptdroid.model.sample.Sample;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import org.reactivestreams.Publisher;
@@ -61,12 +62,9 @@ public class ScriptOperations {
 
     public void newScriptFileForScript(final String script) {
         showFileNameInputDialog("", "js")
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(@io.reactivex.annotations.NonNull String input) throws Exception {
-                        createScriptFile(getCurrentDirectoryPath() + input + ".js", script, false);
-                    }
-                });
+                .subscribe(input ->
+                        createScriptFile(getCurrentDirectoryPath() + input + ".js", script, false)
+                );
     }
 
     private String getCurrentDirectoryPath() {
@@ -78,10 +76,10 @@ public class ScriptOperations {
     }
 
     public void createScriptFile(String path, String script, boolean edit) {
-        if (PFile.createIfNotExists(path)) {
+        if (PFiles.createIfNotExists(path)) {
             if (script != null) {
                 try {
-                    PFile.write(path, script);
+                    PFiles.write(path, script);
                 } catch (UncheckedIOException e) {
                     showMessage(R.string.text_file_write_fail);
                     return;
@@ -106,13 +104,13 @@ public class ScriptOperations {
     }
 
     public Observable<String> importFile(final String pathFrom) {
-        return showFileNameInputDialog(PFile.getNameWithoutExtension(pathFrom), PFile.getExtension(pathFrom))
+        return showFileNameInputDialog(PFiles.getNameWithoutExtension(pathFrom), PFiles.getExtension(pathFrom))
                 .observeOn(Schedulers.io())
                 .map(new Function<String, String>() {
                     @Override
                     public String apply(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        final String pathTo = getCurrentDirectoryPath() + s + "." + PFile.getExtension(pathFrom);
-                        if (PFile.copy(pathFrom, pathTo)) {
+                        final String pathTo = getCurrentDirectoryPath() + s + "." + PFiles.getExtension(pathFrom);
+                        if (PFiles.copy(pathFrom, pathTo)) {
                             showMessage(R.string.text_import_succeed);
                         } else {
                             showMessage(R.string.text_import_fail);
@@ -124,13 +122,13 @@ public class ScriptOperations {
     }
 
     public Observable<String> importFile(String prefix, final InputStream inputStream, final String ext) {
-        return showFileNameInputDialog(PFile.getNameWithoutExtension(prefix), ext)
+        return showFileNameInputDialog(PFiles.getNameWithoutExtension(prefix), ext)
                 .observeOn(Schedulers.io())
                 .map(new Function<String, String>() {
                     @Override
                     public String apply(@io.reactivex.annotations.NonNull String s) throws Exception {
                         final String pathTo = getCurrentDirectoryPath() + s + "." + ext;
-                        if (PFile.copyStream(inputStream, pathTo)) {
+                        if (PFiles.copyStream(inputStream, pathTo)) {
                             showMessage(R.string.text_import_succeed);
                         } else {
                             showMessage(R.string.text_import_fail);
@@ -207,7 +205,7 @@ public class ScriptOperations {
 
     public Observable<String> importSample(Sample sample) {
         try {
-            return importFile(sample.name, mContext.getAssets().open(sample.path), PFile.getExtension(sample.path));
+            return importFile(sample.name, mContext.getAssets().open(sample.path), PFiles.getExtension(sample.path));
         } catch (IOException e) {
             e.printStackTrace();
             showMessage(R.string.text_import_fail);
@@ -218,17 +216,14 @@ public class ScriptOperations {
     public Observable<Boolean> rename(final ScriptFile file) {
         final ScriptFile oldFile = new ScriptFile(file.getPath());
         String originalName = file.getSimplifiedName();
-        return showNameInputDialog(originalName, new InputCallback(file.isDirectory() ? null : PFile.getExtension(file.getName()),
+        return showNameInputDialog(originalName, new InputCallback(file.isDirectory() ? null : PFiles.getExtension(file.getName()),
                 originalName))
-                .map(new Function<String, Boolean>() {
-                    @Override
-                    public Boolean apply(@io.reactivex.annotations.NonNull String newName) throws Exception {
-                        ScriptFile newFile = file.renameAndReturnNewFile(newName);
-                        if (newFile != null) {
-                            mStorageFileProvider.notifyFileChanged(mCurrentDirectory, oldFile, newFile);
-                        }
-                        return newFile != null;
+                .map(newName -> {
+                    PFile newFile = file.renameAndReturnNewFile(newName);
+                    if (newFile != null) {
+                        mStorageFileProvider.notifyFileChanged(mCurrentDirectory, oldFile, newFile);
                     }
+                    return newFile != null;
                 });
     }
 
@@ -241,7 +236,7 @@ public class ScriptOperations {
         Observable.fromPublisher(new Publisher<Boolean>() {
             @Override
             public void subscribe(Subscriber<? super Boolean> s) {
-                s.onNext(PFile.deleteRecursively(scriptFile));
+                s.onNext(PFiles.deleteRecursively(scriptFile));
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

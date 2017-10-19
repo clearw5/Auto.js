@@ -10,11 +10,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.stardust.pio.PFiles.DEFAULT_BUFFER_SIZE;
+
 /**
  * Created by Stardust on 2017/4/1.
  */
 
-public class PWritableTextFile extends PFile implements Closeable {
+public class PWritableTextFile implements Closeable {
 
     public static PWritableTextFile open(String path, String encoding, int bufferSize) {
         return new PWritableTextFile(path, encoding, bufferSize, false);
@@ -36,7 +38,7 @@ public class PWritableTextFile extends PFile implements Closeable {
 
     public PWritableTextFile(String path, String encoding, int bufferingSize, boolean append) {
         if (bufferingSize <= 0) {
-            bufferingSize = PFile.DEFAULT_BUFFER_SIZE;
+            bufferingSize = DEFAULT_BUFFER_SIZE;
         }
         try {
             mBufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path, append), encoding), bufferingSize);
@@ -46,15 +48,15 @@ public class PWritableTextFile extends PFile implements Closeable {
     }
 
     public PWritableTextFile(String path) {
-        this(path, PFile.DEFAULT_ENCODING, PFile.DEFAULT_BUFFER_SIZE, false);
+        this(path, PFiles.DEFAULT_ENCODING, DEFAULT_BUFFER_SIZE, false);
     }
 
     public PWritableTextFile(String path, boolean append) {
-        this(path, PFile.DEFAULT_ENCODING, PFile.DEFAULT_BUFFER_SIZE, append);
+        this(path, PFiles.DEFAULT_ENCODING, DEFAULT_BUFFER_SIZE, append);
     }
 
     public PWritableTextFile(String path, int bufferSize) {
-        this(path, PFile.DEFAULT_ENCODING, bufferSize, false);
+        this(path, PFiles.DEFAULT_ENCODING, bufferSize, false);
     }
 
     public PWritableTextFile(String path, String encoding) {

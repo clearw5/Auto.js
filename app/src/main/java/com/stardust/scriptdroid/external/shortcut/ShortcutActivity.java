@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.stardust.scriptdroid.script.PathChecker;
+import com.stardust.scriptdroid.model.script.PathChecker;
 import com.stardust.scriptdroid.external.CommonUtils;
-import com.stardust.scriptdroid.script.ScriptFile;
-import com.stardust.scriptdroid.script.Scripts;
+import com.stardust.scriptdroid.model.script.ScriptFile;
+import com.stardust.scriptdroid.model.script.Scripts;
 
 /**
  * Created by Stardust on 2017/1/23.

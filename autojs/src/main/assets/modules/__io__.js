@@ -1,15 +1,16 @@
 
 module.exports = function(__runtime__, scope){
-    scope.files = com.stardust.pio.PFile;
+    var files = com.stardust.pio.PFiles;
+    scope.files = files;
     scope.open = function(path, mode, encoding, bufferSize){
          if(arguments.length == 1){
-             return com.stardust.pio.PFile.open(path);
+             return files.open(path);
          }else if(arguments.length == 2){
-             return com.stardust.pio.PFile.open(path, mode);
+             return files.open(path, mode);
          }else if(arguments.length == 3){
-             return com.stardust.pio.PFile.open(path, mode, encoding);
+             return files.open(path, mode, encoding);
          }else if(arguments.length == 4){
-             return com.stardust.pio.PFile.open(path, mode, encoding, bufferSize);
+             return files.open(path, mode, encoding, bufferSize);
          }
     };
 

@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.script;
+package com.stardust.scriptdroid.model.script;
 
 import android.app.Activity;
 import android.content.Context;

@@ -11,8 +11,8 @@ import android.view.View;
 
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.CommonUtils;
-import com.stardust.scriptdroid.script.ScriptFile;
-import com.stardust.scriptdroid.script.StorageFileProvider;
+import com.stardust.scriptdroid.model.script.ScriptFile;
+import com.stardust.scriptdroid.model.script.StorageFileProvider;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.main.scripts.ScriptListView;
 import com.twofortyfouram.locale.sdk.client.ui.activity.AbstractAppCompatPluginActivity;
@@ -46,12 +46,9 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
         ScriptListView scriptList = (ScriptListView) findViewById(R.id.script_list);
         scriptList.setStorageFileProvider(mStorageFileProvider);
         scriptList.setCurrentDirectory(StorageFileProvider.DEFAULT_DIRECTORY);
-        scriptList.setOnScriptFileClickListener(new ScriptListView.OnScriptFileClickListener() {
-            @Override
-            public void onScriptFileClick(View view, ScriptFile file) {
-                mSelectedScriptFilePath = file.getPath();
-                finish();
-            }
+        scriptList.setOnScriptFileClickListener((view, file) -> {
+            mSelectedScriptFilePath = file.getPath();
+            finish();
         });
     }
 

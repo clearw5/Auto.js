@@ -5,13 +5,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
-import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.scriptdroid.R;
 
 import java.io.FileNotFoundException;
@@ -46,7 +44,7 @@ public class ImportIntentActivity extends BaseActivity {
     private void handleIntent(Intent intent) throws FileNotFoundException {
         Uri uri = intent.getData();
         if (uri != null && "content".equals(uri.getScheme())) {
-            String ext = PFile.getExtension(uri.getScheme());
+            String ext = PFiles.getExtension(uri.getScheme());
             if(TextUtils.isEmpty(ext)){
                 ext = "js";
             }

@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.ColorStateList;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -17,9 +16,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.JavaScriptFileSource;
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.script.Scripts;
+import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.ui.edit.completion.CodeCompletions;
 import com.stardust.scriptdroid.ui.edit.completion.CodeCompletionBar;
 import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhancedBarColors;
@@ -40,7 +39,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.stardust.scriptdroid.script.Scripts.ACTION_ON_EXECUTION_FINISHED;
+import static com.stardust.scriptdroid.model.script.Scripts.ACTION_ON_EXECUTION_FINISHED;
 
 /**
  * Created by Stardust on 2017/9/28.
@@ -261,7 +260,7 @@ public class EditorView extends FrameLayout {
                 .doOnNext(new Consumer<String>() {
                     @Override
                     public void accept(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        PFile.write(mFile, s);
+                        PFiles.write(mFile, s);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())

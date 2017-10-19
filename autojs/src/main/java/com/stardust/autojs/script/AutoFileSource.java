@@ -1,11 +1,8 @@
 package com.stardust.autojs.script;
 
-import android.support.annotation.NonNull;
-
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 
 import java.io.File;
-import java.io.Reader;
 
 /**
  * Created by Stardust on 2017/8/2.
@@ -17,7 +14,7 @@ public class AutoFileSource extends ScriptSource {
     private File mFile;
 
     public AutoFileSource(File file) {
-        super(PFile.getNameWithoutExtension(file.getAbsolutePath()));
+        super(PFiles.getNameWithoutExtension(file.getAbsolutePath()));
         mFile = file;
     }
 

@@ -1,13 +1,13 @@
-package com.stardust.scriptdroid.script;
+package com.stardust.scriptdroid.model.script;
 
 import android.os.Environment;
-import android.renderscript.Script;
 import android.support.annotation.Nullable;
 
 import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * Created by Stardust on 2017/1/23.
  */
 
-public class ScriptFile extends File {
+public class ScriptFile extends PFile {
 
     public static final int TYPE_UNKNOWN = 0;
     public static final int TYPE_AUTO = 1;
@@ -26,57 +26,20 @@ public class ScriptFile extends File {
 
     private int mType = -1;
 
-    private String mSimplifyPath;
-    private String mSimplifiedName;
-
-
     public ScriptFile(String path) {
         super(path);
-        init();
     }
 
     public ScriptFile(String parent, String name) {
         super(parent, name);
-        init();
-    }
-
-    private void init() {
-        mSimplifiedName = PFile.getNameWithoutExtension(getName());
-        mSimplifyPath = getPath();
-        if (mSimplifyPath.startsWith(Environment.getExternalStorageDirectory().getPath())) {
-            mSimplifyPath = mSimplifyPath.substring(Environment.getExternalStorageDirectory().getPath().length());
-        }
     }
 
     public ScriptFile(ScriptFile parent, String child) {
         super(parent, child);
-        init();
     }
 
-    public boolean renameTo(String newName) {
-        if (isDirectory())
-            return renameTo(new File(getParent(), newName));
-        else
-            return renameTo(new File(getParent(), newName + "." + getExtension()));
-    }
-
-    @Nullable
-    public ScriptFile renameAndReturnNewFile(String newName) {
-        ScriptFile newFile = isDirectory() ? new ScriptFile(getParent(), newName) :
-                new ScriptFile(getParent(), newName + "." + getExtension());
-        if (renameTo(newFile)) {
-            return newFile;
-        } else {
-            return null;
-        }
-    }
-
-    private String getExtension() {
-        return PFile.getExtension(getName());
-    }
-
-    public String getSimplifiedPath() {
-        return mSimplifyPath;
+    public ScriptFile(File file) {
+        super(file.getPath());
     }
 
     public int getType() {
@@ -98,13 +61,8 @@ public class ScriptFile extends File {
 
     @Override
     public ScriptFile[] listFiles() {
-        return listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                return (file.getName().endsWith(".js") || file.getName().endsWith(".auto") ||
-                        file.isDirectory()) && !file.getName().startsWith(".");
-            }
-        });
+        return listFiles(file -> (file.getName().endsWith(".js") || file.getName().endsWith(".auto") ||
+                file.isDirectory()) && !file.getName().startsWith("."));
     }
 
     @Override
@@ -130,14 +88,6 @@ public class ScriptFile extends File {
         }
         return files.toArray(new ScriptFile[files.size()]);
 
-    }
-
-    public String getSimplifiedName() {
-        return mSimplifiedName;
-    }
-
-    public boolean moveTo(ScriptFile to) {
-        return renameTo(new File(to, getName()));
     }
 
     public ScriptSource toSource() {

@@ -3,7 +3,7 @@ package com.stardust.util;
 import android.app.Activity;
 import android.content.res.AssetManager;
 
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 
 /**
  * Created by Stardust on 2017/3/14.
@@ -19,7 +19,7 @@ public class AssetsCache {
         return cache.get(path, new SimpleCache.Supplier<String>() {
             @Override
             public String get(String key) {
-                return PFile.readAsset(assetManager, path);
+                return PFiles.readAsset(assetManager, path);
             }
         });
     }

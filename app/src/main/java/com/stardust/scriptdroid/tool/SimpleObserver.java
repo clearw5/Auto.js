@@ -1,6 +1,5 @@
 package com.stardust.scriptdroid.tool;
 
-import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;

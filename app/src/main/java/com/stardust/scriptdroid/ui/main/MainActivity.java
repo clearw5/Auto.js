@@ -2,8 +2,11 @@ package com.stardust.scriptdroid.ui.main;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -14,20 +17,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.qq.e.comm.DownloadService;
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.enhancedfloaty.FloatyService;
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.ui.common.NotAskAgainDialog;
 import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
-import com.stardust.scriptdroid.script.StorageFileProvider;
+import com.stardust.scriptdroid.model.script.StorageFileProvider;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment_;
 import com.stardust.scriptdroid.ui.main.doc.OnlineDocsFragment_;
 import com.stardust.scriptdroid.ui.main.scripts.MyScriptListFragment_;
@@ -46,6 +47,8 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+
+import java.util.Arrays;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, BackPressedHandler.HostActivity {
@@ -91,7 +94,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         }
         new CommonMarkdownView.DialogBuilder(this)
                 .padding(36, 0, 36, 0)
-                .markdown(PFile.read(getResources().openRawResource(R.raw.annunciation)))
+                .markdown(PFiles.read(getResources().openRawResource(R.raw.annunciation)))
                 .title(R.string.text_annunciation)
                 .positiveText(R.string.ok)
                 .canceledOnTouchOutside(false)
@@ -118,12 +121,9 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 .content(R.string.explain_accessibility_permission)
                 .positiveText(R.string.text_go_to_setting)
                 .negativeText(R.string.text_cancel)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        AccessibilityServiceTool.enableAccessibilityService();
-                    }
-                }).show();
+                .onPositive((dialog, which) ->
+                        AccessibilityServiceTool.enableAccessibilityService()
+                ).show();
     }
 
     private void setUpToolbar() {
@@ -150,13 +150,10 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     private void setUpViewPagerFragmentBehaviors() {
-        mPagerAdapter.setOnFragmentInstantiateListener(new FragmentPagerAdapterBuilder.OnFragmentInstantiateListener() {
-            @Override
-            public void OnInstantiate(int pos, Fragment fragment) {
-                ((ViewPagerFragment) fragment).setFab(mFab);
-                if (pos == mViewPager.getCurrentItem()) {
-                    ((ViewPagerFragment) fragment).onPageShow();
-                }
+        mPagerAdapter.setOnFragmentInstantiateListener((pos, fragment) -> {
+            ((ViewPagerFragment) fragment).setFab(mFab);
+            if (pos == mViewPager.getCurrentItem()) {
+                ((ViewPagerFragment) fragment).onPageShow();
             }
         });
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -208,10 +205,14 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         mActivityResultMediator.onActivityResult(requestCode, resultCode, data);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        StorageFileProvider.getDefault().notifyStoragePermissionGranted();
+        if (Arrays.asList(permissions).contains(Manifest.permission.READ_EXTERNAL_STORAGE)
+                && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            StorageFileProvider.getDefault().notifyStoragePermissionGranted();
+        }
     }
 
     @Override

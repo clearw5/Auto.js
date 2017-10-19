@@ -1,6 +1,6 @@
 package com.stardust.scriptdroid.ui.viewmodel;
 
-import com.stardust.scriptdroid.script.ScriptFile;
+import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.util.FileSorter;
 
 import java.io.File;

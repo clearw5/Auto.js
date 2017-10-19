@@ -17,7 +17,7 @@ import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.script.sample.Sample;
+import com.stardust.scriptdroid.model.sample.Sample;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
@@ -32,8 +32,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 
-import static com.stardust.scriptdroid.script.Scripts.ACTION_ON_EXECUTION_FINISHED;
-import static com.stardust.scriptdroid.script.Scripts.EXTRA_EXCEPTION_MESSAGE;
+import static com.stardust.scriptdroid.model.script.Scripts.ACTION_ON_EXECUTION_FINISHED;
+import static com.stardust.scriptdroid.model.script.Scripts.EXTRA_EXCEPTION_MESSAGE;
 
 
 /**

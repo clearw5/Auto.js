@@ -1,15 +1,13 @@
 package com.stardust.util;
 
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 
 import java.io.File;
 import java.text.Collator;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by Stardust on 2017/3/31.
@@ -39,7 +37,7 @@ public class FileSorter {
     public static final Comparator<File> TYPE = new Comparator<File>() {
         @Override
         public int compare(File o1, File o2) {
-            return -PFile.getExtension(o1.getName()).compareTo(PFile.getExtension(o2.getName()));
+            return -PFiles.getExtension(o1.getName()).compareTo(PFiles.getExtension(o2.getName()));
         }
     };
 

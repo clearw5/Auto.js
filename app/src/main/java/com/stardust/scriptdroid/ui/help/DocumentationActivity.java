@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.webkit.WebView;
 
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.theme.ThemeColorManagerCompat;
 import com.stardust.util.UnderuseExecutors;
@@ -52,7 +52,7 @@ public class DocumentationActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    mDocumentation = PFile.read(getAssets().open("help/" + path));
+                    mDocumentation = PFiles.read(getAssets().open("help/" + path));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

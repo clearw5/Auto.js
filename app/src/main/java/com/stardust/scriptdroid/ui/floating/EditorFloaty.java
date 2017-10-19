@@ -10,7 +10,7 @@ import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableFloaty;
 import com.stardust.enhancedfloaty.ResizableFloatyWindow;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.script.ScriptFile;
+import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.ui.edit.EditActivity_;
 import com.stardust.scriptdroid.ui.edit.EditorView;
 

@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.workground.WrapContentLinearLayoutManager;
 
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.google.gson.Gson;
@@ -202,7 +202,7 @@ public class HelpCatalogueActivity extends BaseActivity {
     private static void readCatalogues(String path) {
         Map<String, List<Item>> fromJson;
         try {
-            String json = PFile.read(App.getApp().getAssets().open(path));
+            String json = PFiles.read(App.getApp().getAssets().open(path));
             Gson gson = new Gson();
             Type type = new TypeToken<Map<String, List<Item>>>() {
             }.getType();
