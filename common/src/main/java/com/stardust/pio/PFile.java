@@ -97,7 +97,7 @@ public class PFile extends File {
         ArrayList<PFile> files = new ArrayList<>();
         for (int i = 0; i < ss.length; i++) {
             if (!ss[i].startsWith(".")) {
-                files.add(new PFile(ss[i]));
+                files.add(new PFile(this, ss[i]));
             }
         }
         return files.toArray(new PFile[files.size()]);

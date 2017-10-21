@@ -133,6 +133,8 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
                         .newScriptFile();
                 break;
             case 2:
+                new ScriptOperations(getContext(), mScriptFileList, mScriptFileList.getCurrentDirectory())
+                        .importFile();
                 break;
 
         }

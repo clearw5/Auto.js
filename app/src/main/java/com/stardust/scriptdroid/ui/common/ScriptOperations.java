@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.ui.common;
 
 import android.content.Context;
+import android.os.Environment;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -34,7 +35,6 @@ import org.reactivestreams.Subscriber;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -256,13 +256,26 @@ public class ScriptOperations {
 
     public Observable<ScriptFile> download(String url) {
         String fileName = DownloadManager.parseFileNameLocally(url);
-        MaterialDialog progressDialog = createDownloadProgressDialog(url, fileName);
         return new FileChooserDialogBuilder(mContext)
                 .title(R.string.text_select_save_path)
                 .chooseDir()
                 .singleChoice()
                 .map(saveDir -> new File(saveDir, fileName).getPath())
-                .flatMap(savePath -> download(url, savePath, progressDialog));
+                .flatMap(savePath -> {
+                    if (!new File(savePath).exists()) {
+                        return Observable.just(savePath);
+                    }
+                    return RxDialogs.confirm(mContext, R.string.confirm_overwrite_file)
+                            .flatMap(yes -> {
+                                if (yes) {
+                                    new File(savePath).delete();
+                                    return Observable.just(savePath);
+                                } else {
+                                    return Observable.empty();
+                                }
+                            });
+                })
+                .flatMap(savePath -> download(url, savePath, createDownloadProgressDialog(url, fileName)));
     }
 
     private MaterialDialog createDownloadProgressDialog(String url, String fileName) {
@@ -300,6 +313,16 @@ public class ScriptOperations {
         return Observable.fromCallable(() -> TmpScriptFiles.create(mContext))
                 .flatMap(tmpFile ->
                         download(url, tmpFile.getPath(), createDownloadProgressDialog(url, fileName)));
+    }
+
+    public void importFile() {
+        new FileChooserDialogBuilder(mContext)
+                .dir(Environment.getExternalStorageDirectory().getPath())
+                .justScriptFile()
+                .singleChoice(file -> importFile(file.getPath()))
+                .title(R.string.text_select_file_to_import)
+                .positiveText(R.string.ok)
+                .show();
     }
 
 

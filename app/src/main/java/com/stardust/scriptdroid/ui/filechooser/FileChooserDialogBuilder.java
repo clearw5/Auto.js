@@ -59,12 +59,21 @@ public class FileChooserDialogBuilder extends ThemeColorMaterialDialogBuilder {
 
     public FileChooserDialogBuilder dir(String rootDir, String initialDir) {
         mRootDir = new PFile(rootDir);
-        mFileChooseListView.setStorageFileProvider(new StorageFileProvider(mRootDir, 10), new ScriptFile(initialDir));
+        if (mRootDir.equals(StorageFileProvider.DEFAULT_DIRECTORY)) {
+            mFileChooseListView.setStorageFileProvider(StorageFileProvider.getDefault());
+        } else {
+            mFileChooseListView.setStorageFileProvider(new StorageFileProvider(mRootDir, 10), new ScriptFile(initialDir));
+        }
         return this;
     }
 
     public FileChooserDialogBuilder dir(String dir) {
         return dir(dir, dir);
+    }
+
+    public FileChooserDialogBuilder justScriptFile() {
+        mFileChooseListView.setStorageFileProvider(new StorageFileProvider(mRootDir, 10, StorageFileProvider.SCRIPT_FILTER));
+        return this;
     }
 
 

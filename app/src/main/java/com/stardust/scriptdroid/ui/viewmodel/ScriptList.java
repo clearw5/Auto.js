@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.ui.viewmodel;
 
 import com.stardust.scriptdroid.model.script.ScriptFile;
+import com.stardust.scriptdroid.ui.main.scripts.ScriptListView;
 import com.stardust.util.FileSorter;
 
 import java.io.File;
@@ -24,6 +25,7 @@ public class ScriptList {
     private boolean mDirSortedAscending;
     private boolean mFileSortedAscending;
     private int mFileSortType = SORT_TYPE_NAME;
+
 
     public boolean isDirSortedAscending() {
         return mDirSortedAscending;
@@ -109,5 +111,14 @@ public class ScriptList {
     public void sort() {
         FileSorter.sort(mDirectories, getComparator(mDirSortType), mDirSortedAscending);
         FileSorter.sort(mScriptFiles, getComparator(mFileSortType), mFileSortedAscending);
+    }
+
+    public ScriptList cloneConfig() {
+        ScriptList list = new ScriptList();
+        list.mFileSortType = mFileSortType;
+        list.mDirSortType = mDirSortType;
+        list.mDirSortedAscending = mDirSortedAscending;
+        list.mFileSortedAscending = mFileSortedAscending;
+        return list;
     }
 }

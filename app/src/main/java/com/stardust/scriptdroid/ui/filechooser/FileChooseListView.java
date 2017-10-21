@@ -159,6 +159,7 @@ public class FileChooseListView extends ScriptListView {
         DirectoryViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            mCheckBox.setVisibility(mCanChooseDir ? VISIBLE : GONE);
         }
 
         @Override

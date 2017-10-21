@@ -32,6 +32,8 @@ public class StorageFileProvider {
     public static final int ALL = 3;
     public static final String DEFAULT_DIRECTORY_PATH = Environment.getExternalStorageDirectory() + App.getApp().getString(R.string.folder_name);
     public static final PFile DEFAULT_DIRECTORY = new PFile(DEFAULT_DIRECTORY_PATH);
+    public static final FileFilter SCRIPT_FILTER = file ->
+            file.isDirectory() || file.getName().endsWith(".js") || file.getName().endsWith(".auto");
 
     public static class DirectoryChangeEvent {
 
@@ -75,8 +77,6 @@ public class StorageFileProvider {
 
 
     private static StorageFileProvider externalStorageProvider;
-    private static final FileFilter SCRIPT_FILTER = file ->
-            file.isDirectory() || file.getName().endsWith(".js") || file.getName().endsWith(".auto");
     private static final StorageFileProvider DEFAULT_PROVIDER = new StorageFileProvider(DEFAULT_DIRECTORY, 10, SCRIPT_FILTER);
 
     private EventBus mDirectoryEventBus = new EventBus();

@@ -242,6 +242,9 @@
     <string name="text_cancel_download">取消下载</string>
     <string name="text_download">下载</string>
     <string name="format_file_downloaded" formatted="true">文件已保存到 %s</string>
+    <string name="confirm_overwrite_file">文件已存在，要覆盖吗？</string>
+    <string name="text_select_file_to_upload">选择要上传的文件</string>
+    <string name="text_select_file_to_import">选择要导入的文件</string>
 
 
     <string-array name="ad_showing_mode_keys">

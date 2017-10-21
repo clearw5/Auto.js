@@ -1,17 +1,24 @@
 package com.stardust.scriptdroid.ui.main.community;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.net.Uri;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.io.StorageFileProvider;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.network.download.DownloadManager;
 import com.stardust.scriptdroid.ui.common.OptionListView;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
+import com.stardust.scriptdroid.ui.filechooser.FileChooserDialogBuilder;
 import com.stardust.widget.EWebView;
 
 import java.util.regex.Pattern;
@@ -41,6 +48,7 @@ public class CommunityWebView extends EWebView {
 
     private void init() {
         getWebView().setWebViewClient(new MyWebViewClient());
+        getWebView().setWebChromeClient(new MyWebChromeClient());
     }
 
     private void shouldScriptOptionsDialog(String url) {
@@ -111,6 +119,19 @@ public class CommunityWebView extends EWebView {
             return super.shouldOverrideUrlLoading(view, url);
         }
 
+    }
+
+    private class MyWebChromeClient extends EWebView.MyWebChromeClient {
+
+        @Override
+        public void openFileChooser(ValueCallback<Uri> callback) {
+            new FileChooserDialogBuilder(getContext())
+                    .title(R.string.text_select_file_to_upload)
+                    .dir(StorageFileProvider.DEFAULT_DIRECTORY_PATH)
+                    .singleChoice(file -> callback.onReceiveValue(Uri.fromFile(file)))
+                    .cancelListener(dialog -> callback.onReceiveValue(null))
+                    .show();
+        }
 
     }
 }

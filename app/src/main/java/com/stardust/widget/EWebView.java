@@ -9,6 +9,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -80,6 +81,39 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
             super.onProgressChanged(view, newProgress);
             mProgressBar.setProgress(newProgress);
         }
+
+
+        // For Android < 3.0
+        public void openFileChooser(ValueCallback<Uri> valueCallback) {
+
+        }
+
+        // For Android  >= 3.0
+        @SuppressWarnings("unchecked")
+        public void openFileChooser(ValueCallback valueCallback, String acceptType) {
+            openFileChooser(valueCallback);
+        }
+
+        //For Android  >= 4.1
+        public void openFileChooser(ValueCallback<Uri> valueCallback,
+                                    String acceptType, String capture) {
+            openFileChooser(valueCallback);
+        }
+
+        // For Android >= 5.0
+        @Override
+        public boolean onShowFileChooser(WebView webView,
+                                         ValueCallback<Uri[]> filePathCallback,
+                                         WebChromeClient.FileChooserParams fileChooserParams) {
+            openFileChooser(value -> {
+                if (value == null) {
+                    filePathCallback.onReceiveValue(null);
+                } else {
+                    filePathCallback.onReceiveValue(new Uri[]{value});
+                }
+            });
+            return true;
+        }
     }
 
     protected class MyWebViewClient extends WebViewClient {
@@ -113,5 +147,7 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
             }
             return true;
         }
+
+
     }
 }

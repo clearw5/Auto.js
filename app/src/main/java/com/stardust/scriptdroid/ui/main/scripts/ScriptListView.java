@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +42,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
+
+    private static final String LOG_TAG = "ScriptListView";
 
     public interface OnScriptFileClickListener {
         void onScriptFileClick(View view, ScriptFile file);
@@ -155,11 +158,10 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
 
     private void loadScriptList() {
         setRefreshing(true);
-        mScriptList.clear();
         mStorageFileProvider.getDirectoryFiles(mCurrentDirectory)
                 .subscribeOn(Schedulers.io())
-                .collectInto(mScriptList, (list, file) ->
-                        mScriptList.add(new ScriptFile(file))
+                .collectInto(mScriptList.cloneConfig(), (list, file) ->
+                        list.add(new ScriptFile(file))
                 )
                 .observeOn(Schedulers.computation())
                 .doOnSuccess(ScriptList::sort)
@@ -287,6 +289,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         @Override
         public void onBindViewHolder(BindableViewHolder<?> holder, int position) {
             int positionOfCategoryFile = positionOfCategoryFile();
+            Log.d(LOG_TAG, String.format("view holder = %s, pos = %d, posOfCategory = %d, size = %d", holder.getClass().toString(), position, positionOfCategoryFile, mScriptList.count()));
             BindableViewHolder bindableViewHolder = (BindableViewHolder) holder;
             if (position == positionOfCategoryDir || position == positionOfCategoryFile) {
                 // FIXME: 2017/10/20 java.lang.ClassCastException: java.lang.Boolean cannot be cast to com.stardust.scriptdroid.model.script.ScriptFile
@@ -297,19 +300,22 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
                 bindableViewHolder.bind(mScriptList.getDir(position - 1), position);
                 return;
             }
-            bindableViewHolder.bind(mScriptList.getFile(position - positionOfCategoryFile() - 1), position);
+            bindableViewHolder.bind(mScriptList.getFile(position - positionOfCategoryFile - 1), position);
         }
 
         @Override
         public int getItemViewType(int position) {
+            int viewType;
             int positionOfCategoryFile = positionOfCategoryFile();
             if (position == positionOfCategoryDir || position == positionOfCategoryFile) {
-                return VIEW_TYPE_CATEGORY;
+                viewType = VIEW_TYPE_CATEGORY;
+            } else if (position < positionOfCategoryFile) {
+                viewType = VIEW_TYPE_DIRECTORY;
+            } else {
+                viewType = VIEW_TYPE_FILE;
             }
-            if (position < positionOfCategoryFile) {
-                return VIEW_TYPE_DIRECTORY;
-            }
-            return VIEW_TYPE_FILE;
+            Log.d(LOG_TAG, String.format("view type = %d, pos = %d, posOfCategory = %d, size = %d", viewType, position, positionOfCategoryFile, mScriptList.count()));
+            return viewType;
         }
 
         @Override
