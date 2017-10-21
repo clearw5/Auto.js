@@ -20,7 +20,7 @@ import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
-import com.stardust.scriptdroid.model.script.StorageFileProvider;
+import com.stardust.scriptdroid.io.StorageFileProvider;
 import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.viewmodel.ScriptList;
@@ -181,7 +181,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
 
     @Override
     public void onRefresh() {
-        loadScriptList();
+        mStorageFileProvider.notifyDirectoryChanged(mCurrentDirectory);
     }
 
 
@@ -289,6 +289,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
             int positionOfCategoryFile = positionOfCategoryFile();
             BindableViewHolder bindableViewHolder = (BindableViewHolder) holder;
             if (position == positionOfCategoryDir || position == positionOfCategoryFile) {
+                // FIXME: 2017/10/20 java.lang.ClassCastException: java.lang.Boolean cannot be cast to com.stardust.scriptdroid.model.script.ScriptFile
                 bindableViewHolder.bind(position == positionOfCategoryDir, position);
                 return;
             }

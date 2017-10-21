@@ -73,7 +73,7 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
         mWebView.reload();
     }
 
-    private class MyWebChromeClient extends WebChromeClient {
+    protected class MyWebChromeClient extends WebChromeClient {
 
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
@@ -82,7 +82,7 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
         }
     }
 
-    private class MyWebViewClient extends WebViewClient {
+    protected class MyWebViewClient extends WebViewClient {
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {

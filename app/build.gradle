@@ -126,6 +126,10 @@ dependencies {
     // RxJava
     compile "io.reactivex.rxjava2:rxjava:2.1.0"
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    // RxDownload
+    compile('zlc.season:rxdownload3:1.0.8', {
+        exclude group: 'com.android.support'
+    })
     // Retrofit
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'

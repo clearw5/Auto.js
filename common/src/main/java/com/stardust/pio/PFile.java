@@ -94,11 +94,13 @@ public class PFile extends File {
     public PFile[] listFiles() {
         String ss[] = list();
         if (ss == null) return null;
-        PFile[] files = new PFile[ss.length];
+        ArrayList<PFile> files = new ArrayList<>();
         for (int i = 0; i < ss.length; i++) {
-            files[i] = new PFile(ss[i]);
+            if (!ss[i].startsWith(".")) {
+                files.add(new PFile(ss[i]));
+            }
         }
-        return files;
+        return files.toArray(new PFile[files.size()]);
     }
 
     @Override
@@ -107,7 +109,7 @@ public class PFile extends File {
         if (ss == null) return null;
         ArrayList<PFile> files = new ArrayList<>();
         for (String s : ss)
-            if ((filter == null) || filter.accept(this, s))
+            if (!s.startsWith(".") && (filter == null || filter.accept(this, s)))
                 files.add(new PFile(this, s));
         return files.toArray(new PFile[files.size()]);
     }
@@ -119,7 +121,7 @@ public class PFile extends File {
         ArrayList<PFile> files = new ArrayList<>();
         for (String s : ss) {
             PFile f = new PFile(this, s);
-            if ((filter == null) || filter.accept(f))
+            if (!f.isHidden() && (filter == null || filter.accept(f)))
                 files.add(f);
         }
         return files.toArray(new PFile[files.size()]);

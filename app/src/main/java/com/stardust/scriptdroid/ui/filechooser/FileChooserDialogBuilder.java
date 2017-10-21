@@ -2,16 +2,20 @@ package com.stardust.scriptdroid.ui.filechooser;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 
 import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
-import com.stardust.scriptdroid.model.script.StorageFileProvider;
+import com.stardust.scriptdroid.io.StorageFileProvider;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * Created by Stardust on 2017/10/19.
@@ -87,5 +91,25 @@ public class FileChooserDialogBuilder extends ThemeColorMaterialDialogBuilder {
         return this;
     }
 
+    public Observable<PFile> singleChoice() {
+        PublishSubject<PFile> result = PublishSubject.create();
+        singleChoice(file -> {
+            result.onNext(file);
+            result.onComplete();
+        });
+        show();
+        return result;
+    }
 
+    @Override
+    public FileChooserDialogBuilder title(@NonNull CharSequence title) {
+        super.title(title);
+        return this;
+    }
+
+    @Override
+    public FileChooserDialogBuilder title(@StringRes int titleRes) {
+        super.title(titleRes);
+        return this;
+    }
 }

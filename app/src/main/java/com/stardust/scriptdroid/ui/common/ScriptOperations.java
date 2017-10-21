@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -18,10 +19,13 @@ import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.io.TmpScriptFiles;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
-import com.stardust.scriptdroid.model.script.StorageFileProvider;
+import com.stardust.scriptdroid.io.StorageFileProvider;
 import com.stardust.scriptdroid.model.sample.Sample;
+import com.stardust.scriptdroid.network.download.DownloadManager;
+import com.stardust.scriptdroid.ui.filechooser.FileChooserDialogBuilder;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import org.reactivestreams.Publisher;
@@ -30,6 +34,7 @@ import org.reactivestreams.Subscriber;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -38,12 +43,14 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
+
 /**
  * Created by Stardust on 2017/7/31.
  */
 
 public class ScriptOperations {
 
+    private static final String LOG_TAG = "ScriptOperations";
     private Context mContext;
     private View mView;
     private ScriptFile mCurrentDirectory;
@@ -57,7 +64,7 @@ public class ScriptOperations {
     }
 
     public ScriptOperations(Context context, View view) {
-        this(context, view, StorageFileProvider.DEFAULT_DIRECTORY);
+        this(context, view, new ScriptFile(StorageFileProvider.DEFAULT_DIRECTORY));
     }
 
     public void newScriptFileForScript(final String script) {
@@ -240,14 +247,59 @@ public class ScriptOperations {
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(@io.reactivex.annotations.NonNull Boolean deleted) throws Exception {
-                        showMessage(deleted ? R.string.text_already_delete : R.string.text_delete_failed);
-                        if (deleted)
-                            mStorageFileProvider.notifyFileRemoved(mCurrentDirectory, scriptFile);
-                    }
+                .subscribe(deleted -> {
+                    showMessage(deleted ? R.string.text_already_delete : R.string.text_delete_failed);
+                    if (deleted)
+                        mStorageFileProvider.notifyFileRemoved(mCurrentDirectory, scriptFile);
                 });
+    }
+
+    public Observable<ScriptFile> download(String url) {
+        String fileName = DownloadManager.parseFileNameLocally(url);
+        MaterialDialog progressDialog = createDownloadProgressDialog(url, fileName);
+        return new FileChooserDialogBuilder(mContext)
+                .title(R.string.text_select_save_path)
+                .chooseDir()
+                .singleChoice()
+                .map(saveDir -> new File(saveDir, fileName).getPath())
+                .flatMap(savePath -> download(url, savePath, progressDialog));
+    }
+
+    private MaterialDialog createDownloadProgressDialog(String url, String fileName) {
+        return new MaterialDialog.Builder(mContext)
+                .progress(false, 100)
+                .title(fileName)
+                .cancelable(false)
+                .positiveText(R.string.text_cancel_download)
+                .onPositive((dialog, which) -> DownloadManager.getInstance(mContext).cancelDownload(url))
+                .show();
+    }
+
+    public Observable<ScriptFile> download(String url, String path, MaterialDialog progressDialog) {
+        PublishSubject<ScriptFile> subject = PublishSubject.create();
+        DownloadManager.getInstance(mContext).download(url, path)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(progressDialog::setProgress)
+                .doOnComplete(() -> {
+                    progressDialog.dismiss();
+                    subject.onNext(new ScriptFile(path));
+                    subject.onComplete();
+                })
+                .doOnError(error -> {
+                    Log.e(LOG_TAG, "Download failed", error);
+                    progressDialog.dismiss();
+                    showMessage(R.string.text_download_failed);
+                    subject.onError(error);
+                })
+                .subscribe();
+        return subject;
+    }
+
+    public Observable<ScriptFile> temporarilyDownload(String url) {
+        String fileName = DownloadManager.parseFileNameLocally(url);
+        return Observable.fromCallable(() -> TmpScriptFiles.create(mContext))
+                .flatMap(tmpFile ->
+                        download(url, tmpFile.getPath(), createDownloadProgressDialog(url, fileName)));
     }
 
 

@@ -7,12 +7,11 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.model.script.ScriptFile;
-import com.stardust.scriptdroid.model.script.StorageFileProvider;
+import com.stardust.scriptdroid.io.StorageFileProvider;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.main.scripts.ScriptListView;
 import com.twofortyfouram.locale.sdk.client.ui.activity.AbstractAppCompatPluginActivity;
@@ -45,7 +44,7 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
         mStorageFileProvider = StorageFileProvider.getExternalStorageProvider();
         ScriptListView scriptList = (ScriptListView) findViewById(R.id.script_list);
         scriptList.setStorageFileProvider(mStorageFileProvider);
-        scriptList.setCurrentDirectory(StorageFileProvider.DEFAULT_DIRECTORY);
+        scriptList.setCurrentDirectory(new ScriptFile(StorageFileProvider.DEFAULT_DIRECTORY));
         scriptList.setOnScriptFileClickListener((view, file) -> {
             mSelectedScriptFilePath = file.getPath();
             finish();

@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.model.script;
+package com.stardust.scriptdroid.io;
 
 import android.os.Environment;
 
@@ -31,7 +31,7 @@ public class StorageFileProvider {
     public static final int CHANGE = 2;
     public static final int ALL = 3;
     public static final String DEFAULT_DIRECTORY_PATH = Environment.getExternalStorageDirectory() + App.getApp().getString(R.string.folder_name);
-    public static final ScriptFile DEFAULT_DIRECTORY = new ScriptFile(DEFAULT_DIRECTORY_PATH);
+    public static final PFile DEFAULT_DIRECTORY = new PFile(DEFAULT_DIRECTORY_PATH);
 
     public static class DirectoryChangeEvent {
 

@@ -18,6 +18,7 @@ import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.external.shortcut.Shortcut;
 import com.stardust.scriptdroid.external.shortcut.ShortcutActivity;
+import com.stardust.scriptdroid.io.StorageFileProvider;
 import com.stardust.scriptdroid.model.sample.Sample;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
 import com.stardust.util.AssetsCache;

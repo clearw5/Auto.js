@@ -132,7 +132,7 @@
     <string name="text_download_url">下载地址</string>
     <string name="text_directly_download">直接下载</string>
     <string name="text_downloading">下载中</string>
-    <string name="text_download_failed">下载失败~请到应用商店下载</string>
+    <string name="text_download_failed">下载失败</string>
     <string name="text_do_not_ask_again_for_this_version">此版本不再提示</string>
     <string name="text_code_beautify">格式化代码</string>
     <string name="text_processing">处理中</string>
@@ -237,6 +237,11 @@
     <string name="text_close">关闭</string>
     <string name="text_adjust">调整</string>
     <string name="text_exit_floating_window">退出悬浮窗</string>
+    <string name="text_save_and_edit">下载并编辑</string>
+    <string name="text_select_save_path">保存到</string>
+    <string name="text_cancel_download">取消下载</string>
+    <string name="text_download">下载</string>
+    <string name="format_file_downloaded" formatted="true">文件已保存到 %s</string>
 
 
     <string-array name="ad_showing_mode_keys">

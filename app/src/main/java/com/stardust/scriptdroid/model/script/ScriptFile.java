@@ -59,37 +59,6 @@ public class ScriptFile extends PFile {
         return new ScriptFile(p);
     }
 
-    @Override
-    public ScriptFile[] listFiles() {
-        return listFiles(file -> (file.getName().endsWith(".js") || file.getName().endsWith(".auto") ||
-                file.isDirectory()) && !file.getName().startsWith("."));
-    }
-
-    @Override
-    public ScriptFile[] listFiles(FilenameFilter filter) {
-        String ss[] = list();
-        if (ss == null) return null;
-        ArrayList<ScriptFile> files = new ArrayList<>();
-        for (String s : ss)
-            if ((filter == null) || filter.accept(this, s))
-                files.add(new ScriptFile(this, s));
-        return files.toArray(new ScriptFile[files.size()]);
-    }
-
-    @Override
-    public ScriptFile[] listFiles(FileFilter filter) {
-        String ss[] = list();
-        if (ss == null) return null;
-        ArrayList<ScriptFile> files = new ArrayList<>();
-        for (String s : ss) {
-            ScriptFile f = new ScriptFile(this, s);
-            if ((filter == null) || filter.accept(f))
-                files.add(f);
-        }
-        return files.toArray(new ScriptFile[files.size()]);
-
-    }
-
     public ScriptSource toSource() {
         if (getType() == TYPE_JAVA_SCRIPT) {
             return new JavaScriptFileSource(this);

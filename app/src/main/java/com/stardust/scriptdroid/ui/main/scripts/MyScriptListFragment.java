@@ -7,7 +7,7 @@ import android.view.View;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
-import com.stardust.scriptdroid.model.script.StorageFileProvider;
+import com.stardust.scriptdroid.io.StorageFileProvider;
 import com.stardust.scriptdroid.tool.SimpleObserver;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.main.FloatingActionMenu;

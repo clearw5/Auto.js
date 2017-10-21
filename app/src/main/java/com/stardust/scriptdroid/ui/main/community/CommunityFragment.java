@@ -25,7 +25,7 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
     private static final String POSTS_PAGE_PATTERN = "[\\S\\s]+/topic/[0-9]+/[\\S\\s]+";
 
     @ViewById(R.id.eweb_view)
-    EWebView mEWebView;
+    CommunityWebView mEWebView;
     WebView mWebView;
 
     public CommunityFragment() {
