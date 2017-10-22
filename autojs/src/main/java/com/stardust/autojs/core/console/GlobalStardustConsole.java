@@ -1,10 +1,7 @@
-package com.stardust.autojs.runtime.console;
+package com.stardust.autojs.core.console;
 
-import android.graphics.Color;
-import android.util.Log;
 import android.util.SparseArray;
 
-import com.stardust.autojs.runtime.api.Console;
 import com.stardust.util.UiHandler;
 
 import java.text.SimpleDateFormat;

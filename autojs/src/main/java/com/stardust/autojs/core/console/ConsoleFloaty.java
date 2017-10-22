@@ -1,4 +1,4 @@
-package com.stardust.autojs.runtime.console;
+package com.stardust.autojs.core.console;
 
 import android.content.Context;
 import android.content.ContextWrapper;

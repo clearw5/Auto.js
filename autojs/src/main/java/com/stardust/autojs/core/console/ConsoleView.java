@@ -1,4 +1,4 @@
-package com.stardust.autojs.runtime.console;
+package com.stardust.autojs.core.console;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -21,7 +21,6 @@ import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.util.SparseArrayEntries;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Stardust on 2017/5/2.

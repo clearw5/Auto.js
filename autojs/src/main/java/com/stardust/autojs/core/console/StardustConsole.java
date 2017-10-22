@@ -1,4 +1,4 @@
-package com.stardust.autojs.runtime.console;
+package com.stardust.autojs.core.console;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,9 +15,6 @@ import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.util.UiHandler;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;

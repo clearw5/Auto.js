@@ -7,8 +7,8 @@ import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.stardust.autojs.runtime.console.ConsoleView;
-import com.stardust.autojs.runtime.console.StardustConsole;
+import com.stardust.autojs.core.console.ConsoleView;
+import com.stardust.autojs.core.console.StardustConsole;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
