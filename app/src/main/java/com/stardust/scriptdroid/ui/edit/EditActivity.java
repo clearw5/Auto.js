@@ -86,19 +86,11 @@ public class EditActivity extends BaseActivity {
                 .positiveText(R.string.text_cancel)
                 .negativeText(R.string.text_save_and_exit)
                 .neutralText(R.string.text_exit_directly)
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        mEditor.saveFile();
-                        EditActivity.super.finish();
-                    }
+                .onNegative((dialog, which) -> {
+                    mEditor.saveFile();
+                    EditActivity.super.finish();
                 })
-                .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        EditActivity.super.finish();
-                    }
-                })
+                .onNeutral((dialog, which) -> EditActivity.super.finish())
                 .show();
     }
 
@@ -107,13 +99,4 @@ public class EditActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        try {
-            super.onRestoreInstanceState(savedInstanceState);
-        } catch (RuntimeException e) {
-            // FIXME: 2017/3/20
-            e.printStackTrace();
-        }
-    }
 }

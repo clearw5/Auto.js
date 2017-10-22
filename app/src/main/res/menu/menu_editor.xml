@@ -136,6 +136,11 @@
                 android:id="@+id/action_open_by_other_apps"
                 android:title="@string/text_open_by_other_apps"
                 app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_build_apk"
+                android:title="@string/text_build_apk"
+                app:showAsAction="never"/>
         </menu>
     </item>
 </menu>

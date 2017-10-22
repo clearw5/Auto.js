@@ -9,6 +9,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.ui.build.BuildActivity;
+import com.stardust.scriptdroid.ui.build.BuildActivity_;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
 
@@ -118,9 +120,18 @@ public class EditorMenu {
             case R.id.action_info:
                 showInfo();
                 return true;
+            case R.id.action_build_apk:
+                startBuildApkActivity();
+                return true;
 
         }
         return false;
+    }
+
+    private void startBuildApkActivity() {
+        BuildActivity_.intent(mContext)
+                .extra(BuildActivity.EXTRA_SOURCE_FILE, mEditorView.getFile().getPath())
+                .start();
     }
 
 

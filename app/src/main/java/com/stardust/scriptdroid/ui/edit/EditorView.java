@@ -125,6 +125,10 @@ public class EditorView extends FrameLayout {
         getContext().unregisterReceiver(mOnRunFinishedReceiver);
     }
 
+    public File getFile() {
+        return mFile;
+    }
+
     public void handleIntent(Intent intent) {
         mName = intent.getStringExtra(EXTRA_NAME);
         handleText(intent);
