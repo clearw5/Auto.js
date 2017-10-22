@@ -1,24 +1,16 @@
 package com.stardust.scriptdroid.ui.main.task;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.ViewAnimator;
 
-import com.jraska.console.Console;
+import com.stardust.autojs.runtime.console.ConsoleView;
+import com.stardust.autojs.runtime.console.StardustConsole;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.ui.console.LogView;
 import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
 import com.stardust.widget.SimpleAdapterDataObserver;
 
@@ -26,8 +18,6 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
-
-import butterknife.OnClick;
 
 /**
  * Created by Stardust on 2017/3/24.
@@ -47,14 +37,16 @@ public class TaskManagerFragment extends ViewPagerFragment implements PopupMenu.
     @ViewById(R.id.task_manager_view)
     View mTaskManagerView;
 
-    @ViewById(R.id.log)
-    View mLogView;
-
     @ViewById(R.id.spinner)
     View mSpinner;
 
     @ViewById(R.id.spinner_current_item)
     TextView mSpinnerCurrentItem;
+
+    @ViewById(R.id.console)
+    ConsoleView mConsoleView;
+
+    private StardustConsole mStardustConsole;
 
     public TaskManagerFragment() {
         super(45);
@@ -66,6 +58,8 @@ public class TaskManagerFragment extends ViewPagerFragment implements PopupMenu.
         init();
         final boolean noRunningScript = mTaskListRecyclerView.getAdapter().getItemCount() == 0;
         mNoRunningScriptNotice.setVisibility(noRunningScript ? View.VISIBLE : View.GONE);
+        mStardustConsole = (StardustConsole) AutoJs.getInstance().getGlobalConsole();
+        mConsoleView.setConsole(mStardustConsole);
     }
 
     private void init() {
@@ -74,29 +68,20 @@ public class TaskManagerFragment extends ViewPagerFragment implements PopupMenu.
             @Override
             public void onSomethingChanged() {
                 final boolean noRunningScript = mTaskListRecyclerView.getAdapter().getItemCount() == 0;
-                mTaskListRecyclerView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mNoRunningScriptNotice == null)
-                            return;
-                        mNoRunningScriptNotice.setVisibility(noRunningScript ? View.VISIBLE : View.GONE);
-                    }
+                mTaskListRecyclerView.postDelayed(() -> {
+                    if (mNoRunningScriptNotice == null)
+                        return;
+                    mNoRunningScriptNotice.setVisibility(noRunningScript ? View.VISIBLE : View.GONE);
                 }, 150);
             }
 
         });
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mTaskListRecyclerView.updateEngineList();
-                mTaskListRecyclerView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mSwipeRefreshLayout != null)
-                            mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 800);
-            }
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            mTaskListRecyclerView.updateEngineList();
+            mTaskListRecyclerView.postDelayed(() -> {
+                if (mSwipeRefreshLayout != null)
+                    mSwipeRefreshLayout.setRefreshing(false);
+            }, 800);
         });
     }
 
@@ -121,12 +106,12 @@ public class TaskManagerFragment extends ViewPagerFragment implements PopupMenu.
 
     private void showLog() {
         mTaskManagerView.setVisibility(View.GONE);
-        mLogView.setVisibility(View.VISIBLE);
+        mConsoleView.setVisibility(View.VISIBLE);
         mSpinnerCurrentItem.setText(R.string.text_log);
     }
 
     private void showTaskManager() {
-        mLogView.setVisibility(View.GONE);
+        mConsoleView.setVisibility(View.GONE);
         mTaskManagerView.setVisibility(View.VISIBLE);
         mSpinnerCurrentItem.setText(R.string.text_task_manage);
     }
@@ -134,8 +119,8 @@ public class TaskManagerFragment extends ViewPagerFragment implements PopupMenu.
 
     @Override
     protected void onFabClick(FloatingActionButton fab) {
-        if (mLogView.getVisibility() == View.VISIBLE) {
-            Console.clear();
+        if (mConsoleView.getVisibility() == View.VISIBLE) {
+            mStardustConsole.clear();
         } else {
             AutoJs.getInstance().getScriptEngineService().stopAll();
         }

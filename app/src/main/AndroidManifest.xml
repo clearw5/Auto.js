@@ -77,7 +77,6 @@
         <activity
             android:name=".ui.settings.SettingsActivity_"
             android:theme="@style/AppTheme.Settings"/>
-        <activity android:name=".ui.console.LogActivity_"/>
         <activity android:name=".ui.error.ErrorReportActivity"/>
         <activity android:name=".ui.help.LocalWebViewActivity"/>
         <activity android:name=".external.tasker.TaskerScriptEditActivity_"/>

@@ -1,4 +1,4 @@
-package com.stardust.auojs.inrt.rt;
+package com.stardust.autojs.runtime.api;
 
 import android.support.annotation.Nullable;
 

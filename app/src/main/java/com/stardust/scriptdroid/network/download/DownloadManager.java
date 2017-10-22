@@ -3,9 +3,11 @@ package com.stardust.scriptdroid.network.download;
 import android.content.Context;
 
 import java.io.File;
+import java.net.URLDecoder;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
+import retrofit2.http.Url;
 import zlc.season.rxdownload3.RxDownload;
 import zlc.season.rxdownload3.core.Failed;
 import zlc.season.rxdownload3.core.Mission;
@@ -39,7 +41,7 @@ public class DownloadManager {
         if (i < 0) {
             i = url.lastIndexOf('/');
         }
-        return url.substring(i + 1);
+        return URLDecoder.decode(url.substring(i + 1));
     }
 
     public Observable<Integer> download(String url, String path) {

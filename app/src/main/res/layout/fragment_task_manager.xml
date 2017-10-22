@@ -67,21 +67,13 @@
                 android:textSize="16sp"/>
         </FrameLayout>
 
-
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/log"
+        <com.stardust.autojs.runtime.console.ConsoleView
+            android:id="@+id/console"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white"
             android:paddingLeft="6dp"
-            android:visibility="gone">
-
-            <com.stardust.scriptdroid.ui.console.LogView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"/>
-        </android.support.v4.widget.NestedScrollView>
-
+            android:visibility="gone"/>
 
     </FrameLayout>
 

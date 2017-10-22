@@ -24,6 +24,7 @@ import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
+import com.stardust.autojs.runtime.api.NoOpConsole;
 import com.stardust.autojs.runtime.api.Shell;
 import com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity;
 import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;

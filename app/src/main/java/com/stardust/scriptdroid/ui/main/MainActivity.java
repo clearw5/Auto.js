@@ -206,12 +206,14 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         mActivityResultMediator.onActivityResult(requestCode, resultCode, data);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (Arrays.asList(permissions).contains(Manifest.permission.READ_EXTERNAL_STORAGE)
-                && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        int i = Arrays.asList(permissions).indexOf(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (i < 0) {
+            return;
+        }
+        if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
             StorageFileProvider.getDefault().notifyStoragePermissionGranted();
         }
     }

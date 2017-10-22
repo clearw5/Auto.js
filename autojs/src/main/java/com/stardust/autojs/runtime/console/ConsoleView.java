@@ -2,24 +2,21 @@ package com.stardust.autojs.runtime.console;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.method.ScrollingMovementMethod;
-import android.text.style.ForegroundColorSpan;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.stardust.autojs.R;
-import com.stardust.autojs.runtime.console.StardustConsole;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.util.SparseArrayEntries;
 
@@ -31,7 +28,7 @@ import java.util.List;
  */
 public class ConsoleView extends FrameLayout implements StardustConsole.LogListener {
 
-    private static final SparseArray<Integer> COLORS = new SparseArrayEntries<Integer>()
+    static final SparseArray<Integer> COLORS = new SparseArrayEntries<Integer>()
             .entry(Log.VERBOSE, 0xdfc0c0c0)
             .entry(Log.DEBUG, 0xdfffffff)
             .entry(Log.INFO, 0xff64dd17)
@@ -40,12 +37,15 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
             .entry(Log.ASSERT, 0xffff534e)
             .sparseArray();
 
+    private static final int REFRESH_INTERVAL = 100;
+    private SparseArray<Integer> mColors = COLORS;
     private StardustConsole mConsole;
-    private TextView mTextView;
+    private RecyclerView mLogListRecyclerView;
     private EditText mEditText;
     private ResizableExpandableFloatyWindow mWindow;
     private LinearLayout mInputContainer;
-    private ScrollView mContentContainer;
+    private boolean mShouldStopRefresh = false;
+    private ArrayList<StardustConsole.Log> mLogs = new ArrayList<>();
 
     public ConsoleView(Context context) {
         super(context);
@@ -62,11 +62,16 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
         init();
     }
 
+    public void setColors(SparseArray<Integer> colors) {
+        mColors = colors;
+    }
+
     private void init() {
         inflate(getContext(), R.layout.console_view, this);
-        mTextView = (TextView) findViewById(R.id.content);
-        mTextView.setMovementMethod(new ScrollingMovementMethod());
-        mContentContainer = (ScrollView) findViewById(R.id.content_container);
+        mLogListRecyclerView = (RecyclerView) findViewById(R.id.log_list);
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        mLogListRecyclerView.setLayoutManager(manager);
+        mLogListRecyclerView.setAdapter(new Adapter());
         initEditText();
         initSubmitButton();
     }
@@ -115,68 +120,63 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
 
     @Override
     public void onNewLog(StardustConsole.Log log) {
-        log(log.level, log.content);
+
     }
 
-    private void log(int level, CharSequence log) {
-        int color = getColorForLevel(level);
-        final Spannable spannable = buildColorSpannable(log, color);
-        post(new Runnable() {
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mShouldStopRefresh = false;
+        postDelayed(new Runnable() {
             @Override
             public void run() {
-                mTextView.append(spannable);
-                mContentContainer.fullScroll(View.FOCUS_DOWN);
-                mEditText.requestFocus();
+                refreshLog();
+                if (!mShouldStopRefresh) {
+                    postDelayed(this, REFRESH_INTERVAL);
+                }
             }
-
-        });
+        }, REFRESH_INTERVAL);
     }
 
-    private Spannable buildColorSpannable(CharSequence log, int color) {
-        Spannable spannable = new SpannableString(log);
-        spannable.setSpan(new ForegroundColorSpan(color), 0, log.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        return spannable;
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mShouldStopRefresh = true;
     }
 
-    private int getColorForLevel(int level) {
-        return COLORS.get(level);
-    }
 
     @Override
     public void onLogClear() {
         post(new Runnable() {
             @Override
             public void run() {
-                mTextView.setText("");
+                mLogs.clear();
+                mLogListRecyclerView.getAdapter().notifyDataSetChanged();
             }
         });
     }
 
-    @Override
-    protected void onWindowVisibilityChanged(int visibility) {
-        super.onWindowVisibilityChanged(visibility);
-        if (visibility == VISIBLE) {
-            refreshLog();
-        }
-    }
-
     private void refreshLog() {
-        if (mConsole != null) {
-            mTextView.setText("");
-            final List<StardustConsole.Log> logs = new ArrayList<>(mConsole.getLogs());
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    for (StardustConsole.Log log : logs) {
-                        int color = getColorForLevel(log.level);
-                        final Spannable spannable = buildColorSpannable(log.content, color);
-                        mTextView.append(spannable);
-                    }
-                    mContentContainer.fullScroll(View.FOCUS_DOWN);
-                    mEditText.requestFocus();
-                }
-            });
+        if (mConsole == null)
+            return;
+        int oldSize = mLogs.size();
+        ArrayList<StardustConsole.Log> logs = mConsole.getAllLogs();
+        final int size = logs.size();
+        if (size == 0) {
+            return;
         }
+        if (oldSize >= size) {
+            return;
+        }
+        if (oldSize == 0) {
+            mLogs.addAll(logs);
+        } else {
+            for (int i = oldSize; i < size; i++) {
+                mLogs.add(logs.get(i));
+            }
+        }
+        mLogListRecyclerView.getAdapter().notifyItemRangeInserted(oldSize, size - 1);
+        mLogListRecyclerView.scrollToPosition(size - 1);
     }
 
     public void setWindow(ResizableExpandableFloatyWindow window) {
@@ -192,5 +192,35 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
                 mEditText.requestFocus();
             }
         });
+    }
+
+    private class ViewHolder extends RecyclerView.ViewHolder {
+
+        TextView textView;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            textView = (TextView) itemView;
+        }
+    }
+
+    private class Adapter extends RecyclerView.Adapter<ViewHolder> {
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.console_view_item, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            StardustConsole.Log log = mLogs.get(position);
+            holder.textView.setText(log.content);
+            holder.textView.setTextColor(mColors.get(log.level));
+        }
+
+        @Override
+        public int getItemCount() {
+            return mLogs.size();
+        }
     }
 }

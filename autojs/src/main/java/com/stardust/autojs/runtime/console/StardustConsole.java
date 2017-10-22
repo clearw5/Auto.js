@@ -5,19 +5,22 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.WindowManager;
 
+import com.stardust.autojs.R;
 import com.stardust.autojs.annotation.ScriptInterface;
-import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.runtime.api.AbstractConsole;
 import com.stardust.autojs.runtime.api.Console;
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.util.UiHandler;
-import com.stardust.autojs.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import ezy.assist.compat.SettingsCompat;
 
@@ -27,14 +30,29 @@ import ezy.assist.compat.SettingsCompat;
 
 public class StardustConsole extends AbstractConsole {
 
-    public static class Log {
+    public static class Log implements Comparable<Log> {
 
+        public int id;
         public int level;
         public CharSequence content;
+        public boolean newLine = false;
 
-        public Log(int level, CharSequence content) {
+        public Log(int id, int level, CharSequence content) {
+            this.id = id;
             this.level = level;
             this.content = content;
+        }
+
+        public Log(int id, int level, CharSequence content, boolean newLine) {
+            this.id = id;
+            this.level = level;
+            this.content = content;
+            this.newLine = newLine;
+        }
+
+        @Override
+        public int compareTo(@NonNull Log o) {
+            return 0;
         }
     }
 
@@ -45,7 +63,8 @@ public class StardustConsole extends AbstractConsole {
     }
 
     private final Console mGlobalConsole;
-    private List<Log> mLogs = new ArrayList<>();
+    private final ArrayList<Log> mLogs = new ArrayList<>();
+    private AtomicInteger mIdCounter = new AtomicInteger(0);
     private ResizableExpandableFloatyWindow mFloatyWindow;
     private ConsoleFloaty mConsoleFloaty;
     private LogListener mLogListener;
@@ -83,13 +102,13 @@ public class StardustConsole extends AbstractConsole {
         mLogListener = logListener;
     }
 
-    public List<Log> getLogs() {
+    public ArrayList<Log> getAllLogs() {
         return mLogs;
     }
 
     @Override
     public void println(int level, CharSequence charSequence) {
-        Log log = new Log(level, charSequence + "\n");
+        Log log = new Log(mIdCounter.getAndIncrement(), level, charSequence, true);
         mLogs.add(log);
         if (mGlobalConsole != null) {
             mGlobalConsole.println(level, charSequence);
@@ -102,7 +121,7 @@ public class StardustConsole extends AbstractConsole {
 
     @Override
     public void write(int level, CharSequence charSequence) {
-        Log log = new Log(level, charSequence);
+        Log log = new Log(mIdCounter.getAndIncrement(), level, charSequence);
         mLogs.add(log);
         if (mGlobalConsole != null) {
             mGlobalConsole.print(level, charSequence);
