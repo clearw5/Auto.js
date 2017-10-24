@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.ui.main.doc;
+package com.stardust.scriptdroid.ui.doc;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.webkit.WebView;
 
+import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
 import com.stardust.util.BackPressedHandler;
@@ -23,6 +24,8 @@ import org.androidannotations.annotations.ViewById;
 @EFragment(R.layout.fragment_online_docs)
 public class OnlineDocsFragment extends ViewPagerFragment implements BackPressedHandler {
 
+    public static final String ARGUMENT_URL = "url";
+
     @ViewById(R.id.eweb_view)
     EWebView mEWebView;
     WebView mWebView;
@@ -35,7 +38,11 @@ public class OnlineDocsFragment extends ViewPagerFragment implements BackPressed
     @AfterViews
     void setUpViews() {
         mWebView = mEWebView.getWebView();
-        mWebView.loadUrl("https://hyb1996.github.io/AutoJs-Docs/");
+        String url = Pref.getDocumentationUrl() + "index.html";
+        if (getArguments() != null) {
+            url = getArguments().getString(ARGUMENT_URL, url);
+        }
+        mWebView.loadUrl(url);
     }
 
 

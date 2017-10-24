@@ -140,7 +140,7 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (url.startsWith("http://") || url.startsWith("https://")) {
+            if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file://")) {
                 view.loadUrl(url);
             } else {
                 getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));

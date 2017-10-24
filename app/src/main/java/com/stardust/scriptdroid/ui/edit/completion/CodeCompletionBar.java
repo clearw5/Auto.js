@@ -40,6 +40,8 @@ public class CodeCompletionBar extends RecyclerView {
 
     public interface OnHintClickListener {
         void onHintClick(CodeCompletions completions, int pos);
+
+        void onHintLongClick(CodeCompletions completions, int pos);
     }
 
     private int mTextColor;
@@ -64,8 +66,9 @@ public class CodeCompletionBar extends RecyclerView {
             int position = getChildViewHolder(v).getAdapterPosition();
             if (position < 0 || position >= mCodeCompletions.getHints().size())
                 return false;
-            ClipboardUtil.setClip(getContext(), mCodeCompletions.getHints().get(position));
-            Toast.makeText(getContext(), R.string.text_copied, Toast.LENGTH_SHORT).show();
+            if (mOnHintClickListener != null) {
+                mOnHintClickListener.onHintLongClick(mCodeCompletions, position);
+            }
             return true;
         }
     };
@@ -120,7 +123,7 @@ public class CodeCompletionBar extends RecyclerView {
         public void onBindViewHolder(ViewHolder holder, int position) {
             TextView textView = ((TextView) holder.itemView);
             textView.setText(mCodeCompletions.getHints().get(position));
-            if(mTextColor != 0){
+            if (mTextColor != 0) {
                 textView.setTextColor(mTextColor);
             }
         }
@@ -140,29 +143,6 @@ public class CodeCompletionBar extends RecyclerView {
         }
     }
 
-    private static void readCompletions(Context context, String path) {
-        try {
-            JsonParser parser = new JsonParser();
-            JsonObject object = parser.parse(new InputStreamReader(context.getAssets().open(path))).getAsJsonObject();
-            //InputMethodEnhanceBar.global = readGlobal(object.remove("global").getAsJsonObject());
-            readModules(object);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
 
-    private static void readModules(JsonObject object) {
-        for (Map.Entry<String, JsonElement> module : object.entrySet()) {
-            //variables.put(module.getKey(), GsonUtils.toStringList(module.getValue()));
-        }
-    }
-
-    private static List<String> readGlobal(JsonObject global) {
-        List<String> globalFunctions = new ArrayList<>();
-        for (Map.Entry<String, JsonElement> moduleGlobal : global.entrySet()) {
-            globalFunctions.addAll(GsonUtils.toStringList(moduleGlobal.getValue()));
-        }
-        return globalFunctions;
-    }
 
 }

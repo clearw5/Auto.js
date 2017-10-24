@@ -54,7 +54,7 @@ public class CodeMirrorEditor extends FrameLayout {
     public interface Callback {
         void onChange();
 
-        void updateCodeCompletion(int fromLine, int fromCh, int toLine, int toCh, String[] list);
+        void updateCodeCompletion(int fromLine, int fromCh, int toLine, int toCh, String[] list, String[] urls);
     }
 
     private static String[] sAvailableThemes;
@@ -388,14 +388,14 @@ public class CodeMirrorEditor extends FrameLayout {
         }
 
         @JavascriptInterface
-        public void updateCodeCompletion(final int fromLine, final int fromCh, final int toLine, final int toCh, final String[] list) {
+        public void updateCodeCompletion(final int fromLine, final int fromCh, final int toLine, final int toCh, final String[] list, final String[] urls) {
             if (mCallback == null) {
                 return;
             }
             mWebView.post(new Runnable() {
                 @Override
                 public void run() {
-                    mCallback.updateCodeCompletion(fromLine, fromCh, toLine, toCh, list);
+                    mCallback.updateCodeCompletion(fromLine, fromCh, toLine, toCh, list, urls);
                 }
             });
         }

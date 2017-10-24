@@ -128,9 +128,10 @@
         if (picked && data.list.length == 1) {
           this.pick(data, 0);
         } else {
+          console.log("data:", data);
           //Modified By Stardust
           if(typeof __bridge__ != 'undefined'){
-            __bridge__.updateCodeCompletion(data.from.line, data.from.ch, data.to.line, data.to.ch, data.list);
+            __bridge__.updateCodeCompletion(data.from.line, data.from.ch, data.to.line, data.to.ch, data.list, data.urls);
           }else{
             this.widget = new Widget(this, data);
           }

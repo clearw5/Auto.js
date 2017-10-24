@@ -7,7 +7,9 @@ import android.content.IntentFilter;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -17,12 +19,15 @@ import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.pio.PFiles;
+import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.Scripts;
+import com.stardust.scriptdroid.ui.doc.ManualDialog;
 import com.stardust.scriptdroid.ui.edit.completion.CodeCompletions;
 import com.stardust.scriptdroid.ui.edit.completion.CodeCompletionBar;
 import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhancedBarColors;
 import com.stardust.scriptdroid.ui.edit.completion.Symbols;
+import com.stardust.widget.EWebView;
 import com.stardust.widget.ToolbarMenuItem;
 import com.stardust.widget.ViewSwitcher;
 
@@ -36,7 +41,6 @@ import java.util.Arrays;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.stardust.scriptdroid.model.script.Scripts.ACTION_ON_EXECUTION_FINISHED;
@@ -45,7 +49,7 @@ import static com.stardust.scriptdroid.model.script.Scripts.ACTION_ON_EXECUTION_
  * Created by Stardust on 2017/9/28.
  */
 @EViewGroup(R.layout.editor_view)
-public class EditorView extends FrameLayout {
+public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintClickListener {
 
     public static final String EXTRA_PATH = "Still Love Eating 17.4.5";
     public static final String EXTRA_NAME = "Still love you 17.6.29 But....(ಥ_ಥ)";
@@ -69,8 +73,17 @@ public class EditorView extends FrameLayout {
     @ViewById(R.id.input_method_enhance_bar)
     View mInputMethodEnhanceBar;
 
-    @ViewById(R.id.symbols)
-    ImageView mSymbols;
+    @ViewById(R.id.symbol_bar)
+    CodeCompletionBar mSymbolBar;
+
+    @ViewById(R.id.functions)
+    ImageView mFunctions;
+
+    @ViewById(R.id.docs)
+    EWebView mEWebView;
+
+    @ViewById(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
 
     private static final String KEY_EDITOR_THEME = "我...深爱着...你呀...17.9.28";
 
@@ -80,8 +93,6 @@ public class EditorView extends FrameLayout {
 
     private ScriptExecution mScriptExecution;
     private boolean mTextChanged = false;
-    private CodeCompletions mCodeCompletions;
-    private boolean mSymbolsShown = false;
     private BroadcastReceiver mOnRunFinishedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -168,21 +179,15 @@ public class EditorView extends FrameLayout {
         setUpEditor();
         setUpInputMethodEnhancedBar();
         setMenuItemStatus(R.id.save, false);
+        mEWebView.getWebView().getSettings().setDisplayZoomControls(true);
+        mEWebView.getWebView().loadUrl(Pref.getDocumentationUrl() + "index.html");
+
     }
 
     private void setUpInputMethodEnhancedBar() {
-        mCodeCompletionBar.setOnHintClickListener(new CodeCompletionBar.OnHintClickListener() {
-            @Override
-            public void onHintClick(CodeCompletions completions, int pos) {
-                if (completions.shouldBeInserted()) {
-                    mEditor.insert(completions.getHints().get(pos));
-                    showOrHideSymbols();
-                    return;
-                }
-                mEditor.replace(completions.getHints().get(pos), completions.getFrom().line, completions.getFrom().ch,
-                        completions.getTo().line, completions.getTo().ch);
-            }
-        });
+        mSymbolBar.setCodeCompletions(Symbols.getSymbols());
+        mCodeCompletionBar.setOnHintClickListener(this);
+        mSymbolBar.setOnHintClickListener(this);
     }
 
 
@@ -198,11 +203,12 @@ public class EditorView extends FrameLayout {
 
 
             @Override
-            public void updateCodeCompletion(int fromLine, int fromCh, int toLine, int toCh, final String[] list) {
+            public void updateCodeCompletion(int fromLine, int fromCh, int toLine, int toCh, final String[] list, final String[] urls) {
                 mCodeCompletionBar.setCodeCompletions(new CodeCompletions(
                         new CodeCompletions.Pos(fromLine, fromCh),
                         new CodeCompletions.Pos(toLine, toCh),
-                        Arrays.asList(list)
+                        Arrays.asList(list),
+                        Arrays.asList(urls)
                 ));
             }
         });
@@ -215,30 +221,19 @@ public class EditorView extends FrameLayout {
         mInputMethodEnhanceBar.setBackgroundColor(InputMethodEnhancedBarColors.getBackgroundColor(theme));
         int textColor = InputMethodEnhancedBarColors.getTextColor(theme);
         mCodeCompletionBar.setTextColor(textColor);
-        mSymbols.setColorFilter(textColor);
+        mSymbolBar.setTextColor(textColor);
+        mFunctions.setColorFilter(textColor);
     }
 
-    @Click(R.id.symbols)
-    void showOrHideSymbols() {
-        if (mSymbolsShown) {
-            mCodeCompletionBar.setCodeCompletions(mCodeCompletions);
-            mCodeCompletions = null;
-        } else {
-            mCodeCompletions = mCodeCompletionBar.getCodeCompletions();
-            mCodeCompletionBar.setCodeCompletions(Symbols.getSymbols());
-        }
-        mSymbolsShown = !mSymbolsShown;
+    @Click(R.id.functions)
+    void showFunctionList() {
+
     }
 
     @Click(R.id.run)
     public void runAndSaveFileIfNeeded() {
         save().observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        run();
-                    }
-                });
+                .subscribe(s -> run());
     }
 
     public void run() {
@@ -261,19 +256,11 @@ public class EditorView extends FrameLayout {
     public Observable<String> save() {
         return mEditor.getText()
                 .observeOn(Schedulers.io())
-                .doOnNext(new Consumer<String>() {
-                    @Override
-                    public void accept(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        PFiles.write(mFile, s);
-                    }
-                })
+                .doOnNext(s -> PFiles.write(mFile, s))
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Consumer<String>() {
-                    @Override
-                    public void accept(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        mTextChanged = false;
-                        setMenuItemStatus(R.id.save, false);
-                    }
+                .doOnNext(s -> {
+                    mTextChanged = false;
+                    setMenuItemStatus(R.id.save, false);
                 });
     }
 
@@ -337,15 +324,12 @@ public class EditorView extends FrameLayout {
         new MaterialDialog.Builder(getContext())
                 .title(R.string.text_editor_theme)
                 .items((CharSequence[]) themes)
-                .itemsCallbackSingleChoice(i, new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit()
-                                .putString(KEY_EDITOR_THEME, text.toString())
-                                .apply();
-                        setTheme(text.toString());
-                        return true;
-                    }
+                .itemsCallbackSingleChoice(i, (dialog, itemView, which, text) -> {
+                    PreferenceManager.getDefaultSharedPreferences(getContext()).edit()
+                            .putString(KEY_EDITOR_THEME, text.toString())
+                            .apply();
+                    setTheme(text.toString());
+                    return true;
                 })
                 .show();
     }
@@ -368,5 +352,32 @@ public class EditorView extends FrameLayout {
 
     public void replaceAll(String keywords, String replacement, boolean usingRegex) {
         mEditor.replaceAll(keywords, replacement, usingRegex);
+    }
+
+    @Override
+    public void onHintClick(CodeCompletions completions, int pos) {
+        if (completions.shouldBeInserted()) {
+            mEditor.insert(completions.getHints().get(pos));
+            showFunctionList();
+            return;
+        }
+        mEditor.replace(completions.getHints().get(pos), completions.getFrom().line, completions.getFrom().ch,
+                completions.getTo().line, completions.getTo().ch);
+    }
+
+    @Override
+    public void onHintLongClick(CodeCompletions completions, int pos) {
+        String url = completions.getUrltAt(pos);
+        if (url == null)
+            return;
+        String absUrl = Pref.getDocumentationUrl() + url;
+        new ManualDialog(getContext())
+                .title(completions.getHints().get(pos))
+                .url(absUrl)
+                .pinToLeft(v -> {
+                    mEWebView.getWebView().loadUrl(absUrl);
+                    mDrawerLayout.openDrawer(Gravity.START);
+                })
+                .show();
     }
 }

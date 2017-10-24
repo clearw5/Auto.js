@@ -20,7 +20,6 @@ import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.model.sample.Sample;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
-import com.stardust.scriptdroid.ui.help.HelpCatalogueActivity;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.AssetsCache;
 import com.stardust.util.SparseArrayEntries;
@@ -145,7 +144,7 @@ public class ViewSampleActivity extends AppCompatActivity implements OnActivityR
                 showLog();
                 return true;
             case R.id.action_help:
-                HelpCatalogueActivity.showMainCatalogue(this);
+
                 return true;
             case R.id.action_import:
                 new ScriptOperations(this, mView)

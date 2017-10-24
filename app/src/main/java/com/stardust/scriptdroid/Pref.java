@@ -144,4 +144,7 @@ public class Pref {
         return def().getBoolean(getString(R.string.key_stable_mode), false);
     }
 
+    public static String getDocumentationUrl() {
+        return "file:///android_asset/docs/";
+    }
 }
