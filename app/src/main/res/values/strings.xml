@@ -247,12 +247,21 @@
     <string name="text_select_file_to_import">选择要导入的文件</string>
     <string name="text_build_apk">打包应用</string>
     <string name="text_select">选择</string>
-    <string name="text_output_apk_path">打包应用保存路径</string>
+    <string name="text_output_apk_path">打包应用保存位置</string>
     <string name="text_config">配置</string>
     <string name="text_app_name">应用名称</string>
     <string name="text_package_name">包名</string>
     <string name="text_version_name">版本名称</string>
     <string name="text_version_code">版本号</string>
+    <string name="text_build_successfully">打包成功</string>
+    <string name="text_install">安装</string>
+    <string name="text_build_failed">打包失败，错误信息：</string>
+    <string name="format_build_successfully" formatted="true">apk文件已保存到 %s</string>
+    <string name="apk_builder_prepare">准备文件</string>
+    <string name="apk_builder_build">构建中</string>
+    <string name="apk_builder_package">打包中</string>
+    <string name="apk_builder_clean">清理临时文件</string>
+    <string name="text_source_file_path">脚本文件路径</string>
 
 
     <string-array name="ad_showing_mode_keys">

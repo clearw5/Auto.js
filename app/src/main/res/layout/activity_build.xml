@@ -51,7 +51,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="24dp"
-                            android:text="文件"
+                            android:text="@string/text_file"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                             android:textColor="?android:textColorSecondary"/>
 
@@ -69,8 +69,7 @@
                                     android:id="@+id/source_path"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:hint="脚本文件路径"
-                                    android:maxLines="1"/>
+                                    android:hint="@string/text_source_file_path"/>
 
                             </android.support.design.widget.TextInputLayout>
 
@@ -99,8 +98,7 @@
                                     android:id="@+id/output_path"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:hint="@string/text_output_apk_path"
-                                    android:maxLines="1"/>
+                                    android:hint="@string/text_output_apk_path"/>
 
                             </android.support.design.widget.TextInputLayout>
 
@@ -185,6 +183,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="@string/text_version_code"
+                                android:inputType="number"
                                 android:text="1"/>
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
