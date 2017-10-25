@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
@@ -34,6 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -64,6 +66,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
     private ScriptListAdapter mScriptListAdapter = new ScriptListAdapter();
     private ScriptFile mCurrentDirectory;
     private OnScriptFileClickListener mOnScriptFileClickListener;
+    private Function<PFile, Boolean> mFilter;
     private OnItemOperatedListener mOnItemOperatedListener;
     private ScriptFile mSelectedScriptFile;
     private StorageFileProvider mStorageFileProvider;
@@ -126,6 +129,15 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         mDirectorySpanSize = directorySpanSize;
     }
 
+    public void setFilter(Function<PFile, Boolean> filter) {
+        mFilter = filter;
+        reload();
+    }
+
+    public void reload() {
+        loadScriptList();
+    }
+
     private void init() {
         setOnRefreshListener(this);
         mScriptListView = new RecyclerView(getContext());
@@ -160,6 +172,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         setRefreshing(true);
         mStorageFileProvider.getDirectoryFiles(mCurrentDirectory)
                 .subscribeOn(Schedulers.io())
+                .filter(f -> mFilter == null ? true : mFilter.apply(f))
                 .collectInto(mScriptList.cloneConfig(), (list, file) ->
                         list.add(new ScriptFile(file))
                 )

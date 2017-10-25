@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.ui.doc;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -33,16 +34,19 @@ public class OnlineDocsFragment extends ViewPagerFragment implements BackPressed
 
     public OnlineDocsFragment() {
         super(ROTATION_GONE);
+        setArguments(new Bundle());
     }
 
     @AfterViews
     void setUpViews() {
         mWebView = mEWebView.getWebView();
         String url = Pref.getDocumentationUrl() + "index.html";
-        if (getArguments() != null) {
-            url = getArguments().getString(ARGUMENT_URL, url);
+        Bundle savedWebViewState = getArguments().getBundle("savedWebViewState");
+        if (savedWebViewState != null) {
+            mWebView.restoreState(savedWebViewState);
+        } else {
+            mWebView.loadUrl(getArguments().getString(ARGUMENT_URL, url));
         }
-        mWebView.loadUrl(url);
     }
 
 
@@ -57,6 +61,9 @@ public class OnlineDocsFragment extends ViewPagerFragment implements BackPressed
     @Override
     public void onPause() {
         super.onPause();
+        Bundle savedWebViewState = new Bundle();
+        mWebView.saveState(savedWebViewState);
+        getArguments().putBundle("savedWebViewState", savedWebViewState);
         ((BackPressedHandler.HostActivity) getActivity())
                 .getBackPressedObserver()
                 .unregisterHandler(this);

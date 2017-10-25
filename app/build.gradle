@@ -10,8 +10,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 211
-        versionName "3.0.0 Alpha12"
+        versionCode 212
+        versionName "3.0.0 Alpha13"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -35,9 +35,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
         encoding = 'utf-8'
     }
-    dataBinding {
-        enabled = true
-    }
     lintOptions {
         disable 'MissingTranslation'
         disable 'ExtraTranslation'
@@ -49,20 +46,6 @@ android {
         }
     }
 
-    dexcount {
-        format = "list"
-        includeClasses = true
-        includeFieldCount = true
-        includeTotalMethodCount = true
-        orderByMethodCount = true
-        verbose = true
-        maxTreeDepth = Integer.MAX_VALUE
-        teamCityIntegration = false
-        enableForInstantRun = false
-        teamCitySlug = null
-        runOnEachAssemble = true
-        maxMethodCount = 128000
-    }
     configurations.all {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
     }

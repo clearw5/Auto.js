@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.ui.main;
 
+import android.support.annotation.CallSuper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
@@ -15,12 +16,8 @@ public abstract class ViewPagerFragment extends Fragment {
 
     private int mFabRotation;
     private FloatingActionButton mFab;
-    private View.OnClickListener mOnFabClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            onFabClick((FloatingActionButton) v);
-        }
-    };
+    private boolean mShown;
+    private View.OnClickListener mOnFabClickListener = v -> onFabClick((FloatingActionButton) v);
 
     public ViewPagerFragment(int fabRotation) {
         mFabRotation = fabRotation;
@@ -32,7 +29,9 @@ public abstract class ViewPagerFragment extends Fragment {
 
     protected abstract void onFabClick(FloatingActionButton fab);
 
+    @CallSuper
     public void onPageShow() {
+        mShown = true;
         if (mFabRotation == ROTATION_GONE) {
             if (mFab.getVisibility() == View.VISIBLE) {
                 mFab.hide();
@@ -54,7 +53,12 @@ public abstract class ViewPagerFragment extends Fragment {
     }
 
 
+    @CallSuper
     public void onPageHide() {
+        mShown = false;
+    }
 
+    public boolean isShown() {
+        return mShown;
     }
 }

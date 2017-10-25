@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>App | Auto.js 2.0.16 文档</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/app.html">
+</head>
+<body class="alt apidoc" id="api-section-app">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-synopsis" href="synopsis.html">如何阅读本文档</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的触摸模拟</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的触摸模拟</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-app active" href="app.html">App - 应用</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-work-with-java" href="work-with-java.html">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="app" class="interior">
+      <header>
+        <h1>Auto.js 2.0.16 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_undefined"><a href="#app_app">App</a></span><ul>
+<li><span class="stability_undefined"><a href="#app_app_viewfile_path">app.viewFile(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_editfile_path">app.editFile(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_uninstall_packagename">app.uninstall(packageName)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_openurl_url">app.openUrl(url)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_takephoto_path">app.takePhoto(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_sendemail_options">app.sendEmail(options)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_intent_intent">app.intent(intent)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_startactivity_intent">app.startActivity(intent)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_sendbroadcast_intent">app.sendBroadcast(intent)</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>App<span><a class="mark" href="#app_app" id="app_app">#</a></span></h1>
+<p>app模块提供一系列函数，用于与其他应用的交互。例如打开文件、拍照、发送邮件等。</p>
+<p>同时提供了方便的基础函数startActivity和sendBroadcast，用他们可完成app模块没有内置的和其他应用的交互。</p>
+<h2>app.viewFile(path)<span><a class="mark" href="#app_app_viewfile_path" id="app_app_viewfile_path">#</a></span></h2>
+<div class="signature"><ul>
+<li>path <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文件路径</li>
+</ul>
+</div><p>用其他应用查看文件。</p>
+<h2>app.editFile(path)<span><a class="mark" href="#app_app_editfile_path" id="app_app_editfile_path">#</a></span></h2>
+<div class="signature"><ul>
+<li>path <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文件路径</li>
+</ul>
+</div><p>用其他应用编辑文件。</p>
+<h2>app.uninstall(packageName)<span><a class="mark" href="#app_app_uninstall_packagename" id="app_app_uninstall_packagename">#</a></span></h2>
+<div class="signature"><ul>
+<li>packageName <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 应用包名</li>
+</ul>
+</div><p>卸载应用。</p>
+<h2>app.openUrl(url)<span><a class="mark" href="#app_app_openurl_url" id="app_app_openurl_url">#</a></span></h2>
+<div class="signature"><ul>
+<li>url <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 网站的Url</li>
+</ul>
+</div><p>用浏览器打开网站url。</p>
+<h2>app.takePhoto(path)<span><a class="mark" href="#app_app_takephoto_path" id="app_app_takephoto_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 照片保存路径</li>
+</ul>
+</div><p>调用相机应用拍照，完成后保存到路径path。</p>
+<h2>app.sendEmail(options)<span><a class="mark" href="#app_app_sendemail_options" id="app_app_sendemail_options">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 发送邮件的参数。包括:<ul>
+<li>email <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 收件人的邮件地址。如果有多个收件人，则用字符串数组表示</li>
+<li>cc <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 抄送收件人的邮件地址。如果有多个抄送收件人，则用字符串数组表示</li>
+<li>bcc <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 密送收件人的邮件地址。如果有多个密送收件人，则用字符串数组表示</li>
+<li>subject <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a>  邮件主题(标题)</li>
+<li>text <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 邮件正文</li>
+<li>attachment <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 附件的路径。如果有多个附件，则用字符串数组表示</li>
+</ul>
+</li>
+</ul>
+</div><p>根据选项options调用邮箱应用发送邮件。这些选项均是可选的。</p>
+<h2>app.intent(intent)<span><a class="mark" href="#app_app_intent_intent" id="app_app_intent_intent">#</a></span></h2>
+<div class="signature"><ul>
+<li>intent <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 一个表示Intent对象，其属性可以包括：<ul>
+<li>action <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 这个Intent的Action，比如&quot;android.intent.action.SEND&quot;</li>
+<li>type <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 这个Intent的MimeType，比如&quot;text/plain&quot;</li>
+<li>data <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 这个Intent的Data(Uri)，可以是文件路径或者Url等。</li>
+<li>category \<Array\> 这个Intent的Category的字符串数组。</li>
+<li>packageName <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 目标包名</li>
+<li>className <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 目标Activity或Service等组件的名称</li>
+<li>extras <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 以键值对构成的这个Intent的Extras。</li>
+</ul>
+</li>
+</ul>
+</div><p>返回用intent对象构造的android.content.Intent对象。</p>
+<p>例如：</p>
+<pre><code>var i = app.intent({
+    action: &quot;android.intent.action.VIEW&quot;,
+    type: &quot;text/plain&quot;,
+    data: &quot;file:///sdcard/1.txt&quot;,
+});
+</code></pre><p>如果你看了一脸懵逼，请百度<a href="https://www.baidu.com/s?wd=android%20Intent">安卓Intent</a>。</p>
+<h2>app.startActivity(intent)<span><a class="mark" href="#app_app_startactivity_intent" id="app_app_startactivity_intent">#</a></span></h2>
+<div class="signature"><ul>
+<li>intent <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 与app.intent函数的参数一样的intent对象。</li>
+</ul>
+</div><p>相当于context.startActivity(intent)。</p>
+<h2>app.sendBroadcast(intent)<span><a class="mark" href="#app_app_sendbroadcast_intent" id="app_app_sendbroadcast_intent">#</a></span></h2>
+<div class="signature"><ul>
+<li>intent <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 与app.intent函数的参数一样的intent对象。</li>
+</ul>
+</div><p>相当于context.sendBroadcast(intent)。</p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

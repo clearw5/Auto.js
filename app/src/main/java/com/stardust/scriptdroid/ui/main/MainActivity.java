@@ -1,6 +1,8 @@
 package com.stardust.scriptdroid.ui.main;
 
 import android.Manifest;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -10,17 +12,22 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.qq.e.comm.DownloadService;
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.enhancedfloaty.FloatyService;
+import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.Pref;
@@ -43,11 +50,13 @@ import com.stardust.scriptdroid.ui.update.VersionGuard;
 import com.stardust.util.BackPressedHandler;
 import com.stardust.view.DrawerAutoClose;
 import com.stardust.widget.CommonMarkdownView;
+import com.stardust.widget.SearchViewItem;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Arrays;
 
@@ -233,7 +242,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         return mActivityResultMediator;
     }
 
-
     @Override
     public void onBackPressed() {
         if (!mBackPressObserver.onBackPressed(this)) {
@@ -244,6 +252,27 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     @Override
     public BackPressedHandler.Observer getBackPressedObserver() {
         return mBackPressObserver;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        setUpSearchMenuItem(searchMenuItem);
+        return true;
+    }
+
+    private void setUpSearchMenuItem(MenuItem searchMenuItem) {
+        SearchViewItem searchViewItem = new SearchViewItem(this, searchMenuItem);
+        searchViewItem.setQueryCallback(this::submitQuery);
+    }
+
+    private void submitQuery(String query) {
+        if (query == null) {
+            EventBus.getDefault().post(QueryEvent.CLEAR);
+            return;
+        }
+        EventBus.getDefault().post(new QueryEvent(query));
     }
 
 }

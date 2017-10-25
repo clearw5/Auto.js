@@ -1,10 +1,14 @@
 package com.stardust.scriptdroid.ui.main.community;
 
 import android.app.Activity;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.webkit.WebView;
 
+import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.ui.main.QueryEvent;
 import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
 import com.stardust.util.BackPressedHandler;
 import com.stardust.widget.EWebView;
@@ -12,7 +16,10 @@ import com.stardust.widget.EWebView;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
+import java.net.URLEncoder;
 import java.util.regex.Pattern;
 
 /**
@@ -30,12 +37,25 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
 
     public CommunityFragment() {
         super(0);
+        setArguments(new Bundle());
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
     }
 
     @AfterViews
     void setUpViews() {
         mWebView = mEWebView.getWebView();
-        mWebView.loadUrl("http://www.autojs.org/");
+        String url = "http://www.autojs.org/";
+        Bundle savedWebViewState = getArguments().getBundle("savedWebViewState");
+        if (savedWebViewState != null) {
+            mWebView.restoreState(savedWebViewState);
+        } else {
+            mWebView.loadUrl(url);
+        }
     }
 
     @Override
@@ -49,6 +69,9 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
     @Override
     public void onPause() {
         super.onPause();
+        Bundle savedWebViewState = new Bundle();
+        mWebView.saveState(savedWebViewState);
+        getArguments().putBundle("savedWebViewState", savedWebViewState);
         ((BackPressedHandler.HostActivity) getActivity())
                 .getBackPressedObserver()
                 .unregisterHandler(this);
@@ -73,8 +96,24 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
         }
     }
 
+    @Subscribe
+    public void submitQuery(QueryEvent event) {
+        if (!isShown() || event == QueryEvent.CLEAR) {
+            return;
+        }
+        String query = URLEncoder.encode(event.getQuery());
+        String url = String.format("http://www.autojs.org/search?term=%s&in=titlesposts", query);
+        mWebView.loadUrl(url);
+    }
+
     private boolean isInPostsPage() {
         String url = mWebView.getUrl();
         return url.matches(POSTS_PAGE_PATTERN);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

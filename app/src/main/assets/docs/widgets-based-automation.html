@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SimpleActionAutomator | Auto.js 2.0.16 文档</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/widgets-based-automation.html">
+</head>
+<body class="alt apidoc" id="api-section-widgets-based-automation">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-synopsis" href="synopsis.html">如何阅读本文档</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-widgets-based-automation active" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的触摸模拟</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的触摸模拟</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-work-with-java" href="work-with-java.html">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="widgets-based-automation" class="interior">
+      <header>
+        <h1>Auto.js 2.0.16 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#widgets_based_automation_simpleactionautomator">SimpleActionAutomator</a></span><ul>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_click_text_i">click(text[, i])</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_click_left_top_bottom_right">click(left, top, bottom, right)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_longclick_text_i">longClick(text[, i]))</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_scrollup_i">scrollUp([i])</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_scrolldown_i">scrollDown([i])</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_settext_i_text">setText([i, ]text)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_input_i_text">input([i, ]text)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uiselector">UiSelector</a></span><ul>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_id_resid">id(resId)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_idcontains_str">idContains(str)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_idstartswith_prefix">idStartsWith(prefix)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_idendswith_suffix">idEndsWith(suffix)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_idmatches_string">idMatches(String)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_text_str">text(str)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_textcontains_str">textContains(str)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_textstartswith_prefix">textStartsWith(prefix)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_textendswith_suffix">textEndsWith(suffix)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_textmatches_str">textMatches(str)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_desc_str">desc(str)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_desccontains_str">descContains(str)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_descstartswith_prefix">descStartsWith(prefix)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_descendswith_suffix">descEndsWith(suffix)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_descmatches_str">descMatches(str)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_classname_str">className(str)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_classnamecontains_str">classNameContains(str)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_classnamestartswith_prefix">classNameStartsWith(prefix)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_classnameendswith_suffix">classNameEndsWith(suffix)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_classnamematches_str">classNameMatches(str)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_packagename_str">packageName(str)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_packagenamecontains_str">packageNameContains(str)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_packagenamestartswith_prefix">packageNameStartsWith(prefix)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_packagenameendswith_suffix">packageNameEndsWith(suffix)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_packagenamematches_str">packageNameMatches(str)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_bounds_l_t_r_b">bounds(l, t, r, b)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_boundsinside_l_t_r_b">boundsInside(l, t, r, b)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_boundscontains_l_t_r_b">boundsContains(l, t, r, b)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_drawingorder_order">drawingOrder(order)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_checkable_b_true">checkable([b = true])</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_selected_b_true">selected([b = true])</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_clickable_b_true">clickable([b = true])</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_longclickable_b_true">longClickable([b = true])</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_enabled_b_true">enabled([b = true])</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_scrollable_b_true">scrollable([b = true])</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_editable_b_true">editable([b = true])</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_contentinvalid_b_true">contentInvalid([b = true])</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_contextclickable_b_true">contextClickable([b = true])</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_multiline_b_true">multiLine([b = true])</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_findone">findOne()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_find">find()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_untilfind">untilFind()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_exists">exists()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_waitfor">waitFor()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_click">click()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_longclick">longClick()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_copy">copy()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_paste">paste()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_select">select()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_cut">cut()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_collapse">collapse()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_expand">expand()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_show">show()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_scrollforward">scrollForward()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_scrollbackward">scrollBackward()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_scrollup">scrollUp()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_scrolldown">scrollDown()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_scrollleft">scrollLeft()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_scrollright">scrollRight()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_contextclick">contextClick()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_setselection_start_end">setSelection(start, end)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_settext_text">setText(text)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection">UiCollection</a></span><ul>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_size">UiCollection.size()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_get_i">UiCollection.get(i)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_each_func">UiCollection.each(func)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_empty">empty()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_nonempty">nonEmpty()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_filter_filter">UiCollection.filter(filter)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_find_selector">UiCollection.find(selector)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_findone_selector">UiCollection.findOne(selector)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_click">UiCollection.click()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_longclick">UiCollection.longClick()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_copy">UiCollection.copy()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_paste">UiCollection.paste()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_select">UiCollection.select()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_cut">UiCollection.cut()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_collapse">UiCollection.collapse()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_expand">UiCollection.expand()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_show">UiCollection.show()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_scrollforward">UiCollection.scrollForward()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_scrollbackward">UiCollection.scrollBackward()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_scrollup">UiCollection.scrollUp()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_scrolldown">UiCollection.scrollDown()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_scrollleft">UiCollection.scrollLeft()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_scrollright">UiCollection.scrollRight()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_contextclick">UiCollection.contextClick()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_setselection_start_end">UiCollection.setSelection(start, end)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uicollection_settext_text">UiCollection.setText(text)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uiobject">UiObject</a></span><ul>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_child_i">child(i)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_parent">parent()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_children">children()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_childcount">childCount()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_bounds">bounds()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_boundsinparent">boundsInParent()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_drawingorder">drawingOrder()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_id">id()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_text">text()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_findbytext_text">findByText(text)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_find_selector">find(selector)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_findone_1">findOne</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_find_selector_1">find(selector)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_rect">Rect</a></span><ul>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_rect_left">Rect.left</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_rect_right">Rect.right</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_rect_top">Rect.top</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_rect_bottom">Rect.bottom</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_rect_centerx">Rect.centerX()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_rect_centery">Rect.centerY()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_rect_width">Rect.width()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_rect_height">Rect.height()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_rect_contains_r">Rect.contains(r)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_rect_intersect_r">Rect.intersect(r)</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>SimpleActionAutomator<span><a class="mark" href="#widgets_based_automation_simpleactionautomator" id="widgets_based_automation_simpleactionautomator">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>SimpleActionAutomator提供了一些模拟简单操作的函数，例如点击文字、模拟按键等。这些函数可以直接作为全局函数使用。</p>
+<h2>click(text[, i])<span><a class="mark" href="#widgets_based_automation_click_text_i" id="widgets_based_automation_click_text_i">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>text</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要点击的文本</li>
+<li><code>i</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 如果相同的文本在屏幕中出现多次，则i表示要点击第几个文本, i从0开始计算</li>
+</ul>
+</div><p>返回是否点击成功。当屏幕中并未包含该文本，或者该文本所在区域不能点击时返回false，否则返回true。</p>
+<p>该函数可以点击大部分包含文字的按钮。例如微信主界面下方的&quot;微信&quot;, &quot;联系人&quot;, &quot;发现&quot;, &quot;我&quot;的按钮。<br>通常与while同时使用以便点击按钮直至成功。例如:</p>
+<pre><code>while(!click(&quot;扫一扫&quot;));
+</code></pre><p>当不指定参数i时则会尝试点击屏幕上出现的所有文字text并返回是否全部点击成功。</p>
+<p>i是从0开始计算的, 也就是, <code>click(&quot;啦啦啦&quot;, 0)</code>表示点击屏幕上第一个&quot;啦啦啦&quot;, <code>click(&quot;啦啦啦&quot;, 1)</code>表示点击屏幕上第二个&quot;啦啦啦&quot;。</p>
+<blockquote>
+<p>文本所在区域指的是，从文本处向其父视图寻找，直至发现一个可点击的部件为止。</p>
+</blockquote>
+<h2>click(left, top, bottom, right)<span><a class="mark" href="#widgets_based_automation_click_left_top_bottom_right" id="widgets_based_automation_click_left_top_bottom_right">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>left</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要点击的长方形区域左边与屏幕左边的像素距离</li>
+<li><code>top</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要点击的长方形区域上边与屏幕上边的像素距离</li>
+<li><code>bottom</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要点击的长方形区域下边与屏幕下边的像素距离</li>
+<li><code>right</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要点击的长方形区域右边与屏幕右边的像素距离</li>
+</ul>
+</div><p><strong>注意，该函数一般只用于录制的脚本中使用，在自己写的代码中使用该函数一般不要使用该函数。</strong></p>
+<p>点击在指定区域的控件。当屏幕中并未包含与该区域严格匹配的区域，或者该区域不能点击时返回false，否则返回true。  </p>
+<p>有些按钮或者部件是图标而不是文字（例如发送朋友圈的照相机图标以及QQ下方的消息、联系人、动态图标），这时不能通过<code>click(text, i)</code>来点击，可以通过描述图标所在的区域来点击。left, bottom, top, right描述的就是点击的区域。  </p>
+<p>至于要定位点击的区域，可以在悬浮窗使用布局分析工具查看控件的bounds属性。</p>
+<p>通过无障碍服务录制脚本会生成该语句。</p>
+<h2>longClick(text[, i]))<span><a class="mark" href="#widgets_based_automation_longclick_text_i" id="widgets_based_automation_longclick_text_i">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>text</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要长按的文本</li>
+<li><code>i</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 如果相同的文本在屏幕中出现多次，则i表示要长按第几个文本, i从0开始计算</li>
+</ul>
+</div><p>返回是否点击成功。当屏幕中并未包含该文本，或者该文本所在区域不能点击时返回false，否则返回true。</p>
+<p>当不指定参数i时则会尝试点击屏幕上出现的所有文字text并返回是否全部长按成功。</p>
+<h2>scrollUp([i])<span><a class="mark" href="#widgets_based_automation_scrollup_i" id="widgets_based_automation_scrollup_i">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>i</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要滑动的控件序号</li>
+</ul>
+</div><p>找到第i+1个可滑动控件上滑或<strong>左滑</strong>。返回是否操作成功。屏幕上没有可滑动的控件时返回false。</p>
+<p>另外不加参数时<code>scrollUp()</code>会寻找面积最大的可滑动的控件上滑或左滑，例如微信消息列表等。  </p>
+<p>参数为一个整数i时会找到第i + 1个可滑动控件滑动。例如<code>scrollUp(0)</code>为滑动第一个可滑动控件。</p>
+<h2>scrollDown([i])<span><a class="mark" href="#widgets_based_automation_scrolldown_i" id="widgets_based_automation_scrolldown_i">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>i</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要滑动的控件序号</li>
+</ul>
+</div><p>找到第i+1个可滑动控件下滑或<strong>右滑</strong>。返回是否操作成功。屏幕上没有可滑动的控件时返回false。</p>
+<p>另外不加参数时<code>scrollUp()</code>会寻找面积最大的可滑动的控件下滑或右滑。  </p>
+<p>参数为一个整数i时会找到第i + 1个可滑动控件滑动。例如<code>scrollUp(0)</code>为滑动第一个可滑动控件。</p>
+<h2>setText([i, ]text)<span><a class="mark" href="#widgets_based_automation_settext_i_text" id="widgets_based_automation_settext_i_text">#</a></span></h2>
+<div class="signature"><ul>
+<li>i <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 表示要输入的为第i + 1个输入框</li>
+<li>text <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要输入的文本</li>
+</ul>
+</div><p>返回是否输入成功。当找不到对应的文本框时返回false。</p>
+<p>不加参数i则会把所有输入框的文本都置为text。例如<code>setText(&quot;测试&quot;)</code>。</p>
+<p>这里的输入文本的意思是，把输入框的文本置为text，而不是在原来的文本上追加。</p>
+<h2>input([i, ]text)<span><a class="mark" href="#widgets_based_automation_input_i_text" id="widgets_based_automation_input_i_text">#</a></span></h2>
+<div class="signature"><ul>
+<li>i <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 表示要输入的为第i + 1个输入框</li>
+<li>text <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要输入的文本</li>
+</ul>
+</div><p>返回是否输入成功。当找不到对应的文本框时返回false。</p>
+<p>不加参数i则会把所有输入框的文本追加内容text。例如<code>input(&quot;测试&quot;)</code>。</p>
+<h1>UiSelector<span><a class="mark" href="#widgets_based_automation_uiselector" id="widgets_based_automation_uiselector">#</a></span></h1>
+<p>选择器(UiSelector)是稍微复杂的自动操作脚本所必须。使用选择器的一般步骤是：</p>
+<ol>
+<li>用各种筛选条件找出想要的控件，如某个文本控件、列表控件、图片控件</li>
+<li>对找出的控件执行想要的操作，如点击、滑动、设置文字、长按</li>
+</ol>
+<p>问题的关键在于如何找出想要的控件。对于文本控件一般通过他的文字来定位他，图片控件则通过id或者图片描述(desc)。选择器所做的就是提供这些筛选条件并给出筛选结果。</p>
+<p>选择器提供了更强大的定位界面控件与对其进行操作的功能，可以用他们完成更多的自动操作和提取界面信息。<br>选择器通过附加筛选条件，筛选出符合条件的控件或控件集合，之后可以对这些控件这些操作。<br>可供选择的筛选条件包括：</p>
+<ul>
+<li>id</li>
+<li>text 文本</li>
+<li>desc 描述(Content-Description)</li>
+<li>className 类名</li>
+<li>packageName 包名</li>
+<li>bounds 在屏幕上的范围</li>
+<li>drawingOrder 绘制顺序</li>
+<li>各种属性，主要包括：<ul>
+<li>clickable 可点击</li>
+<li>longClickable 可长按</li>
+<li>checkable 可勾选</li>
+<li>checked 被勾选</li>
+<li>scrollable 可滑动</li>
+<li>selected 被选择</li>
+<li>editable 可编辑</li>
+<li>visibleToUser 可见</li>
+<li>enabled 已启用</li>
+</ul>
+</li>
+</ul>
+<p>要对选择器所确定的筛选条件，对屏幕上的控件进行筛选，调用方法find(), findOne(), untilFind()。其中find(), untilFind()返回控件的集合，findOne()返回一个控件。untilFind和findOne函数会一直寻找直到屏幕上出现满足条件的控件为止。<br>一个完整的选择器示例如下：</p>
+<pre><code>var emoj = id(&quot;name&quot;).packageName(&quot;com.tencent.mobileqq&quot;).clickable()
+        .className(&quot;ImageView&quot;).drawingOrder(5).findOne();
+emoj.click();
+</code></pre><p>上述代码是找到QQ聊天界面下面的表情按钮(第5个按钮)并点击。也可以简化为:</p>
+<pre><code>id(&quot;name&quot;).packageName(&quot;com.tencent.mobileqq&quot;).clickable()
+       .className(&quot;ImageView&quot;).click();
+</code></pre><p>这段代码意思是，找出id为&quot;name&quot;, 包名为&quot;com.tentcent.mobileqq&quot;，类名为ImageView的所有可点击控件，对他们执行点击动作。</p>
+<p>最后的click()函数相当于untilFind().click()。也就是如果只需要在找到控件以后立即进行操作，只需要调用相应的操作函数，而不需要先调用find等函数等到控件再操作。<br>要获取屏幕上的控件的信息(例如id, text, desc, bounds等)，可以开启悬浮窗，使用界面层次查看和界面范围查看。  </p>
+<p>选择器部分内容如果有安卓开发经验会更容易掌握。</p>
+<h2>id(resId)<span><a class="mark" href="#widgets_based_automation_id_resid" id="widgets_based_automation_id_resid">#</a></span></h2>
+<div class="signature"><ul>
+<li>resId <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 控件的id，以&quot;包名:id/&quot;开头，例如&quot;com.tencent.mm:id/send_btn&quot;。也可以不指定包名，这时会以当前正在运行的应用的包名来补全id。例如id(&quot;send_btn&quot;),在QQ界面想当于id(&quot;com.tencent.mobileqq:id/send_btn&quot;)。  </li>
+</ul>
+</div><p>附加id严格匹配筛选条件。</p>
+<p>控件的id属性通常是可以用来确定控件的唯一标识，如果一个控件有id，那么使用id来找到他是最好的方法。要查看屏幕上的控件的id，可以开启悬浮窗并使用界面工具，点击相应控件即可查看。若查看到的控件id为null, 表示该控件没有id。另外，在列表中会出现多个控件的id相同的情况。例如微信的联系人列表，每个头像的id都是一样的。此时不能用id来唯一确定控件。</p>
+<p>在QQ界面经常会出现多个id为&quot;name&quot;的控件，在微信上则每个版本的id都会变化。对于这些软件而言比较难用id定位控件。</p>
+<h2>idContains(str)<span><a class="mark" href="#widgets_based_automation_idcontains_str" id="widgets_based_automation_idcontains_str">#</a></span></h2>
+<div class="signature"><ul>
+<li>str <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> id要包含的字符串</li>
+</ul>
+</div><p>附加控件id包含字符串str的筛选条件。</p>
+<h2>idStartsWith(prefix)<span><a class="mark" href="#widgets_based_automation_idstartswith_prefix" id="widgets_based_automation_idstartswith_prefix">#</a></span></h2>
+<div class="signature"><ul>
+<li>prefix <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> id前缀</li>
+</ul>
+</div><p>附加id需要以prefix开头的筛选条件。</p>
+<h2>idEndsWith(suffix)<span><a class="mark" href="#widgets_based_automation_idendswith_suffix" id="widgets_based_automation_idendswith_suffix">#</a></span></h2>
+<div class="signature"><ul>
+<li>suffix <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> id后缀</li>
+</ul>
+</div><p>附加id需要以suffix结束的筛选条件。</p>
+<h2>idMatches(String)<span><a class="mark" href="#widgets_based_automation_idmatches_string" id="widgets_based_automation_idmatches_string">#</a></span></h2>
+<div class="signature"><ul>
+<li>String <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> id要满足的正则表达式</li>
+</ul>
+</div><p>附加id需要满足正则表达式。有关正则表达式，可以查看<a href="http://www.runoob.com/Stringp/Stringp-example.html">菜鸟教程</a>。</p>
+<p>这里的正则表达式是Java的正则表达式，不能直接使用JavaScript的正则表达式。</p>
+<pre><code>idMatches(&quot;[a-zA-Z]+&quot;)
+</code></pre><h2>text(str)<span><a class="mark" href="#widgets_based_automation_text_str" id="widgets_based_automation_text_str">#</a></span></h2>
+<div class="signature"><ul>
+<li>str <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 控件文本</li>
+</ul>
+</div><p>附加控件文本等于字符串str的筛选条件。</p>
+<p>控件的text(文本)属性是控件上的显示的文字，例如微信左上角的&quot;微信&quot;文本。对于图片或者其他控件通常text属性为null。</p>
+<h2>textContains(str)<span><a class="mark" href="#widgets_based_automation_textcontains_str" id="widgets_based_automation_textcontains_str">#</a></span></h2>
+<div class="signature"><ul>
+<li>str <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要包含的字符串</li>
+</ul>
+</div><p>附加控件文本需要以prefix开头的筛选条件。</p>
+<h2>textStartsWith(prefix)<span><a class="mark" href="#widgets_based_automation_textstartswith_prefix" id="widgets_based_automation_textstartswith_prefix">#</a></span></h2>
+<div class="signature"><ul>
+<li>prefix <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 前缀</li>
+</ul>
+</div><p>附加控件文本需要以prefix开头的筛选条件。</p>
+<h2>textEndsWith(suffix)<span><a class="mark" href="#widgets_based_automation_textendswith_suffix" id="widgets_based_automation_textendswith_suffix">#</a></span></h2>
+<div class="signature"><ul>
+<li>suffix <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 后缀</li>
+</ul>
+</div><p>附加控件文本需要以suffix结束的筛选条件。</p>
+<h2>textMatches(str)<span><a class="mark" href="#widgets_based_automation_textmatches_str" id="widgets_based_automation_textmatches_str">#</a></span></h2>
+<div class="signature"><ul>
+<li>String <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要满足的正则表达式</li>
+</ul>
+</div><p>附加控件文本需要满足正则表达式的条件。</p>
+<h2>desc(str)<span><a class="mark" href="#widgets_based_automation_desc_str" id="widgets_based_automation_desc_str">#</a></span></h2>
+<div class="signature"><ul>
+<li>str <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 控件描述</li>
+</ul>
+</div><p>附加控件描述等于字符串str的筛选条件。</p>
+<p>控件的desc(描述，全称为Content-Description)属性是对一个控件的描述，例如网易云音乐右上角的放大镜图标的描述为搜索。要查看一个控件的描述，同样地可以借助悬浮窗查看。</p>
+<p>desc属性同样是定位控件的利器。</p>
+<h2>descContains(str)<span><a class="mark" href="#widgets_based_automation_desccontains_str" id="widgets_based_automation_desccontains_str">#</a></span></h2>
+<div class="signature"><ul>
+<li>str <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要包含的字符串</li>
+</ul>
+</div><p>附加控件描述需要以prefix开头的筛选条件。</p>
+<h2>descStartsWith(prefix)<span><a class="mark" href="#widgets_based_automation_descstartswith_prefix" id="widgets_based_automation_descstartswith_prefix">#</a></span></h2>
+<div class="signature"><ul>
+<li>prefix <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 前缀</li>
+</ul>
+</div><p>附加控件描述需要以prefix开头的筛选条件。</p>
+<h2>descEndsWith(suffix)<span><a class="mark" href="#widgets_based_automation_descendswith_suffix" id="widgets_based_automation_descendswith_suffix">#</a></span></h2>
+<div class="signature"><ul>
+<li>suffix <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 后缀</li>
+</ul>
+</div><p>附加控件描述需要以suffix结束的筛选条件。</p>
+<h2>descMatches(str)<span><a class="mark" href="#widgets_based_automation_descmatches_str" id="widgets_based_automation_descmatches_str">#</a></span></h2>
+<div class="signature"><ul>
+<li>String <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要满足的正则表达式</li>
+</ul>
+</div><p>附加控件描述需要满足正则表达式的条件。</p>
+<h2>className(str)<span><a class="mark" href="#widgets_based_automation_classname_str" id="widgets_based_automation_classname_str">#</a></span></h2>
+<div class="signature"><ul>
+<li>str <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 控件类名</li>
+</ul>
+</div><p>附加控件类名等于字符串str的筛选条件。</p>
+<p>控件的className属性是一个控件的具体类型，例如图片控件通常为ImageView，文本控件通常为TextView, 输入框通常为EditText。(若一个控件是在android.widget包里的，那么android.widget可以省略。但除此之外的其他控件必须是类的全名，例如&quot;com.stardust.theme.ThemeColorImageView&quot;)。</p>
+<h2>classNameContains(str)<span><a class="mark" href="#widgets_based_automation_classnamecontains_str" id="widgets_based_automation_classnamecontains_str">#</a></span></h2>
+<div class="signature"><ul>
+<li>str <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要包含的字符串</li>
+</ul>
+</div><p>附加控件类名需要以prefix开头的筛选条件。</p>
+<h2>classNameStartsWith(prefix)<span><a class="mark" href="#widgets_based_automation_classnamestartswith_prefix" id="widgets_based_automation_classnamestartswith_prefix">#</a></span></h2>
+<div class="signature"><ul>
+<li>prefix <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 前缀</li>
+</ul>
+</div><p>附加控件类名需要以prefix开头的筛选条件。</p>
+<h2>classNameEndsWith(suffix)<span><a class="mark" href="#widgets_based_automation_classnameendswith_suffix" id="widgets_based_automation_classnameendswith_suffix">#</a></span></h2>
+<div class="signature"><ul>
+<li>suffix <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 后缀</li>
+</ul>
+</div><p>附加控件类名需要以suffix结束的筛选条件。</p>
+<h2>classNameMatches(str)<span><a class="mark" href="#widgets_based_automation_classnamematches_str" id="widgets_based_automation_classnamematches_str">#</a></span></h2>
+<div class="signature"><ul>
+<li>String <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要满足的正则表达式</li>
+</ul>
+</div><p>附加控件类名需要满足正则表达式的条件。</p>
+<h2>packageName(str)<span><a class="mark" href="#widgets_based_automation_packagename_str" id="widgets_based_automation_packagename_str">#</a></span></h2>
+<div class="signature"><ul>
+<li>str <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 包名</li>
+</ul>
+</div><p>附加包名等于字符串str的筛选条件。</p>
+<p>packageName属性也即控件所属的应用的包名(参见《shell命令:应用包名》)，通常用来保证当前运行的应用是想要的应用。</p>
+<h2>packageNameContains(str)<span><a class="mark" href="#widgets_based_automation_packagenamecontains_str" id="widgets_based_automation_packagenamecontains_str">#</a></span></h2>
+<div class="signature"><ul>
+<li>str <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要包含的字符串</li>
+</ul>
+</div><p>附加包名需要以prefix开头的筛选条件。</p>
+<h2>packageNameStartsWith(prefix)<span><a class="mark" href="#widgets_based_automation_packagenamestartswith_prefix" id="widgets_based_automation_packagenamestartswith_prefix">#</a></span></h2>
+<div class="signature"><ul>
+<li>prefix <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 前缀</li>
+</ul>
+</div><p>附加包名需要以prefix开头的筛选条件。</p>
+<h2>packageNameEndsWith(suffix)<span><a class="mark" href="#widgets_based_automation_packagenameendswith_suffix" id="widgets_based_automation_packagenameendswith_suffix">#</a></span></h2>
+<div class="signature"><ul>
+<li>suffix <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 后缀</li>
+</ul>
+</div><p>附加包名需要以suffix结束的筛选条件。</p>
+<h2>packageNameMatches(str)<span><a class="mark" href="#widgets_based_automation_packagenamematches_str" id="widgets_based_automation_packagenamematches_str">#</a></span></h2>
+<div class="signature"><ul>
+<li>String <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要满足的正则表达式</li>
+</ul>
+</div><p>附加包名需要满足正则表达式的条件。</p>
+<h2>bounds(l, t, r, b)<span><a class="mark" href="#widgets_based_automation_bounds_l_t_r_b" id="widgets_based_automation_bounds_l_t_r_b">#</a></span></h2>
+<div class="signature"><ul>
+<li>l, t, r, b 用来定位控件在屏幕上的范围的四个整数</li>
+</ul>
+</div><h2>boundsInside(l, t, r, b)<span><a class="mark" href="#widgets_based_automation_boundsinside_l_t_r_b" id="widgets_based_automation_boundsinside_l_t_r_b">#</a></span></h2>
+<h2>boundsContains(l, t, r, b)<span><a class="mark" href="#widgets_based_automation_boundscontains_l_t_r_b" id="widgets_based_automation_boundscontains_l_t_r_b">#</a></span></h2>
+<h2>drawingOrder(order)<span><a class="mark" href="#widgets_based_automation_drawingorder_order" id="widgets_based_automation_drawingorder_order">#</a></span></h2>
+<div class="signature"><ul>
+<li>order <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 控件在父视图中的绘制顺序，在一些</li>
+</ul>
+</div><h2>checkable([b = true])<span><a class="mark" href="#widgets_based_automation_checkable_b_true" id="widgets_based_automation_checkable_b_true">#</a></span></h2>
+<div class="signature"><ul>
+<li>b <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 表示控件是否可勾选, 默认为true</li>
+</ul>
+</div><p>附加控件是否可勾选的条件。可勾选指的是，例如QQ和微信发送图片时图片的勾选。</p>
+<h2>selected([b = true])<span><a class="mark" href="#widgets_based_automation_selected_b_true" id="widgets_based_automation_selected_b_true">#</a></span></h2>
+<div class="signature"><ul>
+<li>b <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 表示控件是否被选中，默认为true</li>
+</ul>
+</div><p>附加控件是否被选中的条件。被选中指的是，例如QQ聊天界面点击下方的表情按钮时，会出现自己收藏的表情，这时表情按钮便处于选中状态。</p>
+<h2>clickable([b = true])<span><a class="mark" href="#widgets_based_automation_clickable_b_true" id="widgets_based_automation_clickable_b_true">#</a></span></h2>
+<div class="signature"><ul>
+<li>b <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 表示控件是否可点击, 默认为true</li>
+</ul>
+</div><p>附加控件是否可点击的条件。但并非所有clickable为false的控件都真的不能点击，这取决于控件的实现。因而要确定一个控件的clickable属性，可以开启悬浮窗工具。</p>
+<h2>longClickable([b = true])<span><a class="mark" href="#widgets_based_automation_longclickable_b_true" id="widgets_based_automation_longclickable_b_true">#</a></span></h2>
+<div class="signature"><ul>
+<li>b <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 表示控件是否可长按, 默认为true</li>
+</ul>
+</div><p>附加控件是否可长按的条件。</p>
+<h2>enabled([b = true])<span><a class="mark" href="#widgets_based_automation_enabled_b_true" id="widgets_based_automation_enabled_b_true">#</a></span></h2>
+<div class="signature"><ul>
+<li>b <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 表示控件是否已启用, 默认为true</li>
+</ul>
+</div><p>附加控件是否已启用的条件。大多数控件都是启用的状态，处于“禁用”状态通常是灰色并且不可点击。</p>
+<h2>scrollable([b = true])<span><a class="mark" href="#widgets_based_automation_scrollable_b_true" id="widgets_based_automation_scrollable_b_true">#</a></span></h2>
+<div class="signature"><ul>
+<li>b <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 表示控件是否可滑动, 默认为true</li>
+</ul>
+</div><p>附加控件是否可滑动的条件。</p>
+<h2>editable([b = true])<span><a class="mark" href="#widgets_based_automation_editable_b_true" id="widgets_based_automation_editable_b_true">#</a></span></h2>
+<div class="signature"><ul>
+<li>b <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 表示控件是否可编辑, 默认为true</li>
+</ul>
+</div><p>附加控件是否可编辑的条件。一般来说可编辑的控件为输入框(EditText)。</p>
+<h2>contentInvalid([b = true])<span><a class="mark" href="#widgets_based_automation_contentinvalid_b_true" id="widgets_based_automation_contentinvalid_b_true">#</a></span></h2>
+<div class="signature"><ul>
+<li>b <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 表示控件是否是contentInvalid, 默认为true</li>
+</ul>
+</div><p>我也不知道是什么，下次再补充吧。</p>
+<h2>contextClickable([b = true])<span><a class="mark" href="#widgets_based_automation_contextclickable_b_true" id="widgets_based_automation_contextclickable_b_true">#</a></span></h2>
+<div class="signature"><ul>
+<li>b <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 表示控件是否是contextClickable, 默认为true</li>
+</ul>
+</div><p>我也不知道是什么，下次再补充吧。</p>
+<h2>multiLine([b = true])<span><a class="mark" href="#widgets_based_automation_multiline_b_true" id="widgets_based_automation_multiline_b_true">#</a></span></h2>
+<div class="signature"><ul>
+<li>b <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 表示文本或输入框控件是否是多行显示的, 默认为true</li>
+</ul>
+</div><p>附加控件是否文本或输入框控件是否是多行显示的条件。</p>
+<h2>findOne()<span><a class="mark" href="#widgets_based_automation_findone" id="widgets_based_automation_findone">#</a></span></h2>
+<p>根据当前的选择器所确定的筛选条件，对屏幕上的控件进行搜索，直到屏幕上出现满足条件的一个控件为止，并返回该控件。如果找不到控件，当屏幕内容发生变化时会重新寻找，直至找到。参见<a href="#控件">控件</a>。</p>
+<h2>find()<span><a class="mark" href="#widgets_based_automation_find" id="widgets_based_automation_find">#</a></span></h2>
+<p>根据当前的选择器所确定的筛选条件，对屏幕上的控件进行搜索，找到所有满足条件的控件集合并返回。这个搜索只进行一次，并不保证一直会找到，因而会出现返回的控件集合为空的情况。参见<a href="#控件集合">控件集合</a>。</p>
+<p>可以通过empty()或nonEmpty()函数判断找到的是否为空。例如：</p>
+<pre><code>var c = className(&quot;AbsListView&quot;).find();
+if(c.empty()){
+    toast(&quot;找到啦&quot;);
+}else{
+    toast(&quot;没找到╭(╯^╰)╮&quot;);
+}
+</code></pre><h2>untilFind()<span><a class="mark" href="#widgets_based_automation_untilfind" id="widgets_based_automation_untilfind">#</a></span></h2>
+<p>根据当前的选择器所确定的筛选条件，对屏幕上的控件进行搜索，直到找到至少一个满足条件的控件为止，并返回所有满足条件的控件集合。参见<a href="#控件集合">控件集合</a>。</p>
+<h2>exists()<span><a class="mark" href="#widgets_based_automation_exists" id="widgets_based_automation_exists">#</a></span></h2>
+<p>判断屏幕上是否存在控件符合选择器所确定的条件。例如要判断某个文本出现就执行某个动作，可以用：</p>
+<pre><code>if(text(&quot;嘿嘿嘿&quot;).exists()){
+    //嘿嘿嘿
+}
+</code></pre><h2>waitFor()<span><a class="mark" href="#widgets_based_automation_waitfor" id="widgets_based_automation_waitfor">#</a></span></h2>
+<p>等待屏幕上出现符合条件的控件。</p>
+<pre><code>text(&quot;嘿嘿嘿&quot;).waitFor();
+</code></pre><h2>click()<span><a class="mark" href="#widgets_based_automation_click" id="widgets_based_automation_click">#</a></span></h2>
+<p>找到所有符合条件的控件并点击。相当于untilFind().click()。参见<a href="#UiCollection.click(">click</a>)。</p>
+<h2>longClick()<span><a class="mark" href="#widgets_based_automation_longclick" id="widgets_based_automation_longclick">#</a></span></h2>
+<p>找到所有符合条件的控件并长按。相当于untilFind().longClick()。参见<a href="#UiCollection.longClick(">longClick</a>)。</p>
+<h2>copy()<span><a class="mark" href="#widgets_based_automation_copy" id="widgets_based_automation_copy">#</a></span></h2>
+<p>找到所有符合条件的控件并复制其内容，只对文本框或输入框控件有文字选中时有效。相当于untilFind().copy()。参见<a href="#UiCollection.copy(">copy</a>)。</p>
+<h2>paste()<span><a class="mark" href="#widgets_based_automation_paste" id="widgets_based_automation_paste">#</a></span></h2>
+<p>找到所有符合条件的控件并粘贴，只对输入框控件有效。相当于untilFind().paste()。参见<a href="#UiCollection.paste(">paste</a>)。</p>
+<h2>select()<span><a class="mark" href="#widgets_based_automation_select" id="widgets_based_automation_select">#</a></span></h2>
+<p>找到所有符合条件的控件并选中。相当于untilFind().select()。参见<a href="#UiCollection.select(">select</a>)。</p>
+<h2>cut()<span><a class="mark" href="#widgets_based_automation_cut" id="widgets_based_automation_cut">#</a></span></h2>
+<p>找到所有符合条件的控件并剪切其内容，只对文本框或输入框控件有文字选中时有效。相当于untilFind().cut()。参见<a href="#UiCollection.cut(">cut</a>)。</p>
+<h2>collapse()<span><a class="mark" href="#widgets_based_automation_collapse" id="widgets_based_automation_collapse">#</a></span></h2>
+<p>找到所有符合条件的控件并折叠。相当于untilFind().collapse()。参见<a href="#UiCollection.collapse(">collapse</a>)。</p>
+<h2>expand()<span><a class="mark" href="#widgets_based_automation_expand" id="widgets_based_automation_expand">#</a></span></h2>
+<p>找到所有符合条件的控件并展开。相当于untilFind().expand()。参见<a href="#UiCollection.expand(">expand</a>)。</p>
+<h2>show()<span><a class="mark" href="#widgets_based_automation_show" id="widgets_based_automation_show">#</a></span></h2>
+<p>找到所有符合条件的控件并使其出现在屏幕上。相当于untilFind().show()。参见<a href="#UiCollection.show(">show</a>)。</p>
+<h2>scrollForward()<span><a class="mark" href="#widgets_based_automation_scrollforward" id="widgets_based_automation_scrollforward">#</a></span></h2>
+<p>找到所有符合条件的控件并向前滑。相当于untilFind().scrollForward()。参见<a href="#UiCollection.scrollForward(">scrollForward</a>)。<br>向前滑指的是，对于左右滑动的控件向右滑，上下滑动的控件向下滑。</p>
+<h2>scrollBackward()<span><a class="mark" href="#widgets_based_automation_scrollbackward" id="widgets_based_automation_scrollbackward">#</a></span></h2>
+<p>找到所有符合条件的控件并向后滑。相当于untilFind().scrollBackward()。参见<a href="#UiCollection.scrollBackward(">scrollBackward</a>)。<br>向后滑指的是，对于左右滑动的控件向左滑，上下滑动的控件向上滑。</p>
+<h2>scrollUp()<span><a class="mark" href="#widgets_based_automation_scrollup" id="widgets_based_automation_scrollup">#</a></span></h2>
+<p>找到所有符合条件的控件并向上滑。相当于untilFind().scrollUp()。参见<a href="#UiCollection.scrollUp(">scrollUp</a>)。</p>
+<h2>scrollDown()<span><a class="mark" href="#widgets_based_automation_scrolldown" id="widgets_based_automation_scrolldown">#</a></span></h2>
+<p>找到所有符合条件的控件并向下滑。相当于untilFind().scrollDown()。参见<a href="#UiCollection.scrollDown(">scrollDown</a>)。</p>
+<h2>scrollLeft()<span><a class="mark" href="#widgets_based_automation_scrollleft" id="widgets_based_automation_scrollleft">#</a></span></h2>
+<p>找到所有符合条件的控件并向左滑。相当于untilFind().scrollLeft()。参见<a href="#UiCollection.scrollLeft(">scrollLeft</a>)。</p>
+<h2>scrollRight()<span><a class="mark" href="#widgets_based_automation_scrollright" id="widgets_based_automation_scrollright">#</a></span></h2>
+<p>找到所有符合条件的控件并向右滑。相当于untilFind().scrollRight()。参见<a href="#UiCollection.scrollRight(">scrollRight</a>)。</p>
+<h2>contextClick()<span><a class="mark" href="#widgets_based_automation_contextclick" id="widgets_based_automation_contextclick">#</a></span></h2>
+<p>文档缺失</p>
+<h2>setSelection(start, end)<span><a class="mark" href="#widgets_based_automation_setselection_start_end" id="widgets_based_automation_setselection_start_end">#</a></span></h2>
+<div class="signature"><ul>
+<li>start <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 文字选中开始位置</li>
+<li>end <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 文字选中结束位置</li>
+</ul>
+</div><p>找到所有符合条件的控件并设置文字选中区域，只对文本控件和输入框有效。相当于untilFind().setSelection()。参见<a href="#UiCollection.setSelection">setSelection</a>。</p>
+<h2>setText(text)<span><a class="mark" href="#widgets_based_automation_settext_text" id="widgets_based_automation_settext_text">#</a></span></h2>
+<div class="signature"><ul>
+<li>text <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要设置的文本
+找到所有符合条件的控件并设置文字，只对输入框有效。相当于untilFind().setText()。参见<a href="#UiCollection.setText">setText</a>。</li>
+</ul>
+</div><h1>UiCollection<span><a class="mark" href="#widgets_based_automation_uicollection" id="widgets_based_automation_uicollection">#</a></span></h1>
+<p>UiCollection, 控件集合, 通过选择器的find(), untilFind()方法返回的对象。可以对其进行操作或者获取其信息。</p>
+<h2>UiCollection.size()<span><a class="mark" href="#widgets_based_automation_uicollection_size" id="widgets_based_automation_uicollection_size">#</a></span></h2>
+<p>返回集合中的控件数。</p>
+<h2>UiCollection.get(i)<span><a class="mark" href="#widgets_based_automation_uicollection_get_i" id="widgets_based_automation_uicollection_get_i">#</a></span></h2>
+<div class="signature"><ul>
+<li>i <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 索引</li>
+</ul>
+</div><p>返回集合中第i+1个控件(UiObject)。</p>
+<h2>UiCollection.each(func)<span><a class="mark" href="#widgets_based_automation_uicollection_each_func" id="widgets_based_automation_uicollection_each_func">#</a></span></h2>
+<div class="signature"><ul>
+<li>func \<Function\> 遍历函数</li>
+</ul>
+</div><p>遍历集合。例如：</p>
+<pre><code>var c = clickable();
+c.each(function(o){
+    log(o.text());
+});
+</code></pre><h2>empty()<span><a class="mark" href="#widgets_based_automation_empty" id="widgets_based_automation_empty">#</a></span></h2>
+<p>返回控件集合是否为空。</p>
+<h2>nonEmpty()<span><a class="mark" href="#widgets_based_automation_nonempty" id="widgets_based_automation_nonempty">#</a></span></h2>
+<p>返回控件集合是否非空。</p>
+<h2>UiCollection.filter(filter)<span><a class="mark" href="#widgets_based_automation_uicollection_filter_filter" id="widgets_based_automation_uicollection_filter_filter">#</a></span></h2>
+<div class="signature"><ul>
+<li>filter \<Function\> 过滤函数。参数为UiObject，返回值为Boolean。</li>
+</ul>
+</div><p>过滤出控件集合中符合条件的子控件。例如要过滤出所有子控件数目为1的控件为：</p>
+<pre><code>var newCollection = collection.filter(function(obj){
+    return obj.childCount() == 1;
+});
+</code></pre><h2>UiCollection.find(selector)<span><a class="mark" href="#widgets_based_automation_uicollection_find_selector" id="widgets_based_automation_uicollection_find_selector">#</a></span></h2>
+<div class="signature"><ul>
+<li>selector \<UiSelector\> 选择器</li>
+</ul>
+</div><p>根据selector所确定的条件在该控件集合的控件和<strong>子控件</strong>找到所有符合条件的控件并返回控件集合。</p>
+<p>注意这会递归地遍历控件集合里所有的控件以及他们的子控件。和filter函数不同。</p>
+<p>例如：</p>
+<pre><code>var names = id(&quot;name&quot;);
+var clickableNames = names.find(clickable());
+</code></pre><h2>UiCollection.findOne(selector)<span><a class="mark" href="#widgets_based_automation_uicollection_findone_selector" id="widgets_based_automation_uicollection_findone_selector">#</a></span></h2>
+<div class="signature"><ul>
+<li>selector \<UiSelector\> 选择器</li>
+</ul>
+</div><p>根据selector所确定的条件在该控件集合中找到一个符合条件的控件并返回控件。若找不到则返回null。</p>
+<h2>UiCollection.click()<span><a class="mark" href="#widgets_based_automation_uicollection_click" id="widgets_based_automation_uicollection_click">#</a></span></h2>
+<p>点击集合中所有控件，并返回是否全部点击成功。</p>
+<h2>UiCollection.longClick()<span><a class="mark" href="#widgets_based_automation_uicollection_longclick" id="widgets_based_automation_uicollection_longclick">#</a></span></h2>
+<p>长按集合中所有控件，并返回是否全部操作成功。</p>
+<h2>UiCollection.copy()<span><a class="mark" href="#widgets_based_automation_uicollection_copy" id="widgets_based_automation_uicollection_copy">#</a></span></h2>
+<p>对集合中所有控件执行复制操作，并返回是否全部操作成功。</p>
+<h2>UiCollection.paste()<span><a class="mark" href="#widgets_based_automation_uicollection_paste" id="widgets_based_automation_uicollection_paste">#</a></span></h2>
+<p>对集合中所有控件执行粘贴操作，并返回是否全部操作成功。</p>
+<h2>UiCollection.select()<span><a class="mark" href="#widgets_based_automation_uicollection_select" id="widgets_based_automation_uicollection_select">#</a></span></h2>
+<p>对集合中所有控件执行选中操作，并返回是否全部操作成功。</p>
+<h2>UiCollection.cut()<span><a class="mark" href="#widgets_based_automation_uicollection_cut" id="widgets_based_automation_uicollection_cut">#</a></span></h2>
+<p>对集合中所有控件执行剪切操作，并返回是否全部操作成功。</p>
+<h2>UiCollection.collapse()<span><a class="mark" href="#widgets_based_automation_uicollection_collapse" id="widgets_based_automation_uicollection_collapse">#</a></span></h2>
+<p>对集合中所有控件执行折叠操作，并返回是否全部操作成功。</p>
+<h2>UiCollection.expand()<span><a class="mark" href="#widgets_based_automation_uicollection_expand" id="widgets_based_automation_uicollection_expand">#</a></span></h2>
+<p>对集合中所有控件执行展开操作，并返回是否全部操作成功。</p>
+<h2>UiCollection.show()<span><a class="mark" href="#widgets_based_automation_uicollection_show" id="widgets_based_automation_uicollection_show">#</a></span></h2>
+<p>对集合中所有控件执行显示操作，并返回是否全部操作成功。</p>
+<h2>UiCollection.scrollForward()<span><a class="mark" href="#widgets_based_automation_uicollection_scrollforward" id="widgets_based_automation_uicollection_scrollforward">#</a></span></h2>
+<p>对集合中所有控件执行向前滑的操作，并返回是否全部操作成功。</p>
+<h2>UiCollection.scrollBackward()<span><a class="mark" href="#widgets_based_automation_uicollection_scrollbackward" id="widgets_based_automation_uicollection_scrollbackward">#</a></span></h2>
+<p>对集合中所有控件执行向后滑的操作，并返回是否全部操作成功。</p>
+<h2>UiCollection.scrollUp()<span><a class="mark" href="#widgets_based_automation_uicollection_scrollup" id="widgets_based_automation_uicollection_scrollup">#</a></span></h2>
+<p>对集合中所有控件执行向上滑的操作，并返回是否全部操作成功。</p>
+<h2>UiCollection.scrollDown()<span><a class="mark" href="#widgets_based_automation_uicollection_scrolldown" id="widgets_based_automation_uicollection_scrolldown">#</a></span></h2>
+<p>对集合中所有控件执行向下滑的操作，并返回是否全部操作成功。</p>
+<h2>UiCollection.scrollLeft()<span><a class="mark" href="#widgets_based_automation_uicollection_scrollleft" id="widgets_based_automation_uicollection_scrollleft">#</a></span></h2>
+<p>对集合中所有控件执行向左滑的操作，并返回是否全部操作成功。</p>
+<h2>UiCollection.scrollRight()<span><a class="mark" href="#widgets_based_automation_uicollection_scrollright" id="widgets_based_automation_uicollection_scrollright">#</a></span></h2>
+<p>对集合中所有控件执行向右滑的操作，并返回是否全部操作成功。</p>
+<h2>UiCollection.contextClick()<span><a class="mark" href="#widgets_based_automation_uicollection_contextclick" id="widgets_based_automation_uicollection_contextclick">#</a></span></h2>
+<h2>UiCollection.setSelection(start, end)<span><a class="mark" href="#widgets_based_automation_uicollection_setselection_start_end" id="widgets_based_automation_uicollection_setselection_start_end">#</a></span></h2>
+<div class="signature"><ul>
+<li>start <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 文字选中开始位置</li>
+<li>end <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 文字选中结束位置</li>
+</ul>
+</div><p>对集合中所有控件设置文字选中区域，并返回是否全部操作成功。</p>
+<h2>UiCollection.setText(text)<span><a class="mark" href="#widgets_based_automation_uicollection_settext_text" id="widgets_based_automation_uicollection_settext_text">#</a></span></h2>
+<div class="signature"><ul>
+<li>text <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要设置的文本
+对集合中所有控件设置文本，并返回是否全部操作成功。</li>
+</ul>
+</div><h1>UiObject<span><a class="mark" href="#widgets_based_automation_uiobject" id="widgets_based_automation_uiobject">#</a></span></h1>
+<p>控件, 选择器的findOne方法返回的对象。和UiCollection有相似的方法，不再赘述。除此之外还有以下方法。</p>
+<h2>child(i)<span><a class="mark" href="#widgets_based_automation_child_i" id="widgets_based_automation_child_i">#</a></span></h2>
+<div class="signature"><ul>
+<li>i <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 子控件索引</li>
+</ul>
+</div><p>返回第i+1个子控件(UiObject)。</p>
+<h2>parent()<span><a class="mark" href="#widgets_based_automation_parent" id="widgets_based_automation_parent">#</a></span></h2>
+<p>返回父控件(UiObject)。</p>
+<h2>children()<span><a class="mark" href="#widgets_based_automation_children" id="widgets_based_automation_children">#</a></span></h2>
+<p>返回该控件的所有子控件组成的控件集合。</p>
+<h2>childCount()<span><a class="mark" href="#widgets_based_automation_childcount" id="widgets_based_automation_childcount">#</a></span></h2>
+<p>返回子控件数目。</p>
+<h2>bounds()<span><a class="mark" href="#widgets_based_automation_bounds" id="widgets_based_automation_bounds">#</a></span></h2>
+<p>返回控件在屏幕上的范围，其值是一个[Rect]对象。</p>
+<h2>boundsInParent()<span><a class="mark" href="#widgets_based_automation_boundsinparent" id="widgets_based_automation_boundsinparent">#</a></span></h2>
+<p>返回控件在父控件中的范围，其值是一个[Rect]对象。</p>
+<h2>drawingOrder()<span><a class="mark" href="#widgets_based_automation_drawingorder" id="widgets_based_automation_drawingorder">#</a></span></h2>
+<p>返回控件的绘制次序。</p>
+<h2>id()<span><a class="mark" href="#widgets_based_automation_id" id="widgets_based_automation_id">#</a></span></h2>
+<p>返回控件的id，可能为null。</p>
+<h2>text()<span><a class="mark" href="#widgets_based_automation_text" id="widgets_based_automation_text">#</a></span></h2>
+<p>返回控件的文本，如果控件没有文本，返回&quot;&quot;。</p>
+<h2>findByText(text)<span><a class="mark" href="#widgets_based_automation_findbytext_text" id="widgets_based_automation_findbytext_text">#</a></span></h2>
+<div class="signature"><ul>
+<li>text <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文本</li>
+</ul>
+</div><p>根据文本text在子控件中递归地寻找并返回文本或描述(desc)<strong>包含</strong>这段文本text的控件，返回它们组成的集合。。</p>
+<h2>find(selector)<span><a class="mark" href="#widgets_based_automation_find_selector" id="widgets_based_automation_find_selector">#</a></span></h2>
+<div class="signature"><ul>
+<li>selector \<UiSelector\> 选择器</li>
+</ul>
+</div><p>根据选择器selector在子控件中递归地寻找符合条件的控件，返回它们组成的集合。</p>
+<h2>findOne<span><a class="mark" href="#widgets_based_automation_findone_1" id="widgets_based_automation_findone_1">#</a></span></h2>
+<h2>find(selector)<span><a class="mark" href="#widgets_based_automation_find_selector_1" id="widgets_based_automation_find_selector_1">#</a></span></h2>
+<div class="signature"><ul>
+<li>selector \<UiSelector\> 选择器</li>
+</ul>
+</div><p>根据选择器selector在子控件中递归地寻找一个符合条件的控件。找不到则返回null。</p>
+<h1>Rect<span><a class="mark" href="#widgets_based_automation_rect" id="widgets_based_automation_rect">#</a></span></h1>
+<p>UiObject.bounds(), UiObject.boundsInParent()返回的对象。表示一个长方形。</p>
+<h2>Rect.left<span><a class="mark" href="#widgets_based_automation_rect_left" id="widgets_based_automation_rect_left">#</a></span></h2>
+<p>长方形左边界的x坐标、</p>
+<h2>Rect.right<span><a class="mark" href="#widgets_based_automation_rect_right" id="widgets_based_automation_rect_right">#</a></span></h2>
+<p>长方形左边界的x坐标、</p>
+<h2>Rect.top<span><a class="mark" href="#widgets_based_automation_rect_top" id="widgets_based_automation_rect_top">#</a></span></h2>
+<p>长方形上边界的y坐标、</p>
+<h2>Rect.bottom<span><a class="mark" href="#widgets_based_automation_rect_bottom" id="widgets_based_automation_rect_bottom">#</a></span></h2>
+<p>长方形下边界的y坐标、</p>
+<h2>Rect.centerX()<span><a class="mark" href="#widgets_based_automation_rect_centerx" id="widgets_based_automation_rect_centerx">#</a></span></h2>
+<p>长方形中点x坐标。</p>
+<h2>Rect.centerY()<span><a class="mark" href="#widgets_based_automation_rect_centery" id="widgets_based_automation_rect_centery">#</a></span></h2>
+<p>长方形中点y坐标。</p>
+<h2>Rect.width()<span><a class="mark" href="#widgets_based_automation_rect_width" id="widgets_based_automation_rect_width">#</a></span></h2>
+<p>长方形宽度。通常可以作为控件宽度。</p>
+<h2>Rect.height()<span><a class="mark" href="#widgets_based_automation_rect_height" id="widgets_based_automation_rect_height">#</a></span></h2>
+<p>长方形高度。通常可以作为控件高度。</p>
+<h2>Rect.contains(r)<span><a class="mark" href="#widgets_based_automation_rect_contains_r" id="widgets_based_automation_rect_contains_r">#</a></span></h2>
+<div class="signature"><ul>
+<li>r \<Rect\> </li>
+</ul>
+</div><p>返回是否包含另一个长方形r。</p>
+<h2>Rect.intersect(r)<span><a class="mark" href="#widgets_based_automation_rect_intersect_r" id="widgets_based_automation_rect_intersect_r">#</a></span></h2>
+<div class="signature"><ul>
+<li>r \<Rect\> </li>
+</ul>
+</div><p>返回是否和另一个长方形相交。</p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

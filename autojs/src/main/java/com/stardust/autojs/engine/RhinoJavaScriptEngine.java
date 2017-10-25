@@ -18,6 +18,7 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.RequireBuilder;
 import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider;
+import org.mozilla.javascript.tools.debugger.Dim;
 
 import java.io.File;
 import java.io.IOException;

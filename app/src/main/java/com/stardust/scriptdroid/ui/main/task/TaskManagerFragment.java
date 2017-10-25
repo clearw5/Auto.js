@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.ui.main.task;
 
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.MenuItem;
@@ -50,6 +51,7 @@ public class TaskManagerFragment extends ViewPagerFragment implements PopupMenu.
 
     public TaskManagerFragment() {
         super(45);
+        setArguments(new Bundle());
     }
 
 
@@ -60,6 +62,9 @@ public class TaskManagerFragment extends ViewPagerFragment implements PopupMenu.
         mNoRunningScriptNotice.setVisibility(noRunningScript ? View.VISIBLE : View.GONE);
         mStardustConsole = (StardustConsole) AutoJs.getInstance().getGlobalConsole();
         mConsoleView.setConsole(mStardustConsole);
+        if (getArguments().getBoolean("console_shown", false)) {
+            showLog();
+        }
     }
 
     private void init() {
@@ -104,6 +109,7 @@ public class TaskManagerFragment extends ViewPagerFragment implements PopupMenu.
         return true;
     }
 
+
     private void showLog() {
         mTaskManagerView.setVisibility(View.GONE);
         mConsoleView.setVisibility(View.VISIBLE);
@@ -124,5 +130,11 @@ public class TaskManagerFragment extends ViewPagerFragment implements PopupMenu.
         } else {
             AutoJs.getInstance().getScriptEngineService().stopAll();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getArguments().putBoolean("console_shown", mConsoleView.getVisibility() == View.VISIBLE);
     }
 }

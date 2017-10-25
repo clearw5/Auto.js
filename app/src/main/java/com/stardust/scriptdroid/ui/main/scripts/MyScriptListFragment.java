@@ -1,6 +1,8 @@
 package com.stardust.scriptdroid.ui.main.scripts;
 
 import android.app.Activity;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 
@@ -11,12 +13,15 @@ import com.stardust.scriptdroid.io.StorageFileProvider;
 import com.stardust.scriptdroid.tool.SimpleObserver;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.main.FloatingActionMenu;
+import com.stardust.scriptdroid.ui.main.QueryEvent;
 import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
 import com.stardust.util.BackPressedHandler;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
@@ -37,15 +42,17 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
 
     private FloatingActionMenu mFloatingActionMenu;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
+
     @AfterViews
     void setUpViews() {
         mScriptFileList.setStorageFileProvider(StorageFileProvider.getDefault());
-        mScriptFileList.setOnScriptFileClickListener(new ScriptListView.OnScriptFileClickListener() {
-            @Override
-            public void onScriptFileClick(View view, ScriptFile file) {
-                Scripts.edit(file);
-                //EditorFloaty.floatingEdit(getContext(), file);
-            }
+        mScriptFileList.setOnScriptFileClickListener((view, file) -> {
+            Scripts.edit(file);
         });
     }
 
@@ -109,9 +116,23 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
 
     @Override
     public void onPageHide() {
+        super.onPageHide();
         if (mFloatingActionMenu != null && mFloatingActionMenu.isExpanded()) {
             mFloatingActionMenu.collapse();
         }
+    }
+
+    @Subscribe
+    public void onQuerySummit(QueryEvent event) {
+        if (!isShown()) {
+            return;
+        }
+        if (event == QueryEvent.CLEAR) {
+            mScriptFileList.setFilter(null);
+            return;
+        }
+        String query = event.getQuery();
+        mScriptFileList.setFilter((file -> file.getSimplifiedName().contains(query)));
     }
 
     @Override
@@ -119,6 +140,12 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
         super.onDetach();
         if (mFloatingActionMenu != null)
             mFloatingActionMenu.setOnFloatingActionButtonClickListener(null);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
