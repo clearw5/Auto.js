@@ -104,6 +104,7 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
         String query = URLEncoder.encode(event.getQuery());
         String url = String.format("http://www.autojs.org/search?term=%s&in=titlesposts", query);
         mWebView.loadUrl(url);
+        event.collapseSearchView();
     }
 
     private boolean isInPostsPage() {

@@ -45,29 +45,19 @@ public class ImportIntentActivity extends BaseActivity {
         Uri uri = intent.getData();
         if (uri != null && "content".equals(uri.getScheme())) {
             String ext = PFiles.getExtension(uri.getScheme());
-            if(TextUtils.isEmpty(ext)){
+            if (TextUtils.isEmpty(ext)) {
                 ext = "js";
             }
             InputStream stream = getContentResolver().openInputStream(uri);
             new ScriptOperations(this, null)
                     .importFile("", stream, ext)
-                    .subscribe(new Consumer<String>() {
-                        @Override
-                        public void accept(@NonNull String s) throws Exception {
-                            finish();
-                        }
-                    });
+                    .subscribe(s -> finish());
         } else {
             final String path = intent.getData().getPath();
             if (!TextUtils.isEmpty(path)) {
                 new ScriptOperations(this, null)
                         .importFile(path)
-                        .subscribe(new Consumer<String>() {
-                            @Override
-                            public void accept(@NonNull String s) throws Exception {
-                                finish();
-                            }
-                        });
+                        .subscribe(s -> finish());
             }
         }
     }

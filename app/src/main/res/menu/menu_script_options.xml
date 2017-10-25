@@ -12,6 +12,9 @@
     <item
         android:id="@+id/delete"
         android:title="@string/text_delete"/>
+    <item
+        android:id="@+id/floating_edit"
+        android:title="@string/text_floating_edit"/>
 
     <item
         android:id="@+id/create_shortcut"

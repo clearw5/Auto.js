@@ -45,7 +45,7 @@
     <string name="text_start_running">开始运行</string>
     <string name="text_open_by_other_apps">用其他应用打开</string>
     <string name="text_rename">重命名</string>
-    <string name="text_send_shortcut">创建桌面快捷方式</string>
+    <string name="text_send_shortcut">创建快捷方式</string>
     <string name="text_already_create">已创建</string>
     <string name="text_delete">删除</string>
     <string name="text_already_delete">已删除</string>
@@ -263,6 +263,8 @@
     <string name="apk_builder_clean">清理临时文件</string>
     <string name="text_source_file_path">脚本文件路径</string>
     <string name="text_search">搜索</string>
+    <string name="text_floating_edit">悬浮编辑</string>
+    <string name="text_select_icon">选择图标</string>
 
 
     <string-array name="ad_showing_mode_keys">

@@ -69,4 +69,10 @@ public class SearchViewItem implements MenuItemCompat.OnActionExpandListener, Se
     public boolean onQueryTextChange(String newText) {
         return false;
     }
+
+
+    public void collapse() {
+        mSearchMenuItem.collapseActionView();
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.ui.common;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -27,6 +28,7 @@ import com.stardust.scriptdroid.io.StorageFileProvider;
 import com.stardust.scriptdroid.model.sample.Sample;
 import com.stardust.scriptdroid.network.download.DownloadManager;
 import com.stardust.scriptdroid.ui.filechooser.FileChooserDialogBuilder;
+import com.stardust.scriptdroid.ui.shortcut.ShortcutCreateActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import org.reactivestreams.Publisher;
@@ -102,12 +104,7 @@ public class ScriptOperations {
 
     public void newScriptFile() {
         showFileNameInputDialog("", "js")
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(@io.reactivex.annotations.NonNull String input) throws Exception {
-                        createScriptFile(getCurrentDirectoryPath() + input + ".js", null, true);
-                    }
-                });
+                .subscribe(input -> createScriptFile(getCurrentDirectoryPath() + input + ".js", null, true));
     }
 
     public Observable<String> importFile(final String pathFrom) {
@@ -235,8 +232,8 @@ public class ScriptOperations {
     }
 
     public void createShortcut(ScriptFile file) {
-        Scripts.createShortcut(file);
-        showMessage(R.string.text_already_create);
+        mContext.startActivity(new Intent(mContext, ShortcutCreateActivity.class)
+                .putExtra(ShortcutCreateActivity.EXTRA_FILE, file));
     }
 
     public void delete(final ScriptFile scriptFile) {
