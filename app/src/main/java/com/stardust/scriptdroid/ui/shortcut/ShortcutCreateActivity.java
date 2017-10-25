@@ -4,25 +4,27 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Icon;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.external.shortcut.Shortcut;
 import com.stardust.scriptdroid.external.shortcut.ShortcutActivity;
+import com.stardust.scriptdroid.external.shortcut.ShortcutManager;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.tool.BitmapTool;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
-import com.stardust.theme.internal.DrawableTool;
-
-import java.io.FileNotFoundException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,8 +47,11 @@ public class ShortcutCreateActivity extends AppCompatActivity {
     @BindView(R.id.name)
     TextView mName;
 
-    @BindView(R.id.select_icon)
+    @BindView(R.id.icon)
     ImageView mIcon;
+
+    @BindView(R.id.use_android_n_shortcut)
+    CheckBox mUseAndroidNShortcut;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +63,8 @@ public class ShortcutCreateActivity extends AppCompatActivity {
     private void showDialog() {
         View view = View.inflate(this, R.layout.shortcut_create_dialog, null);
         ButterKnife.bind(this, view);
+        mUseAndroidNShortcut.setVisibility(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ?
+                View.VISIBLE : View.GONE);
         mName.setText(mScriptFile.getSimplifiedName());
         new ThemeColorMaterialDialogBuilder(this)
                 .customView(view, false)
@@ -72,7 +79,7 @@ public class ShortcutCreateActivity extends AppCompatActivity {
     }
 
 
-    @OnClick(R.id.select_icon)
+    @OnClick(R.id.icon)
     void selectIcon() {
         ShortcutIconSelectActivity_.intent(this)
                 .startForResult(21209);
@@ -80,6 +87,10 @@ public class ShortcutCreateActivity extends AppCompatActivity {
 
 
     private void createShortcut() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && mUseAndroidNShortcut.isChecked()) {
+            createShortcutForAndroidN();
+            return;
+        }
         Shortcut shortcut = new Shortcut(this);
         if (mIsDefaultIcon) {
             shortcut.iconRes(R.drawable.ic_node_js_black);
@@ -91,6 +102,23 @@ public class ShortcutCreateActivity extends AppCompatActivity {
                 .targetClass(ShortcutActivity.class)
                 .extras(new Intent().putExtra(CommonUtils.EXTRA_KEY_PATH, mScriptFile.getPath()))
                 .send();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
+    private void createShortcutForAndroidN() {
+        Icon icon;
+        if (mIsDefaultIcon) {
+            icon = Icon.createWithResource(this, R.drawable.ic_node_js_black);
+        } else {
+            Bitmap bitmap = BitmapTool.drawableToBitmap(mIcon.getDrawable());
+            icon = Icon.createWithBitmap(bitmap);
+        }
+        PersistableBundle extras = new PersistableBundle(1);
+        extras.putString(CommonUtils.EXTRA_KEY_PATH, mScriptFile.getPath());
+        ShortcutManager.getInstance(this).addDynamicShortcut(mName.getText(), mScriptFile.getPath(), icon,
+                new Intent(this, ShortcutActivity.class)
+                        .putExtra(CommonUtils.EXTRA_KEY_PATH, mScriptFile.getPath())
+                        .setAction(Intent.ACTION_MAIN));
     }
 
     @Override

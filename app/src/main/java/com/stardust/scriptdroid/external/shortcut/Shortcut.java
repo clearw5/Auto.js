@@ -70,8 +70,8 @@ public class Shortcut {
         if (mIconRes != null) {
             throw new IllegalStateException("Cannot set both iconRes and icon");
         }
-        if (icon.getByteCount() > 1024 * 100) {
-            mIcon = BitmapTool.scaleBitmap(icon, 100, 100);
+        if (icon.getByteCount() > 1024 * 500) {
+            mIcon = BitmapTool.scaleBitmap(icon, 200, 200);
         }else {
             mIcon = icon;
         }
