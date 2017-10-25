@@ -7,6 +7,7 @@
               android:orientation="horizontal"
               android:paddingBottom="16dp"
               android:paddingLeft="24dp"
+              android:paddingRight="16dp"
               android:paddingTop="16dp">
 
     <com.stardust.theme.widget.ThemeColorImageView

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_select_image"
+        android:icon="@drawable/ic_insert_photo_white_48dp"
+        android:title="@string/text_select_image"
+        app:showAsAction="always"/>
+</menu>

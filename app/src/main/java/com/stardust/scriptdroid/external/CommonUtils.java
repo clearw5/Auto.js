@@ -8,8 +8,8 @@ import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.autojs.script.SequenceScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
-import com.stardust.scriptdroid.script.PathChecker;
-import com.stardust.scriptdroid.script.Scripts;
+import com.stardust.scriptdroid.model.script.PathChecker;
+import com.stardust.scriptdroid.model.script.Scripts;
 
 import java.io.File;
 

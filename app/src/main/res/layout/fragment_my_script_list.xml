@@ -1,24 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:orientation="vertical">
+             android:layout_height="match_parent">
 
-    <com.stardust.scriptdroid.ui.main.script_list.ScriptListWithProgressBarView
-        android:id="@+id/script_list"
+    <com.stardust.scriptdroid.ui.main.scripts.ScriptListView
+        android:id="@+id/script_file_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#f2f3f5"/>
+        android:layout_height="wrap_content"/>
 
-    <TextView
-        android:id="@+id/hint_no_script"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/hint_no_script"
-        android:textColor="#adadad"
-        android:textSize="16sp"
-        android:visibility="gone"/>
 
 </FrameLayout>

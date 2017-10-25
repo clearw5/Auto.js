@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/drawer_menu_divider"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <com.stardust.scriptdroid.ui.main.drawer.DrawerMenuGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="@string/text_accessibility_service">
+
+            <com.stardust.scriptdroid.ui.main.drawer.DrawerMenuItem
+                android:id="@+id/accessibility_service"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:anti_shake="true"
+                app:icon="@drawable/ic_service_green"
+                app:title="@string/text_accessibility_service"
+                app:with_switch="true"/>
+
+            <com.stardust.scriptdroid.ui.main.drawer.DrawerMenuItem
+                android:id="@+id/stable_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_stable"
+                app:pref_key="@string/key_stable_mode"
+                app:title="@string/text_stable_mode"
+                app:with_switch="true"/>
+
+
+        </com.stardust.scriptdroid.ui.main.drawer.DrawerMenuGroup>
+
+        <com.stardust.scriptdroid.ui.main.drawer.DrawerMenuGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="@string/text_script_record">
+
+
+            <com.stardust.scriptdroid.ui.main.drawer.DrawerMenuItem
+                android:id="@+id/floating_window"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:anti_shake="true"
+                app:icon="@drawable/ic_robot_64"
+                app:title="@string/text_floating_window"
+                app:with_switch="true"/>
+
+            <com.stardust.scriptdroid.ui.main.drawer.DrawerMenuItem
+                android:id="@+id/volume_down_control"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_volume"
+                app:pref_key="@string/key_use_volume_control_record"
+                app:title="@string/text_volume_down_control"
+                app:with_switch="true"/>
+
+
+        </com.stardust.scriptdroid.ui.main.drawer.DrawerMenuGroup>
+
+
+        <com.stardust.scriptdroid.ui.main.drawer.DrawerMenuGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="@string/text_others">
+
+            <com.stardust.scriptdroid.ui.main.drawer.DrawerMenuItem
+                android:id="@+id/debug"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:anti_shake="true"
+                app:icon="@drawable/ic_debug"
+                app:title="@string/debug"
+                app:with_switch="true"/>
+
+            <com.stardust.scriptdroid.ui.main.drawer.DrawerMenuItem
+                android:id="@+id/theme_color"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_personalize"
+                app:title="@string/text_theme_color"/>
+
+            <com.stardust.scriptdroid.ui.main.drawer.DrawerMenuItem
+                android:id="@+id/check_for_updates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_check_for_updates"
+                app:title="@string/text_check_for_updates"/>
+
+        </com.stardust.scriptdroid.ui.main.drawer.DrawerMenuGroup>
+
+    </LinearLayout>
+
+
+</ScrollView>

@@ -5,7 +5,6 @@ import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.statics.ScriptStatics;
 
 /**
  * Created by Stardust on 2017/5/3.
@@ -17,7 +16,6 @@ public class ScriptExecutionGlobalListener implements ScriptExecutionListener {
     @Override
     public void onStart(ScriptExecution execution) {
         execution.getEngine().setTag(ENGINE_TAG_START_TIME, System.currentTimeMillis());
-        ScriptStatics.recordScript(execution.getSource());
     }
 
     @Override

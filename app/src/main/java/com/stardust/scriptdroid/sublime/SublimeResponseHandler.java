@@ -8,12 +8,12 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.StringScriptSource;
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.script.Scripts;
-import com.stardust.scriptdroid.script.StorageScriptProvider;
+import com.stardust.scriptdroid.model.script.Scripts;
+import com.stardust.scriptdroid.io.StorageFileProvider;
 
 /**
  * Created by Stardust on 2017/5/11.
@@ -83,7 +83,7 @@ public class SublimeResponseHandler implements Handler {
         if (TextUtils.isEmpty(name)) {
             name = "[" + viewId + "]";
         } else {
-            name = PFile.getNameWithoutExtension(name);
+            name = PFiles.getNameWithoutExtension(name);
         }
         mScriptExecutions.put(viewId, Scripts.run(new StringScriptSource("<remote>:" + name, script)));
     }
@@ -108,13 +108,13 @@ public class SublimeResponseHandler implements Handler {
         if (TextUtils.isEmpty(name)) {
             name = "untitled";
         }
-        name = PFile.getNameWithoutExtension(name);
+        name = PFiles.getNameWithoutExtension(name);
         if (!name.endsWith(".js")) {
             name = "<remote>" + name + ".js";
         } else {
             name = "<remote>" + name;
         }
-        PFile.write(StorageScriptProvider.DEFAULT_DIRECTORY_PATH + name, script);
+        PFiles.write(StorageFileProvider.DEFAULT_DIRECTORY_PATH + name, script);
         App.getApp().getUiHandler().toast(R.string.text_script_save_successfully);
     }
 }

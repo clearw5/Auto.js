@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
+import com.stardust.scriptdroid.tool.BitmapTool;
+
 /**
  * Created by Stardust on 2017/1/20.
  */
@@ -68,7 +70,11 @@ public class Shortcut {
         if (mIconRes != null) {
             throw new IllegalStateException("Cannot set both iconRes and icon");
         }
-        mIcon = icon;
+        if (icon.getByteCount() > 1024 * 500) {
+            mIcon = BitmapTool.scaleBitmap(icon, 200, 200);
+        }else {
+            mIcon = icon;
+        }
         return this;
     }
 

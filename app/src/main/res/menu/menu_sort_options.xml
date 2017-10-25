@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_sort_by_name"
+        android:title="@string/text_name"/>
+    <item
+        android:id="@+id/action_sort_by_date"
+        android:title="@string/text_time"
+        />
+    <item
+        android:id="@+id/action_sort_by_size"
+        android:title="@string/text_size"
+        />
+    <item
+        android:id="@+id/action_sort_by_type"
+        android:title="@string/text_type"
+        />
+</menu>

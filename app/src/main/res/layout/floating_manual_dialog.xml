@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    xmlns:tools="http://schemas.android.com/tools"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    app:cardBackgroundColor="@android:color/white"
+                                    app:cardCornerRadius="6dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:textColor="#2a2a2a"
+                android:textSize="16sp"
+                tools:text="标题"/>
+
+            <ImageView
+                android:id="@+id/pin_to_left"
+                android:layout_width="47dp"
+                android:layout_height="47dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="16dp"
+                android:src="@drawable/ic_ali_pin_to_left"
+                android:tint="#3c3c3c"/>
+
+            <ImageView
+                android:id="@+id/fullscreen"
+                android:layout_width="47dp"
+                android:layout_height="47dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="16dp"
+                android:src="@drawable/ic_ali_fullscreen"
+                android:tint="#3c3c3c"/>
+
+            <ImageView
+                android:id="@+id/close"
+                android:layout_width="47dp"
+                android:layout_height="47dp"
+                android:layout_marginRight="8dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="16dp"
+                android:src="@drawable/ic_ali_close"
+                android:tint="#3c3c3c"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.2px"
+            android:background="#cccccc"/>
+
+
+        <com.stardust.widget.EWebView
+            android:id="@+id/eweb_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

@@ -5,8 +5,9 @@
 
     <application
         >
-        <activity android:name=".execution.ScriptExecuteActivity"/>
-
+        <activity
+            android:name=".execution.ScriptExecuteActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
 
     </application>

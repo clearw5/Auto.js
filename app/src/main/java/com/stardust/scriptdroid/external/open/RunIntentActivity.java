@@ -1,12 +1,24 @@
 package com.stardust.scriptdroid.external.open;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.stardust.autojs.script.StringScriptSource;
+import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.model.script.ScriptFile;
+import com.stardust.scriptdroid.model.script.Scripts;
+import com.stardust.scriptdroid.ui.common.ScriptOperations;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * Created by Stardust on 2017/2/22.
@@ -18,11 +30,24 @@ public class RunIntentActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            CommonUtils.handleIntent(this, getIntent());
+            handleIntent(getIntent());
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, R.string.edit_and_run_handle_intent_error, Toast.LENGTH_LONG).show();
         }
         finish();
+    }
+
+    private void handleIntent(Intent intent) throws FileNotFoundException {
+        Uri uri = intent.getData();
+        if (uri != null && "content".equals(uri.getScheme())) {
+            InputStream stream = getContentResolver().openInputStream(uri);
+            Scripts.run(new StringScriptSource(PFiles.read(stream)));
+        } else {
+            final String path = intent.getData().getPath();
+            if (!TextUtils.isEmpty(path)) {
+                Scripts.run(new ScriptFile(path));
+            }
+        }
     }
 }

@@ -17,6 +17,7 @@ import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.runtime.ScriptRuntime;
+import com.stardust.autojs.core.console.GlobalStardustConsole;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
@@ -30,7 +31,7 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity;
 import com.stardust.autojs.runtime.api.Shell;
-import com.stardust.autojs.runtime.console.StardustConsole;
+import com.stardust.autojs.core.console.StardustConsole;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
@@ -38,8 +39,6 @@ import com.stardust.view.accessibility.AccessibilityInfoProvider;
 import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
-import com.stardust.scriptdroid.ui.console.JraskaConsole;
-import com.stardust.view.accessibility.AccessibilityServiceUtils;
 import com.stardust.view.accessibility.LayoutInspector;
 import com.stardust.view.accessibility.NotificationListener;
 
@@ -77,7 +76,7 @@ public class AutoJs {
         mContext = context;
         mUiHandler = new UiHandler(context);
         mAppUtils = new AppUtils(context);
-        mGlobalConsole = new JraskaConsole();
+        mGlobalConsole = new GlobalStardustConsole(mUiHandler);
         mNotificationObserver = new NotificationListener.Observer(context);
         mAccessibilityInfoProvider = new AccessibilityInfoProvider(context.getPackageManager());
         mScriptEngineService = buildScriptEngineService();
@@ -170,6 +169,9 @@ public class AutoJs {
         return mLayoutInspector;
     }
 
+    public Console getGlobalConsole() {
+        return mGlobalConsole;
+    }
 
     public ScriptEngineService getScriptEngineService() {
         return mScriptEngineService;

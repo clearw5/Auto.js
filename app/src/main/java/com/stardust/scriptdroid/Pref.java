@@ -122,7 +122,9 @@ public class Pref {
     }
 
     public static boolean isRecordWithRootEnabled() {
-        return def().getBoolean(getString(R.string.key_record_with_root), false);
+        //always return true after version 3.0.0
+        //record without root has been deprecated
+        return true;
     }
 
     public static boolean isRecordToastEnabled() {
@@ -142,4 +144,7 @@ public class Pref {
         return def().getBoolean(getString(R.string.key_stable_mode), false);
     }
 
+    public static String getDocumentationUrl() {
+        return "file:///android_asset/docs/";
+    }
 }

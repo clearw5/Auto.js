@@ -19,7 +19,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:name=".App"
         android:allowBackup="false"
-        android:icon="@drawable/autojs_material"
+        android:icon="@drawable/autojs_logo"
         android:label="@string/_app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
@@ -71,15 +71,20 @@
             android:multiprocess="true">
 
         </activity>
-        <activity android:name=".ui.help.DocumentationActivity"/>
-        <activity android:name=".ui.help.HelpCatalogueActivity"/>
         <activity android:name=".ui.settings.AboutActivity_"/>
-        <activity android:name=".ui.settings.SettingsActivity_"/>
-        <activity android:name=".ui.console.LogActivity_"/>
+        <activity
+            android:name=".ui.settings.SettingsActivity_"
+            android:theme="@style/AppTheme.Settings"/>
         <activity android:name=".ui.error.ErrorReportActivity"/>
-        <activity android:name=".ui.help.LocalWebViewActivity"/>
         <activity android:name=".external.tasker.TaskerScriptEditActivity_"/>
         <activity android:name=".ui.edit.ViewSampleActivity"/>
+        <activity android:name=".ui.login.LoginActivity_"/>
+        <activity android:name=".ui.build.BuildActivity_"/>
+        <activity android:name=".ui.doc.DocumentationActivity_"/>
+        <activity android:name=".ui.shortcut.ShortcutIconSelectActivity_"/>
+        <activity
+            android:name=".ui.shortcut.ShortcutCreateActivity"
+            android:theme="@style/AppTheme.Transparent"/>
         <activity android:name=".external.widget.ScriptWidgetSettingsActivity_">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
@@ -96,7 +101,6 @@
 
 
         <service android:name="com.stardust.scriptdroid.external.ScriptExecutionIntentService"/>
-        <service android:name="com.stardust.scriptdroid.external.floatingwindow.menu.HoverMenuService"/>
 
         <activity android:name=".external.tasker.TaskPrefEditActivity_"/>
 
@@ -128,7 +132,7 @@
 
         <activity
             android:name=".external.open.EditIntentActivity"
-            android:icon="@drawable/ic_edit_green_48dp"
+            android:icon="@drawable/autojs_logo"
             android:label="@string/text_edit_script">
 
             <intent-filter>
@@ -140,38 +144,18 @@
 
                 <data android:scheme="file"/>
                 <data android:scheme="content"/>
-                <data android:mimeType="application/x-*"/>
-                <data android:mimeType="application/postscript"/>
-                <data android:mimeType="application/plain"/>
                 <data android:mimeType="application/x-javascript"/>
-                <data android:mimeType="text/*"/>
+                <data android:mimeType="text/plain"/>
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND"/>
 
-                <category android:name="android.intent.category.DEFAULT"/>
-
-                <data android:mimeType="text/*"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.googlecode.android_scripting.action.EDIT_SCRIPT"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
         </activity>
 
         <activity
             android:name=".external.open.RunIntentActivity"
-            android:icon="@drawable/ic_ali_run"
+            android:icon="@drawable/autojs_logo"
             android:label="@string/text_run_script"
             android:taskAffinity="com.stardust.scriptdroid.external.open.RunIntentActivity"
             android:theme="@android:style/Theme.NoDisplay">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.intent.action.EDIT"/>
@@ -181,35 +165,16 @@
 
                 <data android:scheme="file"/>
                 <data android:scheme="content"/>
-                <data android:mimeType="application/x-*"/>
-                <data android:mimeType="application/postscript"/>
-                <data android:mimeType="application/plain"/>
                 <data android:mimeType="application/x-javascript"/>
-                <data android:mimeType="text/*"/>
+                <data android:mimeType="text/plain"/>
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND"/>
 
-                <category android:name="android.intent.category.DEFAULT"/>
-
-                <data android:mimeType="text/*"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.googlecode.android_scripting.action.EDIT_SCRIPT"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
         </activity>
 
 
         <activity
             android:name=".external.open.ImportIntentActivity"
-            android:icon="@drawable/ic_import"
+            android:icon="@drawable/autojs_logo"
             android:label="@string/text_import_script"
             android:theme="@style/AppTheme.Transparent">
 
@@ -220,30 +185,11 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
+
                 <data android:scheme="file"/>
                 <data android:scheme="content"/>
-                <data android:mimeType="application/x-*"/>
-                <data android:mimeType="application/postscript"/>
-                <data android:mimeType="application/plain"/>
                 <data android:mimeType="application/x-javascript"/>
-                <data android:mimeType="text/*"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-
-                <data android:mimeType="text/*"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.googlecode.android_scripting.action.EDIT_SCRIPT"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
             </intent-filter>
         </activity>
 

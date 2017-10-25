@@ -1,69 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.stardust.scriptdroid.ui.edit.EditorView_
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_view"
+    android:id="@+id/editor_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.stardust.scriptdroid.ui.edit.EditActivity">
+    android:layout_height="match_parent"/>
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <com.stardust.theme.widget.ThemeColorToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:title="@string/_app_name"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:orientation="horizontal">
-
-                <com.stardust.widget.ToolbarMenuItem
-                    android:id="@+id/run"
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    app:icon="@drawable/ic_play_arrow_white_48dp"
-                    app:icon_color="@android:color/white"
-                    app:text="@string/text_run"/>
-
-                <com.stardust.widget.ToolbarMenuItem
-                    android:id="@+id/undo"
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    app:icon="@drawable/ic_undo_white_48dp"
-                    app:text="@string/text_undo"/>
-
-                <com.stardust.widget.ToolbarMenuItem
-                    android:id="@+id/redo"
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    app:icon="@drawable/ic_redo_white_48dp"
-                    app:text="@string/text_redo"/>
-
-                <com.stardust.widget.ToolbarMenuItem
-                    android:id="@+id/save"
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    app:icon="@drawable/ic_save_white_48dp"
-                    app:text="@string/text_save"/>
-
-
-            </LinearLayout>
-
-        </com.stardust.theme.widget.ThemeColorToolbar>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <include layout="@layout/content_edit"/>
-
-</LinearLayout>

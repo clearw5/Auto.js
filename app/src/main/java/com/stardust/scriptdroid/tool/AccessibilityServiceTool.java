@@ -56,7 +56,11 @@ public class AccessibilityServiceTool {
 
     public static boolean enableAccessibilityServiceByRoot(Class<? extends android.accessibilityservice.AccessibilityService> accessibilityService) {
         String serviceName = App.getApp().getPackageName() + "/" + accessibilityService.getName();
-        return TextUtils.isEmpty(ProcessShell.execCommand(String.format(Locale.getDefault(), cmd, serviceName), true).error);
+        try {
+            return TextUtils.isEmpty(ProcessShell.execCommand(String.format(Locale.getDefault(), cmd, serviceName), true).error);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public static boolean enableAccessibilityServiceByRootAndWaitFor(long timeOut) {

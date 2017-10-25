@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.stardust.app.OnActivityResultDelegate;
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -64,7 +64,7 @@ public abstract class DrawableSaver {
             public void run() {
                 try {
                     OutputStream outputStream = mContext.openFileOutput(mName, Context.MODE_PRIVATE);
-                    PFile.write(inputStream, outputStream);
+                    PFiles.write(inputStream, outputStream);
                     outputStream.close();
                     inputStream.close();
                     callback.run();

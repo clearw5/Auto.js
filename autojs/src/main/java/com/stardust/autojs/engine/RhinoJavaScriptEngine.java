@@ -8,7 +8,7 @@ import com.stardust.autojs.rhino.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 
 import org.mozilla.javascript.Context;
@@ -18,6 +18,7 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.RequireBuilder;
 import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider;
+import org.mozilla.javascript.tools.debugger.Dim;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,7 +107,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private String readInitScript() {
         try {
-            return PFile.read(mAndroidContext.getAssets().open("javascript_engine_init.js"));
+            return PFiles.read(mAndroidContext.getAssets().open("javascript_engine_init.js"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

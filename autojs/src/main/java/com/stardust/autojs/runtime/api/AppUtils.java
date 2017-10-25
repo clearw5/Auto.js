@@ -17,7 +17,7 @@ import com.stardust.util.IntentUtil;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import static com.stardust.pio.PFile.getExtension;
+import static com.stardust.pio.PFiles.getExtension;
 
 /**
  * Created by Stardust on 2017/4/2.

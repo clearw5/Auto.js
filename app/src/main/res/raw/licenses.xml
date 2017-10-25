@@ -1,122 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <notices>
-    <notice>
+    <toast>
         <name>Rhino: JavaScript in Java</name>
         <url>https://github.com/mozilla/rhino</url>
         <copyright/>
         <license>Mozilla Public License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>920 Text Editor</name>
         <url>https://github.com/jecelyin/920-text-editor-v2</url>
         <copyright/>
         <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>LeakCanary</name>
         <copyright>Copyright 2015 Square, Inc.</copyright>
         <url>https://github.com/square/leakcanary</url>
         <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>StorIO</name>
         <url>https://github.com/pushtorefresh/storio</url>
         <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>Material Dialogs</name>
         <url>https://github.com/afollestad/material-dialogs</url>
         <copyright>Copyright (c) 2014-2016 Aidan Michael Follestad</copyright>
         <license>MIT License</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>Gson</name>
         <url>https://github.com/google/gson</url>
         <copyright>Copyright 2008 Google Inc.</copyright>
         <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>commonmark-java</name>
         <url>https://github.com/atlassian/commonmark-java</url>
         <copyright>Copyright (c) 2015-2016 Atlassian and others.</copyright>
         <license>BSD 2-Clause License</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>Alipay ZeroSdk</name>
         <copyright>Copyright 2016 Fung Go (fython)</copyright>
         <url>https://github.com/fython/AlipayZeroSdk</url>
         <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>Console</name>
         <copyright>Copyright 2015 Josef Raska</copyright>
         <url>https://github.com/jraska/Console</url>
         <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>android-issue-reporter</name>
         <copyright/>
         <url>https://github.com/HeinrichReimer/android-issue-reporter</url>
         <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>SortableTableView</name>
         <copyright>Copyright 2015 Ingo Schwarz</copyright>
         <url>https://github.com/ISchwarz23/SortableTableView</url>
         <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>MultiLevelListView</name>
         <copyright>2016 (C) Copyright Open-RnD Sp. z o.o.</copyright>
         <url>https://github.com/open-rnd/android-multi-level-listview</url>
         <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>hover</name>
         <copyright>2016 (C) Copyright Open-RnD Sp. z o.o.</copyright>
         <url>https://github.com/google/hover</url>
         <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>event-bus</name>
         <copyright>2016 (C) Copyright Open-RnD Sp. z o.o.</copyright>
         <url>https://github.com/greenrobot/EventBus</url>
         <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>Expandable RecyclerView</name>
         <copyright>Copyright (c) 2015 Big Nerd Ranch</copyright>
         <url>https://github.com/bignerdranch/expandable-recycler-view</url>
         <license>MIT License</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>Android Terminal Emulator</name>
         <copyright/>
         <url>https://github.com/jackpal/Android-Terminal-Emulator</url>
         <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>RecyclerView-FlexibleDivider</name>
         <copyright>Copyright 2016 yqritc</copyright>
         <url>https://github.com/yqritc/RecyclerView-FlexibleDivider</url>
         <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>Volley</name>
         <copyright/>
         <url>https://github.com/google/volley</url>
         <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>Settings Compat</name>
         <copyright>Copyright 2016 czy1121</copyright>
         <url>https://github.com/czy1121/settingscompat</url>
         <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
+    </toast>
+    <toast>
         <name>Zip4j</name>
         <copyright/>
         <url>http://www.lingala.net/zip4j/</url>
         <license>Apache Software License 2.0</license>
-    </notice>
+    </toast>
 </notices>

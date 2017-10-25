@@ -1,7 +1,5 @@
 package com.stardust.theme;
 
-import com.jecelyin.editor.v2.core.widget.JecEditText;
-import com.jecelyin.editor.v2.ui.EditorDelegate;
 import com.stardust.scriptdroid.*;
 import com.stardust.scriptdroid.R;
 

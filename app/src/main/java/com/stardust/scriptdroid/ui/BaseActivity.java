@@ -11,7 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.tool.VersionInfo;
+import com.stardust.scriptdroid.network.VersionService;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.BackPressedHandler;
 
@@ -26,11 +26,10 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
  * Created by Stardust on 2017/1/23.
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity  {
 
 
     protected static final int PERMISSION_REQUEST_CODE = 11186;
-    private BackPressedHandler.Observer mBackPressObserver = new BackPressedHandler.Observer();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,18 +43,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             ThemeColorManager.addActivityStatusBar(this);
         }
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        VersionInfo.getInstance().setOnReceiveUpdateResultCallback(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -92,17 +79,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         setToolbarAsBack(this, R.id.toolbar, title);
     }
 
-    public void registerBackPressedHandler(BackPressedHandler handler) {
-        mBackPressObserver.registerHandler(handler);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (!mBackPressObserver.onBackPressed(this)) {
-            super.onBackPressed();
-        }
-    }
-
     public static void setToolbarAsBack(final AppCompatActivity activity, int id, String title) {
         Toolbar toolbar = (Toolbar) activity.findViewById(id);
         toolbar.setTitle(title);
@@ -123,4 +99,5 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
 }

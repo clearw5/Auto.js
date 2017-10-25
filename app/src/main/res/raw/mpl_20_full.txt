@@ -13,12 +13,12 @@ means the combination of the Contributions of others (if any) used by a Contribu
 means Covered Software of a particular Contributor.
 
 1.4. “Covered Software”
-means Source Code Form to which the initial Contributor has attached the notice in Exhibit A, the Executable Form of such Source Code Form, and Modifications of such Source Code Form, in each case including portions thereof.
+means Source Code Form to which the initial Contributor has attached the toast in Exhibit A, the Executable Form of such Source Code Form, and Modifications of such Source Code Form, in each case including portions thereof.
 
 1.5. “Incompatible With Secondary Licenses”
 means
 
-that the initial Contributor has attached the notice described in Exhibit B to the Covered Software; or
+that the initial Contributor has attached the toast described in Exhibit B to the Covered Software; or
 
 that the Covered Software was made available under the terms of version 1.1 or earlier of the License, but not also under the terms of a Secondary License.
 
@@ -77,7 +77,7 @@ for infringements caused by: (i) Your and any other third party’s modification
 
 under Patent Claims infringed by Covered Software in the absence of its Contributions.
 
-This License does not grant any rights in the trademarks, service marks, or logos of any Contributor (except as may be necessary to comply with the notice requirements in Section 3.4).
+This License does not grant any rights in the trademarks, service marks, or logos of any Contributor (except as may be necessary to comply with the toast requirements in Section 3.4).
 
 2.4. Subsequent Licenses
 
@@ -127,7 +127,7 @@ If it is impossible for You to comply with any of the terms of this License with
 
 5. Termination
 
-5.1. The rights granted under this License will terminate automatically if You fail to comply with any of its terms. However, if You become compliant, then the rights granted under this License from a particular Contributor are reinstated (a) provisionally, unless and until such Contributor explicitly and finally terminates Your grants, and (b) on an ongoing basis, if such Contributor fails to notify You of the non-compliance by some reasonable means prior to 60 days after You have come back into compliance. Moreover, Your grants from a particular Contributor are reinstated on an ongoing basis if such Contributor notifies You of the non-compliance by some reasonable means, this is the first time You have received notice of non-compliance with this License from such Contributor, and You become compliant prior to 30 days after Your receipt of the notice.
+5.1. The rights granted under this License will terminate automatically if You fail to comply with any of its terms. However, if You become compliant, then the rights granted under this License from a particular Contributor are reinstated (a) provisionally, unless and until such Contributor explicitly and finally terminates Your grants, and (b) on an ongoing basis, if such Contributor fails to notify You of the non-compliance by some reasonable means prior to 60 days after You have come back into compliance. Moreover, Your grants from a particular Contributor are reinstated on an ongoing basis if such Contributor notifies You of the non-compliance by some reasonable means, this is the first time You have received toast of non-compliance with this License from such Contributor, and You become compliant prior to 30 days after Your receipt of the toast.
 
 5.2. If You initiate litigation against any entity by asserting a patent infringement claim (excluding declaratory judgment actions, counter-claims, and cross-claims) alleging that a Contributor Version directly or indirectly infringes any patent, then the rights granted to You by any and all Contributors for the Covered Software under Section 2.1 of this License shall terminate.
 
@@ -165,13 +165,13 @@ If you create software not governed by this License, and you want to create a ne
 
 10.4. Distributing Source Code Form that is Incompatible With Secondary Licenses
 
-If You choose to distribute Source Code Form that is Incompatible With Secondary Licenses under the terms of this version of the License, the notice described in Exhibit B of this License must be attached.
+If You choose to distribute Source Code Form that is Incompatible With Secondary Licenses under the terms of this version of the License, the toast described in Exhibit B of this License must be attached.
 
 Exhibit A - Source Code Form License Notice
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-If it is not possible or desirable to put the notice in a particular file, then You may include the notice in a location (such as a LICENSE file in a relevant directory) where a recipient would be likely to look for such a notice.
+If it is not possible or desirable to put the toast in a particular file, then You may include the toast in a location (such as a LICENSE file in a relevant directory) where a recipient would be likely to look for such a toast.
 
 You may add additional accurate notices of copyright ownership.
 

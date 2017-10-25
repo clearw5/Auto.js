@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>About this Documentation | Auto.js 2.0.16 文档</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/documentation.html">
+</head>
+<body class="alt apidoc" id="api-section-documentation">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation active" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-synopsis" href="synopsis.html">如何阅读本文档</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的触摸模拟</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的触摸模拟</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-work-with-java" href="work-with-java.html">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="documentation" class="interior">
+      <header>
+        <h1>Auto.js 2.0.16 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_undefined"><a href="#documentation_about_this_documentation">About this Documentation</a></span><ul>
+<li><span class="stability_undefined"><a href="#documentation_stability_index">Stability Index</a></span></li>
+<li><span class="stability_1"><a href="#documentation_json_output">JSON Output</a></span></li>
+<li><span class="stability_undefined"><a href="#documentation_syscalls_and_man_pages">Syscalls and man pages</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>About this Documentation<span><a class="mark" href="#documentation_about_this_documentation" id="documentation_about_this_documentation">#</a></span></h1>
+<!-- type=misc -->
+<p>The goal of this documentation is to comprehensively explain the Node.js
+API, both from a reference as well as a conceptual point of view. Each
+section describes a built-in module or high-level concept.</p>
+<p>Where appropriate, property types, method arguments, and the arguments
+provided to event handlers are detailed in a list underneath the topic
+heading.</p>
+<p>Every <code>.html</code> document has a corresponding <code>.json</code> document presenting
+the same information in a structured manner. This feature is
+experimental, and added for the benefit of IDEs and other utilities that
+wish to do programmatic things with the documentation.</p>
+<p>Every <code>.html</code> and <code>.json</code> file is generated based on the corresponding
+<code>.md</code> file in the <code>doc/api/</code> folder in Node.js&#39;s source tree. The
+documentation is generated using the <code>tools/doc/generate.js</code> program.
+The HTML template is located at <code>doc/template.html</code>.</p>
+<p>If errors are found in this documentation, please <a href="https://github.com/nodejs/node/issues/new">submit an issue</a>
+or see <a href="https://github.com/nodejs/node/blob/master/CONTRIBUTING.md">the contributing guide</a> for directions on how to submit a patch.</p>
+<h2>Stability Index<span><a class="mark" href="#documentation_stability_index" id="documentation_stability_index">#</a></span></h2>
+<!--type=misc-->
+<p>Throughout the documentation are indications of a section&#39;s
+stability. The Node.js API is still somewhat changing, and as it
+matures, certain parts are more reliable than others. Some are so
+proven, and so relied upon, that they are unlikely to ever change at
+all. Others are brand new and experimental, or known to be hazardous
+and in the process of being redesigned.</p>
+<p>The stability indices are as follows:</p>
+<div class="api_stability api_stability_0"><a href="documentation.html#documentation_stability_index">Stability: 0</a> - Deprecated This feature is known to be problematic, and changes may be planned. Do not rely on it. Use of the feature may cause warnings to be emitted. Backwards compatibility across major versions should not be expected.</div><div class="api_stability api_stability_1"><a href="documentation.html#documentation_stability_index">Stability: 1</a> - Experimental This feature is still under active development and subject to non-backwards compatible changes, or even removal, in any future version. Use of the feature is not recommended in production environments. Experimental features are not subject to the Node.js Semantic Versioning model.</div><p><em>Note</em>: Caution must be used when making use of <code>Experimental</code> features,
+particularly within modules that may be used as dependencies (or dependencies
+of dependencies) within a Node.js application. End users may not be aware that
+experimental features are being used, and therefore may experience unexpected
+failures or behavioral changes when changes occur. To help avoid such surprises,
+<code>Experimental</code> features may require a command-line flag to explicitly enable
+them, or may cause a process warning to be emitted. By default, such warnings
+are printed to <code>stderr</code> and may be handled by attaching a listener to the
+<code>process.on(&#39;warning&#39;)</code> event.</p>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable The API has proven satisfactory. Compatibility with the npm ecosystem is a high priority, and will not be broken unless absolutely necessary.</div><h2>JSON Output<span><a class="mark" href="#documentation_json_output" id="documentation_json_output">#</a></span></h2>
+<div class="api_stability api_stability_1"><a href="documentation.html#documentation_stability_index">Stability: 1</a> - Experimental</div><p>Every HTML file in the markdown has a corresponding JSON file with the
+same data.</p>
+<p>This feature was added in Node.js v0.6.12. It is experimental.</p>
+<h2>Syscalls and man pages<span><a class="mark" href="#documentation_syscalls_and_man_pages" id="documentation_syscalls_and_man_pages">#</a></span></h2>
+<p>System calls like <a href="http://man7.org/linux/man-pages/man2/open.2.html">open(2)</a> and <a href="http://man7.org/linux/man-pages/man2/read.2.html">read(2)</a> define the interface between user programs
+and the underlying operating system. Node functions which simply wrap a syscall,
+like <code>fs.open()</code>, will document that. The docs link to the corresponding man
+pages (short for manual pages) which describe how the syscalls work.</p>
+<p><strong>Note:</strong> some syscalls, like <a href="http://man7.org/linux/man-pages/man2/lchown.2.html">lchown(2)</a>, are BSD-specific. That means, for
+example, that <code>fs.lchown()</code> only works on macOS and other BSD-derived systems,
+and is not available on Linux.</p>
+<p>Most Unix syscalls have Windows equivalents, but behavior may differ on Windows
+relative to Linux and macOS. For an example of the subtle ways in which it&#39;s
+sometimes impossible to replace Unix syscall semantics on Windows, see <a href="https://github.com/nodejs/node/issues/4760">Node
+issue 4760</a>.</p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

@@ -8,8 +8,11 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.tool.UpdateChecker;
-import com.stardust.scriptdroid.tool.VersionInfo;
+import com.stardust.scriptdroid.network.VersionService;
+import com.stardust.scriptdroid.network.entity.VersionInfo;
+import com.stardust.scriptdroid.tool.SimpleObserver;
+
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Stardust on 2017/4/12.
@@ -17,42 +20,40 @@ import com.stardust.scriptdroid.tool.VersionInfo;
 
 public class VersionGuard {
 
-
     private Activity mActivity;
     private MaterialDialog mDeprecatedDialog;
-    private VersionInfo mVersionInfo = VersionInfo.getInstance();
+    private VersionService mVersionService = VersionService.getInstance();
 
     public VersionGuard(Activity activity) {
         mActivity = activity;
     }
 
-    public void checkDeprecateAndUpdate() {
-        mVersionInfo.readDeprecatedFromPrefIfNeeded(mActivity);
-        if (mVersionInfo.isCurrentVersionDeprecated()) {
+    public void checkForDeprecatesAndUpdates() {
+        mVersionService.readDeprecatedFromPrefIfNeeded(mActivity);
+        if (mVersionService.isCurrentVersionDeprecated()) {
             showDeprecatedDialogIfNeeded();
         } else {
-            checkUpdateIfNeeded();
+            checkForUpdatesIfNeeded();
         }
     }
 
-    private void checkUpdateIfNeeded() {
-        if (mVersionInfo.getUpdateInfo() == null) {
-            mVersionInfo.setOnReceiveUpdateResultCallback(new VersionInfo.OnReceiveUpdateResultCallback() {
-                @Override
-                public void onReceive(UpdateChecker.UpdateInfo info, boolean isCurrentVersionDeprecated) {
-                    mVersionInfo.setOnReceiveUpdateResultCallback(null);
-                    if (isCurrentVersionDeprecated) {
-                        showDeprecatedDialogIfNeeded();
-                    } else {
-                        showUpdateInfoIfNeeded(info);
+    private void checkForUpdatesIfNeeded() {
+        mVersionService.checkForUpdatesIfNeededAndUsingWifi(mActivity)
+                .subscribe(new SimpleObserver<VersionInfo>() {
+
+                    @Override
+                    public void onNext(@io.reactivex.annotations.NonNull VersionInfo versionInfo) {
+                        if (mVersionService.isCurrentVersionDeprecated()) {
+                            showDeprecatedDialogIfNeeded();
+                        } else {
+                            showUpdateInfoIfNeeded(versionInfo);
+                        }
                     }
-                }
-            });
-            mVersionInfo.checkUpdateIfNeeded(mActivity);
-        }
+
+                });
     }
 
-    private void showUpdateInfoIfNeeded(UpdateChecker.UpdateInfo info) {
+    private void showUpdateInfoIfNeeded(com.stardust.scriptdroid.network.entity.VersionInfo info) {
         if (BuildConfig.VERSION_CODE < info.versionCode) {
             new UpdateInfoDialogBuilder(mActivity, info)
                     .showDoNotAskAgain()
@@ -64,7 +65,7 @@ public class VersionGuard {
         if (mDeprecatedDialog != null && mDeprecatedDialog.isShowing())
             return;
         String content = mActivity.getString(R.string.warning_version_too_old);
-        String issues = mVersionInfo.getCurrentVersionIssues();
+        String issues = mVersionService.getCurrentVersionIssues();
         if (issues != null) {
             content += "\n" + issues;
         }

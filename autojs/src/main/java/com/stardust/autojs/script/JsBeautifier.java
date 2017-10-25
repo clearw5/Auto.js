@@ -3,7 +3,7 @@ package com.stardust.autojs.script;
 import android.content.Context;
 import android.util.Log;
 
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 
 import org.mozilla.javascript.Function;
@@ -102,7 +102,7 @@ public class JsBeautifier {
             InputStream is = mContext.getAssets().open(mBeautifyJsPath);
             if (mScriptable == null)
                 mScriptable = mScriptContext.initSafeStandardObjects();
-            mJsBeautifyFunction = mScriptContext.compileFunction(mScriptable, PFile.read(is), "<js_beautify>", 1, null);
+            mJsBeautifyFunction = mScriptContext.compileFunction(mScriptable, PFiles.read(is), "<js_beautify>", 1, null);
         } catch (IOException e) {
             exitContext();
             throw new UncheckedIOException(e);

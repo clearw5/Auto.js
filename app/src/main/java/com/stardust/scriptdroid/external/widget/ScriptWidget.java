@@ -9,7 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.stardust.pio.PFile;
+import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.external.open.RunIntentActivity;
@@ -41,7 +41,7 @@ public class ScriptWidget extends AppWidgetProvider {
         if (TextUtils.isEmpty(path) || widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             return false;
         }
-        String name = PFile.getNameWithoutExtension(path);
+        String name = PFiles.getNameWithoutExtension(path);
         int requestCode = ScriptWidgets.getRequestCodeForAppWidgetId(widgetId);
         Log.d(LOG_TAG, "updateWidget: id = " + widgetId + ", requestCode = " + requestCode + ", path = " + path);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
