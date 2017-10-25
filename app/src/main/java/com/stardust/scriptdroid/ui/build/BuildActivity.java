@@ -93,7 +93,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         String initialDir = new File(mOutputPath.getText().toString()).exists() ?
                 mOutputPath.getText().toString() : StorageFileProvider.DEFAULT_DIRECTORY_PATH;
         new FileChooserDialogBuilder(this)
-                .title(R.string.text_source_file_path)
+                .title(R.string.text_output_apk_path)
                 .dir(initialDir)
                 .chooseDir()
                 .singleChoice(dir -> mOutputPath.setText(dir.getPath()))
