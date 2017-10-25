@@ -1,6 +1,9 @@
 package com.stardust.scriptdroid.ui.build;
 
 import android.annotation.SuppressLint;
+import android.app.ListActivity;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -74,6 +77,12 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         mSourcePath.setText(file.getPath());
         mOutputPath.setText(file.getParent());
         mAppName.setText(file.getSimplifiedName());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
     }
 
     @Click(R.id.select_source)

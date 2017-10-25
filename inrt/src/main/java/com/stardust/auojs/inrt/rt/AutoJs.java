@@ -14,6 +14,7 @@ import com.stardust.auojs.inrt.R;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.ScriptEngineServiceBuilder;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
+import com.stardust.autojs.core.console.GlobalStardustConsole;
 import com.stardust.autojs.core.inputevent.InputEventObserver;
 import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;
 import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
@@ -62,28 +63,30 @@ public class AutoJs {
     private final AccessibilityActionRecorder mAccessibilityActionRecorder = new AccessibilityActionRecorder();
     private final NotificationListener.Observer mNotificationObserver;
     private ScriptEngineManager mScriptEngineManager;
-    private final LayoutInspector mLayoutInspector = new LayoutInspector();
     private final Context mContext;
     private final UiHandler mUiHandler;
     private final AppUtils mAppUtils;
     private final AccessibilityInfoProvider mAccessibilityInfoProvider;
     private final ScreenCaptureRequester mScreenCaptureRequester = new ScreenCaptureRequesterImpl();
     private final ScriptEngineService mScriptEngineService;
-    private final Console mGlobalConsole;
+    private final StardustConsole mGlobalConsole;
 
 
     private AutoJs(final Context context) {
         mContext = context;
         mUiHandler = new UiHandler(context);
         mAppUtils = new AppUtils(context);
-        mGlobalConsole = new NoOpConsole();
+        mGlobalConsole = new GlobalStardustConsole(mUiHandler);
         mNotificationObserver = new NotificationListener.Observer(context);
         mAccessibilityInfoProvider = new AccessibilityInfoProvider(context.getPackageManager());
         mScriptEngineService = buildScriptEngineService();
         addAccessibilityServiceDelegates();
-        //mScriptEngineService.registerGlobalScriptExecutionListener(new ScriptExecutionGlobalListener());
         registerActivityLifecycleCallbacks();
         InputEventObserver.initGlobal(context);
+    }
+
+    public StardustConsole getGlobalConsole() {
+        return mGlobalConsole;
     }
 
     private ScriptEngineService buildScriptEngineService() {
@@ -153,50 +156,29 @@ public class AutoJs {
         AccessibilityService.addDelegate(300, mAccessibilityActionRecorder);
     }
 
-    public AccessibilityActionRecorder getAccessibilityActionRecorder() {
-        return mAccessibilityActionRecorder;
-    }
-
-    public AppUtils getAppUtils() {
-        return mAppUtils;
-    }
-
-    public UiHandler getUiHandler() {
-        return mUiHandler;
-    }
-
-    public LayoutInspector getLayoutInspector() {
-        return mLayoutInspector;
-    }
-
-
     public ScriptEngineService getScriptEngineService() {
         return mScriptEngineService;
     }
 
-    public AccessibilityInfoProvider getInfoProvider() {
-        return mAccessibilityInfoProvider;
-    }
-
     public void ensureAccessibilityServiceEnabled() {
         if (AccessibilityService.getInstance() == null) {
-            String errorMessage = null;
-            if (AccessibilityServiceUtils.isAccessibilityServiceEnabled(App.getApp(), sAccessibilityServiceClass)) {
-                errorMessage = App.getApp().getString(R.string.text_auto_operate_service_enabled_but_not_running);
-            } else {
-                if (true) {
-                    if (!AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(App.getApp(), 2000)) {
-                        errorMessage = App.getApp().getString(R.string.text_enable_accessibility_service_by_root_timeout);
-                    }
-                } else {
-                    errorMessage = App.getApp().getString(R.string.text_no_accessibility_permission);
+            String errorMessage = getErrorMessage();
+            AccessibilityServiceTool.goToAccessibilitySetting();
+            throw new ScriptException(errorMessage);
+        }
+    }
+
+    private String getErrorMessage() {
+        if (AccessibilityServiceUtils.isAccessibilityServiceEnabled(App.getApp(), sAccessibilityServiceClass)) {
+            return App.getApp().getString(R.string.text_auto_operate_service_enabled_but_not_running);
+        } else {
+            if (true) {
+                if (!AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(App.getApp(), 2000)) {
+                    return App.getApp().getString(R.string.text_enable_accessibility_service_by_root_timeout);
                 }
             }
-            if (errorMessage != null) {
-                AccessibilityServiceTool.goToAccessibilitySetting();
-                throw new ScriptException(errorMessage);
-            }
         }
+        return App.getApp().getString(R.string.text_no_accessibility_permission);
     }
 
 
