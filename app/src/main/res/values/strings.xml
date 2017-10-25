@@ -51,7 +51,6 @@
     <string name="text_already_delete">已删除</string>
     <string name="folder_name">/脚本/</string>
     <string name="text_error">错误</string>
-    <string name="text_load_failed">还没有文档/(ㄒoㄒ)/~~</string>
     <string name="text_copy_debug_info">复制调试信息</string>
     <string name="text_it_is_the_developer_of_app">这是软件开发者(。・・)ノ</string>
     <string name="text_lll">略略略</string>
@@ -72,7 +71,6 @@
     <string name="text_copy_to_clip">复制到剪贴板</string>
     <string name="text_file_write_fail">文件写入失败</string>
     <string name="text_join_qq_group">加入QQ互赞&amp;交流群</string>
-    <string name="text_copied">已复制到剪贴板</string>
     <string name="text_use_volume_control_record">使用音量下键控制</string>
     <string name="summary_use_volume_control_record">开启悬浮窗后每次音量下键会开始或停止脚本录制</string>
     <string name="key_use_volume_control_record">key_use_volume_control_record</string>

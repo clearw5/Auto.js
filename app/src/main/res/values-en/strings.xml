@@ -49,7 +49,6 @@
     <string name="text_already_delete">Deleted</string>
     <string name="folder_name">/Scripts/</string>
     <string name="text_error">Error</string>
-    <string name="text_load_failed">There is no documentation yet/(ㄒoㄒ)/~~</string>
     <string name="text_copy_debug_info">Copy debugging log</string>
     <string name="text_it_is_the_developer_of_app">This is a software developer(。・・)ノ</string>
     <string name="text_lll">lol</string>
@@ -69,7 +68,6 @@
     <string name="text_copy_to_clip">Copy</string>
     <string name="text_file_write_fail">File writing failed</string>
     <string name="text_join_qq_group">Join in QQ Group</string>
-    <string name="text_copied">Copied</string>
     <string name="text_use_volume_control_record">Use the volume keys to control</string>
     <string name="summary_use_volume_control_record">Stop or start recording when volume changes</string>
     <string name="key_use_volume_control_record">key_use_volume_control_record</string>
