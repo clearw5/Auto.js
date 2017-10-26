@@ -40,13 +40,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  * Created by Stardust on 2017/8/22.
  */
 
-public class EWebView extends SwipeRefreshLayout implements SwipeRefreshLayout.OnRefreshListener, OnActivityResultDelegate {
+public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefreshListener, OnActivityResultDelegate {
 
     private static final List<String> IMAGE_TYPES = Arrays.asList("png", "jpg", "bmp");
     private static final int CHOOSE_IMAGE = 42222;
 
     private WebView mWebView;
     private ProgressBar mProgressBar;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public EWebView(Context context) {
         super(context);
@@ -62,8 +63,9 @@ public class EWebView extends SwipeRefreshLayout implements SwipeRefreshLayout.O
     private void init() {
         inflate(getContext(), R.layout.ewebview, this);
         mWebView = (WebView) findViewById(R.id.web_view);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        setOnRefreshListener(this);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         setUpWebView();
     }
 
@@ -97,7 +99,7 @@ public class EWebView extends SwipeRefreshLayout implements SwipeRefreshLayout.O
         mWebView.reload();
         Observable.timer(2, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(t -> setRefreshing(false));
+                .subscribe(t -> mSwipeRefreshLayout.setRefreshing(false));
 
     }
 
@@ -189,7 +191,7 @@ public class EWebView extends SwipeRefreshLayout implements SwipeRefreshLayout.O
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             mProgressBar.setVisibility(GONE);
-            setRefreshing(false);
+            mSwipeRefreshLayout.setRefreshing(false);
         }
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
