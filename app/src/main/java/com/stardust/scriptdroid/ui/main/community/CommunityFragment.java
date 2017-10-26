@@ -89,7 +89,7 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
         if (isInPostsPage()) {
             mWebView.loadUrl("javascript:$('button[component=\"topic/reply\"]').click()");
         } else {
-            mWebView.loadUrl("javascript:$('.new_topic').click()");
+            mWebView.loadUrl("javascript:$('#new_topic').click()");
         }
     }
 

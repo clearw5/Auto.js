@@ -55,4 +55,8 @@ public class NodeBB {
         return Observable.just(mConfig);
 
     }
+
+    public static String url(String relativePath) {
+        return BASE_URL + relativePath;
+    }
 }

@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.ui.main.drawer;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,6 +30,8 @@ import com.stardust.scriptdroid.tool.SimpleObserver;
 import com.stardust.scriptdroid.ui.user.LoginActivity_;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity;
 import com.stardust.scriptdroid.ui.update.UpdateInfoDialogBuilder;
+import com.stardust.scriptdroid.ui.user.WebActivity;
+import com.stardust.scriptdroid.ui.user.WebActivity_;
 import com.stardust.scriptdroid.ui.widget.AvatarView;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.theme.ThemeColorManagerCompat;
@@ -123,20 +126,27 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 .me()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::setUpUserInfo, Throwable::printStackTrace);
+                .subscribe(this::setUpUserInfo, error -> {
+                    error.printStackTrace();
+                    setUpUserInfo(null);
+                });
     }
 
-    private void setUpUserInfo(User user) {
-        mUserName.setText(user.getUsername());
-        mAvatar.setUser(user);
+    private void setUpUserInfo(@Nullable User user) {
+        if (user == null) {
+            mUserName.setText(R.string.not_login);
+            mAvatar.setIcon(R.drawable.profile_avatar_placeholder);
+        } else {
+            mUserName.setText(user.getUsername());
+            mAvatar.setUser(user);
+        }
         setCoverImage(user);
 
 
     }
 
     private void setCoverImage(User user) {
-        String coverUrl = user.getCoverUrl();
-        if (TextUtils.isEmpty(coverUrl) || coverUrl.equals("/assets/images/cover-default.png")) {
+        if (user == null || TextUtils.isEmpty(user.getCoverUrl()) || user.getCoverUrl().equals("/assets/images/cover-default.png")) {
             mDefaultCover.setVisibility(View.VISIBLE);
             mShadow.setVisibility(View.GONE);
             mHeaderView.setBackgroundColor(ThemeColorManagerCompat.getColorPrimary());
@@ -144,7 +154,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
             mDefaultCover.setVisibility(View.GONE);
             mShadow.setVisibility(View.VISIBLE);
             GlideApp.with(getContext())
-                    .load(NodeBB.BASE_URL + coverUrl)
+                    .load(NodeBB.BASE_URL + user.getCoverUrl())
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(new SimpleTarget<Drawable>() {
                         @Override
@@ -157,7 +167,19 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
 
     @Click(R.id.avatar)
     void loginOrShowUserInfo() {
-        LoginActivity_.intent(getActivity()).start();
+        NodeBB.getInstance().getRetrofit()
+                .create(UserApi.class)
+                .me()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((user -> {
+                    WebActivity_.intent(this)
+                            .extra(WebActivity.EXTRA_URL, NodeBB.url("user/" + user.getUserslug()))
+                            .extra(Intent.EXTRA_TITLE, user.getUsername())
+                            .start();
+                }), error -> {
+                    LoginActivity_.intent(getActivity()).start();
+                });
     }
 
 

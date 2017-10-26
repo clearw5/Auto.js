@@ -115,18 +115,26 @@ public class CommunityWebView extends EWebView {
             return super.shouldOverrideUrlLoading(view, url);
         }
 
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            evalJavaScript("$('#header').hide();$('#content').css({ top: '0', position: 'absolute' });");
+        }
     }
 
     private class MyWebChromeClient extends EWebView.MyWebChromeClient {
 
         @Override
-        public void openFileChooser(ValueCallback<Uri> callback, String[] acceptType, boolean isCaptureEnabled) {
+        public boolean openFileChooser(ValueCallback<Uri> callback, String[] acceptType) {
+            if (super.openFileChooser(callback, acceptType)) {
+                return true;
+            }
             new FileChooserDialogBuilder(getContext())
                     .title(R.string.text_select_file_to_upload)
                     .dir(StorageFileProvider.DEFAULT_DIRECTORY_PATH)
                     .singleChoice(file -> callback.onReceiveValue(Uri.fromFile(file)))
                     .cancelListener(dialog -> callback.onReceiveValue(null))
                     .show();
+            return true;
         }
     }
 }

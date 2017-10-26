@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.ui.user;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -8,6 +9,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.network.NodeBB;
 import com.stardust.scriptdroid.network.UserService;
 import com.stardust.scriptdroid.ui.BaseActivity;
 
@@ -66,7 +68,10 @@ public class LoginActivity extends BaseActivity {
 
     @Click(R.id.forgot_password)
     void forgotPassword() {
-
+        WebActivity_.intent(this)
+                .extra(WebActivity.EXTRA_URL, NodeBB.BASE_URL + "reset")
+                .extra(Intent.EXTRA_TITLE, getString(R.string.text_reset_password))
+                .start();
     }
 
     private boolean checkNotEmpty(String userName, String password) {

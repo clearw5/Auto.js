@@ -64,6 +64,12 @@ public class AvatarView extends FrameLayout {
         mIconTextBackground = (GradientDrawable) mIconText.getBackground();
     }
 
+    public void setIcon(int resId) {
+        mIcon.setVisibility(View.VISIBLE);
+        mIconText.setVisibility(View.GONE);
+        mIcon.setImageResource(resId);
+    }
+
     public void setUser(final User user) {
         if (TextUtils.isEmpty(user.getPicture())) {
             mIcon.setVisibility(View.GONE);

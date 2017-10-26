@@ -84,6 +84,7 @@
         <activity
             android:name=".ui.user.RegisterActivity_"
             android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".ui.user.WebActivity_"/>
         <activity android:name=".ui.build.BuildActivity_"/>
         <activity android:name=".ui.doc.DocumentationActivity_"/>
         <activity android:name=".ui.shortcut.ShortcutIconSelectActivity_"/>

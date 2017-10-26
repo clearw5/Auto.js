@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.ui.widget;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,19 +19,34 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
+import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.tool.ImageSelector;
+import com.stardust.util.IntentUtil;
 
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Stardust on 2017/8/22.
  */
 
-public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefreshListener {
+public class EWebView extends SwipeRefreshLayout implements SwipeRefreshLayout.OnRefreshListener, OnActivityResultDelegate {
+
+    private static final List<String> IMAGE_TYPES = Arrays.asList("png", "jpg", "bmp");
+    private static final int CHOOSE_IMAGE = 42222;
 
     private WebView mWebView;
     private ProgressBar mProgressBar;
-    SwipeRefreshLayout mSwipeRefreshLayout;
 
     public EWebView(Context context) {
         super(context);
@@ -47,8 +63,7 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
         inflate(getContext(), R.layout.ewebview, this);
         mWebView = (WebView) findViewById(R.id.web_view);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
+        setOnRefreshListener(this);
         setUpWebView();
     }
 
@@ -69,9 +84,26 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
         return mWebView;
     }
 
+    public void evalJavaScript(String script) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            mWebView.evaluateJavascript(script, null);
+        } else {
+            mWebView.loadUrl("javascript:" + script);
+        }
+    }
+
     @Override
     public void onRefresh() {
         mWebView.reload();
+        Observable.timer(2, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(t -> setRefreshing(false));
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
     }
 
     protected class MyWebChromeClient extends WebChromeClient {
@@ -85,12 +117,21 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
         //For Android  >= 4.1
         public void openFileChooser(ValueCallback<Uri> valueCallback,
                                     String acceptType, String capture) {
-            openFileChooser(valueCallback, acceptType.split(","), capture.equals("true"));
+            if (acceptType == null) {
+                openFileChooser(valueCallback, null);
+            } else {
+                openFileChooser(valueCallback, acceptType.split(","));
+            }
         }
 
-        public void openFileChooser(ValueCallback<Uri> valueCallback,
-                                    String[] acceptType, boolean isCaptureEnabled) {
-
+        public boolean openFileChooser(ValueCallback<Uri> valueCallback,
+                                       String[] acceptType) {
+            if (getContext() instanceof OnActivityResultDelegate.DelegateHost &&
+                    getContext() instanceof Activity && isImageType(acceptType)) {
+                chooseImage(valueCallback);
+                return true;
+            }
+            return false;
         }
 
         // For Android >= 5.0
@@ -105,9 +146,34 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
                 } else {
                     filePathCallback.onReceiveValue(new Uri[]{value});
                 }
-            }, fileChooserParams.getAcceptTypes(), fileChooserParams.isCaptureEnabled());
+            }, fileChooserParams.getAcceptTypes());
             return true;
         }
+
+
+    }
+
+    private void chooseImage(ValueCallback<Uri> valueCallback) {
+        DelegateHost delegateHost = ((OnActivityResultDelegate.DelegateHost) getContext());
+        Mediator mediator = delegateHost.getOnActivityResultDelegateMediator();
+        Activity activity = (Activity) getContext();
+        new ImageSelector(activity, mediator, (selector, uri) -> valueCallback.onReceiveValue(uri))
+                .disposable()
+                .select();
+    }
+
+    private boolean isImageType(String[] acceptTypes) {
+        if (acceptTypes == null) {
+            return false;
+        }
+        for (String acceptType : acceptTypes) {
+            for (String imageType : IMAGE_TYPES) {
+                if (acceptType.contains(imageType)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     protected class MyWebViewClient extends WebViewClient {
@@ -123,7 +189,7 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             mProgressBar.setVisibility(GONE);
-            mSwipeRefreshLayout.setRefreshing(false);
+            setRefreshing(false);
         }
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
