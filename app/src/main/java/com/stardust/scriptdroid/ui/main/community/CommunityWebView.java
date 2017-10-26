@@ -120,7 +120,7 @@ public class CommunityWebView extends EWebView {
     private class MyWebChromeClient extends EWebView.MyWebChromeClient {
 
         @Override
-        public void openFileChooser(ValueCallback<Uri> callback) {
+        public void openFileChooser(ValueCallback<Uri> callback, String[] acceptType, boolean isCaptureEnabled) {
             new FileChooserDialogBuilder(getContext())
                     .title(R.string.text_select_file_to_upload)
                     .dir(StorageFileProvider.DEFAULT_DIRECTORY_PATH)
@@ -128,6 +128,5 @@ public class CommunityWebView extends EWebView {
                     .cancelListener(dialog -> callback.onReceiveValue(null))
                     .show();
         }
-
     }
 }

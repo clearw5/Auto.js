@@ -44,10 +44,7 @@ public class RunIntentActivity extends Activity {
             InputStream stream = getContentResolver().openInputStream(uri);
             Scripts.run(new StringScriptSource(PFiles.read(stream)));
         } else {
-            final String path = intent.getData().getPath();
-            if (!TextUtils.isEmpty(path)) {
-                Scripts.run(new ScriptFile(path));
-            }
+            CommonUtils.handleIntent(this, intent);
         }
     }
 }

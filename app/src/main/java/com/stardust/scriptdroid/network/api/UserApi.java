@@ -25,5 +25,10 @@ public interface UserApi {
     @POST("/login")
     Observable<ResponseBody> login(@HeaderMap Map<String, String> csrfToken, @Field("username") String userName, @Field("password") String password);
 
+    @FormUrlEncoded
+    @POST("/register")
+    Observable<ResponseBody> register(@HeaderMap Map<String, String> csrfToken, @Field("email") String email,
+                                      @Field("username") String userName, @Field("password") String password);
+
 
 }

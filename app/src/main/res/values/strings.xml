@@ -200,7 +200,7 @@
     <string name="text_username">用户名</string>
     <string name="text_password">密码</string>
     <string name="text_login">登录</string>
-    <string name="text_forgot_password">忘记密码</string>
+    <string name="text_forgot_password">忘记密码?</string>
     <string name="text_username_cannot_be_empty">用户名不能为空</string>
     <string name="text_password_cannot_be_empty">密码不能为空</string>
     <string name="text_time">时间</string>
@@ -266,6 +266,15 @@
     <string name="text_use_android_n_shortcut">添加到图标快捷方式</string>
     <string name="text_login_succeed">登录成功</string>
     <string name="text_login_fail">登录失败</string>
+    <string name="text_reset_password">重置密码</string>
+    <string name="text_logining">登录中</string>
+    <string name="text_register">注册</string>
+    <string name="text_email">邮箱</string>
+    <string name="text_email_cannot_be_empty">邮箱不能为空</string>
+    <string name="text_email_format_error">邮箱格式错误</string>
+    <string name="text_registering">注册中</string>
+    <string name="text_register_fail">注册失败</string>
+    <string name="text_register_succeed">注册成功</string>
 
 
     <string-array name="ad_showing_mode_keys">

@@ -29,7 +29,7 @@ public class UserService {
     }
 
     public Observable<ResponseBody> login(String userName, final String password) {
-        return mRetrofit.create(ConfigApi.class)
+        return NodeBB.getInstance()
                 .getConfig()
                 .flatMap(config -> {
                     Log.d("login", config.toString());
@@ -38,5 +38,16 @@ public class UserService {
                                     userName, password);
                 });
 
+    }
+
+    public Observable<ResponseBody> register(String email, String userName, String password) {
+        return NodeBB.getInstance()
+                .getConfig()
+                .flatMap(config -> {
+                    Log.d("login", config.toString());
+                    return mRetrofit.create(UserApi.class)
+                            .register(Collections.singletonMap("x-csrf-token", config.getCsrfToken()),
+                                    email, userName, password);
+                });
     }
 }

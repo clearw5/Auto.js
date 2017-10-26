@@ -82,25 +82,19 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
             mProgressBar.setProgress(newProgress);
         }
 
-
-        // For Android < 3.0
-        public void openFileChooser(ValueCallback<Uri> valueCallback) {
-
-        }
-
-        // For Android  >= 3.0
-        @SuppressWarnings("unchecked")
-        public void openFileChooser(ValueCallback valueCallback, String acceptType) {
-            openFileChooser(valueCallback);
-        }
-
         //For Android  >= 4.1
         public void openFileChooser(ValueCallback<Uri> valueCallback,
                                     String acceptType, String capture) {
-            openFileChooser(valueCallback);
+            openFileChooser(valueCallback, acceptType.split(","), capture.equals("true"));
+        }
+
+        public void openFileChooser(ValueCallback<Uri> valueCallback,
+                                    String[] acceptType, boolean isCaptureEnabled) {
+
         }
 
         // For Android >= 5.0
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public boolean onShowFileChooser(WebView webView,
                                          ValueCallback<Uri[]> filePathCallback,
@@ -111,7 +105,7 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
                 } else {
                     filePathCallback.onReceiveValue(new Uri[]{value});
                 }
-            });
+            }, fileChooserParams.getAcceptTypes(), fileChooserParams.isCaptureEnabled());
             return true;
         }
     }

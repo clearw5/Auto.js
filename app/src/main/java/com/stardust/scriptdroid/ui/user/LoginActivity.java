@@ -1,8 +1,12 @@
-package com.stardust.scriptdroid.ui.login;
+package com.stardust.scriptdroid.ui.user;
 
+import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.network.UserService;
 import com.stardust.scriptdroid.ui.BaseActivity;
@@ -39,15 +43,29 @@ public class LoginActivity extends BaseActivity {
         if (!checkNotEmpty(userName, password)) {
             return;
         }
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .progress(true, 0)
+                .content(R.string.text_logining)
+                .cancelable(false)
+                .show();
         UserService.getInstance().login(userName, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
+                            dialog.dismiss();
                             Toast.makeText(getApplicationContext(), R.string.text_login_succeed, Toast.LENGTH_SHORT).show();
                             finish();
                         }
-                        , error ->
-                                Toast.makeText(getApplicationContext(), R.string.text_login_fail, Toast.LENGTH_SHORT).show());
+                        , error -> {
+                            dialog.dismiss();
+                            mPassword.setError(getString(R.string.text_login_fail));
+                            error.printStackTrace();
+                        });
+
+    }
+
+    @Click(R.id.forgot_password)
+    void forgotPassword() {
 
     }
 
@@ -61,5 +79,21 @@ public class LoginActivity extends BaseActivity {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_login, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_register) {
+            RegisterActivity_.intent(this).start();
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

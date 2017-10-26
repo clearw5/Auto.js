@@ -1,16 +1,23 @@
 package com.stardust.scriptdroid.ui.main.drawer;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.network.GlideApp;
+import com.stardust.scriptdroid.network.UserService;
 import com.stardust.scriptdroid.ui.floating.CircularMenu;
 import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
 import com.stardust.scriptdroid.network.NodeBB;
@@ -19,10 +26,12 @@ import com.stardust.scriptdroid.network.api.UserApi;
 import com.stardust.scriptdroid.network.entity.user.User;
 import com.stardust.scriptdroid.network.entity.VersionInfo;
 import com.stardust.scriptdroid.tool.SimpleObserver;
-import com.stardust.scriptdroid.ui.login.LoginActivity_;
+import com.stardust.scriptdroid.ui.user.LoginActivity_;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity;
 import com.stardust.scriptdroid.ui.update.UpdateInfoDialogBuilder;
+import com.stardust.scriptdroid.ui.widget.AvatarView;
 import com.stardust.theme.ThemeColorManager;
+import com.stardust.theme.ThemeColorManagerCompat;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.sublime.SublimePluginService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
@@ -69,7 +78,13 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     TextView mUserName;
 
     @ViewById(R.id.avatar)
-    ImageView mAvatar;
+    AvatarView mAvatar;
+
+    @ViewById(R.id.shadow)
+    View mShadow;
+
+    @ViewById(R.id.default_cover)
+    View mDefaultCover;
 
 
     private Disposable mConnectionStateDisposable;
@@ -108,21 +123,36 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 .me()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleObserver<User>() {
-                    @Override
-                    public void onNext(@io.reactivex.annotations.NonNull User user) {
-                        setUpUserInfo(user);
-                    }
-
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        e.printStackTrace();
-                    }
-                });
+                .subscribe(this::setUpUserInfo, Throwable::printStackTrace);
     }
 
     private void setUpUserInfo(User user) {
         mUserName.setText(user.getUsername());
+        mAvatar.setUser(user);
+        setCoverImage(user);
+
+
+    }
+
+    private void setCoverImage(User user) {
+        String coverUrl = user.getCoverUrl();
+        if (TextUtils.isEmpty(coverUrl) || coverUrl.equals("/assets/images/cover-default.png")) {
+            mDefaultCover.setVisibility(View.VISIBLE);
+            mShadow.setVisibility(View.GONE);
+            mHeaderView.setBackgroundColor(ThemeColorManagerCompat.getColorPrimary());
+        } else {
+            mDefaultCover.setVisibility(View.GONE);
+            mShadow.setVisibility(View.VISIBLE);
+            GlideApp.with(getContext())
+                    .load(NodeBB.BASE_URL + coverUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                            mHeaderView.setBackground(resource);
+                        }
+                    });
+        }
     }
 
     @Click(R.id.avatar)
