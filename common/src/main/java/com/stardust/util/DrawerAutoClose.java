@@ -1,4 +1,4 @@
-package com.stardust.view;
+package com.stardust.util;
 
 import android.app.Activity;
 import android.support.v4.widget.DrawerLayout;

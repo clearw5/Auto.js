@@ -6,12 +6,10 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.webkit.WebView;
 
-import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.main.QueryEvent;
 import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
 import com.stardust.util.BackPressedHandler;
-import com.stardust.widget.EWebView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -20,7 +18,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.net.URLEncoder;
-import java.util.regex.Pattern;
 
 /**
  * Created by Stardust on 2017/8/22.

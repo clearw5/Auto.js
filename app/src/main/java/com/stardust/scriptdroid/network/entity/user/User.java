@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.network.entity;
+package com.stardust.scriptdroid.network.entity.user;
 
 import java.util.List;
 import com.google.gson.annotations.SerializedName;

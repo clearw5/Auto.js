@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.stardust.scriptdroid.R;
 import com.stardust.view.accessibility.NodeInfo;
 import com.stardust.util.ViewUtil;
-import com.stardust.widget.LevelBeamView;
+import com.stardust.scriptdroid.ui.widget.LevelBeamView;
 
 import java.util.Collections;
 import java.util.HashSet;

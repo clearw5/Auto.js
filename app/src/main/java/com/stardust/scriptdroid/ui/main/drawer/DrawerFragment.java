@@ -1,15 +1,12 @@
 package com.stardust.scriptdroid.ui.main.drawer;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
@@ -19,7 +16,7 @@ import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
 import com.stardust.scriptdroid.network.NodeBB;
 import com.stardust.scriptdroid.network.VersionService;
 import com.stardust.scriptdroid.network.api.UserApi;
-import com.stardust.scriptdroid.network.entity.User;
+import com.stardust.scriptdroid.network.entity.user.User;
 import com.stardust.scriptdroid.network.entity.VersionInfo;
 import com.stardust.scriptdroid.tool.SimpleObserver;
 import com.stardust.scriptdroid.ui.login.LoginActivity_;
@@ -39,12 +36,9 @@ import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.concurrent.Callable;
-
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 

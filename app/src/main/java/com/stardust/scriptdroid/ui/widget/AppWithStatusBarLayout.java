@@ -1,4 +1,4 @@
-package com.stardust.widget;
+package com.stardust.scriptdroid.ui.widget;
 
 import android.app.Activity;
 import android.content.Context;

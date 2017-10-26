@@ -40,9 +40,9 @@ import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity_;
 import com.stardust.scriptdroid.ui.update.VersionGuard;
 import com.stardust.util.BackPressedHandler;
-import com.stardust.view.DrawerAutoClose;
-import com.stardust.widget.CommonMarkdownView;
-import com.stardust.widget.SearchViewItem;
+import com.stardust.util.DrawerAutoClose;
+import com.stardust.scriptdroid.ui.widget.CommonMarkdownView;
+import com.stardust.scriptdroid.ui.widget.SearchViewItem;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;

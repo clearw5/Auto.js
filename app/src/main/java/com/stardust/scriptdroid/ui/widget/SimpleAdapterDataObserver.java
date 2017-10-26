@@ -1,4 +1,4 @@
-package com.stardust.widget;
+package com.stardust.scriptdroid.ui.widget;
 
 import android.support.v7.widget.RecyclerView;
 

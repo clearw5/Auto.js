@@ -1,12 +1,10 @@
-package com.stardust.widget;
+package com.stardust.scriptdroid.ui.widget;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.preference.PreferenceManager;
-import android.support.annotation.IntDef;
 import android.util.AttributeSet;
-import android.view.View;
 
 import com.stardust.scriptdroid.R;
 

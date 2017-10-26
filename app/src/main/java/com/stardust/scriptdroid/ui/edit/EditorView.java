@@ -27,8 +27,8 @@ import com.stardust.scriptdroid.ui.edit.completion.CodeCompletions;
 import com.stardust.scriptdroid.ui.edit.completion.CodeCompletionBar;
 import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhancedBarColors;
 import com.stardust.scriptdroid.ui.edit.completion.Symbols;
-import com.stardust.widget.EWebView;
-import com.stardust.widget.ToolbarMenuItem;
+import com.stardust.scriptdroid.ui.widget.EWebView;
+import com.stardust.scriptdroid.ui.widget.ToolbarMenuItem;
 import com.stardust.widget.ViewSwitcher;
 
 import org.androidannotations.annotations.AfterViews;

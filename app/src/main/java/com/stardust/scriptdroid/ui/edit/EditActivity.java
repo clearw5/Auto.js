@@ -2,20 +2,13 @@ package com.stardust.scriptdroid.ui.edit;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
-import com.stardust.widget.EWebView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;

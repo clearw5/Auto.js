@@ -27,7 +27,7 @@ import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.floating.EditorFloaty;
 import com.stardust.scriptdroid.ui.viewmodel.ScriptList;
-import com.stardust.widget.BindableViewHolder;
+import com.stardust.scriptdroid.ui.widget.BindableViewHolder;
 
 import org.greenrobot.eventbus.Subscribe;
 

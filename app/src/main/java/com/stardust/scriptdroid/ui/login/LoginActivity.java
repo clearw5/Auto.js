@@ -1,13 +1,10 @@
 package com.stardust.scriptdroid.ui.login;
 
-import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.network.NodeBB;
-import com.stardust.scriptdroid.network.api.UserApi;
-import com.stardust.scriptdroid.network.entity.VerifyResponse;
-import com.stardust.scriptdroid.tool.SimpleObserver;
+import com.stardust.scriptdroid.network.UserService;
 import com.stardust.scriptdroid.ui.BaseActivity;
 
 import org.androidannotations.annotations.AfterViews;
@@ -16,7 +13,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -43,24 +39,16 @@ public class LoginActivity extends BaseActivity {
         if (!checkNotEmpty(userName, password)) {
             return;
         }
-
-        NodeBB.getInstance().getRetrofit()
-                .create(UserApi.class)
-                .verify(userName, password)
+        UserService.getInstance().login(userName, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleObserver<VerifyResponse>() {
+                .subscribe(response -> {
+                            Toast.makeText(getApplicationContext(), R.string.text_login_succeed, Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                        , error ->
+                                Toast.makeText(getApplicationContext(), R.string.text_login_fail, Toast.LENGTH_SHORT).show());
 
-                    @Override
-                    public void onNext(@NonNull VerifyResponse verifyResponse) {
-                        Log.d("Login", verifyResponse.toString());
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        e.printStackTrace();
-                    }
-                });
     }
 
     private boolean checkNotEmpty(String userName, String password) {

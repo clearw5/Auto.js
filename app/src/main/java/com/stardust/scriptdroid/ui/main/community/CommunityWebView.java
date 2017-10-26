@@ -1,25 +1,21 @@
 package com.stardust.scriptdroid.ui.main.community;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.io.StorageFileProvider;
-import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.network.download.DownloadManager;
 import com.stardust.scriptdroid.ui.common.OptionListView;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.filechooser.FileChooserDialogBuilder;
-import com.stardust.widget.EWebView;
+import com.stardust.scriptdroid.ui.widget.EWebView;
 
 import java.util.regex.Pattern;
 

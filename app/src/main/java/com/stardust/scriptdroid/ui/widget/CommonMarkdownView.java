@@ -1,4 +1,4 @@
-package com.stardust.widget;
+package com.stardust.scriptdroid.ui.widget;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import org.commonmark.ext.heading.anchor.HeadingAnchorExtension;
