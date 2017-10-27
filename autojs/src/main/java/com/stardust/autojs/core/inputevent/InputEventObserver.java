@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.stardust.autojs.core.record.inputevent.EventFormatException;
-import com.stardust.autojs.runtime.api.Shell;
+import com.stardust.autojs.core.util.Shell;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;

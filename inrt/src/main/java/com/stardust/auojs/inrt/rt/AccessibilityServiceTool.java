@@ -7,7 +7,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 
 import com.stardust.auojs.inrt.App;
-import com.stardust.autojs.runtime.api.ProcessShell;
+import com.stardust.autojs.core.util.ProcessShell;
 
 import java.util.Locale;
 

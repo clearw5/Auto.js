@@ -97,7 +97,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
+            android:name="com.stardust.autojs.core.image.ScreenCaptureRequestActivity"
             android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 

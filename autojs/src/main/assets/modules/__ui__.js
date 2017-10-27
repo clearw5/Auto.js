@@ -52,7 +52,7 @@ module.exports = function(__runtime__, scope){
     }
 
     ui.findViewByStringId = function(view, id){
-        return com.stardust.autojs.runtime.api.ui.JsViewHelper.findViewByStringId(view, id);
+        return com.stardust.autojs.core.ui.JsViewHelper.findViewByStringId(view, id);
     }
 
     function decorate(view){

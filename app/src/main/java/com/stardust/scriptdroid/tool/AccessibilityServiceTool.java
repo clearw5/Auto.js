@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.autojs.runtime.api.ProcessShell;
+import com.stardust.autojs.core.util.ProcessShell;
 import com.stardust.scriptdroid.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
