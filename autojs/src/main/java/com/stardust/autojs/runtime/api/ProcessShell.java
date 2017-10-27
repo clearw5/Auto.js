@@ -226,7 +226,7 @@ public class ProcessShell extends AbstractShell {
         StringBuilder builder = new StringBuilder();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         while ((line = reader.readLine()) != null) {
-            builder.append(line);
+            builder.append(line).append('\n');
         }
         return builder.toString();
     }

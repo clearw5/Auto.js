@@ -21,7 +21,7 @@ import com.stardust.scriptdroid.io.StorageFileProvider;
 import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.util.DownloadTask;
 import com.stardust.util.IntentUtil;
-import com.stardust.widget.CommonMarkdownView;
+import com.stardust.scriptdroid.ui.widget.CommonMarkdownView;
 
 /**
  * Created by Stardust on 2017/4/9.

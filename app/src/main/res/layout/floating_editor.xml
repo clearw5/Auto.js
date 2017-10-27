@@ -14,14 +14,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.stardust.widget.ToolbarMenuItem
+        <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
             android:id="@+id/close"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             app:icon="@drawable/ic_close_white_48dp"
             app:text="@string/text_close"/>
 
-        <com.stardust.widget.ToolbarMenuItem
+        <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
             android:id="@+id/move_or_resize"
             android:layout_width="40dp"
             android:layout_height="match_parent"

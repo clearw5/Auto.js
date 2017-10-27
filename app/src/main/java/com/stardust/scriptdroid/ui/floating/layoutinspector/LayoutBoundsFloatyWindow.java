@@ -13,7 +13,7 @@ import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.floating.FullScreenFloatyWindow;
 import com.stardust.view.accessibility.NodeInfo;
-import com.stardust.widget.BubblePopupMenu;
+import com.stardust.scriptdroid.ui.widget.BubblePopupMenu;
 
 import java.util.Arrays;
 

@@ -1,13 +1,11 @@
 package com.stardust.scriptdroid.ui.doc;
 
-import android.app.Activity;
 import android.webkit.WebView;
 
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.BaseActivity;
-import com.stardust.util.BackPressedHandler;
-import com.stardust.widget.EWebView;
+import com.stardust.scriptdroid.ui.widget.EWebView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;

@@ -31,7 +31,7 @@
                     android:layout_gravity="right"
                     android:orientation="horizontal">
 
-                    <com.stardust.widget.ToolbarMenuItem
+                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
                         android:id="@+id/run"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
@@ -39,21 +39,21 @@
                         app:icon_color="@android:color/white"
                         app:text="@string/text_run"/>
 
-                    <com.stardust.widget.ToolbarMenuItem
+                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
                         android:id="@+id/undo"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
                         app:icon="@drawable/ic_undo_white_48dp"
                         app:text="@string/text_undo"/>
 
-                    <com.stardust.widget.ToolbarMenuItem
+                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
                         android:id="@+id/redo"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
                         app:icon="@drawable/ic_redo_white_48dp"
                         app:text="@string/text_redo"/>
 
-                    <com.stardust.widget.ToolbarMenuItem
+                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
                         android:id="@+id/save"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
@@ -70,21 +70,21 @@
                     android:layout_gravity="right"
                     android:orientation="horizontal">
 
-                    <com.stardust.widget.ToolbarMenuItem
+                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
                         android:id="@+id/replace"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
                         app:icon="@drawable/ic_ali_replace"
                         app:text="@string/text_replace"/>
 
-                    <com.stardust.widget.ToolbarMenuItem
+                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
                         android:id="@+id/find_prev"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
                         app:icon="@drawable/ic_ali_up"
                         app:text="@string/text_find_prev"/>
 
-                    <com.stardust.widget.ToolbarMenuItem
+                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
                         android:id="@+id/find_next"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
@@ -92,7 +92,7 @@
                         app:text="@string/text_find_next"/>
 
 
-                    <com.stardust.widget.ToolbarMenuItem
+                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
                         android:id="@+id/cancel"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
@@ -161,7 +161,7 @@
 
         </LinearLayout>
 
-        <com.stardust.widget.EWebView
+        <com.stardust.scriptdroid.ui.widget.EWebView
             android:id="@+id/docs"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

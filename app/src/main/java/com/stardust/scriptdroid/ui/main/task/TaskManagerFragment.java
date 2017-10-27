@@ -13,7 +13,7 @@ import com.stardust.autojs.core.console.StardustConsole;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
-import com.stardust.widget.SimpleAdapterDataObserver;
+import com.stardust.scriptdroid.ui.widget.SimpleAdapterDataObserver;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;

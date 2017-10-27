@@ -20,6 +20,9 @@ import com.stardust.automator.simple_action.SimpleAction;
 import com.stardust.util.DeveloperUtils;
 import com.stardust.util.ScreenMetrics;
 
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.NativeJavaObject;
+
 /**
  * Created by Stardust on 2017/4/2.
  */

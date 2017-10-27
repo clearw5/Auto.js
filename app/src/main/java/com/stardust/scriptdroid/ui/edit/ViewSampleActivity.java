@@ -23,7 +23,7 @@ import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.AssetsCache;
 import com.stardust.util.SparseArrayEntries;
-import com.stardust.widget.ToolbarMenuItem;
+import com.stardust.scriptdroid.ui.widget.ToolbarMenuItem;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;

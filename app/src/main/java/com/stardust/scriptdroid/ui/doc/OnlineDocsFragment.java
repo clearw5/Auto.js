@@ -1,19 +1,15 @@
 package com.stardust.scriptdroid.ui.doc;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.view.View;
 import android.webkit.WebView;
 
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
 import com.stardust.util.BackPressedHandler;
-import com.stardust.widget.EWebView;
+import com.stardust.scriptdroid.ui.widget.EWebView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;

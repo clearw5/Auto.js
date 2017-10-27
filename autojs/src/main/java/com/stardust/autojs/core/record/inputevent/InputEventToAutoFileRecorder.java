@@ -56,7 +56,7 @@ public class InputEventToAutoFileRecorder extends InputEventRecorder {
     public void recordInputEvent(@NonNull InputEventObserver.InputEvent event) {
         try {
             convertEventOrThrow(event);
-            //Log.d(LOG_TAG, "recordInputEvent: " + event);
+            Log.d(LOG_TAG, "recordInputEvent: " + event);
         } catch (IOException e) {
             e.printStackTrace();
         }

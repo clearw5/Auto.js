@@ -80,19 +80,15 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
     }
 
     private void setupListeners() {
-        mWindow.setOnActionViewClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mState == STATE_RECORDING) {
-                    stopRecord();
-                } else if (mWindow.isExpanded()) {
-                    mWindow.collapse();
-                } else {
-                    AutoJs.getInstance().getLayoutInspector().captureCurrentWindow();
-                    mWindow.expand();
-                }
+        mWindow.setOnActionViewClickListener(v -> {
+            if (mState == STATE_RECORDING) {
+                stopRecord();
+            } else if (mWindow.isExpanded()) {
+                mWindow.collapse();
+            } else {
+                AutoJs.getInstance().getLayoutInspector().captureCurrentWindow();
+                mWindow.expand();
             }
-
         });
     }
 
@@ -130,12 +126,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
                 .customView(listView, false)
                 .positiveText(R.string.cancel)
                 .build();
-        listView.setOnItemOperatedListener(new ScriptListView.OnItemOperatedListener() {
-            @Override
-            public void OnItemOperated(ScriptFile file) {
-                dialog.dismiss();
-            }
-        });
+        listView.setOnItemOperatedListener(file -> dialog.dismiss());
         DialogUtils.showDialog(dialog);
     }
 

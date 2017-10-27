@@ -14,6 +14,7 @@ import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.util.UiHandler;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -67,7 +68,7 @@ public class StardustConsole extends AbstractConsole {
     private LogListener mLogListener;
     private UiHandler mUiHandler;
     private BlockingQueue<String> mInput = new ArrayBlockingQueue<>(1);
-    private ConsoleView mConsoleView;
+    private WeakReference<ConsoleView> mConsoleView;
     private volatile boolean mShown = false;
 
     public StardustConsole(UiHandler uiHandler) {
@@ -88,7 +89,7 @@ public class StardustConsole extends AbstractConsole {
     }
 
     public void setConsoleView(ConsoleView consoleView) {
-        mConsoleView = consoleView;
+        mConsoleView = new WeakReference<>(consoleView);
         setLogListener(consoleView);
         synchronized (this) {
             this.notify();
@@ -177,13 +178,13 @@ public class StardustConsole extends AbstractConsole {
 
     @ScriptInterface
     public String rawInput() {
-        if (mConsoleView == null) {
+        if (mConsoleView == null || mConsoleView.get() == null) {
             if (!mShown) {
                 show();
             }
             waitForConsoleView();
         }
-        mConsoleView.showEditText();
+        mConsoleView.get().showEditText();
         try {
             return mInput.take();
         } catch (InterruptedException e) {

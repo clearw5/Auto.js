@@ -78,7 +78,13 @@
         <activity android:name=".ui.error.ErrorReportActivity"/>
         <activity android:name=".external.tasker.TaskerScriptEditActivity_"/>
         <activity android:name=".ui.edit.ViewSampleActivity"/>
-        <activity android:name=".ui.login.LoginActivity_"/>
+        <activity
+            android:name=".ui.user.LoginActivity_"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".ui.user.RegisterActivity_"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".ui.user.WebActivity_"/>
         <activity android:name=".ui.build.BuildActivity_"/>
         <activity android:name=".ui.doc.DocumentationActivity_"/>
         <activity android:name=".ui.shortcut.ShortcutIconSelectActivity_"/>
