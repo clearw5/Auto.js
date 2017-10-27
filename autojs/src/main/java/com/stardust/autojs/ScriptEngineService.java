@@ -6,6 +6,7 @@ import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.execution.ExecutionConfig;
+import com.stardust.autojs.execution.LoopedBasedJavaScriptExecution;
 import com.stardust.autojs.execution.RunnableScriptExecution;
 import com.stardust.autojs.execution.ScriptExecuteActivity;
 import com.stardust.autojs.execution.ScriptExecution;
@@ -130,7 +131,12 @@ public class ScriptEngineService {
                 return ScriptExecuteActivity.execute(mContext, mScriptEngineManager, task);
             }
         }
-        RunnableScriptExecution r = new RunnableScriptExecution(mScriptEngineManager, task);
+        RunnableScriptExecution r;
+        if (source instanceof JavaScriptSource) {
+            r = new LoopedBasedJavaScriptExecution(mScriptEngineManager, task);
+        } else {
+            r = new RunnableScriptExecution(mScriptEngineManager, task);
+        }
         if (task.getConfig().runInNewThread) {
             new ThreadCompat(r).start();
         } else {

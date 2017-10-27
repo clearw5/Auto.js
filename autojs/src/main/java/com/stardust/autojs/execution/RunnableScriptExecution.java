@@ -51,7 +51,7 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
         engine.init();
     }
 
-    private Object doExecution(ScriptEngine engine) {
+    protected Object doExecution(ScriptEngine engine) {
         engine.setTag(ScriptEngine.TAG_SOURCE, getSource());
         getListener().onStart(this);
         Object result = null;
@@ -64,14 +64,19 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
         sleep(delay);
         ScriptSource source = getSource();
         for (int i = 0; i < times; i++) {
-            result = engine.execute(source);
+            result = execute(engine, source);
             sleep(interval);
         }
         getListener().onSuccess(this, result);
         return result;
     }
 
-    private void sleep(long i) {
+    @SuppressWarnings("unchecked")
+    protected Object execute(ScriptEngine engine, ScriptSource source) {
+        return engine.execute(source);
+    }
+
+    protected void sleep(long i) {
         if (i <= 0) {
             return;
         }

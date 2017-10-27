@@ -2,6 +2,7 @@ package com.stardust.autojs.runtime.api;
 
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.stardust.autojs.runtime.ScriptBridges;
@@ -28,7 +29,7 @@ public class Timers {
         }
     }
 
-    public int setTimeout(final Object callback, long delay, final Object... args) {
+    public int setTimeout(final Object callback, final long delay, final Object... args) {
         ensureHandler();
         mCallbackMaxId++;
         final int id = mCallbackMaxId;

@@ -6,7 +6,6 @@ import android.os.MessageQueue;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.lang.ThreadCompat;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -15,10 +14,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Loopers {
 
+    public interface LooperQuitHandler {
+        boolean shouldQuit();
+    }
+
     public volatile boolean waitWhenIdle = false;
     private volatile Looper mServantLooper;
     private static volatile ConcurrentHashMap<Thread, Looper> sLoopers = new ConcurrentHashMap<>();
     private Timers mTimers;
+    private LooperQuitHandler mLooperQuitHandler;
 
     public Loopers(Timers timers) {
         mTimers = timers;
@@ -29,8 +33,11 @@ public class Loopers {
             @Override
             public boolean queueIdle() {
                 Looper l = Looper.myLooper();
-                if (l != null && shouldQuitLooper())
-                    l.quit();
+                if (l != null && shouldQuitLooper()) {
+                    if (mLooperQuitHandler != null && mLooperQuitHandler.shouldQuit()) {
+                        l.quit();
+                    }
+                }
                 return true;
             }
         });
@@ -101,5 +108,9 @@ public class Loopers {
         Looper looper = sLoopers.remove(thread);
         if (looper != null)
             looper.quit();
+    }
+
+    public void setLooperQuitHandler(LooperQuitHandler looperQuitHandler) {
+        mLooperQuitHandler = looperQuitHandler;
     }
 }
