@@ -307,7 +307,6 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         @Override
         public void onBindViewHolder(BindableViewHolder<?> holder, int position) {
             int positionOfCategoryFile = positionOfCategoryFile();
-            Log.d(LOG_TAG, String.format("view holder = %s, pos = %d, posOfCategory = %d, size = %d", holder.getClass().toString(), position, positionOfCategoryFile, mScriptList.count()));
             BindableViewHolder bindableViewHolder = (BindableViewHolder) holder;
             if (position == positionOfCategoryDir || position == positionOfCategoryFile) {
                 // FIXME: 2017/10/20 java.lang.ClassCastException: java.lang.Boolean cannot be cast to com.stardust.scriptdroid.model.script.ScriptFile
@@ -323,17 +322,14 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
 
         @Override
         public int getItemViewType(int position) {
-            int viewType;
             int positionOfCategoryFile = positionOfCategoryFile();
             if (position == positionOfCategoryDir || position == positionOfCategoryFile) {
-                viewType = VIEW_TYPE_CATEGORY;
+                return VIEW_TYPE_CATEGORY;
             } else if (position < positionOfCategoryFile) {
-                viewType = VIEW_TYPE_DIRECTORY;
+                return VIEW_TYPE_DIRECTORY;
             } else {
-                viewType = VIEW_TYPE_FILE;
+                return VIEW_TYPE_FILE;
             }
-            Log.d(LOG_TAG, String.format("view type = %d, pos = %d, posOfCategory = %d, size = %d", viewType, position, positionOfCategoryFile, mScriptList.count()));
-            return viewType;
         }
 
         @Override
