@@ -1,12 +1,10 @@
 package com.stardust.autojs.core.record.inputevent;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.stardust.autojs.core.inputevent.InputEventCodes;
 import com.stardust.autojs.core.inputevent.InputEventObserver;
 import com.stardust.autojs.engine.RootAutomatorEngine;
-import com.stardust.autojs.runtime.api.RootAutomator;
 
 import static com.stardust.util.ScreenMetrics.getDeviceScreenHeight;
 import static com.stardust.util.ScreenMetrics.getDeviceScreenWidth;

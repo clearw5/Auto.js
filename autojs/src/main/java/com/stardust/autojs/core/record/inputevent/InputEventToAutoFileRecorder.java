@@ -6,8 +6,8 @@ import android.util.Log;
 
 import com.stardust.autojs.core.inputevent.InputEventCodes;
 import com.stardust.autojs.core.inputevent.InputEventObserver;
+import com.stardust.autojs.core.inputevent.RootAutomator;
 import com.stardust.autojs.engine.RootAutomatorEngine;
-import com.stardust.autojs.runtime.api.RootAutomator;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
 

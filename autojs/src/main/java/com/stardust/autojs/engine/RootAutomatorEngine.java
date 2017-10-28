@@ -3,10 +3,8 @@ package com.stardust.autojs.engine;
 import android.content.Context;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.util.Patterns;
 
-import com.stardust.autojs.runtime.api.AbstractShell;
-import com.stardust.autojs.runtime.api.ProcessShell;
+import com.stardust.autojs.core.util.ProcessShell;
 import com.stardust.autojs.core.inputevent.InputDevices;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;

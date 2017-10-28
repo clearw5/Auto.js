@@ -134,21 +134,21 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     }
 
     @NonNull
-    public CharSequence text() {
+    public String text() {
         CharSequence t = getText();
-        return t == null ? "" : t;
+        return t == null ? "" : t.toString();
     }
 
-    public CharSequence desc() {
-        return getContentDescription();
+    public String desc() {
+        return getContentDescription().toString();
     }
 
-    public CharSequence className() {
-        return getClassName();
+    public String className() {
+        return getClassName().toString();
     }
 
-    public CharSequence packageName() {
-        return getPackageName();
+    public String packageName() {
+        return getPackageName().toString();
     }
 
     public boolean performAction(int action, ActionArgument... arguments) {

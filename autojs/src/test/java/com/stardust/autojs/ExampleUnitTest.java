@@ -1,10 +1,6 @@
 package com.stardust.autojs;
 
-import com.stardust.autojs.runtime.api.image.ColorDetector;
-
 import org.junit.Test;
-
-import java.util.Arrays;
 
 /**
  * Example local unit test, which will execute on the development machine (host).

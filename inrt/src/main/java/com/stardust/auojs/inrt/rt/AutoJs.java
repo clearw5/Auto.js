@@ -24,11 +24,9 @@ import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
-import com.stardust.autojs.runtime.api.Console;
-import com.stardust.autojs.core.console.NoOpConsole;
-import com.stardust.autojs.runtime.api.Shell;
-import com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity;
-import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
+import com.stardust.autojs.core.util.Shell;
+import com.stardust.autojs.core.image.ScreenCaptureRequestActivity;
+import com.stardust.autojs.core.image.ScreenCaptureRequester;
 import com.stardust.autojs.core.console.StardustConsole;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.script.AutoFileSource;
@@ -39,7 +37,6 @@ import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
-import com.stardust.view.accessibility.LayoutInspector;
 import com.stardust.view.accessibility.NotificationListener;
 
 

@@ -10,6 +10,7 @@ import android.view.accessibility.AccessibilityEvent;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
+import com.stardust.autojs.core.eventloop.EventEmitter;
 import com.stardust.autojs.runtime.ScriptBridges;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.core.inputevent.InputEventObserver;
