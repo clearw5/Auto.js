@@ -151,6 +151,9 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         if (!intent.getBooleanExtra(EXTRA_RUN_ENABLED, true)) {
             findViewById(R.id.run).setVisibility(GONE);
         }
+        if(mReadOnly){
+            mEditor.setReadOnly(true);
+        }
 
     }
 

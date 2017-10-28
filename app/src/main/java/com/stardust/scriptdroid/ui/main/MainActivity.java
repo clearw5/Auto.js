@@ -31,6 +31,8 @@ import com.stardust.scriptdroid.ui.doc.OnlineDocsFragment_;
 import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
 import com.stardust.scriptdroid.io.StorageFileProvider;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment_;
+import com.stardust.scriptdroid.ui.main.sample.SampleListFragment;
+import com.stardust.scriptdroid.ui.main.sample.SampleListFragment_;
 import com.stardust.scriptdroid.ui.main.scripts.MyScriptListFragment_;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
 import com.stardust.theme.ThemeColorManager;
@@ -145,6 +147,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 .add(new MyScriptListFragment_(), R.string.text_script)
                 .add(new OnlineDocsFragment_(), R.string.text_tutorial)
                 .add(new CommunityFragment_(), R.string.text_community)
+                .add(new SampleListFragment_(), R.string.text_sample)
                 .add(new TaskManagerFragment_(), R.string.text_manage)
                 .build();
         mViewPager.setAdapter(mPagerAdapter);

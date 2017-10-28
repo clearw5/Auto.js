@@ -1,6 +1,5 @@
 package com.stardust.scriptdroid.model.script;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -11,7 +10,6 @@ import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.ScriptSource;
-import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
@@ -19,9 +17,7 @@ import com.stardust.scriptdroid.external.CommonUtils;
 import com.stardust.scriptdroid.external.shortcut.Shortcut;
 import com.stardust.scriptdroid.external.shortcut.ShortcutActivity;
 import com.stardust.scriptdroid.io.StorageFileProvider;
-import com.stardust.scriptdroid.model.sample.Sample;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
-import com.stardust.util.AssetsCache;
 
 import org.mozilla.javascript.RhinoException;
 
@@ -113,10 +109,6 @@ public class Scripts {
                 new ExecutionConfig().path(directoryPath, StorageFileProvider.DEFAULT_DIRECTORY_PATH));
     }
 
-    public static ScriptExecution run(Context context, Sample file) {
-        ScriptSource source = new StringScriptSource(file.name, AssetsCache.get(context.getAssets(), file.path));
-        return AutoJs.getInstance().getScriptEngineService().execute(source);
-    }
 
     public static ScriptExecution runWithBroadcastSender(ScriptSource source) {
         return AutoJs.getInstance().getScriptEngineService().execute(source, BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER,

@@ -22,10 +22,10 @@ import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.io.TmpScriptFiles;
+import com.stardust.scriptdroid.model.sample.SampleFile;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.io.StorageFileProvider;
-import com.stardust.scriptdroid.model.sample.Sample;
 import com.stardust.scriptdroid.network.download.DownloadManager;
 import com.stardust.scriptdroid.ui.filechooser.FileChooserDialogBuilder;
 import com.stardust.scriptdroid.ui.shortcut.ShortcutCreateActivity;
@@ -207,9 +207,9 @@ public class ScriptOperations {
         return mContext.getString(resId);
     }
 
-    public Observable<String> importSample(Sample sample) {
+    public Observable<String> importSample(SampleFile sample) {
         try {
-            return importFile(sample.name, mContext.getAssets().open(sample.path), PFiles.getExtension(sample.path));
+            return importFile(sample.getSimplifiedName(), sample.openInputStream(), sample.getExtension());
         } catch (IOException e) {
             e.printStackTrace();
             showMessage(R.string.text_import_fail);

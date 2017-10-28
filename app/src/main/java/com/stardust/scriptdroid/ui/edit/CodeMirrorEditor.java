@@ -172,28 +172,22 @@ public class CodeMirrorEditor extends FrameLayout {
         mWebView.setWebChromeClient(new MyWebChromeClient());
     }
 
+    public void setReadOnly(boolean readOnly) {
+        evalJavaScript(String.format("editor.setOption('readOnly', %b);", readOnly));
+    }
+
     public void setProgress(boolean onProgress) {
         mProgressBarContainer.setVisibility(onProgress ? VISIBLE : GONE);
     }
 
     public void setText(final String text) {
         mTextFromAndroid = text;
-        mPageFinished.promise().done(new DoneCallback<Void>() {
-            @Override
-            public void onDone(Void result) {
-                evalJavaScript("editor.setValue(__bridge__.getStringFromAndroid());");
-            }
-        });
+        mPageFinished.promise().done(result -> evalJavaScript("editor.setValue(__bridge__.getStringFromAndroid());"));
     }
 
     public void insert(String text) {
         mTextFromAndroid = text;
-        mPageFinished.promise().done(new DoneCallback<Void>() {
-            @Override
-            public void onDone(Void result) {
-                evalJavaScript("editor.replaceSelection(__bridge__.getStringFromAndroid());");
-            }
-        });
+        mPageFinished.promise().done(result -> evalJavaScript("editor.replaceSelection(__bridge__.getStringFromAndroid());"));
     }
 
     public void loadFile(final File file) {

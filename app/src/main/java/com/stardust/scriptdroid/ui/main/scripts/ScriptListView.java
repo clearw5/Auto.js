@@ -66,10 +66,10 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
     private RecyclerView mScriptListView;
     private ScriptListAdapter mScriptListAdapter = new ScriptListAdapter();
     private ScriptFile mCurrentDirectory;
-    private OnScriptFileClickListener mOnScriptFileClickListener;
+    protected OnScriptFileClickListener mOnScriptFileClickListener;
     private Function<PFile, Boolean> mFilter;
     private OnItemOperatedListener mOnItemOperatedListener;
-    private ScriptFile mSelectedScriptFile;
+    protected ScriptFile mSelectedScriptFile;
     private StorageFileProvider mStorageFileProvider;
     private boolean mDirSortMenuShowing = false;
     private boolean mDirsCollapsed;
@@ -174,9 +174,13 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         mStorageFileProvider.getDirectoryFiles(mCurrentDirectory)
                 .subscribeOn(Schedulers.io())
                 .filter(f -> mFilter == null ? true : mFilter.apply(f))
-                .collectInto(mScriptList.cloneConfig(), (list, file) ->
-                        list.add(new ScriptFile(file))
-                )
+                .collectInto(mScriptList.cloneConfig(), (list, file) -> {
+                    if (file instanceof ScriptFile) {
+                        list.add((ScriptFile) file);
+                    } else {
+                        list.add(new ScriptFile(file));
+                    }
+                })
                 .observeOn(Schedulers.computation())
                 .doOnSuccess(ScriptList::sort)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -248,7 +252,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         return true;
     }
 
-    private void notifyOperated() {
+    protected void notifyOperated() {
         if (mOnItemOperatedListener != null) {
             mOnItemOperatedListener.OnItemOperated(mSelectedScriptFile);
         }
@@ -345,7 +349,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         }
     }
 
-    class ScriptFileViewHolder extends BindableViewHolder<ScriptFile> {
+    protected class ScriptFileViewHolder extends BindableViewHolder<ScriptFile> {
 
 
         @BindView(R.id.name)
@@ -413,12 +417,12 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         }
     }
 
-    class DirectoryViewHolder extends BindableViewHolder<ScriptFile> {
+    protected class DirectoryViewHolder extends BindableViewHolder<ScriptFile> {
 
         @BindView(R.id.name)
-        TextView mName;
+        public TextView mName;
         @BindView(R.id.more)
-        View mOptions;
+        public View mOptions;
 
         private ScriptFile mScriptFile;
 
