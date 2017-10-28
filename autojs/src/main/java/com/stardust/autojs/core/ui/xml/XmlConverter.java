@@ -1,5 +1,12 @@
 package com.stardust.autojs.core.ui.xml;
 
+import com.stardust.autojs.core.ui.widget.JsButton;
+import com.stardust.autojs.core.ui.widget.JsEditText;
+import com.stardust.autojs.core.ui.widget.JsFrameLayout;
+import com.stardust.autojs.core.ui.widget.JsLinearLayout;
+import com.stardust.autojs.core.ui.widget.JsRelativeLayout;
+import com.stardust.autojs.core.ui.widget.JsTextView;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -21,14 +28,14 @@ import javax.xml.parsers.ParserConfigurationException;
 public class XmlConverter {
 
     private static final NodeHandler NODE_HANDLER = new NodeHandler.NameRouter()
-            .handler("vertical", new NodeHandler.VerticalHandler("com.stardust.autojs.runtime.api.ui.widget.JsLinearLayout"))
+            .handler("vertical", new NodeHandler.VerticalHandler(JsLinearLayout.class.getName()))
             .defaultHandler(new NodeHandler.MapNameHandler()
-                    .map("frame", "com.stardust.autojs.runtime.api.ui.widget.JsFrameLayout")
-                    .map("linear", "com.stardust.autojs.runtime.api.ui.widget.JsLinearLayout")
-                    .map("relative", "com.stardust.autojs.runtime.api.ui.widget.JsRelativeLayout")
-                    .map("button", "com.stardust.autojs.runtime.api.ui.widget.JsButton")
-                    .map("text", "com.stardust.autojs.runtime.api.ui.widget.JsTextView")
-                    .map("input", "com.stardust.autojs.runtime.api.ui.widget.JsEditText")
+                    .map("frame", JsFrameLayout.class.getName())
+                    .map("linear", JsLinearLayout.class.getName())
+                    .map("relative", JsRelativeLayout.class.getName())
+                    .map("button", JsButton.class.getName())
+                    .map("text", JsTextView.class.getName())
+                    .map("input", JsEditText.class.getName())
                     .map("image", "ImageView")
             );
 
