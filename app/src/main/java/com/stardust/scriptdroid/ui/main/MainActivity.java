@@ -184,10 +184,10 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Click(R.id.exit)
     public void exitCompletely() {
+        finish();
         FloatyWindowManger.hideCircularMenu();
         stopService(new Intent(this, FloatyService.class));
         AutoJs.getInstance().getScriptEngineService().stopAll();
-        finish();
     }
 
     @Override
