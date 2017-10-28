@@ -44,9 +44,7 @@ public class LoopedBasedJavaScriptExecution extends RunnableScriptExecution {
                 return true;
             }
         });
-        javaScriptEngine.execute(
-
-                getSource());
+        javaScriptEngine.execute(getSource());
         return null;
     }
 

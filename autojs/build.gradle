@@ -27,6 +27,7 @@ repositories {
     flatDir {
         dirs 'libs'
     }
+    google()
 }
 
 dependencies {
@@ -41,8 +42,8 @@ dependencies {
     compile('com.afollestad.material-dialogs:core:0.9.2.3', {
         exclude group: 'com.android.support'
     })
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.4.0'
+    compile 'com.android.support:appcompat-v7:25.4.0'
     compile 'com.github.hyb1996:EnhancedFloaty:0.17'
     // Terminal emulator
     compile(name: 'libtermexec-release', ext: 'aar')
