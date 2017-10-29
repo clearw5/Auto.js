@@ -40,7 +40,7 @@ public interface Console {
     @ScriptInterface
     void hide();
 
-    void println(int level, CharSequence charSequence);
+    String println(int level, CharSequence charSequence);
 
     void setTitle(CharSequence title);
 }

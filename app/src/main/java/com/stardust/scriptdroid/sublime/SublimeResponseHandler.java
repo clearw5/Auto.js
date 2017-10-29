@@ -15,6 +15,8 @@ import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.io.StorageFileProvider;
 
+import java.util.HashMap;
+
 /**
  * Created by Stardust on 2017/5/11.
  */
@@ -29,7 +31,7 @@ public class SublimeResponseHandler implements Handler {
                         public boolean handle(JsonObject data) {
                             String script = data.get("script").getAsString();
                             String name = getName(data);
-                            int viewId = data.get("view_id").getAsInt();
+                            String viewId = data.get("view_id").getAsString();
                             runScript(viewId, name, script);
                             return false;
                         }
@@ -37,7 +39,7 @@ public class SublimeResponseHandler implements Handler {
                     .handler("stop", new Handler() {
                         @Override
                         public boolean handle(JsonObject data) {
-                            int viewId = data.get("view_id").getAsInt();
+                            String viewId = data.get("view_id").getAsString();
                             stopScript(viewId);
                             return true;
                         }
@@ -55,7 +57,7 @@ public class SublimeResponseHandler implements Handler {
 
                         @Override
                         public boolean handle(JsonObject data) {
-                            int viewId = data.get("view_id").getAsInt();
+                            String viewId = data.get("view_id").getAsString();
                             String script = data.get("script").getAsString();
                             String name = getName(data);
                             stopScript(viewId);
@@ -72,14 +74,14 @@ public class SublimeResponseHandler implements Handler {
                     }));
 
 
-    private SparseArray<ScriptExecution> mScriptExecutions = new SparseArray<>();
+    private HashMap<String, ScriptExecution> mScriptExecutions = new HashMap<>();
 
     @Override
     public boolean handle(JsonObject data) {
         return mRouter.handle(data);
     }
 
-    private void runScript(int viewId, String name, String script) {
+    private void runScript(String viewId, String name, String script) {
         if (TextUtils.isEmpty(name)) {
             name = "[" + viewId + "]";
         } else {
@@ -88,11 +90,11 @@ public class SublimeResponseHandler implements Handler {
         mScriptExecutions.put(viewId, Scripts.run(new StringScriptSource("<remote>:" + name, script)));
     }
 
-    private void stopScript(int viewId) {
+    private void stopScript(String viewId) {
         ScriptExecution execution = mScriptExecutions.get(viewId);
         if (execution != null) {
             execution.getEngine().forceStop();
-            mScriptExecutions.delete(viewId);
+            mScriptExecutions.remove(viewId);
         }
     }
 

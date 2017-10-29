@@ -106,7 +106,7 @@ public class StardustConsole extends AbstractConsole {
     }
 
     @Override
-    public void println(int level, CharSequence charSequence) {
+    public String println(int level, CharSequence charSequence) {
         Log log = new Log(mIdCounter.getAndIncrement(), level, charSequence, true);
         mLogs.add(log);
         if (mGlobalConsole != null) {
@@ -115,6 +115,7 @@ public class StardustConsole extends AbstractConsole {
         if (mLogListener != null && mLogListener.get() != null) {
             mLogListener.get().onNewLog(log);
         }
+        return null;
     }
 
 

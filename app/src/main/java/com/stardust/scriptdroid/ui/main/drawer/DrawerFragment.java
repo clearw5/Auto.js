@@ -247,7 +247,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     }
 
     private void inputRemoteHost() {
-        String host = Pref.getServerAddressOrDefault(WifiTool.getWifiAddress(getActivity()));
+        String host = Pref.getServerAddressOrDefault(WifiTool.getRouterIp(getActivity()));
         new MaterialDialog.Builder(getActivity())
                 .title(R.string.text_server_address)
                 .input("", host, (dialog, input) -> {

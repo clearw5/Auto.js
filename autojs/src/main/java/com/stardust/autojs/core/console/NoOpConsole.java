@@ -60,8 +60,9 @@ public class NoOpConsole implements Console {
     }
 
     @Override
-    public void println(int level, CharSequence charSequence) {
+    public String println(int level, CharSequence charSequence) {
 
+        return null;
     }
 
     @Override

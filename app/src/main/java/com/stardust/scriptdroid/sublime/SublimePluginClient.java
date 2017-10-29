@@ -1,14 +1,11 @@
 package com.stardust.scriptdroid.sublime;
 
-import android.graphics.BitmapFactory;
+import android.os.Build;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.stardust.enhancedfloaty.FloatyWindow;
-import com.stardust.enhancedfloaty.ResizableFloaty;
 
-import org.greenrobot.eventbus.EventBus;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 
@@ -72,13 +69,27 @@ public class SublimePluginClient {
             mSocket.setTcpNoDelay(true);
             mOutputStream = mSocket.getOutputStream();
             s.onComplete();
-            readLoop(mSocket.getInputStream());
+            sendDeviceName();
         } catch (IOException e) {
             s.onError(e);
-        } finally {
+            tryClose();
+            return;
+        }
+        try {
+            readLoop(mSocket.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
             tryClose();
         }
 
+    }
+
+    private void sendDeviceName() {
+        JsonObject object = new JsonObject();
+        object.addProperty("type", "device_name");
+        object.addProperty("device_name", Build.MODEL);
+        send(object).subscribe();
     }
 
     public PublishSubject<Boolean> getConnectionState() {
@@ -97,18 +108,15 @@ public class SublimePluginClient {
         }
     }
 
-    public Observable<Void> send(final JsonObject object) {
+    public Observable<JsonObject> send(final JsonObject object) {
         if (mSocket == null) {
             throw new IllegalStateException("Socket is not listening ");
         }
-        return Observable.fromCallable(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                mOutputStream.write(object.toString().getBytes());
-                mOutputStream.write("\n".getBytes());
-                mOutputStream.flush();
-                return null;
-            }
+        return Observable.fromCallable(() -> {
+            mOutputStream.write(object.toString().getBytes());
+            mOutputStream.write("\n".getBytes());
+            mOutputStream.flush();
+            return object;
         });
     }
 

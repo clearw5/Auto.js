@@ -30,10 +30,11 @@ public class GlobalStardustConsole extends StardustConsole {
     }
 
     @Override
-    public void println(int level, CharSequence charSequence) {
-        charSequence = String.format(Locale.getDefault(), "%s/%s: %s",
+    public String println(int level, CharSequence charSequence) {
+        String log = String.format(Locale.getDefault(), "%s/%s: %s",
                 DATE_FORMAT.format(new Date()), getLevelChar(level), charSequence.toString());
-        super.println(level, charSequence);
+        super.println(level, log);
+        return log;
     }
 
     private String getLevelChar(int level) {

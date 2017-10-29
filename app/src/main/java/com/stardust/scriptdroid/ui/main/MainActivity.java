@@ -52,6 +52,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 
+import java.net.Socket;
 import java.util.Arrays;
 
 @EActivity(R.layout.activity_main)

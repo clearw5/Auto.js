@@ -3,6 +3,8 @@ package com.stardust.scriptdroid.sublime;
 import com.google.gson.JsonObject;
 
 import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -50,11 +52,9 @@ public class SublimePluginService {
         JsonObject object = new JsonObject();
         object.addProperty("type", "log");
         object.addProperty("log", log);
-        try {
-            client.send(object);
-        } catch (Exception e) {
-            e.printStackTrace();
-            disconnect();
-        }
+        client.send(object)
+                .subscribeOn(Schedulers.io())
+                .subscribe(ignored -> {
+                }, Throwable::printStackTrace);
     }
 }
