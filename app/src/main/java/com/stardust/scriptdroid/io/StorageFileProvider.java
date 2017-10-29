@@ -16,9 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Function;
 
 /**
  * Created by Stardust on 2017/3/31.
@@ -82,6 +79,7 @@ public class StorageFileProvider {
     private EventBus mDirectoryEventBus = new EventBus();
     private LimitedHashMap<String, List<PFile>> mPFileCache;
     private PFile mInitialDirectory;
+    private FileFilter mFileFilter;
 
     public StorageFileProvider(PFile initialDirectory, int cacheSize, FileFilter fileFilter) {
         mInitialDirectory = initialDirectory;
@@ -89,7 +87,6 @@ public class StorageFileProvider {
         mPFileCache = new LimitedHashMap<>(cacheSize);
     }
 
-    private FileFilter mFileFilter;
 
     public StorageFileProvider(String path, int cacheSize) {
         this(new PFile(path), cacheSize);
@@ -185,23 +182,20 @@ public class StorageFileProvider {
     }
 
 
-    private Observable<PFile> listFiles(PFile directory) {
+    protected Observable<PFile> listFiles(PFile directory) {
         return Observable.just(directory)
-                .flatMap(new Function<PFile, ObservableSource<PFile>>() {
-                    @Override
-                    public ObservableSource<PFile> apply(@NonNull PFile dir) throws Exception {
-                        PFile[] files;
-                        if (mFileFilter == null) {
-                            files = dir.listFiles();
-                        } else {
-                            files = dir.listFiles(mFileFilter);
-                        }
-                        if (files == null) {
-                            return Observable.empty();
-                        }
-                        mPFileCache.put(dir.getPath(), new ArrayList<>(Arrays.asList(files)));
-                        return Observable.fromArray(files);
+                .flatMap(dir -> {
+                    PFile[] files;
+                    if (mFileFilter == null) {
+                        files = dir.listFiles();
+                    } else {
+                        files = dir.listFiles(mFileFilter);
                     }
+                    if (files == null) {
+                        return Observable.empty();
+                    }
+                    mPFileCache.put(dir.getPath(), new ArrayList<>(Arrays.asList(files)));
+                    return Observable.fromArray(files);
                 });
     }
 

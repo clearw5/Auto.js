@@ -65,7 +65,7 @@ public class StardustConsole extends AbstractConsole {
     private AtomicInteger mIdCounter = new AtomicInteger(0);
     private ResizableExpandableFloatyWindow mFloatyWindow;
     private ConsoleFloaty mConsoleFloaty;
-    private LogListener mLogListener;
+    private WeakReference<LogListener> mLogListener;
     private UiHandler mUiHandler;
     private BlockingQueue<String> mInput = new ArrayBlockingQueue<>(1);
     private WeakReference<ConsoleView> mConsoleView;
@@ -96,8 +96,9 @@ public class StardustConsole extends AbstractConsole {
         }
     }
 
+
     public void setLogListener(LogListener logListener) {
-        mLogListener = logListener;
+        mLogListener = new WeakReference<>(logListener);
     }
 
     public ArrayList<Log> getAllLogs() {
@@ -111,8 +112,8 @@ public class StardustConsole extends AbstractConsole {
         if (mGlobalConsole != null) {
             mGlobalConsole.println(level, charSequence);
         }
-        if (mLogListener != null) {
-            mLogListener.onNewLog(log);
+        if (mLogListener != null && mLogListener.get() != null) {
+            mLogListener.get().onNewLog(log);
         }
     }
 
@@ -124,8 +125,8 @@ public class StardustConsole extends AbstractConsole {
         if (mGlobalConsole != null) {
             mGlobalConsole.print(level, charSequence);
         }
-        if (mLogListener != null) {
-            mLogListener.onNewLog(log);
+        if (mLogListener != null && mLogListener.get() != null) {
+            mLogListener.get().onNewLog(log);
         }
     }
 
@@ -133,8 +134,8 @@ public class StardustConsole extends AbstractConsole {
     @Override
     public void clear() {
         mLogs.clear();
-        if (mLogListener != null) {
-            mLogListener.onLogClear();
+        if (mLogListener != null && mLogListener.get() != null) {
+            mLogListener.get().onLogClear();
         }
     }
 

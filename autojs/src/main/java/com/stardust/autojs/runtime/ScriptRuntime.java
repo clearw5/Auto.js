@@ -27,6 +27,7 @@ import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.core.accessibility.SimpleActionAutomator;
 import com.stardust.concurrent.VolatileBox;
 import com.stardust.autojs.runtime.api.UI;
+import com.stardust.concurrent.VolatileDispose;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.autojs.core.util.ProcessShell;
@@ -237,7 +238,7 @@ public class ScriptRuntime {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             return ClipboardUtil.getClipOrEmpty(mUiHandler.getContext()).toString();
         }
-        final VolatileBox<String> clip = new VolatileBox<>("");
+        final VolatileDispose<String> clip = new VolatileDispose<>();
         mUiHandler.post(new Runnable() {
             @Override
             public void run() {

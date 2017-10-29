@@ -246,7 +246,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
     }
 
     @Optional
-    @OnClick(R.id.package_name)
+    @OnClick(R.id.class_name)
     void copyActivityName() {
         dismissSettingsDialog();
         if (TextUtils.isEmpty(mRunningActivity))

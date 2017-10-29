@@ -89,7 +89,6 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     @ViewById(R.id.default_cover)
     View mDefaultCover;
 
-
     private Disposable mConnectionStateDisposable;
 
 
@@ -101,6 +100,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 .doOnNext(connected -> mConnectionItem.getSwitchCompat().setChecked(connected))
                 .subscribe();
         EventBus.getDefault().register(this);
+
     }
 
     @Override
@@ -118,6 +118,9 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     @AfterViews
     void setUpViews() {
         ThemeColorManager.addViewBackground(mHeaderView);
+        if (Pref.isFloatingMenuShown()) {
+            mFloatingWindowItem.getSwitchCompat().setChecked(true);
+        }
     }
 
     private void syncUserInfo() {
@@ -204,6 +207,9 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     void showOrDismissFloatingWindow() {
         boolean isFloatingWindowShowing = FloatyWindowManger.isCircularMenuShowing();
         boolean checked = mFloatingWindowItem.getSwitchCompat().isChecked();
+        if (getActivity() != null && !getActivity().isFinishing()) {
+            Pref.setFloatingMenuShown(checked);
+        }
         if (checked && !isFloatingWindowShowing) {
             FloatyWindowManger.showCircularMenu();
             enableAccessibilityServiceByRootIfNeeded();

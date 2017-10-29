@@ -275,6 +275,12 @@
     <string name="text_registering">注册中</string>
     <string name="text_register_fail">注册失败</string>
     <string name="text_register_succeed">注册成功</string>
+    <string name="text_sample">示例</string>
+    <string name="text_copy_to_my_script">导入到我的脚本</string>
+    <string name="text_reset_to_initial_content">重置为初始内容</string>
+    <string name="text_reset_fail">重置失败</string>
+    <string name="text_reset_succeed">重置成功</string>
+    <string name="text_cannot_read_file" formatted="true">无法读取文件: %s</string>
 
 
     <string-array name="ad_showing_mode_keys">

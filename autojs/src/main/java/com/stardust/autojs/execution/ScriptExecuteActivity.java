@@ -39,7 +39,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         IntentExtras extras = IntentExtras.fromIntent(getIntent());
-        if (extras == null || extras.get(EXTRA_EXECUTION) == null) {
+        if (extras.get(EXTRA_EXECUTION) == null) {
             finish();
             return;
         }

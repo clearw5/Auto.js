@@ -17,7 +17,7 @@ import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.model.sample.Sample;
+import com.stardust.scriptdroid.model.sample.SampleFile;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.theme.ThemeColorManager;
@@ -41,14 +41,14 @@ import static com.stardust.scriptdroid.model.script.Scripts.EXTRA_EXCEPTION_MESS
 public class ViewSampleActivity extends AppCompatActivity implements OnActivityResultDelegate.DelegateHost {
 
 
-    public static void view(Context context, Sample sample) {
+    public static void view(Context context, SampleFile sample) {
         context.startActivity(new Intent(context, ViewSampleActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra("sample", sample));
+                .putExtra("sample_path", sample.getPath()));
     }
 
     private View mView;
-    private Sample mSample;
+    private SampleFile mSample;
     private ScriptExecution mScriptExecution;
     private SparseArray<ToolbarMenuItem> mMenuMap;
     private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
@@ -76,8 +76,7 @@ public class ViewSampleActivity extends AppCompatActivity implements OnActivityR
     }
 
     private void handleIntent(Intent intent) {
-        mSample = (Sample) intent.getSerializableExtra("sample");
-        String content = AssetsCache.get(this, mSample.path);
+        mSample = new SampleFile(intent.getStringExtra("sample_path"), getAssets());
     }
 
     private void setUpUI() {
@@ -92,7 +91,7 @@ public class ViewSampleActivity extends AppCompatActivity implements OnActivityR
     }
 
     private void setUpToolbar() {
-        BaseActivity.setToolbarAsBack(this, R.id.toolbar, mSample.name);
+        BaseActivity.setToolbarAsBack(this, R.id.toolbar, mSample.getSimplifiedName());
     }
 
     @OnClick(R.id.run)

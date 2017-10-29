@@ -34,7 +34,7 @@ public class ScriptFile extends PFile {
         super(parent, name);
     }
 
-    public ScriptFile(ScriptFile parent, String child) {
+    public ScriptFile(File parent, String child) {
         super(parent, child);
     }
 

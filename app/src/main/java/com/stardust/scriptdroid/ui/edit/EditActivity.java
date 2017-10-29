@@ -14,8 +14,10 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
+import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_CONTENT;
 import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_NAME;
 import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_PATH;
+import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_READ_ONLY;
 
 /**
  * Created by Stardust on 2017/1/29.
@@ -41,8 +43,12 @@ public class EditActivity extends BaseActivity {
                 .putExtra(EXTRA_NAME, name));
     }
 
-    public static void editFile(Context context, ScriptFile file) {
-        editFile(context, file.getSimplifiedName(), file.getPath());
+    public static void viewContent(Context context, String name, String content) {
+        context.startActivity(new Intent(context, EditActivity_.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(EXTRA_CONTENT, content)
+                .putExtra(EXTRA_NAME, name)
+                .putExtra(EXTRA_READ_ONLY, true));
     }
 
     @AfterViews

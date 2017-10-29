@@ -22,10 +22,10 @@ import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.io.TmpScriptFiles;
+import com.stardust.scriptdroid.model.sample.SampleFile;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.io.StorageFileProvider;
-import com.stardust.scriptdroid.model.sample.Sample;
 import com.stardust.scriptdroid.network.download.DownloadManager;
 import com.stardust.scriptdroid.ui.filechooser.FileChooserDialogBuilder;
 import com.stardust.scriptdroid.ui.shortcut.ShortcutCreateActivity;
@@ -110,51 +110,43 @@ public class ScriptOperations {
     public Observable<String> importFile(final String pathFrom) {
         return showFileNameInputDialog(PFiles.getNameWithoutExtension(pathFrom), PFiles.getExtension(pathFrom))
                 .observeOn(Schedulers.io())
-                .map(new Function<String, String>() {
-                    @Override
-                    public String apply(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        final String pathTo = getCurrentDirectoryPath() + s + "." + PFiles.getExtension(pathFrom);
-                        if (PFiles.copy(pathFrom, pathTo)) {
-                            showMessage(R.string.text_import_succeed);
-                        } else {
-                            showMessage(R.string.text_import_fail);
-                        }
-                        mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(pathTo));
-                        return pathTo;
+                .map(input -> {
+                    final String pathTo = getCurrentDirectoryPath() + input + "." + PFiles.getExtension(pathFrom);
+                    if (PFiles.copy(pathFrom, pathTo)) {
+                        showMessage(R.string.text_import_succeed);
+                    } else {
+                        showMessage(R.string.text_import_fail);
                     }
+                    mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(pathTo));
+                    return pathTo;
                 });
     }
 
     public Observable<String> importFile(String prefix, final InputStream inputStream, final String ext) {
         return showFileNameInputDialog(PFiles.getNameWithoutExtension(prefix), ext)
                 .observeOn(Schedulers.io())
-                .map(new Function<String, String>() {
-                    @Override
-                    public String apply(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        final String pathTo = getCurrentDirectoryPath() + s + "." + ext;
-                        if (PFiles.copyStream(inputStream, pathTo)) {
-                            showMessage(R.string.text_import_succeed);
-                        } else {
-                            showMessage(R.string.text_import_fail);
-                        }
-                        mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(pathTo));
-                        return pathTo;
+                .map(input -> {
+                    final String pathTo = getCurrentDirectoryPath() + input + "." + ext;
+                    if (PFiles.copyStream(inputStream, pathTo)) {
+                        showMessage(R.string.text_import_succeed);
+                    } else {
+                        showMessage(R.string.text_import_fail);
                     }
+                    mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(pathTo));
+                    return pathTo;
                 });
     }
 
 
     public void newDirectory() {
         showNameInputDialog("", new InputCallback())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(@io.reactivex.annotations.NonNull String path) throws Exception {
-                        if (new ScriptFile(getCurrentDirectory(), path).mkdirs()) {
-                            showMessage(R.string.text_already_create);
-                            mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(path));
-                        } else {
-                            showMessage(R.string.text_create_fail);
-                        }
+                .subscribe(path -> {
+                    ScriptFile newDir = new ScriptFile(getCurrentDirectory(), path);
+                    if (newDir.mkdirs()) {
+                        showMessage(R.string.text_already_create);
+                        mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(newDir));
+                    } else {
+                        showMessage(R.string.text_create_fail);
                     }
                 });
     }
@@ -164,12 +156,7 @@ public class ScriptOperations {
             showMessageWithoutThreadSwitch(resId);
         }
         //switch to ui thread to show message
-        App.getApp().getUiHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                showMessageWithoutThreadSwitch(resId);
-            }
-        });
+        App.getApp().getUiHandler().post(() -> showMessageWithoutThreadSwitch(resId));
     }
 
     private void showMessageWithoutThreadSwitch(int resId) {
@@ -191,12 +178,9 @@ public class ScriptOperations {
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .alwaysCallInputCallback()
                 .input(getString(R.string.text_please_input_name), prefix, false, textWatcher)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        input.onNext(dialog.getInputEditText().getText().toString());
-                        input.onComplete();
-                    }
+                .onPositive((dialog, which) -> {
+                    input.onNext(dialog.getInputEditText().getText().toString());
+                    input.onComplete();
                 })
                 .build());
         return input;
@@ -207,9 +191,9 @@ public class ScriptOperations {
         return mContext.getString(resId);
     }
 
-    public Observable<String> importSample(Sample sample) {
+    public Observable<String> importSample(SampleFile sample) {
         try {
-            return importFile(sample.name, mContext.getAssets().open(sample.path), PFiles.getExtension(sample.path));
+            return importFile(sample.getSimplifiedName(), sample.openInputStream(), sample.getExtension());
         } catch (IOException e) {
             e.printStackTrace();
             showMessage(R.string.text_import_fail);

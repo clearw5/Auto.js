@@ -17,6 +17,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -172,46 +173,36 @@ public class CodeMirrorEditor extends FrameLayout {
         mWebView.setWebChromeClient(new MyWebChromeClient());
     }
 
+    public void setReadOnly(boolean readOnly) {
+        evalJavaScript(String.format("editor.setOption('readOnly', %b);", readOnly));
+    }
+
     public void setProgress(boolean onProgress) {
         mProgressBarContainer.setVisibility(onProgress ? VISIBLE : GONE);
     }
 
     public void setText(final String text) {
         mTextFromAndroid = text;
-        mPageFinished.promise().done(new DoneCallback<Void>() {
-            @Override
-            public void onDone(Void result) {
-                evalJavaScript("editor.setValue(__bridge__.getStringFromAndroid());");
-            }
-        });
+        mPageFinished.promise().done(result -> evalJavaScript("editor.setValue(__bridge__.getStringFromAndroid());"));
     }
 
     public void insert(String text) {
         mTextFromAndroid = text;
-        mPageFinished.promise().done(new DoneCallback<Void>() {
-            @Override
-            public void onDone(Void result) {
-                evalJavaScript("editor.replaceSelection(__bridge__.getStringFromAndroid());");
-            }
-        });
+        mPageFinished.promise().done(result -> evalJavaScript("editor.replaceSelection(__bridge__.getStringFromAndroid());"));
     }
 
     public void loadFile(final File file) {
         setProgress(true);
-        // TODO: 2017/9/29 handle error
-        Observable.fromCallable(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                return PFiles.read(file);
-            }
-        }).subscribeOn(Schedulers.io())
+        Observable.fromCallable(() -> PFiles.read(file))
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(@NonNull String s) throws Exception {
-                        setText(s);
-                        setProgress(false);
-                    }
+                .subscribe(s -> {
+                    setText(s);
+                    setProgress(false);
+                }, err -> {
+                    err.printStackTrace();
+                    Toast.makeText(getContext(), getContext().getString(R.string.text_cannot_read_file, file.getPath()),
+                            Toast.LENGTH_SHORT).show();
                 });
     }
 
