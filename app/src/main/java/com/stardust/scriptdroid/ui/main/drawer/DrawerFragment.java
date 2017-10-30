@@ -1,8 +1,12 @@
 package com.stardust.scriptdroid.ui.main.drawer;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,6 +17,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.stardust.notification.NotificationListenerService;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
@@ -55,6 +60,7 @@ import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Stardust on 2017/1/30.
+ * TODO 侧拉菜单用RecyclerView
  */
 @EFragment(R.layout.fragment_drawer)
 public class DrawerFragment extends android.support.v4.app.Fragment {
@@ -66,6 +72,9 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
 
     @ViewById(R.id.accessibility_service)
     DrawerMenuItem mAccessibilityServiceItem;
+
+    @ViewById(R.id.notification_service)
+    DrawerMenuItem mNotificationPermissionItem;
 
     @ViewById(R.id.floating_window)
     DrawerMenuItem mFloatingWindowItem;
@@ -201,6 +210,19 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         }
     }
 
+    @Click(R.id.notification_service)
+    void goToNotificationServiceSettings() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
+            return;
+        }
+        boolean enabled = NotificationListenerService.getInstance() != null;
+        boolean checked = mNotificationPermissionItem.getSwitchCompat().isChecked();
+        if ((checked && !enabled) || (!checked && enabled)) {
+            startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
+        }
+    }
+
+
     private boolean isAccessibilityServiceEnabled() {
         return AccessibilityServiceTool.isAccessibilityServiceEnabled(getActivity());
     }
@@ -307,6 +329,10 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     private void syncSwitchState() {
         mAccessibilityServiceItem.getSwitchCompat().setChecked(
                 AccessibilityServiceTool.isAccessibilityServiceEnabled(getActivity()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            mNotificationPermissionItem.getSwitchCompat().setChecked(NotificationListenerService.getInstance() != null);
+        }
+
     }
 
     private void enableAccessibilityService() {

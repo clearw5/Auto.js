@@ -27,11 +27,11 @@ import com.stardust.util.ScreenMetrics;
 public class ScreenCapturer {
 
     private static final String LOG_TAG = "ScreenCapturer";
+    private final Object mCachedImageLock = new Object();
     private ImageReader mImageReader;
     private MediaProjection mMediaProjection;
     private VirtualDisplay mVirtualDisplay;
     private volatile Looper mImageAcquireLooper;
-    private final Object mImageWaitingLock = new Object();
     private volatile Image mUnderUsingImage;
     private volatile Image mCachedImage;
     private final int mScreenWidth;
@@ -87,7 +87,13 @@ public class ScreenCapturer {
             @Override
             public void onImageAvailable(ImageReader reader) {
                 if (mCachedImage != null) {
-                    return;
+                    synchronized (mCachedImageLock) {
+                        if (mCachedImage != null) {
+                            mCachedImage.close();
+                        }
+                        mCachedImage = reader.acquireLatestImage();
+                        return;
+                    }
                 }
                 mCachedImage = reader.acquireLatestImage();
             }
@@ -99,8 +105,10 @@ public class ScreenCapturer {
         if (mCachedImage != null) {
             if (mUnderUsingImage != null)
                 mUnderUsingImage.close();
-            mUnderUsingImage = mCachedImage;
-            mCachedImage = null;
+            synchronized (mCachedImageLock) {
+                mUnderUsingImage = mCachedImage;
+                mCachedImage = null;
+            }
         }
         return mUnderUsingImage;
     }

@@ -15,7 +15,7 @@
         <com.stardust.scriptdroid.ui.main.drawer.DrawerMenuGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="@string/text_accessibility_service">
+            app:title="@string/text_service">
 
             <com.stardust.scriptdroid.ui.main.drawer.DrawerMenuItem
                 android:id="@+id/accessibility_service"
@@ -33,6 +33,14 @@
                 app:icon="@drawable/ic_stable"
                 app:pref_key="@string/key_stable_mode"
                 app:title="@string/text_stable_mode"
+                app:with_switch="true"/>
+
+            <com.stardust.scriptdroid.ui.main.drawer.DrawerMenuItem
+                android:id="@+id/notification_service"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_ali_notification"
+                app:title="@string/text_notification_permission"
                 app:with_switch="true"/>
 
 

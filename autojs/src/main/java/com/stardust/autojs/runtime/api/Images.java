@@ -99,7 +99,6 @@ public class Images {
         Image image = mScreenCapturer.capture();
         if (image != null) {
             saveImage(image, path);
-            image.close();
             return true;
         }
         return false;

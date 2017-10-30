@@ -282,6 +282,8 @@
     <string name="text_reset_succeed">重置成功</string>
     <string name="text_cannot_read_file" formatted="true">无法读取文件: %s</string>
     <string name="text_connected">已连接</string>
+    <string name="text_service">服务</string>
+    <string name="text_notification_permission">通知权限</string>
 
 
     <string-array name="ad_showing_mode_keys">

@@ -1,11 +1,13 @@
 package com.stardust.view.accessibility;
 
 import android.accessibilityservice.AccessibilityService;
-import android.app.Notification;
 import android.content.Context;
+import android.service.notification.StatusBarNotification;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
+
+import com.stardust.notification.Notification;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 
 public interface NotificationListener {
+
 
     class NotificationInfo {
 
@@ -73,9 +76,9 @@ public interface NotificationListener {
         }
     }
 
-    void onNotification(AccessibilityEvent event, NotificationInfo notification);
 
-    void onNotification(AccessibilityEvent event, Notification notification);
+    void onNotification(Notification notification);
+
 
     class Observer implements NotificationListener, AccessibilityDelegate {
 
@@ -91,27 +94,6 @@ public interface NotificationListener {
             mContext = context;
         }
 
-        @Override
-        public void onNotification(AccessibilityEvent event, NotificationInfo notification) {
-            for (NotificationListener listener : mNotificationListeners) {
-                try {
-                    listener.onNotification(event, notification);
-                } catch (Exception e) {
-                    Log.e(TAG, "Error onNotification: " + notification + " Listener: " + listener, e);
-                }
-            }
-        }
-
-        @Override
-        public void onNotification(AccessibilityEvent event, Notification notification) {
-            for (NotificationListener listener : mNotificationListeners) {
-                try {
-                    listener.onNotification(event, notification);
-                } catch (Exception e) {
-                    Log.e(TAG, "Error onNotification: " + notification + " Listener: " + listener, e);
-                }
-            }
-        }
 
         public void addListener(NotificationListener listener) {
             mNotificationListeners.add(listener);
@@ -124,18 +106,9 @@ public interface NotificationListener {
         @Override
         public boolean onAccessibilityEvent(AccessibilityService service, AccessibilityEvent event) {
             if (event.getParcelableData() instanceof Notification) {
-                Notification notification = (Notification) event.getParcelableData();
+                android.app.Notification notification = (android.app.Notification) event.getParcelableData();
                 Log.d(TAG, "onNotification: " + notification + "; " + event);
-                onNotification(event, notification);
-            } else {
-                List<CharSequence> list = event.getText();
-                Log.d(TAG, "onNotification: " + list + "; " + event);
-                if (event.getPackageName().equals(mContext.getPackageName())) {
-                    return false;
-                }
-                if (list != null) {
-                    onNotification(event, new NotificationInfo(event.getPackageName(), list));
-                }
+                onNotification(Notification.create(notification, event.getPackageName().toString()));
             }
             return false;
         }
@@ -144,6 +117,17 @@ public interface NotificationListener {
         @Override
         public Set<Integer> getEventTypes() {
             return EVENT_TYPES;
+        }
+
+        @Override
+        public void onNotification(Notification notification) {
+            for (NotificationListener listener : mNotificationListeners) {
+                try {
+                    listener.onNotification(notification);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error onNotification: " + notification + " Listener: " + listener, e);
+                }
+            }
         }
     }
 }
