@@ -1,7 +1,6 @@
-package com.stardust.scriptdroid.sublime;
+package com.stardust.scriptdroid.pluginclient;
 
 import android.text.TextUtils;
-import android.util.SparseArray;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
@@ -21,56 +20,40 @@ import java.util.HashMap;
  * Created by Stardust on 2017/5/11.
  */
 
-public class SublimeResponseHandler implements Handler {
+public class DevPluginResponseHandler implements Handler {
 
 
     private Router mRouter = new Router("type")
             .handler("command", new Router("command")
-                    .handler("run", new Handler() {
-                        @Override
-                        public boolean handle(JsonObject data) {
-                            String script = data.get("script").getAsString();
-                            String name = getName(data);
-                            String viewId = data.get("view_id").getAsString();
-                            runScript(viewId, name, script);
-                            return false;
-                        }
+                    .handler("run", data -> {
+                        String script = data.get("script").getAsString();
+                        String name = getName(data);
+                        String viewId = data.get("view_id").getAsString();
+                        runScript(viewId, name, script);
+                        return false;
                     })
-                    .handler("stop", new Handler() {
-                        @Override
-                        public boolean handle(JsonObject data) {
-                            String viewId = data.get("view_id").getAsString();
-                            stopScript(viewId);
-                            return true;
-                        }
+                    .handler("stop", data -> {
+                        String viewId = data.get("view_id").getAsString();
+                        stopScript(viewId);
+                        return true;
                     })
-                    .handler("save", new Handler() {
-                        @Override
-                        public boolean handle(JsonObject data) {
-                            String script = data.get("script").getAsString();
-                            String name = getName(data);
-                            saveScript(name, script);
-                            return false;
-                        }
+                    .handler("save", data -> {
+                        String script = data.get("script").getAsString();
+                        String name = getName(data);
+                        saveScript(name, script);
+                        return false;
                     })
-                    .handler("rerun", new Handler() {
-
-                        @Override
-                        public boolean handle(JsonObject data) {
-                            String viewId = data.get("view_id").getAsString();
-                            String script = data.get("script").getAsString();
-                            String name = getName(data);
-                            stopScript(viewId);
-                            runScript(viewId, name, script);
-                            return false;
-                        }
+                    .handler("rerun", data -> {
+                        String viewId = data.get("view_id").getAsString();
+                        String script = data.get("script").getAsString();
+                        String name = getName(data);
+                        stopScript(viewId);
+                        runScript(viewId, name, script);
+                        return false;
                     })
-                    .handler("stopAll", new Handler() {
-                        @Override
-                        public boolean handle(JsonObject data) {
-                            AutoJs.getInstance().getScriptEngineService().stopAllAndToast();
-                            return false;
-                        }
+                    .handler("stopAll", data -> {
+                        AutoJs.getInstance().getScriptEngineService().stopAllAndToast();
+                        return false;
                     }));
 
 

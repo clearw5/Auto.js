@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.sublime;
+package com.stardust.scriptdroid.pluginclient;
 
 import com.google.gson.JsonObject;
 

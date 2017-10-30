@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -18,7 +17,7 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.network.GlideApp;
-import com.stardust.scriptdroid.network.UserService;
+import com.stardust.scriptdroid.pluginclient.DevPluginClient;
 import com.stardust.scriptdroid.ui.floating.CircularMenu;
 import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
 import com.stardust.scriptdroid.network.NodeBB;
@@ -36,7 +35,7 @@ import com.stardust.scriptdroid.ui.widget.AvatarView;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.theme.ThemeColorManagerCompat;
 import com.stardust.view.accessibility.AccessibilityService;
-import com.stardust.scriptdroid.sublime.SublimePluginService;
+import com.stardust.scriptdroid.pluginclient.DevPluginService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.tool.WifiTool;
 import com.stardust.util.IntentUtil;
@@ -95,23 +94,25 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mConnectionStateDisposable = SublimePluginService.getConnectionState()
+        mConnectionStateDisposable = DevPluginService.getInstance().getConnection()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(connected -> mConnectionItem.getSwitchCompat().setChecked(connected))
-                .subscribe();
+                .subscribe(state -> {
+                    if (mConnectionItem != null) {
+                        mConnectionItem.getSwitchCompat().setChecked(state.getState() == DevPluginClient.State.CONNECTED, false);
+                        mConnectionItem.setProgress(state.getState() == DevPluginClient.State.CONNECTING);
+                    }
+                    if (state.getException() != null) {
+                        showMessage(state.getException().getMessage());
+                    }
+                });
         EventBus.getDefault().register(this);
 
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        syncSwitchState();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
+        syncSwitchState();
         syncUserInfo();
     }
 
@@ -121,6 +122,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         if (Pref.isFloatingMenuShown()) {
             mFloatingWindowItem.getSwitchCompat().setChecked(true);
         }
+        mConnectionItem.getSwitchCompat().setChecked(DevPluginService.getInstance().isConnected(), false);
     }
 
     private void syncUserInfo() {
@@ -238,11 +240,11 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     @Click(R.id.debug)
     void connectOrDisconnectToRemote() {
         boolean checked = mConnectionItem.getSwitchCompat().isChecked();
-        boolean connected = SublimePluginService.isConnected();
+        boolean connected = DevPluginService.getInstance().isConnected();
         if (checked && !connected) {
             inputRemoteHost();
         } else if (!checked && connected) {
-            SublimePluginService.disconnectIfNeeded();
+            DevPluginService.getInstance().disconnectIfNeeded();
         }
     }
 
@@ -264,28 +266,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     }
 
     private void connectToRemote(String host) {
-        mConnectionItem.setProgress(true);
-        Toast.makeText(App.getApp(), R.string.text_connecting, Toast.LENGTH_SHORT).show();
-        SublimePluginService.connect(host)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleObserver<Void>() {
-
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        if (isHidden()) {
-                            return;
-                        }
-                        Toast.makeText(App.getApp(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                        mConnectionItem.getSwitchCompat().setChecked(false, false);
-                        mConnectionItem.setProgress(false);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        mConnectionItem.setProgress(false);
-                    }
-                });
+        DevPluginService.getInstance().connectToServer(host);
     }
 
     @Click(R.id.check_for_updates)
@@ -348,6 +329,13 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                     }
                     mAccessibilityServiceItem.setProgress(false);
                 });
+    }
+
+
+    private void showMessage(CharSequence text) {
+        if (getContext() == null)
+            return;
+        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
     }
 
     @Override

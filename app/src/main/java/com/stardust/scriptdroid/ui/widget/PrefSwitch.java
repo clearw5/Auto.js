@@ -73,12 +73,12 @@ public class PrefSwitch extends SwitchCompat implements SharedPreferences.OnShar
 
     @Override
     public void setChecked(boolean checked) {
-        setChecked(checked, true);
-
+        super.setChecked(checked);
+        notifyPrefChanged(checked);
     }
 
     public void setChecked(boolean checked, boolean notifyChange) {
-        super.setChecked(checked);
+        super.setChecked(checked, notifyChange);
         if (notifyChange) {
             notifyPrefChanged(checked);
         }

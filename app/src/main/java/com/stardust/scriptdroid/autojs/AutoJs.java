@@ -32,7 +32,7 @@ import com.stardust.scriptdroid.R;
 import com.stardust.autojs.core.image.ScreenCaptureRequestActivity;
 import com.stardust.autojs.core.util.Shell;
 import com.stardust.autojs.core.console.StardustConsole;
-import com.stardust.scriptdroid.sublime.SublimePluginService;
+import com.stardust.scriptdroid.pluginclient.DevPluginService;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
@@ -81,7 +81,7 @@ public class AutoJs {
             @Override
             public String println(int level, CharSequence charSequence) {
                 String log = super.println(level, charSequence);
-                SublimePluginService.log(log);
+                DevPluginService.getInstance().log(log);
                 return log;
             }
         };
