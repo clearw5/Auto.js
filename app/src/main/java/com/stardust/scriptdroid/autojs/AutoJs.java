@@ -15,7 +15,7 @@ import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
 import com.stardust.autojs.engine.RootAutomatorEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
-import com.stardust.autojs.core.bridge.AccessibilityBridge;
+import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.core.console.GlobalStardustConsole;
 import com.stardust.autojs.runtime.exception.ScriptException;

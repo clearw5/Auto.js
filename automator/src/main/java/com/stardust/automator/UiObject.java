@@ -97,7 +97,7 @@ public class UiObject extends AccessibilityNodeInfoCompat {
         }
     }
 
-    public <T> T find(UiGlobalSelector selector) {
+    public UiObjectCollection find(UiGlobalSelector selector) {
         return selector.findOf(this);
     }
 
@@ -105,13 +105,12 @@ public class UiObject extends AccessibilityNodeInfoCompat {
         return selector.findOneOf(this);
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T children() {
+    public UiObjectCollection children() {
         ArrayList<AccessibilityNodeInfoCompat> list = new ArrayList<>(getChildCount());
         for (int i = 0; i < getChildCount(); i++) {
             list.add(getChild(i));
         }
-        return (T) UiObjectCollection.ofCompat(list);
+        return UiObjectCollection.ofCompat(list);
     }
 
     public int childCount() {
