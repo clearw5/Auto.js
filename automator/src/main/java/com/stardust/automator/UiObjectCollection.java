@@ -2,6 +2,7 @@ package com.stardust.automator;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -10,8 +11,11 @@ import com.stardust.util.Consumer;
 import com.stardust.util.Func1;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.*;
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CONTEXT_CLICK;
@@ -27,7 +31,7 @@ import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.
  * Created by Stardust on 2017/3/9.
  */
 
-public class UiObjectCollection {
+public class UiObjectCollection implements List<UiObject> {
 
     public static final UiObjectCollection EMPTY = UiObjectCollection.of(Collections.<UiObject>emptyList());
 
@@ -49,7 +53,7 @@ public class UiObjectCollection {
 
     private List<UiObject> mNodes;
 
-    private UiObjectCollection(List<UiObject> list) {
+    protected UiObjectCollection(List<UiObject> list) {
         mNodes = list;
     }
 
@@ -189,12 +193,124 @@ public class UiObjectCollection {
                 new ActionArgument.IntActionArgument(ACTION_ARGUMENT_COLUMN_INT, column));
     }
 
+    @Override
     public UiObject get(int i) {
         return mNodes.get(i);
     }
 
+    @Override
+    public UiObject set(int index, UiObject element) {
+        return mNodes.set(index, element);
+    }
+
+    @Override
+    public void add(int index, UiObject element) {
+        mNodes.add(index, element);
+    }
+
+    @Override
+    public UiObject remove(int index) {
+        return mNodes.remove(index);
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        return mNodes.indexOf(o);
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        return mNodes.lastIndexOf(o);
+    }
+
+    @NonNull
+    @Override
+    public ListIterator<UiObject> listIterator() {
+        return mNodes.listIterator();
+    }
+
+    @NonNull
+    @Override
+    public ListIterator<UiObject> listIterator(int index) {
+        return mNodes.listIterator(index);
+    }
+
+    @NonNull
+    @Override
+    public UiObjectCollection subList(int fromIndex, int toIndex) {
+        return UiObjectCollection.of(mNodes.subList(fromIndex, toIndex));
+    }
+
     public int size() {
         return mNodes.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return mNodes.isEmpty();
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        return mNodes.contains(o);
+    }
+
+    @NonNull
+    @Override
+    public Iterator<UiObject> iterator() {
+        return mNodes.iterator();
+    }
+
+    @NonNull
+    @Override
+    public Object[] toArray() {
+        return mNodes.toArray();
+    }
+
+    @NonNull
+    @Override
+    public <T> T[] toArray(@NonNull T[] a) {
+        return mNodes.toArray(a);
+    }
+
+    @Override
+    public boolean add(UiObject uiObject) {
+        return mNodes.add(uiObject);
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        return mNodes.remove(o);
+    }
+
+    @Override
+    public boolean containsAll(@NonNull Collection<?> c) {
+        return mNodes.containsAll(c);
+    }
+
+    @Override
+    public boolean addAll(@NonNull Collection<? extends UiObject> c) {
+        return mNodes.addAll(c);
+    }
+
+    @Override
+    public boolean addAll(int index, @NonNull Collection<? extends UiObject> c) {
+        return mNodes.addAll(index, c);
+    }
+
+    @Override
+    public boolean removeAll(@NonNull Collection<?> c) {
+        return mNodes.retainAll(c);
+    }
+
+    @Override
+    public boolean retainAll(@NonNull Collection<?> c) {
+        return mNodes.retainAll(c);
+    }
+
+    @Override
+    public void clear() {
+        mNodes.clear();
     }
 
     public UiObjectCollection each(Consumer<UiObject> consumer) {
@@ -216,7 +332,7 @@ public class UiObjectCollection {
     public UiObjectCollection find(UiGlobalSelector selector) {
         List<UiObject> list = new ArrayList<>();
         for (UiObject object : mNodes) {
-            list.addAll(selector.findOf(object).mNodes);
+            list.addAll(((UiObjectCollection) selector.findOf(object)).mNodes);
         }
         return of(list);
     }
@@ -232,11 +348,11 @@ public class UiObjectCollection {
     }
 
     public boolean empty() {
-        return size() == 0;
+        return isEmpty();
     }
 
     public boolean nonEmpty() {
-        return size() != 0;
+        return !isEmpty();
     }
 
 }

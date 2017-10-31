@@ -6,7 +6,6 @@ package com.stardust.autojs.runtime;
 
 public class ScriptBridges {
 
-
     public interface FunctionCaller {
 
         Object[] NO_ARGUMENTS = new Object[0];
@@ -25,4 +24,6 @@ public class ScriptBridges {
             throw new IllegalStateException("no function caller");
         return mFunctionCaller.call(func, target, args);
     }
+
+
 }

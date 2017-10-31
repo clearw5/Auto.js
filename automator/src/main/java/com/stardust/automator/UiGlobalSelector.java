@@ -351,13 +351,19 @@ public class UiGlobalSelector {
         return this;
     }
 
-    public UiObjectCollection findOf(UiObject node) {
+
+    /**
+     * Note: The method use a dirty template to make its child class can
+     *  change the type of return value.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T findOf(UiObject node) {
         List<UiObject> list = new ArrayList<>();
         list.add(node);
         for (ListFilter filter : mFilters) {
             list = filter.filter(list);
         }
-        return UiObjectCollection.of(list);
+        return (T) UiObjectCollection.of(list);
     }
 
     @Nullable

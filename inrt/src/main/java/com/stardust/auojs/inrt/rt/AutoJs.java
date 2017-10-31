@@ -13,7 +13,7 @@ import com.stardust.auojs.inrt.App;
 import com.stardust.auojs.inrt.R;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.ScriptEngineServiceBuilder;
-import com.stardust.autojs.core.accessibility.AccessibilityBridge;
+import com.stardust.autojs.core.bridge.AccessibilityBridge;
 import com.stardust.autojs.core.console.GlobalStardustConsole;
 import com.stardust.autojs.core.inputevent.InputEventObserver;
 import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;

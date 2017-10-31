@@ -1,11 +1,15 @@
 package com.stardust.autojs.core.accessibility;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.autojs.annotation.ScriptInterface;
+import com.stardust.autojs.core.bridge.AccessibilityBridge;
+import com.stardust.autojs.core.bridge.ScriptBridges;
 import com.stardust.autojs.runtime.accessibility.AutomatorConfig;
+import com.stardust.autojs.runtime.api.UI;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.automator.ActionArgument;
 import com.stardust.automator.UiGlobalSelector;
@@ -55,22 +59,33 @@ public class UiSelector extends UiGlobalSelector {
 
 
     private static final String TAG = "UiSelector";
+    private static Object sEmptyUiCollection;
 
     private AccessibilityBridge mAccessibilityBridge;
     private AccessibilityNodeInfoAllocator mAllocator = null;
+    private ScriptBridges mScriptBridges;
 
-    public UiSelector(AccessibilityBridge accessibilityBridge) {
-        mAccessibilityBridge = accessibilityBridge;
+    public UiSelector(ScriptBridges bridges) {
+        this(bridges, null);
     }
 
-    public UiSelector(AccessibilityBridge accessibilityBridge, AccessibilityNodeInfoAllocator allocator) {
-        mAccessibilityBridge = accessibilityBridge;
+    public UiSelector(ScriptBridges bridges, AccessibilityNodeInfoAllocator allocator) {
+        mAccessibilityBridge = bridges.getAccessibilityBrige();
+        mScriptBridges = bridges;
         mAllocator = allocator;
     }
 
     @NonNull
     @ScriptInterface
-    public UiObjectCollection find() {
+    public Object find() {
+        UiObjectCollection c = findInner();
+        if(c == UiObjectCollection.EMPTY){
+            return emptyUiCollection();
+        }
+        return mScriptBridges.wrapAsArray(c);
+    }
+
+    protected UiObjectCollection findInner(){
         ensureAccessibilityServiceEnabled();
         if (AutomatorConfig.isUnintendedGuardEnabled() && isRunningPackageSelf()) {
             Log.d(TAG, "isSelfPackage return null");
@@ -80,7 +95,22 @@ public class UiSelector extends UiGlobalSelector {
         if (root == null) {
             return UiObjectCollection.EMPTY;
         }
-        return findOf(UiObject.createRoot(root, mAllocator));
+        return super.findOf(UiObject.createRoot(root, mAllocator));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object findOf(UiObject node) {
+        return mScriptBridges.wrapAsArray((Iterable<?>) super.findOf(node));
+    }
+
+
+    @NonNull
+    private Object emptyUiCollection() {
+        if(sEmptyUiCollection == null){
+            sEmptyUiCollection = mScriptBridges.wrapAsArray(UiObjectCollection.EMPTY);
+        }
+        return sEmptyUiCollection;
     }
 
 
@@ -95,8 +125,15 @@ public class UiSelector extends UiGlobalSelector {
 
     @ScriptInterface
     @NonNull
-    public UiObjectCollection untilFind() {
-        UiObjectCollection uiObjectCollection = find();
+    public Object untilFind() {
+        return mScriptBridges.wrapAsArray(untilFindInner());
+    }
+
+
+    @ScriptInterface
+    @NonNull
+    protected UiObjectCollection untilFindInner() {
+        UiObjectCollection uiObjectCollection = findInner();
         while (uiObjectCollection.empty()) {
             if (Thread.currentThread().isInterrupted()) {
                 throw new ScriptInterruptedException();
@@ -106,7 +143,7 @@ public class UiSelector extends UiGlobalSelector {
             } catch (InterruptedException e) {
                 throw new ScriptInterruptedException();
             }
-            uiObjectCollection = find();
+            uiObjectCollection = findInner();
         }
         return uiObjectCollection;
     }
@@ -118,13 +155,13 @@ public class UiSelector extends UiGlobalSelector {
 
     @ScriptInterface
     public boolean exists() {
-        UiObjectCollection collection = find();
+        UiObjectCollection collection = findInner();
         return collection.nonEmpty();
     }
 
     @NonNull
     public UiObject untilFindOne() {
-        UiObjectCollection collection = untilFind();
+        UiObjectCollection collection = untilFindInner();
         return new UiObject(collection.get(0).getInfo());
     }
 
@@ -151,7 +188,7 @@ public class UiSelector extends UiGlobalSelector {
 
 
     private boolean performAction(int action, ActionArgument... arguments) {
-        return untilFind().performAction(action, arguments);
+        return untilFindInner().performAction(action, arguments);
     }
 
 
