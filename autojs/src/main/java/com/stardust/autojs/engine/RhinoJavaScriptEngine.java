@@ -3,19 +3,25 @@ package com.stardust.autojs.engine;
 import android.util.Log;
 
 import com.stardust.autojs.BuildConfig;
+import com.stardust.autojs.core.accessibility.UiCollection;
 import com.stardust.autojs.rhino.AndroidContextFactory;
 import com.stardust.autojs.rhino.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
+import com.stardust.automator.UiObjectCollection;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ImporterTopLevel;
+import org.mozilla.javascript.NativeArray;
+import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.TopLevel;
+import org.mozilla.javascript.WrapFactory;
 import org.mozilla.javascript.commonjs.module.RequireBuilder;
 import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider;
 import org.mozilla.javascript.tools.debugger.Dim;
@@ -23,9 +29,12 @@ import org.mozilla.javascript.tools.debugger.Dim;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -33,7 +42,13 @@ import java.util.List;
 
 public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
+    public interface TypeWrapper {
+
+        Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType);
+    }
+
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
+    private static Constructor<?> nativeStringConstructor;
 
     private static int contextCount = 0;
     private static StringScriptSource sInitScript;
@@ -124,6 +139,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
                 .setSandboxed(true)
                 .createRequire(context, scope)
                 .install(scope);
+
     }
 
     public Context getContext() {
@@ -148,7 +164,34 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         contextCount++;
         context.setOptimizationLevel(-1);
         context.setLanguageVersion(Context.VERSION_ES6);
+        context.setLocale(Locale.getDefault());
+        context.setWrapFactory(new WrapFactory());
         return context;
+    }
+
+    private Object createNativeString(Object obj) {
+        if (nativeStringConstructor == null)
+            return obj;
+        try {
+            return nativeStringConstructor.newInstance(obj.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return obj;
+        }
+    }
+
+    private class WrapFactory extends org.mozilla.javascript.WrapFactory {
+        @Override
+        public Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType) {
+            if (staticType == String.class) {
+                return createNativeString(obj);
+            }
+            if (staticType == UiObjectCollection.class ) {
+                return getRuntime().bridges.toArray(obj);
+
+            }
+            return super.wrap(cx, scope, obj, staticType);
+        }
     }
 
     private static class InterruptibleAndroidContextFactory extends AndroidContextFactory {
@@ -172,4 +215,14 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         }
     }
 
+
+    static {
+        try {
+            Class c = Class.forName("org.mozilla.javascript.NativeString");
+            nativeStringConstructor = c.getDeclaredConstructor(CharSequence.class);
+            nativeStringConstructor.setAccessible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

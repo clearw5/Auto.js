@@ -53,6 +53,10 @@ public class UiObjectCollection {
         mNodes = list;
     }
 
+    public UiObject[] toArray(){
+        return mNodes.toArray(new UiObject[mNodes.size()]);
+    }
+
     public boolean performAction(int action) {
         boolean fail = false;
         for (UiObject node : mNodes) {
@@ -202,15 +206,6 @@ public class UiObjectCollection {
             consumer.accept(uiObject);
         }
         return this;
-    }
-
-    public UiObjectCollection filter(Func1<UiObject, Boolean> func1) {
-        List<UiObject> list = new ArrayList<>();
-        for (UiObject uiObject : mNodes) {
-            if (func1.call(uiObject))
-                list.add(uiObject);
-        }
-        return of(list);
     }
 
     public UiObjectCollection find(UiGlobalSelector selector) {
