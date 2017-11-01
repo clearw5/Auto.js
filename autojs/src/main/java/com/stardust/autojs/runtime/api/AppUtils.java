@@ -47,7 +47,10 @@ public class AppUtils {
 
     @ScriptInterface
     public boolean launchApp(String appName) {
-        return launchPackage(getPackageName(appName));
+        String pkg = getPackageName(appName);
+        if(pkg == null)
+            return false;
+        return launchPackage(pkg);
     }
 
     @ScriptInterface

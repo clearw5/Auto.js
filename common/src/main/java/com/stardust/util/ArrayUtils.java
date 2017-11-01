@@ -1,5 +1,6 @@
 package com.stardust.util;
 
+import java.lang.reflect.Array;
 import java.util.List;
 
 /**
@@ -33,5 +34,13 @@ public class ArrayUtils {
             str[i] = o == null ? null : o.toString();
         }
         return str;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T[] merge(T[] a1, T[] a2) {
+        T[] a = (T[]) Array.newInstance(a1.getClass().getComponentType(), a1.length + a2.length);
+        System.arraycopy(a1, 0, a, 0, a1.length);
+        System.arraycopy(a2, 0, a, a1.length, a2.length);
+        return a;
     }
 }

@@ -1,4 +1,4 @@
-package com.stardust.autojs.core.bridge;
+package com.stardust.autojs.core.accessibility;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

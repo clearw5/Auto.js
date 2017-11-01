@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.autojs.annotation.ScriptInterface;
-import com.stardust.autojs.core.bridge.AccessibilityBridge;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.accessibility.AutomatorConfig;
 import com.stardust.automator.GlobalActionAutomator;
@@ -20,6 +19,9 @@ import com.stardust.automator.simple_action.ActionTarget;
 import com.stardust.automator.simple_action.SimpleAction;
 import com.stardust.util.DeveloperUtils;
 import com.stardust.util.ScreenMetrics;
+
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.NativeJavaObject;
 
 /**
  * Created by Stardust on 2017/4/2.

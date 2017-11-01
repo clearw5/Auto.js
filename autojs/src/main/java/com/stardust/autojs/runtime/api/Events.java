@@ -6,9 +6,10 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Handler;
 import android.view.KeyEvent;
+import android.view.accessibility.AccessibilityEvent;
 
 import com.stardust.autojs.R;
-import com.stardust.autojs.core.bridge.AccessibilityBridge;
+import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.eventloop.EventEmitter;
 import com.stardust.notification.Notification;
 import com.stardust.notification.NotificationListenerService;

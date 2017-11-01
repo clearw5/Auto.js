@@ -1,29 +1,41 @@
 package com.stardust.autojs.runtime;
 
+import com.stardust.autojs.core.accessibility.UiCollection;
+
 /**
  * Created by Stardust on 2017/7/21.
  */
 
 public class ScriptBridges {
 
-    public interface FunctionCaller {
+    public interface Bridges {
 
         Object[] NO_ARGUMENTS = new Object[0];
 
         Object call(Object func, Object target, Object[] arg);
+
+        Object toArray(Object o);
     }
 
-    private FunctionCaller mFunctionCaller;
+    private Bridges mBridges;
 
-    public void setFunctionCaller(FunctionCaller functionCaller) {
-        mFunctionCaller = functionCaller;
+    public void setBridges(Bridges bridges) {
+        mBridges = bridges;
     }
 
     public Object callFunction(Object func, Object target, Object[] args) {
-        if (mFunctionCaller == null)
-            throw new IllegalStateException("no function caller");
-        return mFunctionCaller.call(func, target, args);
+        checkBridges();
+        return mBridges.call(func, target, args);
+    }
+
+    private void checkBridges() {
+        if (mBridges == null)
+            throw new IllegalStateException("no bridges set");
     }
 
 
+    public Object toArray(Object c) {
+        checkBridges();
+        return mBridges.toArray(c);
+    }
 }

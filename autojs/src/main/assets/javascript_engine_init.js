@@ -14,13 +14,32 @@ var loadJar = function(path){
     __runtime__.loadJar(path);
 }
 
-__runtime__.bridges.setFunctionCaller(function(func, target, args){
-   var arr = [];
-   var len = args.length;
-   for(var i = 0; i < len; i++){
-      arr.push(args[i]);
-   }
-   return func.apply(target, arr);
+__runtime__.bridges.setBridges({
+    call: function(func, target, args){
+       var arr = [];
+       var len = args.length;
+       for(var i = 0; i < len; i++){
+          arr.push(args[i]);
+       }
+       return func.apply(target, arr);
+    },
+    toArray: function(o){
+        var arr = [];
+        for(var i = 0; i < o.size(); i++){
+            arr.push(o.get(i));
+        }
+        for(var key in o){
+            if(arr[key])
+                continue;
+            var v = o[key];
+            if(typeof(v) == 'function'){
+                arr[key] = v.bind(o);
+            }else{
+                arr[key] = v;
+            }
+        }
+        return arr;
+    }
 });
 
 var __that__ = this;
