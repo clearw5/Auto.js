@@ -32,6 +32,7 @@ import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
 import com.stardust.scriptdroid.io.StorageFileProvider;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment_;
 import com.stardust.scriptdroid.ui.main.sample.SampleListFragment;
+import com.stardust.scriptdroid.ui.log.LogActivity_;
 import com.stardust.scriptdroid.ui.main.sample.SampleListFragment_;
 import com.stardust.scriptdroid.ui.main.scripts.MyScriptListFragment_;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
@@ -257,6 +258,15 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
         setUpSearchMenuItem(searchMenuItem);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_log){
+            LogActivity_.intent(this).start();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setUpSearchMenuItem(MenuItem searchMenuItem) {

@@ -308,4 +308,5 @@
         <item>js</item>
         <item>binary</item>
     </string-array>
+    <string name="title_activity_log">LogActivity</string>
 </resources>

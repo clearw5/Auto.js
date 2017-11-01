@@ -11,6 +11,7 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.ui.build.BuildActivity;
 import com.stardust.scriptdroid.ui.build.BuildActivity_;
+import com.stardust.scriptdroid.ui.log.LogActivity_;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
 
@@ -258,7 +259,7 @@ public class EditorMenu {
 
 
     private void showLog() {
-        AutoJs.getInstance().getScriptEngineService().getGlobalConsole().show();
+        LogActivity_.intent(mContext).start();
     }
 
     private void showConsole() {
