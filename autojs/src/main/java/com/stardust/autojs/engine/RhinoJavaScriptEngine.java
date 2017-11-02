@@ -184,7 +184,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         @Override
         public Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType) {
             if (staticType == String.class) {
-                return createNativeString(obj);
+                return getRuntime().bridges.toString(obj);
             }
             if (staticType == UiObjectCollection.class ) {
                 return getRuntime().bridges.toArray(obj);

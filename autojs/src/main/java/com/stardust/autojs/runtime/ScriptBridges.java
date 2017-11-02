@@ -8,6 +8,7 @@ import com.stardust.autojs.core.accessibility.UiCollection;
 
 public class ScriptBridges {
 
+
     public interface Bridges {
 
         Object[] NO_ARGUMENTS = new Object[0];
@@ -15,6 +16,8 @@ public class ScriptBridges {
         Object call(Object func, Object target, Object[] arg);
 
         Object toArray(Object o);
+
+        Object toString(Object obj);
     }
 
     private Bridges mBridges;
@@ -37,5 +40,11 @@ public class ScriptBridges {
     public Object toArray(Object c) {
         checkBridges();
         return mBridges.toArray(c);
+    }
+
+
+    public Object toString(Object obj) {
+        checkBridges();
+        return mBridges.toString(obj);
     }
 }

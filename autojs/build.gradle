@@ -49,6 +49,7 @@ dependencies {
     compile(name: 'libtermexec-release', ext: 'aar')
     compile(name: 'emulatorview-release', ext: 'aar')
     compile(name: 'term-debug', ext: 'aar')
+    compile files('libs/rhino-1.7.7.2.jar')
     compile project(path: ':common')
     compile project(path: ':automator')
 }

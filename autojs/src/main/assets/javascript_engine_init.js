@@ -39,6 +39,9 @@ __runtime__.bridges.setBridges({
             }
         }
         return arr;
+    },
+    toString: function(o){
+        return String(o);
     }
 });
 
@@ -67,3 +70,4 @@ require("__general__")(__runtime__, this);
 
 __importClass__(android.view.KeyEvent);
 __importClass__(com.stardust.autojs.core.util.Shell);
+
