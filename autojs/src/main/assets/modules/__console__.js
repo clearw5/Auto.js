@@ -23,7 +23,7 @@ module.exports = function(__runtime__, scope){
     }
 
     console.print = function(){
-        rtConsole.print(util.format.apply(util, arguments));
+        rtConsole.print(android.util.Log.DEBUG, util.format.apply(util, arguments));
     }
 
     console.info = function(){
@@ -43,7 +43,7 @@ module.exports = function(__runtime__, scope){
     console.clear = rtConsole.clear.bind(rtConsole);
     console.setTitle = rtConsole.setTitle.bind(rtConsole);
 
-    scope.print = console.print.bind(console, android.util.Log.DEBUG);
+    scope.print = console.print.bind(console);
     scope.log = console.log.bind(console);
     scope.err = console.error.bind(console);
     scope.openConsole = console.show.bind(console);

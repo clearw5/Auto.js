@@ -309,4 +309,5 @@
         <item>binary</item>
     </string-array>
     <string name="title_activity_log">LogActivity</string>
+    <string name="text_open_main_activity">打开主界面</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.ui.floating;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.gson.Gson;
 import com.stardust.app.DialogUtils;
 import com.stardust.app.OperationDialogBuilder;
 import com.stardust.autojs.core.record.Recorder;
@@ -22,8 +24,10 @@ import com.stardust.scriptdroid.autojs.record.GlobalRecorder;
 import com.stardust.scriptdroid.io.StorageFileProvider;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
+import com.stardust.scriptdroid.tool.GsonUtils;
 import com.stardust.scriptdroid.ui.floating.layoutinspector.LayoutBoundsFloatyWindow;
 import com.stardust.scriptdroid.ui.floating.layoutinspector.LayoutHierarchyFloatyWindow;
+import com.stardust.scriptdroid.ui.main.MainActivity_;
 import com.stardust.scriptdroid.ui.main.scripts.ScriptListView;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
@@ -213,6 +217,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
                         mContext.getString(R.string.text_current_package) + mRunningPackage)
                 .item(R.id.class_name, R.drawable.ic_ali_android,
                         mContext.getString(R.string.text_current_activity) + mRunningActivity)
+                .item(R.id.open_launcher, R.drawable.ic_android_eat_js, R.string.text_open_main_activity)
                 .item(R.id.exit, R.drawable.ic_close_white_48dp, R.string.text_exit_floating_window)
                 .bindItemClick(this)
                 .title(R.string.text_more)
@@ -256,13 +261,27 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
     }
 
     @Optional
+    @OnClick(R.id.open_launcher)
+    void openLauncher() {
+        dismissSettingsDialog();
+        mContext.startActivity(new Intent(mContext, MainActivity_.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+
+    @Optional
     @OnClick(R.id.exit)
     public void close() {
         dismissSettingsDialog();
-        mWindow.close();
+        try {
+            mWindow.close();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } finally {
+            EventBus.getDefault().post(new StateChangeEvent(STATE_CLOSED, mState));
+            mState = STATE_CLOSED;
+        }
         mRecorder.removeOnStateChangedListener(this);
-        EventBus.getDefault().post(new StateChangeEvent(STATE_CLOSED, mState));
-        mState = STATE_CLOSED;
     }
 
 
@@ -278,7 +297,6 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
 
     @Override
     public void onPause() {
-
     }
 
     @Override

@@ -24,7 +24,9 @@ exports.format = function(f) {
   if (!isString(f)) {
     var objects = [];
     for (var i = 0; i < arguments.length; i++) {
-      objects.push(inspect(arguments[i]));
+      var v = isJavaObject(arguments[i]) ? arguments[i].toString() :
+        arguments[i];
+      objects.push(inspect(v));
     }
     return objects.join(' ');
   }
@@ -444,6 +446,10 @@ function reduceToSingleString(output, base, braces) {
   return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
 }
 
+
+function isJavaObject(obj){
+    return !!obj.getClass;
+}
 
 // NOTE: These type checking functions intentionally don't use `instanceof`
 // because it is fragile and can be easily faked with `Object.create()`.
