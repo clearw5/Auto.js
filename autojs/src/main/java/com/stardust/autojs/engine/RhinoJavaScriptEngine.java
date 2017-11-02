@@ -42,13 +42,7 @@ import java.util.Locale;
 
 public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
-    public interface TypeWrapper {
-
-        Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType);
-    }
-
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
-    private static Constructor<?> nativeStringConstructor;
 
     private static int contextCount = 0;
     private static StringScriptSource sInitScript;
@@ -169,17 +163,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         return context;
     }
 
-    private Object createNativeString(Object obj) {
-        if (nativeStringConstructor == null)
-            return obj;
-        try {
-            return nativeStringConstructor.newInstance(obj.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return obj;
-        }
-    }
-
     private class WrapFactory extends org.mozilla.javascript.WrapFactory {
         @Override
         public Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType) {
@@ -216,13 +199,4 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     }
 
 
-    static {
-        try {
-            Class c = Class.forName("org.mozilla.javascript.NativeString");
-            nativeStringConstructor = c.getDeclaredConstructor(CharSequence.class);
-            nativeStringConstructor.setAccessible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

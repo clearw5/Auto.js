@@ -46,6 +46,7 @@ __runtime__.bridges.setBridges({
 });
 
 var __that__ = this;
+util = require('__util__.js');
 
 var __asGlobal__ = function(obj, functions){
     var len = functions.length;
