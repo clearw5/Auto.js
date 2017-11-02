@@ -2,8 +2,10 @@ package com.stardust.scriptdroid.ui.edit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toolbar;
 
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
@@ -24,7 +26,6 @@ import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_READ_ONLY;
  */
 @EActivity(R.layout.activity_edit)
 public class EditActivity extends BaseActivity {
-
 
     @ViewById(R.id.editor_view)
     EditorView mEditor;
@@ -71,6 +72,16 @@ public class EditActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return mEditorMenu.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onActionModeStarted(ActionMode mode) {
+        Menu menu = mode.getMenu();
+        MenuItem item = menu.getItem(menu.size() - 1);
+        menu.add(item.getGroupId(), R.id.action_delete_line, 10000, R.string.text_delete_line);
+        menu.add(item.getGroupId(), R.id.action_copy_line, 20000, R.string.text_copy_line);
+        super.onActionModeStarted(mode);
     }
 
     @Override

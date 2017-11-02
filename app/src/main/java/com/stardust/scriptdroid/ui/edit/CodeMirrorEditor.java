@@ -5,10 +5,15 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.ActionMode;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
@@ -24,6 +29,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.util.ClipboardUtil;
 
 import org.jdeferred.Deferred;
 import org.jdeferred.DoneCallback;
@@ -51,6 +57,7 @@ import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 public class CodeMirrorEditor extends FrameLayout {
 
     private static final String LOG_TAG = "CodeMirrorEditor";
+
 
     public interface Callback {
         void onChange();
@@ -92,12 +99,16 @@ public class CodeMirrorEditor extends FrameLayout {
         init();
     }
 
+    public WebView getWebView() {
+        return mWebView;
+    }
+
     public void setCallback(Callback callback) {
         mCallback = callback;
     }
 
     public void beautifyCode() {
-        evalJavaScript("editor.setValue(js_beautify(editor.getValue()));");
+        evalJavaScript("editor.setValue(js_beautify(editor.getValue(), {indent_size: 2}));");
     }
 
     public String[] getAvailableThemes() {
@@ -173,6 +184,17 @@ public class CodeMirrorEditor extends FrameLayout {
         mWebView.setWebChromeClient(new MyWebChromeClient());
     }
 
+
+    @Override
+    public ActionMode startActionModeForChild(View originalView, ActionMode.Callback callback) {
+        return super.startActionModeForChild(originalView, new EditorActionModeCallback(callback, this));
+    }
+
+    @Override
+    public ActionMode startActionModeForChild(View originalView, ActionMode.Callback callback, int type) {
+        return super.startActionModeForChild(originalView, new EditorActionModeCallback(callback, this), type);
+    }
+
     public void setReadOnly(boolean readOnly) {
         evalJavaScript(String.format("editor.setOption('readOnly', %b);", readOnly));
     }
@@ -190,6 +212,7 @@ public class CodeMirrorEditor extends FrameLayout {
         mTextFromAndroid = text;
         mPageFinished.promise().done(result -> evalJavaScript("editor.replaceSelection(__bridge__.getStringFromAndroid());"));
     }
+
 
     public void loadFile(final File file) {
         setProgress(true);
@@ -221,6 +244,42 @@ public class CodeMirrorEditor extends FrameLayout {
     public void deleteLine() {
         evalJavaScript("editor.replaceRange('', {line: editor.getCursor().line, ch: 0}," +
                 " {line: editor.getCursor().line + 1, ch: 0});");
+    }
+
+    public void copyLine() {
+        getLine()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    ClipboardUtil.setClip(getContext(), s);
+                    Snackbar.make(mWebView, R.string.text_already_copy_to_clip, Snackbar.LENGTH_SHORT).show();
+                });
+    }
+
+    public void cut() {
+        getSelection().observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    ClipboardUtil.setClip(getContext(), s);
+                    evalJavaScript("editor.replaceSelection('');");
+                });
+    }
+
+
+    public void copy() {
+        getSelection().observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> ClipboardUtil.setClip(getContext(), s));
+    }
+
+    public void paste() {
+        CharSequence clip = ClipboardUtil.getClip(getContext());
+        if (clip == null) {
+            return;
+        }
+        evalJavaScript(String.format("editor.replaceSelection('%s');", clip.toString().replace("'", "\\'")));
+    }
+
+
+    public void selectAll() {
+        evalJavaScript("editor.execCommand('selectAll');");
     }
 
     public Observable<Integer> getLineCount() {
@@ -438,18 +497,8 @@ public class CodeMirrorEditor extends FrameLayout {
             new ThemeColorMaterialDialogBuilder(getContext())
                     .title(R.string.text_alert)
                     .content(message)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@android.support.annotation.NonNull MaterialDialog dialog, @android.support.annotation.NonNull DialogAction which) {
-                            result.confirm();
-                        }
-                    })
-                    .cancelListener(new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            result.cancel();
-                        }
-                    })
+                    .onPositive((dialog, which) -> result.confirm())
+                    .cancelListener(dialog -> result.cancel())
                     .positiveText(R.string.ok)
                     .show();
             return true;
@@ -458,6 +507,28 @@ public class CodeMirrorEditor extends FrameLayout {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             setProgress(newProgress != 100);
+        }
+
+        @Override
+        public boolean onConsoleMessage(ConsoleMessage m) {
+            switch (m.messageLevel()) {
+                case LOG:
+                    Log.i(LOG_TAG, String.format("%s (%s:%d)", m.message(), m.sourceId(), m.lineNumber()));
+                    return true;
+                case TIP:
+                    Log.v(LOG_TAG, String.format("%s (%s:%d)", m.message(), m.sourceId(), m.lineNumber()));
+                    return true;
+                case DEBUG:
+                    Log.d(LOG_TAG, String.format("%s (%s:%d)", m.message(), m.sourceId(), m.lineNumber()));
+                    return true;
+                case WARNING:
+                    Log.w(LOG_TAG, String.format("%s (%s:%d)", m.message(), m.sourceId(), m.lineNumber()));
+                    return true;
+                case ERROR:
+                    Log.e(LOG_TAG, String.format("%s (%s:%d)", m.message(), m.sourceId(), m.lineNumber()));
+                    return true;
+            }
+            return false;
         }
     }
 }

@@ -65,7 +65,8 @@
 
         <activity
             android:name=".ui.edit.EditActivity_"
-            android:multiprocess="true">
+            android:multiprocess="true"
+            android:theme="@style/EditorTheme">
         </activity>
         <activity android:name=".ui.settings.AboutActivity_"/>
         <activity

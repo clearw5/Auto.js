@@ -7,6 +7,11 @@
 
     </style>
 
+    <style name="EditorTheme" parent="AppTheme">
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:actionModeBackground">@color/colorAccent</item>
+    </style>
+
     <style name="AppTheme.FullScreen" parent="AppTheme">
         <!-- Customize your theme here. -->
         <item name="windowNoTitle">true</item>

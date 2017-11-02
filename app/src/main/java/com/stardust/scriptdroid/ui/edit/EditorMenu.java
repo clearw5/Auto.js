@@ -213,15 +213,7 @@ public class EditorMenu {
     }
 
     private void copyLine() {
-        mEditor.getLine()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(@NonNull String s) throws Exception {
-                        ClipboardUtil.setClip(mContext, s);
-                        Snackbar.make(mEditorView, R.string.text_already_copy_to_clip, Snackbar.LENGTH_SHORT).show();
-                    }
-                });
+        mEditor.copyLine();
     }
 
 

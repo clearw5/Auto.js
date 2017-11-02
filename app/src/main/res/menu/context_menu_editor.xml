@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_copy_line"
+        android:title="@string/text_copy_line"/>
+
+    <item
+        android:id="@+id/action_delete_line"
+        android:title="@string/text_delete_line"/>
+</menu>
