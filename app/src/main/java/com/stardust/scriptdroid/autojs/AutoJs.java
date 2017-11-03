@@ -38,6 +38,7 @@ import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;
+import com.stardust.view.accessibility.AccessibilityNotificationObserver;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.view.accessibility.LayoutInspector;
@@ -61,7 +62,7 @@ public class AutoJs {
     }
 
     private final AccessibilityActionRecorder mAccessibilityActionRecorder = new AccessibilityActionRecorder();
-    private final NotificationListener.Observer mNotificationObserver;
+    private final AccessibilityNotificationObserver mNotificationObserver;
     private ScriptEngineManager mScriptEngineManager;
     private final LayoutInspector mLayoutInspector = new LayoutInspector();
     private final Context mContext;
@@ -85,7 +86,7 @@ public class AutoJs {
                 return log;
             }
         };
-        mNotificationObserver = new NotificationListener.Observer(context);
+        mNotificationObserver = new AccessibilityNotificationObserver(context);
         mAccessibilityInfoProvider = new AccessibilityInfoProvider(context.getPackageManager());
         mScriptEngineService = buildScriptEngineService();
         addAccessibilityServiceDelegates();
@@ -230,7 +231,7 @@ public class AutoJs {
         }
 
         @Override
-        public NotificationListener.Observer getNotificationObserver() {
+        public AccessibilityNotificationObserver getNotificationObserver() {
             return mNotificationObserver;
         }
 

@@ -53,6 +53,18 @@ public class Notification extends android.app.Notification {
         }
     }
 
+    @Override
+    public String toString() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return "Notification{" +
+                    "packageName='" + mPackageName + '\'' +
+                    "title = " + getTitle() + '\'' +
+                    "text='" + getText() + '\'' +
+                    "} ";
+        }
+        return super.toString();
+    }
+
     public static void clone(android.app.Notification from, android.app.Notification to) {
         to.when = from.when;
         to.icon = from.icon;

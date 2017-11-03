@@ -35,7 +35,9 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
     private Object execute(ScriptEngine engine) {
         try {
             prepare(engine);
-            return doExecution(engine);
+            Object r = doExecution(engine);
+            getListener().onSuccess(this, r);
+            return r;
         } catch (Exception e) {
             e.printStackTrace();
             getListener().onException(this, e);
@@ -67,7 +69,6 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
             result = execute(engine, source);
             sleep(interval);
         }
-        getListener().onSuccess(this, result);
         return result;
     }
 

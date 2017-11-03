@@ -1,11 +1,11 @@
 package com.stardust.autojs.core.accessibility;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
+import com.stardust.view.accessibility.AccessibilityNotificationObserver;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.NotificationListener;
 
@@ -48,5 +48,5 @@ public abstract class AccessibilityBridge {
     }
 
     @NonNull
-    public abstract NotificationListener.Observer getNotificationObserver();
+    public abstract AccessibilityNotificationObserver getNotificationObserver();
 }
