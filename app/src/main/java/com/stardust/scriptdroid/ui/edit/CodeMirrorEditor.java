@@ -11,8 +11,11 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsPromptResult;
@@ -165,11 +168,18 @@ public class CodeMirrorEditor extends FrameLayout {
     }
 
     private void setupWebView() {
-        mWebView = new WebView(getContext());
+        mWebView = new WebView(getContext()) {
+            @Override
+            public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+                InputConnection connection = super.onCreateInputConnection(outAttrs);
+                return connection == null ? null : new MyInputConnection(connection);
+            }
+        };
         setupWebSettings();
         mWebView.addJavascriptInterface(mJavaScriptBridge, "__bridge__");
         addView(mWebView);
     }
+
 
     private void setupWebSettings() {
         WebSettings settings = mWebView.getSettings();
@@ -180,8 +190,9 @@ public class CodeMirrorEditor extends FrameLayout {
         settings.setDomStorageEnabled(true);
         settings.setNeedInitialFocus(true);
         settings.setDisplayZoomControls(false);
-        mWebView.setWebViewClient(new MyWebViewClient());
         mWebView.setWebChromeClient(new MyWebChromeClient());
+        mWebView.setWebViewClient(new MyWebViewClient());
+
     }
 
 
@@ -529,6 +540,31 @@ public class CodeMirrorEditor extends FrameLayout {
                     return true;
             }
             return false;
+        }
+    }
+
+    private class MyInputConnection extends InputConnectProxy {
+
+        public MyInputConnection(InputConnection inputConnection) {
+            super(inputConnection);
+        }
+
+        @Override
+        public boolean sendKeyEvent(KeyEvent event) {
+            Log.d(LOG_TAG, "sendKeyEvent: " + event);
+            return super.sendKeyEvent(event);
+        }
+
+        @Override
+        public boolean performContextMenuAction(int id) {
+            if (id == android.R.id.selectAll) {
+                post(CodeMirrorEditor.this::selectAll);
+                return true;
+            }
+            if(id == android.R.id.startSelectingText){
+                evalJavaScript("editor.setSelection(editor.getCursor(), {line: editor.getCursor().line, ch: editor.getCursor().ch - 1});");
+            }
+            return super.performContextMenuAction(id);
         }
     }
 }
