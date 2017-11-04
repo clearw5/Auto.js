@@ -58,7 +58,7 @@ public class AutoJs {
     }
 
     private final AccessibilityActionRecorder mAccessibilityActionRecorder = new AccessibilityActionRecorder();
-    private final NotificationListener.Observer mNotificationObserver;
+    private final NotificationListener.AccessibilityNotificationObserver mNotificationObserver;
     private ScriptEngineManager mScriptEngineManager;
     private final Context mContext;
     private final UiHandler mUiHandler;
@@ -74,7 +74,7 @@ public class AutoJs {
         mUiHandler = new UiHandler(context);
         mAppUtils = new AppUtils(context);
         mGlobalConsole = new GlobalStardustConsole(mUiHandler);
-        mNotificationObserver = new NotificationListener.Observer(context);
+        mNotificationObserver = new NotificationListener.AccessibilityNotificationObserver(context);
         mAccessibilityInfoProvider = new AccessibilityInfoProvider(context.getPackageManager());
         mScriptEngineService = buildScriptEngineService();
         addAccessibilityServiceDelegates();
@@ -198,7 +198,7 @@ public class AutoJs {
         }
 
         @Override
-        public NotificationListener.Observer getNotificationObserver() {
+        public NotificationListener.AccessibilityNotificationObserver getNotificationObserver() {
             return mNotificationObserver;
         }
 

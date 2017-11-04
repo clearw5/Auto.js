@@ -1,9 +1,9 @@
 package com.stardust.scriptdroid.ui.user;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,6 +12,7 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.network.NodeBB;
 import com.stardust.scriptdroid.network.UserService;
 import com.stardust.scriptdroid.ui.BaseActivity;
+import com.stardust.theme.ThemeColorManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -33,9 +34,13 @@ public class LoginActivity extends BaseActivity {
     @ViewById(R.id.password)
     TextView mPassword;
 
+    @ViewById(R.id.login)
+    View mLogin;
+
     @AfterViews
     void setUpViews() {
         setToolbarAsBack(getString(R.string.text_login));
+        ThemeColorManager.addViewBackground(mLogin);
     }
 
     @Click(R.id.login)

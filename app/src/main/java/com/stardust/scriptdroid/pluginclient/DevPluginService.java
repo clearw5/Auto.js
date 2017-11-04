@@ -13,7 +13,7 @@ public class DevPluginService {
 
     private static DevPluginService sInstance = new DevPluginService();
     private DevPluginClient mClient;
-    private  final PublishSubject<DevPluginClient.State> mConnection = PublishSubject.create();
+    private final PublishSubject<DevPluginClient.State> mConnection = PublishSubject.create();
 
     public static DevPluginService getInstance() {
         return sInstance;
@@ -23,7 +23,7 @@ public class DevPluginService {
         return mClient != null && mClient.getState() == DevPluginClient.State.CONNECTED;
     }
 
-    public boolean isDisconnected(){
+    public boolean isDisconnected() {
         return mClient == null || mClient.getState() == DevPluginClient.State.DISCONNECTED;
     }
 
@@ -44,7 +44,14 @@ public class DevPluginService {
     }
 
     public void connectToServer(String host) {
-        mClient = new DevPluginClient(host, 1209, mConnection);
+        int port = 1209;
+        String ip = host;
+        int i = host.lastIndexOf(':');
+        if (i > 0 && i < host.length() - 1) {
+            port = Integer.parseInt(host.substring(i + 1));
+            ip = host.substring(0, i);
+        }
+        mClient = new DevPluginClient(ip, port, mConnection);
         mClient.setResponseHandler(new DevPluginResponseHandler());
         mClient.connectToServer();
     }
