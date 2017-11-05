@@ -1,22 +1,16 @@
 package com.stardust.automator;
 
-import android.app.UiAutomation;
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.Pools;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.Log;
-import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 import com.stardust.view.accessibility.AccessibilityNodeInfoHelper;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,35 +34,40 @@ public class UiObject extends AccessibilityNodeInfoCompat {
 
     private static final String TAG = "UiObject";
     private static final boolean DEBUG = false;
-    private static int notRecycledCount = 0;
+
 
     public static UiObject createRoot(AccessibilityNodeInfo root) {
-        return new UiObject(root, null, true);
+        return new UiObject(root, null, 0);
     }
 
     public static UiObject createRoot(AccessibilityNodeInfo root, AccessibilityNodeInfoAllocator allocator) {
-        return new UiObject(root, allocator, true);
+        return new UiObject(root, allocator, 0);
     }
 
 
     private AccessibilityNodeInfoAllocator mAllocator = null;
     private String mStackTrace = "";
-    private boolean mIsRootNode = false;
+    private int mDepth = 0;
 
     public UiObject(Object info) {
-        this(info, null);
+        this(info, 0);
     }
 
-    public UiObject(Object info, AccessibilityNodeInfoAllocator allocator, boolean isRootNode) {
+    public UiObject(Object info, AccessibilityNodeInfoAllocator allocator, int depth) {
         super(info);
-        mIsRootNode = isRootNode;
+        mDepth = depth;
         mAllocator = allocator;
         if (DEBUG)
             mStackTrace = Arrays.toString(Thread.currentThread().getStackTrace());
     }
 
+
     public UiObject(Object info, AccessibilityNodeInfoAllocator allocator) {
-        this(info, allocator, false);
+        this(info, allocator, 0);
+    }
+
+    public UiObject(Object info, int depth) {
+        this(info, null, depth);
     }
 
     @Nullable
@@ -77,7 +76,7 @@ public class UiObject extends AccessibilityNodeInfoCompat {
             AccessibilityNodeInfoCompat parent = super.getParent();
             if (parent == null)
                 return null;
-            return new UiObject(parent.getInfo());
+            return new UiObject(parent.getInfo(), mDepth - 1);
         } catch (IllegalStateException e) {
             // FIXME: 2017/5/5
             return null;
@@ -90,7 +89,7 @@ public class UiObject extends AccessibilityNodeInfoCompat {
             AccessibilityNodeInfoCompat child = super.getChild(i);
             if (child == null)
                 return null;
-            return new UiObject(child.getInfo());
+            return new UiObject(child.getInfo(), mDepth + 1);
         } catch (IllegalStateException e) {
             // FIXME: 2017/5/5
             return null;
@@ -149,6 +148,10 @@ public class UiObject extends AccessibilityNodeInfoCompat {
 
     public String packageName() {
         return getPackageName().toString();
+    }
+
+    public int depth() {
+        return mDepth;
     }
 
     public boolean performAction(int action, ActionArgument... arguments) {
@@ -370,6 +373,36 @@ public class UiObject extends AccessibilityNodeInfoCompat {
         return isScrollable();
     }
 
+    public int row() {
+        return getCollectionItemInfo() == null ? -1 : getCollectionItemInfo().getRowIndex();
+    }
+
+    public int column() {
+        return getCollectionItemInfo() == null ? -1 : getCollectionItemInfo().getColumnIndex();
+    }
+
+    public int rowSpan() {
+        return getCollectionItemInfo() == null ? -1 : getCollectionItemInfo().getRowSpan();
+    }
+
+
+    public int columnSpan() {
+        return getCollectionItemInfo() == null ? -1 : getCollectionItemInfo().getColumnSpan();
+    }
+
+    public int rowCount() {
+        return getCollectionInfo() == null ? 0 : getCollectionInfo().getRowCount();
+    }
+
+
+    public int columnCount() {
+        return getCollectionInfo() == null ? 0 : getCollectionInfo().getColumnCount();
+    }
+
+    public boolean isHierarchically() {
+        return getCollectionInfo() != null && getCollectionInfo().isHierarchical();
+    }
+
     @Override
     public List<AccessibilityNodeInfoCompat> findAccessibilityNodeInfosByText(String text) {
         if (mAllocator == null)
@@ -393,6 +426,7 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     }
 
     public static List<UiObject> compatListToUiObjectList(List<AccessibilityNodeInfoCompat> compats, AccessibilityNodeInfoAllocator allocator) {
+        // FIXME: 2017/11/5 lost depth info
         List<UiObject> uiObjects = new ArrayList<>(compats.size());
         for (AccessibilityNodeInfoCompat compat : compats) {
             if (compat != null)

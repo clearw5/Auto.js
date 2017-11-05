@@ -10,9 +10,12 @@ import com.stardust.automator.filter.ClassNameFilter;
 import com.stardust.automator.filter.DescFilter;
 import com.stardust.automator.filter.DfsFilter;
 import com.stardust.automator.filter.IdFilter;
+import com.stardust.automator.filter.IntFilter;
 import com.stardust.automator.filter.ListFilter;
 import com.stardust.automator.filter.PackageNameFilter;
 import com.stardust.automator.filter.TextFilter;
+import com.stardust.automator.simple_action.Able;
+import com.stardust.util.Supplier;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -348,6 +351,54 @@ public class UiGlobalSelector {
 
     public UiGlobalSelector dismissable() {
         mFilters.add(BooleanFilter.get(BooleanFilter.DISMISSABLE, true));
+        return this;
+    }
+
+
+    //第三类 int
+    public UiGlobalSelector depth(int d) {
+        mFilters.add(new IntFilter(IntFilter.DEPTH, d));
+        return this;
+    }
+
+    public UiGlobalSelector row(int d) {
+        mFilters.add(new IntFilter(IntFilter.ROW, d));
+        return this;
+    }
+
+    public UiGlobalSelector rowCount(int d) {
+        mFilters.add(new IntFilter(IntFilter.ROW_COUNT, d));
+        return this;
+    }
+
+    public UiGlobalSelector rowSpan(int d) {
+        mFilters.add(new IntFilter(IntFilter.ROW_SPAN, d));
+        return this;
+    }
+
+    public UiGlobalSelector column(int d) {
+        mFilters.add(new IntFilter(IntFilter.COLUMN, d));
+        return this;
+    }
+
+    public UiGlobalSelector columnCount(int d) {
+        mFilters.add(new IntFilter(IntFilter.COLUMN_COUNT, d));
+        return this;
+    }
+
+    public UiGlobalSelector columnSpan(int d) {
+        mFilters.add(new IntFilter(IntFilter.COLUMN_SPAN, d));
+        return this;
+    }
+
+
+    public UiGlobalSelector filter(final BooleanFilter.BooleanSupplier filter) {
+        mFilters.add(new DfsFilter() {
+            @Override
+            protected boolean isIncluded(UiObject nodeInfo) {
+                return filter.get(nodeInfo);
+            }
+        });
         return this;
     }
 

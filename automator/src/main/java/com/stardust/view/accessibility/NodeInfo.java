@@ -25,6 +25,7 @@ public class NodeInfo {
     public CharSequence className;
     public CharSequence packageName;
     public CharSequence text;
+    public int depth;
     public int drawingOrder;
     public boolean accessibilityFocused;
     public boolean checked;
@@ -35,19 +36,33 @@ public class NodeInfo {
     public boolean enabled;
     public boolean focusable;
     public boolean longClickable;
+    public int row;
+    public int column;
+    public int rowCount;
+    public int columnCount;
+    public int rowSpan;
+    public int columnSpan;
     public boolean selected;
     public boolean scrollable;
     public String bounds;
 
 
-    public NodeInfo(AccessibilityNodeInfoCompat node) {
+    public NodeInfo(UiObject node) {
         id = simplifyId(node.getViewIdResourceName());
         desc = node.getContentDescription();
         className = node.getClassName();
         packageName = node.getPackageName();
         text = node.getText();
 
+        depth = node.depth();
         drawingOrder = node.getDrawingOrder();
+
+        row = node.row();
+        column = node.column();
+        rowCount = node.rowCount();
+        columnCount = node.columnCount();
+        rowSpan = node.rowSpan();
+        columnSpan = node.columnSpan();
 
         accessibilityFocused = node.isAccessibilityFocused();
         checked = node.isChecked();
@@ -80,16 +95,12 @@ public class NodeInfo {
         return rect.toString().replace('-', ',').replace(" ", "").substring(4);
     }
 
-    public NodeInfo(AccessibilityNodeInfo node) {
-        this(new AccessibilityNodeInfoCompat(node));
-    }
 
-
-    public static NodeInfo capture(@NonNull UiObject root) {
-        NodeInfo nodeInfo = new NodeInfo(root);
-        int childCount = root.getChildCount();
+    public static NodeInfo capture(@NonNull UiObject parent) {
+        NodeInfo nodeInfo = new NodeInfo(parent);
+        int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            UiObject child = root.child(i);
+            UiObject child = parent.child(i);
             if (child != null) {
                 nodeInfo.children.add(capture(child));
             }

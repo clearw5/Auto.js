@@ -33,6 +33,7 @@ public class NodeInfoView extends RecyclerView {
     private static final String[] FIELD_NAMES = {
             "id",
             "bounds",
+            "depth",
             "desc",
             "className",
             "packageName",
@@ -47,6 +48,12 @@ public class NodeInfoView extends RecyclerView {
             "enabled",
             "focusable",
             "longClickable",
+            "row",
+            "rowCount",
+            "rowSpan",
+            "column",
+            "columnCount",
+            "columnSpan",
             "selected",
             "scrollable",
     };
@@ -64,17 +71,6 @@ public class NodeInfoView extends RecyclerView {
     }
 
     private String[][] mData = new String[FIELDS.length + 1][2];
-    private OnLongClickListener itemLongClickListener = new OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View v) {
-            int pos = getChildAdapterPosition(v);
-            if (pos < 1 || pos >= mData.length)
-                return false;
-            ClipboardUtil.setClip(getContext(), mData[pos][0] + " = " + mData[pos][1]);
-            Toast.makeText(getContext(), R.string.text_copy_to_clip, Toast.LENGTH_SHORT).show();
-            return true;
-        }
-    };
 
     public NodeInfoView(Context context) {
         super(context);

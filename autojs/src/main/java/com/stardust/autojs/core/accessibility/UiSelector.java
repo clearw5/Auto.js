@@ -125,7 +125,7 @@ public class UiSelector extends UiGlobalSelector {
     @NonNull
     public UiObject untilFindOne() {
         UiObjectCollection collection = untilFind();
-        return new UiObject(collection.get(0).getInfo());
+        return collection.get(0);
     }
 
     @ScriptInterface

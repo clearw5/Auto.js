@@ -35,14 +35,6 @@ public class UiObjectCollection {
         return new UiObjectCollection(UiObject.compatListToUiObjectList(list));
     }
 
-    public static UiObjectCollection ofInfo(List<AccessibilityNodeInfo> list) {
-        List<UiObject> compatList = new ArrayList<>(list.size());
-        for (AccessibilityNodeInfo nodeInfo : list) {
-            compatList.add(new UiObject(nodeInfo));
-        }
-        return new UiObjectCollection(compatList);
-    }
-
     public static UiObjectCollection of(List<UiObject> list) {
         return new UiObjectCollection(list);
     }
