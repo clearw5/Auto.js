@@ -26,12 +26,12 @@ import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.ui.codegeneration.CodeGenerateDialog;
 import com.stardust.scriptdroid.ui.common.NotAskAgainDialog;
 import com.stardust.scriptdroid.ui.doc.OnlineDocsFragment_;
 import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
 import com.stardust.scriptdroid.io.StorageFileProvider;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment_;
-import com.stardust.scriptdroid.ui.main.sample.SampleListFragment;
 import com.stardust.scriptdroid.ui.log.LogActivity_;
 import com.stardust.scriptdroid.ui.main.sample.SampleListFragment_;
 import com.stardust.scriptdroid.ui.main.scripts.MyScriptListFragment_;
@@ -53,7 +53,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 
-import java.net.Socket;
 import java.util.Arrays;
 
 @EActivity(R.layout.activity_main)
@@ -262,7 +261,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_log){
+        if (item.getItemId() == R.id.action_log) {
             LogActivity_.intent(this).start();
             return true;
         }

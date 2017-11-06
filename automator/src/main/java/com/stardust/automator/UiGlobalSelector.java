@@ -403,12 +403,16 @@ public class UiGlobalSelector {
     }
 
     public UiObjectCollection findOf(UiObject node) {
+        return UiObjectCollection.of(findAndReturnList(node));
+    }
+
+    public List<UiObject> findAndReturnList(UiObject node) {
         List<UiObject> list = new ArrayList<>();
         list.add(node);
         for (ListFilter filter : mFilters) {
             list = filter.filter(list);
         }
-        return UiObjectCollection.of(list);
+        return list;
     }
 
     @Nullable

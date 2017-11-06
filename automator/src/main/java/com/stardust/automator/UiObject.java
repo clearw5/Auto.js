@@ -139,7 +139,8 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     }
 
     public String desc() {
-        return getContentDescription().toString();
+        CharSequence d = getContentDescription();
+        return d == null ? null : d.toString();
     }
 
     public String className() {
@@ -411,7 +412,7 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     }
 
     public List<UiObject> findByText(String text) {
-        return compatListToUiObjectList(findAccessibilityNodeInfosByText(text), mAllocator);
+        return new UiGlobalSelector().textContains(text).findAndReturnList(this);
     }
 
     @Override
@@ -422,7 +423,7 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     }
 
     public List<UiObject> findByViewId(String viewId) {
-        return compatListToUiObjectList(findAccessibilityNodeInfosByViewId(viewId), mAllocator);
+        return new UiGlobalSelector().id(viewId).findAndReturnList(this);
     }
 
     public static List<UiObject> compatListToUiObjectList(List<AccessibilityNodeInfoCompat> compats, AccessibilityNodeInfoAllocator allocator) {

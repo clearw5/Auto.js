@@ -18,13 +18,14 @@ import java.util.List;
 public class NodeInfo {
 
     private List<NodeInfo> children = new ArrayList<>();
-    private Rect mBoundsInScreen;
+    private Rect mBoundsInScreen = new Rect();
+    private Rect mBoundsInParent = new Rect();
 
     public String id;
-    public CharSequence desc;
-    public CharSequence className;
-    public CharSequence packageName;
-    public CharSequence text;
+    public String desc;
+    public String className;
+    public String packageName;
+    public String text;
     public int depth;
     public int drawingOrder;
     public boolean accessibilityFocused;
@@ -45,14 +46,17 @@ public class NodeInfo {
     public boolean selected;
     public boolean scrollable;
     public String bounds;
+    public boolean checkable;
+    public boolean focused;
+    public boolean visibleToUser;
 
 
     public NodeInfo(UiObject node) {
         id = simplifyId(node.getViewIdResourceName());
-        desc = node.getContentDescription();
-        className = node.getClassName();
-        packageName = node.getPackageName();
-        text = node.getText();
+        desc = node.desc();
+        className = node.className();
+        packageName = node.packageName();
+        text = node.text();
 
         depth = node.depth();
         drawingOrder = node.getDrawingOrder();
@@ -66,18 +70,22 @@ public class NodeInfo {
 
         accessibilityFocused = node.isAccessibilityFocused();
         checked = node.isChecked();
+        checkable = node.isCheckable();
         clickable = node.isClickable();
         contextClickable = node.isContextClickable();
         dismissable = node.isDismissable();
         enabled = node.isEnabled();
         editable = node.isEditable();
         focusable = node.isFocusable();
+        focused = node.focused();
         longClickable = node.isLongClickable();
         selected = node.isSelected();
         scrollable = node.isScrollable();
-        mBoundsInScreen = new Rect();
+        visibleToUser = node.visibleToUser();
         node.getBoundsInScreen(mBoundsInScreen);
+        node.getBoundsInParent(mBoundsInParent);
         bounds = boundsToString(mBoundsInScreen);
+
     }
 
     private String simplifyId(String idResourceName) {
@@ -89,6 +97,11 @@ public class NodeInfo {
 
     public Rect getBoundsInScreen() {
         return mBoundsInScreen;
+    }
+
+
+    public Rect getBoundsInParent() {
+        return mBoundsInParent;
     }
 
     public static String boundsToString(Rect rect) {

@@ -18,8 +18,8 @@ public class IdFilter extends ListFilter.Default {
         }
     };
 
-    public static IdFilter equals(String id) {
-        return new IdFilter(id);
+    public static StringEqualsFilter equals(String id) {
+        return new StringEqualsFilter(id, ID_GETTER);
     }
 
     public static StringStartsWithFilter startsWith(String prefix) {

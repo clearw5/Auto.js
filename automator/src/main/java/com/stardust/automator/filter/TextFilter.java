@@ -23,7 +23,7 @@ public class TextFilter extends ListFilter.Default {
     }
 
     public static ListFilter contains(String str) {
-        return new TextFilter(str);
+        return new StringContainsFilter(str, TEXT_GETTER);
     }
 
     public static ListFilter startsWith(String prefix) {

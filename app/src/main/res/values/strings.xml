@@ -313,4 +313,22 @@
     <string name="text_select_all">全选</string>
     <string name="text_cut">剪切</string>
     <string name="text_copy">复制</string>
+    <string name="text_generate_code">生成代码</string>
+    <string name="text_action">动作</string>
+    <string name="text_click">点击(click)</string>
+    <string name="text_long_click">长按(longClick)</string>
+    <string name="text_set_text">设置文本(setText)</string>
+    <string name="text_scroll_forward">向前/右/下滑动(scrollForward)</string>
+    <string name="text_scroll_backward">向后/上/左滑动(scrollBackward)</string>
+    <string name="text_find_one">直到找到一个(findOne)</string>
+    <string name="text_until_find">直到找到所有(untilFind)</string>
+    <string name="text_wait_for">等待控件出现(waitFor)</string>
+    <string name="text_selector_exists">判断控件存在(exists)</string>
+    <string name="text_options">选项</string>
+    <string name="text_using_id_selector">使用id选择</string>
+    <string name="text_using_text_selector">使用文本选择(text)</string>
+    <string name="text_using_desc_selector">使用描述选择(desc)</string>
+    <string name="text_generate_and_copy">生成并复制</string>
+    <string name="text_generate_and_open_editor">生成并打开编辑器</string>
+    <string name="text_generate_fail">生成失败了o(╥﹏╥)o</string>
 </resources>
