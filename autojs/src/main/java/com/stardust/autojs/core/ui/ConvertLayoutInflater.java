@@ -11,6 +11,9 @@ import com.stardust.autojs.core.ui.widget.JsFrameLayout;
 import com.stardust.autojs.core.ui.xml.XmlConverter;
 import com.stardust.util.MapEntries;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Map;
 
 /**
@@ -54,7 +57,6 @@ public class ConvertLayoutInflater implements JsLayoutInflater {
 
     @Override
     public View inflate(Context context, String xml) {
-
         try {
             String androidLayoutXml = XmlConverter.convertToAndroidLayout(xml);
             JsFrameLayout root = new JsFrameLayout(context);

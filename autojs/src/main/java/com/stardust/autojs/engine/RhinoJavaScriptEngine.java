@@ -13,6 +13,7 @@ import com.stardust.automator.UiObjectCollection;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 
+import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ImporterTopLevel;
@@ -43,6 +44,7 @@ import java.util.Locale;
 public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
+    private static ThreadLocal<Thread.UncaughtExceptionHandler> mExceptionHandlerThreadLocal = new ThreadLocal<>();
 
     private static int contextCount = 0;
     private static StringScriptSource sInitScript;
@@ -163,13 +165,17 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         return context;
     }
 
+    public static void setUncaghtExceptionHandler(Thread.UncaughtExceptionHandler handler) {
+        mExceptionHandlerThreadLocal.set(handler);
+    }
+
     private class WrapFactory extends org.mozilla.javascript.WrapFactory {
         @Override
         public Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType) {
             if (staticType == String.class) {
                 return getRuntime().bridges.toString(obj);
             }
-            if (staticType == UiObjectCollection.class ) {
+            if (staticType == UiObjectCollection.class) {
                 return getRuntime().bridges.toArray(obj);
 
             }
@@ -195,6 +201,21 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
             Context cx = super.makeContext();
             cx.setInstructionObserverThreshold(10000);
             return cx;
+        }
+
+        @Override
+        protected Object doTopCall(Callable callable, Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
+            Thread.UncaughtExceptionHandler exceptionHandler = mExceptionHandlerThreadLocal.get();
+            if (exceptionHandler == null)
+                return super.doTopCall(callable, cx, scope, thisObj, args);
+            else {
+                try {
+                    return super.doTopCall(callable, cx, scope, thisObj, args);
+                } catch (Exception e) {
+                    exceptionHandler.uncaughtException(Thread.currentThread(), e);
+                    return null;
+                }
+            }
         }
     }
 

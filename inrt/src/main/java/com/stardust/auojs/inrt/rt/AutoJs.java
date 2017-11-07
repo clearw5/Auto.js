@@ -35,6 +35,7 @@ import com.stardust.util.ScreenMetrics;
 import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
+import com.stardust.view.accessibility.AccessibilityNotificationObserver;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 import com.stardust.view.accessibility.NotificationListener;
@@ -58,7 +59,7 @@ public class AutoJs {
     }
 
     private final AccessibilityActionRecorder mAccessibilityActionRecorder = new AccessibilityActionRecorder();
-    private final NotificationListener.AccessibilityNotificationObserver mNotificationObserver;
+    private final AccessibilityNotificationObserver mNotificationObserver;
     private ScriptEngineManager mScriptEngineManager;
     private final Context mContext;
     private final UiHandler mUiHandler;
@@ -74,7 +75,7 @@ public class AutoJs {
         mUiHandler = new UiHandler(context);
         mAppUtils = new AppUtils(context);
         mGlobalConsole = new GlobalStardustConsole(mUiHandler);
-        mNotificationObserver = new NotificationListener.AccessibilityNotificationObserver(context);
+        mNotificationObserver = new AccessibilityNotificationObserver(context);
         mAccessibilityInfoProvider = new AccessibilityInfoProvider(context.getPackageManager());
         mScriptEngineService = buildScriptEngineService();
         addAccessibilityServiceDelegates();
@@ -198,7 +199,7 @@ public class AutoJs {
         }
 
         @Override
-        public NotificationListener.AccessibilityNotificationObserver getNotificationObserver() {
+        public AccessibilityNotificationObserver getNotificationObserver() {
             return mNotificationObserver;
         }
 

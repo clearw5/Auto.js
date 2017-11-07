@@ -10,7 +10,9 @@ module.exports = function(__runtime__, scope){
     ui.setContentView = function(view){
         ui.view = view;
         ui.__view_cache__ = {};
-        activity.setContentView(view);
+        ui.run(function(){
+            activity.setContentView(view);
+        });
     }
 
     ui.id = function(id){
@@ -43,12 +45,16 @@ module.exports = function(__runtime__, scope){
             color = android.graphics.Color.parseColor(color);
         }
         if(android.os.Build.VERSION.SDK_INT >= 21){
-            activity.getWindow().setStatusBarColor(color);
+            ui.run(function(){
+                activity.getWindow().setStatusBarColor(color);
+            });
         }
     }
 
     ui.finish = function(){
-        activity.finish();
+        ui.run(function(){
+            activity.finish();
+        });
     }
 
     ui.findViewByStringId = function(view, id){
@@ -97,5 +103,7 @@ module.exports = function(__runtime__, scope){
            return ui[name];
         }
     };
+
+
     return proxy;
 }

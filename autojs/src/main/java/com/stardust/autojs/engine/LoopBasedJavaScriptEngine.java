@@ -16,6 +16,12 @@ import com.stardust.util.Callback;
 
 public class LoopBasedJavaScriptEngine extends RhinoJavaScriptEngine {
 
+    public interface ExecuteCallback {
+        void onResult(Object r);
+
+        void onException(Exception e);
+    }
+
     private Handler mHandler;
     private boolean mLooping = false;
 
@@ -30,15 +36,21 @@ public class LoopBasedJavaScriptEngine extends RhinoJavaScriptEngine {
     }
 
 
-    public void execute(final ScriptSource source, final Callback<Object> callback) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
+    public void execute(final ScriptSource source, final ExecuteCallback callback) {
+        Runnable r = () -> {
+            try {
                 Object o = LoopBasedJavaScriptEngine.super.execute((JavaScriptSource) source);
                 if (callback != null)
-                    callback.call(o);
-
+                    callback.onResult(o);
+            } catch (Exception e) {
+                if (callback == null) {
+                    throw e;
+                } else {
+                    callback.onException(e);
+                }
             }
+
+
         };
         mHandler.post(r);
         if (!mLooping && Looper.myLooper() != Looper.getMainLooper()) {
@@ -56,7 +68,9 @@ public class LoopBasedJavaScriptEngine extends RhinoJavaScriptEngine {
 
     @Override
     public synchronized void destroy() {
-        Loopers.quitForThread(getThread());
+        Thread thread = getThread();
+        if (thread != null)
+            Loopers.quitForThread(thread);
         super.destroy();
     }
 

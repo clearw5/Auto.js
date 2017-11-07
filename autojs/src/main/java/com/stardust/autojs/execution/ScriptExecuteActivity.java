@@ -5,16 +5,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
+import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
+import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
+import com.stardust.lang.ThreadCompat;
 import com.stardust.util.IntentExtras;
 
 /**
  * Created by Stardust on 2017/2/5.
  */
 
-public class ScriptExecuteActivity extends AppCompatActivity {
+public class ScriptExecuteActivity extends AppCompatActivity implements Thread.UncaughtExceptionHandler {
 
 
     private static final String EXTRA_EXECUTION = ScriptExecuteActivity.class.getName() + ".execution";
@@ -47,6 +51,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         mScriptSource = mScriptExecution.getSource();
         mScriptEngine = mScriptExecution.getEngine();
         mExecutionListener = mScriptExecution.getListener();
+        RhinoJavaScriptEngine.setUncaghtExceptionHandler(this);
         runScript();
     }
 
@@ -60,6 +65,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void doExecution() {
         mScriptEngine.setTag(ScriptEngine.TAG_SOURCE, mScriptSource);
         mExecutionListener.onStart(mScriptExecution);
@@ -84,6 +90,12 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         mScriptEngine.put("activity", null);
         mScriptEngine.destroy();
         mScriptExecution = null;
+    }
+
+    @Override
+    public void uncaughtException(Thread t, Throwable e) {
+        mExecutionListener.onException(mScriptExecution, (Exception) e);
+        super.finish();
     }
 
     private static class ActivityScriptExecution extends ScriptExecution.AbstractScriptExecution {
