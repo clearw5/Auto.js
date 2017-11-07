@@ -193,7 +193,7 @@ public class CodeGenerateDialog extends ThemeColorMaterialDialogBuilder {
         @OnCheckedChanged(R.id.checkbox)
         void onCheckedChanged() {
             getChild().checked = checkBox.isChecked();
-            if (checkBox.isChecked() && getChild().group.titleRes != R.string.text_action)
+            if (checkBox.isChecked() && getChild().group.titleRes != R.string.text_options)
                 uncheckOthers(getParentAdapterPosition(), getChild());
         }
 

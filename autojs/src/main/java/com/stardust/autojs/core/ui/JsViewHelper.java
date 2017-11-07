@@ -7,7 +7,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.nickandjerry.dynamiclayoutinflator.lib.DynamicLayoutInflator;
+import com.nickandjerry.dynamiclayoutinflator.lib.util.Ids;
+
 
 /**
  * Created by Stardust on 2017/5/14.
@@ -17,7 +18,7 @@ public class JsViewHelper {
 
     @Nullable
     public static View findViewByStringId(View view, String id) {
-        View result = DynamicLayoutInflator.findViewByIdString(view, id);
+        View result = view.findViewById(Ids.getIdFromName(id));
         if (result != null)
             return result;
         if (!(view instanceof ViewGroup)) {

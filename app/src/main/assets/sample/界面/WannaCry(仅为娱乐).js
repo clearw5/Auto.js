@@ -13,7 +13,7 @@ ui.layout(
     <frame background="#AA0000">
 	    <vertical align="top" paddingTop="5" margin="10">
 		    <text id="oops" color="#FFFFFF" gravity="center" size="20">Oops, your files have been encrypted!</text>
-		    <text id="text" bg="#FFFFFF" gravity="left" color="#000" size="15" marginTop="15" h="425"></text>
+		    <text id="text" bg="#FFFFFF" gravity="left" color="#000000" size="15" marginTop="15" h="425"></text>
 		    <button id="payment" text="Payment" margin="20 0 0 0"/>
 		    <button id="decrypt" text="Decrypt"/>
 	    </vertical>

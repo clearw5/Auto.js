@@ -9,11 +9,11 @@ function showLoginUI(){
       <frame>
         <vertical h="auto" align="center" margin="0 50">
           <linear>
-             <text w="56" gravity="center" color="#111" size="16">用户名</text>
+             <text w="56" gravity="center" color="#111111" size="16">用户名</text>
              <input id="name" w="*" h="40"/>
           </linear>
           <linear>
-             <text w="56" gravity="center" color="#111" size="16">密码</text>
+             <text w="56" gravity="center" color="#111111" size="16">密码</text>
              <input id="password" w="*" h="40" inputType="password"/>
           </linear>
           <linear gravity="center">
@@ -36,15 +36,15 @@ function showRegisterUI(){
       <frame>
         <vertical h="auto" align="center" margin="0 50">
           <linear>
-             <text w="56" gravity="center" color="#111" size="16">用户名</text>
+             <text w="56" gravity="center" color="#111111" size="16">用户名</text>
              <input w="*" h="40"/>
           </linear>
           <linear>
-             <text w="56" gravity="center" color="#111" size="16">密码</text>
+             <text w="56" gravity="center" color="#111111" size="16">密码</text>
              <input w="*" h="40" inputType="password"/>
           </linear>
           <linear>
-             <text w="56" gravity="center" color="#111" size="16">邮箱</text>
+             <text w="56" gravity="center" color="#111111" size="16">邮箱</text>
              <input w="*" h="40" inputType="email"/>
           </linear>
           <linear gravity="center">

@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.nickandjerry.dynamiclayoutinflator.lib.DynamicLayoutInflator;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.network.GlideApp;
 import com.stardust.scriptdroid.network.Glides;

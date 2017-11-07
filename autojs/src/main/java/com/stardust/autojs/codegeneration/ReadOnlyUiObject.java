@@ -43,7 +43,7 @@ public class ReadOnlyUiObject extends UiObject {
 
     @Override
     public String className() {
-        return mNodeInfo.className.toString();
+        return mNodeInfo.className;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ReadOnlyUiObject extends UiObject {
 
     @Override
     public String packageName() {
-        return mNodeInfo.packageName.toString();
+        return mNodeInfo.packageName;
     }
 
     @Override

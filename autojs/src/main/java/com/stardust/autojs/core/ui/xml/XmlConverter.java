@@ -36,7 +36,7 @@ public class XmlConverter {
                     .map("button", JsButton.class.getName())
                     .map("text", JsTextView.class.getName())
                     .map("input", JsEditText.class.getName())
-                    .map("image", "ImageView")
+                    .map("img", "ImageView")
             );
 
     private static final AttributeHandler ATTRIBUTE_HANDLER = new AttributeHandler.AttrNameRouter()

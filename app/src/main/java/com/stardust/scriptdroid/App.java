@@ -1,12 +1,22 @@
 package com.stardust.scriptdroid;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.multidex.MultiDexApplication;
+import android.view.View;
+import android.widget.ImageView;
 
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.flurry.android.FlurryAgent;
+import com.nickandjerry.dynamiclayoutinflator.lib.ImageLoader;
+import com.nickandjerry.dynamiclayoutinflator.lib.util.Drawables;
 import com.squareup.leakcanary.LeakCanary;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.autojs.key.GlobalKeyObserver;
 import com.stardust.scriptdroid.autojs.record.GlobalRecorder;
+import com.stardust.scriptdroid.network.GlideApp;
 import com.stardust.scriptdroid.tool.CrashHandler;
 import com.stardust.scriptdroid.tool.JsBeautifierFactory;
 import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
@@ -63,8 +73,62 @@ public class App extends MultiDexApplication {
         JsBeautifierFactory.initJsBeautify(this, "js/jsbeautify.js");
         GlobalKeyObserver.getSingleton();
         GlobalRecorder.initSingleton(this);
+        setupDrawableImageLoader();
+
     }
 
+    private void setupDrawableImageLoader() {
+        Drawables.setImageLoader(new ImageLoader() {
+            @Override
+            public void loadInto(ImageView imageView, Uri uri) {
+                GlideApp.with(App.this)
+                        .load(uri)
+                        .into(imageView);
+            }
+
+            @Override
+            public void loadIntoBackground(View view, Uri uri) {
+                GlideApp.with(App.this)
+                        .load(uri)
+                        .into(new SimpleTarget<Drawable>() {
+                            @Override
+                            public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                                view.setBackground(resource);
+                            }
+                        });
+            }
+
+            @Override
+            public Drawable load(View view, Uri uri) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void load(View view, Uri uri, DrawableCallback drawableCallback) {
+                GlideApp.with(App.this)
+                        .load(uri)
+                        .into(new SimpleTarget<Drawable>() {
+                            @Override
+                            public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                                drawableCallback.onLoaded(resource);
+                            }
+                        });
+            }
+
+            @Override
+            public void load(View view, Uri uri, BitmapCallback bitmapCallback) {
+                GlideApp.with(App.this)
+                        .asBitmap()
+                        .load(uri)
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                                bitmapCallback.onLoaded(resource);
+                            }
+                        });
+            }
+        });
+    }
 
 
     public UiHandler getUiHandler() {

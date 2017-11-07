@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.getkeepsafe.dexcount'
-def AAVersion = '4.2.0'
+def AAVersion = '4.3.1'
 
 android {
     compileSdkVersion 25
@@ -9,8 +9,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 219
-        versionName "3.0.0 Alpha19"
+        versionCode 221
+        versionName "3.0.0 Alpha21"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
