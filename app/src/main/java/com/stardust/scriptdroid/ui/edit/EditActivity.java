@@ -2,11 +2,13 @@ package com.stardust.scriptdroid.ui.edit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toolbar;
 
+import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.ui.BaseActivity;
@@ -25,7 +27,9 @@ import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_READ_ONLY;
  * Created by Stardust on 2017/1/29.
  */
 @EActivity(R.layout.activity_edit)
-public class EditActivity extends BaseActivity {
+public class EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost {
+
+    private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
 
     @ViewById(R.id.editor_view)
     EditorView mEditor;
@@ -113,4 +117,14 @@ public class EditActivity extends BaseActivity {
         super.onDestroy();
     }
 
+    @NonNull
+    @Override
+    public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
+        return mMediator;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mMediator.onActivityResult(requestCode, resultCode, data);
+    }
 }

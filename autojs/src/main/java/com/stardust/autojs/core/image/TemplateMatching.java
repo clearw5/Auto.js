@@ -111,12 +111,12 @@ public class TemplateMatching {
     }
 
     private static Rect getROI(Point p, Mat src, Mat currentTemplate) {
-        int x = (int) (p.x * 2 - currentTemplate.rows() / 4);
+        int x = (int) (p.x * 2 - currentTemplate.cols() / 4);
         x = Math.max(0, x);
-        int y = (int) (p.y * 2 - currentTemplate.cols() / 4);
+        int y = (int) (p.y * 2 - currentTemplate.rows() / 4);
         y = Math.max(0, y);
-        int w = (int) (currentTemplate.rows() * 1.5);
-        int h = (int) (currentTemplate.cols() * 1.5);
+        int w = (int) (currentTemplate.cols() * 1.5);
+        int h = (int) (currentTemplate.rows() * 1.5);
         if (x + w >= src.cols()) {
             w = src.cols() - x - 1;
         }

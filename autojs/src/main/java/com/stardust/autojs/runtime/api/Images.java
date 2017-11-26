@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Point;
 import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
@@ -16,6 +15,7 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 
+import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.image.ColorFinder;
 import com.stardust.autojs.core.image.ImageWrapper;
 import com.stardust.autojs.core.image.ScreenCaptureRequester;
@@ -23,23 +23,18 @@ import com.stardust.autojs.core.image.ScreenCapturer;
 import com.stardust.autojs.core.image.TemplateMatching;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
-import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.concurrent.VolatileBox;
+import com.stardust.concurrent.VolatileDispose;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
 
-import org.opencv.android.Utils;
-import org.opencv.contrib.FaceRecognizer;
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.highgui.Highgui;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.nio.ByteBuffer;
+import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -68,18 +63,14 @@ public class Images {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean requestScreenCapture(final int width, final int height) {
         mScriptRuntime.requiresApi(21);
-        final VolatileBox<Boolean> requestResult = new VolatileBox<>();
-        mScreenCaptureRequester.setOnActivityResultCallback(new ScreenCaptureRequester.Callback() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onRequestResult(int result, Intent data) {
-                if (result == Activity.RESULT_OK) {
-                    mScreenCapturer = new ScreenCapturer(mContext, data, width, height, ScreenMetrics.getDeviceScreenDensity(),
-                            new Handler(mScriptRuntime.loopers.getServantLooper()));
-                    requestResult.setAndNotify(true);
-                } else {
-                    requestResult.setAndNotify(false);
-                }
+        final VolatileDispose<Boolean> requestResult = new VolatileDispose<>();
+        mScreenCaptureRequester.setOnActivityResultCallback((result, data) -> {
+            if (result == Activity.RESULT_OK) {
+                mScreenCapturer = new ScreenCapturer(mContext, data, width, height, ScreenMetrics.getDeviceScreenDensity(),
+                        new Handler(mScriptRuntime.loopers.getServantLooper()));
+                requestResult.setAndNotify(true);
+            } else {
+                requestResult.setAndNotify(false);
             }
         });
         mScreenCaptureRequester.request();
@@ -139,7 +130,8 @@ public class Images {
 
 
     public ImageWrapper read(String path) {
-        return ImageWrapper.ofBitmap(BitmapFactory.decodeFile(path));
+        Bitmap bitmap = BitmapFactory.decodeFile(path);
+        return ImageWrapper.ofBitmap(bitmap);
     }
 
     public static void saveBitmap(Bitmap bitmap, String path) {
@@ -191,15 +183,8 @@ public class Images {
             point.x += rect.x;
             point.y += rect.y;
         }
-        return toAndroidPoint(point);
+        return point;
     }
 
-
-    public static Point toAndroidPoint(org.opencv.core.Point p) {
-        if (p == null) {
-            return null;
-        }
-        return new Point((int) p.x, (int) p.y);
-    }
 
 }

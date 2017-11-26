@@ -132,7 +132,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(mAndroidContext, list);
         new RequireBuilder()
                 .setModuleScriptProvider(new SoftCachingModuleScriptProvider(provider))
-                .setSandboxed(true)
+                .setSandboxed(false)
                 .createRequire(context, scope)
                 .install(scope);
 

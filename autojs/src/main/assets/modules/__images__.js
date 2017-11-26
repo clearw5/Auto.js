@@ -42,9 +42,9 @@ module.exports = function(__runtime__, scope){
             var threshold = options.threshold || 16;
         }
         if(options.region){
-            return rtImages.toAndroidPoint(colorFinder.findColor(img, color, threshold, buildRegion(options.region, img)));
+            return colorFinder.findColor(img, color, threshold, buildRegion(options.region, img));
         }else{
-            return rtImages.toAndroidPoint(colorFinder.findColor(img, color, threshold, null));
+            return colorFinder.findColor(img, color, threshold, null);
         }
    }
 
@@ -98,7 +98,7 @@ module.exports = function(__runtime__, scope){
   function toPointArray(points){
      var arr = [];
      for(var i = 0; i < points.length; i++){
-        arr.push(rtImages.toAndroidPoint(points[i]));
+        arr.push(points[i]);
      }
      return arr;
   }
