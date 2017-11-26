@@ -37,7 +37,7 @@ module.exports = function(runtime, scope){
         }
         call.enqueue(new Callback({
             onResponse: function(call, res){
-                callback(res);
+                callback(wrapResponse(res));
             },
             onFailure: function(call, ex){
                 callback(null, ex);
@@ -103,6 +103,7 @@ module.exports = function(runtime, scope){
     function wrapResponse(res){
         var r = {};
         r.statusCode = res.code();
+        r.statusMessage = res.message();
         var headers = res.headers();
         r.headers = {};
         for(var i = 0; i < headers.size(); i++){
@@ -112,6 +113,7 @@ module.exports = function(runtime, scope){
         r.body.json = function(){
             return JSON.parse(r.body.string());
         }
+        r.body.contentType = r.body.contentType();
         r.request = res.request();
         r.url = r.request.url();
         r.method = r.request.method();

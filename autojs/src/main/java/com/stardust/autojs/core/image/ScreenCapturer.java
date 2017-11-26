@@ -83,25 +83,26 @@ public class ScreenCapturer {
     }
 
     private void setImageListener(Handler handler) {
-        mImageReader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
-            @Override
-            public void onImageAvailable(ImageReader reader) {
-                if (mCachedImage != null) {
-                    synchronized (mCachedImageLock) {
-                        if (mCachedImage != null) {
-                            mCachedImage.close();
-                        }
-                        mCachedImage = reader.acquireLatestImage();
-                        return;
+        mImageReader.setOnImageAvailableListener(reader -> {
+            if (mCachedImage != null) {
+                synchronized (mCachedImageLock) {
+                    if (mCachedImage != null) {
+                        mCachedImage.close();
                     }
+                    mCachedImage = reader.acquireLatestImage();
+                    mCachedImageLock.notify();
+                    return;
                 }
-                mCachedImage = reader.acquireLatestImage();
             }
+            mCachedImage = reader.acquireLatestImage();
         }, handler);
     }
 
     @Nullable
     public Image capture() {
+        if (mUnderUsingImage == null && mCachedImage == null) {
+            waitForImageAvailable();
+        }
         if (mCachedImage != null) {
             if (mUnderUsingImage != null)
                 mUnderUsingImage.close();
@@ -111,6 +112,16 @@ public class ScreenCapturer {
             }
         }
         return mUnderUsingImage;
+    }
+
+    private void waitForImageAvailable() {
+        synchronized (mCachedImageLock) {
+            try {
+                mCachedImageLock.wait();
+            } catch (InterruptedException e) {
+                throw new ScriptInterruptedException();
+            }
+        }
     }
 
     public int getScreenWidth() {

@@ -57,9 +57,9 @@ public class Notification extends android.app.Notification {
     public String toString() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             return "Notification{" +
-                    "packageName='" + mPackageName + '\'' +
-                    "title = " + getTitle() + '\'' +
-                    "text='" + getText() + '\'' +
+                    "packageName='" + mPackageName + "', " +
+                    "title='" + getTitle() + ", " +
+                    "text='" + getText() + "'" +
                     "} ";
         }
         return super.toString();

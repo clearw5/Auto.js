@@ -43,6 +43,7 @@ public class IntentExtras implements Serializable {
 
     private IntentExtras(int id) {
         mMap = extraStore.get(id);
+        extraStore.remove(id);
         mMaxId = id;
     }
 

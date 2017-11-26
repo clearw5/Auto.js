@@ -60,16 +60,30 @@ public class ScriptExecuteActivity extends AppCompatActivity implements Thread.U
             prepare();
             doExecution();
         } catch (Exception e) {
-            mExecutionListener.onException(mScriptExecution, e);
-            super.finish();
+            onException(e);
         }
+    }
+
+    private void onException(Exception e) {
+        mExecutionListener.onException(mScriptExecution, e);
+        super.finish();
     }
 
     @SuppressWarnings("unchecked")
     private void doExecution() {
         mScriptEngine.setTag(ScriptEngine.TAG_SOURCE, mScriptSource);
         mExecutionListener.onStart(mScriptExecution);
-        mResult = mScriptEngine.execute(mScriptSource);
+        ((LoopBasedJavaScriptEngine) mScriptEngine).execute(mScriptSource, new LoopBasedJavaScriptEngine.ExecuteCallback() {
+            @Override
+            public void onResult(Object r) {
+                mResult = r;
+            }
+
+            @Override
+            public void onException(Exception e) {
+                ScriptExecuteActivity.this.onException(e);
+            }
+        });
     }
 
     private void prepare() {
@@ -94,8 +108,7 @@ public class ScriptExecuteActivity extends AppCompatActivity implements Thread.U
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {
-        mExecutionListener.onException(mScriptExecution, (Exception) e);
-        super.finish();
+        onException((Exception) e);
     }
 
     private static class ActivityScriptExecution extends ScriptExecution.AbstractScriptExecution {

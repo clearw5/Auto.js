@@ -24,8 +24,8 @@ exports.format = function(f) {
   if (!isString(f)) {
     var objects = [];
     for (var i = 0; i < arguments.length; i++) {
-      var v = isJavaObject(arguments[i]) ? arguments[i].toString() :
-        arguments[i];
+      var v = (arguments[i] && isJavaObject(arguments[i])) ? arguments[i].toString() :
+            arguments[i];
       objects.push(inspect(v));
     }
     return objects.join(' ');

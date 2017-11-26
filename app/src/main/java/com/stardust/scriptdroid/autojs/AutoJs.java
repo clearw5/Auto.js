@@ -44,6 +44,9 @@ import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.view.accessibility.LayoutInspector;
 import com.stardust.view.accessibility.NotificationListener;
 
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.OpenCVLoader;
+
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -78,7 +81,7 @@ public class AutoJs {
         mContext = context;
         mUiHandler = new UiHandler(context);
         mAppUtils = new AppUtils(context);
-        mGlobalConsole = new GlobalStardustConsole(mUiHandler){
+        mGlobalConsole = new GlobalStardustConsole(mUiHandler) {
             @Override
             public String println(int level, CharSequence charSequence) {
                 String log = super.println(level, charSequence);
@@ -93,6 +96,8 @@ public class AutoJs {
         mScriptEngineService.registerGlobalScriptExecutionListener(new ScriptExecutionGlobalListener());
         registerActivityLifecycleCallbacks();
         InputEventObserver.initGlobal(context);
+        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_13, context, new BaseLoaderCallback(context) {
+        });
     }
 
     private ScriptEngineService buildScriptEngineService() {

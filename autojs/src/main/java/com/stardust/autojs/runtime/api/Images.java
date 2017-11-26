@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
@@ -16,14 +17,25 @@ import android.view.Surface;
 import android.view.WindowManager;
 
 import com.stardust.autojs.core.image.ColorFinder;
+import com.stardust.autojs.core.image.ImageWrapper;
 import com.stardust.autojs.core.image.ScreenCaptureRequester;
 import com.stardust.autojs.core.image.ScreenCapturer;
+import com.stardust.autojs.core.image.TemplateMatching;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.concurrent.VolatileBox;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
+
+import org.opencv.android.Utils;
+import org.opencv.contrib.FaceRecognizer;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.highgui.Highgui;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -56,7 +68,6 @@ public class Images {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean requestScreenCapture(final int width, final int height) {
         mScriptRuntime.requiresApi(21);
-        colorFinder.prestartThreads();
         final VolatileBox<Boolean> requestResult = new VolatileBox<>();
         mScreenCaptureRequester.setOnActivityResultCallback(new ScreenCaptureRequester.Callback() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -84,19 +95,17 @@ public class Images {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public Image captureScreen() {
+    public ImageWrapper captureScreen() {
         mScriptRuntime.requiresApi(21);
         if (mScreenCapturer == null) {
             throw new SecurityException("No screen capture permission");
         }
-        colorFinder.prestartThreads();
-        return mScreenCapturer.capture();
+        return ImageWrapper.ofImage(mScreenCapturer.capture());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean captureScreen(String path) {
-        mScriptRuntime.requiresApi(21);
-        Image image = mScreenCapturer.capture();
+        ImageWrapper image = captureScreen();
         if (image != null) {
             saveImage(image, path);
             return true;
@@ -104,22 +113,10 @@ public class Images {
         return false;
     }
 
-    public void saveImage(Image image, String path) {
-        Bitmap bitmap = toBitmap(image);
-        saveBitmap(bitmap, path);
-        bitmap.recycle();
+    public void saveImage(ImageWrapper image, String path) {
+        image.saveTo(path);
     }
 
-    public static Bitmap toBitmap(Image image) {
-        Image.Plane plane = image.getPlanes()[0];
-        ByteBuffer buffer = plane.getBuffer();
-        buffer.position(0);
-        int pixelStride = plane.getPixelStride();
-        int rowPadding = plane.getRowStride() - pixelStride * image.getWidth();
-        Bitmap bitmap = Bitmap.createBitmap(image.getWidth() + rowPadding / pixelStride, image.getHeight(), Bitmap.Config.ARGB_8888);
-        bitmap.copyPixelsFromBuffer(buffer);
-        return bitmap;
-    }
 
     public static int pixel(Image image, int x, int y) {
         int originX = x;
@@ -134,15 +131,15 @@ public class Images {
         return (c & 0xff000000) + ((c & 0xff) << 16) + (c & 0x00ff00) + ((c & 0xff0000) >> 16);
     }
 
-    public static int pixel(Bitmap bitmap, int x, int y) {
-        x = ScreenMetrics.rescaleX(x, bitmap.getWidth());
-        y = ScreenMetrics.rescaleY(y, bitmap.getHeight());
-        return bitmap.getPixel(x, y);
+    public static int pixel(ImageWrapper image, int x, int y) {
+        x = ScreenMetrics.rescaleX(x, image.getWidth());
+        y = ScreenMetrics.rescaleY(y, image.getHeight());
+        return image.getPixel(x, y);
     }
 
 
-    public static Bitmap read(String path) {
-        return BitmapFactory.decodeFile(path);
+    public ImageWrapper read(String path) {
+        return ImageWrapper.ofBitmap(BitmapFactory.decodeFile(path));
     }
 
     public static void saveBitmap(Bitmap bitmap, String path) {
@@ -151,24 +148,6 @@ public class Images {
         } catch (FileNotFoundException e) {
             throw new UncheckedIOException(e);
         }
-    }
-
-    public static void saveBitmap(Bitmap bitmap, String path, int width, int height) {
-        if (width != bitmap.getWidth() || height != bitmap.getHeight()) {
-            Bitmap scaleBitmap = scaleBitmap(bitmap, width, height);
-            saveBitmap(scaleBitmap, path);
-            if (scaleBitmap != bitmap) {
-                scaleBitmap.recycle();
-            }
-        } else {
-            saveBitmap(bitmap, path);
-        }
-    }
-
-    public void saveImage(Image image, String path, int width, int height) {
-        Bitmap bitmap = toBitmap(image);
-        saveBitmap(bitmap, path, width, height);
-        bitmap.recycle();
     }
 
     public static Bitmap scaleBitmap(Bitmap origin, int newWidth, int newHeight) {
@@ -188,6 +167,39 @@ public class Images {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mScreenCapturer != null) {
             mScreenCapturer.release();
         }
+    }
+
+    public Point findImage(ImageWrapper image, ImageWrapper template) {
+        return findImage(image, template, 0.9f, null);
+    }
+
+    public Point findImage(ImageWrapper image, ImageWrapper template, float threshold) {
+        return findImage(image, template, threshold, null);
+    }
+
+    public Point findImage(ImageWrapper image, ImageWrapper template, float threshold, Rect rect) {
+        return findImage(image, template, threshold, rect, TemplateMatching.MAX_LEVEL_AUTO);
+    }
+
+    public Point findImage(ImageWrapper image, ImageWrapper template, float threshold, Rect rect, int maxLevel) {
+        Mat src = image.getMat();
+        if (rect != null) {
+            src = new Mat(src, rect);
+        }
+        org.opencv.core.Point point = TemplateMatching.fastTemplateMatching(src, template.getMat(), threshold);
+        if (point != null && rect != null) {
+            point.x += rect.x;
+            point.y += rect.y;
+        }
+        return toAndroidPoint(point);
+    }
+
+
+    public static Point toAndroidPoint(org.opencv.core.Point p) {
+        if (p == null) {
+            return null;
+        }
+        return new Point((int) p.x, (int) p.y);
     }
 
 }
