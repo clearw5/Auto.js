@@ -206,8 +206,6 @@
             </intent-filter>
         </service>
 
-        <service android:name=".timing.TimedTaskService"/>
-
         <receiver android:name=".external.widget.ScriptWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -224,7 +222,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".timing.TaskSchedulerReceiver">
+        <receiver android:name=".timing.TimedTaskScheduler">
             <intent-filter>
                 <action android:name="com.stardust.autojs.action.check_task"/>
             </intent-filter>

@@ -1,11 +1,18 @@
 package com.stardust.scriptdroid.timing;
 
 
-import com.pushtorefresh.storio2.sqlite.StorIOSQLite;
-import com.pushtorefresh.storio2.sqlite.impl.DefaultStorIOSQLite;
-import com.pushtorefresh.storio2.sqlite.queries.Query;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
-import io.reactivex.Observable;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.rx2.language.RXSQLite;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.structure.ModelAdapter;
+
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Stardust on 2017/11/27.
@@ -13,46 +20,59 @@ import io.reactivex.Observable;
 
 public class TimedTaskManager {
 
-    static final String TABLE_NAME = "timed_tasks";
-
-    private static TimedTaskManager sInstance = new TimedTaskManager();
-    private StorIOSQLite mStorIOSQLite;
+    private static TimedTaskManager sInstance;
+    private ModelAdapter<TimedTask> mTimedTaskModelAdapter;
 
     public static TimedTaskManager getInstance() {
+        if (sInstance == null) {
+            sInstance = new TimedTaskManager();
+        }
         return sInstance;
     }
 
     public TimedTaskManager() {
-      /*  mStorIOSQLite = DefaultStorIOSQLite.builder()
-                .sqliteOpenHelper()
-                .build();*/
+        mTimedTaskModelAdapter = FlowManager.getModelAdapter(TimedTask.class);
     }
 
     public void notifyTaskFinished(int id) {
         getTaskById(id).subscribe(timedTask -> {
             if (timedTask.isDisposable()) {
-                removeTask(id);
+                removeTask(id).subscribe();
             } else {
-
+                timedTask.setScheduled(false);
+                mTimedTaskModelAdapter.update(timedTask);
             }
         });
     }
 
-    private Observable<TimedTask> getTaskById(int id) {
-        return null;
+    private Flowable<TimedTask> getTaskById(int id) {
+        return RXSQLite.rx(SQLite.select()
+                .from(TimedTask.class)
+                .where(TimedTask_Table.id.is(id)))
+                .queryStreamResults()
+                .subscribeOn(Schedulers.io());
     }
 
-    private void removeTask(int id) {
+    private Completable removeTask(int id) {
+        return RXSQLite.rx(SQLite.delete(TimedTaskDatabase.class)
+                .where(TimedTask_Table.id.is(id)))
+                .execute()
+                .subscribeOn(Schedulers.io());
+
     }
 
 
-    public Observable<TimedTask> getAllTasks() {
-        return null;
+    public Flowable<TimedTask> getAllTasks() {
+        return RXSQLite.rx(SQLite.select().from(TimedTask.class))
+                .queryStreamResults()
+                .subscribeOn(Schedulers.io());
+
     }
 
-    public Observable<TimedTask> getFutureTasksInMillis(long millis) {
-        long current = System.currentTimeMillis();
-        return getAllTasks().filter(timedTask ->
-                timedTask.getNextTime() - current <= millis);
+    public void notifyTaskScheduled(TimedTask timedTask) {
+        timedTask.setScheduled(true);
+        mTimedTaskModelAdapter.update(timedTask);
+
     }
+
 }

@@ -1,8 +1,5 @@
 package com.stardust.scriptdroid;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -15,14 +12,14 @@ import com.bumptech.glide.request.transition.Transition;
 import com.flurry.android.FlurryAgent;
 import com.nickandjerry.dynamiclayoutinflator.lib.ImageLoader;
 import com.nickandjerry.dynamiclayoutinflator.lib.util.Drawables;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.squareup.leakcanary.LeakCanary;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.autojs.key.GlobalKeyObserver;
 import com.stardust.scriptdroid.autojs.record.GlobalRecorder;
 import com.stardust.scriptdroid.network.GlideApp;
-import com.stardust.scriptdroid.timing.TaskSchedulerReceiver;
+import com.stardust.scriptdroid.timing.TimedTaskScheduler;
 import com.stardust.scriptdroid.tool.CrashHandler;
-import com.stardust.scriptdroid.tool.JsBeautifierFactory;
 import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
 import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
@@ -71,14 +68,14 @@ public class App extends MultiDexApplication {
     }
 
     private void init() {
+        FlowManager.init(this);
         ThemeColorManager.setDefaultThemeColor(new ThemeColor(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorPrimaryDark), getResources().getColor(R.color.colorAccent)));
         ThemeColorManager.init(this);
         AutoJs.initInstance(this);
-        JsBeautifierFactory.initJsBeautify(this, "js/jsbeautify.js");
         GlobalKeyObserver.getSingleton();
         GlobalRecorder.initSingleton(this);
         setupDrawableImageLoader();
-        TaskSchedulerReceiver.setupRepeating(this);
+        TimedTaskScheduler.setupRepeating(this);
     }
 
     private void setupDrawableImageLoader() {

@@ -124,10 +124,13 @@ dependencies {
         exclude group: 'com.android.support'
     })
     annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
-    //stor
-    compile 'com.pushtorefresh.storio2:sqlite:2.1.0'
-    compile 'com.pushtorefresh.storio2:sqlite-annotations:2.1.0'
-    annotationProcessor 'com.pushtorefresh.storio2:sqlite-annotations-processor:2.1.0'
+    //dbflow
+    annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:4.1.2"
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:4.1.2"
+    compile "com.github.Raizlabs.DBFlow:dbflow:4.1.2"
+    compile "com.github.Raizlabs.DBFlow:dbflow-rx2:4.1.2"
+    //joda time
+    compile 'joda-time:joda-time:2.9.9'
     // Tasker Plugin
     compile 'com.twofortyfouram:android-plugin-client-sdk-for-locale:4.0.3'
     compile 'com.flurry.android:analytics:7.0.0@aar'
