@@ -286,28 +286,7 @@
     <string name="text_notification_permission">通知权限</string>
 
 
-    <string-array name="ad_showing_mode_keys">
-        <item>默认</item>
-        <item>每天显示一次</item>
-        <item>关闭广告</item>
-    </string-array>
 
-    <string-array name="ad_showing_mode_values">
-        <item>Default</item>
-        <item>OncePerDay</item>
-        <item>Off</item>
-    </string-array>
-
-
-    <string-array name="root_record_out_file_type_keys">
-        <item>可编辑的js文件</item>
-        <item>不可编辑的二进制文件</item>
-    </string-array>
-
-    <string-array name="root_record_out_file_type_values">
-        <item>js</item>
-        <item>binary</item>
-    </string-array>
     <string name="title_activity_log">LogActivity</string>
     <string name="text_open_main_activity">打开主界面</string>
     <string name="text_select_all">全选</string>
@@ -331,4 +310,6 @@
     <string name="text_generate_and_copy">生成并复制</string>
     <string name="text_generate_and_open_editor">生成并打开编辑器</string>
     <string name="text_generate_fail">生成失败了o(╥﹏╥)o</string>
+    <string name="key_documentation_source">key_documentation_source</string>
+    <string name="text_documentation_source">文档源</string>
 </resources>

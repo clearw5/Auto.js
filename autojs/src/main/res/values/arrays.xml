@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string-array name="ad_showing_mode_keys">
+        <item>默认</item>
+        <item>每天显示一次</item>
+        <item>关闭广告</item>
+    </string-array>
+
+    <string-array name="ad_showing_mode_values">
+        <item>Default</item>
+        <item>OncePerDay</item>
+        <item>Off</item>
+    </string-array>
+
+
+    <string-array name="root_record_out_file_type_keys">
+        <item>可编辑的js文件</item>
+        <item>不可编辑的二进制文件</item>
+    </string-array>
+
+    <string-array name="root_record_out_file_type_values">
+        <item>js</item>
+        <item>binary</item>
+
+    </string-array>
+
+
+    <string-array name="keys_documentation_source">
+        <item>本地文档</item>
+        <item>在线文档</item>
+    </string-array>
+
+    <string-array name="values_documentation_source">
+        <item>Local</item>
+        <item>Online</item>
+    </string-array>
+</resources>

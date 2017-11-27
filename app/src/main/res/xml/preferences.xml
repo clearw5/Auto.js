@@ -113,6 +113,19 @@
 
     <com.stardust.theme.preference.ThemeColorPreferenceCategory
         android:layout="@layout/preference_category_custom"
+        android:title="@string/text_others">
+
+        <com.afollestad.materialdialogs.prefs.MaterialListPreference
+            android:entries="@array/keys_documentation_source"
+            android:entryValues="@array/values_documentation_source"
+            android:key="@string/key_documentation_source"
+            android:layout="@layout/preference_custom"
+            android:title="@string/text_documentation_source"
+            />
+    </com.stardust.theme.preference.ThemeColorPreferenceCategory>
+
+    <com.stardust.theme.preference.ThemeColorPreferenceCategory
+        android:layout="@layout/preference_category_custom"
         android:title="@string/text_about">
 
         <Preference
