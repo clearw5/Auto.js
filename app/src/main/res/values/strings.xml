@@ -312,4 +312,6 @@
     <string name="text_generate_fail">生成失败了o(╥﹏╥)o</string>
     <string name="key_documentation_source">key_documentation_source</string>
     <string name="text_documentation_source">文档源</string>
+    <string name="text_send">发送</string>
+    <string name="text_timed_task">定时运行</string>
 </resources>

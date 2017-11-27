@@ -1,5 +1,8 @@
 package com.stardust.scriptdroid;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -17,6 +20,7 @@ import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.autojs.key.GlobalKeyObserver;
 import com.stardust.scriptdroid.autojs.record.GlobalRecorder;
 import com.stardust.scriptdroid.network.GlideApp;
+import com.stardust.scriptdroid.timing.TaskSchedulerReceiver;
 import com.stardust.scriptdroid.tool.CrashHandler;
 import com.stardust.scriptdroid.tool.JsBeautifierFactory;
 import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
@@ -74,7 +78,7 @@ public class App extends MultiDexApplication {
         GlobalKeyObserver.getSingleton();
         GlobalRecorder.initSingleton(this);
         setupDrawableImageLoader();
-
+        TaskSchedulerReceiver.setupRepeating(this);
     }
 
     private void setupDrawableImageLoader() {

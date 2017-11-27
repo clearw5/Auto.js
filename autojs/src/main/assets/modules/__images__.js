@@ -85,10 +85,11 @@ module.exports = function(__runtime__, scope){
        options = options || {};
        var threshold = options.threshold || 0.9;
        var maxLevel = options.level || -1;
+       var weakThreshold = options.weakThreshold || 0.7;
        if(options.region){
-            return rtImages.findImage(img, template, threshold, buildRegion(options, img), maxLevel);
+            return rtImages.findImage(img, template, weakThreshold, threshold, buildRegion(options, img), maxLevel);
        }else{
-            return rtImages.findImage(img, template, threshold, null, maxLevel);
+            return rtImages.findImage(img, template, weakThreshold, threshold, null, maxLevel);
        }
   }
 

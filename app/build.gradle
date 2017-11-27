@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.getkeepsafe.dexcount'
 def AAVersion = '4.3.1'
 
 android {
@@ -9,8 +8,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 222
-        versionName "3.0.0 Alpha22"
+        versionCode 223
+        versionName "3.0.0 Alpha23"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -125,6 +124,10 @@ dependencies {
         exclude group: 'com.android.support'
     })
     annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
+    //stor
+    compile 'com.pushtorefresh.storio2:sqlite:2.1.0'
+    compile 'com.pushtorefresh.storio2:sqlite-annotations:2.1.0'
+    annotationProcessor 'com.pushtorefresh.storio2:sqlite-annotations-processor:2.1.0'
     // Tasker Plugin
     compile 'com.twofortyfouram:android-plugin-client-sdk-for-locale:4.0.3'
     compile 'com.flurry.android:analytics:7.0.0@aar'

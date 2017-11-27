@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.external.CommonUtils;
+import com.stardust.scriptdroid.external.ScriptIntents;
 import com.stardust.scriptdroid.external.shortcut.Shortcut;
 import com.stardust.scriptdroid.external.shortcut.ShortcutActivity;
 import com.stardust.scriptdroid.external.shortcut.ShortcutManager;
@@ -100,7 +100,7 @@ public class ShortcutCreateActivity extends AppCompatActivity {
         }
         shortcut.name(mName.getText().toString())
                 .targetClass(ShortcutActivity.class)
-                .extras(new Intent().putExtra(CommonUtils.EXTRA_KEY_PATH, mScriptFile.getPath()))
+                .extras(new Intent().putExtra(ScriptIntents.EXTRA_KEY_PATH, mScriptFile.getPath()))
                 .send();
     }
 
@@ -114,10 +114,10 @@ public class ShortcutCreateActivity extends AppCompatActivity {
             icon = Icon.createWithBitmap(bitmap);
         }
         PersistableBundle extras = new PersistableBundle(1);
-        extras.putString(CommonUtils.EXTRA_KEY_PATH, mScriptFile.getPath());
+        extras.putString(ScriptIntents.EXTRA_KEY_PATH, mScriptFile.getPath());
         ShortcutManager.getInstance(this).addDynamicShortcut(mName.getText(), mScriptFile.getPath(), icon,
                 new Intent(this, ShortcutActivity.class)
-                        .putExtra(CommonUtils.EXTRA_KEY_PATH, mScriptFile.getPath())
+                        .putExtra(ScriptIntents.EXTRA_KEY_PATH, mScriptFile.getPath())
                         .setAction(Intent.ACTION_MAIN));
     }
 

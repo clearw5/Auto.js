@@ -5,17 +5,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.stardust.autojs.script.StringScriptSource;
-import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
-import com.stardust.scriptdroid.external.CommonUtils;
+import com.stardust.scriptdroid.external.ScriptIntents;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
-import com.stardust.scriptdroid.ui.common.ScriptOperations;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -44,7 +40,7 @@ public class RunIntentActivity extends Activity {
             InputStream stream = getContentResolver().openInputStream(uri);
             Scripts.run(new StringScriptSource(PFiles.read(stream)));
         } else {
-            CommonUtils.handleIntent(this, intent);
+            ScriptIntents.handleIntent(this, intent);
         }
     }
 }

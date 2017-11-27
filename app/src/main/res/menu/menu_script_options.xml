@@ -12,15 +12,33 @@
     <item
         android:id="@+id/delete"
         android:title="@string/text_delete"/>
-    <item
-        android:id="@+id/floating_edit"
-        android:title="@string/text_floating_edit"/>
 
     <item
-        android:id="@+id/create_shortcut"
-        android:title="@string/text_send_shortcut"/>
-    <item
-        android:id="@+id/open_by_other_apps"
-        android:title="@string/text_open_by_other_apps"/>
+        android:id="@+id/send"
+        android:title="@string/text_send"/>
+
+
+    <item android:title="@string/text_more">
+
+        <menu>
+
+            <item
+                android:id="@+id/timed_task"
+                android:title="@string/text_timed_task"/>
+
+            <item
+                android:id="@+id/floating_edit"
+                android:title="@string/text_floating_edit"/>
+
+            <item
+                android:id="@+id/create_shortcut"
+                android:title="@string/text_send_shortcut"/>
+
+            <item
+                android:id="@+id/open_by_other_apps"
+                android:title="@string/text_open_by_other_apps"/>
+        </menu>
+    </item>
+
 
 </menu>

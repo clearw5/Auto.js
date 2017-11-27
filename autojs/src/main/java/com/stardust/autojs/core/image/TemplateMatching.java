@@ -26,9 +26,10 @@ public class TemplateMatching {
     private static final String LOG_TAG = "TemplateMatching";
 
     public static final int MAX_LEVEL_AUTO = -1;
+    public static final int MATCHING_METHOD_DEFAULT = Imgproc.TM_CCOEFF_NORMED;
 
     public static Point fastTemplateMatching(Mat img, Mat template, float threshold) {
-        return fastTemplateMatching(img, template, Imgproc.TM_CCOEFF_NORMED, 0.75f, threshold, MAX_LEVEL_AUTO);
+        return fastTemplateMatching(img, template, MATCHING_METHOD_DEFAULT, 0.75f, threshold, MAX_LEVEL_AUTO);
     }
 
     public static Point fastTemplateMatching(Mat img, Mat template, int matchMethod, float weakThreshold, float strictThreshold, int maxLevel) {

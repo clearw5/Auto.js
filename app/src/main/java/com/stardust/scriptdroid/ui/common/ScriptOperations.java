@@ -306,6 +306,10 @@ public class ScriptOperations {
                 .show();
     }
 
+    public void timedTask(ScriptFile scriptFile) {
+
+    }
+
 
     private class InputCallback implements MaterialDialog.InputCallback {
 
@@ -322,7 +326,7 @@ public class ScriptOperations {
             this(ext, null);
         }
 
-        public InputCallback() {
+        InputCallback() {
             this(null);
         }
 

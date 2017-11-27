@@ -234,6 +234,15 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
                 Scripts.openByOtherApps(mSelectedScriptFile);
                 notifyOperated();
                 break;
+            case R.id.send:
+                Scripts.send(mSelectedScriptFile);
+                notifyOperated();
+                break;
+            case R.id.timed_task:
+                new ScriptOperations(getContext(), this)
+                        .timedTask(mSelectedScriptFile);
+                notifyOperated();
+                break;
             case R.id.action_sort_by_date:
                 sort(ScriptList.SORT_TYPE_DATE, mDirSortMenuShowing);
                 break;

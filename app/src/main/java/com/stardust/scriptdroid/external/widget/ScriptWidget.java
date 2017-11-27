@@ -11,7 +11,7 @@ import android.widget.RemoteViews;
 
 import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.external.CommonUtils;
+import com.stardust.scriptdroid.external.ScriptIntents;
 import com.stardust.scriptdroid.external.open.RunIntentActivity;
 
 import java.util.HashSet;
@@ -48,7 +48,7 @@ public class ScriptWidget extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_script_shortcut);
         views.setOnClickPendingIntent(R.id.widget, PendingIntent.getActivity(context, requestCode,
                 new Intent(context, RunIntentActivity.class)
-                        .putExtra(CommonUtils.EXTRA_KEY_PATH, path)
+                        .putExtra(ScriptIntents.EXTRA_KEY_PATH, path)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), PendingIntent.FLAG_UPDATE_CURRENT));
         views.setTextViewText(R.id.name, name);
         appWidgetManager.updateAppWidget(widgetId, views);

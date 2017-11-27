@@ -97,7 +97,7 @@
         <activity
             android:name="com.stardust.autojs.core.image.ScreenCaptureRequestActivity"
             android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:theme="@style/AppTheme.Transparent"/>
         <activity
             android:name=".ui.error.IssueReporterActivity"
             android:theme="@style/IssueReporterTheme"/>
@@ -206,6 +206,8 @@
             </intent-filter>
         </service>
 
+        <service android:name=".timing.TimedTaskService"/>
+
         <receiver android:name=".external.widget.ScriptWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -214,6 +216,18 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/script_widget_config"/>
+        </receiver>
+
+        <receiver android:name=".timing.TaskReceiver">
+            <intent-filter>
+                <action android:name="com.stardust.autojs.action.task"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".timing.TaskSchedulerReceiver">
+            <intent-filter>
+                <action android:name="com.stardust.autojs.action.check_task"/>
+            </intent-filter>
         </receiver>
 
         <!-- 声明广告SDK所需要的组件 -->

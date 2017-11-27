@@ -51,6 +51,8 @@ public class Images {
     private ScreenCapturer mScreenCapturer;
     private Context mContext;
     private Display mDisplay;
+    private Image mPreCapture;
+    private ImageWrapper mPreCaptureImage;
 
     @ScriptVariable
     public final ColorFinder colorFinder;
@@ -102,7 +104,13 @@ public class Images {
         if (mScreenCapturer == null) {
             throw new SecurityException("No screen capture permission");
         }
-        return ImageWrapper.ofImage(mScreenCapturer.capture());
+        Image capture = mScreenCapturer.capture();
+        if (capture == mPreCapture) {
+            return mPreCaptureImage;
+        }
+        mPreCapture = capture;
+        mPreCaptureImage = ImageWrapper.ofImage(capture);
+        return mPreCaptureImage;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -195,15 +203,16 @@ public class Images {
     }
 
     public Point findImage(ImageWrapper image, ImageWrapper template, float threshold, Rect rect) {
-        return findImage(image, template, threshold, rect, TemplateMatching.MAX_LEVEL_AUTO);
+        return findImage(image, template, 0.7f, threshold, rect, TemplateMatching.MAX_LEVEL_AUTO);
     }
 
-    public Point findImage(ImageWrapper image, ImageWrapper template, float threshold, Rect rect, int maxLevel) {
+    public Point findImage(ImageWrapper image, ImageWrapper template, float weakThreshold, float threshold, Rect rect, int maxLevel) {
         Mat src = image.getMat();
         if (rect != null) {
             src = new Mat(src, rect);
         }
-        org.opencv.core.Point point = TemplateMatching.fastTemplateMatching(src, template.getMat(), threshold);
+        org.opencv.core.Point point = TemplateMatching.fastTemplateMatching(src, template.getMat(), TemplateMatching.MATCHING_METHOD_DEFAULT,
+                weakThreshold, threshold, maxLevel);
         if (point != null && rect != null) {
             point.x += rect.x;
             point.y += rect.y;

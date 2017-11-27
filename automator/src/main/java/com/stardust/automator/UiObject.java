@@ -144,11 +144,13 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     }
 
     public String className() {
-        return getClassName().toString();
+        CharSequence d = getClassName();
+        return d == null ? null : d.toString();
     }
 
     public String packageName() {
-        return getPackageName().toString();
+        CharSequence d = getPackageName();
+        return d == null ? null : d.toString();
     }
 
     public int depth() {

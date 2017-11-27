@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.stardust.autojs.execution.ExecutionConfig;
 import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.autojs.script.SequenceScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
+import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.io.StorageFileProvider;
 import com.stardust.scriptdroid.model.script.PathChecker;
-import com.stardust.scriptdroid.model.script.Scripts;
 
 import java.io.File;
 
@@ -17,21 +19,27 @@ import java.io.File;
  * Created by Stardust on 2017/4/1.
  */
 
-public class CommonUtils {
+public class ScriptIntents {
 
     public static final String EXTRA_KEY_PATH = "path";
-
     public static final String EXTRA_KEY_PRE_EXECUTE_SCRIPT = "script";
+    public static final String EXTRA_KEY_LOOP_TIMES = "loop";
+    public static final String EXTRA_KEY_LOOP_INTERVAL = "interval";
+    public static final String EXTRA_KEY_DELAY = "delay";
+
 
     public static boolean isTaskerBundleValid(Bundle bundle) {
-        return bundle.containsKey(CommonUtils.EXTRA_KEY_PATH) || bundle.containsKey(EXTRA_KEY_PRE_EXECUTE_SCRIPT);
+        return bundle.containsKey(ScriptIntents.EXTRA_KEY_PATH) || bundle.containsKey(EXTRA_KEY_PRE_EXECUTE_SCRIPT);
     }
 
-    public static void handleIntent(Context context, Intent intent) {
+    public static boolean handleIntent(Context context, Intent intent) {
         String path = getPath(intent);
-        String directoryPath = null;
-        String script = intent.getStringExtra(CommonUtils.EXTRA_KEY_PRE_EXECUTE_SCRIPT);
+        String script = intent.getStringExtra(ScriptIntents.EXTRA_KEY_PRE_EXECUTE_SCRIPT);
+        int loopTimes = intent.getIntExtra(EXTRA_KEY_LOOP_TIMES, 1);
+        long delay = intent.getLongExtra(EXTRA_KEY_DELAY, 0);
+        long interval = intent.getLongExtra(EXTRA_KEY_LOOP_INTERVAL, 0);
         ScriptSource source = null;
+        ExecutionConfig config = new ExecutionConfig().loop(delay, loopTimes, interval);
         if (path == null && script != null) {
             source = new StringScriptSource(script);
         } else if (path != null && new PathChecker(context).checkAndToastError(path)) {
@@ -41,19 +49,20 @@ public class CommonUtils {
             } else {
                 source = fileScriptSource;
             }
-            directoryPath = new File(path).getParent();
+            config.path(new File(path).getParent(), StorageFileProvider.DEFAULT_DIRECTORY_PATH);
+        } else {
+            config.path(StorageFileProvider.DEFAULT_DIRECTORY_PATH);
         }
-        if (source != null) {
-            if (directoryPath == null)
-                Scripts.run(source);
-            else
-                Scripts.run(source, directoryPath);
+        if (source == null) {
+            return false;
         }
+        AutoJs.getInstance().getScriptEngineService().execute(source, config);
+        return true;
     }
 
     private static String getPath(Intent intent) {
         if (intent.getData() != null && intent.getData().getPath() != null)
             return intent.getData().getPath();
-        return intent.getStringExtra(CommonUtils.EXTRA_KEY_PATH);
+        return intent.getStringExtra(ScriptIntents.EXTRA_KEY_PATH);
     }
 }

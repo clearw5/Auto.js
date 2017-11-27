@@ -26,7 +26,7 @@ import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.ui.codegeneration.CodeGenerateDialog;
+import com.stardust.scriptdroid.timing.TimedTaskService;
 import com.stardust.scriptdroid.ui.common.NotAskAgainDialog;
 import com.stardust.scriptdroid.ui.doc.OnlineDocsFragment_;
 import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
