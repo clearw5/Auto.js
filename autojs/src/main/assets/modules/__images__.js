@@ -19,7 +19,11 @@ module.exports = function(__runtime__, scope){
 
    images.read = rtImages.read.bind(rtImages);
 
+   images.load = rtImages.load.bind(rtImages);
+
    images.saveImage = rtImages.saveImage.bind(rtImages);
+
+   images.save = rtImages.saveImage;
 
    images.pixel = rtImages.pixel;
 

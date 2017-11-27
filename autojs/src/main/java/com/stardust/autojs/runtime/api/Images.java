@@ -2,7 +2,6 @@ package com.stardust.autojs.runtime.api;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -15,6 +14,8 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 
+import com.nickandjerry.dynamiclayoutinflator.lib.ImageLoader;
+import com.nickandjerry.dynamiclayoutinflator.lib.util.Drawables;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.image.ColorFinder;
 import com.stardust.autojs.core.image.ImageWrapper;
@@ -23,7 +24,6 @@ import com.stardust.autojs.core.image.ScreenCapturer;
 import com.stardust.autojs.core.image.TemplateMatching;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
-import com.stardust.concurrent.VolatileBox;
 import com.stardust.concurrent.VolatileDispose;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
@@ -35,6 +35,9 @@ import org.opencv.core.Rect;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Locale;
 
 /**
@@ -75,6 +78,14 @@ public class Images {
         });
         mScreenCaptureRequester.request();
         return requestResult.blockedGetOrThrow(ScriptInterruptedException.class);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public boolean requestScreenCapture(boolean landscape) {
+        if (!landscape)
+            return requestScreenCapture(ScreenMetrics.getDeviceScreenWidth(), ScreenMetrics.getDeviceScreenHeight());
+        else
+            return requestScreenCapture(ScreenMetrics.getDeviceScreenHeight(), ScreenMetrics.getDeviceScreenWidth());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -125,13 +136,27 @@ public class Images {
     public static int pixel(ImageWrapper image, int x, int y) {
         x = ScreenMetrics.rescaleX(x, image.getWidth());
         y = ScreenMetrics.rescaleY(y, image.getHeight());
-        return image.getPixel(x, y);
+        return image.pixel(x, y);
     }
 
 
     public ImageWrapper read(String path) {
         Bitmap bitmap = BitmapFactory.decodeFile(path);
         return ImageWrapper.ofBitmap(bitmap);
+    }
+
+    public ImageWrapper load(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap bitmap = BitmapFactory.decodeStream(input);
+            return ImageWrapper.ofBitmap(bitmap);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     public static void saveBitmap(Bitmap bitmap, String path) {

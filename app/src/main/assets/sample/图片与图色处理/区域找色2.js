@@ -1,6 +1,6 @@
 if(!requestScreenCapture()){
     toast("请求截图失败");
-    stop();
+    exit();
 }
 var img = captureScreen();
 //0xffffff为白色

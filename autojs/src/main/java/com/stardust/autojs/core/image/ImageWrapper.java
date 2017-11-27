@@ -103,7 +103,7 @@ public class ImageWrapper {
         }
     }
 
-    public int getPixel(int x, int y) {
+    public int pixel(int x, int y) {
         if (mBitmap != null) {
             return mBitmap.getPixel(x, y);
         }
