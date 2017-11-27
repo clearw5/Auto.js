@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>全局变量与函数 | Auto.js 2.0.16 文档</title>
+  <title>全局变量与函数 | Auto.js 3.0.0 文档</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
@@ -35,6 +35,8 @@
 <li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
 <li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
 <li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
 <li><a class="nav-app" href="app.html">App - 应用</a></li>
 <li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
 <li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
@@ -51,7 +53,7 @@
 
     <div id="column1" data-id="all" class="interior">
       <header>
-        <h1>Auto.js 2.0.16 文档</h1>
+        <h1>Auto.js 3.0.0 文档</h1>
         <div id="gtoc">
           <p>
             <a href="index.html" name="toc">索引</a> |
@@ -244,15 +246,19 @@
 </ul>
 </li>
 <li><span class="stability_2"><a href="#images_images">Images</a></span><ul>
-<li><span class="stability_undefined"><a href="#images_requestscreencapture_width_height">requestScreenCapture([width, height])</a></span></li>
-<li><span class="stability_undefined"><a href="#images_capturescreen">captureScreen()</a></span></li>
-<li><span class="stability_undefined"><a href="#images_capturescreen_path">captureScreen(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_requestscreencapture_landscape">images.requestScreenCapture([landscape])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_capturescreen">images.captureScreen()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_capturescreen_path">images.captureScreen(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_pixel_image_x_y">images.pixel(image, x, y)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_saveimage_image_path">images.saveImage(image, path)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_read_path">images.read(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_load_url">images.load(url)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findcolor_image_color_options">images.findColor(image, color, options)</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_findcolorinregion_img_color_x_y_width_height_threads_algorithm_threshold">images.findColorInRegion(img, color, x, y[, width, height, threads, algorithm, threshold])</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_findcolorequals_img_color_x_y_width_height_threads">images.findColorEquals(img, color, x, y, width, height, threads)</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_detectscolor_image_color_x_y_threshold_16_algorithm_rgb">images.detectsColor(image, color, x, y[, threshold = 16, algorithm = &quot;rgb&quot;])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findcolorinregion_img_color_x_y_width_height_threshold">images.findColorInRegion(img, color, x, y[, width, height, threshold])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findcolorequals_img_color_x_y_width_height">images.findColorEquals(img, color[, x, y, width, height])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff">images.detectsColor(image, color, x, y[, threshold = 16, algorithm = &quot;diff&quot;])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findimage_img_template_options">images.findImage(img, template[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findimageinregion_img_template_x_y_width_height_threshold">images.findImageInRegion(img, template, x, y[, width, height, threshold])</a></span></li>
 </ul>
 </li>
 <li><span class="stability_2"><a href="#images_colors">colors</a></span><ul>
@@ -268,6 +274,8 @@
 <li><span class="stability_undefined"><a href="#images_image">Image</a></span><ul>
 <li><span class="stability_undefined"><a href="#images_image_getwidth">Image.getWidth()</a></span></li>
 <li><span class="stability_undefined"><a href="#images_image_getheight">Image.getHeight()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_image_saveto_path">Image.saveTo(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_image_pixel_x_y">Image.pixel(x, y)</a></span></li>
 </ul>
 </li>
 <li><span class="stability_undefined"><a href="#images_point">Point</a></span><ul>
@@ -465,6 +473,34 @@
 <li><span class="stability_undefined"><a href="#app_app_intent_intent">app.intent(intent)</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_startactivity_intent">app.startActivity(intent)</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_sendbroadcast_intent">app.sendBroadcast(intent)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_2"><a href="#http_http">HTTP</a></span><ul>
+<li><span class="stability_undefined"><a href="#http_http_get_url_options_callback">http.get(url[, options, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#http_http_post_url_data_options_callback">http.post(url, data[, options, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#http_http_postjson_url_data_options_callback">http.postJson(url[, data, options, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#http_http_request_url_options_callback">http.request(url[, options, callback])</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#http_response">Response</a></span><ul>
+<li><span class="stability_undefined"><a href="#http_response_statuscode">Response.statusCode</a></span></li>
+<li><span class="stability_undefined"><a href="#http_response_statusmessage">Response.statusMessage</a></span></li>
+<li><span class="stability_undefined"><a href="#http_response_headers">Response.headers</a></span></li>
+<li><span class="stability_undefined"><a href="#http_response_body">Response.body</a></span></li>
+<li><span class="stability_undefined"><a href="#http_response_request">Response.request</a></span></li>
+<li><span class="stability_undefined"><a href="#http_response_url">Response.url</a></span></li>
+<li><span class="stability_undefined"><a href="#http_response_method">Response.method</a></span></li>
+</ul>
+</li>
+<li><span class="stability_2"><a href="#dialogs_dialogs">Dialogs</a></span><ul>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_rawinput_title_default">dialogs.rawInput(title[, default])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_input_title_default">dialogs.input(title[, default])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_prompt_title_default">dialogs.prompt(title[, default])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_alert_title_content">dialogs.alert(title[, content])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_confirm_title_content">dialogs.confirm(title[, content])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_select_title_items">dialogs.select(title, items)</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_singlechoice_title_items_index">dialogs.singleChoice(title, items[, index])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_multichoice_title_items_indexes">dialogs.multiChoice(title, items[, indexes])</a></span></li>
 </ul>
 </li>
 <li><span class="stability_2"><a href="#engines_engines">Engines</a></span><ul>
@@ -1301,118 +1337,248 @@ sleep(500);
 <!-- [start-include:images.md] -->
 <h1>Images<span><a class="mark" href="#images_images" id="images_images">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>images模块提供了一些手机设备中常见的图片处理函数，包括截图、读写图片、图片剪裁、找色、找图等。</p>
-<h2>requestScreenCapture([width, height])<span><a class="mark" href="#images_requestscreencapture_width_height" id="images_requestscreencapture_width_height">#</a></span></h2>
+<h2>images.requestScreenCapture([landscape])<span><a class="mark" href="#images_images_requestscreencapture_landscape" id="images_images_requestscreencapture_landscape">#</a></span></h2>
 <div class="signature"><ul>
-<li>width <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 截图宽度</li>
-<li>height <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 截图高度</li>
+<li><code>landscape</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a> 布尔值， 表示将要执行的截屏是否为横屏。如果landscape为false, 则表示竖屏截图; true为横屏截图。</li>
 </ul>
 </div><p>向系统申请屏幕截图权限，返回是否请求成功。</p>
 <p>第一次使用该函数会弹出截图权限请求，建议选择“总是允许”。</p>
-<p>这个函数只是申请截图权限，并不会真正执行截图，真正的截图函数是[captureScreen][]都调用一次。</p>
+<p>这个函数只是申请截图权限，并不会真正执行截图，真正的截图函数是[captureScreen][]。</p>
 <p>该函数在截图脚本中只需执行一次，而无需每次调用[captureScreen][]都调用一次。</p>
-<p>不指定参数时默认为屏幕宽高。指定参数时，并不会严格以width和height为截图宽度和高度，而是以和width, height接近的最适合的宽高为截图宽高。例如在1920*1080屏幕中requestScreenCapture(600, 1000)请求的截图的高度一般是540*960。</p>
-<p>如果在第一次权限请求时选择&quot;总是允许&quot;, 之后的脚本执行该函数通常耗时200毫秒以内(测试机型：小米6)。</p>
-<p>建议在本软件界面运行该函数，在其他软件界面运行时容易出现一闪而过的黑屏。  </p>
-<p>如果要进行截图、找色的软件界面为横屏，则requestScreenCapture函数需要在<strong>横屏状态</strong>下执行，否则后续截图将会异常，调用findColor等函数时坐标变换会出现错误。</p>
-<h2>captureScreen()<span><a class="mark" href="#images_capturescreen" id="images_capturescreen">#</a></span></h2>
-<p>截取当前屏幕并返回一个[Image][]对象。</p>
+<p><strong>如果不指定landscape值，则截图方向由当前设备屏幕方向决定</strong>，因此务必注意执行该函数时的屏幕方向。</p>
+<p>建议在本软件界面运行该函数，在其他软件界面运行时容易出现一闪而过的黑屏现象。  </p>
+<p>示例:</p>
+<pre><code>//请求截图
+if(!requestScreenCapture()){
+    toast(&quot;请求截图失败&quot;);
+    exit();
+}
+//连续截图10张图片(间隔1秒)并保存到存储卡目录
+for(var i = 0; i &lt; 10; i++){
+    captureScreen(&quot;/sdcard/screencapture&quot; + i + &quot;.png&quot;);
+    sleep(1000);
+}
+</code></pre><p>该函数也可以作为全局函数使用。</p>
+<h2>images.captureScreen()<span><a class="mark" href="#images_images_capturescreen" id="images_images_capturescreen">#</a></span></h2>
+<p>截取当前屏幕并返回一个Image对象。</p>
 <p>没有截图权限时执行该函数会抛出SecurityException。</p>
-<p>该函数不会返回null，两次调用可能返回相同的Image对象。这是因为设备截图的更新需要一定的时间，短时间内（几十ms）连续调用则会返回同一张截图。</p>
-<h2>captureScreen(path)<span><a class="mark" href="#images_capturescreen_path" id="images_capturescreen_path">#</a></span></h2>
+<p>该函数不会返回null，两次调用可能返回相同的Image对象。这是因为设备截图的更新需要一定的时间，短时间内（一般来说是16ms）连续调用则会返回同一张截图。</p>
+<p>截图需要转换为Bitmap格式，从而该函数执行需要一定的时间(0~20ms)。</p>
+<p>另外在requestScreenCapture()执行成功后需要一定时间后才有截图可用，因此如果立即调用captureScreen()，会等待一定时间后(一般为几百ms)才返回截图。</p>
+<p>例子:</p>
+<pre><code>//请求横屏截图
+requestScreenCapture(true);
+//截图
+var img = captureScreen();
+//获取在点(100, 100)的颜色值
+var color = images.pixel(img, 100, 100);
+//显示该颜色值
+toast(colors.toString(color));
+</code></pre><p>该函数也可以作为全局函数使用。</p>
+<h2>images.captureScreen(path)<span><a class="mark" href="#images_images_capturescreen_path" id="images_images_capturescreen_path">#</a></span></h2>
 <div class="signature"><ul>
-<li>path <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 截图保存路径</li>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 截图保存路径</li>
 </ul>
 </div><p>截取当前屏幕并以PNG格式保存到path中。如果文件不存在会被创建；文件存在会被覆盖。</p>
-<p>该函数不会返回任何值。</p>
+<p>该函数不会返回任何值。该函数也可以作为全局函数使用。</p>
 <h2>images.pixel(image, x, y)<span><a class="mark" href="#images_images_pixel_image_x_y" id="images_images_pixel_image_x_y">#</a></span></h2>
 <div class="signature"><ul>
-<li>image <span class="type">&lt;Image&gt;</span> 图片</li>
-<li>x <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要获取的像素的横坐标。</li>
-<li>y <span class="type">&lt;y&gt;</span> 要获取的像素的纵坐标。</li>
+<li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要获取的像素的横坐标。</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要获取的像素的纵坐标。</li>
 </ul>
 </div><p>返回图片image在点(x, y)处的像素的ARGB值。  </p>
-<p>该值的格式为0xAARRGGBB，是一个&quot;32位整数&quot;(虽然JavaScript中并不区分整数类型和其他数值类型。</p>
+<p>该值的格式为0xAARRGGBB，是一个&quot;32位整数&quot;(虽然JavaScript中并不区分整数类型和其他数值类型)。</p>
 <p>坐标系以图片左上角为原点。以图片左侧边为y轴，上侧边为x轴。</p>
 <h2>images.saveImage(image, path)<span><a class="mark" href="#images_images_saveimage_image_path" id="images_images_saveimage_image_path">#</a></span></h2>
 <div class="signature"><ul>
-<li>image <span class="type">&lt;image&gt;</span> 图片</li>
-<li>path <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路劲</li>
+<li><code>image</code> <span class="type">&lt;image&gt;</span> 图片</li>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路劲</li>
 </ul>
 </div><p>把图片image以PNG格式保存到path中。如果文件不存在会被创建；文件存在会被覆盖。</p>
+<h2>images.read(path)<span><a class="mark" href="#images_images_read_path" id="images_images_read_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片路径</li>
+</ul>
+</div><p>读取在路径path的图片文件并返回一个Image对象。如果文件不存在或者文件无法解码则返回null。</p>
+<h2>images.load(url)<span><a class="mark" href="#images_images_load_url" id="images_images_load_url">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片URL地址</li>
+</ul>
+</div><p>加载在地址URL的网络图片并返回一个Image对象。如果地址不存在或者图片无法解码则返回null。</p>
 <h2>images.findColor(image, color, options)<span><a class="mark" href="#images_images_findcolor_image_color_options" id="images_images_findcolor_image_color_options">#</a></span></h2>
 <div class="signature"><ul>
-<li>image <span class="type">&lt;image&gt;</span> 图片</li>
-<li>color <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要寻找的颜色的RGB值。如果是一个整数，则以0xRRGGBB的形式代表RGB值（A通道会被忽略）；如果是字符串，则以&quot;#RRGGBB&quot;代表其RGB值。</li>
-<li>options <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项</li>
+<li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要寻找的颜色的RGB值。如果是一个整数，则以0xRRGGBB的形式代表RGB值（A通道会被忽略）；如果是字符串，则以&quot;#RRGGBB&quot;代表其RGB值。</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项</li>
 </ul>
-</div><p>在图片中寻找颜色color。找到时返回找到的点[Point][]，找不到时返回null。</p>
+</div><p>在图片中寻找颜色color。找到时返回找到的点Point，找不到时返回null。</p>
 <p>选项包括：</p>
 <ul>
-<li>region <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 找色区域。是一个两个或四个元素的数组。(region[0], region[1])表示找色区域的左上角；region[2]*region[3]表示找色区域的宽高。如果只有region只有两个元素，则找色区域为(region[0], region[1])到屏幕右下角。如果不指定region选项，则找色区域为整张图片。</li>
-<li>threads <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 指定找色使用的线程数。不能超过16。最适合的线程数取决于设备。默认线程数为2。</li>
-<li>algorithm <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 指定颜色匹配算法。包括:<ul>
-<li>&quot;equal&quot;: 相等匹配，只有与给定颜色color完全相等时才匹配。 </li>
+<li><code>region</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 找色区域。是一个两个或四个元素的数组。(region[0], region[1])表示找色区域的左上角；region[2]*region[3]表示找色区域的宽高。如果只有region只有两个元素，则找色区域为(region[0], region[1])到屏幕右下角。如果不指定region选项，则找色区域为整张图片。</li>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色时颜色相似度的临界值，范围为0~255（越小越相似，0为颜色相等，255为任何颜色都能匹配）。默认为16。threshold和浮点数相似度(0.0~1.0)的换算为 similarity = (255 - threshold) / 255.</li>
+</ul>
+<p>该函数也可以作为全局函数使用。</p>
+<p>一个循环找色的例子如下：</p>
+<pre><code>requestScreenCapture();
+
+//循环找色，找到红色(#ff0000)时停止并报告坐标
+while(true){
+    var img = captureScreen();
+    var point = findColor(img, &quot;#ff0000&quot;);
+    if(point){
+        toast(&quot;找到红色，坐标为(&quot; + point.x + &quot;, &quot; + point.y + &quot;)&quot;);
+    }
+}
+</code></pre><p>一个区域找色的例子如下：</p>
+<pre><code>//读取本地图片/sdcard/1.png
+var img = images.read(&quot;/sdcard/1.png&quot;);
+//判断图片是否加载成功
+if(!img){
+    toast(&quot;没有该图片&quot;);
+    exit();
+}
+//在该图片中找色，指定找色区域为在位置(400, 500)的宽为300长为200的区域，指定找色临界值为4
+var point = findColor(img, &quot;#00ff00&quot;, {
+     region: [400, 500, 300, 200],
+     threshold: 4
+ });
+if(point){
+    toast(&quot;找到啦:&quot; + point);
+}else{
+    toast(&quot;没找到&quot;);
+}
+</code></pre><h2>images.findColorInRegion(img, color, x, y[, width, height, threshold])<span><a class="mark" href="#images_images_findcolorinregion_img_color_x_y_width_height_threshold" id="images_images_findcolorinregion_img_color_x_y_width_height_threshold">#</a></span></h2>
+<p>区域找色的简便方法。</p>
+<p>相当于</p>
+<pre><code>images.findColor(img, color, {
+     region: [x, y, width, height],
+     threshold: threshold
+});
+</code></pre><p>该函数也可以作为全局函数使用。</p>
+<h2>images.findColorEquals(img, color[, x, y, width, height])<span><a class="mark" href="#images_images_findcolorequals_img_color_x_y_width_height" id="images_images_findcolorequals_img_color_x_y_width_height">#</a></span></h2>
+<p>严格找色的简便方法。找色时要求颜色完全相等才匹配。</p>
+<p>相当于</p>
+<pre><code>images.findColor(img, color, {
+   region: [x, y, width, height],
+   threshold: 0
+});
+</code></pre><p>该函数也可以作为全局函数使用。</p>
+<p>示例：
+(通过找QQ红点的颜色来判断是否有未读消息)</p>
+<pre><code>requestScreenCapture();
+launchApp(&quot;QQ&quot;);
+sleep(1200);
+var p = findColorEquals(captureScreen(), &quot;#f64d30&quot;);
+if(p){
+    toast(&quot;有未读消息&quot;);
+}else{
+    toast(&quot;没有未读消息&quot;);
+}
+</code></pre><h2>images.detectsColor(image, color, x, y[, threshold = 16, algorithm = &quot;diff&quot;])<span><a class="mark" href="#images_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff" id="images_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要检测的颜色</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要检测的位置横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要检测的位置纵坐标</li>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色相似度临界值，默认为16。取值范围为0~255。</li>
+<li><code>algorithm</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色匹配算法，包括:<ul>
+<li>&quot;equal&quot;: 相等匹配，只有与给定颜色color完全相等时才匹配。</li>
 <li>&quot;diff&quot;: 差值匹配。与给定颜色的R、G、B差的绝对值之和小于threshold时匹配。</li>
 <li>&quot;rgb&quot;: rgb欧拉距离相似度。与给定颜色color的rgb欧拉距离小于等于threshold时匹配。</li>
 <li>&quot;rgb+&quot;: 加权rgb欧拉距离匹配(<a href="https://en.wikipedia.org/wiki/Color_difference">LAB Delta E</a>)。</li>
 <li>&quot;hs&quot;: hs欧拉距离匹配。hs为HSV空间的色调值。</li>
 </ul>
 </li>
-<li>threshold <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色时颜色相似度的临界值，范围为0~255（越小越相似，0为颜色相等，255为任何颜色都能匹配）。默认为16。threshold和浮点数相似度(0.0~1.0)的换算为 similarity = (255 - threshold) / 255.</li>
+</ul>
+</div><p>返回图片image在位置(x, y)处是否匹配到颜色color。用于检测图片中某个位置是否是特定颜色。</p>
+<p>一个判断微博客户端的某个微博是否被点赞过的例子：</p>
+<pre><code>requestScreenCapture();
+//找到点赞控件
+var like = id(&quot;ly_feed_like_icon&quot;).findOne();
+//获取该控件中点坐标
+var x = like.bounds().centerX();
+var y = like.bounds().centerY();
+//截图
+var img = captureScreen();
+//判断在该坐标的颜色是否为橙红色
+if(images.detectsColor(img, &quot;#fed9a8&quot;, x, y)){
+    //是的话则已经是点赞过的了，不做任何动作
+}else{
+    //否则点击点赞按钮
+    like.click();
+}
+</code></pre><h2>images.findImage(img, template[, options])<span><a class="mark" href="#images_images_findimage_img_template_options" id="images_images_findimage_img_template_options">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 大图片</li>
+<li><code>template</code> <span class="type">&lt;Image&gt;</span> 小图片（模板）</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 找图选项</li>
+</ul>
+</div><p>找图。在大图片img中查找小图片template的位置（模块匹配），找到时返回位置坐标(Point)，找不到时返回null。</p>
+<p>选项包括：</p>
+<ul>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片相似度。取值范围为0~1的浮点数。默认值为0.9。</li>
+<li><code>region</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 找图区域。参见findColor函数关于region的说明。</li>
+<li><code>level</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> <strong>一般而言不必修改此参数</strong>。不加此参数时该参数会根据图片大小自动调整。找图算法是采用图像金字塔进行的, level参数表示金字塔的层次, level越大可能带来越高的找图效率，但也可能造成找图失败（图片因过度缩小而无法分辨）或返回错误位置。因此，除非您清楚该参数的意义并需要进行性能调优，否则不需要用到该参数。</li>
 </ul>
 <p>该函数也可以作为全局函数使用。</p>
-<h2>images.findColorInRegion(img, color, x, y[, width, height, threads, algorithm, threshold])<span><a class="mark" href="#images_images_findcolorinregion_img_color_x_y_width_height_threads_algorithm_threshold" id="images_images_findcolorinregion_img_color_x_y_width_height_threads_algorithm_threshold">#</a></span></h2>
-<p>相当于</p>
-<pre><code>images.findColor(img, color, {
-     region: [x, y, width, height],
-     algorithm: algorithm,
-     threshold: threshold,
-     threads: threads
+<p>一个最简单的找图例子如下：</p>
+<pre><code>var img = images.read(&quot;/sdcard/大图.png&quot;);
+var templ = images.read(&quot;/sdcard/小图.png&quot;);
+var p = findImage(img, templ);
+if(p){
+    toast(&quot;找到啦:&quot; + p);
+}else{
+    toast(&quot;没找到&quot;);
+}
+</code></pre><p>稍微复杂点的区域找图例子如下：</p>
+<pre><code>auto();
+requestScreenCapture();
+var wx = images.read(&quot;/sdcard/微信图标.png&quot;);
+//返回桌面
+home();
+//截图并找图
+var p = findImage(captureScreen(), wx, {
+    region: [0, 50],
+    threshold: 0.8
 });
+if(p){
+    toast(&quot;在桌面找到了微信图标啦: &quot; + p);
+}else{
+    toast(&quot;在桌面没有找到微信图标&quot;);
+}
+</code></pre><h2>images.findImageInRegion(img, template, x, y[, width, height, threshold])<span><a class="mark" href="#images_images_findimageinregion_img_template_x_y_width_height_threshold" id="images_images_findimageinregion_img_template_x_y_width_height_threshold">#</a></span></h2>
+<p>区域找图的简便方法。相当于：</p>
+<pre><code>images.findImage(img, template, {
+    region: [x, y, width, height],
+    threshold: threshold
+})
 </code></pre><p>该函数也可以作为全局函数使用。</p>
-<h2>images.findColorEquals(img, color, x, y, width, height, threads)<span><a class="mark" href="#images_images_findcolorequals_img_color_x_y_width_height_threads" id="images_images_findcolorequals_img_color_x_y_width_height_threads">#</a></span></h2>
-<p>相当于</p>
-<pre><code>images.findColor(img, color, {
-   region: [x, y, width, height],
-   algorithm: &quot;equal&quot;,
-   threads: threads
-});
-</code></pre><p>该函数也可以作为全局函数使用。</p>
-<h2>images.detectsColor(image, color, x, y[, threshold = 16, algorithm = &quot;rgb&quot;])<span><a class="mark" href="#images_images_detectscolor_image_color_x_y_threshold_16_algorithm_rgb" id="images_images_detectscolor_image_color_x_y_threshold_16_algorithm_rgb">#</a></span></h2>
-<div class="signature"><ul>
-<li>image <span class="type">&lt;Image&gt;</span> 图片</li>
-<li>color <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要检测的颜色</li>
-<li>x <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要检测的位置横坐标</li>
-<li>y <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要检测的位置纵坐标</li>
-<li>threshold <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色相似度临界值，默认为16</li>
-<li>algorithm <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色匹配算法，默认为rgb欧式距离</li>
-</ul>
-</div><p>返回图片image在位置(x, y)处是否匹配到颜色color。有关threshold和algorithm的信息，参考findColor函数。</p>
 <h1>colors<span><a class="mark" href="#images_colors" id="images_colors">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>colors是颜色处理的工具对象。包含一些常用方法，包括android.graphics.Color的所有方法以及toString方法。</p>
 <h2>colors.toString(color)<span><a class="mark" href="#images_colors_tostring_color" id="images_colors_tostring_color">#</a></span></h2>
 <div class="signature"><ul>
-<li>color <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
 </ul>
 </div><p>返回颜色值的字符串，格式为 #AARRGGBB。</p>
 <h2>colors.red(color)<span><a class="mark" href="#images_colors_red_color" id="images_colors_red_color">#</a></span></h2>
 <div class="signature"><ul>
-<li>color <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
 </ul>
 </div><p>返回颜色color的R通道的值，范围0~255.</p>
 <h2>colors.green(color)<span><a class="mark" href="#images_colors_green_color" id="images_colors_green_color">#</a></span></h2>
 <div class="signature"><ul>
-<li>color <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
 </ul>
 </div><p>返回颜色color的G通道的值，范围0~255.</p>
 <h2>colors.blue(color)<span><a class="mark" href="#images_colors_blue_color" id="images_colors_blue_color">#</a></span></h2>
 <div class="signature"><ul>
-<li>color <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
 </ul>
 </div><p>返回颜色color的B通道的值，范围0~255.</p>
 <h2>colors.alpha(color)<span><a class="mark" href="#images_colors_alpha_color" id="images_colors_alpha_color">#</a></span></h2>
 <div class="signature"><ul>
-<li>color <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
 </ul>
 </div><p>返回颜色color的Alpha通道的值，范围0~255.</p>
 <h2>colors.rgb(red, green, blue)<span><a class="mark" href="#images_colors_rgb_red_green_blue" id="images_colors_rgb_red_green_blue">#</a></span></h2>
@@ -1424,20 +1590,33 @@ sleep(500);
 </div><p>返回这些颜色通道构成的整数颜色值。Alpha通道将是255（不透明）。</p>
 <h2>colors.argb(alpha, red, green, blue)<span><a class="mark" href="#images_colors_argb_alpha_red_green_blue" id="images_colors_argb_alpha_red_green_blue">#</a></span></h2>
 <div class="signature"><ul>
-<li>alpha <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的Alpha通道的值</li>
-<li>red <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a>  颜色的R通道的值</li>
-<li>green <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的G通道的值</li>
-<li>blue <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的B通道的值</li>
+<li><code>alpha</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的Alpha通道的值</li>
+<li><code>red</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a>  颜色的R通道的值</li>
+<li><code>green</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的G通道的值</li>
+<li><code>blue</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的B通道的值</li>
 </ul>
 </div><p>返回这些颜色通道构成的整数颜色值。</p>
 <h1>Image<span><a class="mark" href="#images_image" id="images_image">#</a></span></h1>
-<p>[captureScreen][] 返回的对象。</p>
+<p>表示一张图片，可以是截图的图片，或者本地读取的图片，或者从网络获取的图片。</p>
 <h2>Image.getWidth()<span><a class="mark" href="#images_image_getwidth" id="images_image_getwidth">#</a></span></h2>
 <p>返回以像素为单位图片宽度。</p>
 <h2>Image.getHeight()<span><a class="mark" href="#images_image_getheight" id="images_image_getheight">#</a></span></h2>
 <p>返回以像素为单位的图片高度。</p>
+<h2>Image.saveTo(path)<span><a class="mark" href="#images_image_saveto_path" id="images_image_saveto_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+</ul>
+</div><p>把图片保存到路径path。（如果文件存在则覆盖）</p>
+<h2>Image.pixel(x, y)<span><a class="mark" href="#images_image_pixel_x_y" id="images_image_pixel_x_y">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 纵坐标</li>
+</ul>
+</div><p>返回图片image在点(x, y)处的像素的ARGB值。  </p>
+<p>该值的格式为0xAARRGGBB，是一个&quot;32位整数&quot;(虽然JavaScript中并不区分整数类型和其他数值类型)。</p>
+<p>坐标系以图片左上角为原点。以图片左侧边为y轴，上侧边为x轴。</p>
 <h1>Point<span><a class="mark" href="#images_point" id="images_point">#</a></span></h1>
-<p>findColor返回的对象。</p>
+<p>findColor, findImage返回的对象。表示一个点（坐标）。</p>
 <h2>Point.x<span><a class="mark" href="#images_point_x" id="images_point_x">#</a></span></h2>
 <p>横坐标。</p>
 <h2>Point.y<span><a class="mark" href="#images_point_y" id="images_point_y">#</a></span></h2>
@@ -2505,6 +2684,218 @@ sh.exit();
 </ul>
 </div><p>相当于context.sendBroadcast(intent)。</p>
 <!-- [end-include:app.md] -->
+<!-- [start-include:http.md] -->
+<h1>HTTP<span><a class="mark" href="#http_http" id="http_http">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>http模块提供一些进行http请求的函数。</p>
+<h2>http.get(url[, options, callback])<span><a class="mark" href="#http_http_get_url_options_callback" id="http_http_get_url_options_callback">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 请求的URL地址，需要以&quot;<a href="http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。">http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。</a></li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 请求选项。参见[http.request()][]。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调函数，可选，其参数是一个[Response][]对象。如果不加回调函数，则该请求将阻塞、同步地执行。</li>
+</ul>
+</div><p>对地址url进行一次HTTP GET 请求。如果没有回调函数，则在请求完成或失败时返回此次请求的响应(参见[Response][])。</p>
+<p>最简单GET请求如下:</p>
+<pre><code>console.show();
+var r = http.get(&quot;www.baidu.com&quot;);
+log(&quot;code = &quot; + r.statusCode);
+log(&quot;html = &quot; + r.body.string());
+</code></pre><p>采用回调形式的GET请求如下：</p>
+<pre><code>console.show();
+http.get(&quot;www.baidu.com&quot;, {}, function(res, err){
+    if(err){
+        console.error(err);
+        return;
+    }
+    log(&quot;code = &quot; + r.statusCode);
+    log(&quot;html = &quot; + r.body.string());
+});
+</code></pre><p>如果要增加HTTP头部信息，则在options参数中添加，例如：</p>
+<pre><code>console.show();
+var r = http.get(&quot;www.baidu.com&quot;, {
+    headers: {
+        &quot;Accept-Language&quot;: &quot;zh-cn,zh;q=0.5&quot;,
+        &quot;User-Agent: &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X
+10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56
+Safari/535.11&quot;
+    }
+});
+log(&quot;code = &quot; + r.statusCode);
+log(&quot;html = &quot; + r.body.string());
+</code></pre><p>一个请求天气并解析返回的天气JSON结果的例子如下：</p>
+<pre><code>var city = &quot;广州&quot;;
+var res = http.get(&quot;http://www.sojson.com/open/api/weather/json.shtml?city=&quot; + city);
+if(res.statusCode != 200){
+    toast(&quot;请求失败: &quot; + res.statusCode + &quot; &quot; + res.statusMessage);
+}else{
+    var weather = res.body.json();
+    log(weather);
+    toast(util.format(&quot;温度: %s 湿度: %s 空气质量: %s&quot;, weather.data.wendu,
+        weather.data.shidu, weather.quality));
+}
+</code></pre><h2>http.post(url, data[, options, callback])<span><a class="mark" href="#http_http_post_url_data_options_callback" id="http_http_post_url_data_options_callback">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 请求的URL地址，需要以&quot;<a href="http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。">http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。</a></li>
+<li><code>data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> POST数据。</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 请求选项。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调，其参数是一个[Response][]对象。如果不加回调参数，则该请求将阻塞、同步地执行。</li>
+</ul>
+</div><p>对地址url进行一次HTTP POST 请求。如果没有回调函数，则在请求完成或失败时返回此次请求的响应(参见[Response][])。</p>
+<p>其中POST数据可以是字符串或键值对。具体含义取决于options.contentType的值。默认为&quot;application/x-www-form-urlencoded&quot;(表单提交), 这种方式是JQuery的ajax函数的默认方式。</p>
+<p>一个模拟表单提交登录淘宝的例子如下:</p>
+<pre><code>var url = &quot;https://login.taobao.com/member/login.jhtml&quot;;
+var username = &quot;你的用户名&quot;;
+var password = &quot;你的密码&quot;;
+var res = http.post(url, {
+    &quot;TPL_username&quot;: username,
+    &quot;TPL_password&quot;: password
+});
+var html = res.body.string();
+if(html.contains(&quot;页面跳转中&quot;)){
+    toast(&quot;登录成功&quot;);
+}else{
+    toast(&quot;登录失败&quot;);
+}
+</code></pre><h2>http.postJson(url[, data, options, callback])<span><a class="mark" href="#http_http_postjson_url_data_options_callback" id="http_http_postjson_url_data_options_callback">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 请求的URL地址，需要以&quot;<a href="http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。">http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。</a></li>
+<li><code>data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> POST数据。</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 请求选项。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调，其参数是一个[Response][]对象。如果不加回调参数，则该请求将阻塞、同步地执行。</li>
+</ul>
+</div><p>以JSON格式向目标Url发起POST请求。如果没有回调函数，则在请求完成或失败时返回此次请求的响应(参见[Response][])。</p>
+<p>JSON格式指的是，将会调用<code>JSON.stringify()</code>把data对象转换为JSON字符串，并在HTTP头部信息中把&quot;Content-Type&quot;属性置为&quot;application/json&quot;。这种方式是AngularJS的ajax函数的默认方式。</p>
+<p>一个调用图灵机器人接口的例子如下：</p>
+<h2>http.request(url[, options, callback])<span><a class="mark" href="#http_http_request_url_options_callback" id="http_http_request_url_options_callback">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 请求的URL地址，需要以&quot;<a href="http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。">http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。</a></li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 请求选项。参见[http.buildRequest()][]。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调，其参数是一个[Response][]对象。如果不加回调参数，则该请求将阻塞、同步地执行。</li>
+</ul>
+</div><p>对目标地址url发起一次HTTP请求。如果没有回调函数，则在请求完成或失败时返回此次请求的响应(参见[Response][])。</p>
+<p>选项options可以包含以下属性：</p>
+<ul>
+<li><code>headers</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 键值对形式的HTTP头部信息。有关HTTP头部信息，参见<a href="http://www.runoob.com/http/http-header-fields.html">菜鸟教程：HTTP响应头信息</a>。</li>
+<li><code>method</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> HTTP请求方法。包括&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELET&quot;, &quot;PATCH&quot;。</li>
+<li><code>contentType</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> HTTP头部信息中的&quot;Content-Type&quot;, 表示HTTP请求的内容类型。例如&quot;text/plain&quot;, &quot;application/json&quot;。更多信息参见<a href="http://www.runoob.com/http/http-content-type.html">菜鸟教程：HTTP contentType</a>。</li>
+<li><code>body</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> HTTP请求的内容。可以是一个字符串，也可以是一个字节数组；或者是一个以<a href="https://github.com/square/okio/blob/master/okio/src/main/java/okio/BufferedSink.java">BufferedSink</a>为参数的函数。</li>
+</ul>
+<p>该函数是get, post, postJson等函数的基础函数。因此除非是PUT, DELET等请求，或者需要更高定制的HTTP请求，否则直接使用get, post, postJson等函数会更加方便。</p>
+<h1>Response<span><a class="mark" href="#http_response" id="http_response">#</a></span></h1>
+<p>HTTP请求的响应。</p>
+<h2>Response.statusCode<span><a class="mark" href="#http_response_statuscode" id="http_response_statuscode">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>当前响应的HTTP状态码。例如200(OK), 404(Not Found)等。</p>
+<p>有关HTTP状态码的信息，参见<a href="http://www.runoob.com/http/http-status-codes.html">菜鸟教程：HTTP状态码</a>。</p>
+<h2>Response.statusMessage<span><a class="mark" href="#http_response_statusmessage" id="http_response_statusmessage">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> </li>
+</ul>
+</div><p>当前响应的HTTP状态信息。例如&quot;OK&quot;, &quot;Bad Request&quot;, &quot;Forbidden&quot;。</p>
+<p>有关HTTP状态码的信息，参见<a href="http://www.runoob.com/http/http-status-codes.html">菜鸟教程：HTTP状态码</a>。</p>
+<p>例子：</p>
+<pre><code>var res = http.get(&quot;www.baidu.com&quot;);
+if(res.statusCode &gt;= 200 &amp;&amp; res.statusCode &lt; 300){
+    toast(&quot;页面获取成功!&quot;);
+}else if(res.statusCode == 404){
+    toast(&quot;页面没找到哦...&quot;);
+}else{
+    toast(&quot;错误: &quot; + res.statusCode + &quot; &quot; + res.statusMessage);
+}
+</code></pre><h2>Response.headers<span><a class="mark" href="#http_response_headers" id="http_response_headers">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a></li>
+</ul>
+</div><p>当前响应的HTTP头部信息。该对象的键是响应头名称，值是各自的响应头值。 所有响应头名称都是小写的(吗)。</p>
+<p>有关HTTP头部信息，参见<a href="http://www.runoob.com/http/http-header-fields.html">菜鸟教程：HTTP响应头信息</a>。</p>
+<p>例子:</p>
+<pre><code>console.show();
+var res = http.get(&quot;www.qq.com&quot;);
+console.log(&quot;HTTP Headers:&quot;)
+for(var headerName in res.headers){
+    console.log(&quot;%s: %s&quot;, headerName, res.headers[headerName]);
+}
+</code></pre><h2>Response.body<span><a class="mark" href="#http_response_body" id="http_response_body">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a></li>
+</ul>
+</div><p>当前响应的内容。他有以下属性和函数：</p>
+<ul>
+<li>bytes() <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 以字节数组形式返回响应内容</li>
+<li>string() <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 以字符串形式返回响应内容</li>
+<li>json() <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 把响应内容作为JSON格式的数据并调用JSON.parse，返回解析后的对象</li>
+<li>contentType <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 当前响应的内容类型</li>
+</ul>
+<h2>Response.request<span><a class="mark" href="#http_response_request" id="http_response_request">#</a></span></h2>
+<div class="signature"><ul>
+<li><span class="type">&lt;Request&gt;</span>
+当前响应所对应的请求。参见[Request][]。</li>
+</ul>
+</div><h2>Response.url<span><a class="mark" href="#http_response_url" id="http_response_url">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a>
+当前响应所对应的请求URL。</li>
+</ul>
+</div><h2>Response.method<span><a class="mark" href="#http_response_method" id="http_response_method">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a>
+当前响应所对应的HTTP请求的方法。例如&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;等。</li>
+</ul>
+</div><!-- [end-include:http.md] -->
+<!-- [start-include:dialogs.md] -->
+<h1>Dialogs<span><a class="mark" href="#dialogs_dialogs" id="dialogs_dialogs">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>dialogs 模块允许用户通过对话框与脚本进行交互。</p>
+<h2>dialogs.rawInput(title[, default])<span><a class="mark" href="#dialogs_dialogs_rawinput_title_default" id="dialogs_dialogs_rawinput_title_default">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
+<li><code>default</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 可选，对话框内输入框的初始内容。默认为 <code>&quot;&quot;</code> 。</li>
+</ul>
+</div><p>显示一个包含输入框的对话框。如果指定了 <code>default</code> ，那么对话框显示时输入框的内容就为该值。</p>
+<p>该函数也可通过 <code>rawInput(title[, default])</code> 、 <code>prompt(title[, default])</code> 或者 <code>dialogs.prompt(title[, default])</code> 来调用。调用时脚本将阻塞直至对话框被关闭。如果用户输入内容并点击确定，函数将返回输入的内容；否则返回 <code>null</code> 。</p>
+<h2>dialogs.input(title[, default])<span><a class="mark" href="#dialogs_dialogs_input_title_default" id="dialogs_dialogs_input_title_default">#</a></span></h2>
+<p>等效于 <code>eval(dialogs.rawInput(title, default))</code> </p>
+<h2>dialogs.prompt(title[, default])<span><a class="mark" href="#dialogs_dialogs_prompt_title_default" id="dialogs_dialogs_prompt_title_default">#</a></span></h2>
+<p>见 dialogs.rawInput</p>
+<h2>dialogs.alert(title[, content])<span><a class="mark" href="#dialogs_dialogs_alert_title_content" id="dialogs_dialogs_alert_title_content">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
+<li><code>content</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 可选，对话框的内容。默认为空。</li>
+</ul>
+</div><p>显示一个只包含“确定”按钮的提示对话框。</p>
+<p>该函数也可通过 <code>alert(title[, content])</code> 来调用。调用时脚本将阻塞直至对话框被关闭。该函数无返回值。</p>
+<h2>dialogs.confirm(title[, content])<span><a class="mark" href="#dialogs_dialogs_confirm_title_content" id="dialogs_dialogs_confirm_title_content">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
+<li><code>content</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 可选，对话框的内容。默认为空。</li>
+</ul>
+</div><p>显示一个包含“确定”和“取消”按钮的提示对话框。</p>
+<p>该函数也可通过 <code>confirm(title[, content])</code> 来调用。调用时脚本将阻塞直至对话框被关闭。如果用户点击“确定”则返回 <code>true</code> ，否则返回 <code>false</code> 。</p>
+<h2>dialogs.select(title, items)<span><a class="mark" href="#dialogs_dialogs_select_title_items" id="dialogs_dialogs_select_title_items">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
+<li><code>items</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 对话框的选项列表，是一个字符串数组。</li>
+</ul>
+</div><p>显示一个带有选项列表的对话框。</p>
+<p>该函数也可通过 <code>dialogs.select(title, ...items)</code> 来调用。<br>例如： <code>dialogs.select(&quot;标题&quot;, [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;])</code> 可以用  <code>dialogs.select(&quot;标题&quot;, &quot;A&quot;, &quot;B&quot;, &quot;C&quot;)</code> 替代。</p>
+<p>调用时脚本将阻塞直至对话框被关闭。如果用户点击了对话框中的某个选项，该函数会返回该选项的位置（选中第一个选项返回0，第二个选项返回1，以此类推），否则返回-1。</p>
+<h2>dialogs.singleChoice(title, items[, index])<span><a class="mark" href="#dialogs_dialogs_singlechoice_title_items_index" id="dialogs_dialogs_singlechoice_title_items_index">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
+<li><code>items</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 对话框的选项列表，是一个字符串数组。</li>
+<li><code>index</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 可选，对话框的默认选项的位置。默认为0。</li>
+</ul>
+</div><p>显示一个带有单选框选项列表的对话框。</p>
+<p>调用时脚本将阻塞直至对话框被关闭。如果用户选中了对话框中的某个选项并点击“确定”，该函数会返回该选项的位置（选中第一个选项返回0，第二个选项返回1，以此类推），否则返回-1。</p>
+<h2>dialogs.multiChoice(title, items[, indexes])<span><a class="mark" href="#dialogs_dialogs_multichoice_title_items_indexes" id="dialogs_dialogs_multichoice_title_items_indexes">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
+<li><code>items</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 对话框的选项列表，是一个字符串数组。</li>
+<li><code>indexes</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 可选，对话框的默认选项的位置数组。默认为空数组。</li>
+</ul>
+</div><p>显示一个带有多选框选项列表的对话框。</p>
+<p>调用时脚本将阻塞直至对话框被关闭。如果用户点击“确定”按钮，该函数会返回所有已选选项的位置组成的数组，否则返回空数组。
+<!-- [end-include:dialogs.md] --></p>
 <!-- [start-include:engines.md] -->
 <h1>Engines<span><a class="mark" href="#engines_engines" id="engines_engines">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>engines模块包含了一些与脚本引擎有关的函数，包括运行其他脚本，关闭脚本等。</p>
