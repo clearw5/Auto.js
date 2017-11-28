@@ -108,8 +108,8 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
         for (TaskGroup group : mTaskGroups) {
             group.refresh();
         }
-        mAdapter.notifyParentChanged(0);
-        mAdapter.notifyParentChanged(1);
+        mAdapter = new Adapter(mTaskGroups);
+        setAdapter(mAdapter);
         //notifyDataSetChanged not working...
     }
 

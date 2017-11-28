@@ -9,7 +9,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 23
         versionCode 224
-        versionName "3.0.0 Alpha24"
+        versionName "3.0.0 Alpha2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {

@@ -33,29 +33,26 @@ public class TimedTaskScheduler extends BroadcastReceiver {
     }
 
     public static void checkTasks(Context context) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         TimedTaskManager.getInstance().getAllTasks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(timedTask -> scheduleTaskIfNeeded(context, alarmManager, timedTask));
+                .subscribe(timedTask -> scheduleTaskIfNeeded(context, timedTask));
     }
 
-    public static void scheduleTaskIfNeeded(Context context, AlarmManager alarmManager, TimedTask timedTask) {
+    public static void scheduleTaskIfNeeded(Context context, TimedTask timedTask) {
         long millis = timedTask.getNextTime();
         if (timedTask.isScheduled() || millis - System.currentTimeMillis() > ONE_HOUR) {
             return;
         }
-        scheduleTask(context, alarmManager, timedTask, millis);
+        scheduleTask(context, timedTask, millis);
         TimedTaskManager.getInstance()
                 .notifyTaskScheduled(timedTask);
 
     }
 
-    public static void scheduleTaskIfNeeded(Context context, TimedTask timedTask) {
-        scheduleTaskIfNeeded(context, (AlarmManager) context.getSystemService(Context.ALARM_SERVICE), timedTask);
-    }
 
-    private static void scheduleTask(Context context, AlarmManager alarmManager, TimedTask timedTask, long millis) {
+    private static void scheduleTask(Context context, TimedTask timedTask, long millis) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (millis <= System.currentTimeMillis()) {
             context.sendBroadcast(timedTask.createIntent());
             return;
@@ -70,14 +67,34 @@ public class TimedTaskScheduler extends BroadcastReceiver {
     }
 
     public static void setupRepeating(Context context) {
+        if (TimedTaskManager.getInstance().countTasks() > 0) {
+            startRtcRepeatingIfNeeded(context);
+        }
+    }
+
+
+    public static void startRtcRepeatingIfNeeded(Context context) {
+        Log.v(LOG_TAG, "startRtcRepeating");
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000,
-                INTERVAL, PendingIntent.getBroadcast(context, REQUEST_CODE,
-                        new Intent(TimedTaskScheduler.ACTION_CHECK_TASK), PendingIntent.FLAG_UPDATE_CURRENT));
+                INTERVAL, createTaskCheckPendingIntent(context));
     }
+
 
     public static void cancel(Context context, TimedTask timedTask) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(timedTask.createPendingIntent(context));
+    }
+
+    public static void stopRtcRepeating(Context context) {
+        Log.v(LOG_TAG, "stopRtcRepeating");
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(createTaskCheckPendingIntent(context));
+
+    }
+
+    private static PendingIntent createTaskCheckPendingIntent(Context context) {
+        return PendingIntent.getBroadcast(context, REQUEST_CODE,
+                new Intent(TimedTaskScheduler.ACTION_CHECK_TASK), PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }

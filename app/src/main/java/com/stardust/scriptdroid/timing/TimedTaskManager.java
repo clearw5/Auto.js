@@ -49,6 +49,11 @@ public class TimedTaskManager {
             @Override
             public void onModelChanged(@NonNull TimedTask model, @NonNull BaseModel.Action action) {
                 mTimedTaskChanges.onNext(new ModelChange<>(model, action));
+                if (action == BaseModel.Action.DELETE && countTasks() == 0) {
+                    TimedTaskScheduler.stopRtcRepeating(mContext);
+                } else if (action == BaseModel.Action.INSERT) {
+                    TimedTaskScheduler.startRtcRepeatingIfNeeded(mContext);
+                }
             }
 
             @Override
@@ -131,5 +136,9 @@ public class TimedTaskManager {
         mTimedTaskModelAdapter.update(task);
         TimedTaskScheduler.cancel(mContext, task);
         TimedTaskScheduler.scheduleTaskIfNeeded(mContext, task);
+    }
+
+    public long countTasks() {
+        return SQLite.select().from(TimedTask.class).count();
     }
 }

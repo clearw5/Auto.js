@@ -1,5 +1,8 @@
 package com.stardust.scriptdroid.ui.main.task;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineFactory;
@@ -19,7 +22,7 @@ import org.joda.time.format.DateTimeFormat;
  * Created by Stardust on 2017/11/28.
  */
 
-public abstract class Task {
+public abstract class Task implements Parcelable {
 
     public abstract String getName();
 
@@ -28,6 +31,16 @@ public abstract class Task {
     public abstract void cancel();
 
     public abstract String getEngineName();
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+    }
 
     public static class PendingTask extends Task {
 
