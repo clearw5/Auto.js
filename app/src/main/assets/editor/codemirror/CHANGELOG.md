@@ -643,7 +643,7 @@ Fix a [bug](https://github.com/codemirror/CodeMirror/issues/3834) that caused ph
 * The editor and theme CSS was cleaned up. Some selectors are now less specific than before
 * New theme: [abcdef](http://codemirror.net/demo/theme.html#abcdef)
 * Lines longer than [`maxHighlightLength`](http://codemirror.net/doc/manual.html#option_maxHighlightLength) are now less likely to mess up indentation
-* New addons: [`autorefresh`](http://codemirror.net/doc/manual.html#addon_autorefresh) for refreshing an editor the first time it becomes visible, and `html-lint` for using [HTMLHint](http://htmlhint.com/)
+* New addons: [`autorefresh`](http://codemirror.net/doc/manual.html#addon_autorefresh) for refreshing an editor the first timeFlag it becomes visible, and `html-lint` for using [HTMLHint](http://htmlhint.com/)
 * The [`search`](http://codemirror.net/doc/manual.html#addon_search) addon now recognizes `\r` and `\n` in pattern and replacement input
 
 ## 5.5.0 (2015-07-20)
@@ -774,7 +774,7 @@ Emergency single-patch update to 4.9\. Fixes Firefox-specific problem where the 
 ## 4.4.0 (2014-07-21)
 
 *   **Note:** Some events might now fire in slightly different order (`"change"` is still guaranteed to fire before `"cursorActivity"`)
-*   Nested operations in multiple editors are now synced (complete at same time, reducing DOM reflows)
+*   Nested operations in multiple editors are now synced (complete at same timeFlag, reducing DOM reflows)
 *   Visual block mode for [vim](http://codemirror.net/demo/vim.html) (<C-v>) is nearly complete
 *   New mode: [Kotlin](http://codemirror.net/mode/kotlin/index.html)
 *   Better multi-selection paste for text copied from multiple CodeMirror selections
@@ -804,7 +804,7 @@ Emergency single-patch update to 4.9\. Fixes Firefox-specific problem where the 
 
 ## 4.1.0 (2014-04-22)
 
-*   _Slightly incompatible_: The [`"cursorActivity"`](http://codemirror.net/doc/manual.html#event_cursorActivity) event now fires after all other events for the operation (and only for handlers that were actually registered at the time the activity happened).
+*   _Slightly incompatible_: The [`"cursorActivity"`](http://codemirror.net/doc/manual.html#event_cursorActivity) event now fires after all other events for the operation (and only for handlers that were actually registered at the timeFlag the activity happened).
 *   New command: [`insertSoftTab`](http://codemirror.net/doc/manual.html#command_insertSoftTab).
 *   New mode: [Django](http://codemirror.net/mode/django/index.html).
 *   Improved modes: [Verilog](http://codemirror.net/mode/verilog/index.html) (rewritten), [Jinja2](http://codemirror.net/mode/jinja2/index.html), [Haxe](http://codemirror.net/mode/haxe/index.html), [PHP](http://codemirror.net/mode/php/index.html) (string interpolation highlighted), [JavaScript](http://codemirror.net/mode/javascript/index.html) (indentation of trailing else, template strings), [LiveScript](http://codemirror.net/mode/livescript/index.html) (multi-line strings).

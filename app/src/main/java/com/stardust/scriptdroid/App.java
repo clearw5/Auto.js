@@ -12,12 +12,16 @@ import com.bumptech.glide.request.transition.Transition;
 import com.flurry.android.FlurryAgent;
 import com.nickandjerry.dynamiclayoutinflator.lib.ImageLoader;
 import com.nickandjerry.dynamiclayoutinflator.lib.util.Drawables;
+import com.raizlabs.android.dbflow.config.DatabaseConfig;
+import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.runtime.DirectModelNotifier;
 import com.squareup.leakcanary.LeakCanary;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.autojs.key.GlobalKeyObserver;
 import com.stardust.scriptdroid.autojs.record.GlobalRecorder;
 import com.stardust.scriptdroid.network.GlideApp;
+import com.stardust.scriptdroid.storage.database.TimedTaskDatabase;
 import com.stardust.scriptdroid.timing.TimedTaskScheduler;
 import com.stardust.scriptdroid.tool.CrashHandler;
 import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
@@ -68,7 +72,11 @@ public class App extends MultiDexApplication {
     }
 
     private void init() {
-        FlowManager.init(this);
+        FlowManager.init(FlowConfig.builder(this)
+                .addDatabaseConfig(DatabaseConfig.builder(TimedTaskDatabase.class)
+                        .modelNotifier(DirectModelNotifier.get())
+                        .build())
+                .build());
         ThemeColorManager.setDefaultThemeColor(new ThemeColor(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorPrimaryDark), getResources().getColor(R.color.colorAccent)));
         ThemeColorManager.init(this);
         AutoJs.initInstance(this);

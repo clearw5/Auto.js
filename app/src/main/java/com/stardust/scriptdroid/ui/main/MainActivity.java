@@ -29,7 +29,7 @@ import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.ui.common.NotAskAgainDialog;
 import com.stardust.scriptdroid.ui.doc.OnlineDocsFragment_;
 import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
-import com.stardust.scriptdroid.io.StorageFileProvider;
+import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment_;
 import com.stardust.scriptdroid.ui.log.LogActivity_;
 import com.stardust.scriptdroid.ui.main.sample.SampleListFragment_;

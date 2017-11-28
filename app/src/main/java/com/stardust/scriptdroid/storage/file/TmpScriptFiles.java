@@ -1,9 +1,8 @@
-package com.stardust.scriptdroid.io;
+package com.stardust.scriptdroid.storage.file;
 
 import android.content.Context;
 
 import com.stardust.pio.PFiles;
-import com.stardust.scriptdroid.model.script.ScriptFile;
 
 import java.io.File;
 import java.io.IOException;

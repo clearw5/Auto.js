@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.timing;
+package com.stardust.scriptdroid.storage.database;
 
 import com.raizlabs.android.dbflow.annotation.Database;
 

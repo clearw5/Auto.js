@@ -313,5 +313,13 @@
     <string name="key_documentation_source">key_documentation_source</string>
     <string name="text_documentation_source">文档源</string>
     <string name="text_send">发送</string>
-    <string name="text_timed_task">定时运行</string>
+    <string name="text_timed_task">定时任务</string>
+    <string name="text_running_task">运行中脚本</string>
+    <string name="text_done">完成</string>
+    <string name="text_disposable_task">只运行一次</string>
+    <string name="text_daily_task">每天运行</string>
+    <string name="text_weekly_task">按星期运行</string>
+    <string name="text_timing">定时</string>
+    <string name="text_disposable_task_time_before_now">任务时间小于当前时间</string>
+    <string name="text_next_run_time">下次运行</string>
 </resources>

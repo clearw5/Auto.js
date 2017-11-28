@@ -21,14 +21,16 @@ import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.io.TmpScriptFiles;
+import com.stardust.scriptdroid.external.ScriptIntents;
+import com.stardust.scriptdroid.storage.file.TmpScriptFiles;
 import com.stardust.scriptdroid.model.sample.SampleFile;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
-import com.stardust.scriptdroid.io.StorageFileProvider;
+import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.network.download.DownloadManager;
 import com.stardust.scriptdroid.ui.filechooser.FileChooserDialogBuilder;
 import com.stardust.scriptdroid.ui.shortcut.ShortcutCreateActivity;
+import com.stardust.scriptdroid.ui.timing.TimedTaskSettingActivity_;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import org.reactivestreams.Publisher;
@@ -40,8 +42,6 @@ import java.io.InputStream;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
@@ -307,7 +307,9 @@ public class ScriptOperations {
     }
 
     public void timedTask(ScriptFile scriptFile) {
-
+        TimedTaskSettingActivity_.intent(mContext)
+                .extra(ScriptIntents.EXTRA_KEY_PATH, scriptFile.getPath())
+                .start();
     }
 
 

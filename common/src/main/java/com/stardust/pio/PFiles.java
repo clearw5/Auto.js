@@ -354,4 +354,11 @@ public class PFiles {
         String pre = "KMGTPE".substring(exp - 1, exp);
         return String.format(Locale.getDefault(), "%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
+
+    public static String getSimplifiedPath(String path) {
+        if (path.startsWith(Environment.getExternalStorageDirectory().getPath())) {
+           return path.substring(Environment.getExternalStorageDirectory().getPath().length());
+        }
+        return path;
+    }
 }

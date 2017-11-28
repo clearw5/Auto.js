@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.external.ScriptIntents;
 import com.stardust.scriptdroid.model.script.ScriptFile;
-import com.stardust.scriptdroid.io.StorageFileProvider;
+import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.main.scripts.ScriptListView;
 import com.twofortyfouram.locale.sdk.client.ui.activity.AbstractAppCompatPluginActivity;

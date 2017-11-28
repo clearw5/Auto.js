@@ -15,8 +15,7 @@ import android.widget.TextView;
 
 import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.io.SampleFileProvider;
-import com.stardust.scriptdroid.io.StorageFileProvider;
+import com.stardust.scriptdroid.storage.file.SampleFileProvider;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;

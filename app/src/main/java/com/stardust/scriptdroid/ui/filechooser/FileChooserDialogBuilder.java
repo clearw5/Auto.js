@@ -7,7 +7,7 @@ import android.support.annotation.StringRes;
 import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
-import com.stardust.scriptdroid.io.StorageFileProvider;
+import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import java.io.File;

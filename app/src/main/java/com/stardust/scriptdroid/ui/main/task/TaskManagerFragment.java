@@ -3,20 +3,14 @@ package com.stardust.scriptdroid.ui.main.task;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.PopupMenu;
-import android.widget.TextView;
 
-import com.stardust.autojs.core.console.ConsoleView;
-import com.stardust.autojs.core.console.StardustConsole;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
 import com.stardust.scriptdroid.ui.widget.SimpleAdapterDataObserver;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
@@ -63,7 +57,7 @@ public class TaskManagerFragment extends ViewPagerFragment {
 
         });
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
-            mTaskListRecyclerView.updateEngineList();
+            mTaskListRecyclerView.refresh();
             mTaskListRecyclerView.postDelayed(() -> {
                 if (mSwipeRefreshLayout != null)
                     mSwipeRefreshLayout.setRefreshing(false);

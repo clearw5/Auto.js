@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.external.ScriptIntents;
 
 /**

@@ -61,8 +61,7 @@ public class TimedTaskScheduler extends BroadcastReceiver {
             return;
         }
         // FIXME: 2017/11/28 requestCode may > 65535
-        PendingIntent op = PendingIntent.getBroadcast(context, REQUEST_CODE + 1 + timedTask.getId(),
-                timedTask.createIntent(), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent op = timedTask.createPendingIntent(context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, millis, op);
         } else {
@@ -75,5 +74,10 @@ public class TimedTaskScheduler extends BroadcastReceiver {
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000,
                 INTERVAL, PendingIntent.getBroadcast(context, REQUEST_CODE,
                         new Intent(TimedTaskScheduler.ACTION_CHECK_TASK), PendingIntent.FLAG_UPDATE_CURRENT));
+    }
+
+    public static void cancel(Context context, TimedTask timedTask) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(timedTask.createPendingIntent(context));
     }
 }

@@ -86,6 +86,7 @@
         <activity android:name=".ui.log.LogActivity_"/>
         <activity android:name=".ui.doc.DocumentationActivity_"/>
         <activity android:name=".ui.shortcut.ShortcutIconSelectActivity_"/>
+        <activity android:name=".ui.timing.TimedTaskSettingActivity_"/>
         <activity
             android:name=".ui.shortcut.ShortcutCreateActivity"
             android:theme="@style/AppTheme.Transparent"/>
@@ -101,6 +102,7 @@
         <activity
             android:name=".ui.error.IssueReporterActivity"
             android:theme="@style/IssueReporterTheme"/>
+
 
         <service android:name=".external.ScriptExecutionIntentService"/>
 

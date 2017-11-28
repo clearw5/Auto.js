@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.io;
+package com.stardust.scriptdroid.storage.file;
 
 import android.content.Context;
 import android.content.res.AssetManager;

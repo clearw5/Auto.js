@@ -47,10 +47,7 @@ public class PFile extends File {
         } else {
             mSimplifiedName = PFiles.getNameWithoutExtension(getName());
         }
-        mSimplifyPath = getPath();
-        if (mSimplifyPath.startsWith(Environment.getExternalStorageDirectory().getPath())) {
-            mSimplifyPath = mSimplifyPath.substring(Environment.getExternalStorageDirectory().getPath().length());
-        }
+        mSimplifyPath = PFiles.getSimplifiedPath(getPath());
     }
 
     public boolean renameTo(String newName) {
