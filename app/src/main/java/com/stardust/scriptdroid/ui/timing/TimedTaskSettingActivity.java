@@ -9,8 +9,11 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -37,6 +40,9 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Stardust on 2017/11/28.
@@ -73,7 +79,13 @@ public class TimedTaskSettingActivity extends BaseActivity {
     TimePicker mDailyTaskTimePicker;
 
     @ViewById(R.id.weekly_task_time_picker)
-    TimePicker mWWeeklyTaskTimePicker;
+    TimePicker mWeeklyTaskTimePicker;
+
+    @ViewById(R.id.weekly_task_container)
+    LinearLayout mWeeklyTaskContainer;
+
+    private List<CheckBox> mDayOfWeekCheckBoxes = new ArrayList<>();
+
 
     private ScriptFile mScriptFile;
     private TimedTask mTimedTask;
@@ -103,7 +115,22 @@ public class TimedTaskSettingActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mToolbar.setSubtitle(mScriptFile.getName());
         }
+        findDayOfWeekCheckBoxes(mWeeklyTaskContainer);
         setUpTime();
+    }
+
+    private void findDayOfWeekCheckBoxes(ViewGroup parent) {
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            View child = parent.getChildAt(i);
+            if (child instanceof CheckBox) {
+                mDayOfWeekCheckBoxes.add((CheckBox) child);
+            } else if (child instanceof ViewGroup) {
+                findDayOfWeekCheckBoxes((ViewGroup) child);
+            }
+            if (mDayOfWeekCheckBoxes.size() >= 7)
+                break;
+        }
+
     }
 
     private void setUpTime() {
@@ -119,14 +146,18 @@ public class TimedTaskSettingActivity extends BaseActivity {
             mDisposableTaskDate.setText(DATE_FORMATTER.print(mTimedTask.getMillis()));
             return;
         }
+        LocalTime time = LocalTime.fromMillisOfDay(mTimedTask.getMillis());
+        mDailyTaskTimePicker.setCurrentHour(time.getHourOfDay());
+        mDailyTaskTimePicker.setCurrentMinute(time.getMinuteOfHour());
         if (mTimedTask.isDaily()) {
             mDailyTaskRadio.setChecked(true);
-            LocalTime time = LocalTime.fromMillisOfDay(mTimedTask.getMillis());
-            mDailyTaskTimePicker.setCurrentHour(time.getHourOfDay());
-            mDailyTaskTimePicker.setCurrentMinute(time.getMinuteOfHour());
-            return;
+        } else {
+            mWeeklyTaskRadio.setChecked(true);
+            for (int i = 0; i < mDayOfWeekCheckBoxes.size(); i++) {
+                mDayOfWeekCheckBoxes.get(i).setChecked(mTimedTask.hasDayOfWeek(i + 1));
+            }
         }
-        // TODO: 2017/11/28  Weekly
+
     }
 
 
@@ -180,8 +211,18 @@ public class TimedTaskSettingActivity extends BaseActivity {
     }
 
     private TimedTask createWeeklyTask() {
-        // TODO: 2017/11/28  Weekly
-        return null;
+        long timeFlag = 0;
+        for (int i = 0; i < mDayOfWeekCheckBoxes.size(); i++) {
+            if (mDayOfWeekCheckBoxes.get(i).isChecked()) {
+                timeFlag |= TimedTask.getDayOfWeekTimeFlag(i + 1);
+            }
+        }
+        if (timeFlag == 0) {
+            Toast.makeText(this, R.string.text_weekly_task_should_check_day_of_week, Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        LocalTime time = new LocalTime(mDailyTaskTimePicker.getCurrentHour(), mDailyTaskTimePicker.getCurrentMinute());
+        return TimedTask.weeklyTask(time, timeFlag, mScriptFile.getPath(), ExecutionConfig.getDefault());
     }
 
     private TimedTask createDailyTask() {

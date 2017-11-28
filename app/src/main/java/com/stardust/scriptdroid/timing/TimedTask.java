@@ -11,6 +11,8 @@ import com.stardust.autojs.execution.ExecutionConfig;
 import com.stardust.scriptdroid.external.ScriptIntents;
 import com.stardust.scriptdroid.storage.database.TimedTaskDatabase;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 
@@ -63,7 +65,7 @@ public class TimedTask {
 
     }
 
-    public TimedTask(long millis, int timeFlag, String scriptPath, ExecutionConfig config) {
+    public TimedTask(long millis, long timeFlag, String scriptPath, ExecutionConfig config) {
         mMillis = millis;
         mTimeFlag = timeFlag;
         mScriptPath = scriptPath;
@@ -88,13 +90,58 @@ public class TimedTask {
         if (isDisposable()) {
             return mMillis;
         }
-        // TODO: 2017/11/28 day of week
-        LocalTime time = LocalTime.fromMillisOfDay(mMillis);
-        long nextTimeMillis = time.toDateTimeToday().getMillis();
-        if (System.currentTimeMillis() > nextTimeMillis) {
-            return nextTimeMillis + TimeUnit.DAYS.toMillis(1);
+        if (isDaily()) {
+            LocalTime time = LocalTime.fromMillisOfDay(mMillis);
+            long nextTimeMillis = time.toDateTimeToday().getMillis();
+            if (System.currentTimeMillis() > nextTimeMillis) {
+                return nextTimeMillis + TimeUnit.DAYS.toMillis(1);
+            }
+            return nextTimeMillis;
         }
-        return nextTimeMillis;
+        return getNextTimeOfWeeklyTask();
+
+    }
+
+    private long getNextTimeOfWeeklyTask() {
+        int dayOfWeek = DateTime.now().getDayOfWeek();
+        long nextTimeMillis = LocalTime.fromMillisOfDay(mMillis).toDateTimeToday().getMillis();
+        for (int i = 0; i < 8; i++) {
+            if ((getDayOfWeekTimeFlag(dayOfWeek) & mTimeFlag) != 0) {
+                if (System.currentTimeMillis() <= nextTimeMillis) {
+                    return nextTimeMillis;
+                }
+            }
+            dayOfWeek++;
+            nextTimeMillis += TimeUnit.DAYS.toMillis(1);
+        }
+        throw new IllegalStateException("Should not happen! timeFlag = " + mTimeFlag + ", dayOfWeek = " + DateTime.now().getDayOfWeek());
+    }
+
+    public static long getDayOfWeekTimeFlag(int dayOfWeek) {
+        dayOfWeek = (dayOfWeek - 1) % 7 + 1;
+        switch (dayOfWeek) {
+            case DateTimeConstants.SUNDAY:
+                return FLAG_SUNDAY;
+
+            case DateTimeConstants.MONDAY:
+                return FLAG_MONDAY;
+
+            case DateTimeConstants.SATURDAY:
+                return FLAG_SATURDAY;
+
+            case DateTimeConstants.WEDNESDAY:
+                return FLAG_WEDNESDAY;
+
+            case DateTimeConstants.TUESDAY:
+                return FLAG_TUESDAY;
+
+            case DateTimeConstants.THURSDAY:
+                return FLAG_THURSDAY;
+            case DateTimeConstants.FRIDAY:
+                return FLAG_FRIDAY;
+
+        }
+        throw new IllegalArgumentException("dayOfWeek = " + dayOfWeek);
     }
 
     public long getMillis() {
@@ -210,4 +257,11 @@ public class TimedTask {
         return new TimedTask(dateTime.toDateTime().getMillis(), FLAG_DISPOSABLE, scriptPath, config);
     }
 
+    public static TimedTask weeklyTask(LocalTime time, long timeFlag, String scriptPath, ExecutionConfig config) {
+        return new TimedTask(time.getMillisOfDay(), timeFlag, scriptPath, config);
+    }
+
+    public boolean hasDayOfWeek(int dayOfWeek) {
+        return (mTimeFlag & getDayOfWeekTimeFlag(dayOfWeek)) != 0;
+    }
 }

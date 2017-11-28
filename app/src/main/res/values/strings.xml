@@ -322,4 +322,12 @@
     <string name="text_timing">定时</string>
     <string name="text_disposable_task_time_before_now">任务时间小于当前时间</string>
     <string name="text_next_run_time">下次运行</string>
+    <string name="text_day1">一</string>
+    <string name="text_day2">二</string>
+    <string name="text_day3">三</string>
+    <string name="text_day4">四</string>
+    <string name="text_day5">五</string>
+    <string name="text_day6">六</string>
+    <string name="text_day7">日</string>
+    <string name="text_weekly_task_should_check_day_of_week">至少选择一周中的一天</string>
 </resources>
