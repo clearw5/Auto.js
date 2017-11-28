@@ -109,11 +109,13 @@ module.exports = function(runtime, scope){
         for(var i = 0; i < headers.size(); i++){
             r.headers[headers.name(i)] = headers.value(i);
         }
-        r.body = Object.create(res.body());
+        r.body = {};
+        var body = res.body();
+        r.body.string = body.string.bind(body);
         r.body.json = function(){
             return JSON.parse(r.body.string());
         }
-        r.body.contentType = r.body.contentType();
+        r.body.contentType = body.contentType();
         r.request = res.request();
         r.url = r.request.url();
         r.method = r.request.method();
