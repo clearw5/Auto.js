@@ -100,6 +100,23 @@ module.exports = function(__runtime__, scope){
         });
   }
 
+   function getColorDetector(color, algorithm, threshold){
+          switch(algorithm){
+              case "rgb":
+                  return new com.stardust.autojs.core.image.ColorDetector.RGBDistanceDetector(color, threshold);
+              case "equal":
+                  return new com.stardust.autojs.core.image.ColorDetector.EqualityDetector(color);
+              case "diff":
+                  return new com.stardust.autojs.core.image.ColorDetector.DifferenceDetector(color, threshold);
+              case "rgb+":
+                  return new com.stardust.autojs.core.image.ColorDetector.WeightedRGBDistanceDetector(color, threshold);
+              case "hs":
+                  return new com.stardust.autojs.core.image.ColorDetector.HSDistanceDetector(color, threshold);
+          }
+          throw new Error("Unknown algorithm: " + algorithm);
+     }
+
+
   function toPointArray(points){
      var arr = [];
      for(var i = 0; i < points.length; i++){

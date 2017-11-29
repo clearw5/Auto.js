@@ -10,8 +10,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.flurry.android.FlurryAgent;
-import com.nickandjerry.dynamiclayoutinflator.lib.ImageLoader;
-import com.nickandjerry.dynamiclayoutinflator.lib.util.Drawables;
 import com.raizlabs.android.dbflow.config.DatabaseConfig;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -28,6 +26,9 @@ import com.stardust.scriptdroid.ui.error.ErrorReportActivity;
 import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.UiHandler;
+
+import org.autojs.dynamiclayoutinflater.ImageLoader;
+import org.autojs.dynamiclayoutinflater.util.Drawables;
 
 import java.lang.ref.WeakReference;
 

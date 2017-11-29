@@ -14,8 +14,6 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 
-import com.nickandjerry.dynamiclayoutinflator.lib.ImageLoader;
-import com.nickandjerry.dynamiclayoutinflator.lib.util.Drawables;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.image.ColorFinder;
 import com.stardust.autojs.core.image.ImageWrapper;

@@ -7,7 +7,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.nickandjerry.dynamiclayoutinflator.lib.util.Ids;
+import org.autojs.dynamiclayoutinflater.util.Ids;
 
 
 /**
@@ -18,7 +18,7 @@ public class JsViewHelper {
 
     @Nullable
     public static View findViewByStringId(View view, String id) {
-        View result = view.findViewById(Ids.getIdFromName(id));
+        View result = view.findViewById(Ids.parse(id));
         if (result != null)
             return result;
         if (!(view instanceof ViewGroup)) {

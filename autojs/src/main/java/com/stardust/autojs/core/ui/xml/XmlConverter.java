@@ -1,11 +1,22 @@
 package com.stardust.autojs.core.ui.xml;
 
+import android.webkit.WebView;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.TimePicker;
+
 import com.stardust.autojs.core.ui.widget.JsButton;
 import com.stardust.autojs.core.ui.widget.JsEditText;
 import com.stardust.autojs.core.ui.widget.JsFrameLayout;
 import com.stardust.autojs.core.ui.widget.JsLinearLayout;
 import com.stardust.autojs.core.ui.widget.JsRelativeLayout;
 import com.stardust.autojs.core.ui.widget.JsTextView;
+import com.stardust.autojs.core.ui.widget.JsWebView;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -16,6 +27,7 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,11 +44,21 @@ public class XmlConverter {
             .defaultHandler(new NodeHandler.MapNameHandler()
                     .map("frame", JsFrameLayout.class.getName())
                     .map("linear", JsLinearLayout.class.getName())
+                    .map("horizontal", JsLinearLayout.class.getName())
                     .map("relative", JsRelativeLayout.class.getName())
                     .map("button", JsButton.class.getName())
                     .map("text", JsTextView.class.getName())
                     .map("input", JsEditText.class.getName())
                     .map("img", "ImageView")
+                    .map("datepicker", DatePicker.class.getName())
+                    .map("timepicker", TimePicker.class.getName())
+                    .map("webview", JsWebView.class.getName())
+                    .map("progressbar", ProgressBar.class.getName())
+                    .map("seekbar", SeekBar.class.getName())
+                    .map("spinner", Spinner.class.getName())
+                    .map("radio", RadioButton.class.getName())
+                    .map("radiogroup", RadioGroup.class.getName())
+                    .map("checkbox", CheckBox.class.getName())
             );
 
     private static final AttributeHandler ATTRIBUTE_HANDLER = new AttributeHandler.AttrNameRouter()

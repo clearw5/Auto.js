@@ -6,11 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.nickandjerry.dynamiclayoutinflator.lib.DynamicLayoutInflater;
-import com.nickandjerry.dynamiclayoutinflator.lib.util.Drawables;
 import com.stardust.autojs.core.ui.widget.JsFrameLayout;
 import com.stardust.autojs.core.ui.xml.XmlConverter;
 import com.stardust.util.MapEntries;
+
+import org.autojs.dynamiclayoutinflater.DynamicLayoutInflater;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
