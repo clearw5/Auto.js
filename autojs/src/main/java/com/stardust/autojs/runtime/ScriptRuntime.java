@@ -38,6 +38,8 @@ import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 
 import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 
 import java.io.File;
 import java.io.IOException;

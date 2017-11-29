@@ -19,7 +19,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:name=".App"
         android:allowBackup="false"
-        android:icon="@drawable/ic_android_eat_js"
+        android:icon="@drawable/autojs_material"
         android:label="@string/_app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
@@ -134,7 +134,7 @@
 
         <activity
             android:name=".external.open.EditIntentActivity"
-            android:icon="@drawable/autojs_logo"
+            android:icon="@drawable/autojs_material"
             android:label="@string/text_edit_script">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -151,7 +151,7 @@
         </activity>
         <activity
             android:name=".external.open.RunIntentActivity"
-            android:icon="@drawable/autojs_logo"
+            android:icon="@drawable/autojs_material"
             android:label="@string/text_run_script"
             android:taskAffinity="com.stardust.scriptdroid.external.open.RunIntentActivity"
             android:theme="@android:style/Theme.NoDisplay">
@@ -170,7 +170,7 @@
         </activity>
         <activity
             android:name=".external.open.ImportIntentActivity"
-            android:icon="@drawable/autojs_logo"
+            android:icon="@drawable/autojs_material"
             android:label="@string/text_import_script"
             android:theme="@style/AppTheme.Transparent">
             <intent-filter>

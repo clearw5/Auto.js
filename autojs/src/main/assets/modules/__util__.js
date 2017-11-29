@@ -24,7 +24,7 @@ exports.format = function(f) {
   if (!isString(f)) {
     var objects = [];
     for (var i = 0; i < arguments.length; i++) {
-      var v = (arguments[i] && isJavaObject(arguments[i])) ? arguments[i].toString() :
+      var v = //(arguments[i] && isJavaObject(arguments[i])) ? arguments[i].toString() :
             arguments[i];
       objects.push(inspect(v));
     }
@@ -312,9 +312,13 @@ function formatValue(ctx, value, recurseTimes) {
   if (array) {
     output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
   } else {
-    output = keys.map(function(key) {
-      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
-    });
+    try{
+        output = keys.map(function(key) {
+          return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+        });
+    }catch(err){
+        return value.toString();
+    }
   }
 
   ctx.seen.pop();
