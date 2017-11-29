@@ -9,9 +9,7 @@ import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
 import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
-import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
-import com.stardust.lang.ThreadCompat;
 import com.stardust.util.IntentExtras;
 
 /**
@@ -51,7 +49,7 @@ public class ScriptExecuteActivity extends AppCompatActivity implements Thread.U
         mScriptSource = mScriptExecution.getSource();
         mScriptEngine = mScriptExecution.getEngine();
         mExecutionListener = mScriptExecution.getListener();
-        RhinoJavaScriptEngine.setUncaghtExceptionHandler(this);
+        RhinoJavaScriptEngine.setUncaughtExceptionHandler(this);
         runScript();
     }
 

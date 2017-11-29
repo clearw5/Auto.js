@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.autojs;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -52,7 +53,7 @@ import org.opencv.android.OpenCVLoader;
  * Created by Stardust on 2017/4/2.
  */
 
-public class AutoJs {
+public class AutoJs extends com.stardust.autojs.AutoJs {
 
     private static AutoJs instance;
 
@@ -64,24 +65,15 @@ public class AutoJs {
         instance = new AutoJs(context);
     }
 
-    private final AccessibilityActionRecorder mAccessibilityActionRecorder = new AccessibilityActionRecorder();
-    private final AccessibilityNotificationObserver mNotificationObserver;
-    private ScriptEngineManager mScriptEngineManager;
-    private final LayoutInspector mLayoutInspector = new LayoutInspector();
-    private final Context mContext;
-    private final UiHandler mUiHandler;
-    private final AppUtils mAppUtils;
-    private final AccessibilityInfoProvider mAccessibilityInfoProvider;
-    private final ScreenCaptureRequester mScreenCaptureRequester = new ScreenCaptureRequesterImpl();
-    private final ScriptEngineService mScriptEngineService;
-    private final Console mGlobalConsole;
-
 
     private AutoJs(final Context context) {
-        mContext = context;
-        mUiHandler = new UiHandler(context);
-        mAppUtils = new AppUtils(context);
-        mGlobalConsole = new GlobalStardustConsole(mUiHandler) {
+        super(context);
+        getScriptEngineService().registerGlobalScriptExecutionListener(new ScriptExecutionGlobalListener());
+    }
+
+    @Override
+    protected Console createGlobalConsole() {
+        return new GlobalStardustConsole(getUiHandler()) {
             @Override
             public String println(int level, CharSequence charSequence) {
                 String log = super.println(level, charSequence);
@@ -89,172 +81,33 @@ public class AutoJs {
                 return log;
             }
         };
-        mNotificationObserver = new AccessibilityNotificationObserver(context);
-        mAccessibilityInfoProvider = new AccessibilityInfoProvider(context.getPackageManager());
-        mScriptEngineService = buildScriptEngineService();
-        addAccessibilityServiceDelegates();
-        mScriptEngineService.registerGlobalScriptExecutionListener(new ScriptExecutionGlobalListener());
-        registerActivityLifecycleCallbacks();
-        InputEventObserver.initGlobal(context);
-        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_13, context, new BaseLoaderCallback(context) {
-        });
-    }
-
-    private ScriptEngineService buildScriptEngineService() {
-        initScriptEngineManager();
-        return new ScriptEngineServiceBuilder()
-                .uiHandler(mUiHandler)
-                .globalConsole(mGlobalConsole)
-                .engineManger(mScriptEngineManager)
-                .build();
-    }
-
-    private void initScriptEngineManager() {
-        mScriptEngineManager = new ScriptEngineManager(mContext);
-        mScriptEngineManager.registerEngine(JavaScriptSource.ENGINE, new Supplier<ScriptEngine>() {
-            @Override
-            public ScriptEngine get() {
-                LoopBasedJavaScriptEngine engine = new LoopBasedJavaScriptEngine(mContext);
-                engine.setRuntime(new ScriptRuntime.Builder()
-                        .setConsole(new StardustConsole(mUiHandler, mGlobalConsole))
-                        .setScreenCaptureRequester(mScreenCaptureRequester)
-                        .setAccessibilityBridge(new AccessibilityBridgeImpl())
-                        .setUiHandler(mUiHandler)
-                        .setAppUtils(mAppUtils)
-                        .setEngineService(mScriptEngineService)
-                        .setShellSupplier(new Supplier<AbstractShell>() {
-                            @Override
-                            public AbstractShell get() {
-                                return new Shell(mContext, true);
-                            }
-                        }).build());
-                return engine;
-            }
-        });
-        mScriptEngineManager.registerEngine(AutoFileSource.ENGINE, new Supplier<ScriptEngine>() {
-            @Override
-            public ScriptEngine get() {
-                return new RootAutomatorEngine(mContext);
-            }
-        });
-
-    }
-
-    private void registerActivityLifecycleCallbacks() {
-        App.getApp().registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
-
-            @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                ScreenMetrics.initIfNeeded(activity);
-                mAppUtils.setCurrentActivity(activity);
-            }
-
-            @Override
-            public void onActivityPaused(Activity activity) {
-                mAppUtils.setCurrentActivity(null);
-            }
-
-            @Override
-            public void onActivityResumed(Activity activity) {
-                mAppUtils.setCurrentActivity(activity);
-            }
-        });
-    }
-
-    private void addAccessibilityServiceDelegates() {
-        AccessibilityService.addDelegate(100, mAccessibilityInfoProvider);
-        AccessibilityService.addDelegate(200, mNotificationObserver);
-        AccessibilityService.addDelegate(300, mAccessibilityActionRecorder);
-    }
-
-    public AccessibilityActionRecorder getAccessibilityActionRecorder() {
-        return mAccessibilityActionRecorder;
-    }
-
-    public AppUtils getAppUtils() {
-        return mAppUtils;
-    }
-
-    public UiHandler getUiHandler() {
-        return mUiHandler;
-    }
-
-    public LayoutInspector getLayoutInspector() {
-        return mLayoutInspector;
-    }
-
-    public Console getGlobalConsole() {
-        return mGlobalConsole;
-    }
-
-    public ScriptEngineService getScriptEngineService() {
-        return mScriptEngineService;
-    }
-
-    public AccessibilityInfoProvider getInfoProvider() {
-        return mAccessibilityInfoProvider;
     }
 
     public void ensureAccessibilityServiceEnabled() {
-        if (AccessibilityService.getInstance() == null) {
-            String errorMessage = null;
-            if (AccessibilityServiceTool.isAccessibilityServiceEnabled(App.getApp())) {
-                errorMessage = App.getApp().getString(R.string.text_auto_operate_service_enabled_but_not_running);
-            } else {
-                if (Pref.enableAccessibilityServiceByRoot()) {
-                    if (!AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(2000)) {
-                        errorMessage = App.getApp().getString(R.string.text_enable_accessibility_service_by_root_timeout);
-                    }
-                } else {
-                    errorMessage = App.getApp().getString(R.string.text_no_accessibility_permission);
+        if (AccessibilityService.getInstance() != null) {
+            return;
+        }
+        String errorMessage = null;
+        if (AccessibilityServiceTool.isAccessibilityServiceEnabled(App.getApp())) {
+            errorMessage = App.getApp().getString(R.string.text_auto_operate_service_enabled_but_not_running);
+        } else {
+            if (Pref.enableAccessibilityServiceByRoot()) {
+                if (!AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(2000)) {
+                    errorMessage = App.getApp().getString(R.string.text_enable_accessibility_service_by_root_timeout);
                 }
-            }
-            if (errorMessage != null) {
-                AccessibilityServiceTool.goToAccessibilitySetting();
-                throw new ScriptException(errorMessage);
-            }
-        }
-    }
-
-
-    private class AccessibilityBridgeImpl extends AccessibilityBridge {
-
-        @Override
-        public void ensureServiceEnabled() {
-            AutoJs.this.ensureAccessibilityServiceEnabled();
-        }
-
-        @Nullable
-        @Override
-        public AccessibilityService getService() {
-            return AccessibilityService.getInstance();
-        }
-
-        @Override
-        public AccessibilityInfoProvider getInfoProvider() {
-            return mAccessibilityInfoProvider;
-        }
-
-        @Override
-        public AccessibilityNotificationObserver getNotificationObserver() {
-            return mNotificationObserver;
-        }
-
-    }
-
-    private class ScreenCaptureRequesterImpl extends ScreenCaptureRequester.AbstractScreenCaptureRequester {
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-        @Override
-        public void request() {
-            Activity activity = mAppUtils.getCurrentActivity();
-            if (activity instanceof OnActivityResultDelegate.DelegateHost) {
-                ScreenCaptureRequester requester = new ActivityScreenCaptureRequester(
-                        ((OnActivityResultDelegate.DelegateHost) activity).getOnActivityResultDelegateMediator(), activity);
-                requester.setOnActivityResultCallback(mCallback);
-                requester.request();
             } else {
-                ScreenCaptureRequestActivity.request(mContext, mCallback);
+                errorMessage = App.getApp().getString(R.string.text_no_accessibility_permission);
             }
         }
+        if (errorMessage != null) {
+            AccessibilityServiceTool.goToAccessibilitySetting();
+            throw new ScriptException(errorMessage);
+        }
     }
+
+    @Override
+    protected Application getApplication() {
+        return App.getApp();
+    }
+
 }

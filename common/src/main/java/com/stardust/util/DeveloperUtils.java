@@ -27,9 +27,10 @@ public class DeveloperUtils {
         return PACKAGE_NAME.equals(runningPackage);
     }
 
-    public static String getSignature(Context context) {
+    @Nullable
+    public static String getSignature(Context context, String packageName) {
         try {
-            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
             Signature[] signatures = packageInfo.signatures;
             StringBuilder builder = new StringBuilder();
             for (Signature signature : signatures) {
@@ -47,7 +48,12 @@ public class DeveloperUtils {
      * 为了开源社区的发展，请善用源码:-)
      */
     public static boolean checkSignature(Context context) {
-        return SIGNATURE.equals(getSignature(context));
+        return SIGNATURE.equals(getSignature(context, context.getPackageName()));
     }
+
+    public static boolean checkSignature(Context context, String packageName) {
+        return SIGNATURE.equals(getSignature(context, packageName));
+    }
+
 
 }

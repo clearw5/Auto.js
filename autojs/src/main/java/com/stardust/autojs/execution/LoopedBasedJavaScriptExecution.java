@@ -40,7 +40,6 @@ public class LoopedBasedJavaScriptExecution extends RunnableScriptExecution {
                     return false;
                 }
                 javaScriptEngine.getRuntime().loopers.setLooperQuitHandler(null);
-                getListener().onSuccess(LoopedBasedJavaScriptExecution.this, null);
                 return true;
             }
         });

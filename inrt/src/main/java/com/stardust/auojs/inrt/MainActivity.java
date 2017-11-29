@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.stardust.auojs.inrt.rt.AutoJs;
 import com.stardust.autojs.core.console.ConsoleView;
+import com.stardust.autojs.core.console.StardustConsole;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.pio.PFiles;
 
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupView() {
         ConsoleView consoleView = new ConsoleView(this);
-        consoleView.setConsole(AutoJs.getInstance().getGlobalConsole());
+        consoleView.setConsole((StardustConsole) AutoJs.getInstance().getGlobalConsole());
         setContentView(consoleView);
     }
 

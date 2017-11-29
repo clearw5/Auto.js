@@ -26,7 +26,7 @@ import io.reactivex.subjects.PublishSubject;
 /**
  * Created by Stardust on 2017/11/27.
  */
-
+//TODO rx
 public class TimedTaskManager {
 
 
@@ -73,23 +73,6 @@ public class TimedTaskManager {
             task.setScheduled(false);
             mTimedTaskModelAdapter.update(task);
         }
-    }
-
-
-    private Flowable<TimedTask> getTaskById(int id) {
-        return RXSQLite.rx(SQLite.select()
-                .from(TimedTask.class)
-                .where(TimedTask_Table.id.is(id)))
-                .queryStreamResults()
-                .subscribeOn(Schedulers.io());
-    }
-
-    private Completable removeTask(int id) {
-        return RXSQLite.rx(SQLite.delete(TimedTaskDatabase.class)
-                .where(TimedTask_Table.id.is(id)))
-                .execute()
-                .subscribeOn(Schedulers.io());
-
     }
 
     public void cancelTask(TimedTask timedTask) {

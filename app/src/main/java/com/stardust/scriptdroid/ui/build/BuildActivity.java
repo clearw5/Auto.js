@@ -1,17 +1,22 @@
 package com.stardust.scriptdroid.ui.build;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.build.AutoJsApkBuilder;
+import com.stardust.scriptdroid.build.ApkBuilderPluginHelper;
+import com.stardust.scriptdroid.network.download.DownloadManager;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.filechooser.FileChooserDialogBuilder;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.IntentUtil;
 
 import org.androidannotations.annotations.AfterViews;
@@ -20,6 +25,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
+import java.io.InputStream;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -61,7 +67,26 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         if (sourcePath != null) {
             setupWithSourceFile(new ScriptFile(sourcePath));
         }
+        showPluginDownloadDialogIfNeeded();
 
+    }
+
+    private void showPluginDownloadDialogIfNeeded() {
+        if (ApkBuilderPluginHelper.checkPlugin(this)) {
+            return;
+        }
+        new ThemeColorMaterialDialogBuilder(this)
+                .content(R.string.no_apk_builder_plugin)
+                .positiveText(R.string.ok)
+                .negativeText(R.string.text_exit)
+                .onPositive((dialog, which) -> downloadPlugin())
+                .onNegative((dialog, which) -> finish())
+                .show();
+
+    }
+
+    private void downloadPlugin() {
+        // TODO: 2017/11/29
     }
 
     private void setupWithSourceFile(ScriptFile file) {
@@ -102,6 +127,14 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
 
     @Click(R.id.fab)
     void buildApk() {
+        if (!ApkBuilderPluginHelper.checkPlugin(this)) {
+            Toast.makeText(this, R.string.text_apk_builder_plugin_unavailable, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        doBuildingApk();
+    }
+
+    private void doBuildingApk() {
         String jsPath = mSourcePath.getText().toString();
         String versionName = mVersionName.getText().toString();
         int versionCode = Integer.parseInt(mVersionCode.getText().toString());
@@ -110,20 +143,21 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         File outApk = new File(mOutputPath.getText().toString(),
                 String.format("%s_v%s.apk", appName, versionName));
         showProgressDialog();
-        Observable.fromCallable(() ->
-                new AutoJsApkBuilder(getAssets().open("template.apk"), outApk, tmpDir.getPath())
-                        .setProgressCallback(BuildActivity.this)
-                        .prepare()
-                        .withConfig(new AutoJsApkBuilder.AppConfig(appName, versionName, versionCode, jsPath))
-                        .build()
-                        .sign()
-                        .cleanWorkspace()
+        Observable.fromCallable(() -> {
+                    InputStream templateApk = ApkBuilderPluginHelper.openTemplateApk(BuildActivity.this);
+                    return new AutoJsApkBuilder(templateApk, outApk, tmpDir.getPath())
+                            .setProgressCallback(BuildActivity.this)
+                            .prepare()
+                            .withConfig(new AutoJsApkBuilder.AppConfig(appName, versionName, versionCode, jsPath))
+                            .build()
+                            .sign()
+                            .cleanWorkspace();
+                }
         )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(apkBuilder -> onBuildSuccessful(outApk),
                         this::onBuildFailed);
-
     }
 
     private void showProgressDialog() {

@@ -3,6 +3,7 @@ package com.stardust.autojs.runtime.api;
 import android.os.Looper;
 import android.os.MessageQueue;
 
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.lang.ThreadCompat;
 
@@ -22,10 +23,12 @@ public class Loopers {
     private volatile Looper mServantLooper;
     private static volatile ConcurrentHashMap<Thread, Looper> sLoopers = new ConcurrentHashMap<>();
     private Timers mTimers;
+    private ScriptRuntime mScriptRuntime;
     private LooperQuitHandler mLooperQuitHandler;
 
-    public Loopers(Timers timers) {
-        mTimers = timers;
+    public Loopers(ScriptRuntime runtime) {
+        mTimers = runtime.timers;
+        mScriptRuntime = runtime;
         if (Looper.myLooper() == Looper.getMainLooper()) {
             waitWhenIdle = true;
         }
@@ -35,6 +38,7 @@ public class Loopers {
                 Looper l = Looper.myLooper();
                 if (l != null && shouldQuitLooper()) {
                     if (mLooperQuitHandler != null && mLooperQuitHandler.shouldQuit()) {
+                        mScriptRuntime.events.emit("exit");
                         l.quit();
                     }
                 }

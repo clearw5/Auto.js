@@ -3,7 +3,6 @@ package com.stardust.autojs.engine;
 import android.util.Log;
 
 import com.stardust.autojs.BuildConfig;
-import com.stardust.autojs.core.accessibility.UiCollection;
 import com.stardust.autojs.rhino.AndroidContextFactory;
 import com.stardust.autojs.rhino.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
@@ -17,21 +16,14 @@ import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ImporterTopLevel;
-import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.TopLevel;
-import org.mozilla.javascript.WrapFactory;
 import org.mozilla.javascript.commonjs.module.RequireBuilder;
 import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider;
-import org.mozilla.javascript.tools.debugger.Dim;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +36,7 @@ import java.util.Locale;
 public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
-    private static ThreadLocal<Thread.UncaughtExceptionHandler> mExceptionHandlerThreadLocal = new ThreadLocal<>();
+    private static ThreadLocal<Thread.UncaughtExceptionHandler> sExceptionHandlerThreadLocal = new ThreadLocal<>();
 
     private static int contextCount = 0;
     private static StringScriptSource sInitScript;
@@ -165,8 +157,8 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         return context;
     }
 
-    public static void setUncaghtExceptionHandler(Thread.UncaughtExceptionHandler handler) {
-        mExceptionHandlerThreadLocal.set(handler);
+    public static void setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler handler) {
+        sExceptionHandlerThreadLocal.set(handler);
     }
 
     private class WrapFactory extends org.mozilla.javascript.WrapFactory {
@@ -205,7 +197,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
         @Override
         protected Object doTopCall(Callable callable, Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-            Thread.UncaughtExceptionHandler exceptionHandler = mExceptionHandlerThreadLocal.get();
+            Thread.UncaughtExceptionHandler exceptionHandler = sExceptionHandlerThreadLocal.get();
             if (exceptionHandler == null)
                 return super.doTopCall(callable, cx, scope, thisObj, args);
             else {

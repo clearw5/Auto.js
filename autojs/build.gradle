@@ -52,6 +52,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.4.0'
     compile 'com.github.hyb1996:EnhancedFloaty:0.17'
     compile 'com.github.hyb1996:OpenCvLib:2.4.13.4-imgproc'
+    // Gson
+    compile 'com.google.code.gson:gson:2.8.0'
     // Terminal emulator
     compile(name: 'libtermexec-release', ext: 'aar')
     compile(name: 'emulatorview-release', ext: 'aar')
