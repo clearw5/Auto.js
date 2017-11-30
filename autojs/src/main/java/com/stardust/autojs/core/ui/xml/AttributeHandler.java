@@ -1,5 +1,7 @@
 package com.stardust.autojs.core.ui.xml;
 
+import android.util.Log;
+
 import org.w3c.dom.Node;
 
 import java.util.HashMap;
@@ -44,7 +46,10 @@ public interface AttributeHandler {
 
         @Override
         public boolean handle(String nodeName, Node attr, StringBuilder layoutXml) {
-            layoutXml.append("android:").append(mapAttrName(nodeName, attr.getNodeName()))
+            if (!attr.getNodeName().equals("style")) {
+                layoutXml.append("android:");
+            }
+            layoutXml.append(mapAttrName(nodeName, attr.getLocalName()))
                     .append("=\"").append(mapAttrValue(nodeName, attr.getNodeName(), attr.getNodeValue())).append("\"\n");
             return true;
         }

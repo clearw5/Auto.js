@@ -1,11 +1,13 @@
 package com.stardust.autojs.core.ui.xml;
 
+import android.support.v7.widget.Toolbar;
 import android.webkit.WebView;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TimePicker;
@@ -13,6 +15,7 @@ import android.widget.TimePicker;
 import com.stardust.autojs.core.ui.widget.JsButton;
 import com.stardust.autojs.core.ui.widget.JsEditText;
 import com.stardust.autojs.core.ui.widget.JsFrameLayout;
+import com.stardust.autojs.core.ui.widget.JsImageView;
 import com.stardust.autojs.core.ui.widget.JsLinearLayout;
 import com.stardust.autojs.core.ui.widget.JsRelativeLayout;
 import com.stardust.autojs.core.ui.widget.JsTextView;
@@ -49,7 +52,7 @@ public class XmlConverter {
                     .map("button", JsButton.class.getName())
                     .map("text", JsTextView.class.getName())
                     .map("input", JsEditText.class.getName())
-                    .map("img", "ImageView")
+                    .map("img", JsImageView.class.getName())
                     .map("datepicker", DatePicker.class.getName())
                     .map("timepicker", TimePicker.class.getName())
                     .map("webview", JsWebView.class.getName())
@@ -59,6 +62,8 @@ public class XmlConverter {
                     .map("radio", RadioButton.class.getName())
                     .map("radiogroup", RadioGroup.class.getName())
                     .map("checkbox", CheckBox.class.getName())
+                    .map("scroll", ScrollView.class.getName())
+                    .map("toolbar", Toolbar.class.getName())
             );
 
     private static final AttributeHandler ATTRIBUTE_HANDLER = new AttributeHandler.AttrNameRouter()

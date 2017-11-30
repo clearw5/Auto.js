@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.stardust.autojs.core.ui.widget.JsFrameLayout;
+import com.stardust.autojs.core.ui.widget.JsImageView;
+import com.stardust.autojs.core.ui.xml.JsImageViewAttrSetter;
 import com.stardust.autojs.core.ui.xml.XmlConverter;
 import com.stardust.util.MapEntries;
 
@@ -23,13 +25,28 @@ import java.util.Map;
 
 public class ConvertLayoutInflater implements JsLayoutInflater {
 
+    private DynamicLayoutInflater mDynamicLayoutInflater;
+
+    public ConvertLayoutInflater() {
+
+    }
+
+    private void ensureInflater(Context context) {
+        if (mDynamicLayoutInflater != null) {
+            return;
+        }
+        mDynamicLayoutInflater = new DynamicLayoutInflater(context);
+        mDynamicLayoutInflater.registerViewAttrSetter(JsImageView.class.getName(),
+                new JsImageViewAttrSetter<>());
+    }
 
     @Override
     public View inflate(Context context, String xml) {
+        ensureInflater(context);
         try {
             String androidLayoutXml = XmlConverter.convertToAndroidLayout(xml);
             JsFrameLayout root = new JsFrameLayout(context);
-            new DynamicLayoutInflater(context).inflate(androidLayoutXml, root);
+            mDynamicLayoutInflater.inflate(androidLayoutXml, root);
             return root;
         } catch (Exception e) {
             throw new RuntimeException(e);

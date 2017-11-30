@@ -18,7 +18,7 @@ module.exports = function(__runtime__, scope){
     ui.id = function(id){
         if(!ui.view)
             return null;
-        var v = ui.view.getChildAt(0).id(id);
+        var v = ui.findViewByStringId(ui.view.getChildAt(0), id);
         if(v){
             v = decorate(v);
         }

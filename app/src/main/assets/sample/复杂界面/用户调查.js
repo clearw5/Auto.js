@@ -51,4 +51,4 @@ ui.layout(
     </vertical>
 )
 
-ui.webview.getWebView().loadUrl("http://www.autojs.org");
+ui.webview.loadUrl("http://www.autojs.org");

@@ -135,7 +135,6 @@ dependencies {
     compile('com.afollestad.material-dialogs:commons:0.9.2.3', {
         exclude group: 'com.android.support'
     })
-    compile 'com.makeramen:roundedimageview:2.3.0'
     compile 'com.rengwuxian.materialedittext:library:2.0.3'
     compile 'org.msgpack:msgpack-core:0.8.11'
     compile project(':automator')
