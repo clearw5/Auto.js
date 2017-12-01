@@ -49,7 +49,7 @@ public interface AttributeHandler {
             if (!attr.getNodeName().equals("style")) {
                 layoutXml.append("android:");
             }
-            layoutXml.append(mapAttrName(nodeName, attr.getLocalName()))
+            layoutXml.append(mapAttrName(nodeName, attr.getNodeName()))
                     .append("=\"").append(mapAttrValue(nodeName, attr.getNodeName(), attr.getNodeValue())).append("\"\n");
             return true;
         }

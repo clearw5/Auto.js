@@ -25,7 +25,6 @@ import com.stardust.autojs.runtime.exception.ScriptEnvironmentException;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.core.accessibility.SimpleActionAutomator;
-import com.stardust.concurrent.VolatileBox;
 import com.stardust.autojs.runtime.api.UI;
 import com.stardust.concurrent.VolatileDispose;
 import com.stardust.pio.UncheckedIOException;
@@ -38,8 +37,6 @@ import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 
 import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -174,7 +171,7 @@ public class ScriptRuntime {
             images = new Images(context, this, builder.mScreenCaptureRequester);
         }
         engines = new Engines(builder.mEngineService);
-        dialogs = new Dialogs(app, mUiHandler);
+        dialogs = new Dialogs(app, mUiHandler, bridges);
     }
 
     public void init() {
@@ -217,23 +214,16 @@ public class ScriptRuntime {
     }
 
     public void setClip(final String text) {
-        final Object lock = new Object();
-        mUiHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                ClipboardUtil.setClip(mUiHandler.getContext(), text);
-                synchronized (lock) {
-                    lock.notify();
-                }
-            }
-        });
-        synchronized (lock) {
-            try {
-                lock.wait();
-            } catch (InterruptedException e) {
-                throw new ScriptInterruptedException();
-            }
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            ClipboardUtil.setClip(mUiHandler.getContext(), text);
+            return;
         }
+        VolatileDispose<Object> dispose = new VolatileDispose<>();
+        mUiHandler.post(() -> {
+            ClipboardUtil.setClip(mUiHandler.getContext(), text);
+            dispose.setAndNotify(text);
+        });
+        dispose.blockedGet();
     }
 
     public String getClip() {

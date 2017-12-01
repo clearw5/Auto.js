@@ -46,8 +46,9 @@ __runtime__.bridges.setBridges({
 });
 
 var __that__ = this;
-JSON = require('__json2__.js');
-util = require('__util__.js');
+var Promise = require('promise.js');
+var JSON = require('__json2__.js');
+var util = require('__util__.js');
 
 var __asGlobal__ = function(obj, functions){
     var len = functions.length;

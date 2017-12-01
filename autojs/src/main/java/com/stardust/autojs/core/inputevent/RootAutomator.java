@@ -164,8 +164,8 @@ public class RootAutomator {
 
     public void touchUp(int id) throws IOException {
         sendEvent(EV_ABS, ABS_MT_TRACKING_ID, id);
-       // sendEvent(EV_KEY, BTN_TOUCH, 0x00000000);
-       // sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000000);
+        sendEvent(EV_KEY, BTN_TOUCH, 0x00000000);
+        sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000000);
         sendEvent(EV_SYN, SYN_REPORT, 0x00000000);
     }
 

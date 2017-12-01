@@ -8,8 +8,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 226
-        versionName "3.0.0 Alpha26"
+        versionCode 227
+        versionName "3.0.0 Alpha27"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -115,8 +115,6 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
-    //JDeferred
-    compile 'org.jdeferred:jdeferred-android-aar:1.2.6'
     //Glide
     compile('com.github.bumptech.glide:glide:4.2.0', {
         exclude group: 'com.android.support'

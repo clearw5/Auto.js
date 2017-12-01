@@ -13,7 +13,7 @@ public class ScriptBridges {
 
         Object[] NO_ARGUMENTS = new Object[0];
 
-        Object call(Object func, Object target, Object[] arg);
+        Object call(Object func, Object target, Object arg);
 
         Object toArray(Object o);
 
@@ -26,7 +26,7 @@ public class ScriptBridges {
         mBridges = bridges;
     }
 
-    public Object callFunction(Object func, Object target, Object[] args) {
+    public Object callFunction(Object func, Object target, Object args) {
         checkBridges();
         return mBridges.call(func, target, args);
     }

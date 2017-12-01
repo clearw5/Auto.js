@@ -3,8 +3,7 @@ package com.stardust.autojs.core.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.DialogInterface;
-import android.support.annotation.NonNull;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.WindowManager;
@@ -12,8 +11,13 @@ import android.view.WindowManager;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.stardust.concurrent.VolatileBox;
+import com.stardust.autojs.runtime.ScriptBridges;
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
+import com.stardust.concurrent.VolatileDispose;
+import com.stardust.util.ArrayUtils;
 import com.stardust.util.UiHandler;
+
+import org.jdeferred.impl.DeferredObject;
 
 /**
  * Created by Stardust on 2017/5/8.
@@ -48,98 +52,121 @@ public class BlockedMaterialDialog extends MaterialDialog {
 
     public static class Builder extends MaterialDialog.Builder {
 
+        private VolatileDispose<Object> mResultBox;
         private UiHandler mUiHandler;
+        private Object mCallback;
+        private ScriptBridges mScriptBridges;
+        private boolean mNotified = false;
 
-        public Builder(Context context, UiHandler uiHandler) {
+        public Builder(Context context, UiHandler uiHandler, ScriptBridges scriptBridges, Object callback) {
             super(context);
             super.theme(Theme.LIGHT);
             mUiHandler = uiHandler;
+            mScriptBridges = scriptBridges;
+            mCallback = callback;
+            if (Looper.getMainLooper() != Looper.myLooper()) {
+                mResultBox = new VolatileDispose<>();
+            }
         }
 
-        public MaterialDialog.Builder input(@Nullable CharSequence hint, @Nullable CharSequence prefill, boolean allowEmptyInput, final VolatileBox<String> result) {
-            dismissListener(result);
-            super.input(hint, prefill, allowEmptyInput, new MaterialDialog.InputCallback() {
-                @Override
-                public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                    result.set(input.toString());
-                    synchronized (result) {
-                        result.notify();
-                    }
+        public MaterialDialog.Builder input(@Nullable CharSequence hint, @Nullable CharSequence prefill, boolean allowEmptyInput) {
+            super.input(hint, prefill, allowEmptyInput, (dialog, input) -> setAndNotify(input.toString()));
+            return this;
+        }
+
+        private void setAndNotify(Object r) {
+            if (mNotified) {
+                return;
+            }
+            mNotified = true;
+            if (mCallback != null) {
+                mScriptBridges.callFunction(mCallback, null, new Object[]{r});
+            }
+            if (mResultBox != null) {
+                mResultBox.setAndNotify(r);
+            }
+        }
+
+        private void setAndNotify(int r) {
+            if (mNotified) {
+                return;
+            }
+            mNotified = true;
+            if (mCallback != null) {
+                mScriptBridges.callFunction(mCallback, null, new int[]{r});
+            }
+            if (mResultBox != null) {
+                mResultBox.setAndNotify(r);
+            }
+        }
+
+        private void setAndNotify(boolean r) {
+            if (mNotified) {
+                return;
+            }
+            mNotified = true;
+            if (mCallback != null) {
+                mScriptBridges.callFunction(mCallback, null, new boolean[]{r});
+            }
+            if (mResultBox != null) {
+                mResultBox.setAndNotify(r);
+            }
+        }
+
+        public Builder alert() {
+            dismissListener(dialog -> setAndNotify(null));
+            onAny((dialog, which) -> setAndNotify(null));
+            return this;
+        }
+
+        public Builder confirm() {
+            dismissListener(dialog -> setAndNotify(false));
+            onAny((dialog, which) -> {
+                if (which == DialogAction.POSITIVE) {
+                    setAndNotify(true);
+                } else {
+                    setAndNotify(false);
                 }
             });
             return this;
         }
 
-        public Builder confirm(final VolatileBox<Boolean> result) {
-            onAny(new SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    if (which == DialogAction.POSITIVE) {
-                        result.setAndNotify(true);
-                    } else {
-                        result.setAndNotify(false);
-                    }
-                }
+        public MaterialDialog.Builder itemsCallback() {
+            dismissListener(dialog -> setAndNotify(-1));
+            super.itemsCallback((dialog, itemView, position, text) -> setAndNotify(position));
+            return this;
+        }
+
+        public MaterialDialog.Builder itemsCallbackMultiChoice(@Nullable Integer[] selectedIndices) {
+            dismissListener(dialog -> setAndNotify(new Integer[0]));
+            super.itemsCallbackMultiChoice(selectedIndices, (dialog, which, text) -> {
+                setAndNotify(ArrayUtils.unbox(which));
+                return true;
             });
             return this;
         }
 
-        public MaterialDialog.Builder itemsCallback(final VolatileBox<Integer> result) {
-            dismissListener(result);
-            super.itemsCallback(new ListCallback() {
-                @Override
-                public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                    result.setAndNotify(position);
-                }
+        public MaterialDialog.Builder itemsCallbackSingleChoice(int selectedIndex) {
+            dismissListener(dialog -> setAndNotify(-1));
+            super.itemsCallbackSingleChoice(selectedIndex, (dialog, itemView, which, text) -> {
+                setAndNotify(which);
+                return true;
             });
             return this;
         }
 
-        public MaterialDialog.Builder itemsCallbackMultiChoice(@Nullable Integer[] selectedIndices, final VolatileBox<Integer[]> result) {
-            dismissListener(result);
-            super.itemsCallbackMultiChoice(selectedIndices, new ListCallbackMultiChoice() {
-                @Override
-                public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
-                    result.setAndNotify(which);
-                    return true;
-                }
-            });
-            return this;
-        }
 
-        public MaterialDialog.Builder itemsCallbackSingleChoice(int selectedIndex, final VolatileBox<Integer> result) {
-            dismissListener(result);
-            super.itemsCallbackSingleChoice(selectedIndex, new ListCallbackSingleChoice() {
-                @Override
-                public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-                    result.setAndNotify(which);
-                    return true;
-                }
-            });
-            return this;
-        }
-
-        public Builder dismissListener(final VolatileBox<?> result) {
-            super.dismissListener(new OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    synchronized (result) {
-                        result.notify();
-                    }
-                }
-            });
-            return this;
-        }
-
-        @Override
-        public MaterialDialog show() {
-            mUiHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Builder.super.show();
-                }
-            });
-            return null;
+        public Object showAndGet() {
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                super.show();
+            } else {
+                mUiHandler.post(Builder.super::show);
+            }
+            if (mResultBox != null) {
+                return mResultBox.blockedGetOrThrow(ScriptInterruptedException.class);
+            } else {
+                return null;
+            }
         }
 
         @Override
