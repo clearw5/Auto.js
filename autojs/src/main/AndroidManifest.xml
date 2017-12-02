@@ -3,12 +3,15 @@
           package="com.stardust.autojs"
     >
 
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+
     <application
         >
         <activity
             android:name=".execution.ScriptExecuteActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-
 
     </application>
 

@@ -13,6 +13,7 @@ import com.stardust.autojs.rhino.AndroidClassLoader;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
+import com.stardust.autojs.runtime.api.Device;
 import com.stardust.autojs.runtime.api.Engines;
 import com.stardust.autojs.runtime.api.Events;
 import com.stardust.autojs.runtime.api.Loopers;
@@ -141,6 +142,9 @@ public class ScriptRuntime {
     public Timers timers;
 
     @ScriptVariable
+    public Device device;
+
+    @ScriptVariable
     public final AccessibilityBridge accessibilityBridge;
 
     @ScriptVariable
@@ -172,6 +176,7 @@ public class ScriptRuntime {
         }
         engines = new Engines(builder.mEngineService);
         dialogs = new Dialogs(app, mUiHandler, bridges);
+        device = new Device(mUiHandler.getContext());
     }
 
     public void init() {
