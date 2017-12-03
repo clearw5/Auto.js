@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.accessibility.AccessibilityService;
 import com.stardust.util.IntentUtil;
 
 import java.io.PrintWriter;
@@ -40,7 +41,6 @@ public class CrashHandler implements UncaughtExceptionHandler {
                 return;
             String msg = App.getApp().getString(R.string.sorry_for_crash) + ex.toString();
             startErrorReportActivity(msg, throwableToString(ex));
-            System.exit(0);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }

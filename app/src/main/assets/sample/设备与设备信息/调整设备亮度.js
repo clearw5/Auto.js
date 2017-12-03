@@ -9,7 +9,7 @@ ui.layout(
 );
 
 //getBrightnessMode()返回亮度模式，1为自动亮度
-ui.auto.setChecked(device.getBrightnessMode());
+ui.auto.setChecked(device.getBrightnessMode() == 1);
 ui.auto.setOnCheckedChangeListener(function(v, checked){
     device.setBrightnessMode(checked ? 1: 0);
 });
