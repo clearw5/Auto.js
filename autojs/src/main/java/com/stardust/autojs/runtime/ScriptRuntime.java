@@ -16,6 +16,7 @@ import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.Engines;
 import com.stardust.autojs.runtime.api.Events;
 import com.stardust.autojs.runtime.api.Loopers;
+import com.stardust.autojs.runtime.api.Threads;
 import com.stardust.autojs.runtime.api.Timers;
 import com.stardust.autojs.core.accessibility.UiSelector;
 import com.stardust.autojs.runtime.api.Images;
@@ -146,6 +147,9 @@ public class ScriptRuntime {
     @ScriptVariable
     public final Engines engines;
 
+    @ScriptVariable
+    public final Threads threads;
+
     private Images images;
 
     private static WeakReference<Context> applicationContext;
@@ -172,6 +176,7 @@ public class ScriptRuntime {
         }
         engines = new Engines(builder.mEngineService);
         dialogs = new Dialogs(app, mUiHandler, bridges);
+        threads = new Threads(this);
     }
 
     public void init() {
@@ -303,6 +308,7 @@ public class ScriptRuntime {
     }
 
     public void onExit() {
+        threads.shutDownAll();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             images.releaseScreenCapturer();
         }

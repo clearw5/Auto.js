@@ -144,7 +144,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         return importerTopLevel;
     }
 
-    protected Context createContext() {
+    public Context createContext() {
         if (!ContextFactory.hasExplicitGlobal()) {
             ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mAndroidContext.getCacheDir(), "classes")));
         }

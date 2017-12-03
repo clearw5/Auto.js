@@ -17,7 +17,7 @@ module.exports = function(__runtime__, scope){
     }
 
     engines.myEngine = function(){
-        return scope.__engine__;
+        return rtEngines.myEngine();
     }
 
     engines.stopAll = rtEngines.stopAll.bind(rtEngines);

@@ -1,5 +1,6 @@
 package com.stardust.pio;
 
+import android.app.NativeActivity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Environment;
@@ -10,10 +11,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.nio.charset.Charset;
 import java.util.Locale;
 
@@ -127,6 +130,16 @@ public class PFiles {
         return read(inputStream, "utf-8");
     }
 
+    public static byte[] readBytes(InputStream is) {
+        try {
+            byte[] bytes = new byte[is.available()];
+            is.read(bytes);
+            return bytes;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
     public static boolean copyRaw(Context context, int rawId, String path) {
         InputStream is = context.getResources().openRawResource(rawId);
         return copyStream(is, path);
@@ -192,7 +205,50 @@ public class PFiles {
     public static void write(OutputStream outputStream, String text, String encoding) {
         try {
             outputStream.write(text.getBytes(encoding));
+            outputStream.close();
         } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static void append(String path, String text) {
+        try {
+            write(new FileOutputStream(path, true), text);
+        } catch (FileNotFoundException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+
+    public static void append(String path, String text, String encoding) {
+        try {
+            write(new FileOutputStream(path, true), text, encoding);
+        } catch (FileNotFoundException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static void writeBytes(OutputStream outputStream, byte[] bytes) {
+        try {
+            outputStream.write(bytes);
+            outputStream.close();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static void appendBytes(String path, byte[] bytes) {
+        try {
+            writeBytes(new FileOutputStream(path, true), bytes);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static void writeBytes(String path, byte[] bytes) {
+        try {
+            writeBytes(new FileOutputStream(path), bytes);
+        } catch (FileNotFoundException e) {
             throw new UncheckedIOException(e);
         }
     }
@@ -357,7 +413,7 @@ public class PFiles {
 
     public static String getSimplifiedPath(String path) {
         if (path.startsWith(Environment.getExternalStorageDirectory().getPath())) {
-           return path.substring(Environment.getExternalStorageDirectory().getPath().length());
+            return path.substring(Environment.getExternalStorageDirectory().getPath().length());
         }
         return path;
     }
