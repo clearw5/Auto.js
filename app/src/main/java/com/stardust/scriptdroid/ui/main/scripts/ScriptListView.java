@@ -105,6 +105,14 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
     }
 
 
+    public void setSortConfig(ScriptList.SortConfig sortConfig) {
+        mScriptList.setSortConfig(sortConfig);
+    }
+
+    public ScriptList.SortConfig getSortConfig() {
+        return mScriptList.getSortConfig();
+    }
+
     public void setStorageFileProvider(StorageFileProvider fileProvider, ScriptFile currentDirectory) {
         if (mStorageFileProvider != null)
             mStorageFileProvider.unregisterDirectoryChangeListener(this);
@@ -285,6 +293,14 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
                 });
     }
 
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (mStorageFileProvider != null)
+            mStorageFileProvider.registerDirectoryChangeListener(this);
+
+    }
 
     @Override
     protected void onDetachedFromWindow() {
@@ -495,8 +511,12 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
             }
             if (isDirCategory) {
                 mArrow.setRotation(mDirsCollapsed ? -90 : 0);
+                mSortOrder.setImageResource(mScriptList.isDirSortedAscending() ?
+                        R.drawable.ic_ascending_order : R.drawable.ic_descending_order);
             } else {
                 mArrow.setRotation(mFilesCollapsed ? -90 : 0);
+                mSortOrder.setImageResource(mScriptList.isFileSortedAscending() ?
+                        R.drawable.ic_ascending_order : R.drawable.ic_descending_order);
             }
         }
 

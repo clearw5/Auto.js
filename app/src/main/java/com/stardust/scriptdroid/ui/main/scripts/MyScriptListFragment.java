@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.ui.main.scripts;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 
@@ -13,6 +14,7 @@ import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.main.FloatingActionMenu;
 import com.stardust.scriptdroid.ui.main.QueryEvent;
 import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
+import com.stardust.scriptdroid.ui.viewmodel.ScriptList;
 import com.stardust.util.BackPressedHandler;
 
 import org.androidannotations.annotations.AfterViews;
@@ -48,10 +50,10 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
 
     @AfterViews
     void setUpViews() {
+        ScriptList.SortConfig sortConfig = ScriptList.SortConfig.from(PreferenceManager.getDefaultSharedPreferences(getContext()));
+        mScriptFileList.setSortConfig(sortConfig);
         mScriptFileList.setStorageFileProvider(StorageFileProvider.getDefault());
-        mScriptFileList.setOnScriptFileClickListener((view, file) -> {
-            Scripts.edit(file);
-        });
+        mScriptFileList.setOnScriptFileClickListener((view, file) -> Scripts.edit(file));
     }
 
     @Override
@@ -134,11 +136,18 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        mScriptFileList.getSortConfig().saveInto(PreferenceManager.getDefaultSharedPreferences(getContext()));
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         if (mFloatingActionMenu != null)
             mFloatingActionMenu.setOnFloatingActionButtonClickListener(null);
     }
+
 
     @Override
     public void onDestroy() {
