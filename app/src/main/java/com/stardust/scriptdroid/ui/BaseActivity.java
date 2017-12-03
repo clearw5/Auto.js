@@ -9,6 +9,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.SeekBar;
 
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.network.VersionService;
@@ -26,7 +27,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
  * Created by Stardust on 2017/1/23.
  */
 
-public abstract class BaseActivity extends AppCompatActivity  {
+public abstract class BaseActivity extends AppCompatActivity {
 
 
     protected static final int PERMISSION_REQUEST_CODE = 11186;
