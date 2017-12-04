@@ -14,7 +14,7 @@ function showLoginUI(){
           </linear>
           <linear>
              <text w="56" gravity="center" color="#111111" size="16">密码</text>
-             <input id="password" w="*" h="40" inputType="password"/>
+             <input id="password" w="*" h="40" password="true"/>
           </linear>
           <linear gravity="center">
              <button id="login" text="登录"/>

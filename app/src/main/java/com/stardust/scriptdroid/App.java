@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -57,6 +58,8 @@ public class App extends MultiDexApplication {
     }
 
     private void setUpStaticsTool() {
+        if (BuildConfig.DEBUG)
+            return;
         new FlurryAgent.Builder()
                 .withLogEnabled(BuildConfig.DEBUG)
                 .build(this, "D42MH48ZN4PJC5TKNYZD");
@@ -68,8 +71,8 @@ public class App extends MultiDexApplication {
             return;
         }
         LeakCanary.install(this);
-        if (!BuildConfig.DEBUG)
-            Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
+        //if (!BuildConfig.DEBUG)
+        Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
     }
 
     private void init() {

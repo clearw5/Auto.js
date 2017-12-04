@@ -313,20 +313,25 @@ public class ScriptRuntime {
     }
 
     public void onExit() {
-        threads.shutDownAll();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            images.releaseScreenCapturer();
-        }
-        if (mRootShell != null) {
-            mRootShell.exitAndWaitFor();
-        }
-        mRootShell = null;
-        mShellSupplier = null;
-        if (events != null) {
-            events.recycle();
-        }
-        if (loopers != null) {
-            loopers.quitAll();
+        try {
+            threads.shutDownAll();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                images.releaseScreenCapturer();
+            }
+
+            if (events != null) {
+                events.recycle();
+            }
+            if (loopers != null) {
+                loopers.quitAll();
+            }
+            if (mRootShell != null) {
+                mRootShell.exitAndWaitFor();
+            }
+            mRootShell = null;
+            mShellSupplier = null;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
