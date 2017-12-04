@@ -34,12 +34,14 @@
 <li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
 <li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
 <li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
-<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
 <li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
 <li><a class="nav-http" href="http.html">Http - HTTP</a></li>
 <li><a class="nav-app" href="app.html">App - 应用</a></li>
 <li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
 <li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
 <li><a class="nav-work-with-java" href="work-with-java.html">Work with Java - 调用Java API</a></li>
 </ul>
 <div class="line"></div>
@@ -234,14 +236,14 @@ exports.puts = util.deprecate(function() {
 <p>When called, <code>util.deprecate()</code> will return a function that will emit a
 <code>DeprecationWarning</code> using the <code>process.on(&#39;warning&#39;)</code> event. By default,
 this warning will be emitted and printed to <code>stderr</code> exactly once, the first
-timeFlag it is called. After the warning is emitted, the wrapped <code>function</code>
+time it is called. After the warning is emitted, the wrapped <code>function</code>
 is called.</p>
 <p>If either the <code>--no-deprecation</code> or <code>--no-warnings</code> command line flags are
 used, or if the <code>process.noDeprecation</code> property is set to <code>true</code> <em>prior</em> to
 the first deprecation warning, the <code>util.deprecate()</code> method does nothing.</p>
 <p>If the <code>--trace-deprecation</code> or <code>--trace-warnings</code> command line flags are set,
 or the <code>process.traceDeprecation</code> property is set to <code>true</code>, a warning and a
-stack trace are printed to <code>stderr</code> the first timeFlag the deprecated function is
+stack trace are printed to <code>stderr</code> the first time the deprecated function is
 called.</p>
 <p>If the <code>--throw-deprecation</code> command line flag is set, or the
 <code>process.throwDeprecation</code> property is set to <code>true</code>, then an exception will be
@@ -447,7 +449,7 @@ via the <code>util.inspect.styles</code> and <code>util.inspect.colors</code> pr
 <li><code>regexp</code> - <code>red</code></li>
 <li><code>null</code> - <code>bold</code></li>
 <li><code>undefined</code> - <code>grey</code></li>
-<li><code>special</code> - <code>cyan</code> (only applied to functions at this timeFlag)</li>
+<li><code>special</code> - <code>cyan</code> (only applied to functions at this time)</li>
 <li><code>name</code> - (no styling)</li>
 </ul>
 <p>The predefined color codes are: <code>white</code>, <code>grey</code>, <code>black</code>, <code>blue</code>, <code>cyan</code>,

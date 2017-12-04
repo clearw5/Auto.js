@@ -34,12 +34,14 @@
 <li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
 <li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
 <li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
-<li><a class="nav-files active" href="files.html">Files - 文件系统</a></li>
 <li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-files active" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
 <li><a class="nav-http" href="http.html">Http - HTTP</a></li>
 <li><a class="nav-app" href="app.html">App - 应用</a></li>
 <li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
 <li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
 <li><a class="nav-work-with-java" href="work-with-java.html">Work with Java - 调用Java API</a></li>
 </ul>
 <div class="line"></div>
@@ -76,7 +78,11 @@
 <li><span class="stability_undefined"><a href="#files_files_exists_path">files.exists(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#files_files_ensuredir_path">files.ensureDir(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#files_files_read_path_encoding_utf_8">files.read(path[, encoding = &quot;utf-8&quot;])</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_readbytes_path">files.readBytes(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#files_files_write_path_text_encoding_utf_8">files.write(path, text[, encoding = &quot;utf-8&quot;])</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_writebytes_path_bytes">files.writeBytes(path, bytes)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_append_path_text_encoding_utf_8">files.append(path, text[, encoding = &#39;utf-8&#39;])</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_appendbytes_path_text_encoding_utf_8">files.appendBytes(path, text[, encoding = &#39;utf-8&#39;])</a></span></li>
 <li><span class="stability_undefined"><a href="#files_files_copy_frompath_topath">files.copy(fromPath, toPath)</a></span></li>
 <li><span class="stability_undefined"><a href="#files_files_move_frompath_topath">files.move(fromPath, toPath)</a></span></li>
 <li><span class="stability_undefined"><a href="#files_files_rename_path_newname">files.rename(path, newName)</a></span></li>
@@ -161,7 +167,13 @@
 <li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
 <li><code>encoding</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 字符编码</li>
 </ul>
-</div><p>读取文件path的所有内容并返回。</p>
+</div><p>读取文本文件path的所有内容并返回一个字符串。</p>
+<h2>files.readBytes(path)<span><a class="mark" href="#files_files_readbytes_path" id="files_files_readbytes_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+</ul>
+</div><p>读取文件path的所有内容并返回一个字节数组。</p>
+<p>注意，该数组是Java的数组，不具有JavaScript数组的函数。</p>
 <h2>files.write(path, text[, encoding = &quot;utf-8&quot;])<span><a class="mark" href="#files_files_write_path_text_encoding_utf_8" id="files_files_write_path_text_encoding_utf_8">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
@@ -169,6 +181,25 @@
 <li><code>encoding</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 字符编码</li>
 </ul>
 </div><p>把text写入到文件path中。如果文件存在则覆盖，不存在则创建。</p>
+<h2>files.writeBytes(path, bytes)<span><a class="mark" href="#files_files_writebytes_path_bytes" id="files_files_writebytes_path_bytes">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li><code>bytes</code> <span class="type">&lt;byte[]&gt;</span> 字节数组，要写入的二进制数据</li>
+</ul>
+</div><p>把bytes写入到文件path中。如果文件存在则覆盖，不存在则创建。</p>
+<h2>files.append(path, text[, encoding = &#39;utf-8&#39;])<span><a class="mark" href="#files_files_append_path_text_encoding_utf_8" id="files_files_append_path_text_encoding_utf_8">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li><code>text</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要写入的文本内容</li>
+<li><code>encoding</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 字符编码</li>
+</ul>
+</div><p>把text追加到文件path的末尾。如果文件不存在则创建。</p>
+<h2>files.appendBytes(path, text[, encoding = &#39;utf-8&#39;])<span><a class="mark" href="#files_files_appendbytes_path_text_encoding_utf_8" id="files_files_appendbytes_path_text_encoding_utf_8">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li><code>bytes</code> <span class="type">&lt;byte[]&gt;</span> 字节数组，要写入的二进制数据</li>
+</ul>
+</div><p>把bytes追加到文件path的末尾。如果文件不存在则创建。</p>
 <h2>files.copy(fromPath, toPath)<span><a class="mark" href="#files_files_copy_frompath_topath" id="files_files_copy_frompath_topath">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>fromPath</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要复制的原文件路径</li>
