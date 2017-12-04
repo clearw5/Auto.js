@@ -332,4 +332,5 @@
     <string name="text_weekly_task_should_check_day_of_week">至少选择一周中的一天</string>
     <string name="no_apk_builder_plugin">没有安装打包插件，是否立即下载？</string>
     <string name="text_apk_builder_plugin_unavailable">打包插件不可用</string>
+    <string name="text_detail">详情</string>
 </resources>

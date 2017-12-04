@@ -2,6 +2,7 @@ package com.stardust.auojs.inrt;
 
 import android.Manifest;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,8 +30,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupView();
-        checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
-        runScript();
+        checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     private void setupView() {
@@ -41,18 +41,20 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void runScript() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String js = PFiles.read(getAssets().open("script.js"));
-                    StringScriptSource source = new StringScriptSource("main", js);
-                    AutoJs.getInstance().getScriptEngineService().execute(source);
-                } catch (Exception e) {
-                    AutoJs.getInstance().getGlobalConsole().log(e);
-                }
+        new Thread(() -> {
+            try {
+                String js = PFiles.read(getAssets().open("script.js"));
+                StringScriptSource source = new StringScriptSource("main", js);
+                AutoJs.getInstance().getScriptEngineService().execute(source);
+            } catch (Exception e) {
+                AutoJs.getInstance().getGlobalConsole().log(e);
             }
         }).start();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        runScript();
     }
 
     protected void checkPermission(String... permissions) {
@@ -60,12 +62,12 @@ public class MainActivity extends AppCompatActivity {
             String[] requestPermissions = getRequestPermissions(permissions);
             if (requestPermissions.length > 0) {
                 requestPermissions(requestPermissions, PERMISSION_REQUEST_CODE);
+                return;
             }
-        } else {
-            int[] grantResults = new int[permissions.length];
-            Arrays.fill(grantResults, PERMISSION_GRANTED);
-            onRequestPermissionsResult(PERMISSION_REQUEST_CODE, permissions, grantResults);
         }
+        int[] grantResults = new int[permissions.length];
+        Arrays.fill(grantResults, PERMISSION_GRANTED);
+        onRequestPermissionsResult(PERMISSION_REQUEST_CODE, permissions, grantResults);
     }
 
 

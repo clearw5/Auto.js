@@ -110,7 +110,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private String readInitScript() {
         try {
-            return PFiles.read(mAndroidContext.getAssets().open("javascript_engine_init.js"));
+            return PFiles.read(mAndroidContext.getAssets().open("init.js"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -164,8 +164,8 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     private class WrapFactory extends org.mozilla.javascript.WrapFactory {
         @Override
         public Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType) {
-            if (staticType == String.class) {
-                return getRuntime().bridges.toString(obj);
+            if (obj instanceof CharSequence) {
+                return getRuntime().bridges.toString(obj.toString());
             }
             if (staticType == UiObjectCollection.class) {
                 return getRuntime().bridges.toArray(obj);

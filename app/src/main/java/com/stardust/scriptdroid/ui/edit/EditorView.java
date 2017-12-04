@@ -27,6 +27,7 @@ import com.stardust.scriptdroid.ui.edit.completion.CodeCompletions;
 import com.stardust.scriptdroid.ui.edit.completion.CodeCompletionBar;
 import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhancedBarColors;
 import com.stardust.scriptdroid.ui.edit.completion.Symbols;
+import com.stardust.scriptdroid.ui.log.LogActivity_;
 import com.stardust.scriptdroid.ui.widget.EWebView;
 import com.stardust.scriptdroid.ui.widget.ToolbarMenuItem;
 import com.stardust.widget.ViewSwitcher;
@@ -106,7 +107,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
                     mEditor.jumpTo(line - 1, col);
                 }
                 if (msg != null) {
-                    Snackbar.make(EditorView.this, getResources().getString(R.string.text_error) + ": " + msg, Snackbar.LENGTH_LONG).show();
+                    showErrorMessage(msg);
                 }
             }
         }
@@ -151,7 +152,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         if (!intent.getBooleanExtra(EXTRA_RUN_ENABLED, true)) {
             findViewById(R.id.run).setVisibility(GONE);
         }
-        if(mReadOnly){
+        if (mReadOnly) {
             mEditor.setReadOnly(true);
         }
 
@@ -355,6 +356,13 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     public void replaceAll(String keywords, String replacement, boolean usingRegex) {
         mEditor.replaceAll(keywords, replacement, usingRegex);
+    }
+
+
+    private void showErrorMessage(String msg) {
+        Snackbar.make(EditorView.this, getResources().getString(R.string.text_error) + ": " + msg, Snackbar.LENGTH_LONG)
+                .setAction(R.string.text_detail, v -> LogActivity_.intent(getContext()).start())
+                .show();
     }
 
     @Override

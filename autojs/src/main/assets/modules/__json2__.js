@@ -230,7 +230,7 @@ JSON = {};
         var partial;
         var value = holder[key];
 
-        if(value.getClass){
+        if(value && value.getClass){
             return gson.toJson(value);
         }
 
