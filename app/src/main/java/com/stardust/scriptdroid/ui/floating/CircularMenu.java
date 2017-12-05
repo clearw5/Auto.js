@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -64,7 +65,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
     public static final int STATE_NORMAL = 0;
     public static final int STATE_RECORDING = 1;
 
-    private static final int IC_ACTION_VIEW = R.drawable.ic_circular_menu;
+    private static final int IC_ACTION_VIEW = R.drawable.ic_android_eat_js;
 
     CircularActionMenuFloatingWindow mWindow;
     private int mState;
@@ -112,7 +113,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
                 return menu;
             }
         });
-        mWindow.setKeepToSideHiddenWidthRadio(0.3f);
+        mWindow.setKeepToSideHiddenWidthRadio(0.25f);
         FloatyService.addWindow(mWindow);
     }
 
