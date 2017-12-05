@@ -51,6 +51,8 @@ dependencies {
     compile 'com.github.hyb1996:EnhancedFloaty:0.17'
     compile 'com.github.hyb1996:OpenCvLib:2.4.13.4-imgproc'
     compile 'com.makeramen:roundedimageview:2.3.0'
+    // OkHttp
+    compile 'com.squareup.okhttp3:okhttp:3.9.0'
     //JDeferred
     compile 'org.jdeferred:jdeferred-android-aar:1.2.6'
 

@@ -31,7 +31,12 @@ import com.stardust.util.UiHandler;
 import org.autojs.dynamiclayoutinflater.ImageLoader;
 import org.autojs.dynamiclayoutinflater.util.Drawables;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
+
+import okhttp3.Headers;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -71,8 +76,8 @@ public class App extends MultiDexApplication {
             return;
         }
         LeakCanary.install(this);
-        //if (!BuildConfig.DEBUG)
-        Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
+        if (!BuildConfig.DEBUG)
+            Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
     }
 
     private void init() {

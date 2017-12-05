@@ -16,7 +16,7 @@ import static com.stardust.pio.PFiles.DEFAULT_BUFFER_SIZE;
  * Created by Stardust on 2017/4/1.
  */
 
-public class PWritableTextFile implements Closeable {
+public class PWritableTextFile implements Closeable, PFileInterface {
 
     public static PWritableTextFile open(String path, String encoding, int bufferSize) {
         return new PWritableTextFile(path, encoding, bufferSize, false);
@@ -35,8 +35,10 @@ public class PWritableTextFile implements Closeable {
     }
 
     private BufferedWriter mBufferedWriter;
+    private String mPath;
 
     public PWritableTextFile(String path, String encoding, int bufferingSize, boolean append) {
+        mPath = path;
         if (bufferingSize <= 0) {
             bufferingSize = DEFAULT_BUFFER_SIZE;
         }
@@ -116,4 +118,8 @@ public class PWritableTextFile implements Closeable {
     }
 
 
+    @Override
+    public String getPath() {
+        return mPath;
+    }
 }

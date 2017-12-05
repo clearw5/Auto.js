@@ -31,7 +31,7 @@ public class PFiles {
     static final int DEFAULT_BUFFER_SIZE = 8192;
     static final String DEFAULT_ENCODING = Charset.defaultCharset().name();
 
-    public static Object open(String path, String mode, String encoding, int bufferSize) {
+    public static PFileInterface open(String path, String mode, String encoding, int bufferSize) {
         switch (mode) {
             case "r":
                 return new PReadableTextFile(path, encoding, bufferSize);
