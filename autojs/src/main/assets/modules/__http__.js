@@ -163,6 +163,7 @@ module.exports = function(runtime, scope){
         r.body = {};
         var body = res.body();
         r.body.string = body.string.bind(body);
+        r.body.bytes = body.bytes.bind(body);
         r.body.json = function(){
             return JSON.parse(r.body.string());
         }

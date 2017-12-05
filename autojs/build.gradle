@@ -48,7 +48,7 @@ dependencies {
     })
     compile 'com.android.support:design:25.4.0'
     compile 'com.android.support:appcompat-v7:25.4.0'
-    compile 'com.github.hyb1996:EnhancedFloaty:0.17'
+    compile 'com.github.hyb1996:EnhancedFloaty:0.21'
     compile 'com.github.hyb1996:OpenCvLib:2.4.13.4-imgproc'
     compile 'com.makeramen:roundedimageview:2.3.0'
     // OkHttp

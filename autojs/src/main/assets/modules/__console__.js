@@ -39,7 +39,7 @@ module.exports = function(__runtime__, scope){
     }
 
     console.show = rtConsole.show.bind(rtConsole);
-    console.hide = rtConsole.show.bind(rtConsole);
+    console.hide = rtConsole.hide.bind(rtConsole);
     console.clear = rtConsole.clear.bind(rtConsole);
     console.setTitle = rtConsole.setTitle.bind(rtConsole);
 

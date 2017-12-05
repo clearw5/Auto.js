@@ -64,6 +64,8 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
     public static final int STATE_NORMAL = 0;
     public static final int STATE_RECORDING = 1;
 
+    private static final int IC_ACTION_VIEW = R.drawable.ic_circular_menu;
+
     CircularActionMenuFloatingWindow mWindow;
     private int mState;
     private ImageView mActionViewIcon;
@@ -110,7 +112,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
                 return menu;
             }
         });
-        mWindow.setKeepToSideHiddenWidthRadio(0.2f);
+        mWindow.setKeepToSideHiddenWidthRadio(0.3f);
         FloatyService.addWindow(mWindow);
     }
 
@@ -142,7 +144,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
         int previousState = mState;
         mState = state;
         mActionViewIcon.setImageResource(mState == STATE_RECORDING ? R.drawable.ic_ali_record :
-                R.drawable.autojs_logo);
+                IC_ACTION_VIEW);
         mActionViewIcon.setBackgroundResource(mState == STATE_RECORDING ? R.drawable.circle_red :
                 0);
         if (state == STATE_RECORDING) {

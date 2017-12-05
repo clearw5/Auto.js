@@ -106,7 +106,6 @@
     <string name="key_use_volume_control_running">key_use_volume_control_running</string>
     <string name="text_use_volume_to_stop_running">音量上键停止所有脚本</string>
     <string name="text_need_to_enable_accessibility_service">需要启用无障碍服务</string>
-    <string name="text_task_manage">任务管理</string>
     <string name="text_name_should_not_be_empty">名称不能为空</string>
     <string name="text_import_fail">导入失败</string>
     <string name="text_no_brower">没有浏览器耶o(╯□╰)o快去安装一个吧</string>
@@ -196,7 +195,6 @@
     <string name="text_others">其他</string>
     <string name="text_import">导入</string>
     <string name="text_click_too_frequently">您的操作太快啦ヽ(#`Д´)ﾉ</string>
-    <string name="text_connecting">连接中…</string>
     <string name="text_username">用户名</string>
     <string name="text_password">密码</string>
     <string name="text_login">登录</string>
@@ -281,17 +279,11 @@
     <string name="text_reset_fail">重置失败</string>
     <string name="text_reset_succeed">重置成功</string>
     <string name="text_cannot_read_file" formatted="true">无法读取文件: %s</string>
-    <string name="text_connected">已连接</string>
     <string name="text_service">服务</string>
     <string name="text_notification_permission">通知权限</string>
 
 
-
-    <string name="title_activity_log">LogActivity</string>
     <string name="text_open_main_activity">打开主界面</string>
-    <string name="text_select_all">全选</string>
-    <string name="text_cut">剪切</string>
-    <string name="text_copy">复制</string>
     <string name="text_generate_code">生成代码</string>
     <string name="text_action">动作</string>
     <string name="text_click">点击(click)</string>

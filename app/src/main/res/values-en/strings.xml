@@ -113,7 +113,6 @@
     <string name="text_release_notes">Release Notes</string>
 
     <string name="text_update">Update</string>
-    <string name="text_task_manage">Tasks</string>
     <string name="text_processing">Processing</string>
     <string name="text_pre_execute_script">Pre-execute script</string>
     <string name="text_check_for_updates">Check for updates</string>

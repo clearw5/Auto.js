@@ -26,7 +26,6 @@ public class ExampleUnitTest {
 
     @Test
     public void test() throws IOException {
-        MimeTypeMap.getSingleton().getMimeTypeFromExtension();
         File file = new File("C:\\Users\\Stardust\\Desktop\\1.txt");
         System.out.println(PFiles.read(file));
         String url = "http://posttestserver.com/post.php?dir=example";
