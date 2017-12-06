@@ -2,6 +2,7 @@ package com.stardust.autojs.core.console;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.view.WindowManager;
 
@@ -13,6 +14,7 @@ import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.util.UiHandler;
+import com.stardust.util.ViewUtil;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -60,6 +62,7 @@ public class StardustConsole extends AbstractConsole {
         void onLogClear();
     }
 
+    private final Object WINDOW_SHOW_LOCK = new Object();
     private final Console mGlobalConsole;
     private final ArrayList<Log> mLogs = new ArrayList<>();
     private AtomicInteger mIdCounter = new AtomicInteger(0);
@@ -70,6 +73,9 @@ public class StardustConsole extends AbstractConsole {
     private BlockingQueue<String> mInput = new ArrayBlockingQueue<>(1);
     private WeakReference<ConsoleView> mConsoleView;
     private volatile boolean mShown = false;
+    private int mWidth;
+    private int mHeight;
+    private int mX, mY;
 
     public StardustConsole(UiHandler uiHandler) {
         this(uiHandler, null);
@@ -79,11 +85,19 @@ public class StardustConsole extends AbstractConsole {
         mUiHandler = uiHandler;
         mConsoleFloaty = new ConsoleFloaty(this);
         mGlobalConsole = globalConsole;
+        mWidth = mConsoleFloaty.getInitialWidth();
+        mHeight = mConsoleFloaty.getInitialHeight();
         mFloatyWindow = new ResizableExpandableFloatyWindow(mConsoleFloaty) {
             @Override
             public void onCreate(FloatyService service, WindowManager manager) {
                 super.onCreate(service, manager);
                 expand();
+                mFloatyWindow.getWindowBridge().updateMeasure(mWidth, mHeight);
+                mFloatyWindow.getWindowBridge().updatePosition(mX, mY);
+                synchronized (WINDOW_SHOW_LOCK) {
+                    mShown = true;
+                    WINDOW_SHOW_LOCK.notifyAll();
+                }
             }
         };
     }
@@ -142,6 +156,9 @@ public class StardustConsole extends AbstractConsole {
 
     @Override
     public void show() {
+        if (mShown) {
+            return;
+        }
         if (!SettingsCompat.canDrawOverlays(mUiHandler.getContext())) {
             SettingsCompat.manageDrawOverlays(mUiHandler.getContext());
             mUiHandler.toast(R.string.text_no_floating_window_permission);
@@ -157,7 +174,16 @@ public class StardustConsole extends AbstractConsole {
                 mUiHandler.toast(R.string.text_no_floating_window_permission);
             }
         });
-        mShown = true;
+        synchronized (WINDOW_SHOW_LOCK) {
+            if (mShown) {
+                return;
+            }
+            try {
+                WINDOW_SHOW_LOCK.wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private void startFloatyService() {
@@ -167,12 +193,42 @@ public class StardustConsole extends AbstractConsole {
 
     @Override
     public void hide() {
-        try {
-            mFloatyWindow.close();
-        } catch (IllegalArgumentException ignored) {
+        mUiHandler.post(() -> {
+            synchronized (WINDOW_SHOW_LOCK) {
+                if (!mShown)
+                    return;
+                try {
+                    mFloatyWindow.close();
+                } catch (IllegalArgumentException ignored) {
 
+                }
+                mShown = false;
+            }
+        });
+    }
+
+    public void setSize(int w, int h) {
+        mWidth = w;
+        mHeight = h;
+        if (mShown) {
+            mUiHandler.post(() -> {
+                if (mShown) {
+                    ViewUtil.setViewMeasure(mConsoleFloaty.getExpandedView(), w, h);
+                    mFloatyWindow.getWindowBridge().updateMeasure(w, h);
+                }
+            });
         }
-        mShown = false;
+    }
+
+    public void setPosition(int x, int y) {
+        mX = x;
+        mY = y;
+        if (mShown) {
+            mUiHandler.post(() -> {
+                if (mShown)
+                    mFloatyWindow.getWindowBridge().updatePosition(x, y);
+            });
+        }
     }
 
     @ScriptInterface
