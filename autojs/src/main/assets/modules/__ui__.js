@@ -26,7 +26,7 @@ module.exports = function(__runtime__, scope){
     }
 
     ui.run = function(action){
-        activity.runOnUiThread(action);
+        __runtime__.uiHandler.post(action);
     }
 
     ui.nonUi = function(action){

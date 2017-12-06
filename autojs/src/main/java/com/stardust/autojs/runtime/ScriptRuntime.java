@@ -158,11 +158,13 @@ public class ScriptRuntime {
     @ScriptVariable
     public final Floaty floaty;
 
+    @ScriptVariable
+    public UiHandler uiHandler;
+
     private Images images;
 
     private static WeakReference<Context> applicationContext;
     private Map<String, Object> mProperties = new ConcurrentHashMap<>();
-    private UiHandler mUiHandler;
     private AbstractShell mRootShell;
     private Supplier<AbstractShell> mShellSupplier;
     private ScreenMetrics mScreenMetrics = new ScreenMetrics();
@@ -170,23 +172,23 @@ public class ScriptRuntime {
 
     protected ScriptRuntime(Builder builder) {
         app = builder.mAppUtils;
-        mUiHandler = builder.mUiHandler;
+        uiHandler = builder.mUiHandler;
         console = builder.mConsole;
         accessibilityBridge = builder.mAccessibilityBridge;
         mShellSupplier = builder.mShellSupplier;
-        ui = new UI(mUiHandler.getContext());
+        ui = new UI(uiHandler.getContext());
         this.automator = new SimpleActionAutomator(accessibilityBridge, this);
         automator.setScreenMetrics(mScreenMetrics);
         this.info = accessibilityBridge.getInfoProvider();
-        Context context = mUiHandler.getContext();
+        Context context = uiHandler.getContext();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             images = new Images(context, this, builder.mScreenCaptureRequester);
         }
         engines = new Engines(builder.mEngineService);
-        dialogs = new Dialogs(app, mUiHandler, bridges);
+        dialogs = new Dialogs(app, uiHandler, bridges);
         threads = new Threads(this);
-        device = new Device(mUiHandler.getContext());
-        floaty = new Floaty(mUiHandler, ui);
+        device = new Device(uiHandler.getContext());
+        floaty = new Floaty(uiHandler, ui);
     }
 
     public void init() {
@@ -194,7 +196,7 @@ public class ScriptRuntime {
             throw new IllegalStateException("already initialized");
         timers = new Timers(bridges);
         loopers = new Loopers(this);
-        events = new Events(mUiHandler.getContext(), accessibilityBridge, bridges, loopers);
+        events = new Events(uiHandler.getContext(), accessibilityBridge, bridges, loopers);
     }
 
     public static void setApplicationContext(Context context) {
@@ -209,7 +211,7 @@ public class ScriptRuntime {
     }
 
     public UiHandler getUiHandler() {
-        return mUiHandler;
+        return uiHandler;
     }
 
     public AccessibilityBridge getAccessibilityBridge() {
@@ -217,7 +219,7 @@ public class ScriptRuntime {
     }
 
     public void toast(final String text) {
-        mUiHandler.toast(text);
+        uiHandler.toast(text);
     }
 
     public void sleep(long millis) {
@@ -230,12 +232,12 @@ public class ScriptRuntime {
 
     public void setClip(final String text) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
-            ClipboardUtil.setClip(mUiHandler.getContext(), text);
+            ClipboardUtil.setClip(uiHandler.getContext(), text);
             return;
         }
         VolatileDispose<Object> dispose = new VolatileDispose<>();
-        mUiHandler.post(() -> {
-            ClipboardUtil.setClip(mUiHandler.getContext(), text);
+        uiHandler.post(() -> {
+            ClipboardUtil.setClip(uiHandler.getContext(), text);
             dispose.setAndNotify(text);
         });
         dispose.blockedGet();
@@ -243,13 +245,13 @@ public class ScriptRuntime {
 
     public String getClip() {
         if (Looper.myLooper() == Looper.getMainLooper()) {
-            return ClipboardUtil.getClipOrEmpty(mUiHandler.getContext()).toString();
+            return ClipboardUtil.getClipOrEmpty(uiHandler.getContext()).toString();
         }
         final VolatileDispose<String> clip = new VolatileDispose<>();
-        mUiHandler.post(new Runnable() {
+        uiHandler.post(new Runnable() {
             @Override
             public void run() {
-                clip.setAndNotify(ClipboardUtil.getClipOrEmpty(mUiHandler.getContext()).toString());
+                clip.setAndNotify(ClipboardUtil.getClipOrEmpty(uiHandler.getContext()).toString());
             }
         });
         return clip.blockedGetOrThrow(ScriptInterruptedException.class);
@@ -282,7 +284,7 @@ public class ScriptRuntime {
 
     public void requiresApi(int i) {
         if (Build.VERSION.SDK_INT < i) {
-            throw new ScriptException(mUiHandler.getContext().getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
+            throw new ScriptException(uiHandler.getContext().getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
         }
     }
 

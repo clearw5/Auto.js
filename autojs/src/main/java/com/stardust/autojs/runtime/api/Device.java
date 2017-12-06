@@ -2,6 +2,7 @@ package com.stardust.autojs.runtime.api;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.content.Context;
 import android.content.Intent;
@@ -177,6 +178,22 @@ public class Device {
         float battery = ((float) level / scale) * 100.0f;
         return Math.round(battery * 10) / 10;
     }
+
+    public long getTotalMem(){
+        ActivityManager activityManager = getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo info = new ActivityManager.MemoryInfo();
+        activityManager.getMemoryInfo(info);
+        return info.totalMem;
+    }
+
+    public long getAvailMem(){
+        ActivityManager activityManager = getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo info = new ActivityManager.MemoryInfo();
+        activityManager.getMemoryInfo(info);
+        return info.availMem;
+    }
+
+
 
     public boolean isCharging() {
         Intent intent = mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));

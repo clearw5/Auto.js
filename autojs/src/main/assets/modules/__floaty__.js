@@ -9,6 +9,8 @@ module.exports = function(__runtime__, scope){
         return wrap(__runtime__.floaty.window(layout));
     }
 
+    floaty.__view_cache__ = {};
+
     function wrap(window){
         var proxyObject = new com.stardust.autojs.rhino.ProxyJavaObject(scope, window, window.getClass());
         proxyObject.__proxy__ = {
@@ -18,12 +20,16 @@ module.exports = function(__runtime__, scope){
             get: function(name) {
                var value = window[name];
                if(typeof(value) == 'undefined'){
-                   value = window.getView(name);
+                   value = floaty.__view_cache__[name];
+                   if(!value){
+                        value = window.getView(name);
+                        if(value){
+                            value = ui.__decorate__(value);
+                            floaty.__view_cache__[name] = value;
+                        }
+                   }
                    if(!value){
                       value = undefined;
-                   }else{
-                      value = scope.ui.__decorate__(value);
-
                    }
                }
                return value;

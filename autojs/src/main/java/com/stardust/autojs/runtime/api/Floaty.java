@@ -11,8 +11,11 @@ import com.stardust.autojs.core.floaty.FloatyWindow;
 import com.stardust.autojs.core.ui.JsLayoutInflater;
 import com.stardust.autojs.core.ui.JsViewHelper;
 import com.stardust.autojs.rhino.ProxyObject;
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
+import com.stardust.concurrent.VolatileDispose;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.util.UiHandler;
+import com.stardust.util.ViewUtil;
 
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.Scriptable;
@@ -53,7 +56,13 @@ public class Floaty {
     }
 
     private View inflate(String xml) {
-        return mJsLayoutInflater.inflate(mContext, xml);
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            return mJsLayoutInflater.inflate(mContext, xml);
+        } else {
+            VolatileDispose<View> dispose = new VolatileDispose<>();
+            mUiHandler.post(() -> dispose.setAndNotify(mJsLayoutInflater.inflate(mContext, xml)));
+            return dispose.blockedGetOrThrow(ScriptInterruptedException.class);
+        }
     }
 
     public void closeAll() {
@@ -87,18 +96,9 @@ public class Floaty {
         }
 
         public View getView(String id) {
-            View v = mViewCache.get(id);
-            if (v != null) {
-                return v;
-            }
-            v = JsViewHelper.findViewByStringId(mView, id);
-            if (v != null) {
-                mViewCache.put(id, v);
-                return v;
-            } else {
-                return null;
-            }
+            return JsViewHelper.findViewByStringId(mView, id);
         }
+
         public int getX() {
             return mWindow.getWindowBridge().getX();
         }
@@ -119,7 +119,10 @@ public class Floaty {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 mWindow.getWindowBridge().updateMeasure(w, h);
             } else {
-                mUiHandler.post(() -> mWindow.getWindowBridge().updateMeasure(w, h));
+                mUiHandler.post(() -> {
+                    ViewUtil.setViewMeasure(mView, w, h);
+                    mWindow.getWindowBridge().updateMeasure(w, h);
+                });
             }
         }
 
