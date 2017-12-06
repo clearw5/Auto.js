@@ -1,5 +1,6 @@
 package com.stardust.autojs.core.accessibility;
 
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -109,6 +110,50 @@ public class UiSelector extends UiGlobalSelector {
             uiObjectCollection = find();
         }
         return uiObjectCollection;
+    }
+
+    @ScriptInterface
+    public UiObject findOne(long timeout) {
+        if (timeout == -1) {
+            return untilFindOne();
+        }
+        UiObjectCollection uiObjectCollection = find();
+        long start = SystemClock.uptimeMillis();
+        while (uiObjectCollection.empty()) {
+            if (Thread.currentThread().isInterrupted()) {
+                throw new ScriptInterruptedException();
+            }
+            if (SystemClock.uptimeMillis() - start > timeout) {
+                return null;
+            }
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                throw new ScriptInterruptedException();
+            }
+            uiObjectCollection = find();
+        }
+
+        return uiObjectCollection.get(0);
+    }
+
+    public UiObject findOnce(int index) {
+        UiObjectCollection uiObjectCollection = find();
+        while (uiObjectCollection.empty()) {
+            if (Thread.currentThread().isInterrupted()) {
+                throw new ScriptInterruptedException();
+            }
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                throw new ScriptInterruptedException();
+            }
+            uiObjectCollection = find();
+        }
+        if (index >= uiObjectCollection.size()) {
+            return null;
+        }
+        return uiObjectCollection.get(index);
     }
 
     @ScriptInterface
