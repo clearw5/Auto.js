@@ -27,7 +27,7 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.ui.common.NotAskAgainDialog;
-import com.stardust.scriptdroid.ui.doc.OnlineDocsFragment_;
+import com.stardust.scriptdroid.ui.doc.DocsFragment_;
 import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment_;
@@ -145,7 +145,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         TabLayout tabLayout = $(R.id.tab);
         mPagerAdapter = new FragmentPagerAdapterBuilder(this)
                 .add(new MyScriptListFragment_(), R.string.text_script)
-                .add(new OnlineDocsFragment_(), R.string.text_tutorial)
+                .add(new DocsFragment_(), R.string.text_tutorial)
                 .add(new CommunityFragment_(), R.string.text_community)
                 .add(new SampleListFragment_(), R.string.text_sample)
                 .add(new TaskManagerFragment_(), R.string.text_manage)

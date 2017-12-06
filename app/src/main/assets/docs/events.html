@@ -25,24 +25,27 @@
 <ul>
 <li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
 <li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
-<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
-<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的触摸模拟</a></li>
-<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的触摸模拟</a></li>
-<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
-<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
-<li><a class="nav-events active" href="events.html">Events - 事件与监听</a></li>
-<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
-<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
-<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
-<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
-<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
-<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
-<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
 <li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的触摸模拟</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
 <li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events active" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
 <li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的触摸模拟</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
 <li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
-<li><a class="nav-work-with-java" href="work-with-java.html">Work with Java - 调用Java API</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
 </ul>
 <div class="line"></div>
 
@@ -85,6 +88,7 @@
 <li><span class="stability_undefined"><a href="#events_key">事件: &#39;key&#39;</a></span></li>
 <li><span class="stability_undefined"><a href="#events_key_down">事件: &#39;key_down&#39;</a></span></li>
 <li><span class="stability_undefined"><a href="#events_key_up">事件: &#39;key_up&#39;</a></span></li>
+<li><span class="stability_undefined"><a href="#events_exit">事件: &#39;exit`</a></span></li>
 <li><span class="stability_undefined"><a href="#events_obversenotification">obverseNotification()</a></span></li>
 <li><span class="stability_undefined"><a href="#events_toast">事件: &#39;toast&#39;</a></span></li>
 <li><span class="stability_undefined"><a href="#events_notification">事件: &#39;notification&#39;</a></span></li>
@@ -261,6 +265,15 @@ events.observeKey();
 events.on(&quot;key_up&quot;, function(keyCode, event){
     //处理按键弹起事件
 });
+</code></pre><h2>事件: &#39;exit`<span><a class="mark" href="#events_exit" id="events_exit">#</a></span></h2>
+<p>当脚本正常或者异常退出时会触发该事件。事件处理中如果有异常抛出，则立即中止exit事件的处理（即使exit事件有多个处理函数）并在控制台和日志中打印该异常。</p>
+<p>一个脚本停止运行时，会关闭该脚本的所有悬浮窗，触发exit事件，之后再回收资源。如果exit事件的处理中有死循环，则后续资源无法得到及时回收。
+此时脚本会停留在任务列表，如果在任务列表中关闭，则会强制结束exit事件的处理并回收后续资源。</p>
+<pre><code>log(&quot;开始运行&quot;)
+events.on(&quot;exit&quot;, function(){
+    log(&quot;结束运行&quot;);
+});
+log(&quot;即将结束运行&quot;);
 </code></pre><h2>obverseNotification()<span><a class="mark" href="#events_obversenotification" id="events_obversenotification">#</a></span></h2>
 <p>开启通知(包括Toast)监听。</p>
 <p>通知与Toast监听依赖于无障碍服务，因此这个函数会调用<code>auto()</code>来确保无障碍服务启用。</p>
