@@ -148,16 +148,13 @@ public class StardustConsole extends AbstractConsole {
             return;
         }
         startFloatyService();
-        mUiHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FloatyService.addWindow(mFloatyWindow);
-                    // SecurityException: https://github.com/hyb1996-guest/AutoJsIssueReport/issues/4781
-                } catch (WindowManager.BadTokenException | SecurityException e) {
-                    e.printStackTrace();
-                    mUiHandler.toast(R.string.text_no_floating_window_permission);
-                }
+        mUiHandler.post(() -> {
+            try {
+                FloatyService.addWindow(mFloatyWindow);
+                // SecurityException: https://github.com/hyb1996-guest/AutoJsIssueReport/issues/4781
+            } catch (WindowManager.BadTokenException | SecurityException e) {
+                e.printStackTrace();
+                mUiHandler.toast(R.string.text_no_floating_window_permission);
             }
         });
         mShown = true;

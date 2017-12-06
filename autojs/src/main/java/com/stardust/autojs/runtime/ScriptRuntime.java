@@ -16,6 +16,7 @@ import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.Device;
 import com.stardust.autojs.runtime.api.Engines;
 import com.stardust.autojs.runtime.api.Events;
+import com.stardust.autojs.runtime.api.Floaty;
 import com.stardust.autojs.runtime.api.Loopers;
 import com.stardust.autojs.runtime.api.Threads;
 import com.stardust.autojs.runtime.api.Timers;
@@ -154,6 +155,9 @@ public class ScriptRuntime {
     @ScriptVariable
     public final Threads threads;
 
+    @ScriptVariable
+    public final Floaty floaty;
+
     private Images images;
 
     private static WeakReference<Context> applicationContext;
@@ -182,6 +186,7 @@ public class ScriptRuntime {
         dialogs = new Dialogs(app, mUiHandler, bridges);
         threads = new Threads(this);
         device = new Device(mUiHandler.getContext());
+        floaty = new Floaty(mUiHandler, ui);
     }
 
     public void init() {
@@ -313,23 +318,31 @@ public class ScriptRuntime {
     }
 
     public void onExit() {
+        //悬浮窗需要第一时间关闭以免出现恶意脚本全屏悬浮窗屏蔽屏幕并且在exit中写死循环的问题
+        ignoresException(floaty::closeAll);
         try {
-            threads.shutDownAll();
+            events.emit("exit");
+        } catch (Exception ignored) {
+            console.error("exception on exit: " + ignored);
+        }
+        ignoresException(threads::shutDownAll);
+        ignoresException(events::recycle);
+        ignoresException(loopers::quitAll);
+        ignoresException(() -> {
+            if (mRootShell != null) mRootShell.exitAndWaitFor();
+            mRootShell = null;
+            mShellSupplier = null;
+        });
+        ignoresException(() -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 images.releaseScreenCapturer();
             }
+        });
+    }
 
-            if (events != null) {
-                events.recycle();
-            }
-            if (loopers != null) {
-                loopers.quitAll();
-            }
-            if (mRootShell != null) {
-                mRootShell.exitAndWaitFor();
-            }
-            mRootShell = null;
-            mShellSupplier = null;
+    private void ignoresException(Runnable r) {
+        try {
+            r.run();
         } catch (Exception e) {
             e.printStackTrace();
         }

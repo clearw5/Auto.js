@@ -38,7 +38,6 @@ public class Loopers {
                 Looper l = Looper.myLooper();
                 if (l != null && shouldQuitLooper()) {
                     if (mLooperQuitHandler != null && mLooperQuitHandler.shouldQuit()) {
-                        mScriptRuntime.events.emit("exit");
                         l.quit();
                     }
                 }

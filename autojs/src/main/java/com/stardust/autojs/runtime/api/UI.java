@@ -21,16 +21,22 @@ public class UI extends ProxyObject {
 
     private Context mContext;
     private Map<String, Object> mProperties = new ConcurrentHashMap<>();
+    private JsLayoutInflater mJsLayoutInflater;
 
     public UI(Context context, JsLayoutInflater layoutInflater) {
         mContext = context;
         mProperties.put("layoutInflater", layoutInflater);
+        mJsLayoutInflater = layoutInflater;
     }
 
     public UI(Context context) {
         this(context, new ConvertLayoutInflater());
     }
 
+
+    public JsLayoutInflater getJsLayoutInflater() {
+        return mJsLayoutInflater;
+    }
 
     @Override
     public String getClassName() {

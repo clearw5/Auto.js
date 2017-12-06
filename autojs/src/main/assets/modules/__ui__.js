@@ -83,6 +83,8 @@ module.exports = function(__runtime__, scope){
         return view;
     }
 
+    ui.__decorate__ = decorate;
+
     var proxy = __runtime__.ui;
     proxy.__proxy__ = {
         set: function(name, value){
