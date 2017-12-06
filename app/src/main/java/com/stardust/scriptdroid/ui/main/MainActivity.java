@@ -73,6 +73,8 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private VersionGuard mVersionGuard;
     private BackPressedHandler.Observer mBackPressObserver = new BackPressedHandler.Observer();
     private SearchViewItem mSearchViewItem;
+    private MenuItem mLogMenuItem;
+    private boolean mDocsSearchItemExpanded;
 
 
     @Override
@@ -254,6 +256,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        mLogMenuItem = menu.findItem(R.id.action_log);
         setUpSearchMenuItem(searchMenuItem);
         return true;
     }
@@ -261,14 +264,37 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_log) {
-            LogActivity_.intent(this).start();
+            if (mDocsSearchItemExpanded) {
+                submitForwardQuery();
+            } else {
+                LogActivity_.intent(this).start();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+
     private void setUpSearchMenuItem(MenuItem searchMenuItem) {
-        mSearchViewItem = new SearchViewItem(this, searchMenuItem);
+        mSearchViewItem = new SearchViewItem(this, searchMenuItem) {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                if (mViewPager.getCurrentItem() == 1) {
+                    mDocsSearchItemExpanded = true;
+                    mLogMenuItem.setIcon(R.drawable.ic_ali_up);
+                }
+                return super.onMenuItemActionExpand(item);
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                if (mDocsSearchItemExpanded) {
+                    mDocsSearchItemExpanded = false;
+                    mLogMenuItem.setIcon(R.drawable.ic_ali_log);
+                }
+                return super.onMenuItemActionCollapse(item);
+            }
+        };
         mSearchViewItem.setQueryCallback(this::submitQuery);
     }
 
@@ -283,5 +309,11 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
             mSearchViewItem.collapse();
         }
     }
+
+    private void submitForwardQuery() {
+        QueryEvent event = QueryEvent.FIND_FORWARD;
+        EventBus.getDefault().post(event);
+    }
+
 
 }

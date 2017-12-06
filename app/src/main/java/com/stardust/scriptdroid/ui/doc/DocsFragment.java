@@ -101,12 +101,16 @@ public class DocsFragment extends ViewPagerFragment implements BackPressedHandle
             mPreviousQuery = null;
             return;
         }
-        if (event.getQuery().equals(mPreviousQuery)) {
+        if (event.isFindForward()) {
             mWebView.findNext(false);
-        } else {
-            mWebView.findAllAsync(event.getQuery());
-            mPreviousQuery = event.getQuery();
+            return;
         }
+        if (event.getQuery().equals(mPreviousQuery)) {
+            mWebView.findNext(true);
+            return;
+        }
+        mWebView.findAllAsync(event.getQuery());
+        mPreviousQuery = event.getQuery();
     }
 
     @Override
