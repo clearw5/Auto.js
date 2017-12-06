@@ -1,1 +1,0 @@
-shell("am start -n com.eg.android.AlipayGphone/com.alipay.mobile.scan.as.main.MainCaptureActivity", true);
