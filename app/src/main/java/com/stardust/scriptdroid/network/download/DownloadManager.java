@@ -111,7 +111,7 @@ public class DownloadManager {
             mInputStream = body.byteStream();
             long total = body.contentLength();
             long read = 0;
-            while (read < total) {
+            while (true) {
                 if (!mStatus.get()) {
                     onCancel();
                     return;
@@ -122,7 +122,9 @@ public class DownloadManager {
                 }
                 read += len;
                 mFileOutputStream.write(buffer, 0, len);
-                mProgress.onNext((int) (100 * read / total));
+                if (total > 0) {
+                    mProgress.onNext((int) (100 * read / total));
+                }
             }
             mProgress.onComplete();
             recycle();
