@@ -265,13 +265,13 @@ public class ScriptOperations {
                 .title(fileName)
                 .cancelable(false)
                 .positiveText(R.string.text_cancel_download)
-                .onPositive((dialog, which) -> DownloadManager.getInstance(mContext).cancelDownload(url))
+                .onPositive((dialog, which) -> DownloadManager.getInstance().cancelDownload(url))
                 .show();
     }
 
     public Observable<ScriptFile> download(String url, String path, MaterialDialog progressDialog) {
         PublishSubject<ScriptFile> subject = PublishSubject.create();
-        DownloadManager.getInstance(mContext).download(url, path)
+        DownloadManager.getInstance().download(url, path)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(progressDialog::setProgress)
                 .doOnComplete(() -> {
