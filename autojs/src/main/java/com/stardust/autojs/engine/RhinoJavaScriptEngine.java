@@ -1,6 +1,7 @@
 package com.stardust.autojs.engine;
 
 import android.util.Log;
+import android.widget.TextView;
 
 import com.stardust.autojs.BuildConfig;
 import com.stardust.autojs.rhino.AndroidContextFactory;
@@ -165,7 +166,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     private class WrapFactory extends org.mozilla.javascript.WrapFactory {
         @Override
         public Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType) {
-            if (obj instanceof CharSequence) {
+            if (obj instanceof String) {
                 return getRuntime().bridges.toString(obj.toString());
             }
             if (staticType == UiObjectCollection.class) {

@@ -73,10 +73,15 @@ public class CodeGenerator {
     }
 
     protected String generateCode(UiSelectorGenerator generator, UiObject root, UiObject target, int maxParentLevel, int maxChildrenLevel) {
-        String selector = generator.generateSelectorCode();
+        return generateCode(generator, root, target, maxParentLevel, maxChildrenLevel, true);
+    }
+
+    protected String generateCode(UiSelectorGenerator generator, UiObject root, UiObject target, int maxParentLevel, int maxChildrenLevel, boolean withFind) {
+        String selector = withFind ? generator.generateSelectorCode() : generator.generateSelector().toString();
         if (selector != null) {
             return selector;
         }
+
         if (maxChildrenLevel > 0) {
             for (int i = 0; i < target.childCount(); i++) {
                 UiObject child = target.child(i);
@@ -101,9 +106,13 @@ public class CodeGenerator {
     }
 
     protected String generateCode(UiObject root, UiObject target, int maxParentLevel, int maxChildrenLevel) {
+        return generateCode(root, target, maxParentLevel, maxChildrenLevel, true);
+    }
+
+    protected String generateCode(UiObject root, UiObject target, int maxParentLevel, int maxChildrenLevel, boolean withFind) {
         UiSelectorGenerator generator = new UiSelectorGenerator(root, target);
         generator.setUsingId(mUsingId);
-        return generateCode(generator, root, target, maxParentLevel, maxChildrenLevel);
+        return generateCode(generator, root, target, maxParentLevel, maxChildrenLevel, withFind);
     }
 
     private String generateAction(String selector) {
@@ -158,10 +167,10 @@ public class CodeGenerator {
         String collectionCode = generateCode(mRoot, collection, 2, 0);
         if (collectionCode == null)
             return null;
-        String itemCode = generateCode(collectionItem, target, 1, 2);
+        String itemCode = generateCode(collectionItem, target, 1, 2, false);
         if (itemCode == null)
             return null;
-        return collectionCode + ".findOne().children().forEach(child => {\n"
+        return collectionCode + ".children().forEach(child => {\n"
                 + "var target = child.findOne(" + itemCode + ");\n"
                 + "target." + getAction() + ";\n"
                 + "});";
