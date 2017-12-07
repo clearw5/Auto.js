@@ -3,6 +3,7 @@ package com.stardust.view.accessibility;
 import android.graphics.Rect;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -49,9 +50,10 @@ public class NodeInfo {
     public boolean checkable;
     public boolean focused;
     public boolean visibleToUser;
+    public NodeInfo parent;
 
 
-    public NodeInfo(UiObject node) {
+    public NodeInfo(UiObject node, NodeInfo parent) {
         id = simplifyId(node.getViewIdResourceName());
         desc = node.desc();
         className = node.className();
@@ -86,6 +88,8 @@ public class NodeInfo {
         node.getBoundsInParent(mBoundsInParent);
         bounds = boundsToString(mBoundsInScreen);
 
+        this.parent = parent;
+
     }
 
     private String simplifyId(String idResourceName) {
@@ -109,13 +113,13 @@ public class NodeInfo {
     }
 
 
-    public static NodeInfo capture(@NonNull UiObject parent) {
-        NodeInfo nodeInfo = new NodeInfo(parent);
-        int childCount = parent.getChildCount();
+    public static NodeInfo capture(@NonNull UiObject uiObject, @Nullable NodeInfo parent) {
+        NodeInfo nodeInfo = new NodeInfo(uiObject, parent);
+        int childCount = uiObject.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            UiObject child = parent.child(i);
+            UiObject child = uiObject.child(i);
             if (child != null) {
-                nodeInfo.children.add(capture(child));
+                nodeInfo.children.add(capture(child, nodeInfo));
             }
         }
         return nodeInfo;
@@ -123,11 +127,48 @@ public class NodeInfo {
 
     public static NodeInfo capture(@NonNull AccessibilityNodeInfo root) {
         UiObject r = UiObject.createRoot(root);
-        return capture(r);
+        return capture(r, null);
     }
 
     @NonNull
     public List<NodeInfo> getChildren() {
         return children;
+    }
+
+    @Override
+    public String toString() {
+        return className + "{" +
+                "childCount=" + children.size() +
+                ", mBoundsInScreen=" + mBoundsInScreen +
+                ", mBoundsInParent=" + mBoundsInParent +
+                ", id='" + id + '\'' +
+                ", desc='" + desc + '\'' +
+                ", packageName='" + packageName + '\'' +
+                ", text='" + text + '\'' +
+                ", depth=" + depth +
+                ", drawingOrder=" + drawingOrder +
+                ", accessibilityFocused=" + accessibilityFocused +
+                ", checked=" + checked +
+                ", clickable=" + clickable +
+                ", contextClickable=" + contextClickable +
+                ", dismissable=" + dismissable +
+                ", editable=" + editable +
+                ", enabled=" + enabled +
+                ", focusable=" + focusable +
+                ", longClickable=" + longClickable +
+                ", row=" + row +
+                ", column=" + column +
+                ", rowCount=" + rowCount +
+                ", columnCount=" + columnCount +
+                ", rowSpan=" + rowSpan +
+                ", columnSpan=" + columnSpan +
+                ", selected=" + selected +
+                ", scrollable=" + scrollable +
+                ", bounds='" + bounds + '\'' +
+                ", checkable=" + checkable +
+                ", focused=" + focused +
+                ", visibleToUser=" + visibleToUser +
+                ", parent=" + parent.className +
+                '}';
     }
 }

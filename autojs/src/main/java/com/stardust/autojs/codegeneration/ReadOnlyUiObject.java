@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 
 import com.stardust.automator.UiObject;
-import com.stardust.automator.UiObjectCollection;
 import com.stardust.view.accessibility.NodeInfo;
 
 /**
@@ -16,19 +15,27 @@ import com.stardust.view.accessibility.NodeInfo;
 public class ReadOnlyUiObject extends UiObject {
 
     private NodeInfo mNodeInfo;
-    private boolean mUsingId;
-    private boolean mUsingText;
-    private boolean mUsingDesc;
 
     public ReadOnlyUiObject(NodeInfo info) {
-        super(info, info.depth);
+        super(info, info.depth, -1);
+        mNodeInfo = info;
+    }
+
+    public ReadOnlyUiObject(NodeInfo info, int indexInParent) {
+        super(info, info.depth, indexInParent);
         mNodeInfo = info;
     }
 
     @Nullable
     @Override
     public UiObject child(int i) {
-        return new ReadOnlyUiObject(mNodeInfo.getChildren().get(i));
+        return new ReadOnlyUiObject(mNodeInfo.getChildren().get(i), i);
+    }
+
+    @Nullable
+    @Override
+    public UiObject parent() {
+        return mNodeInfo.parent == null ? null : new ReadOnlyUiObject(mNodeInfo.parent);
     }
 
     @Override
@@ -190,6 +197,82 @@ public class ReadOnlyUiObject extends UiObject {
     }
 
     @Override
+    public boolean isCheckable() {
+        return checkable();
+    }
+
+    @Override
+    public boolean isChecked() {
+        return checked();
+    }
+
+    @Override
+    public boolean isFocusable() {
+        return focusable();
+    }
+
+    @Override
+    public boolean isFocused() {
+        return focused();
+    }
+
+    @Override
+    public boolean isVisibleToUser() {
+        return visibleToUser();
+    }
+
+    @Override
+    public boolean isAccessibilityFocused() {
+        return accessibilityFocused();
+    }
+
+    @Override
+    public boolean isSelected() {
+        return selected();
+    }
+
+    @Override
+    public boolean isClickable() {
+        return clickable();
+    }
+
+    @Override
+    public boolean isLongClickable() {
+        return longClickable();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled();
+    }
+
+    @Override
+    public boolean isPassword() {
+        return password();
+    }
+
+    @Override
+    public boolean isScrollable() {
+        return scrollable();
+    }
+
+
+    @Override
+    public boolean isContextClickable() {
+        return mNodeInfo.contextClickable;
+    }
+
+    @Override
+    public boolean isDismissable() {
+        return mNodeInfo.dismissable;
+    }
+
+    @Override
+    public boolean isEditable() {
+        return mNodeInfo.editable;
+    }
+
+    @Override
     public int row() {
         return mNodeInfo.row;
     }
@@ -222,5 +305,28 @@ public class ReadOnlyUiObject extends UiObject {
     @Override
     public void recycle() {
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ReadOnlyUiObject that = (ReadOnlyUiObject) o;
+
+        return mNodeInfo.equals(that.mNodeInfo);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + mNodeInfo.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return mNodeInfo.toString();
     }
 }

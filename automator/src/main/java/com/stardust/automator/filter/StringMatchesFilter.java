@@ -22,4 +22,8 @@ public class StringMatchesFilter extends DfsFilter {
         return key != null && key.matches(mRegex);
     }
 
+    @Override
+    public String toString() {
+        return mKeyGetter.toString() + "Matches(\"" + mRegex + "\")";
+    }
 }

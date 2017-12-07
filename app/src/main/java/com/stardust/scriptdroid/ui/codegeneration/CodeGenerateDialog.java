@@ -16,7 +16,8 @@ import com.bignerdranch.expandablerecyclerview.ChildViewHolder;
 import com.bignerdranch.expandablerecyclerview.ExpandableRecyclerAdapter;
 import com.bignerdranch.expandablerecyclerview.ParentViewHolder;
 import com.bignerdranch.expandablerecyclerview.model.Parent;
-import com.stardust.autojs.codegeneration.UiSelectorGenerator;
+import com.stardust.app.DialogUtils;
+import com.stardust.autojs.codegeneration.CodeGenerator;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.widget.CheckBoxCompat;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
@@ -66,39 +67,39 @@ public class CodeGenerateDialog extends ThemeColorMaterialDialogBuilder {
         super(context);
         mRootNode = rootNode;
         mTargetNode = targetNode;
-        positiveText(R.string.text_generate_and_copy);
-        neutralText(R.string.text_generate_and_open_editor);
-        onPositive(((dialog, which) -> generateCodeAndCopy()));
-        onNeutral(((dialog, which) -> generateCodeAndOpenEditor()));
+        positiveText(R.string.text_generate);
+        negativeText(R.string.text_cancel);
+        onPositive(((dialog, which) -> generateCodeAndShow()));
         setupViews();
     }
 
-    private void generateCodeAndCopy() {
+    private void generateCodeAndShow() {
         String code = generateCode();
         if (code == null) {
             Toast.makeText(getContext(), R.string.text_generate_fail, Toast.LENGTH_SHORT).show();
             return;
         }
-        ClipboardUtil.setClip(getContext(), code);
-        Toast.makeText(getContext(), R.string.text_already_copy_to_clip, Toast.LENGTH_SHORT).show();
+        DialogUtils.showDialog(new ThemeColorMaterialDialogBuilder(getContext())
+                .title(R.string.text_generated_code)
+                .content(code)
+                .positiveText(R.string.text_copy)
+                .onPositive(((dialog, which) -> ClipboardUtil.setClip(getContext(), code)))
+                .build());
     }
 
-    private void generateCodeAndOpenEditor() {
-
-    }
 
     private String generateCode() {
-        UiSelectorGenerator generator = new UiSelectorGenerator(mRootNode, mTargetNode);
+        CodeGenerator generator = new CodeGenerator(mRootNode, mTargetNode);
         OptionGroup settings = getOptionGroup(R.string.text_options);
         generator.setUsingId(settings.getOption(R.string.text_using_id_selector).checked);
         generator.setUsingText(settings.getOption(R.string.text_using_text_selector).checked);
         generator.setUsingDesc(settings.getOption(R.string.text_using_desc_selector).checked);
         generator.setSearchMode(getSearchMode());
         setAction(generator);
-        return generator.generate();
+        return generator.generateCode();
     }
 
-    private void setAction(UiSelectorGenerator generator) {
+    private void setAction(CodeGenerator generator) {
         OptionGroup action = getOptionGroup(R.string.text_action);
         if (action.getOption(R.string.text_click).checked) {
             generator.setAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
@@ -117,18 +118,18 @@ public class CodeGenerateDialog extends ThemeColorMaterialDialogBuilder {
     private int getSearchMode() {
         OptionGroup selectMode = getOptionGroup(R.string.text_select);
         if (selectMode.getOption(R.string.text_find_one).checked) {
-            return UiSelectorGenerator.FIND_ONE;
+            return CodeGenerator.FIND_ONE;
         }
         if (selectMode.getOption(R.string.text_until_find).checked) {
-            return UiSelectorGenerator.UNTIL_FIND;
+            return CodeGenerator.UNTIL_FIND;
         }
         if (selectMode.getOption(R.string.text_wait_for).checked) {
-            return UiSelectorGenerator.WAIT_FOR;
+            return CodeGenerator.WAIT_FOR;
         }
         if (selectMode.getOption(R.string.text_wait_for).checked) {
-            return UiSelectorGenerator.EXISTS;
+            return CodeGenerator.EXISTS;
         }
-        return UiSelectorGenerator.FIND_ONE;
+        return CodeGenerator.FIND_ONE;
     }
 
     private void setupViews() {

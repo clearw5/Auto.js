@@ -22,4 +22,8 @@ public class StringStartsWithFilter extends DfsFilter {
         return key != null && key.startsWith(mPrefix);
     }
 
+    @Override
+    public String toString() {
+        return mKeyGetter.toString() + "StartsWith(\"" + mPrefix + "\")";
+    }
 }

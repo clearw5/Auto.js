@@ -22,4 +22,8 @@ public class StringEndsWithFilter extends DfsFilter {
         return key != null && key.endsWith(mSuffix);
     }
 
+    @Override
+    public String toString() {
+        return mKeyGetter.toString() + "EndsWith(\"" + mSuffix + "\")";
+    }
 }

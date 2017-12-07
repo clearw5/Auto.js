@@ -31,10 +31,6 @@ public class UiObjectCollection {
 
     public static final UiObjectCollection EMPTY = UiObjectCollection.of(Collections.<UiObject>emptyList());
 
-    public static UiObjectCollection ofCompat(List<AccessibilityNodeInfoCompat> list) {
-        return new UiObjectCollection(UiObject.compatListToUiObjectList(list));
-    }
-
     public static UiObjectCollection of(List<UiObject> list) {
         return new UiObjectCollection(list);
     }

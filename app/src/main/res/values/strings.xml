@@ -299,7 +299,7 @@
     <string name="text_using_id_selector">使用id选择</string>
     <string name="text_using_text_selector">使用文本选择(text)</string>
     <string name="text_using_desc_selector">使用描述选择(desc)</string>
-    <string name="text_generate_and_copy">生成并复制</string>
+    <string name="text_generate">生成</string>
     <string name="text_generate_and_open_editor">生成并打开编辑器</string>
     <string name="text_generate_fail">生成失败了o(╥﹏╥)o</string>
     <string name="key_documentation_source">key_documentation_source</string>
@@ -326,4 +326,6 @@
     <string name="text_apk_builder_plugin_unavailable">打包插件不可用</string>
     <string name="text_detail">详情</string>
     <string name="text_open">打开</string>
+    <string name="text_generated_code">生成结果</string>
+    <string name="text_copy">复制</string>
 </resources>

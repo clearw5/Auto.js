@@ -37,37 +37,39 @@ public class UiObject extends AccessibilityNodeInfoCompat {
 
 
     public static UiObject createRoot(AccessibilityNodeInfo root) {
-        return new UiObject(root, null, 0);
+        return new UiObject(root, null, 0, -1);
     }
 
     public static UiObject createRoot(AccessibilityNodeInfo root, AccessibilityNodeInfoAllocator allocator) {
-        return new UiObject(root, allocator, 0);
+        return new UiObject(root, allocator, 0, -1);
     }
 
 
     private AccessibilityNodeInfoAllocator mAllocator = null;
     private String mStackTrace = "";
     private int mDepth = 0;
+    private final int mIndexInParent;
 
     public UiObject(Object info) {
-        this(info, 0);
+        this(info, 0, -1);
     }
 
-    public UiObject(Object info, AccessibilityNodeInfoAllocator allocator, int depth) {
+    public UiObject(Object info, AccessibilityNodeInfoAllocator allocator, int depth, int indexInParent) {
         super(info);
         mDepth = depth;
         mAllocator = allocator;
+        mIndexInParent = indexInParent;
         if (DEBUG)
             mStackTrace = Arrays.toString(Thread.currentThread().getStackTrace());
     }
 
 
-    public UiObject(Object info, AccessibilityNodeInfoAllocator allocator) {
-        this(info, allocator, 0);
+    public UiObject(Object info, AccessibilityNodeInfoAllocator allocator, int indexInParent) {
+        this(info, allocator, 0, indexInParent);
     }
 
-    public UiObject(Object info, int depth) {
-        this(info, null, depth);
+    public UiObject(Object info, int depth, int indexInParent) {
+        this(info, null, depth, indexInParent);
     }
 
     @Nullable
@@ -76,7 +78,7 @@ public class UiObject extends AccessibilityNodeInfoCompat {
             AccessibilityNodeInfoCompat parent = super.getParent();
             if (parent == null)
                 return null;
-            return new UiObject(parent.getInfo(), mDepth - 1);
+            return new UiObject(parent.getInfo(), mDepth - 1, -1);
         } catch (IllegalStateException e) {
             // FIXME: 2017/5/5
             return null;
@@ -89,11 +91,15 @@ public class UiObject extends AccessibilityNodeInfoCompat {
             AccessibilityNodeInfoCompat child = super.getChild(i);
             if (child == null)
                 return null;
-            return new UiObject(child.getInfo(), mDepth + 1);
+            return new UiObject(child.getInfo(), mDepth + 1, i);
         } catch (IllegalStateException e) {
             // FIXME: 2017/5/5
             return null;
         }
+    }
+
+    public int indexInParent() {
+        return mIndexInParent;
     }
 
     public UiObjectCollection find(UiGlobalSelector selector) {
@@ -105,11 +111,11 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     }
 
     public UiObjectCollection children() {
-        ArrayList<AccessibilityNodeInfoCompat> list = new ArrayList<>(getChildCount());
+        ArrayList<UiObject> list = new ArrayList<>(getChildCount());
         for (int i = 0; i < getChildCount(); i++) {
-            list.add(getChild(i));
+            list.add(child(i));
         }
-        return UiObjectCollection.ofCompat(list);
+        return UiObjectCollection.of(list);
     }
 
     public int childCount() {
@@ -428,20 +434,6 @@ public class UiObject extends AccessibilityNodeInfoCompat {
         return new UiGlobalSelector().id(viewId).findAndReturnList(this);
     }
 
-    public static List<UiObject> compatListToUiObjectList(List<AccessibilityNodeInfoCompat> compats, AccessibilityNodeInfoAllocator allocator) {
-        // FIXME: 2017/11/5 lost depth info
-        List<UiObject> uiObjects = new ArrayList<>(compats.size());
-        for (AccessibilityNodeInfoCompat compat : compats) {
-            if (compat != null)
-                uiObjects.add(new UiObject(compat.getInfo(), allocator));
-        }
-        return uiObjects;
-    }
-
-    public static List<UiObject> compatListToUiObjectList(List<AccessibilityNodeInfoCompat> compats) {
-        return compatListToUiObjectList(compats, null);
-    }
-
     @Override
     public void recycle() {
         try {
@@ -450,5 +442,6 @@ public class UiObject extends AccessibilityNodeInfoCompat {
             Log.w(TAG, mStackTrace, e);
         }
     }
+
 
 }

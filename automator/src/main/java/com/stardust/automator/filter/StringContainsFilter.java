@@ -21,4 +21,8 @@ public class StringContainsFilter extends DfsFilter {
         return key != null && key.contains(mContains);
     }
 
+    @Override
+    public String toString() {
+        return mKeyGetter.toString() + "Contains(\"" + mContains + "\")";
+    }
 }
