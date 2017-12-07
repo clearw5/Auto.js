@@ -77,9 +77,7 @@ public class Dialogs {
     }
 
     @ScriptInterface
-    public Object select(String title, Object... args) {
-        Object callback = getCallback(args);
-        String[] items = getItems(args);
+    public Object select(String title, String[] items, Object callback) {
         return ((BlockedMaterialDialog.Builder) dialogBuilder(callback)
                 .itemsCallback()
                 .title(title)
@@ -152,8 +150,8 @@ public class Dialogs {
         }
 
         @ScriptInterface
-        public int select(String title, Object... args) {
-            return (Integer) Dialogs.this.select(title, args);
+        public int select(String title, String[] items, Object callback) {
+            return (Integer) Dialogs.this.select(title, items, callback);
         }
 
         @ScriptInterface

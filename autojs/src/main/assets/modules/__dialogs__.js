@@ -69,7 +69,7 @@ module.exports = function(__runtime__, scope){
             }
             return rtDialogs().select(title, items, callback ? callback : null);
         }
-        return rtDialogs().select(title, [].slice.call(arguments, 1));
+        return rtDialogs().select(title, [].slice.call(arguments, 1), null);
     }
 
     dialogs.singleChoice = function(title, items, index, callback){
