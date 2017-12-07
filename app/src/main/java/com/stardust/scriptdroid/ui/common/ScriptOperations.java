@@ -28,6 +28,7 @@ import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.network.download.DownloadManager;
+import com.stardust.scriptdroid.tool.SimpleObserver;
 import com.stardust.scriptdroid.ui.filechooser.FileChooserDialogBuilder;
 import com.stardust.scriptdroid.ui.shortcut.ShortcutCreateActivity;
 import com.stardust.scriptdroid.ui.timing.TimedTaskSettingActivity_;
@@ -265,27 +266,31 @@ public class ScriptOperations {
                 .title(fileName)
                 .cancelable(false)
                 .positiveText(R.string.text_cancel_download)
-                .onPositive((dialog, which) -> DownloadManager.getInstance(mContext).cancelDownload(url))
+                .onPositive((dialog, which) -> DownloadManager.getInstance().cancelDownload(url))
                 .show();
     }
 
     public Observable<ScriptFile> download(String url, String path, MaterialDialog progressDialog) {
         PublishSubject<ScriptFile> subject = PublishSubject.create();
-        DownloadManager.getInstance(mContext).download(url, path)
+        DownloadManager.getInstance().download(url, path)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(progressDialog::setProgress)
-                .doOnComplete(() -> {
-                    progressDialog.dismiss();
-                    subject.onNext(new ScriptFile(path));
-                    subject.onComplete();
-                })
-                .doOnError(error -> {
-                    Log.e(LOG_TAG, "Download failed", error);
-                    progressDialog.dismiss();
-                    showMessage(R.string.text_download_failed);
-                    subject.onError(error);
-                })
-                .subscribe();
+                .subscribe(new SimpleObserver<Integer>() {
+                    @Override
+                    public void onComplete() {
+                        progressDialog.dismiss();
+                        subject.onNext(new ScriptFile(path));
+                        subject.onComplete();
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        Log.e(LOG_TAG, "Download failed", error);
+                        progressDialog.dismiss();
+                        showMessage(R.string.text_download_failed);
+                        subject.onError(error);
+                    }
+                });
         return subject;
     }
 

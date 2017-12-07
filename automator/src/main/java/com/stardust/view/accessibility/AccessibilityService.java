@@ -61,10 +61,10 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
         Log.v(TAG, "onAccessibilityEvent: " + event);
         if (!containsAllEventTypes && !eventTypes.contains(event.getEventType()))
             return;
-        int type = event.getEventType();
-        if (type == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED || type == AccessibilityEvent.TYPE_VIEW_HOVER_ENTER
-                || type == AccessibilityEvent.TYPE_VIEW_HOVER_EXIT) {
-            mFastRootInActiveWindow = super.getRootInActiveWindow();
+        AccessibilityNodeInfo root = super.getRootInActiveWindow();
+        if (root != null) {
+            mFastRootInActiveWindow = root;
+            Log.v(TAG, "root not null: " + event);
         }
         for (Map.Entry<Integer, AccessibilityDelegate> entry : mDelegates.entrySet()) {
             AccessibilityDelegate delegate = entry.getValue();
@@ -163,5 +163,6 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     public static OnKeyListener.Observer getStickOnKeyObserver() {
         return stickOnKeyObserver;
     }
+
 
 }

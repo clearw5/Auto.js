@@ -7,12 +7,19 @@ package com.stardust.scriptdroid.ui.main;
 public class QueryEvent {
 
     public static final QueryEvent CLEAR = new QueryEvent(null);
+    public static final QueryEvent FIND_FORWARD = new QueryEvent("", true);
 
     private boolean mShouldCollapseSearchView = false;
     private final String mQuery;
+    private final boolean mFindForward;
+
+    public QueryEvent(String query, boolean b) {
+        mQuery = query;
+        mFindForward = b;
+    }
 
     public QueryEvent(String query) {
-        mQuery = query;
+        this(query, false);
     }
 
     public String getQuery() {
@@ -25,6 +32,10 @@ public class QueryEvent {
 
     public boolean shouldCollapseSearchView() {
         return mShouldCollapseSearchView;
+    }
+
+    public boolean isFindForward() {
+        return mFindForward;
     }
 }
 

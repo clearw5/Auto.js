@@ -16,6 +16,11 @@ public class IdFilter extends ListFilter.Default {
         public String getKey(UiObject nodeInfo) {
             return nodeInfo.getViewIdResourceName();
         }
+
+        @Override
+        public String toString() {
+            return "id";
+        }
     };
 
     public static StringEqualsFilter equals(String id) {

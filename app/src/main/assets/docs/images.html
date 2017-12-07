@@ -25,24 +25,27 @@
 <ul>
 <li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
 <li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
-<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
-<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的触摸模拟</a></li>
-<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的触摸模拟</a></li>
-<li><a class="nav-images active" href="images.html">Images - 图片与图色处理</a></li>
-<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
-<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
-<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
-<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
-<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
-<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
-<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
-<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
-<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
 <li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的触摸模拟</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
 <li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images active" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
 <li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的触摸模拟</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
 <li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
-<li><a class="nav-work-with-java" href="work-with-java.html">Work with Java - 调用Java API</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
 </ul>
 <div class="line"></div>
 
@@ -73,7 +76,7 @@
 <li><span class="stability_undefined"><a href="#images_images_capturescreen">images.captureScreen()</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_capturescreen_path">images.captureScreen(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_pixel_image_x_y">images.pixel(image, x, y)</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_saveimage_image_path">images.saveImage(image, path)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_save_image_path">images.save(image, path)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_read_path">images.read(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_load_url">images.load(url)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findcolor_image_color_options">images.findColor(image, color, options)</a></span></li>
@@ -166,7 +169,7 @@ toast(colors.toString(color));
 </div><p>返回图片image在点(x, y)处的像素的ARGB值。  </p>
 <p>该值的格式为0xAARRGGBB，是一个&quot;32位整数&quot;(虽然JavaScript中并不区分整数类型和其他数值类型)。</p>
 <p>坐标系以图片左上角为原点。以图片左侧边为y轴，上侧边为x轴。</p>
-<h2>images.saveImage(image, path)<span><a class="mark" href="#images_images_saveimage_image_path" id="images_images_saveimage_image_path">#</a></span></h2>
+<h2>images.save(image, path)<span><a class="mark" href="#images_images_save_image_path" id="images_images_save_image_path">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>image</code> <span class="type">&lt;image&gt;</span> 图片</li>
 <li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路劲</li>

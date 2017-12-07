@@ -1,13 +1,10 @@
 package com.stardust.autojs.runtime.api;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.app.AlarmManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -16,31 +13,16 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
-import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.autojs.R;
 import com.stardust.autojs.runtime.exception.ScriptException;
-import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
-import com.stardust.util.IntentUtil;
 import com.stardust.util.ScreenMetrics;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,11 +44,11 @@ public class Device {
 
     public static final String product = Build.PRODUCT;
 
-    public static final String device = Build.DEVICE;
-
     public static final String board = Build.BOARD;
 
     public static final String brand = Build.BRAND;
+
+    public static final String device = Build.DEVICE;
 
     public static final String model = Build.MODEL;
 
@@ -77,6 +59,26 @@ public class Device {
     public static final String fingerprint = Build.FINGERPRINT;
 
     public static final int sdkInt = Build.VERSION.SDK_INT;
+
+    public static final String incremental = Build.VERSION.INCREMENTAL;
+
+    public static final String release = Build.VERSION.RELEASE;
+
+    public static final String baseOS;
+
+    public static final String securityPatch;
+
+    static {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            baseOS = Build.VERSION.BASE_OS;
+            securityPatch = Build.VERSION.SECURITY_PATCH;
+        } else {
+            baseOS = null;
+            securityPatch = null;
+        }
+    }
+
+    public static final String codename = Build.VERSION.CODENAME;
 
     @SuppressLint("HardwareIds")
     public static final String serial = Build.SERIAL;
@@ -179,20 +181,19 @@ public class Device {
         return Math.round(battery * 10) / 10;
     }
 
-    public long getTotalMem(){
+    public long getTotalMem() {
         ActivityManager activityManager = getSystemService(Context.ACTIVITY_SERVICE);
         ActivityManager.MemoryInfo info = new ActivityManager.MemoryInfo();
         activityManager.getMemoryInfo(info);
         return info.totalMem;
     }
 
-    public long getAvailMem(){
+    public long getAvailMem() {
         ActivityManager activityManager = getSystemService(Context.ACTIVITY_SERVICE);
         ActivityManager.MemoryInfo info = new ActivityManager.MemoryInfo();
         activityManager.getMemoryInfo(info);
         return info.availMem;
     }
-
 
 
     public boolean isCharging() {
@@ -289,15 +290,19 @@ public class Device {
                 ", buildId='" + buildId + '\'' +
                 ", buildDisplay='" + buildDisplay + '\'' +
                 ", product='" + product + '\'' +
-                ", device='" + device + '\'' +
                 ", board='" + board + '\'' +
                 ", brand='" + brand + '\'' +
+                ", device='" + device + '\'' +
                 ", model='" + model + '\'' +
                 ", bootloader='" + bootloader + '\'' +
                 ", hardware='" + hardware + '\'' +
                 ", fingerprint='" + fingerprint + '\'' +
+                ", sdkInt=" + sdkInt +
+                ", incremental='" + incremental + '\'' +
+                ", release='" + release + '\'' +
+                ", baseOS='" + baseOS + '\'' +
+                ", securityPatch='" + securityPatch + '\'' +
                 ", serial='" + serial + '\'' +
-                ", sdkInt='" + sdkInt + '\'' +
                 '}';
     }
 

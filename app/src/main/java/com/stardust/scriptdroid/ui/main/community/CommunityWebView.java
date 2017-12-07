@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
+import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 
@@ -21,6 +22,7 @@ import java.util.regex.Pattern;
 
 import butterknife.OnClick;
 import butterknife.Optional;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
@@ -55,7 +57,6 @@ public class CommunityWebView extends EWebView {
                 .title(fileName)
                 .item(R.id.save, R.drawable.ic_file_download_black_48dp, R.string.text_download)
                 .item(R.id.run, R.drawable.ic_play_arrow_white_48dp, R.string.text_run)
-                .item(R.id.edit, R.drawable.ic_edit_white_24dp, R.string.text_save_and_edit)
                 .bindItemClick(this)
                 .build());
         mBottomSheetDialog.show();
@@ -68,19 +69,12 @@ public class CommunityWebView extends EWebView {
         new ScriptOperations(getContext(), CommunityWebView.this)
                 .download(mUrl)
                 .observeOn(AndroidSchedulers.mainThread())
+                .onErrorResumeNext(Observable.empty())
                 .subscribe(file ->
                         Snackbar.make(CommunityWebView.this, getResources().getString(R.string.format_file_downloaded, file.getPath())
-                                , Snackbar.LENGTH_SHORT).show());
-    }
-
-    @Optional
-    @OnClick(R.id.edit)
-    void saveAndEdit() {
-        dismissBottomSheetDialog();
-        new ScriptOperations(getContext(), CommunityWebView.this)
-                .download(mUrl)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(Scripts::edit);
+                                , Snackbar.LENGTH_LONG)
+                                .setAction(R.string.text_open, v -> Scripts.edit(file))
+                                .show());
     }
 
     @Optional
@@ -90,6 +84,7 @@ public class CommunityWebView extends EWebView {
         new ScriptOperations(getContext(), CommunityWebView.this)
                 .temporarilyDownload(mUrl)
                 .observeOn(AndroidSchedulers.mainThread())
+                .onErrorResumeNext(Observable.empty())
                 .subscribe(file -> {
                     Snackbar.make(CommunityWebView.this, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
                     Scripts.run(file);

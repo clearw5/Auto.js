@@ -28,21 +28,26 @@ public class LayoutInspector {
             Log.d(LOG_TAG, "captureCurrentWindow: service = null");
             mCapture = null;
         } else {
-            final AccessibilityNodeInfo root = service.getRootInActiveWindow();
+            final AccessibilityNodeInfo root = getRootInActiveWindow(service);
             if (root == null) {
                 Log.d(LOG_TAG, "captureCurrentWindow: root = null");
                 mCapture = null;
             } else {
-                mExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDumping = true;
-                        mCapture = NodeInfo.capture(root);
-                        mDumping = false;
-                    }
+                mExecutor.execute(() -> {
+                    mDumping = true;
+                    mCapture = NodeInfo.capture(root);
+                    mDumping = false;
                 });
             }
         }
+    }
+
+    private AccessibilityNodeInfo getRootInActiveWindow(AccessibilityService service) {
+        AccessibilityNodeInfo root = service.getRootInActiveWindow();
+        if (root == null)
+            return service.fastRootInActiveWindow();
+        return root;
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)

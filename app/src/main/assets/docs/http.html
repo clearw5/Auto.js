@@ -25,24 +25,27 @@
 <ul>
 <li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
 <li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
-<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
-<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的触摸模拟</a></li>
-<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的触摸模拟</a></li>
-<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
-<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
-<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
-<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
-<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
-<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
-<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
-<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
-<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
-<li><a class="nav-http active" href="http.html">Http - HTTP</a></li>
 <li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的触摸模拟</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
 <li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http active" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
 <li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的触摸模拟</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
 <li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
-<li><a class="nav-work-with-java" href="work-with-java.html">Work with Java - 调用Java API</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
 </ul>
 <div class="line"></div>
 
@@ -72,6 +75,7 @@
 <li><span class="stability_undefined"><a href="#http_http_get_url_options_callback">http.get(url[, options, callback])</a></span></li>
 <li><span class="stability_undefined"><a href="#http_http_post_url_data_options_callback">http.post(url, data[, options, callback])</a></span></li>
 <li><span class="stability_undefined"><a href="#http_http_postjson_url_data_options_callback">http.postJson(url[, data, options, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#http_http_postmultipart_url_files_options_callback">http.postMultipart(url, files[, options, callback])</a></span></li>
 <li><span class="stability_undefined"><a href="#http_http_request_url_options_callback">http.request(url[, options, callback])</a></span></li>
 </ul>
 </li>
@@ -170,7 +174,42 @@ if(html.contains(&quot;页面跳转中&quot;)){
 </div><p>以JSON格式向目标Url发起POST请求。如果没有回调函数，则在请求完成或失败时返回此次请求的响应(参见[Response][])。</p>
 <p>JSON格式指的是，将会调用<code>JSON.stringify()</code>把data对象转换为JSON字符串，并在HTTP头部信息中把&quot;Content-Type&quot;属性置为&quot;application/json&quot;。这种方式是AngularJS的ajax函数的默认方式。</p>
 <p>一个调用图灵机器人接口的例子如下：</p>
-<h2>http.request(url[, options, callback])<span><a class="mark" href="#http_http_request_url_options_callback" id="http_http_request_url_options_callback">#</a></span></h2>
+<h2>http.postMultipart(url, files[, options, callback])<span><a class="mark" href="#http_http_postmultipart_url_files_options_callback" id="http_http_postmultipart_url_files_options_callback">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 请求的URL地址，需要以&quot;<a href="http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。">http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。</a></li>
+<li><code>files</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> POST数据。</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 请求选项。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调，其参数是一个<code>Response</code>对象。如果不加回调参数，则该请求将阻塞、同步地执行。</li>
+</ul>
+</div><p>向目标地址发起类型为multipart/form-data的请求（通常用于文件上传等), 其中files参数是<span class="type">&lt;name1: value1, name2: value2, ...&gt;</span>的键值对，value的格式可以是以下几种情况：</p>
+<ol>
+<li><code>string</code></li>
+<li>文件类型，即open()返回的类型</li>
+<li>[fileName, filePath]</li>
+<li>[fileName, mimeType, filePath]</li>
+</ol>
+<p>其中1属于非文件参数，2、3、4为文件参数。举个例子，最简单的文件上传的请求为：</p>
+<pre><code>var res = http.postMultipart(url, {
+    file: open(&quot;/sdcard/1.txt&quot;)
+});
+log(res.body.string());
+</code></pre><p>如果使用格式2，则代码为</p>
+<pre><code>var res = http.postMultipart(url, {
+    file: [&quot;1.txt&quot;, &quot;/sdcard/1.txt&quot;]
+});
+log(res.body.string());
+</code></pre><p>如果使用格式3，则代码为</p>
+<pre><code>var res = http.postMultipart(url, {
+    file: [&quot;1.txt&quot;, &quot;text/plain&quot;, &quot;/sdcard/1.txt&quot;]
+});
+log(res.body.string());
+</code></pre><p>如果使用格式2的同时要附带非文件参数&quot;appId=abcdefghijk&quot;，则为:</p>
+<pre><code>var res = http.postMultipart(url, {
+    appId: &quot;adcdefghijk&quot;,
+    file: open(&quot;/sdcard/1.txt&quot;)
+});
+log(res.body.string());
+</code></pre><h2>http.request(url[, options, callback])<span><a class="mark" href="#http_http_request_url_options_callback" id="http_http_request_url_options_callback">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 请求的URL地址，需要以&quot;<a href="http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。">http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。</a></li>
 <li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 请求选项。参见[http.buildRequest()][]。</li>

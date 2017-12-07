@@ -1,48 +1,80 @@
 package com.stardust.autojs.codegeneration;
 
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
-
 import com.stardust.automator.UiGlobalSelector;
+import com.stardust.automator.UiObject;
 import com.stardust.util.Consumer;
-import com.stardust.view.accessibility.NodeInfo;
+
+import static com.stardust.autojs.codegeneration.CodeGenerator.FIND_ONE;
+import static com.stardust.autojs.codegeneration.CodeGenerator.UNTIL_FIND;
 
 /**
- * Created by Stardust on 2017/8/4.
+ * Created by Stardust on 2017/12/7.
  */
 
 public class UiSelectorGenerator {
 
-
-    public static final int UNTIL_FIND = 0;
-    public static final int FIND_ONE = 1;
-    public static final int WAIT_FOR = 2;
-    public static final int EXISTS = 3;
-
-    private ReadOnlyUiObject mRoot;
-    private ReadOnlyUiObject mTarget;
+    private UiObject mRoot;
+    private UiObject mTarget;
     private boolean mUsingId = true;
     private boolean mUsingDesc = true;
     private boolean mUsingText = true;
-    private UiGlobalSelector mUiGlobalSelector;
     private int mSearchMode = FIND_ONE;
-    private int mAction = -1;
 
-    public UiSelectorGenerator(NodeInfo root, NodeInfo target) {
-        this(new ReadOnlyUiObject(root), new ReadOnlyUiObject(target));
-    }
-
-    public UiSelectorGenerator(ReadOnlyUiObject root, ReadOnlyUiObject target) {
+    public UiSelectorGenerator(UiObject root, UiObject target) {
         mRoot = root;
         mTarget = target;
     }
 
-    public void setSearchMode(int searchMode) {
-        mSearchMode = searchMode;
+    public UiGlobalSelector generateSelector() {
+        UiGlobalSelector selector = new UiGlobalSelector();
+        if (mUsingId &&
+                tryWithStringCondition(selector, mTarget.id(), selector::id)) {
+            return selector;
+        }
+
+        if (tryWithStringCondition(selector, mTarget.className(), selector::className)) {
+            return selector;
+        }
+        if (mUsingText &&
+                tryWithStringCondition(selector, mTarget.text(), selector::text)) {
+            return selector;
+        }
+        if (mUsingDesc &&
+                tryWithStringCondition(selector, mTarget.desc(), selector::desc)) {
+            return selector;
+        }
+        if (mTarget.scrollable() && tryWithBooleanCondition(selector, mTarget.scrollable(), selector::scrollable)) {
+            return selector;
+        }
+        if (mTarget.clickable() && tryWithBooleanCondition(selector, mTarget.clickable(), selector::clickable)) {
+            return selector;
+        }
+        if (mTarget.selected() && tryWithBooleanCondition(selector, mTarget.selected(), selector::selected)) {
+            return selector;
+        }
+        if (mTarget.checkable() && tryWithBooleanCondition(selector, mTarget.checkable(), selector::checkable)) {
+            return selector;
+        }
+        if (mTarget.checked() && tryWithBooleanCondition(selector, mTarget.checked(), selector::checked)) {
+            return selector;
+        }
+        if (mTarget.longClickable() && tryWithBooleanCondition(selector, mTarget.longClickable(), selector::longClickable)) {
+            return selector;
+        }
+        if (tryWithIntCondition(selector, mTarget.depth(), selector::depth)) {
+            return selector;
+        }
+        return null;
     }
 
-    public void setAction(int action) {
-        mAction = action;
+    public String generateSelectorCode() {
+        UiGlobalSelector selector = generateSelector();
+        if (selector == null) {
+            return null;
+        }
+        return selector + (mSearchMode == FIND_ONE ? ".findOne()" : ".untilFind()");
     }
+
 
     public void setUsingId(boolean usingId) {
         mUsingId = usingId;
@@ -56,94 +88,37 @@ public class UiSelectorGenerator {
         mUsingText = usingText;
     }
 
+    public void setSearchMode(int searchMode) {
+        mSearchMode = searchMode;
+    }
 
-    private boolean tryWithStringCondition(String name, String value, Consumer<String> condition, StringBuilder code) {
-        if (value == null || value.isEmpty())
+    private boolean tryWithBooleanCondition(UiGlobalSelector selector, boolean value, Consumer<Boolean> condition) {
+        condition.accept(value);
+        return shouldStopGeneration(selector);
+    }
+
+
+    private boolean tryWithStringCondition(UiGlobalSelector selector, String value, Consumer<String> condition) {
+        if (value == null || value.isEmpty()) {
             return false;
-        code.append('.').append(name).append("(\"").append(value).append("\")");
+        }
         condition.accept(value);
-        return isConditionEnough();
+        return shouldStopGeneration(selector);
     }
 
-    private boolean tryWithIntCondition(String name, int value, Consumer<Integer> condition, StringBuilder code) {
-        code.append('.').append(name).append('(').append(value).append(')');
-        condition.accept(value);
-        return isConditionEnough();
-    }
-
-    private boolean isConditionEnough() {
+    private boolean shouldStopGeneration(UiGlobalSelector selector) {
         if (mSearchMode == UNTIL_FIND) {
-            return !mUiGlobalSelector.findAndReturnList(mRoot).isEmpty();
+            return !selector.findAndReturnList(mRoot).isEmpty();
         } else {
-            return mUiGlobalSelector.findAndReturnList(mRoot).size() == 1;
+            return selector.findAndReturnList(mRoot).size() == 1;
 
         }
     }
 
-    public String generate() {
-        String selector = generateSelector();
-        if (selector == null) {
-            return null;
-        }
-        //remove '.'
-        selector = selector.substring(1);
-        if (mSearchMode == WAIT_FOR) {
-            return selector + ".waitFor()";
-        }
-        if (mSearchMode == EXISTS) {
-            return "if(" + selector + ".exists()){\n  \n}";
-        }
-        String action = getAction();
-        if (action == null) {
-            return selector;
-        } else {
-            return selector + action;
-        }
-
+    private boolean tryWithIntCondition(UiGlobalSelector selector, int value, Consumer<Integer> condition) {
+        condition.accept(value);
+        return shouldStopGeneration(selector);
     }
 
-    private String getAction() {
-        switch (mAction) {
-            case AccessibilityNodeInfoCompat.ACTION_CLICK:
-                return ".click()";
-            case AccessibilityNodeInfoCompat.ACTION_LONG_CLICK:
-                return ".longClick()";
 
-            case AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD:
-                return ".scrollBackward()";
-
-            case AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD:
-                return ".scrollForward()";
-
-            case AccessibilityNodeInfoCompat.ACTION_SET_TEXT:
-                return ".setText(\"\")";
-        }
-        return null;
-    }
-
-    private String generateSelector() {
-        mUiGlobalSelector = new UiGlobalSelector();
-        StringBuilder code = new StringBuilder();
-        if (mUsingId &&
-                tryWithStringCondition("id", mTarget.id(), mUiGlobalSelector::id, code)) {
-            return code.toString();
-        }
-        if (tryWithIntCondition("depth", mTarget.depth(), mUiGlobalSelector::depth, code)) {
-            return code.toString();
-        }
-        if (tryWithStringCondition("className", mTarget.className(), mUiGlobalSelector::className, code)) {
-            return code.toString();
-        }
-
-        if (mUsingText &&
-                tryWithStringCondition("text", mTarget.text(), mUiGlobalSelector::text, code)) {
-            return code.toString();
-        }
-
-        if (mUsingDesc &&
-                tryWithStringCondition("desc", mTarget.desc(), mUiGlobalSelector::desc, code)) {
-            return code.toString();
-        }
-        return null;
-    }
 }

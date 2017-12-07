@@ -103,7 +103,7 @@ public class Images {
             throw new SecurityException("No screen capture permission");
         }
         Image capture = mScreenCapturer.capture();
-        if (capture == mPreCapture) {
+        if (capture == mPreCapture && mPreCaptureImage != null) {
             return mPreCaptureImage;
         }
         mPreCapture = capture;

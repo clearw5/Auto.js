@@ -34,6 +34,7 @@ public class ScreenCapturer {
     private volatile Looper mImageAcquireLooper;
     private volatile Image mUnderUsingImage;
     private volatile Image mCachedImage;
+    private volatile boolean mImageAvailable = false;
     private final int mScreenWidth;
     private final int mScreenHeight;
     private final int mScreenDensity;
@@ -90,6 +91,7 @@ public class ScreenCapturer {
                         mCachedImage.close();
                     }
                     mCachedImage = reader.acquireLatestImage();
+                    mImageAvailable = true;
                     mCachedImageLock.notify();
                     return;
                 }
@@ -100,13 +102,13 @@ public class ScreenCapturer {
 
     @Nullable
     public Image capture() {
-        if (mUnderUsingImage == null && mCachedImage == null) {
+        if (!mImageAvailable) {
             waitForImageAvailable();
         }
-        if (mCachedImage != null) {
-            if (mUnderUsingImage != null)
-                mUnderUsingImage.close();
-            synchronized (mCachedImageLock) {
+        synchronized (mCachedImageLock) {
+            if (mCachedImage != null) {
+                if (mUnderUsingImage != null)
+                    mUnderUsingImage.close();
                 mUnderUsingImage = mCachedImage;
                 mCachedImage = null;
             }
@@ -116,6 +118,9 @@ public class ScreenCapturer {
 
     private void waitForImageAvailable() {
         synchronized (mCachedImageLock) {
+            if (mImageAvailable) {
+                return;
+            }
             try {
                 mCachedImageLock.wait();
             } catch (InterruptedException e) {

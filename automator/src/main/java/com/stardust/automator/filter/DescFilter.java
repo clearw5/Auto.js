@@ -14,6 +14,11 @@ public class DescFilter {
             CharSequence charSequence = nodeInfo.getContentDescription();
             return charSequence == null ? null : charSequence.toString();
         }
+
+        @Override
+        public String toString() {
+            return "desc";
+        }
     };
 
     public static ListFilter equals(String text) {

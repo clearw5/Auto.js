@@ -178,6 +178,11 @@ public class UiGlobalSelector {
             protected boolean isIncluded(UiObject nodeInfo) {
                 return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && nodeInfo.getDrawingOrder() == order;
             }
+
+            @Override
+            public String toString() {
+                return "drawingOrder(" + order + ")";
+            }
         });
         return this;
     }
@@ -430,5 +435,13 @@ public class UiGlobalSelector {
         return this;
     }
 
-
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        for (ListFilter filter : mFilters) {
+            str.append(filter.toString()).append(".");
+        }
+        str.deleteCharAt(str.length() - 1);
+        return str.toString();
+    }
 }

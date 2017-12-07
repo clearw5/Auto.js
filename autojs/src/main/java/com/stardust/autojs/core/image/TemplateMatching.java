@@ -32,6 +32,7 @@ public class TemplateMatching {
         return fastTemplateMatching(img, template, MATCHING_METHOD_DEFAULT, 0.75f, threshold, MAX_LEVEL_AUTO);
     }
 
+
     public static Point fastTemplateMatching(Mat img, Mat template, int matchMethod, float weakThreshold, float strictThreshold, int maxLevel) {
         TimingLogger logger = new TimingLogger(LOG_TAG, "fast_tm");
         if (maxLevel == MAX_LEVEL_AUTO) {

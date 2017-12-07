@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Floaty | Auto.js 3.0.0 文档</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/floaty.html">
+</head>
+<body class="alt apidoc" id="api-section-floaty">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-synopsis" href="synopsis.html">如何阅读本文档</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的触摸模拟</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty active" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的触摸模拟</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="floaty" class="interior">
+      <header>
+        <h1>Auto.js 3.0.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_undefined"><a href="#floaty_floaty">Floaty</a></span><ul>
+<li><span class="stability_undefined"><a href="#floaty_floaty_window_layout">floaty.window(layout)</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_floaty_expandablewindow_collapsedlayout_expandedlayout">floaty.expandableWindow(collapsedLayout, expandedLayout)</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_floaty_closeall">floaty.closeAll()</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#floaty_floatywindow">FloatyWindow</a></span><ul>
+<li><span class="stability_undefined"><a href="#floaty_floatywindow_setadjustenabled_enabled">FloatyWindow.setAdjustEnabled(enabled)</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_floatywindow_setposition_x_y">FloatyWindow.setPosition(x, y)</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_floatywindow_getx">FloatyWindow.getX()</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_floatywindow_gety">FloatyWindow.getY()</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_floatywindow_setsize_width_height">FloatyWindow.setSize(width, height)</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_floatywindow_getwidht">FloatyWindow.getWidht()</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_floatywindow_getheight">FloatyWindow.getHeight()</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_floatywindow_close">FloatyWindow.close()</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#floaty_expandablefloatywindow">ExpandableFloatyWindow</a></span><ul>
+<li><span class="stability_undefined"><a href="#floaty_expandablefloatywindow_expand">ExpandableFloatyWindow.expand();</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_expandablefloatywindow_collapse">ExpandableFloatyWindow.collapse();</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_expandablefloatywindow_toggle">ExpandableFloatyWindow.toggle();</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_expandablefloatywindow_isexpanded">ExpandableFloatyWindow.isExpanded();</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>Floaty<span><a class="mark" href="#floaty_floaty" id="floaty_floaty">#</a></span></h1>
+<p>floaty模块提供了悬浮窗的相关函数，可以在屏幕上显示自定义悬浮窗，控制悬浮窗大小、位置等。</p>
+<p>悬浮窗在脚本停止运行时会自动关闭，因此，要保持悬浮窗不被关闭，可以用一个空的setInterval来实现，例如：</p>
+<pre><code>setInterval(()=&gt;{}, 1000);
+</code></pre><h2>floaty.window(layout)<span><a class="mark" href="#floaty_floaty_window_layout" id="floaty_floaty_window_layout">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>layout</code> <span class="type">&lt;xml&gt;</span> | <span class="type">&lt;View&gt;</span> 悬浮窗界面的XML或者View</li>
+</ul>
+</div><p>指定悬浮窗的布局，创建并<strong>显示</strong>一个悬浮窗，返回一个<code>FloatyWindow</code>对象。</p>
+<p>其中layout参数可以是xml布局或者一个View，更多信息参见ui模块的说明。</p>
+<p>例子：</p>
+<pre><code>var w = floaty.window(
+    &lt;frame gravity=&quot;center&quot;&gt;
+        &lt;text id=&quot;text&quot;&gt;悬浮文字&lt;/text&gt;
+    &lt;/frame&gt;
+);
+setTimeout(()=&gt;{
+    w.close();
+}, 2000);
+</code></pre><p>这段代码运行后将会在屏幕上显示悬浮文字，并在两秒后消失。</p>
+<p>另外，因为脚本运行的线程不是UI线程，而所有对控件的修改操作需要在UI线程执行，此时需要用<code>ui.run</code>，例如:</p>
+<pre><code>ui.run(function(){
+    w.text.setText(&quot;文本&quot;);
+});
+</code></pre><h2>floaty.expandableWindow(collapsedLayout, expandedLayout)<span><a class="mark" href="#floaty_floaty_expandablewindow_collapsedlayout_expandedlayout" id="floaty_floaty_expandablewindow_collapsedlayout_expandedlayout">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>collapsedLayout</code> <span class="type">&lt;xml&gt;</span> | <span class="type">&lt;View&gt;</span> 悬浮窗折叠时的界面XML或者View</li>
+<li><code>expandedLayout</code> <span class="type">&lt;xml&gt;</span> | <span class="type">&lt;View&gt;</span> 悬浮窗展开时的界面的XML或者View</li>
+</ul>
+</div><p>指定悬浮窗的布局，创建并<strong>显示</strong>一个可展开悬浮窗，返回一个<code>ExpandableFloatyWindow</code>对象。</p>
+<p>所谓可展开的悬浮窗，以Auto.js的控制台悬浮窗为例，点击右上角的最小化即为悬浮窗折叠状态，再点击悬浮窗则为展开状态。</p>
+<p>其中layout参数可以是xml布局或者一个View，更多信息参见ui模块的说明。</p>
+<p>例子：</p>
+<pre><code>var w = floaty.expandableWindow(
+    &lt;img id=&quot;logo&quot; src=&quot;file:///sdcard/logo.png&quot; w=&quot;100&quot; h=&quot;100&quot; circle=&quot;true&quot;/&gt;
+    ,
+    &lt;vertical&gt;
+        &lt;radiogroup bg=&quot;#ffffff&quot;&gt;
+            &lt;radio text=&quot;选项1&quot;&gt;
+            &lt;radio text=&quot;选项2&quot;&gt;
+            &lt;radio text=&quot;选项3&quot;&gt;
+        &lt;/radiogroup&gt;
+        &lt;button id=&quot;minimize&quot; text=&quot;折叠&quot;/&gt;
+        &lt;button id=&quot;exit&quot; text=&quot;关闭悬浮窗&quot;/&gt;
+    &lt;/vertical&gt;
+
+);
+
+
+w.logo.click(()=&gt; w.expand());
+w.minimize.click(()=&gt; w.collapse());
+w.exit.click(()=&gt; w.close());
+</code></pre><p>这个例子运行后将会显示一个图片的图标，点击后显示三个选项和折叠、关闭按键。</p>
+<h2>floaty.closeAll()<span><a class="mark" href="#floaty_floaty_closeall" id="floaty_floaty_closeall">#</a></span></h2>
+<p>关闭所有本脚本的悬浮窗。</p>
+<h1>FloatyWindow<span><a class="mark" href="#floaty_floatywindow" id="floaty_floatywindow">#</a></span></h1>
+<p>悬浮窗对象，可通过<code>FloatyWindow.{id}</code>获取悬浮窗界面上的元素。例如, 悬浮窗window上一个控件的id为aaa, 那么<code>window.aaa</code>即可获取到该控件，类似于ui。</p>
+<h2>FloatyWindow.setAdjustEnabled(enabled)<span><a class="mark" href="#floaty_floatywindow_setadjustenabled_enabled" id="floaty_floatywindow_setadjustenabled_enabled">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>enabled</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a> 是否启用悬浮窗调整(大小、位置)</li>
+</ul>
+</div><p>如果enabled为true，则在悬浮窗左上角、右上角显示可供位置、大小调整的标示，就像控制台一样；
+如果enabled为false，则隐藏上述标示。</p>
+<h2>FloatyWindow.setPosition(x, y)<span><a class="mark" href="#floaty_floatywindow_setposition_x_y" id="floaty_floatywindow_setposition_x_y">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> x</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> y</li>
+</ul>
+</div><p>设置悬浮窗位置。</p>
+<h2>FloatyWindow.getX()<span><a class="mark" href="#floaty_floatywindow_getx" id="floaty_floatywindow_getx">#</a></span></h2>
+<p>返回悬浮窗位置的X坐标。</p>
+<h2>FloatyWindow.getY()<span><a class="mark" href="#floaty_floatywindow_gety" id="floaty_floatywindow_gety">#</a></span></h2>
+<p>返回悬浮窗位置的Y坐标。</p>
+<h2>FloatyWindow.setSize(width, height)<span><a class="mark" href="#floaty_floatywindow_setsize_width_height" id="floaty_floatywindow_setsize_width_height">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>width</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 宽度</li>
+<li><code>height</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 高度</li>
+</ul>
+</div><p>设置悬浮窗宽高。</p>
+<h2>FloatyWindow.getWidht()<span><a class="mark" href="#floaty_floatywindow_getwidht" id="floaty_floatywindow_getwidht">#</a></span></h2>
+<p>返回悬浮窗宽度。</p>
+<h2>FloatyWindow.getHeight()<span><a class="mark" href="#floaty_floatywindow_getheight" id="floaty_floatywindow_getheight">#</a></span></h2>
+<p>返回悬浮窗高度。</p>
+<h2>FloatyWindow.close()<span><a class="mark" href="#floaty_floatywindow_close" id="floaty_floatywindow_close">#</a></span></h2>
+<p>关闭悬浮窗。如果悬浮窗已经是关闭状态，则此函数将不执行任何操作。</p>
+<p>被关闭后的悬浮窗不能再显示。</p>
+<h1>ExpandableFloatyWindow<span><a class="mark" href="#floaty_expandablefloatywindow" id="floaty_expandablefloatywindow">#</a></span></h1>
+<p>可展开悬浮窗。ExpandableFloatyWindow拥有FloatyWindow的所有函数，同时还有以下函数。</p>
+<h2>ExpandableFloatyWindow.expand();<span><a class="mark" href="#floaty_expandablefloatywindow_expand" id="floaty_expandablefloatywindow_expand">#</a></span></h2>
+<p>展开悬浮窗。</p>
+<h2>ExpandableFloatyWindow.collapse();<span><a class="mark" href="#floaty_expandablefloatywindow_collapse" id="floaty_expandablefloatywindow_collapse">#</a></span></h2>
+<p>折叠悬浮窗。</p>
+<h2>ExpandableFloatyWindow.toggle();<span><a class="mark" href="#floaty_expandablefloatywindow_toggle" id="floaty_expandablefloatywindow_toggle">#</a></span></h2>
+<p>如果悬浮窗是折叠状态，则展开悬浮窗；如果是展开状态，则折叠悬浮窗。</p>
+<h2>ExpandableFloatyWindow.isExpanded();<span><a class="mark" href="#floaty_expandablefloatywindow_isexpanded" id="floaty_expandablefloatywindow_isexpanded">#</a></span></h2>
+<p>返回悬浮窗是否是展开状态。</p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>
