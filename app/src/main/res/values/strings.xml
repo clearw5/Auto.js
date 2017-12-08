@@ -328,4 +328,6 @@
     <string name="text_open">打开</string>
     <string name="text_generated_code">生成结果</string>
     <string name="text_copy">复制</string>
+    <string name="format_default_package_name" formatted="true">com.example.script%d</string>
+    <string name="text_should_not_be_empty">不能为空</string>
 </resources>

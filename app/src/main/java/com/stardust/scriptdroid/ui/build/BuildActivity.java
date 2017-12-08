@@ -1,17 +1,17 @@
 package com.stardust.scriptdroid.ui.build;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.build.AutoJsApkBuilder;
 import com.stardust.scriptdroid.build.ApkBuilderPluginHelper;
-import com.stardust.scriptdroid.network.download.DownloadManager;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.ui.BaseActivity;
@@ -42,22 +42,22 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     private static final String LOG_TAG = "BuildActivity";
 
     @ViewById(R.id.source_path)
-    EditText mSourcePath;
+    TextInputEditText mSourcePath;
 
     @ViewById(R.id.output_path)
-    EditText mOutputPath;
+    TextInputEditText mOutputPath;
 
     @ViewById(R.id.app_name)
-    EditText mAppName;
+    TextInputEditText mAppName;
 
     @ViewById(R.id.package_name)
-    EditText mPackageName;
+    TextInputEditText mPackageName;
 
     @ViewById(R.id.version_name)
-    EditText mVersionName;
+    TextInputEditText mVersionName;
 
     @ViewById(R.id.version_code)
-    EditText mVersionCode;
+    TextInputEditText mVersionCode;
     private MaterialDialog mProgressDialog;
 
     @AfterViews
@@ -68,7 +68,6 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
             setupWithSourceFile(new ScriptFile(sourcePath));
         }
         showPluginDownloadDialogIfNeeded();
-
     }
 
     private void showPluginDownloadDialogIfNeeded() {
@@ -93,6 +92,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         mSourcePath.setText(file.getPath());
         mOutputPath.setText(file.getParent());
         mAppName.setText(file.getSimplifiedName());
+        mPackageName.setText(getString(R.string.format_default_package_name, System.currentTimeMillis()));
     }
 
     @Override
@@ -131,7 +131,31 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
             Toast.makeText(this, R.string.text_apk_builder_plugin_unavailable, Toast.LENGTH_SHORT).show();
             return;
         }
+        if (!checkInputs()) {
+            return;
+        }
         doBuildingApk();
+    }
+
+    private boolean checkInputs() {
+        boolean inputValid = true;
+        inputValid &= checkNotEmpty(mSourcePath);
+        inputValid &= checkNotEmpty(mOutputPath);
+        inputValid &= checkNotEmpty(mAppName);
+        inputValid &= checkNotEmpty(mSourcePath);
+        inputValid &= checkNotEmpty(mVersionCode);
+        inputValid &= checkNotEmpty(mVersionName);
+        inputValid &= checkNotEmpty(mPackageName);
+        return inputValid;
+    }
+
+    private boolean checkNotEmpty(TextInputEditText editText) {
+        if (!TextUtils.isEmpty(editText.getText()))
+            return true;
+        // TODO: 2017/12/8 more beautiful ways?
+        String hint = ((TextInputLayout) editText.getParent().getParent()).getHint().toString();
+        editText.setError(hint + getString(R.string.text_should_not_be_empty));
+        return false;
     }
 
     private void doBuildingApk() {
@@ -139,6 +163,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         String versionName = mVersionName.getText().toString();
         int versionCode = Integer.parseInt(mVersionCode.getText().toString());
         String appName = mAppName.getText().toString();
+        String packageName = mPackageName.getText().toString();
         File tmpDir = new File(getCacheDir(), "build/");
         File outApk = new File(mOutputPath.getText().toString(),
                 String.format("%s_v%s.apk", appName, versionName));
@@ -148,7 +173,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
                     return new AutoJsApkBuilder(templateApk, outApk, tmpDir.getPath())
                             .setProgressCallback(BuildActivity.this)
                             .prepare()
-                            .withConfig(new AutoJsApkBuilder.AppConfig(appName, versionName, versionCode, jsPath))
+                            .withConfig(new AutoJsApkBuilder.AppConfig(packageName, appName, versionName, versionCode, jsPath))
                             .build()
                             .sign()
                             .cleanWorkspace();
