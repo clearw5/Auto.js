@@ -88,10 +88,6 @@
             android:layout="@layout/preference_custom"
             android:title="@string/text_theme_color"
             />
-        <Preference
-            android:layout="@layout/preference_custom"
-            android:title="@string/text_reset_background"
-            />
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
     <com.stardust.theme.preference.ThemeColorPreferenceCategory

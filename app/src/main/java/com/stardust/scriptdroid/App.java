@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.multidex.MultiDexApplication;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -18,7 +17,6 @@ import com.raizlabs.android.dbflow.runtime.DirectModelNotifier;
 import com.squareup.leakcanary.LeakCanary;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.autojs.key.GlobalKeyObserver;
-import com.stardust.scriptdroid.autojs.record.GlobalRecorder;
 import com.stardust.scriptdroid.network.GlideApp;
 import com.stardust.scriptdroid.storage.database.TimedTaskDatabase;
 import com.stardust.scriptdroid.timing.TimedTaskScheduler;
@@ -31,12 +29,7 @@ import com.stardust.util.UiHandler;
 import org.autojs.dynamiclayoutinflater.ImageLoader;
 import org.autojs.dynamiclayoutinflater.util.Drawables;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
-
-import okhttp3.Headers;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -90,7 +83,6 @@ public class App extends MultiDexApplication {
         ThemeColorManager.init(this);
         AutoJs.initInstance(this);
         GlobalKeyObserver.getSingleton();
-        GlobalRecorder.initSingleton(this);
         setupDrawableImageLoader();
         TimedTaskScheduler.setupRepeating(this);
     }

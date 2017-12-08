@@ -6,6 +6,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.stardust.auojs.inrt.App;
+import com.stardust.auojs.inrt.Pref;
 import com.stardust.auojs.inrt.R;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.view.accessibility.AccessibilityService;
@@ -32,6 +33,7 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         super(context);
     }
 
+
     @Override
     public void ensureAccessibilityServiceEnabled() {
         if (AccessibilityService.getInstance() != null) {
@@ -41,7 +43,11 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         if (AccessibilityServiceUtils.isAccessibilityServiceEnabled(getApplication(), AccessibilityService.class)) {
             errorMessage = App.getApp().getString(R.string.text_auto_operate_service_enabled_but_not_running);
         } else {
-            if (!AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(getApplication(), 2000)) {
+            if (Pref.shouldEnableAccessibilityServiceByRoot()) {
+                if (!AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(getApplication(), 2000)) {
+                    errorMessage = App.getApp().getString(R.string.text_enable_accessibility_service_by_root_timeout);
+                }
+            } else {
                 errorMessage = App.getApp().getString(R.string.text_no_accessibility_permission);
             }
         }
@@ -50,6 +56,7 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
             throw new ScriptException(errorMessage);
         }
     }
+
 
     @Override
     protected Application getApplication() {

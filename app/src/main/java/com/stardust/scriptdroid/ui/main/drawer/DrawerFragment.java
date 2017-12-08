@@ -1,7 +1,5 @@
 package com.stardust.scriptdroid.ui.main.drawer;
 
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -248,7 +246,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     }
 
     private void enableAccessibilityServiceByRootIfNeeded() {
-        Observable.fromCallable(() -> Pref.enableAccessibilityServiceByRoot() && !isAccessibilityServiceEnabled())
+        Observable.fromCallable(() -> Pref.shouldEnableAccessibilityServiceByRoot() && !isAccessibilityServiceEnabled())
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(needed -> {
@@ -336,7 +334,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     }
 
     private void enableAccessibilityService() {
-        if (!Pref.enableAccessibilityServiceByRoot()) {
+        if (!Pref.shouldEnableAccessibilityServiceByRoot()) {
             AccessibilityServiceTool.goToAccessibilitySetting();
             return;
         }

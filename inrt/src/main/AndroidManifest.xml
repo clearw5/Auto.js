@@ -4,6 +4,7 @@
           package="com.stardust.auojs.inrt">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
@@ -24,9 +25,11 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".SettingsActivity"/>
+
         <service
-            android:name="com.stardust.view.accessibility.AccessibilityService"
-            android:label="@string/_app_name"
+            android:name=".rt.AccessibilityService"
+            android:label="inrt"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService"/>

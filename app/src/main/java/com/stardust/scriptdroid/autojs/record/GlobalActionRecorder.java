@@ -2,16 +2,11 @@ package com.stardust.scriptdroid.autojs.record;
 
 import android.content.Context;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.view.ContextThemeWrapper;
-import android.view.View;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.DialogUtils;
 import com.stardust.autojs.core.record.Recorder;
-import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;
 import com.stardust.autojs.core.record.inputevent.InputEventRecorder;
 import com.stardust.autojs.core.record.inputevent.InputEventToAutoFileRecorder;
 import com.stardust.autojs.core.record.inputevent.InputEventToRootAutomatorRecorder;
@@ -19,14 +14,11 @@ import com.stardust.autojs.core.record.inputevent.TouchRecorder;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.accessibility.AccessibilityEventHelper;
-import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -34,27 +26,23 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created by Stardust on 2017/8/6.
  */
 
-public class GlobalRecorder implements Recorder.OnStateChangedListener {
+public class GlobalActionRecorder implements Recorder.OnStateChangedListener {
 
-    private static GlobalRecorder sSingleton;
-    private Recorder mRecorder;
+    private static GlobalActionRecorder sSingleton;
     private CopyOnWriteArrayList<Recorder.OnStateChangedListener> mOnStateChangedListeners = new CopyOnWriteArrayList<>();
     private TouchRecorder mTouchRecorder;
     private Context mContext;
     private boolean mDiscard = false;
 
-    public static GlobalRecorder getSingleton(Context context) {
+    public static GlobalActionRecorder getSingleton(Context context) {
         if (sSingleton == null) {
-            sSingleton = new GlobalRecorder(context);
+            sSingleton = new GlobalActionRecorder(context);
         }
         return sSingleton;
     }
 
-    public static void initSingleton(Context context) {
-        getSingleton(context);
-    }
 
-    public GlobalRecorder(Context context) {
+    public GlobalActionRecorder(Context context) {
         mContext = new ContextThemeWrapper(context.getApplicationContext(), R.style.AppTheme);
         mTouchRecorder = new TouchRecorder(context) {
             @Override
@@ -69,43 +57,37 @@ public class GlobalRecorder implements Recorder.OnStateChangedListener {
     }
 
 
-
     public void start() {
-        if (Pref.isRecordWithRootEnabled()) {
-            mTouchRecorder.reset();
-            mRecorder = mTouchRecorder;
-        } else {
-            mRecorder = AutoJs.getInstance().getAccessibilityActionRecorder();
-        }
+        mTouchRecorder.reset();
         mDiscard = false;
-        mRecorder.setOnStateChangedListener(this);
-        mRecorder.start();
+        mTouchRecorder.setOnStateChangedListener(this);
+        mTouchRecorder.start();
     }
 
     public void pause() {
-        mRecorder.pause();
+        mTouchRecorder.pause();
     }
 
     public void resume() {
-        mRecorder.resume();
+        mTouchRecorder.resume();
     }
 
     public void stop() {
-        mRecorder.stop();
+        mTouchRecorder.stop();
     }
 
     public String getCode() {
-        return mRecorder.getCode();
+        return mTouchRecorder.getCode();
     }
 
     public String getPath() {
-        return mRecorder.getPath();
+        return mTouchRecorder.getPath();
     }
 
     public int getState() {
-        if (mRecorder == null)
+        if (mTouchRecorder == null)
             return Recorder.STATE_NOT_START;
-        return mRecorder.getState();
+        return mTouchRecorder.getState();
     }
 
 
@@ -159,34 +141,18 @@ public class GlobalRecorder implements Recorder.OnStateChangedListener {
         stop();
     }
 
-    @Subscribe
-    public void onAccessibilityActionRecordEvent(AccessibilityActionRecorder.AccessibilityActionRecordEvent event) {
-        if (Pref.isRecordToastEnabled()) {
-            App.getApp().getUiHandler().toast(AccessibilityEventHelper.getEventTypeNameResId(event.getAccessibilityEvent()));
-        }
-    }
 
     private void handleRecordedScript(final String script) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             showRecordHandleDialog(script);
         } else {
-            App.getApp().getUiHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    showRecordHandleDialog(script);
-                }
-            });
+            App.getApp().getUiHandler().post(() -> showRecordHandleDialog(script));
         }
     }
 
     private void handleRecordedFile(final String path) {
         if (Looper.myLooper() != Looper.getMainLooper()) {
-            App.getApp().getUiHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    handleRecordedFile(path);
-                }
-            });
+            App.getApp().getUiHandler().post(() -> handleRecordedFile(path));
             return;
         }
         new ScriptOperations(mContext, null)
@@ -200,25 +166,17 @@ public class GlobalRecorder implements Recorder.OnStateChangedListener {
         DialogUtils.showDialog(new ThemeColorMaterialDialogBuilder(mContext)
                 .title(R.string.text_recorded)
                 .items(getString(R.string.text_new_file), getString(R.string.text_copy_to_clip))
-                .itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                        if (position == 0) {
-                            new ScriptOperations(mContext, null)
-                                    .newScriptFileForScript(script);
-                        } else {
-                            ClipboardUtil.setClip(mContext, script);
-                            Toast.makeText(mContext, R.string.text_already_copy_to_clip, Toast.LENGTH_SHORT).show();
-                        }
+                .itemsCallback((dialog, itemView, position, text) -> {
+                    if (position == 0) {
+                        new ScriptOperations(mContext, null)
+                                .newScriptFileForScript(script);
+                    } else {
+                        ClipboardUtil.setClip(mContext, script);
+                        Toast.makeText(mContext, R.string.text_already_copy_to_clip, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .negativeText(R.string.text_cancel)
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                })
+                .onNegative((dialog, which) -> dialog.dismiss())
                 .canceledOnTouchOutside(false)
                 .build());
     }

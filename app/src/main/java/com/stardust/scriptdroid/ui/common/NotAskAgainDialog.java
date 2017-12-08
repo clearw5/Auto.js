@@ -36,12 +36,7 @@ public class NotAskAgainDialog extends MaterialDialog {
             super(context);
             mKeyRemind = key;
             readRemindStatus();
-            checkBoxPrompt(context.getString(R.string.text_do_not_remind_again), false, new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    setRemindState(!isChecked);
-                }
-            });
+            checkBoxPrompt(context.getString(R.string.text_do_not_remind_again), false, (buttonView, isChecked) -> setRemindState(!isChecked));
         }
 
         public MaterialDialog show() {

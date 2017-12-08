@@ -3,4 +3,20 @@
     <string name="text_no_accessibility_permission">无障碍服务未启动</string>
     <string name="text_auto_operate_service_enabled_but_not_running">无障碍服务已启用但没有运行，您可以尝试重新启用或重启手机</string>
     <string name="text_enable_accessibility_service_by_root_timeout">使用root权限启用无障碍服务失败</string>
+    <string name="text_settings">设置</string>
+    <string name="text_script_running">脚本运行</string>
+
+    <string name="key_use_volume_control_running">key_use_volume_control_running</string>
+    <string name="key_enable_accessibility_service_by_root">key_enable_accessibility_service_by_root</string>
+    <string name="text_use_volume_to_stop_running">音量上键停止所有脚本</string>
+    <string name="summary_enable_accessibility_service_by_root">开启后运行脚本会使用Root权限自动开启无障碍服务</string>
+    <string name="text_enable_accessibility_service_by_root">使用Root权限自动启用服务</string>
+    <string name="key_stable_mode">key_stable_mode</string>
+    <string name="summary_stable_mode">开启后布局分析更稳定，但小部分脚本可能无法正常运行。重启无障碍服务生效</string>
+    <string name="text_stable_mode">稳定模式</string>
+    <string name="text_accessibility_service">无障碍服务</string>
+    <string name="text_dont_show_main_activity">不显示主界面</string>
+    <string name="key_dont_show_main_activity">key_dont_show_main_activity</string>
+    <string name="summary_dont_show_main_activity">打开应用后直接运行脚本</string>
+    <string name="text_others">其他</string>
 </resources>

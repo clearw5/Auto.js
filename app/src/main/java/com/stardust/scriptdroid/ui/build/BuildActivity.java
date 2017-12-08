@@ -103,7 +103,11 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
 
     private void setupWithSourceFile(ScriptFile file) {
         mSourcePath.setText(file.getPath());
-        mOutputPath.setText(file.getParent());
+        String dir = file.getParent();
+        if (dir.startsWith(getFilesDir().getPath())) {
+            dir = StorageFileProvider.DEFAULT_DIRECTORY_PATH;
+        }
+        mOutputPath.setText(dir);
         mAppName.setText(file.getSimplifiedName());
         mPackageName.setText(getString(R.string.format_default_package_name, System.currentTimeMillis()));
     }

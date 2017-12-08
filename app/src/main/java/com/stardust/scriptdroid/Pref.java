@@ -52,28 +52,16 @@ public class Pref {
         return 0;
     }
 
-    public static boolean isRecordVolumeControlEnable() {
-        return def().getBoolean(getString(R.string.key_use_volume_control_record), false);
-    }
-
     public static boolean isRunningVolumeControlEnabled() {
         return def().getBoolean(getString(R.string.key_use_volume_control_running), false);
     }
 
-    public static boolean enableAccessibilityServiceByRoot() {
+    public static boolean shouldEnableAccessibilityServiceByRoot() {
         return def().getBoolean(getString(R.string.key_enable_accessibility_service_by_root), false);
     }
 
     private static String getString(int id) {
         return App.getApp().getString(id);
-    }
-
-    public static int getMaxTextLengthForCodeCompletion() {
-        try {
-            return Integer.parseInt(def().getString(App.getApp().getString(R.string.key_max_length_for_code_completion), "2000"));
-        } catch (NumberFormatException e) {
-            return 2000;
-        }
     }
 
     public static boolean isFirstUsing() {

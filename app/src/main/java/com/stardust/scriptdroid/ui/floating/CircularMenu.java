@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -20,9 +19,10 @@ import com.stardust.floatingcircularactionmenu.CircularActionMenuFloaty;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.autojs.record.GlobalRecorder;
+import com.stardust.scriptdroid.autojs.record.GlobalActionRecorder;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
+import com.stardust.scriptdroid.ui.common.NotAskAgainDialog;
 import com.stardust.scriptdroid.ui.floating.layoutinspector.LayoutBoundsFloatyWindow;
 import com.stardust.scriptdroid.ui.floating.layoutinspector.LayoutHierarchyFloatyWindow;
 import com.stardust.scriptdroid.ui.main.MainActivity_;
@@ -30,6 +30,7 @@ import com.stardust.scriptdroid.ui.main.scripts.ScriptListView;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.view.accessibility.LayoutInspector;
+import com.stericson.RootShell.RootShell;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -71,7 +72,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
     private int mState;
     private ImageView mActionViewIcon;
     private Context mContext;
-    private GlobalRecorder mRecorder;
+    private GlobalActionRecorder mRecorder;
     private MaterialDialog mSettingsDialog;
     private String mRunningPackage, mRunningActivity;
 
@@ -79,7 +80,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
         mContext = new ContextThemeWrapper(context, R.style.AppTheme);
         initFloaty();
         setupListeners();
-        mRecorder = GlobalRecorder.getSingleton(context);
+        mRecorder = GlobalActionRecorder.getSingleton(context);
         mRecorder.addOnStateChangedListener(this);
     }
 
@@ -138,7 +139,18 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
     @OnClick(R.id.record)
     void startRecord() {
         mWindow.collapse();
-        mRecorder.start();
+        if (!RootShell.isRootAvailable()) {
+            new NotAskAgainDialog.Builder(mContext, "root")
+                    .title(R.string.text_device_not_rooted)
+                    .content(R.string.prompt_device_not_rooted)
+                    .neutralText(R.string.text_device_rooted)
+                    .positiveText(R.string.ok)
+                    .onNeutral(((dialog, which) -> mRecorder.start()))
+                    .show();
+        } else {
+            mRecorder.start();
+
+        }
     }
 
     private void setState(int state) {

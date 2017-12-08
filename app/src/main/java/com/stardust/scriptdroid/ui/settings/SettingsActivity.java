@@ -106,61 +106,18 @@ public class SettingsActivity extends BaseActivity {
         public void onStart() {
             super.onStart();
             ACTION_MAP = new MapEntries<String, Runnable>()
-                    .entry(getString(R.string.text_theme_color), new Runnable() {
-                        @Override
-                        public void run() {
-                            selectThemeColor(getActivity());
-                        }
+                    .entry(getString(R.string.text_theme_color), () -> selectThemeColor(getActivity()))
+                    .entry(getString(R.string.show_ad), () -> {
+                        SplashActivity_.intent(getActivity())
+                                .extra(SplashActivity.NOT_START_MAIN_ACTIVITY, true)
+                                .extra(SplashActivity.FORCE_SHOW_AD, true)
+                                .start();
                     })
-                    .entry(getString(R.string.text_reset_background), new Runnable() {
-                        @Override
-                        public void run() {
-                            // EventBus.getDefault().post(new MessageEvent(MainActivity.MESSAGE_CLEAR_BACKGROUND_SETTINGS));
-                            Toast.makeText(getActivity(), R.string.text_already_reset, Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .entry(getString(R.string.show_ad), new Runnable() {
-                        @Override
-                        public void run() {
-                            SplashActivity_.intent(getActivity())
-                                    .extra(SplashActivity.NOT_START_MAIN_ACTIVITY, true)
-                                    .extra(SplashActivity.FORCE_SHOW_AD, true)
-                                    .start();
-                        }
-                    })
-                    .entry(getString(R.string.text_check_for_updates), new Runnable() {
-                        @Override
-                        public void run() {
-                            new UpdateCheckDialog(getActivity())
-                                    .show();
-                        }
-                    })
-                    .entry(getString(R.string.text_issue_report), new Runnable() {
-                        @Override
-                        public void run() {
-                            startActivity(new Intent(getActivity(), IssueReporterActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                        }
-                    })
-                    .entry(getString(R.string.text_join_qq_group), new Runnable() {
-                        @Override
-                        public void run() {
-                            if (!IntentUtil.joinQQGroup(getActivity(), "-7riBQuwFUUqdgYL5vFeIdBfH4H9m-Uj")) {
-                                Toast.makeText(getActivity(), R.string.text_mobile_qq_not_installed, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    })
-                    .entry(getString(R.string.text_about_me_and_repo), new Runnable() {
-                        @Override
-                        public void run() {
-                            startActivity(new Intent(getActivity(), AboutActivity_.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                        }
-                    })
-                    .entry(getString(R.string.text_licenses), new Runnable() {
-                        @Override
-                        public void run() {
-                            showLicenseDialog();
-                        }
-                    })
+                    .entry(getString(R.string.text_check_for_updates), () -> new UpdateCheckDialog(getActivity())
+                            .show())
+                    .entry(getString(R.string.text_issue_report), () -> startActivity(new Intent(getActivity(), IssueReporterActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)))
+                    .entry(getString(R.string.text_about_me_and_repo), () -> startActivity(new Intent(getActivity(), AboutActivity_.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)))
+                    .entry(getString(R.string.text_licenses), () -> showLicenseDialog())
                     .map();
         }
 

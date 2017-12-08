@@ -22,7 +22,7 @@ public class AccessibilityServiceTool {
     private static final Class<AccessibilityService> sAccessibilityServiceClass = AccessibilityService.class;
 
     public static void enableAccessibilityService() {
-        if (Pref.enableAccessibilityServiceByRoot()) {
+        if (Pref.shouldEnableAccessibilityServiceByRoot()) {
             if (!enableAccessibilityServiceByRoot(sAccessibilityServiceClass)) {
                 goToAccessibilitySetting();
             }
@@ -72,7 +72,7 @@ public class AccessibilityServiceTool {
 
     public static void enableAccessibilityServiceByRootIfNeeded() {
         if (AccessibilityService.getInstance() == null)
-            if (Pref.enableAccessibilityServiceByRoot()) {
+            if (Pref.shouldEnableAccessibilityServiceByRoot()) {
                 AccessibilityServiceTool.enableAccessibilityServiceByRoot(sAccessibilityServiceClass);
             }
     }

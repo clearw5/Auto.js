@@ -19,8 +19,9 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.stardust.autojs.core.console.ConsoleView
-        android:id="@+id/console"
+    <FrameLayout
+        android:id="@+id/fragment_setting"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:background="@android:color/white"/>
 </LinearLayout>

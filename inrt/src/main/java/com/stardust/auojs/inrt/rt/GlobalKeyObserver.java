@@ -1,13 +1,11 @@
-package com.stardust.scriptdroid.autojs.key;
+package com.stardust.auojs.inrt.rt;
 
 import android.util.Log;
 import android.view.KeyEvent;
 
+import com.stardust.auojs.inrt.Pref;
 import com.stardust.autojs.core.inputevent.InputEventObserver;
 import com.stardust.autojs.core.inputevent.ShellKeyObserver;
-import com.stardust.event.EventDispatcher;
-import com.stardust.scriptdroid.Pref;
-import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.OnKeyListener;
 
@@ -18,15 +16,8 @@ import com.stardust.view.accessibility.OnKeyListener;
 public class GlobalKeyObserver implements OnKeyListener, ShellKeyObserver.KeyListener {
 
 
-    public interface OnVolumeDownListener {
-        void onVolumeDown();
-    }
-
-    private static final EventDispatcher.Event<OnVolumeDownListener> VOLUME_DOWN_EVENT = OnVolumeDownListener::onVolumeDown;
     private static final String LOG_TAG = "GlobalKeyObserver";
-    private static final long EVENT_TIMEOUT = 200;
     private static GlobalKeyObserver sSingleton = new GlobalKeyObserver();
-    private EventDispatcher<OnVolumeDownListener> mVolumeDownEventDispatcher = new EventDispatcher<>();
     private boolean mVolumeDownFromShell, mVolumeDownFromAccessibility;
     private boolean mVolumeUpFromShell, mVolumeUpFromAccessibility;
 
@@ -38,32 +29,15 @@ public class GlobalKeyObserver implements OnKeyListener, ShellKeyObserver.KeyLis
         InputEventObserver.getGlobal().addListener(observer);
     }
 
-    public static GlobalKeyObserver getSingleton() {
-        return sSingleton;
-    }
-
     public static void init() {
         //do nothing
     }
 
     public void onVolumeUp() {
         Log.d(LOG_TAG, "onVolumeUp at " + System.currentTimeMillis());
-        if (Pref.isRunningVolumeControlEnabled()) {
+        if (Pref.shouldStopAllScriptsWhenVolumeUp()) {
             AutoJs.getInstance().getScriptEngineService().stopAllAndToast();
         }
-    }
-
-    public void onVolumeDown() {
-        Log.d(LOG_TAG, "onVolumeDown at " + System.currentTimeMillis());
-        mVolumeDownEventDispatcher.dispatchEvent(VOLUME_DOWN_EVENT);
-    }
-
-    public void addVolumeDownListener(OnVolumeDownListener listener) {
-        mVolumeDownEventDispatcher.addListener(listener);
-    }
-
-    public boolean removeVolumeDownListener(OnVolumeDownListener listener) {
-        return mVolumeDownEventDispatcher.removeListener(listener);
     }
 
     @Override
@@ -85,6 +59,10 @@ public class GlobalKeyObserver implements OnKeyListener, ShellKeyObserver.KeyLis
             mVolumeUpFromAccessibility = true;
             onVolumeUp();
         }
+    }
+
+    public void onVolumeDown() {
+
     }
 
 

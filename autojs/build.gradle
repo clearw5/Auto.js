@@ -55,7 +55,8 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.9.0'
     //JDeferred
     compile 'org.jdeferred:jdeferred-android-aar:1.2.6'
-
+    //RootShell
+    compile 'com.github.Stericson:RootShell:1.6'
     // Gson
     compile 'com.google.code.gson:gson:2.8.0'
     // Terminal emulator
