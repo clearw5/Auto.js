@@ -18,7 +18,6 @@ import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
 
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -53,7 +52,6 @@ public class GlobalActionRecorder implements Recorder.OnStateChangedListener {
                     return new InputEventToRootAutomatorRecorder();
             }
         };
-        EventBus.getDefault().register(this);
     }
 
 

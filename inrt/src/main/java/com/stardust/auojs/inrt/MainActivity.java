@@ -3,10 +3,10 @@ package com.stardust.auojs.inrt;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +15,6 @@ import com.stardust.auojs.inrt.rt.AutoJs;
 import com.stardust.autojs.core.console.ConsoleView;
 import com.stardust.autojs.core.console.StardustConsole;
 import com.stardust.autojs.script.StringScriptSource;
-import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
 
 import java.util.ArrayList;
@@ -56,22 +55,22 @@ public class MainActivity extends AppCompatActivity {
                 AutoJs.getInstance().getGlobalConsole().log(e);
             }
         }).start();
-        if(!Pref.shouldShowMainActivity()){
+        if (!Pref.shouldShowMainActivity()) {
             finish();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        System.out.println(PFiles.read("/sdcard/1.txt"));
         runScript();
     }
+
     protected void checkPermission(String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             String[] requestPermissions = getRequestPermissions(permissions);
             if (requestPermissions.length > 0) {
                 requestPermissions(requestPermissions, PERMISSION_REQUEST_CODE);
-            }else {
+            } else {
                 runScript();
             }
         } else {
