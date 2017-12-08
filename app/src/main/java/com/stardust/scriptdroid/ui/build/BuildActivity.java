@@ -1,11 +1,15 @@
 package com.stardust.scriptdroid.ui.build;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -14,8 +18,11 @@ import com.stardust.scriptdroid.autojs.build.AutoJsApkBuilder;
 import com.stardust.scriptdroid.build.ApkBuilderPluginHelper;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.model.script.ScriptFile;
+import com.stardust.scriptdroid.tool.BitmapTool;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.filechooser.FileChooserDialogBuilder;
+import com.stardust.scriptdroid.ui.shortcut.ShortcutIconSelectActivity;
+import com.stardust.scriptdroid.ui.shortcut.ShortcutIconSelectActivity_;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.IntentUtil;
 
@@ -26,6 +33,7 @@ import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -58,7 +66,12 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
 
     @ViewById(R.id.version_code)
     TextInputEditText mVersionCode;
+
+    @ViewById(R.id.icon)
+    ImageView mIcon;
+
     private MaterialDialog mProgressDialog;
+    private boolean mIsDefaultIcon = true;
 
     @AfterViews
     void setupViews() {
@@ -125,6 +138,12 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
                 .show();
     }
 
+    @Click(R.id.icon)
+    void selectIcon() {
+        ShortcutIconSelectActivity_.intent(this)
+                .startForResult(31209);
+    }
+
     @Click(R.id.fab)
     void buildApk() {
         if (!ApkBuilderPluginHelper.checkPlugin(this)) {
@@ -173,7 +192,16 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
                     return new AutoJsApkBuilder(templateApk, outApk, tmpDir.getPath())
                             .setProgressCallback(BuildActivity.this)
                             .prepare()
-                            .withConfig(new AutoJsApkBuilder.AppConfig(packageName, appName, versionName, versionCode, jsPath))
+                            .withConfig(new AutoJsApkBuilder.AppConfig()
+                                    .setAppName(appName)
+                                    .setJsPath(jsPath)
+                                    .setPackageName(packageName)
+                                    .setVersionCode(versionCode)
+                                    .setVersionName(versionName)
+                                    .setIcon(mIsDefaultIcon ? null : (Callable<Bitmap>) () ->
+                                            BitmapTool.drawableToBitmap(mIcon.getDrawable())
+                                    )
+                            )
                             .build()
                             .sign()
                             .cleanWorkspace();
@@ -234,5 +262,34 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     @Override
     public void onClean(AutoJsApkBuilder builder) {
         mProgressDialog.setContent(R.string.apk_builder_clean);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        String packageName = data.getStringExtra(ShortcutIconSelectActivity.EXTRA_PACKAGE_NAME);
+        if (packageName != null) {
+            try {
+                mIcon.setImageDrawable(getPackageManager().getApplicationIcon(packageName));
+                mIsDefaultIcon = false;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+        if (data.getData() == null)
+            return;
+        Observable.fromCallable(() -> BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData())))
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((bitmap -> {
+                    mIcon.setImageBitmap(bitmap);
+                    mIsDefaultIcon = false;
+                }), error -> {
+                    Log.e(LOG_TAG, "decode stream", error);
+                });
+
     }
 }

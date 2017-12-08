@@ -261,7 +261,7 @@
     <string name="text_search">搜索</string>
     <string name="text_floating_edit">悬浮编辑</string>
     <string name="text_select_icon">选择图标</string>
-    <string name="text_use_android_n_shortcut">添加到图标快捷方式</string>
+    <string name="text_use_android_n_shortcut">添加到安卓7.0 Shortcut</string>
     <string name="text_login_succeed">登录成功</string>
     <string name="text_login_fail">登录失败</string>
     <string name="text_reset_password">重置密码</string>
@@ -330,4 +330,5 @@
     <string name="text_copy">复制</string>
     <string name="format_default_package_name" formatted="true">com.example.script%d</string>
     <string name="text_should_not_be_empty">不能为空</string>
+    <string name="text_icon">图标</string>
 </resources>

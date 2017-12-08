@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import com.stardust.BuildConfig;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.DeveloperUtils;
 
@@ -25,6 +26,9 @@ public class ApkBuilderPluginHelper {
 
     public static InputStream openTemplateApk(Context context) {
         try {
+            if (BuildConfig.DEBUG) {
+                return context.getAssets().open(TEMPLATE_APK_PATH);
+            }
             return context.getPackageManager().getResourcesForApplication(PLUGIN_PACKAGE_NAME)
                     .getAssets().open(TEMPLATE_APK_PATH);
         } catch (IOException e) {
