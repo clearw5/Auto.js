@@ -158,7 +158,6 @@
                                 android:id="@+id/package_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_."
                                 android:hint="@string/text_package_name"/>
                         </android.support.design.widget.TextInputLayout>
 

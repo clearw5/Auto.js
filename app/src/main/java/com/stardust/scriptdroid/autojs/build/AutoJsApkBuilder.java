@@ -1,15 +1,11 @@
 package com.stardust.scriptdroid.autojs.build;
 
 import com.stardust.autojs.apkbuilder.ApkBuilder;
-import com.stardust.autojs.apkbuilder.ManifestEditor;
-import com.stardust.autojs.apkbuilder.util.StreamUtils;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.ui.build.BuildActivity;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -36,10 +32,8 @@ public class AutoJsApkBuilder extends ApkBuilder {
         String versionName;
         int versionCode;
         String jsPath;
-        String packageName;
 
-        public AppConfig(String packageName, String appName, String versionName, int versionCode, String jsPath) {
-            this.packageName = packageName;
+        public AppConfig(String appName, String versionName, int versionCode, String jsPath) {
             this.appName = appName;
             this.versionName = versionName;
             this.versionCode = versionCode;
@@ -48,17 +42,13 @@ public class AutoJsApkBuilder extends ApkBuilder {
     }
 
     private ProgressCallback mProgressCallback;
-    private ManifestEditor mManifestEditor;
-    private String mWorkspacePath;
 
     public AutoJsApkBuilder(InputStream apkInputStream, File outApkFile, String workspacePath) {
         super(apkInputStream, outApkFile, workspacePath);
-        mWorkspacePath = workspacePath;
     }
 
     public AutoJsApkBuilder(File inFile, File outFile, String workspacePath) throws FileNotFoundException {
         super(inFile, outFile, workspacePath);
-        mWorkspacePath = workspacePath;
     }
 
     public AutoJsApkBuilder setProgressCallback(ProgressCallback callback) {
@@ -79,18 +69,11 @@ public class AutoJsApkBuilder extends ApkBuilder {
         return this;
     }
 
-    @Override
-    public ApkBuilder replaceFile(String relativePath, String newFilePath) throws IOException {
-        StreamUtils.write(new FileInputStream(newFilePath), new FileOutputStream(new File(this.mWorkspacePath, relativePath)));
-        return this;
-    }
-
     public AutoJsApkBuilder withConfig(AppConfig config) throws IOException {
-        mManifestEditor = editManifest().setAppName(config.appName)
+        editManifest().setAppName(config.appName)
                 .setVersionName(config.versionName)
                 .setVersionCode(config.versionCode)
-                .setPackageName(config.packageName);
-        setArscPackageName(config.packageName);
+                .commit();
         setScriptFile(config.jsPath);
         return this;
     }
@@ -100,8 +83,6 @@ public class AutoJsApkBuilder extends ApkBuilder {
         if (mProgressCallback != null) {
             App.getApp().getUiHandler().post(() -> mProgressCallback.onBuild(AutoJsApkBuilder.this));
         }
-        mManifestEditor.commit();
-        mManifestEditor = null;
         return (AutoJsApkBuilder) super.build();
     }
 
