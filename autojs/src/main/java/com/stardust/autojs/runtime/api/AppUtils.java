@@ -59,7 +59,7 @@ public class AppUtils {
         List<ApplicationInfo> installedApplications = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
         for (ApplicationInfo applicationInfo : installedApplications) {
             if (packageManager.getApplicationLabel(applicationInfo).toString().equals(appName)) {
-                return applicationInfo.processName;
+                return applicationInfo.packageName;
             }
         }
         return null;
