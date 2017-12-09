@@ -32,21 +32,37 @@ public class TemplateMatching {
         return fastTemplateMatching(img, template, MATCHING_METHOD_DEFAULT, 0.75f, threshold, MAX_LEVEL_AUTO);
     }
 
-
+    /**
+     * 采用图像金字塔算法快速找图
+     *
+     * @param img             图片
+     * @param template        模板图片
+     * @param matchMethod     匹配算法
+     * @param weakThreshold   弱阈值。该值用于在每一轮模板匹配中检验是否继续匹配。如果相似度小于该值，则不再继续匹配。
+     * @param strictThreshold 强阈值。该值用于检验最终匹配结果，以及在每一轮匹配中如果相似度大于该值则直接返回匹配结果。
+     * @param maxLevel        图像金字塔的层数
+     * @return
+     */
     public static Point fastTemplateMatching(Mat img, Mat template, int matchMethod, float weakThreshold, float strictThreshold, int maxLevel) {
         TimingLogger logger = new TimingLogger(LOG_TAG, "fast_tm");
         if (maxLevel == MAX_LEVEL_AUTO) {
+            //自动选取金字塔层数
             maxLevel = selectPyramidLevel(img, template);
             logger.addSplit("selectPyramidLevel:" + maxLevel);
         }
+        //保存每一轮匹配到模板图片在原图片的位置
         Point p = null;
         Mat matchResult;
         double similarity = 0;
+        boolean isFirstMatching = true;
         for (int level = maxLevel; level >= 0; level--) {
+            //放缩图片
             Mat src = getPyramidDownAtLevel(img, level);
             Mat currentTemplate = getPyramidDownAtLevel(template, level);
+            //如果在上一轮中没有匹配到图片，则考虑是否退出匹配
             if (p == null) {
-                if (!shouldContinueMatching(level, maxLevel)) {
+                //如果不是第一次匹配，并且不满足shouldContinueMatching的条件，则直接退出匹配（返回null）
+                if (!isFirstMatching && !shouldContinueMatching(level, maxLevel)) {
                     break;
                 }
                 matchResult = matchTemplate(src, currentTemplate, matchMethod);
@@ -54,9 +70,11 @@ public class TemplateMatching {
                 p = bestMatched.first;
                 similarity = bestMatched.second;
             } else {
+                //根据上一轮的匹配点，计算本次匹配的区域
                 Rect r = getROI(p, src, currentTemplate);
                 matchResult = matchTemplate(new Mat(src, r), currentTemplate, matchMethod);
                 Pair<Point, Double> bestMatched = getBestMatched(matchResult, matchMethod, weakThreshold);
+                //不满足弱阈值，返回null
                 if (bestMatched.second < weakThreshold) {
                     p = null;
                     break;
@@ -65,12 +83,14 @@ public class TemplateMatching {
                 similarity = bestMatched.second;
                 p.x += r.x;
                 p.y += r.y;
+                //满足强阈值，返回当前结果
                 if (bestMatched.second >= strictThreshold) {
                     pyrUp(p, level);
                     break;
                 }
             }
             logger.addSplit("level:" + level + " point:" + p);
+            isFirstMatching = false;
         }
         logger.addSplit("result:" + p);
         logger.dumpToLog();
