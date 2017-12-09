@@ -11,6 +11,7 @@ import android.view.accessibility.AccessibilityEvent;
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.eventloop.EventEmitter;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.notification.Notification;
 import com.stardust.notification.NotificationListenerService;
 import com.stardust.autojs.runtime.ScriptBridges;
@@ -40,12 +41,14 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     private Loopers mLoopers;
     private Handler mHandler;
     private boolean mListeningNotification = false;
+    private ScriptRuntime mScriptRuntime;
 
-    public Events(Context context, AccessibilityBridge accessibilityBridge, ScriptBridges bridges, Loopers loopers) {
-        super(bridges);
+    public Events(Context context, AccessibilityBridge accessibilityBridge, ScriptRuntime runtime) {
+        super(runtime.bridges);
         mAccessibilityBridge = accessibilityBridge;
         mContext = context;
-        mLoopers = loopers;
+        mLoopers = runtime.loopers;
+        mScriptRuntime = runtime;
     }
 
     public EventEmitter emitter() {
@@ -55,6 +58,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     public void observeKey() {
         if (mListeningKey)
             return;
+        mScriptRuntime.ensureAccessibilityServiceEnabled();
         AccessibilityService service = mAccessibilityBridge.getService();
         if (service == null)
             throw new ScriptException("AccessibilityService = null");

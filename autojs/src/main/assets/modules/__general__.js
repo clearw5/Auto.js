@@ -38,10 +38,12 @@ module.exports = function(__runtime__, scope){
     }
 
     scope.currentPackage = function(){
+        scope.auto();
         return __runtime__.info.getLatestPackage();
     }
 
     scope.currentActivity = function(){
+        scope.auto();
         return __runtime__.info.getLatestActivity();
     }
 
