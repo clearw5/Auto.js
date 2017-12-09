@@ -34,12 +34,7 @@ public class BubblePopupMenu extends PopupWindow {
         View view = View.inflate(context, R.layout.bubble_popup_menu, null);
         mLittleTriangle = view.findViewById(R.id.little_triangle);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.list);
-        mRecyclerView.setAdapter(new SimpleRecyclerViewAdapter<>(R.layout.bubble_popup_menu_item, options, new SimpleRecyclerViewAdapter.ViewHolderFactory<MenuItemViewHolder>() {
-            @Override
-            public MenuItemViewHolder create(View itemView) {
-                return new MenuItemViewHolder(itemView);
-            }
-        }));
+        mRecyclerView.setAdapter(new SimpleRecyclerViewAdapter<>(R.layout.bubble_popup_menu_item, options, MenuItemViewHolder::new));
         setContentView(view);
         setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         setOutsideTouchable(true);
@@ -53,8 +48,8 @@ public class BubblePopupMenu extends PopupWindow {
     public void showAsDropDownAtLocation(View parent, int contentHeight, int x, int y) {
         int screenWidth = getContentView().getResources().getDisplayMetrics().widthPixels;
         int screenHeight = getContentView().getResources().getDisplayMetrics().heightPixels;
-        int width = getContentView().getWidth();
-        int height = getContentView().getHeight();
+        int width = getContentView().getMeasuredWidth();
+        int height = getContentView().getMeasuredHeight();
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mLittleTriangle.getLayoutParams();
         if (x + width > screenWidth) {
             params.leftMargin = x + width - screenWidth;

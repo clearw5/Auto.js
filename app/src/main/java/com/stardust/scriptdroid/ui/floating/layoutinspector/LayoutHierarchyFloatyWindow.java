@@ -9,8 +9,10 @@ import android.view.WindowManager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.stardust.app.DialogUtils;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.ui.codegeneration.CodeGenerateDialog;
 import com.stardust.scriptdroid.ui.floating.FullScreenFloatyWindow;
 import com.stardust.view.accessibility.NodeInfo;
 import com.stardust.scriptdroid.ui.widget.BubblePopupMenu;
@@ -82,20 +84,25 @@ public class LayoutHierarchyFloatyWindow extends FullScreenFloatyWindow {
             return;
         mBubblePopMenu = new BubblePopupMenu(mContext, Arrays.asList(
                 mContext.getString(R.string.text_show_widget_infomation),
-                mContext.getString(R.string.text_show_layout_bounds)));
-        mBubblePopMenu.setOnItemClickListener(new BubblePopupMenu.OnItemClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                mBubblePopMenu.dismiss();
-                if (position == 0) {
-                    showNodeInfo();
-                } else {
-                    showLayoutBounds();
-                }
+                mContext.getString(R.string.text_show_layout_bounds),
+                mContext.getString(R.string.text_generate_code)));
+        mBubblePopMenu.setOnItemClickListener((view, position) -> {
+            mBubblePopMenu.dismiss();
+            if (position == 0) {
+                showNodeInfo();
+            } else if (position == 1) {
+                showLayoutBounds();
+            } else {
+                generateCode();
             }
         });
         mBubblePopMenu.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         mBubblePopMenu.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
+
+    private void generateCode() {
+        DialogUtils.showDialog(new CodeGenerateDialog(mContext, mRootNode, mSelectedNode)
+                .build());
     }
 
     private void showLayoutBounds() {

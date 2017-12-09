@@ -196,7 +196,7 @@ public class ScriptRuntime {
             throw new IllegalStateException("already initialized");
         timers = new Timers(bridges);
         loopers = new Loopers(this);
-        events = new Events(uiHandler.getContext(), accessibilityBridge, bridges, loopers);
+        events = new Events(uiHandler.getContext(), accessibilityBridge, this);
     }
 
     public static void setApplicationContext(Context context) {

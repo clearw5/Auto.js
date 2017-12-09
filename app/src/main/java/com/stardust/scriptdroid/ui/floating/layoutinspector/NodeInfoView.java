@@ -47,6 +47,7 @@ public class NodeInfoView extends RecyclerView {
             "editable",
             "enabled",
             "focusable",
+            "indexInParent",
             "longClickable",
             "row",
             "rowCount",

@@ -50,7 +50,9 @@ public class NodeInfo {
     public boolean checkable;
     public boolean focused;
     public boolean visibleToUser;
+    public int indexInParent;
     public NodeInfo parent;
+
 
 
     public NodeInfo(UiObject node, NodeInfo parent) {
@@ -87,6 +89,7 @@ public class NodeInfo {
         node.getBoundsInScreen(mBoundsInScreen);
         node.getBoundsInParent(mBoundsInParent);
         bounds = boundsToString(mBoundsInScreen);
+        indexInParent = node.indexInParent();
 
         this.parent = parent;
 
