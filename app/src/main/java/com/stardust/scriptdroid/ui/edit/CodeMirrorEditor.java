@@ -257,6 +257,12 @@ public class CodeMirrorEditor extends FrameLayout {
                 " {line: editor.getCursor().line + 1, ch: 0});");
     }
 
+    public void moveCursor(int dLine, int dCh) {
+        evalJavaScript(String.format(Locale.getDefault(),
+                "editor.setCursor({line: editor.getCursor().line + (%d), ch: editor.getCursor().ch + (%d)});",
+                dLine, dCh));
+    }
+
     public void copyLine() {
         getLine()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -561,7 +567,7 @@ public class CodeMirrorEditor extends FrameLayout {
                 post(CodeMirrorEditor.this::selectAll);
                 return true;
             }
-            if(id == android.R.id.startSelectingText){
+            if (id == android.R.id.startSelectingText) {
                 evalJavaScript("editor.setSelection(editor.getCursor(), {line: editor.getCursor().line, ch: editor.getCursor().ch - 1});");
             }
             return super.performContextMenuAction(id);

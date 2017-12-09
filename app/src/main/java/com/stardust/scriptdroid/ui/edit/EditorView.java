@@ -428,10 +428,11 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     @Override
     public void onPropertyClick(Module m, Property property) {
         if (property.isGlobal()) {
-            mEditor.insert(property.getKey());
+            mEditor.insert(property.getKey() + "()");
         } else {
-            mEditor.insert(m.getName() + "." + property.getKey());
+            mEditor.insert(m.getName() + "." + property.getKey() + "()");
         }
+        mEditor.moveCursor(0, -1);
         mFunctionsKeyboardHelper.hideFunctionsLayout(true);
     }
 
