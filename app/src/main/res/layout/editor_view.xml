@@ -139,7 +139,7 @@
                     android:layout_alignParentBottom="true"/>
 
                 <ImageView
-                    android:id="@+id/functions"
+                    android:id="@+id/properties"
                     android:layout_width="40dp"
                     android:layout_height="35dp"
                     android:layout_alignParentLeft="true"
@@ -156,8 +156,15 @@
                     android:layout_above="@+id/symbol_bar"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
-                    android:layout_toRightOf="@+id/functions"/>
+                    android:layout_toRightOf="@+id/properties"/>
+
             </RelativeLayout>
+
+            <com.stardust.scriptdroid.ui.edit.keyboard.FunctionsKeyboardView
+                android:id="@+id/functions_keyboard"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
 
         </LinearLayout>
 
@@ -166,8 +173,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"/>
-
     </android.support.v4.widget.DrawerLayout>
-
 
 </LinearLayout>

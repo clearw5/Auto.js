@@ -92,7 +92,6 @@ dependencies {
         exclude group: 'com.afollestad.material-dialogs'
         exclude group: 'com.android.support'
     })
-    //
     compile 'com.github.hyb1996:android-multi-level-listview:1.1'
     compile 'de.psdev.licensesdialog:licensesdialog:1.8.1'
     compile 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'

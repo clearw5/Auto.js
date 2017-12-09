@@ -24,7 +24,6 @@ import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
-import com.stardust.scriptdroid.ui.floating.EditorFloaty;
 import com.stardust.scriptdroid.ui.viewmodel.ScriptList;
 import com.stardust.scriptdroid.ui.widget.BindableViewHolder;
 
@@ -227,10 +226,6 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
             case R.id.run_repeatedly:
                 new ScriptLoopDialog(getContext(), mSelectedScriptFile)
                         .show();
-                notifyOperated();
-                break;
-            case R.id.floating_edit:
-                EditorFloaty.floatingEdit(getContext(), mSelectedScriptFile);
                 notifyOperated();
                 break;
             case R.id.create_shortcut:
