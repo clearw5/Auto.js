@@ -19,9 +19,14 @@ public class StringEqualsFilter extends DfsFilter {
     @Override
     protected boolean isIncluded(UiObject nodeInfo) {
         String key = mKeyGetter.getKey(nodeInfo);
-        if(key != null){
+        if (key != null) {
             return key.equals(mText);
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return mKeyGetter.toString() + "(\"" + mText + "\")";
     }
 }

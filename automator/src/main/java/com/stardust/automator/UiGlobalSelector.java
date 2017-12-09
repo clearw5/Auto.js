@@ -10,9 +10,12 @@ import com.stardust.automator.filter.ClassNameFilter;
 import com.stardust.automator.filter.DescFilter;
 import com.stardust.automator.filter.DfsFilter;
 import com.stardust.automator.filter.IdFilter;
+import com.stardust.automator.filter.IntFilter;
 import com.stardust.automator.filter.ListFilter;
 import com.stardust.automator.filter.PackageNameFilter;
 import com.stardust.automator.filter.TextFilter;
+import com.stardust.automator.simple_action.Able;
+import com.stardust.util.Supplier;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -174,6 +177,11 @@ public class UiGlobalSelector {
             @Override
             protected boolean isIncluded(UiObject nodeInfo) {
                 return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && nodeInfo.getDrawingOrder() == order;
+            }
+
+            @Override
+            public String toString() {
+                return "drawingOrder(" + order + ")";
             }
         });
         return this;
@@ -351,13 +359,65 @@ public class UiGlobalSelector {
         return this;
     }
 
+
+    //第三类 int
+    public UiGlobalSelector depth(int d) {
+        mFilters.add(new IntFilter(IntFilter.DEPTH, d));
+        return this;
+    }
+
+    public UiGlobalSelector row(int d) {
+        mFilters.add(new IntFilter(IntFilter.ROW, d));
+        return this;
+    }
+
+    public UiGlobalSelector rowCount(int d) {
+        mFilters.add(new IntFilter(IntFilter.ROW_COUNT, d));
+        return this;
+    }
+
+    public UiGlobalSelector rowSpan(int d) {
+        mFilters.add(new IntFilter(IntFilter.ROW_SPAN, d));
+        return this;
+    }
+
+    public UiGlobalSelector column(int d) {
+        mFilters.add(new IntFilter(IntFilter.COLUMN, d));
+        return this;
+    }
+
+    public UiGlobalSelector columnCount(int d) {
+        mFilters.add(new IntFilter(IntFilter.COLUMN_COUNT, d));
+        return this;
+    }
+
+    public UiGlobalSelector columnSpan(int d) {
+        mFilters.add(new IntFilter(IntFilter.COLUMN_SPAN, d));
+        return this;
+    }
+
+
+    public UiGlobalSelector filter(final BooleanFilter.BooleanSupplier filter) {
+        mFilters.add(new DfsFilter() {
+            @Override
+            protected boolean isIncluded(UiObject nodeInfo) {
+                return filter.get(nodeInfo);
+            }
+        });
+        return this;
+    }
+
     public UiObjectCollection findOf(UiObject node) {
+        return UiObjectCollection.of(findAndReturnList(node));
+    }
+
+    public List<UiObject> findAndReturnList(UiObject node) {
         List<UiObject> list = new ArrayList<>();
         list.add(node);
         for (ListFilter filter : mFilters) {
             list = filter.filter(list);
         }
-        return UiObjectCollection.of(list);
+        return list;
     }
 
     @Nullable
@@ -375,5 +435,13 @@ public class UiGlobalSelector {
         return this;
     }
 
-
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        for (ListFilter filter : mFilters) {
+            str.append(filter.toString()).append(".");
+        }
+        str.deleteCharAt(str.length() - 1);
+        return str.toString();
+    }
 }

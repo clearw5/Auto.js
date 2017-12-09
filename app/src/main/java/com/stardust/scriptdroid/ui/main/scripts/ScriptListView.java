@@ -8,7 +8,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,12 +21,12 @@ import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
-import com.stardust.scriptdroid.io.StorageFileProvider;
+import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.floating.EditorFloaty;
 import com.stardust.scriptdroid.ui.viewmodel.ScriptList;
-import com.stardust.widget.BindableViewHolder;
+import com.stardust.scriptdroid.ui.widget.BindableViewHolder;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -66,10 +65,10 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
     private RecyclerView mScriptListView;
     private ScriptListAdapter mScriptListAdapter = new ScriptListAdapter();
     private ScriptFile mCurrentDirectory;
-    private OnScriptFileClickListener mOnScriptFileClickListener;
+    protected OnScriptFileClickListener mOnScriptFileClickListener;
     private Function<PFile, Boolean> mFilter;
     private OnItemOperatedListener mOnItemOperatedListener;
-    private ScriptFile mSelectedScriptFile;
+    protected ScriptFile mSelectedScriptFile;
     private StorageFileProvider mStorageFileProvider;
     private boolean mDirSortMenuShowing = false;
     private boolean mDirsCollapsed;
@@ -105,6 +104,14 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         setStorageFileProvider(storageFileProvider, new ScriptFile(storageFileProvider.getInitialDirectory()));
     }
 
+
+    public void setSortConfig(ScriptList.SortConfig sortConfig) {
+        mScriptList.setSortConfig(sortConfig);
+    }
+
+    public ScriptList.SortConfig getSortConfig() {
+        return mScriptList.getSortConfig();
+    }
 
     public void setStorageFileProvider(StorageFileProvider fileProvider, ScriptFile currentDirectory) {
         if (mStorageFileProvider != null)
@@ -174,9 +181,13 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         mStorageFileProvider.getDirectoryFiles(mCurrentDirectory)
                 .subscribeOn(Schedulers.io())
                 .filter(f -> mFilter == null ? true : mFilter.apply(f))
-                .collectInto(mScriptList.cloneConfig(), (list, file) ->
-                        list.add(new ScriptFile(file))
-                )
+                .collectInto(mScriptList.cloneConfig(), (list, file) -> {
+                    if (file instanceof ScriptFile) {
+                        list.add((ScriptFile) file);
+                    } else {
+                        list.add(new ScriptFile(file));
+                    }
+                })
                 .observeOn(Schedulers.computation())
                 .doOnSuccess(ScriptList::sort)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -230,6 +241,15 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
                 Scripts.openByOtherApps(mSelectedScriptFile);
                 notifyOperated();
                 break;
+            case R.id.send:
+                Scripts.send(mSelectedScriptFile);
+                notifyOperated();
+                break;
+            case R.id.timed_task:
+                new ScriptOperations(getContext(), this)
+                        .timedTask(mSelectedScriptFile);
+                notifyOperated();
+                break;
             case R.id.action_sort_by_date:
                 sort(ScriptList.SORT_TYPE_DATE, mDirSortMenuShowing);
                 break;
@@ -248,7 +268,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         return true;
     }
 
-    private void notifyOperated() {
+    protected void notifyOperated() {
         if (mOnItemOperatedListener != null) {
             mOnItemOperatedListener.OnItemOperated(mSelectedScriptFile);
         }
@@ -273,6 +293,14 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
                 });
     }
 
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (mStorageFileProvider != null)
+            mStorageFileProvider.registerDirectoryChangeListener(this);
+
+    }
 
     @Override
     protected void onDetachedFromWindow() {
@@ -307,7 +335,6 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         @Override
         public void onBindViewHolder(BindableViewHolder<?> holder, int position) {
             int positionOfCategoryFile = positionOfCategoryFile();
-            Log.d(LOG_TAG, String.format("view holder = %s, pos = %d, posOfCategory = %d, size = %d", holder.getClass().toString(), position, positionOfCategoryFile, mScriptList.count()));
             BindableViewHolder bindableViewHolder = (BindableViewHolder) holder;
             if (position == positionOfCategoryDir || position == positionOfCategoryFile) {
                 // FIXME: 2017/10/20 java.lang.ClassCastException: java.lang.Boolean cannot be cast to com.stardust.scriptdroid.model.script.ScriptFile
@@ -323,17 +350,14 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
 
         @Override
         public int getItemViewType(int position) {
-            int viewType;
             int positionOfCategoryFile = positionOfCategoryFile();
             if (position == positionOfCategoryDir || position == positionOfCategoryFile) {
-                viewType = VIEW_TYPE_CATEGORY;
+                return VIEW_TYPE_CATEGORY;
             } else if (position < positionOfCategoryFile) {
-                viewType = VIEW_TYPE_DIRECTORY;
+                return VIEW_TYPE_DIRECTORY;
             } else {
-                viewType = VIEW_TYPE_FILE;
+                return VIEW_TYPE_FILE;
             }
-            Log.d(LOG_TAG, String.format("view type = %d, pos = %d, posOfCategory = %d, size = %d", viewType, position, positionOfCategoryFile, mScriptList.count()));
-            return viewType;
         }
 
         @Override
@@ -349,7 +373,7 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         }
     }
 
-    class ScriptFileViewHolder extends BindableViewHolder<ScriptFile> {
+    protected class ScriptFileViewHolder extends BindableViewHolder<ScriptFile> {
 
 
         @BindView(R.id.name)
@@ -417,12 +441,12 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
         }
     }
 
-    class DirectoryViewHolder extends BindableViewHolder<ScriptFile> {
+    protected class DirectoryViewHolder extends BindableViewHolder<ScriptFile> {
 
         @BindView(R.id.name)
-        TextView mName;
+        public TextView mName;
         @BindView(R.id.more)
-        View mOptions;
+        public View mOptions;
 
         private ScriptFile mScriptFile;
 
@@ -487,8 +511,12 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
             }
             if (isDirCategory) {
                 mArrow.setRotation(mDirsCollapsed ? -90 : 0);
+                mSortOrder.setImageResource(mScriptList.isDirSortedAscending() ?
+                        R.drawable.ic_ascending_order : R.drawable.ic_descending_order);
             } else {
                 mArrow.setRotation(mFilesCollapsed ? -90 : 0);
+                mSortOrder.setImageResource(mScriptList.isFileSortedAscending() ?
+                        R.drawable.ic_ascending_order : R.drawable.ic_descending_order);
             }
         }
 

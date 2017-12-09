@@ -1,6 +1,5 @@
 package com.stardust.scriptdroid.model.script;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -11,17 +10,14 @@ import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.ScriptSource;
-import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.external.CommonUtils;
+import com.stardust.scriptdroid.external.ScriptIntents;
 import com.stardust.scriptdroid.external.shortcut.Shortcut;
 import com.stardust.scriptdroid.external.shortcut.ShortcutActivity;
-import com.stardust.scriptdroid.io.StorageFileProvider;
-import com.stardust.scriptdroid.model.sample.Sample;
+import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.ui.edit.EditActivity;
-import com.stardust.util.AssetsCache;
 
 import org.mozilla.javascript.RhinoException;
 
@@ -81,7 +77,7 @@ public class Scripts {
         new Shortcut(App.getApp()).name(scriptFile.getSimplifiedName())
                 .targetClass(ShortcutActivity.class)
                 .iconRes(R.drawable.ic_node_js_black)
-                .extras(new Intent().putExtra(CommonUtils.EXTRA_KEY_PATH, scriptFile.getPath()))
+                .extras(new Intent().putExtra(ScriptIntents.EXTRA_KEY_PATH, scriptFile.getPath()))
                 .send();
     }
 
@@ -113,10 +109,6 @@ public class Scripts {
                 new ExecutionConfig().path(directoryPath, StorageFileProvider.DEFAULT_DIRECTORY_PATH));
     }
 
-    public static ScriptExecution run(Context context, Sample file) {
-        ScriptSource source = new StringScriptSource(file.name, AssetsCache.get(context.getAssets(), file.path));
-        return AutoJs.getInstance().getScriptEngineService().execute(source);
-    }
 
     public static ScriptExecution runWithBroadcastSender(ScriptSource source) {
         return AutoJs.getInstance().getScriptEngineService().execute(source, BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER,
@@ -140,5 +132,13 @@ public class Scripts {
             e = e.getCause();
         }
         return null;
+    }
+
+    public static void send(ScriptFile file) {
+        Uri uri = Uri.parse("file://" + file.getPath());
+        App.getApp().startActivity(new Intent(Intent.ACTION_SEND)
+                .setDataAndType(uri, "text/plain")
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+
     }
 }

@@ -13,23 +13,26 @@ import com.stardust.autojs.rhino.AndroidClassLoader;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
+import com.stardust.autojs.runtime.api.Device;
 import com.stardust.autojs.runtime.api.Engines;
 import com.stardust.autojs.runtime.api.Events;
+import com.stardust.autojs.runtime.api.Floaty;
 import com.stardust.autojs.runtime.api.Loopers;
+import com.stardust.autojs.runtime.api.Threads;
 import com.stardust.autojs.runtime.api.Timers;
-import com.stardust.autojs.runtime.api.UiSelector;
-import com.stardust.autojs.runtime.api.image.Images;
-import com.stardust.autojs.runtime.api.image.ScreenCaptureRequester;
-import com.stardust.autojs.runtime.api.ui.Dialogs;
+import com.stardust.autojs.core.accessibility.UiSelector;
+import com.stardust.autojs.runtime.api.Images;
+import com.stardust.autojs.core.image.ScreenCaptureRequester;
+import com.stardust.autojs.runtime.api.Dialogs;
 import com.stardust.autojs.runtime.exception.ScriptEnvironmentException;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.core.accessibility.SimpleActionAutomator;
-import com.stardust.concurrent.VolatileBox;
-import com.stardust.autojs.runtime.api.ui.UI;
+import com.stardust.autojs.runtime.api.UI;
+import com.stardust.concurrent.VolatileDispose;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ClipboardUtil;
-import com.stardust.autojs.runtime.api.ProcessShell;
+import com.stardust.autojs.core.util.ProcessShell;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.SdkVersionUtil;
 import com.stardust.util.Supplier;
@@ -141,16 +144,27 @@ public class ScriptRuntime {
     public Timers timers;
 
     @ScriptVariable
+    public Device device;
+
+    @ScriptVariable
     public final AccessibilityBridge accessibilityBridge;
 
     @ScriptVariable
     public final Engines engines;
 
+    @ScriptVariable
+    public final Threads threads;
+
+    @ScriptVariable
+    public final Floaty floaty;
+
+    @ScriptVariable
+    public UiHandler uiHandler;
+
     private Images images;
 
     private static WeakReference<Context> applicationContext;
     private Map<String, Object> mProperties = new ConcurrentHashMap<>();
-    private UiHandler mUiHandler;
     private AbstractShell mRootShell;
     private Supplier<AbstractShell> mShellSupplier;
     private ScreenMetrics mScreenMetrics = new ScreenMetrics();
@@ -158,28 +172,31 @@ public class ScriptRuntime {
 
     protected ScriptRuntime(Builder builder) {
         app = builder.mAppUtils;
-        mUiHandler = builder.mUiHandler;
+        uiHandler = builder.mUiHandler;
         console = builder.mConsole;
         accessibilityBridge = builder.mAccessibilityBridge;
         mShellSupplier = builder.mShellSupplier;
-        ui = new UI(mUiHandler.getContext());
+        ui = new UI(uiHandler.getContext());
         this.automator = new SimpleActionAutomator(accessibilityBridge, this);
         automator.setScreenMetrics(mScreenMetrics);
         this.info = accessibilityBridge.getInfoProvider();
-        Context context = mUiHandler.getContext();
+        Context context = uiHandler.getContext();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             images = new Images(context, this, builder.mScreenCaptureRequester);
         }
         engines = new Engines(builder.mEngineService);
-        dialogs = new Dialogs(app, mUiHandler);
+        dialogs = new Dialogs(app, uiHandler, bridges);
+        threads = new Threads(this);
+        device = new Device(uiHandler.getContext());
+        floaty = new Floaty(uiHandler, ui);
     }
 
     public void init() {
         if (loopers != null)
             throw new IllegalStateException("already initialized");
         timers = new Timers(bridges);
-        loopers = new Loopers(timers);
-        events = new Events(mUiHandler.getContext(), accessibilityBridge, bridges, loopers);
+        loopers = new Loopers(this);
+        events = new Events(uiHandler.getContext(), accessibilityBridge, this);
     }
 
     public static void setApplicationContext(Context context) {
@@ -194,7 +211,7 @@ public class ScriptRuntime {
     }
 
     public UiHandler getUiHandler() {
-        return mUiHandler;
+        return uiHandler;
     }
 
     public AccessibilityBridge getAccessibilityBridge() {
@@ -202,7 +219,7 @@ public class ScriptRuntime {
     }
 
     public void toast(final String text) {
-        mUiHandler.toast(text);
+        uiHandler.toast(text);
     }
 
     public void sleep(long millis) {
@@ -214,34 +231,27 @@ public class ScriptRuntime {
     }
 
     public void setClip(final String text) {
-        final Object lock = new Object();
-        mUiHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                ClipboardUtil.setClip(mUiHandler.getContext(), text);
-                synchronized (lock) {
-                    lock.notify();
-                }
-            }
-        });
-        synchronized (lock) {
-            try {
-                lock.wait();
-            } catch (InterruptedException e) {
-                throw new ScriptInterruptedException();
-            }
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            ClipboardUtil.setClip(uiHandler.getContext(), text);
+            return;
         }
+        VolatileDispose<Object> dispose = new VolatileDispose<>();
+        uiHandler.post(() -> {
+            ClipboardUtil.setClip(uiHandler.getContext(), text);
+            dispose.setAndNotify(text);
+        });
+        dispose.blockedGet();
     }
 
     public String getClip() {
         if (Looper.myLooper() == Looper.getMainLooper()) {
-            return ClipboardUtil.getClipOrEmpty(mUiHandler.getContext()).toString();
+            return ClipboardUtil.getClipOrEmpty(uiHandler.getContext()).toString();
         }
-        final VolatileBox<String> clip = new VolatileBox<>("");
-        mUiHandler.post(new Runnable() {
+        final VolatileDispose<String> clip = new VolatileDispose<>();
+        uiHandler.post(new Runnable() {
             @Override
             public void run() {
-                clip.setAndNotify(ClipboardUtil.getClipOrEmpty(mUiHandler.getContext()).toString());
+                clip.setAndNotify(ClipboardUtil.getClipOrEmpty(uiHandler.getContext()).toString());
             }
         });
         return clip.blockedGetOrThrow(ScriptInterruptedException.class);
@@ -274,7 +284,7 @@ public class ScriptRuntime {
 
     public void requiresApi(int i) {
         if (Build.VERSION.SDK_INT < i) {
-            throw new ScriptException(mUiHandler.getContext().getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
+            throw new ScriptException(uiHandler.getContext().getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
         }
     }
 
@@ -310,19 +320,33 @@ public class ScriptRuntime {
     }
 
     public void onExit() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            images.releaseScreenCapturer();
+        //悬浮窗需要第一时间关闭以免出现恶意脚本全屏悬浮窗屏蔽屏幕并且在exit中写死循环的问题
+        ignoresException(floaty::closeAll);
+        try {
+            events.emit("exit");
+        } catch (Exception ignored) {
+            console.error("exception on exit: " + ignored);
         }
-        if (mRootShell != null) {
-            mRootShell.exitAndWaitFor();
-        }
-        mRootShell = null;
-        mShellSupplier = null;
-        if (events != null) {
-            events.recycle();
-        }
-        if (loopers != null) {
-            loopers.quitAll();
+        ignoresException(threads::shutDownAll);
+        ignoresException(events::recycle);
+        ignoresException(loopers::quitAll);
+        ignoresException(() -> {
+            if (mRootShell != null) mRootShell.exitAndWaitFor();
+            mRootShell = null;
+            mShellSupplier = null;
+        });
+        ignoresException(() -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                images.releaseScreenCapturer();
+            }
+        });
+    }
+
+    private void ignoresException(Runnable r) {
+        try {
+            r.run();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

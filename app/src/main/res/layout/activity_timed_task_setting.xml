@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <com.stardust.theme.widget.ThemeColorToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginTop="12dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="2dp"
+                app:cardElevation="1dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/text_timing"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="?android:textColorSecondary"/>
+
+                    <RadioGroup
+                        android:id="@+id/timing_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/daily_task_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:paddingLeft="16dp"
+                            android:text="@string/text_daily_task"/>
+
+                        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+                            android:id="@+id/daily_task_relative_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:ael_expanded="false"
+                            app:ael_interpolator="fastOutSlowIn"
+                            app:ael_orientation="vertical">
+
+                            <TimePicker
+                                android:id="@+id/daily_task_time_picker"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:timePickerMode="spinner"/>
+
+                        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+
+                        <RadioButton
+                            android:id="@+id/disposable_task_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:paddingLeft="16dp"
+                            android:text="@string/text_disposable_task"/>
+
+                        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="36dp"
+                            app:ael_expanded="false"
+                            app:ael_interpolator="fastOutSlowIn"
+                            app:ael_orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/disposable_task_time_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:background="?selectableItemBackground"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingBottom="6dp"
+                                android:paddingTop="6dp">
+
+                                <com.stardust.theme.widget.ThemeColorImageViewCompat
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:gravity="center"
+                                    android:src="@drawable/ic_schedule_black_48dp"/>
+
+                                <TextView
+                                    android:id="@+id/disposable_task_time"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="36dp"
+                                    android:layout_marginLeft="12dp"
+                                    android:gravity="center_vertical"
+                                    android:textColor="#202020"
+                                    android:textSize="16sp"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/disposable_task_date_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_below="@+id/disposable_task_time_container"
+                                android:background="?selectableItemBackground"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingTop="6dp">
+
+                                <com.stardust.theme.widget.ThemeColorImageViewCompat
+                                    android:id="@+id/disposable_task_date_icon"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:gravity="center"
+                                    android:src="@drawable/ic_date_range_black_48dp"/>
+
+                                <TextView
+                                    android:id="@+id/disposable_task_date"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="36dp"
+                                    android:layout_marginLeft="12dp"
+                                    android:gravity="center_vertical"
+                                    android:textColor="#202020"
+                                    android:textSize="16sp"/>
+                            </LinearLayout>
+
+                        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+
+                        <RadioButton
+                            android:id="@+id/weekly_task_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:paddingLeft="16dp"
+                            android:text="@string/text_weekly_task"/>
+
+                        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:ael_expanded="false"
+                            app:ael_interpolator="fastOutSlowIn"
+                            app:ael_orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/weekly_task_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TimePicker
+                                    android:id="@+id/weekly_task_time_picker"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:timePickerMode="spinner"/>
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="25dp"
+                                    android:orientation="horizontal"
+                                    android:weightSum="4">
+
+                                    <CheckBox
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="@string/text_day1"/>
+
+                                    <CheckBox
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="@string/text_day2"/>
+
+                                    <CheckBox
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="@string/text_day3"/>
+
+                                    <CheckBox
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="@string/text_day4"/>
+                                </LinearLayout>
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="25dp"
+                                    android:orientation="horizontal"
+                                    android:weightSum="4">
+
+                                    <CheckBox
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="@string/text_day5"/>
+
+                                    <CheckBox
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="@string/text_day6"/>
+
+                                    <CheckBox
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="@string/text_day7"/>
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+
+                        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+
+                    </RadioGroup>
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

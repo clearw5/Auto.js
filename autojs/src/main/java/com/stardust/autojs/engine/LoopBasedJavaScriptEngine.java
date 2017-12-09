@@ -8,12 +8,19 @@ import android.os.MessageQueue;
 import com.stardust.autojs.runtime.api.Loopers;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
+import com.stardust.util.Callback;
 
 /**
  * Created by Stardust on 2017/7/28.
  */
 
 public class LoopBasedJavaScriptEngine extends RhinoJavaScriptEngine {
+
+    public interface ExecuteCallback {
+        void onResult(Object r);
+
+        void onException(Exception e);
+    }
 
     private Handler mHandler;
     private boolean mLooping = false;
@@ -24,18 +31,33 @@ public class LoopBasedJavaScriptEngine extends RhinoJavaScriptEngine {
 
     @Override
     public Object execute(final JavaScriptSource source) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                LoopBasedJavaScriptEngine.super.execute(source);
+        execute(source, null);
+        return null;
+    }
+
+
+    public void execute(final ScriptSource source, final ExecuteCallback callback) {
+        Runnable r = () -> {
+            try {
+                Object o = LoopBasedJavaScriptEngine.super.execute((JavaScriptSource) source);
+                if (callback != null)
+                    callback.onResult(o);
+            } catch (Exception e) {
+                if (callback == null) {
+                    throw e;
+                } else {
+                    callback.onException(e);
+                }
             }
+
+
         };
         mHandler.post(r);
         if (!mLooping && Looper.myLooper() != Looper.getMainLooper()) {
             mLooping = true;
             Looper.loop();
+            mLooping = false;
         }
-        return null;
     }
 
     @Override
@@ -46,7 +68,9 @@ public class LoopBasedJavaScriptEngine extends RhinoJavaScriptEngine {
 
     @Override
     public synchronized void destroy() {
-        Loopers.quitForThread(getThread());
+        Thread thread = getThread();
+        if (thread != null)
+            Loopers.quitForThread(thread);
         super.destroy();
     }
 

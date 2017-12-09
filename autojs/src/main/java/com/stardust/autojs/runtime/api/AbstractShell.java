@@ -28,10 +28,10 @@ public abstract class AbstractShell {
         }
     }
 
-    static final String COMMAND_SU = "su";
-    static final String COMMAND_SH = "sh";
-    static final String COMMAND_EXIT = "exit\n";
-    static final String COMMAND_LINE_END = "\n";
+    protected static final String COMMAND_SU = "su";
+    protected static final String COMMAND_SH = "sh";
+    protected static final String COMMAND_EXIT = "exit\n";
+    protected static final String COMMAND_LINE_END = "\n";
 
 
     private int mTouchDevice = -1;

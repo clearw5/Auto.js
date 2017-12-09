@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>module (模块) | Auto.js 2.0.16 文档</title>
+  <title>module (模块) | Auto.js 3.0.0 文档</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
@@ -25,20 +25,27 @@
 <ul>
 <li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
 <li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
-<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
-<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的触摸模拟</a></li>
-<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的触摸模拟</a></li>
-<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
-<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
-<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
-<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
-<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
-<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
-<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
 <li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的触摸模拟</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
 <li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
 <li><a class="nav-modules active" href="modules.html">Modules - 模块</a></li>
-<li><a class="nav-work-with-java" href="work-with-java.html">Work with Java - 调用Java API</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的触摸模拟</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
 </ul>
 <div class="line"></div>
 
@@ -51,7 +58,7 @@
 
     <div id="column1" data-id="modules" class="interior">
       <header>
-        <h1>Auto.js 2.0.16 文档</h1>
+        <h1>Auto.js 3.0.0 文档</h1>
         <div id="gtoc">
           <p>
             <a href="index.html" name="toc">索引</a> |
@@ -74,14 +81,18 @@
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>Auto.js 有一个简单的模块加载系统。 在 Auto.js 中，文件和模块是一一对应的（每个文件被视为一个独立的模块）。</p>
 <p>例子，假设有一个名为 foo.js 的文件：</p>
 <pre><code>const circle = require(&#39;./circle.js&#39;);
-console.log(`半径为 4 的圆的面积是 ${circle.area(4)}`);
+console.log(&quot;半径为 4 的圆的面积是 %d&quot;, circle.area(4));
 </code></pre><p>在第一行中，foo.js 加载了同一目录下的 circle.js 模块。</p>
 <p>circle.js 文件的内容为：</p>
-<pre><code>const { PI } = Math;
+<pre><code>const PI = Math.PI;
 
-exports.area = (r) =&gt; PI * r ** 2;
+var circle = {};
 
-exports.circumference = (r) =&gt; 2 * PI * r;
+circle.area = (r) =&gt; PI * r ** 2;
+
+circle.circumference = (r) =&gt; 2 * PI * r;
+
+module.exports = circle;
 </code></pre><p>circle.js 模块导出了 area() 和 circumference() 两个函数。 通过在特殊的 exports 对象上指定额外的属性，函数和对象可以被添加到模块的根部。</p>
 <p>模块内的本地变量是私有的，因为模块被 Node.js 包装在一个函数中（详见模块包装器）。 在这个例子中，变量 PI 是 circle.js 私有的。</p>
 <p>module.exports属性可以被赋予一个新的值（例如函数或对象）。</p>

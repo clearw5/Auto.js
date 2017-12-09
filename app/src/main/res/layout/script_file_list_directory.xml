@@ -5,12 +5,12 @@
                                     android:id="@+id/item"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="2dp"
-                                    android:layout_marginRight="2dp"
+                                    android:layout_marginLeft="3dp"
+                                    android:layout_marginRight="3dp"
                                     android:clickable="true"
                                     android:foreground="?selectableItemBackground"
                                     app:cardBackgroundColor="#ffffff"
-                                    app:cardElevation="1dp"
+                                    app:cardElevation="0.618dp"
                                     app:cardUseCompatPadding="true">
 
     <LinearLayout

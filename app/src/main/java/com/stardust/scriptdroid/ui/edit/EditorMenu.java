@@ -11,6 +11,7 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.ui.build.BuildActivity;
 import com.stardust.scriptdroid.ui.build.BuildActivity_;
+import com.stardust.scriptdroid.ui.log.LogActivity_;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
 
@@ -162,45 +163,29 @@ public class EditorMenu {
     private void jumpToLine() {
         mEditor.getLineCount()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Integer>() {
-                    @Override
-                    public void accept(@NonNull Integer lineCount) throws Exception {
-                        showJumpDialog(lineCount);
-                    }
-                });
+                .subscribe(this::showJumpDialog);
     }
 
     private void showJumpDialog(final int lineCount) {
         String hint = "1 ~ " + lineCount;
         new ThemeColorMaterialDialogBuilder(mContext)
                 .title(R.string.text_jump_to_line)
-                .input(hint, "", new MaterialDialog.InputCallback() {
-                    @Override
-                    public void onInput(@android.support.annotation.NonNull MaterialDialog dialog, CharSequence input) {
-                        int line = Integer.parseInt(input.toString());
-                        mEditor.jumpTo(line - 1, 0);
-                    }
+                .input(hint, "", (dialog, input) -> {
+                    int line = Integer.parseInt(input.toString());
+                    mEditor.jumpTo(line - 1, 0);
                 })
                 .inputType(InputType.TYPE_CLASS_NUMBER)
                 .show();
     }
 
     private void showInfo() {
-        Observable.zip(mEditor.getText(), mEditor.getLineCount(), new BiFunction<String, Integer, String>() {
-            @Override
-            public String apply(@NonNull String text, @NonNull Integer lineCount) throws Exception {
-                String size = PFiles.getHumanReadableSize(text.length());
-                return String.format(Locale.getDefault(), mContext.getString(R.string.format_editor_info),
-                        text.length(), lineCount, size);
-            }
+        Observable.zip(mEditor.getText(), mEditor.getLineCount(), (text, lineCount) -> {
+            String size = PFiles.getHumanReadableSize(text.length());
+            return String.format(Locale.getDefault(), mContext.getString(R.string.format_editor_info),
+                    text.length(), lineCount, size);
         })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(@NonNull String info) throws Exception {
-                        showInfo(info);
-                    }
-                });
+                .subscribe(this::showInfo);
 
     }
 
@@ -212,15 +197,7 @@ public class EditorMenu {
     }
 
     private void copyLine() {
-        mEditor.getLine()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(@NonNull String s) throws Exception {
-                        ClipboardUtil.setClip(mContext, s);
-                        Snackbar.make(mEditorView, R.string.text_already_copy_to_clip, Snackbar.LENGTH_SHORT).show();
-                    }
-                });
+        mEditor.copyLine();
     }
 
 
@@ -258,7 +235,7 @@ public class EditorMenu {
 
 
     private void showLog() {
-        AutoJs.getInstance().getScriptEngineService().getGlobalConsole().show();
+        LogActivity_.intent(mContext).start();
     }
 
     private void showConsole() {

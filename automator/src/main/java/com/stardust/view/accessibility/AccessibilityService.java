@@ -62,19 +62,23 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
         if (!containsAllEventTypes && !eventTypes.contains(event.getEventType()))
             return;
         int type = event.getEventType();
-        if (type == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED || type == AccessibilityEvent.TYPE_VIEW_HOVER_ENTER
-                || type == AccessibilityEvent.TYPE_VIEW_HOVER_EXIT) {
-            mFastRootInActiveWindow = super.getRootInActiveWindow();
+        if (type == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED ||
+                type == AccessibilityEvent.TYPE_VIEW_FOCUSED) {
+            AccessibilityNodeInfo root = super.getRootInActiveWindow();
+            if (root != null) {
+                mFastRootInActiveWindow = root;
+            }
         }
+
         for (Map.Entry<Integer, AccessibilityDelegate> entry : mDelegates.entrySet()) {
             AccessibilityDelegate delegate = entry.getValue();
             Set<Integer> types = delegate.getEventTypes();
             if (types != null && !delegate.getEventTypes().contains(event.getEventType()))
                 continue;
-            long start = System.currentTimeMillis();
+            //long start = System.currentTimeMillis();
             if (delegate.onAccessibilityEvent(AccessibilityService.this, event))
                 break;
-            Log.v(TAG, "millis: " + (System.currentTimeMillis() - start) + " delegate: " + entry.getValue().getClass().getName());
+            //Log.v(TAG, "millis: " + (System.currentTimeMillis() - start) + " delegate: " + entry.getValue().getClass().getName());
         }
     }
 
@@ -89,12 +93,9 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
         if (mKeyEventExecutor == null) {
             mKeyEventExecutor = Executors.newSingleThreadExecutor();
         }
-        mKeyEventExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                stickOnKeyObserver.onKeyEvent(event.getKeyCode(), event);
-                mOnKeyObserver.onKeyEvent(event.getKeyCode(), event);
-            }
+        mKeyEventExecutor.execute(() -> {
+            stickOnKeyObserver.onKeyEvent(event.getKeyCode(), event);
+            mOnKeyObserver.onKeyEvent(event.getKeyCode(), event);
         });
         return false;
     }
@@ -163,5 +164,6 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     public static OnKeyListener.Observer getStickOnKeyObserver() {
         return stickOnKeyObserver;
     }
+
 
 }

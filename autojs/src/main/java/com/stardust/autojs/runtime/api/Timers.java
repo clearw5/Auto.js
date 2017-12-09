@@ -2,6 +2,7 @@ package com.stardust.autojs.runtime.api;
 
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.stardust.autojs.runtime.ScriptBridges;
@@ -15,7 +16,7 @@ public class Timers {
     private SparseArray<Runnable> mHandlerCallbacks = new SparseArray<>();
     private int mCallbackMaxId = 0;
     private ScriptBridges mBridges;
-    private Handler mHandler;
+    private ThreadLocal<Handler> mHandler = new ThreadLocal<>();
     private long mFutureCallbackUptimeMillis = 0;
 
     public Timers(ScriptBridges bridges) {
@@ -23,21 +24,18 @@ public class Timers {
     }
 
     private void ensureHandler() {
-        if (mHandler == null) {
-            mHandler = new Handler();
+        if (mHandler.get() == null) {
+            mHandler.set(new Handler());
         }
     }
 
-    public int setTimeout(final Object callback, long delay, final Object... args) {
+    public int setTimeout(final Object callback, final long delay, final Object... args) {
         ensureHandler();
         mCallbackMaxId++;
         final int id = mCallbackMaxId;
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                mBridges.callFunction(callback, null, args);
-                mHandlerCallbacks.remove(id);
-            }
+        Runnable r = () -> {
+            mBridges.callFunction(callback, null, args);
+            mHandlerCallbacks.remove(id);
         };
         mHandlerCallbacks.put(id, r);
         postDelayed(r, delay);
@@ -68,7 +66,7 @@ public class Timers {
 
     private void postDelayed(Runnable r, long interval) {
         long uptime = SystemClock.uptimeMillis() + interval;
-        mHandler.postAtTime(r, uptime);
+        mHandler.get().postAtTime(r, uptime);
         mFutureCallbackUptimeMillis = Math.max(mFutureCallbackUptimeMillis, uptime);
     }
 
@@ -99,7 +97,7 @@ public class Timers {
     private boolean clearCallback(int id) {
         Runnable callback = mHandlerCallbacks.get(id);
         if (callback != null) {
-            mHandler.removeCallbacks(callback);
+            mHandler.get().removeCallbacks(callback);
             mHandlerCallbacks.remove(id);
             return true;
         }

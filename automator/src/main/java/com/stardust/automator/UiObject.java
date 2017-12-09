@@ -1,22 +1,16 @@
 package com.stardust.automator;
 
-import android.app.UiAutomation;
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.Pools;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.Log;
-import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 import com.stardust.view.accessibility.AccessibilityNodeInfoHelper;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,35 +34,42 @@ public class UiObject extends AccessibilityNodeInfoCompat {
 
     private static final String TAG = "UiObject";
     private static final boolean DEBUG = false;
-    private static int notRecycledCount = 0;
+
 
     public static UiObject createRoot(AccessibilityNodeInfo root) {
-        return new UiObject(root, null, true);
+        return new UiObject(root, null, 0, -1);
     }
 
     public static UiObject createRoot(AccessibilityNodeInfo root, AccessibilityNodeInfoAllocator allocator) {
-        return new UiObject(root, allocator, true);
+        return new UiObject(root, allocator, 0, -1);
     }
 
 
     private AccessibilityNodeInfoAllocator mAllocator = null;
     private String mStackTrace = "";
-    private boolean mIsRootNode = false;
+    private int mDepth = 0;
+    private final int mIndexInParent;
 
     public UiObject(Object info) {
-        this(info, null);
+        this(info, 0, -1);
     }
 
-    public UiObject(Object info, AccessibilityNodeInfoAllocator allocator, boolean isRootNode) {
+    public UiObject(Object info, AccessibilityNodeInfoAllocator allocator, int depth, int indexInParent) {
         super(info);
-        mIsRootNode = isRootNode;
+        mDepth = depth;
         mAllocator = allocator;
+        mIndexInParent = indexInParent;
         if (DEBUG)
             mStackTrace = Arrays.toString(Thread.currentThread().getStackTrace());
     }
 
-    public UiObject(Object info, AccessibilityNodeInfoAllocator allocator) {
-        this(info, allocator, false);
+
+    public UiObject(Object info, AccessibilityNodeInfoAllocator allocator, int indexInParent) {
+        this(info, allocator, 0, indexInParent);
+    }
+
+    public UiObject(Object info, int depth, int indexInParent) {
+        this(info, null, depth, indexInParent);
     }
 
     @Nullable
@@ -77,7 +78,7 @@ public class UiObject extends AccessibilityNodeInfoCompat {
             AccessibilityNodeInfoCompat parent = super.getParent();
             if (parent == null)
                 return null;
-            return new UiObject(parent.getInfo());
+            return new UiObject(parent.getInfo(), mDepth - 1, -1);
         } catch (IllegalStateException e) {
             // FIXME: 2017/5/5
             return null;
@@ -90,11 +91,15 @@ public class UiObject extends AccessibilityNodeInfoCompat {
             AccessibilityNodeInfoCompat child = super.getChild(i);
             if (child == null)
                 return null;
-            return new UiObject(child.getInfo());
+            return new UiObject(child.getInfo(), mDepth + 1, i);
         } catch (IllegalStateException e) {
             // FIXME: 2017/5/5
             return null;
         }
+    }
+
+    public int indexInParent() {
+        return mIndexInParent;
     }
 
     public UiObjectCollection find(UiGlobalSelector selector) {
@@ -106,11 +111,11 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     }
 
     public UiObjectCollection children() {
-        ArrayList<AccessibilityNodeInfoCompat> list = new ArrayList<>(getChildCount());
+        ArrayList<UiObject> list = new ArrayList<>(getChildCount());
         for (int i = 0; i < getChildCount(); i++) {
-            list.add(getChild(i));
+            list.add(child(i));
         }
-        return UiObjectCollection.ofCompat(list);
+        return UiObjectCollection.of(list);
     }
 
     public int childCount() {
@@ -134,21 +139,28 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     }
 
     @NonNull
-    public CharSequence text() {
+    public String text() {
         CharSequence t = getText();
-        return t == null ? "" : t;
+        return t == null ? "" : t.toString();
     }
 
-    public CharSequence desc() {
-        return getContentDescription();
+    public String desc() {
+        CharSequence d = getContentDescription();
+        return d == null ? null : d.toString();
     }
 
-    public CharSequence className() {
-        return getClassName();
+    public String className() {
+        CharSequence d = getClassName();
+        return d == null ? null : d.toString();
     }
 
-    public CharSequence packageName() {
-        return getPackageName();
+    public String packageName() {
+        CharSequence d = getPackageName();
+        return d == null ? null : d.toString();
+    }
+
+    public int depth() {
+        return mDepth;
     }
 
     public boolean performAction(int action, ActionArgument... arguments) {
@@ -370,6 +382,36 @@ public class UiObject extends AccessibilityNodeInfoCompat {
         return isScrollable();
     }
 
+    public int row() {
+        return getCollectionItemInfo() == null ? -1 : getCollectionItemInfo().getRowIndex();
+    }
+
+    public int column() {
+        return getCollectionItemInfo() == null ? -1 : getCollectionItemInfo().getColumnIndex();
+    }
+
+    public int rowSpan() {
+        return getCollectionItemInfo() == null ? -1 : getCollectionItemInfo().getRowSpan();
+    }
+
+
+    public int columnSpan() {
+        return getCollectionItemInfo() == null ? -1 : getCollectionItemInfo().getColumnSpan();
+    }
+
+    public int rowCount() {
+        return getCollectionInfo() == null ? 0 : getCollectionInfo().getRowCount();
+    }
+
+
+    public int columnCount() {
+        return getCollectionInfo() == null ? 0 : getCollectionInfo().getColumnCount();
+    }
+
+    public boolean isHierarchically() {
+        return getCollectionInfo() != null && getCollectionInfo().isHierarchical();
+    }
+
     @Override
     public List<AccessibilityNodeInfoCompat> findAccessibilityNodeInfosByText(String text) {
         if (mAllocator == null)
@@ -378,7 +420,7 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     }
 
     public List<UiObject> findByText(String text) {
-        return compatListToUiObjectList(findAccessibilityNodeInfosByText(text), mAllocator);
+        return new UiGlobalSelector().textContains(text).findAndReturnList(this);
     }
 
     @Override
@@ -389,20 +431,7 @@ public class UiObject extends AccessibilityNodeInfoCompat {
     }
 
     public List<UiObject> findByViewId(String viewId) {
-        return compatListToUiObjectList(findAccessibilityNodeInfosByViewId(viewId), mAllocator);
-    }
-
-    public static List<UiObject> compatListToUiObjectList(List<AccessibilityNodeInfoCompat> compats, AccessibilityNodeInfoAllocator allocator) {
-        List<UiObject> uiObjects = new ArrayList<>(compats.size());
-        for (AccessibilityNodeInfoCompat compat : compats) {
-            if (compat != null)
-                uiObjects.add(new UiObject(compat.getInfo(), allocator));
-        }
-        return uiObjects;
-    }
-
-    public static List<UiObject> compatListToUiObjectList(List<AccessibilityNodeInfoCompat> compats) {
-        return compatListToUiObjectList(compats, null);
+        return new UiGlobalSelector().id(viewId).findAndReturnList(this);
     }
 
     @Override
@@ -413,5 +442,6 @@ public class UiObject extends AccessibilityNodeInfoCompat {
             Log.w(TAG, mStackTrace, e);
         }
     }
+
 
 }

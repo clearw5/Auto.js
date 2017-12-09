@@ -1,80 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@android:color/white"
-              android:orientation="vertical">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@android:color/white">
 
-    <LinearLayout
-        android:id="@+id/spinner"
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.stardust.scriptdroid.ui.main.task.TaskListRecyclerView
+            android:id="@+id/task_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/notice_no_running_script"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
-        android:clickable="true"
-        android:padding="8dp">
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/notice_no_running_script"
+        android:textColor="#adadad"
+        android:textSize="16sp"/>
 
-        <TextView
-            android:id="@+id/spinner_current_item"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="8dp"
-            android:text="@string/text_task_manage"
-            android:textColor="#484C4F"
-            android:textSize="16sp"/>
-
-        <ImageView
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="8dp"
-            android:src="@drawable/ic_arrow_drop_down_black_36dp"
-            android:tint="#484C4F"/>
-
-    </LinearLayout>
-
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white">
-
-        <FrameLayout
-            android:id="@+id/task_manager_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/swipe_refresh_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <com.stardust.scriptdroid.ui.main.task.TaskListRecyclerView
-                    android:id="@+id/task_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-
-            </android.support.v4.widget.SwipeRefreshLayout>
-
-            <TextView
-                android:id="@+id/notice_no_running_script"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="@string/notice_no_running_script"
-                android:textColor="#adadad"
-                android:textSize="16sp"/>
-        </FrameLayout>
-
-        <com.stardust.autojs.core.console.ConsoleView
-            android:id="@+id/console"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:paddingLeft="6dp"
-            android:visibility="gone"/>
-
-    </FrameLayout>
-
-</LinearLayout>
+</FrameLayout>

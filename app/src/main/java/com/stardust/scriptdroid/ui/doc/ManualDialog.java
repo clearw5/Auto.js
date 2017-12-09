@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.R;
-import com.stardust.widget.EWebView;
+import com.stardust.scriptdroid.ui.widget.EWebView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

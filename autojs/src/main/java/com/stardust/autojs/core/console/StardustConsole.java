@@ -2,6 +2,7 @@ package com.stardust.autojs.core.console;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.view.WindowManager;
 
@@ -13,7 +14,9 @@ import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.util.UiHandler;
+import com.stardust.util.ViewUtil;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -59,16 +62,20 @@ public class StardustConsole extends AbstractConsole {
         void onLogClear();
     }
 
+    private final Object WINDOW_SHOW_LOCK = new Object();
     private final Console mGlobalConsole;
     private final ArrayList<Log> mLogs = new ArrayList<>();
     private AtomicInteger mIdCounter = new AtomicInteger(0);
     private ResizableExpandableFloatyWindow mFloatyWindow;
     private ConsoleFloaty mConsoleFloaty;
-    private LogListener mLogListener;
+    private WeakReference<LogListener> mLogListener;
     private UiHandler mUiHandler;
     private BlockingQueue<String> mInput = new ArrayBlockingQueue<>(1);
-    private ConsoleView mConsoleView;
+    private WeakReference<ConsoleView> mConsoleView;
     private volatile boolean mShown = false;
+    private int mWidth;
+    private int mHeight;
+    private int mX, mY;
 
     public StardustConsole(UiHandler uiHandler) {
         this(uiHandler, null);
@@ -78,25 +85,34 @@ public class StardustConsole extends AbstractConsole {
         mUiHandler = uiHandler;
         mConsoleFloaty = new ConsoleFloaty(this);
         mGlobalConsole = globalConsole;
+        mWidth = mConsoleFloaty.getInitialWidth();
+        mHeight = mConsoleFloaty.getInitialHeight();
         mFloatyWindow = new ResizableExpandableFloatyWindow(mConsoleFloaty) {
             @Override
             public void onCreate(FloatyService service, WindowManager manager) {
                 super.onCreate(service, manager);
                 expand();
+                mFloatyWindow.getWindowBridge().updateMeasure(mWidth, mHeight);
+                mFloatyWindow.getWindowBridge().updatePosition(mX, mY);
+                synchronized (WINDOW_SHOW_LOCK) {
+                    mShown = true;
+                    WINDOW_SHOW_LOCK.notifyAll();
+                }
             }
         };
     }
 
     public void setConsoleView(ConsoleView consoleView) {
-        mConsoleView = consoleView;
+        mConsoleView = new WeakReference<>(consoleView);
         setLogListener(consoleView);
         synchronized (this) {
             this.notify();
         }
     }
 
+
     public void setLogListener(LogListener logListener) {
-        mLogListener = logListener;
+        mLogListener = new WeakReference<>(logListener);
     }
 
     public ArrayList<Log> getAllLogs() {
@@ -104,15 +120,16 @@ public class StardustConsole extends AbstractConsole {
     }
 
     @Override
-    public void println(int level, CharSequence charSequence) {
+    public String println(int level, CharSequence charSequence) {
         Log log = new Log(mIdCounter.getAndIncrement(), level, charSequence, true);
         mLogs.add(log);
         if (mGlobalConsole != null) {
             mGlobalConsole.println(level, charSequence);
         }
-        if (mLogListener != null) {
-            mLogListener.onNewLog(log);
+        if (mLogListener != null && mLogListener.get() != null) {
+            mLogListener.get().onNewLog(log);
         }
+        return null;
     }
 
 
@@ -123,8 +140,8 @@ public class StardustConsole extends AbstractConsole {
         if (mGlobalConsole != null) {
             mGlobalConsole.print(level, charSequence);
         }
-        if (mLogListener != null) {
-            mLogListener.onNewLog(log);
+        if (mLogListener != null && mLogListener.get() != null) {
+            mLogListener.get().onNewLog(log);
         }
     }
 
@@ -132,32 +149,41 @@ public class StardustConsole extends AbstractConsole {
     @Override
     public void clear() {
         mLogs.clear();
-        if (mLogListener != null) {
-            mLogListener.onLogClear();
+        if (mLogListener != null && mLogListener.get() != null) {
+            mLogListener.get().onLogClear();
         }
     }
 
     @Override
     public void show() {
+        if (mShown) {
+            return;
+        }
         if (!SettingsCompat.canDrawOverlays(mUiHandler.getContext())) {
             SettingsCompat.manageDrawOverlays(mUiHandler.getContext());
             mUiHandler.toast(R.string.text_no_floating_window_permission);
             return;
         }
         startFloatyService();
-        mUiHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FloatyService.addWindow(mFloatyWindow);
-                    // SecurityException: https://github.com/hyb1996-guest/AutoJsIssueReport/issues/4781
-                } catch (WindowManager.BadTokenException | SecurityException e) {
-                    e.printStackTrace();
-                    mUiHandler.toast(R.string.text_no_floating_window_permission);
-                }
+        mUiHandler.post(() -> {
+            try {
+                FloatyService.addWindow(mFloatyWindow);
+                // SecurityException: https://github.com/hyb1996-guest/AutoJsIssueReport/issues/4781
+            } catch (WindowManager.BadTokenException | SecurityException e) {
+                e.printStackTrace();
+                mUiHandler.toast(R.string.text_no_floating_window_permission);
             }
         });
-        mShown = true;
+        synchronized (WINDOW_SHOW_LOCK) {
+            if (mShown) {
+                return;
+            }
+            try {
+                WINDOW_SHOW_LOCK.wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private void startFloatyService() {
@@ -167,23 +193,53 @@ public class StardustConsole extends AbstractConsole {
 
     @Override
     public void hide() {
-        try {
-            mFloatyWindow.close();
-        } catch (IllegalArgumentException ignored) {
+        mUiHandler.post(() -> {
+            synchronized (WINDOW_SHOW_LOCK) {
+                if (!mShown)
+                    return;
+                try {
+                    mFloatyWindow.close();
+                } catch (IllegalArgumentException ignored) {
 
+                }
+                mShown = false;
+            }
+        });
+    }
+
+    public void setSize(int w, int h) {
+        mWidth = w;
+        mHeight = h;
+        if (mShown) {
+            mUiHandler.post(() -> {
+                if (mShown) {
+                    ViewUtil.setViewMeasure(mConsoleFloaty.getExpandedView(), w, h);
+                    mFloatyWindow.getWindowBridge().updateMeasure(w, h);
+                }
+            });
         }
-        mShown = false;
+    }
+
+    public void setPosition(int x, int y) {
+        mX = x;
+        mY = y;
+        if (mShown) {
+            mUiHandler.post(() -> {
+                if (mShown)
+                    mFloatyWindow.getWindowBridge().updatePosition(x, y);
+            });
+        }
     }
 
     @ScriptInterface
     public String rawInput() {
-        if (mConsoleView == null) {
+        if (mConsoleView == null || mConsoleView.get() == null) {
             if (!mShown) {
                 show();
             }
             waitForConsoleView();
         }
-        mConsoleView.showEditText();
+        mConsoleView.get().showEditText();
         try {
             return mInput.take();
         } catch (InterruptedException e) {

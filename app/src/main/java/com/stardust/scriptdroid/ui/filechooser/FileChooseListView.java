@@ -9,7 +9,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.stardust.pio.PFile;
@@ -17,8 +16,8 @@ import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.ui.main.scripts.ScriptListView;
-import com.stardust.widget.BindableViewHolder;
-import com.stardust.widget.CheckBoxCompat;
+import com.stardust.scriptdroid.ui.widget.BindableViewHolder;
+import com.stardust.scriptdroid.ui.widget.CheckBoxCompat;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

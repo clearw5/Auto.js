@@ -1,6 +1,7 @@
 package com.stardust.autojs.engine;
 
 import android.util.Log;
+import android.widget.TextView;
 
 import com.stardust.autojs.BuildConfig;
 import com.stardust.autojs.rhino.AndroidContextFactory;
@@ -8,9 +9,11 @@ import com.stardust.autojs.rhino.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
+import com.stardust.automator.UiObjectCollection;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 
+import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ImporterTopLevel;
@@ -18,7 +21,6 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.RequireBuilder;
 import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider;
-import org.mozilla.javascript.tools.debugger.Dim;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +28,7 @@ import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -34,6 +37,7 @@ import java.util.List;
 public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
+    private static ThreadLocal<Thread.UncaughtExceptionHandler> sExceptionHandlerThreadLocal = new ThreadLocal<>();
 
     private static int contextCount = 0;
     private static StringScriptSource sInitScript;
@@ -48,6 +52,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         mAndroidContext = context;
         mContext = createContext();
         mScriptable = createScope(mContext);
+
     }
 
     @Override
@@ -107,7 +112,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private String readInitScript() {
         try {
-            return PFiles.read(mAndroidContext.getAssets().open("javascript_engine_init.js"));
+            return PFiles.read(mAndroidContext.getAssets().open("init.js"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -121,9 +126,10 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(mAndroidContext, list);
         new RequireBuilder()
                 .setModuleScriptProvider(new SoftCachingModuleScriptProvider(provider))
-                .setSandboxed(true)
+                .setSandboxed(false)
                 .createRequire(context, scope)
                 .install(scope);
+
     }
 
     public Context getContext() {
@@ -140,7 +146,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         return importerTopLevel;
     }
 
-    protected Context createContext() {
+    public Context createContext() {
         if (!ContextFactory.hasExplicitGlobal()) {
             ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mAndroidContext.getCacheDir(), "classes")));
         }
@@ -148,7 +154,27 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         contextCount++;
         context.setOptimizationLevel(-1);
         context.setLanguageVersion(Context.VERSION_ES6);
+        context.setLocale(Locale.getDefault());
+        context.setWrapFactory(new WrapFactory());
         return context;
+    }
+
+    public static void setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler handler) {
+        sExceptionHandlerThreadLocal.set(handler);
+    }
+
+    private class WrapFactory extends org.mozilla.javascript.WrapFactory {
+        @Override
+        public Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType) {
+            if (obj instanceof String) {
+                return getRuntime().bridges.toString(obj.toString());
+            }
+            if (staticType == UiObjectCollection.class) {
+                return getRuntime().bridges.toArray(obj);
+
+            }
+            return super.wrap(cx, scope, obj, staticType);
+        }
     }
 
     private static class InterruptibleAndroidContextFactory extends AndroidContextFactory {
@@ -170,6 +196,22 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
             cx.setInstructionObserverThreshold(10000);
             return cx;
         }
+
+        @Override
+        protected Object doTopCall(Callable callable, Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
+            Thread.UncaughtExceptionHandler exceptionHandler = sExceptionHandlerThreadLocal.get();
+            if (exceptionHandler == null)
+                return super.doTopCall(callable, cx, scope, thisObj, args);
+            else {
+                try {
+                    return super.doTopCall(callable, cx, scope, thisObj, args);
+                } catch (Exception e) {
+                    exceptionHandler.uncaughtException(Thread.currentThread(), e);
+                    return null;
+                }
+            }
+        }
     }
+
 
 }

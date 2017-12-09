@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
+import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.script.ScriptSource;
@@ -14,7 +16,7 @@ import com.stardust.util.IntentExtras;
  * Created by Stardust on 2017/2/5.
  */
 
-public class ScriptExecuteActivity extends AppCompatActivity {
+public class ScriptExecuteActivity extends AppCompatActivity implements Thread.UncaughtExceptionHandler {
 
 
     private static final String EXTRA_EXECUTION = ScriptExecuteActivity.class.getName() + ".execution";
@@ -39,7 +41,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         IntentExtras extras = IntentExtras.fromIntent(getIntent());
-        if (extras == null || extras.get(EXTRA_EXECUTION) == null) {
+        if (extras.get(EXTRA_EXECUTION) == null) {
             finish();
             return;
         }
@@ -47,6 +49,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         mScriptSource = mScriptExecution.getSource();
         mScriptEngine = mScriptExecution.getEngine();
         mExecutionListener = mScriptExecution.getListener();
+        RhinoJavaScriptEngine.setUncaughtExceptionHandler(this);
         runScript();
     }
 
@@ -55,15 +58,30 @@ public class ScriptExecuteActivity extends AppCompatActivity {
             prepare();
             doExecution();
         } catch (Exception e) {
-            mExecutionListener.onException(mScriptExecution, e);
-            super.finish();
+            onException(e);
         }
     }
 
+    private void onException(Exception e) {
+        mExecutionListener.onException(mScriptExecution, e);
+        super.finish();
+    }
+
+    @SuppressWarnings("unchecked")
     private void doExecution() {
         mScriptEngine.setTag(ScriptEngine.TAG_SOURCE, mScriptSource);
         mExecutionListener.onStart(mScriptExecution);
-        mResult = mScriptEngine.execute(mScriptSource);
+        ((LoopBasedJavaScriptEngine) mScriptEngine).execute(mScriptSource, new LoopBasedJavaScriptEngine.ExecuteCallback() {
+            @Override
+            public void onResult(Object r) {
+                mResult = r;
+            }
+
+            @Override
+            public void onException(Exception e) {
+                ScriptExecuteActivity.this.onException(e);
+            }
+        });
     }
 
     private void prepare() {
@@ -84,6 +102,11 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         mScriptEngine.put("activity", null);
         mScriptEngine.destroy();
         mScriptExecution = null;
+    }
+
+    @Override
+    public void uncaughtException(Thread t, Throwable e) {
+        onException((Exception) e);
     }
 
     private static class ActivityScriptExecution extends ScriptExecution.AbstractScriptExecution {

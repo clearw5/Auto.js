@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.model.script.PathChecker;
-import com.stardust.scriptdroid.external.CommonUtils;
+import com.stardust.scriptdroid.external.ScriptIntents;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
 
@@ -17,7 +17,7 @@ public class ShortcutActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final String path = getIntent().getStringExtra(CommonUtils.EXTRA_KEY_PATH);
+        final String path = getIntent().getStringExtra(ScriptIntents.EXTRA_KEY_PATH);
         if (new PathChecker(this).checkAndToastError(path)) {
             runScriptFile(path);
         }

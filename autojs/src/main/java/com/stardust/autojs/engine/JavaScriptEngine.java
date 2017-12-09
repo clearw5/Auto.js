@@ -32,6 +32,7 @@ public abstract class JavaScriptEngine extends ScriptEngine.AbstractScriptEngine
             throw new IllegalStateException("a runtime has been set");
         }
         mRuntime = runtime;
+        mRuntime.engines.setCurrentEngine(this);
         put("__runtime__", runtime);
     }
 

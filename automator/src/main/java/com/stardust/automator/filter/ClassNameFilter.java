@@ -14,6 +14,11 @@ public class ClassNameFilter {
             CharSequence charSequence = nodeInfo.getClassName();
             return charSequence == null ? null : charSequence.toString();
         }
+
+        @Override
+        public String toString() {
+            return "className";
+        }
     };
 
     public static ListFilter equals(String text) {

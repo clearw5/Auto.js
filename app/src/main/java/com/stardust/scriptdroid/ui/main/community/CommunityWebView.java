@@ -1,30 +1,28 @@
 package com.stardust.scriptdroid.ui.main.community;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
+import android.view.View;
 import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.io.StorageFileProvider;
-import com.stardust.scriptdroid.model.script.ScriptFile;
+import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.network.download.DownloadManager;
 import com.stardust.scriptdroid.ui.common.OptionListView;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.filechooser.FileChooserDialogBuilder;
-import com.stardust.widget.EWebView;
+import com.stardust.scriptdroid.ui.widget.EWebView;
 
 import java.util.regex.Pattern;
 
 import butterknife.OnClick;
 import butterknife.Optional;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
@@ -59,7 +57,6 @@ public class CommunityWebView extends EWebView {
                 .title(fileName)
                 .item(R.id.save, R.drawable.ic_file_download_black_48dp, R.string.text_download)
                 .item(R.id.run, R.drawable.ic_play_arrow_white_48dp, R.string.text_run)
-                .item(R.id.edit, R.drawable.ic_edit_white_24dp, R.string.text_save_and_edit)
                 .bindItemClick(this)
                 .build());
         mBottomSheetDialog.show();
@@ -72,19 +69,12 @@ public class CommunityWebView extends EWebView {
         new ScriptOperations(getContext(), CommunityWebView.this)
                 .download(mUrl)
                 .observeOn(AndroidSchedulers.mainThread())
+                .onErrorResumeNext(Observable.empty())
                 .subscribe(file ->
                         Snackbar.make(CommunityWebView.this, getResources().getString(R.string.format_file_downloaded, file.getPath())
-                                , Snackbar.LENGTH_SHORT).show());
-    }
-
-    @Optional
-    @OnClick(R.id.edit)
-    void saveAndEdit() {
-        dismissBottomSheetDialog();
-        new ScriptOperations(getContext(), CommunityWebView.this)
-                .download(mUrl)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(Scripts::edit);
+                                , Snackbar.LENGTH_LONG)
+                                .setAction(R.string.text_open, v -> Scripts.edit(file))
+                                .show());
     }
 
     @Optional
@@ -94,6 +84,7 @@ public class CommunityWebView extends EWebView {
         new ScriptOperations(getContext(), CommunityWebView.this)
                 .temporarilyDownload(mUrl)
                 .observeOn(AndroidSchedulers.mainThread())
+                .onErrorResumeNext(Observable.empty())
                 .subscribe(file -> {
                     Snackbar.make(CommunityWebView.this, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
                     Scripts.run(file);
@@ -119,19 +110,26 @@ public class CommunityWebView extends EWebView {
             return super.shouldOverrideUrlLoading(view, url);
         }
 
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            evalJavaScript("$('#header').hide();$('#content').css({ top: '0', position: 'absolute' });");
+        }
     }
 
     private class MyWebChromeClient extends EWebView.MyWebChromeClient {
 
         @Override
-        public void openFileChooser(ValueCallback<Uri> callback) {
+        public boolean openFileChooser(ValueCallback<Uri> callback, String[] acceptType) {
+            if (super.openFileChooser(callback, acceptType)) {
+                return true;
+            }
             new FileChooserDialogBuilder(getContext())
                     .title(R.string.text_select_file_to_upload)
                     .dir(StorageFileProvider.DEFAULT_DIRECTORY_PATH)
                     .singleChoice(file -> callback.onReceiveValue(Uri.fromFile(file)))
                     .cancelListener(dialog -> callback.onReceiveValue(null))
                     .show();
+            return true;
         }
-
     }
 }

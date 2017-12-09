@@ -5,10 +5,18 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.ActionMode;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
+import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
@@ -17,12 +25,14 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
+import com.stardust.util.ClipboardUtil;
 
 import org.jdeferred.Deferred;
 import org.jdeferred.DoneCallback;
@@ -50,6 +60,7 @@ import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 public class CodeMirrorEditor extends FrameLayout {
 
     private static final String LOG_TAG = "CodeMirrorEditor";
+
 
     public interface Callback {
         void onChange();
@@ -91,12 +102,16 @@ public class CodeMirrorEditor extends FrameLayout {
         init();
     }
 
+    public WebView getWebView() {
+        return mWebView;
+    }
+
     public void setCallback(Callback callback) {
         mCallback = callback;
     }
 
     public void beautifyCode() {
-        evalJavaScript("editor.setValue(js_beautify(editor.getValue()));");
+        evalJavaScript("editor.setValue(js_beautify(editor.getValue(), {indent_size: 2}));");
     }
 
     public String[] getAvailableThemes() {
@@ -153,11 +168,18 @@ public class CodeMirrorEditor extends FrameLayout {
     }
 
     private void setupWebView() {
-        mWebView = new WebView(getContext());
+        mWebView = new WebView(getContext()) {
+            @Override
+            public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+                InputConnection connection = super.onCreateInputConnection(outAttrs);
+                return connection == null ? null : new MyInputConnection(connection);
+            }
+        };
         setupWebSettings();
         mWebView.addJavascriptInterface(mJavaScriptBridge, "__bridge__");
         addView(mWebView);
     }
+
 
     private void setupWebSettings() {
         WebSettings settings = mWebView.getSettings();
@@ -168,8 +190,24 @@ public class CodeMirrorEditor extends FrameLayout {
         settings.setDomStorageEnabled(true);
         settings.setNeedInitialFocus(true);
         settings.setDisplayZoomControls(false);
-        mWebView.setWebViewClient(new MyWebViewClient());
         mWebView.setWebChromeClient(new MyWebChromeClient());
+        mWebView.setWebViewClient(new MyWebViewClient());
+
+    }
+
+
+    @Override
+    public ActionMode startActionModeForChild(View originalView, ActionMode.Callback callback) {
+        return super.startActionModeForChild(originalView, new EditorActionModeCallback(callback, this));
+    }
+
+    @Override
+    public ActionMode startActionModeForChild(View originalView, ActionMode.Callback callback, int type) {
+        return super.startActionModeForChild(originalView, new EditorActionModeCallback(callback, this), type);
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        evalJavaScript(String.format("editor.setOption('readOnly', %b);", readOnly));
     }
 
     public void setProgress(boolean onProgress) {
@@ -178,40 +216,27 @@ public class CodeMirrorEditor extends FrameLayout {
 
     public void setText(final String text) {
         mTextFromAndroid = text;
-        mPageFinished.promise().done(new DoneCallback<Void>() {
-            @Override
-            public void onDone(Void result) {
-                evalJavaScript("editor.setValue(__bridge__.getStringFromAndroid());");
-            }
-        });
+        mPageFinished.promise().done(result -> evalJavaScript("editor.setValue(__bridge__.getStringFromAndroid());"));
     }
 
     public void insert(String text) {
         mTextFromAndroid = text;
-        mPageFinished.promise().done(new DoneCallback<Void>() {
-            @Override
-            public void onDone(Void result) {
-                evalJavaScript("editor.replaceSelection(__bridge__.getStringFromAndroid());");
-            }
-        });
+        mPageFinished.promise().done(result -> evalJavaScript("editor.replaceSelection(__bridge__.getStringFromAndroid());"));
     }
+
 
     public void loadFile(final File file) {
         setProgress(true);
-        // TODO: 2017/9/29 handle error
-        Observable.fromCallable(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                return PFiles.read(file);
-            }
-        }).subscribeOn(Schedulers.io())
+        Observable.fromCallable(() -> PFiles.read(file))
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(@NonNull String s) throws Exception {
-                        setText(s);
-                        setProgress(false);
-                    }
+                .subscribe(s -> {
+                    setText(s);
+                    setProgress(false);
+                }, err -> {
+                    err.printStackTrace();
+                    Toast.makeText(getContext(), getContext().getString(R.string.text_cannot_read_file, file.getPath()),
+                            Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -230,6 +255,42 @@ public class CodeMirrorEditor extends FrameLayout {
     public void deleteLine() {
         evalJavaScript("editor.replaceRange('', {line: editor.getCursor().line, ch: 0}," +
                 " {line: editor.getCursor().line + 1, ch: 0});");
+    }
+
+    public void copyLine() {
+        getLine()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    ClipboardUtil.setClip(getContext(), s);
+                    Snackbar.make(mWebView, R.string.text_already_copy_to_clip, Snackbar.LENGTH_SHORT).show();
+                });
+    }
+
+    public void cut() {
+        getSelection().observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    ClipboardUtil.setClip(getContext(), s);
+                    evalJavaScript("editor.replaceSelection('');");
+                });
+    }
+
+
+    public void copy() {
+        getSelection().observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> ClipboardUtil.setClip(getContext(), s));
+    }
+
+    public void paste() {
+        CharSequence clip = ClipboardUtil.getClip(getContext());
+        if (clip == null) {
+            return;
+        }
+        evalJavaScript(String.format("editor.replaceSelection('%s');", clip.toString().replace("'", "\\'")));
+    }
+
+
+    public void selectAll() {
+        evalJavaScript("editor.execCommand('selectAll');");
     }
 
     public Observable<Integer> getLineCount() {
@@ -447,18 +508,8 @@ public class CodeMirrorEditor extends FrameLayout {
             new ThemeColorMaterialDialogBuilder(getContext())
                     .title(R.string.text_alert)
                     .content(message)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@android.support.annotation.NonNull MaterialDialog dialog, @android.support.annotation.NonNull DialogAction which) {
-                            result.confirm();
-                        }
-                    })
-                    .cancelListener(new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            result.cancel();
-                        }
-                    })
+                    .onPositive((dialog, which) -> result.confirm())
+                    .cancelListener(dialog -> result.cancel())
                     .positiveText(R.string.ok)
                     .show();
             return true;
@@ -467,6 +518,53 @@ public class CodeMirrorEditor extends FrameLayout {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             setProgress(newProgress != 100);
+        }
+
+        @Override
+        public boolean onConsoleMessage(ConsoleMessage m) {
+            switch (m.messageLevel()) {
+                case LOG:
+                    Log.i(LOG_TAG, String.format("%s (%s:%d)", m.message(), m.sourceId(), m.lineNumber()));
+                    return true;
+                case TIP:
+                    Log.v(LOG_TAG, String.format("%s (%s:%d)", m.message(), m.sourceId(), m.lineNumber()));
+                    return true;
+                case DEBUG:
+                    Log.d(LOG_TAG, String.format("%s (%s:%d)", m.message(), m.sourceId(), m.lineNumber()));
+                    return true;
+                case WARNING:
+                    Log.w(LOG_TAG, String.format("%s (%s:%d)", m.message(), m.sourceId(), m.lineNumber()));
+                    return true;
+                case ERROR:
+                    Log.e(LOG_TAG, String.format("%s (%s:%d)", m.message(), m.sourceId(), m.lineNumber()));
+                    return true;
+            }
+            return false;
+        }
+    }
+
+    private class MyInputConnection extends InputConnectProxy {
+
+        public MyInputConnection(InputConnection inputConnection) {
+            super(inputConnection);
+        }
+
+        @Override
+        public boolean sendKeyEvent(KeyEvent event) {
+            Log.d(LOG_TAG, "sendKeyEvent: " + event);
+            return super.sendKeyEvent(event);
+        }
+
+        @Override
+        public boolean performContextMenuAction(int id) {
+            if (id == android.R.id.selectAll) {
+                post(CodeMirrorEditor.this::selectAll);
+                return true;
+            }
+            if(id == android.R.id.startSelectingText){
+                evalJavaScript("editor.setSelection(editor.getCursor(), {line: editor.getCursor().line, ch: editor.getCursor().ch - 1});");
+            }
+            return super.performContextMenuAction(id);
         }
     }
 }

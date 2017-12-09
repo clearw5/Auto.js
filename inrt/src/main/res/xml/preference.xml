@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/text_script_running">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/key_use_volume_control_running"
+            android:title="@string/text_use_volume_to_stop_running"/>
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_dont_show_main_activity"
+            android:summary="@string/summary_dont_show_main_activity"
+            android:title="@string/text_dont_show_main_activity"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/text_accessibility_service">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_enable_accessibility_service_by_root"
+            android:summary="@string/summary_enable_accessibility_service_by_root"
+            android:title="@string/text_enable_accessibility_service_by_root"/>
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_stable_mode"
+            android:summary="@string/summary_stable_mode"
+            android:title="@string/text_stable_mode"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/text_others">
+
+
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

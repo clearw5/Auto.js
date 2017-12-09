@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.autojs.runtime.api.ProcessShell;
+import com.stardust.autojs.core.util.ProcessShell;
 import com.stardust.scriptdroid.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
@@ -22,7 +22,7 @@ public class AccessibilityServiceTool {
     private static final Class<AccessibilityService> sAccessibilityServiceClass = AccessibilityService.class;
 
     public static void enableAccessibilityService() {
-        if (Pref.enableAccessibilityServiceByRoot()) {
+        if (Pref.shouldEnableAccessibilityServiceByRoot()) {
             if (!enableAccessibilityServiceByRoot(sAccessibilityServiceClass)) {
                 goToAccessibilitySetting();
             }
@@ -72,7 +72,7 @@ public class AccessibilityServiceTool {
 
     public static void enableAccessibilityServiceByRootIfNeeded() {
         if (AccessibilityService.getInstance() == null)
-            if (Pref.enableAccessibilityServiceByRoot()) {
+            if (Pref.shouldEnableAccessibilityServiceByRoot()) {
                 AccessibilityServiceTool.enableAccessibilityServiceByRoot(sAccessibilityServiceClass);
             }
     }

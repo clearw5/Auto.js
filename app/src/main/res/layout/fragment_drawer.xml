@@ -16,18 +16,21 @@
         android:layout_height="170dp"
         android:layout_marginBottom="5dp">
 
-        <com.makeramen.roundedimageview.RoundedImageView
+        <View
+            android:id="@+id/shadow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/drawer_header_shadow"
+            android:visibility="gone"/>
+
+        <com.stardust.scriptdroid.ui.widget.AvatarView
             android:id="@+id/avatar"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_above="@+id/username"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="8dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/profile_avatar_placeholder"
-            app:riv_border_color="#77f2f3f5"
-            app:riv_border_width="0.5dp"
-            app:riv_corner_radius="40dp"/>
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="12dp"
+            android:scaleType="fitXY"/>
 
         <TextView
             android:id="@+id/username"
@@ -35,23 +38,22 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="12dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginLeft="20dp"
             android:gravity="center"
             android:text="@string/not_login"
             android:textColor="@android:color/white"
-            android:textSize="14sp"/>
+            android:textSize="16sp"/>
 
         <ImageView
+            android:id="@+id/default_cover"
             android:layout_width="match_parent"
             android:layout_height="118dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="-12dp"
             android:layout_toRightOf="@+id/avatar"
             android:alpha="0.08"
             android:src="@drawable/android_eating_half"
             android:tint="#000000"/>
-
 
     </RelativeLayout>
 

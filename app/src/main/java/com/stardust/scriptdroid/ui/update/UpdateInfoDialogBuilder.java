@@ -17,11 +17,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.network.entity.VersionInfo;
-import com.stardust.scriptdroid.io.StorageFileProvider;
+import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.tool.IntentTool;
 import com.stardust.util.DownloadTask;
 import com.stardust.util.IntentUtil;
-import com.stardust.widget.CommonMarkdownView;
+import com.stardust.scriptdroid.ui.widget.CommonMarkdownView;
 
 /**
  * Created by Stardust on 2017/4/9.

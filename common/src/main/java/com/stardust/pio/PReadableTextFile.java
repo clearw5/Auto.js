@@ -8,12 +8,13 @@ import java.util.List;
  * Created by Stardust on 2017/4/1.
  */
 
-public class PReadableTextFile implements Closeable {
+public class PReadableTextFile implements Closeable, PFileInterface {
 
     private BufferedReader mBufferedReader;
     private FileInputStream mFileInputStream;
     private int mBufferingSize;
     private String mEncoding;
+    private String mPath;
 
     public PReadableTextFile(String path) {
         this(path, PFiles.DEFAULT_ENCODING);
@@ -26,6 +27,7 @@ public class PReadableTextFile implements Closeable {
     public PReadableTextFile(String path, String encoding, int bufferingSize) {
         mEncoding = encoding;
         mBufferingSize = bufferingSize;
+        mPath = path;
         try {
             mFileInputStream = new FileInputStream(path);
         } catch (FileNotFoundException e) {
@@ -102,5 +104,10 @@ public class PReadableTextFile implements Closeable {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    @Override
+    public String getPath() {
+        return mPath;
     }
 }

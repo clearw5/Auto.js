@@ -47,7 +47,7 @@ Mozilla Public License Version 2.0
 
 1.9. "Licensable"
     means having the right to grant, to the maximum extent possible,
-    whether at the time of the initial grant or subsequently, any and
+    whether at the timeFlag of the initial grant or subsequently, any and
     all of the rights conveyed by this License.
 
 1.10. "Modifications"
@@ -246,7 +246,7 @@ non-compliance by some reasonable means prior to 60 days after You have
 come back into compliance. Moreover, Your grants from a particular
 Contributor are reinstated on an ongoing basis if such Contributor
 notifies You of the non-compliance by some reasonable means, this is the
-first time You have received notice of non-compliance with this License
+first timeFlag You have received notice of non-compliance with this License
 from such Contributor, and You become compliant prior to 30 days after
 Your receipt of the notice.
 

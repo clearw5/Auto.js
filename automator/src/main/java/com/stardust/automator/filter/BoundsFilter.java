@@ -5,6 +5,8 @@ import android.graphics.Rect;
 import com.stardust.automator.UiObject;
 import com.stardust.view.accessibility.AccessibilityNodeInfoHelper;
 
+import java.util.Locale;
+
 /**
  * Created by Stardust on 2017/3/9.
  */
@@ -32,5 +34,12 @@ public class BoundsFilter extends DfsFilter {
         if (mType == TYPE_EQUALS)
             return boundsInScreen.equals(mBounds);
         return mBounds.contains(boundsInScreen);
+    }
+
+    @Override
+    public String toString() {
+        return String.format(Locale.getDefault(), "bounds%s(%d, %d, %d, %d)", mType == TYPE_EQUALS ? "" :
+                        mType == TYPE_INSIDE ? "Inside" : "Contains",
+                mBounds.left, mBounds.top, mBounds.right, mBounds.bottom);
     }
 }

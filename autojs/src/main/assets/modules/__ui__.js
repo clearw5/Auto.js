@@ -10,13 +10,15 @@ module.exports = function(__runtime__, scope){
     ui.setContentView = function(view){
         ui.view = view;
         ui.__view_cache__ = {};
-        activity.setContentView(view);
+        ui.run(function(){
+            activity.setContentView(view);
+        });
     }
 
     ui.id = function(id){
         if(!ui.view)
             return null;
-        var v = ui.view.getChildAt(0).id(id);
+        var v = ui.findViewByStringId(ui.view.getChildAt(0), id);
         if(v){
             v = decorate(v);
         }
@@ -24,7 +26,7 @@ module.exports = function(__runtime__, scope){
     }
 
     ui.run = function(action){
-        activity.runOnUiThread(action);
+        __runtime__.uiHandler.post(action);
     }
 
     ui.nonUi = function(action){
@@ -43,16 +45,20 @@ module.exports = function(__runtime__, scope){
             color = android.graphics.Color.parseColor(color);
         }
         if(android.os.Build.VERSION.SDK_INT >= 21){
-            activity.getWindow().setStatusBarColor(color);
+            ui.run(function(){
+                activity.getWindow().setStatusBarColor(color);
+            });
         }
     }
 
     ui.finish = function(){
-        activity.finish();
+        ui.run(function(){
+            activity.finish();
+        });
     }
 
     ui.findViewByStringId = function(view, id){
-        return com.stardust.autojs.runtime.api.ui.JsViewHelper.findViewByStringId(view, id);
+        return com.stardust.autojs.core.ui.JsViewHelper.findViewByStringId(view, id);
     }
 
     function decorate(view){
@@ -77,6 +83,8 @@ module.exports = function(__runtime__, scope){
         return view;
     }
 
+    ui.__decorate__ = decorate;
+
     var proxy = __runtime__.ui;
     proxy.__proxy__ = {
         set: function(name, value){
@@ -97,5 +105,7 @@ module.exports = function(__runtime__, scope){
            return ui[name];
         }
     };
+
+
     return proxy;
 }

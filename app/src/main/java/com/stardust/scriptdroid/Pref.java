@@ -18,6 +18,7 @@ public class Pref {
     private static final String KEY_SHOULD_SHOW_ANNUNCIATION = "Sing about all the things you forgot, things you are not";
     private static final String KEY_FIRST_SHOW_AD = "En, Today is 17.7.7, but, I'm still love you so....";
     private static final String KEY_LAST_SHOW_AD_MILLIS = "But... it seems that...you will not come back any more...";
+    private static final String KEY_FLOATING_MENU_SHOWN = "17.10.28 I have idea of what you think...maybe...I'm overthinking...";
     private static SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -51,28 +52,16 @@ public class Pref {
         return 0;
     }
 
-    public static boolean isRecordVolumeControlEnable() {
-        return def().getBoolean(getString(R.string.key_use_volume_control_record), false);
-    }
-
     public static boolean isRunningVolumeControlEnabled() {
         return def().getBoolean(getString(R.string.key_use_volume_control_running), false);
     }
 
-    public static boolean enableAccessibilityServiceByRoot() {
+    public static boolean shouldEnableAccessibilityServiceByRoot() {
         return def().getBoolean(getString(R.string.key_enable_accessibility_service_by_root), false);
     }
 
     private static String getString(int id) {
         return App.getApp().getString(id);
-    }
-
-    public static int getMaxTextLengthForCodeCompletion() {
-        try {
-            return Integer.parseInt(def().getString(App.getApp().getString(R.string.key_max_length_for_code_completion), "2000"));
-        } catch (NumberFormatException e) {
-            return 2000;
-        }
     }
 
     public static boolean isFirstUsing() {
@@ -145,6 +134,19 @@ public class Pref {
     }
 
     public static String getDocumentationUrl() {
-        return "file:///android_asset/docs/";
+        String docSource = def().getString(getString(R.string.key_documentation_source), null);
+        if (docSource == null || docSource.equals("Local")) {
+            return "file:///android_asset/docs/";
+        } else {
+            return "https://hyb1996.github.io/AutoJs-Docs/";
+        }
+    }
+
+    public static boolean isFloatingMenuShown() {
+        return def().getBoolean(KEY_FLOATING_MENU_SHOWN, false);
+    }
+
+    public static void setFloatingMenuShown(boolean checked) {
+        def().edit().putBoolean(KEY_FLOATING_MENU_SHOWN, checked).apply();
     }
 }

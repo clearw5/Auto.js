@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -15,8 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.R;
-import com.stardust.widget.PrefSwitch;
-import com.stardust.widget.SwitchCompat;
+import com.stardust.scriptdroid.ui.widget.PrefSwitch;
+import com.stardust.scriptdroid.ui.widget.SwitchCompat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

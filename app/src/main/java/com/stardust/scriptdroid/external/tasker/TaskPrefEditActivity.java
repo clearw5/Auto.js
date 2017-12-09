@@ -9,9 +9,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.external.CommonUtils;
+import com.stardust.scriptdroid.external.ScriptIntents;
 import com.stardust.scriptdroid.model.script.ScriptFile;
-import com.stardust.scriptdroid.io.StorageFileProvider;
+import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.main.scripts.ScriptListView;
 import com.twofortyfouram.locale.sdk.client.ui.activity.AbstractAppCompatPluginActivity;
@@ -43,8 +43,7 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
     private void initScriptListRecyclerView() {
         mStorageFileProvider = StorageFileProvider.getExternalStorageProvider();
         ScriptListView scriptList = (ScriptListView) findViewById(R.id.script_list);
-        scriptList.setStorageFileProvider(mStorageFileProvider);
-        scriptList.setCurrentDirectory(new ScriptFile(StorageFileProvider.DEFAULT_DIRECTORY));
+        scriptList.setStorageFileProvider(mStorageFileProvider, new ScriptFile(StorageFileProvider.DEFAULT_DIRECTORY));
         scriptList.setOnScriptFileClickListener((view, file) -> {
             mSelectedScriptFilePath = file.getPath();
             finish();
@@ -79,30 +78,30 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
 
     @Override
     public boolean isBundleValid(@NonNull Bundle bundle) {
-        return CommonUtils.isTaskerBundleValid(bundle);
+        return ScriptIntents.isTaskerBundleValid(bundle);
     }
 
     @Override
     public void onPostCreateWithPreviousResult(@NonNull Bundle bundle, @NonNull String s) {
-        mSelectedScriptFilePath = bundle.getString(CommonUtils.EXTRA_KEY_PATH);
-        mPreExecuteScript = bundle.getString(CommonUtils.EXTRA_KEY_PRE_EXECUTE_SCRIPT);
+        mSelectedScriptFilePath = bundle.getString(ScriptIntents.EXTRA_KEY_PATH);
+        mPreExecuteScript = bundle.getString(ScriptIntents.EXTRA_KEY_PRE_EXECUTE_SCRIPT);
     }
 
     @Nullable
     @Override
     public Bundle getResultBundle() {
         Bundle bundle = new Bundle();
-        bundle.putString(CommonUtils.EXTRA_KEY_PATH, mSelectedScriptFilePath);
-        bundle.putString(CommonUtils.EXTRA_KEY_PRE_EXECUTE_SCRIPT, mPreExecuteScript);
+        bundle.putString(ScriptIntents.EXTRA_KEY_PATH, mSelectedScriptFilePath);
+        bundle.putString(ScriptIntents.EXTRA_KEY_PRE_EXECUTE_SCRIPT, mPreExecuteScript);
         return bundle;
     }
 
     @NonNull
     @Override
     public String getResultBlurb(@NonNull Bundle bundle) {
-        String blurb = bundle.getString(CommonUtils.EXTRA_KEY_PATH);
+        String blurb = bundle.getString(ScriptIntents.EXTRA_KEY_PATH);
         if (TextUtils.isEmpty(blurb)) {
-            blurb = bundle.getString(CommonUtils.EXTRA_KEY_PRE_EXECUTE_SCRIPT);
+            blurb = bundle.getString(ScriptIntents.EXTRA_KEY_PRE_EXECUTE_SCRIPT);
         }
         if (TextUtils.isEmpty(blurb)) {
             blurb = getString(R.string.text_path_is_empty);

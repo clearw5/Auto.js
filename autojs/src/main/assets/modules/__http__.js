@@ -30,6 +30,14 @@ module.exports = function(runtime, scope){
        return http.post(url, data, options, callback);
     }
 
+    http.postMultipart = function(url, files, options, callback){
+       options = options || {};
+       options.method = "POST";
+       options.contentType = "multipart/form-data";
+       options.files = files;
+       return http.request(url, options, callback);
+    }
+
     http.request = function(url, options, callback){
         var call = http.client().newCall(http.buildRequest(url, options));
         if(!callback){
@@ -37,7 +45,7 @@ module.exports = function(runtime, scope){
         }
         call.enqueue(new Callback({
             onResponse: function(call, res){
-                callback(res);
+                callback(wrapResponse(res));
             },
             onFailure: function(call, ex){
                 callback(null, ex);
@@ -56,10 +64,51 @@ module.exports = function(runtime, scope){
         }
         if(options.body){
             r.method(options.method, parseBody(options, options.body));
-        }else{
+        }else if(options.files){
+            r.method(options.method, parseMultipart(options.files));
+        }else {
             r.method(options.method, null);
         }
         return r.build();
+    }
+
+    function parseMultipart(files){
+        var builder = new MultipartBody.Builder()
+            .setType(MultipartBody.FORM);
+        for(var key in files){
+            if(!files.hasOwnProperty(key)){
+                continue;
+            }
+            var value = files[key];
+            if(typeof(value) == 'string'){
+                builder.addFormDataPart(key, value);
+                continue;
+            }
+            var path, mimeType, fileName;
+            if(typeof(value.getPath) == 'function'){
+                path = value.getPath();
+            }else if(value.length == 2){
+                fileName = value[0];
+                path = value[1];
+            }else if(value.length >= 3){
+                fileName = value[0];
+                mimeType = value[1]
+                path = value[2];
+            }
+            var file = new com.stardust.pio.PFile(path);
+            fileName = fileName || file.getName();
+            mimeType = mimeType || parseMimeType(file.getExtension());
+            builder.addFormDataPart(key, fileName, RequestBody.create(MediaType.parse(mimeType), file));
+        }
+        return builder.build();
+    }
+
+    function parseMimeType(ext){
+        if(ext.length == 0){
+            return "application/octet-stream";
+        }
+        return android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext)
+            || "application/octet-stream";
     }
 
     function fillPostData(options, data){
@@ -89,6 +138,8 @@ module.exports = function(runtime, scope){
     function parseBody(options, body){
         if(typeof(body) == "string"){
             body = RequestBody.create(MediaType.parse(options.contentType), body);
+        }else if(body instanceof RequestBody){
+            return body;
         }else{
             body = new RequestBody({
                contentType: function(){
@@ -103,15 +154,20 @@ module.exports = function(runtime, scope){
     function wrapResponse(res){
         var r = {};
         r.statusCode = res.code();
+        r.statusMessage = res.message();
         var headers = res.headers();
         r.headers = {};
         for(var i = 0; i < headers.size(); i++){
             r.headers[headers.name(i)] = headers.value(i);
         }
-        r.body = Object.create(res.body());
+        r.body = {};
+        var body = res.body();
+        r.body.string = body.string.bind(body);
+        r.body.bytes = body.bytes.bind(body);
         r.body.json = function(){
             return JSON.parse(r.body.string());
         }
+        r.body.contentType = body.contentType();
         r.request = res.request();
         r.url = r.request.url();
         r.method = r.request.method();

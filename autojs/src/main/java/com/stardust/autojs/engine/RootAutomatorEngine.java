@@ -4,13 +4,20 @@ import android.content.Context;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.stardust.autojs.runtime.api.AbstractShell;
-import com.stardust.autojs.runtime.api.ProcessShell;
+import com.stardust.autojs.core.util.ProcessShell;
 import com.stardust.autojs.core.inputevent.InputDevices;
+import com.stardust.autojs.runtime.exception.ScriptException;
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.pio.PFiles;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Stardust on 2017/8/1.
@@ -22,6 +29,7 @@ public class RootAutomatorEngine extends ScriptEngine.AbstractScriptEngine<AutoF
 
     private static final String KEY_TOUCH_DEVICE = RootAutomatorEngine.class.getName() + ".touch_device";
     private static final String LOG_TAG = "RootAutomatorEngine";
+    private static final Pattern PID_PATTERN = Pattern.compile("[0-9]{2,}");
 
     private static int sTouchDevice = -1;
     private static final String ROOT_AUTOMATOR_EXECUTABLE_ASSET = "binary/root_automator";
@@ -30,6 +38,8 @@ public class RootAutomatorEngine extends ScriptEngine.AbstractScriptEngine<AutoF
     private String mDeviceNameOrPath;
     private Thread mThread;
     private String mExecutablePath;
+    private String mPid;
+    private Process mProcess;
 
     public RootAutomatorEngine(Context context, String deviceNameOrPath) {
         mContext = context;
@@ -44,11 +54,49 @@ public class RootAutomatorEngine extends ScriptEngine.AbstractScriptEngine<AutoF
     public void execute(String autoFile) {
         mExecutablePath = getExecutablePath(mContext);
         Log.d(LOG_TAG, "exec: " + autoFile);
-        AbstractShell.Result result = ProcessShell.execCommand(new String[]{
-                "chmod 777 " + mExecutablePath,
-                mExecutablePath + " \"" + autoFile + "\" -d " + mDeviceNameOrPath
-        }, true);
-        Log.d(LOG_TAG, "result = " + result);
+        final String[] commands = {
+                "chmod 755 " + mExecutablePath,
+                String.format("\"%s\" \"%s\" -d \"%s\" &", mExecutablePath, autoFile, mDeviceNameOrPath), // to run root_automator
+                "echo $!",  // to print the root_automator pid
+                "exit", // to exit su
+                "exit"  // to exit shell
+        };
+        try {
+            mProcess = Runtime.getRuntime().exec("su");
+            executeCommands(mProcess, commands);
+            mPid = readPid(mProcess);
+            mProcess.waitFor();
+        } catch (IOException e) {
+            throw new ScriptException(e);
+        } catch (InterruptedException e) {
+            throw new ScriptInterruptedException();
+        } finally {
+            mProcess.destroy();
+            mProcess = null;
+        }
+    }
+
+    private String readPid(Process process) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            Matcher matcher = PID_PATTERN.matcher(line);
+            if (matcher.find()) {
+                return matcher.group();
+            }
+        }
+        return null;
+    }
+
+    private void executeCommands(Process process, String[] commands) throws IOException {
+        DataOutputStream os = new DataOutputStream(process.getOutputStream());
+        for (String command : commands) {
+            if (command != null) {
+                os.write(command.getBytes());
+                os.writeBytes("\n");
+            }
+        }
+        os.flush();
     }
 
 
@@ -96,7 +144,9 @@ public class RootAutomatorEngine extends ScriptEngine.AbstractScriptEngine<AutoF
     @Override
     public void forceStop() {
         mThread.interrupt();
-        ProcessShell.exec("killall " + mExecutablePath, true);
+        if (mPid != null) {
+            ProcessShell.exec("kill " + mPid, true);
+        }
     }
 
     @Override

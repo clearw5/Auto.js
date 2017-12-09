@@ -27,10 +27,13 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.ui.common.NotAskAgainDialog;
-import com.stardust.scriptdroid.ui.doc.OnlineDocsFragment_;
+import com.stardust.scriptdroid.ui.common.ScriptOperations;
+import com.stardust.scriptdroid.ui.doc.DocsFragment_;
 import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
-import com.stardust.scriptdroid.io.StorageFileProvider;
+import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment_;
+import com.stardust.scriptdroid.ui.log.LogActivity_;
+import com.stardust.scriptdroid.ui.main.sample.SampleListFragment_;
 import com.stardust.scriptdroid.ui.main.scripts.MyScriptListFragment_;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
 import com.stardust.theme.ThemeColorManager;
@@ -40,9 +43,9 @@ import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity_;
 import com.stardust.scriptdroid.ui.update.VersionGuard;
 import com.stardust.util.BackPressedHandler;
-import com.stardust.view.DrawerAutoClose;
-import com.stardust.widget.CommonMarkdownView;
-import com.stardust.widget.SearchViewItem;
+import com.stardust.util.DrawerAutoClose;
+import com.stardust.scriptdroid.ui.widget.CommonMarkdownView;
+import com.stardust.scriptdroid.ui.widget.SearchViewItem;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -71,6 +74,8 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private VersionGuard mVersionGuard;
     private BackPressedHandler.Observer mBackPressObserver = new BackPressedHandler.Observer();
     private SearchViewItem mSearchViewItem;
+    private MenuItem mLogMenuItem;
+    private boolean mDocsSearchItemExpanded;
 
 
     @Override
@@ -143,8 +148,9 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         TabLayout tabLayout = $(R.id.tab);
         mPagerAdapter = new FragmentPagerAdapterBuilder(this)
                 .add(new MyScriptListFragment_(), R.string.text_script)
-                .add(new OnlineDocsFragment_(), R.string.text_tutorial)
+                .add(new DocsFragment_(), R.string.text_tutorial)
                 .add(new CommunityFragment_(), R.string.text_community)
+                .add(new SampleListFragment_(), R.string.text_sample)
                 .add(new TaskManagerFragment_(), R.string.text_manage)
                 .build();
         mViewPager.setAdapter(mPagerAdapter);
@@ -184,10 +190,10 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Click(R.id.exit)
     public void exitCompletely() {
+        finish();
         FloatyWindowManger.hideCircularMenu();
         stopService(new Intent(this, FloatyService.class));
         AutoJs.getInstance().getScriptEngineService().stopAll();
-        finish();
     }
 
     @Override
@@ -251,12 +257,45 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        mLogMenuItem = menu.findItem(R.id.action_log);
         setUpSearchMenuItem(searchMenuItem);
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_log) {
+            if (mDocsSearchItemExpanded) {
+                submitForwardQuery();
+            } else {
+                LogActivity_.intent(this).start();
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
     private void setUpSearchMenuItem(MenuItem searchMenuItem) {
-        mSearchViewItem = new SearchViewItem(this, searchMenuItem);
+        mSearchViewItem = new SearchViewItem(this, searchMenuItem) {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                if (mViewPager.getCurrentItem() == 1) {
+                    mDocsSearchItemExpanded = true;
+                    mLogMenuItem.setIcon(R.drawable.ic_ali_up);
+                }
+                return super.onMenuItemActionExpand(item);
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                if (mDocsSearchItemExpanded) {
+                    mDocsSearchItemExpanded = false;
+                    mLogMenuItem.setIcon(R.drawable.ic_ali_log);
+                }
+                return super.onMenuItemActionCollapse(item);
+            }
+        };
         mSearchViewItem.setQueryCallback(this::submitQuery);
     }
 
@@ -271,5 +310,11 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
             mSearchViewItem.collapse();
         }
     }
+
+    private void submitForwardQuery() {
+        QueryEvent event = QueryEvent.FIND_FORWARD;
+        EventBus.getDefault().post(event);
+    }
+
 
 }

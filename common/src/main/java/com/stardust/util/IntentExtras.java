@@ -43,6 +43,7 @@ public class IntentExtras implements Serializable {
 
     private IntentExtras(int id) {
         mMap = extraStore.get(id);
+        extraStore.remove(id);
         mMaxId = id;
     }
 
@@ -55,7 +56,7 @@ public class IntentExtras implements Serializable {
     @SuppressWarnings("unchecked")
     public <T> T getAndClear(String key) {
         T value = (T) mMap.get(key);
-        clear();
+        recycle();
         return value;
     }
 
@@ -69,7 +70,7 @@ public class IntentExtras implements Serializable {
         return intent;
     }
 
-    public void clear() {
+    public void recycle() {
         extraStore.remove(mId);
         mMap = null;
     }

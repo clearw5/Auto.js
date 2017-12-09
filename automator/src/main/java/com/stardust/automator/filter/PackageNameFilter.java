@@ -14,6 +14,11 @@ public class PackageNameFilter {
             CharSequence charSequence = nodeInfo.getPackageName();
             return charSequence == null ? null : charSequence.toString();
         }
+
+        @Override
+        public String toString() {
+            return "packageName";
+        }
     };
 
     public static ListFilter equals(String text) {

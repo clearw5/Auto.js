@@ -2,34 +2,34 @@ package com.stardust.scriptdroid.ui.edit;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.widget.DrawerLayout;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toolbar;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.scriptdroid.Pref;
+import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
-import com.stardust.widget.EWebView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
+import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_CONTENT;
 import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_NAME;
 import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_PATH;
+import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_READ_ONLY;
 
 /**
  * Created by Stardust on 2017/1/29.
  */
 @EActivity(R.layout.activity_edit)
-public class EditActivity extends BaseActivity {
+public class EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost {
 
+    private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
 
     @ViewById(R.id.editor_view)
     EditorView mEditor;
@@ -48,8 +48,12 @@ public class EditActivity extends BaseActivity {
                 .putExtra(EXTRA_NAME, name));
     }
 
-    public static void editFile(Context context, ScriptFile file) {
-        editFile(context, file.getSimplifiedName(), file.getPath());
+    public static void viewContent(Context context, String name, String content) {
+        context.startActivity(new Intent(context, EditActivity_.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(EXTRA_CONTENT, content)
+                .putExtra(EXTRA_NAME, name)
+                .putExtra(EXTRA_READ_ONLY, true));
     }
 
     @AfterViews
@@ -72,6 +76,16 @@ public class EditActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return mEditorMenu.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onActionModeStarted(ActionMode mode) {
+        Menu menu = mode.getMenu();
+        MenuItem item = menu.getItem(menu.size() - 1);
+        menu.add(item.getGroupId(), R.id.action_delete_line, 10000, R.string.text_delete_line);
+        menu.add(item.getGroupId(), R.id.action_copy_line, 20000, R.string.text_copy_line);
+        super.onActionModeStarted(mode);
     }
 
     @Override
@@ -103,4 +117,14 @@ public class EditActivity extends BaseActivity {
         super.onDestroy();
     }
 
+    @NonNull
+    @Override
+    public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
+        return mMediator;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mMediator.onActivityResult(requestCode, resultCode, data);
+    }
 }

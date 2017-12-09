@@ -7,6 +7,11 @@
 
     </style>
 
+    <style name="EditorTheme" parent="AppTheme">
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:actionModeBackground">@color/colorAccent</item>
+    </style>
+
     <style name="AppTheme.FullScreen" parent="AppTheme">
         <!-- Customize your theme here. -->
         <item name="windowNoTitle">true</item>
@@ -38,10 +43,6 @@
     </style>
 
 
-    <style name="MainToolbarTheme" parent="AppTheme">
-        <item name="android:textColorSecondary">#c4c4c4</item>
-    </style>
-
     <style name="IssueReporterTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -52,18 +53,8 @@
 
     </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
-
-    <style name="AppTheme.Console" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorButtonNormal">#cc181818</item>
-    </style>
 
 </resources>

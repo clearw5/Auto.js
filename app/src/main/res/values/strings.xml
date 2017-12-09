@@ -106,7 +106,6 @@
     <string name="key_use_volume_control_running">key_use_volume_control_running</string>
     <string name="text_use_volume_to_stop_running">音量上键停止所有脚本</string>
     <string name="text_need_to_enable_accessibility_service">需要启用无障碍服务</string>
-    <string name="text_task_manage">任务管理</string>
     <string name="text_name_should_not_be_empty">名称不能为空</string>
     <string name="text_import_fail">导入失败</string>
     <string name="text_no_brower">没有浏览器耶o(╯□╰)o快去安装一个吧</string>
@@ -196,11 +195,10 @@
     <string name="text_others">其他</string>
     <string name="text_import">导入</string>
     <string name="text_click_too_frequently">您的操作太快啦ヽ(#`Д´)ﾉ</string>
-    <string name="text_connecting">连接中…</string>
     <string name="text_username">用户名</string>
     <string name="text_password">密码</string>
     <string name="text_login">登录</string>
-    <string name="text_forgot_password">忘记密码</string>
+    <string name="text_forgot_password">忘记密码?</string>
     <string name="text_username_cannot_be_empty">用户名不能为空</string>
     <string name="text_password_cannot_be_empty">密码不能为空</string>
     <string name="text_time">时间</string>
@@ -263,29 +261,77 @@
     <string name="text_search">搜索</string>
     <string name="text_floating_edit">悬浮编辑</string>
     <string name="text_select_icon">选择图标</string>
-    <string name="text_use_android_n_shortcut">添加到图标快捷方式</string>
+    <string name="text_use_android_n_shortcut">添加到安卓7.0 Shortcut</string>
+    <string name="text_login_succeed">登录成功</string>
+    <string name="text_login_fail">登录失败</string>
+    <string name="text_reset_password">重置密码</string>
+    <string name="text_logining">登录中</string>
+    <string name="text_register">注册</string>
+    <string name="text_email">邮箱</string>
+    <string name="text_email_cannot_be_empty">邮箱不能为空</string>
+    <string name="text_email_format_error">邮箱格式错误</string>
+    <string name="text_registering">注册中</string>
+    <string name="text_register_fail">注册失败</string>
+    <string name="text_register_succeed">注册成功</string>
+    <string name="text_sample">示例</string>
+    <string name="text_copy_to_my_script">导入到我的脚本</string>
+    <string name="text_reset_to_initial_content">重置为初始内容</string>
+    <string name="text_reset_fail">重置失败</string>
+    <string name="text_reset_succeed">重置成功</string>
+    <string name="text_cannot_read_file" formatted="true">无法读取文件: %s</string>
+    <string name="text_service">服务</string>
+    <string name="text_notification_permission">通知权限</string>
 
 
-    <string-array name="ad_showing_mode_keys">
-        <item>默认</item>
-        <item>每天显示一次</item>
-        <item>关闭广告</item>
-    </string-array>
-
-    <string-array name="ad_showing_mode_values">
-        <item>Default</item>
-        <item>OncePerDay</item>
-        <item>Off</item>
-    </string-array>
-
-
-    <string-array name="root_record_out_file_type_keys">
-        <item>可编辑的js文件</item>
-        <item>不可编辑的二进制文件</item>
-    </string-array>
-
-    <string-array name="root_record_out_file_type_values">
-        <item>js</item>
-        <item>binary</item>
-    </string-array>
+    <string name="text_open_main_activity">打开主界面</string>
+    <string name="text_generate_code">生成代码</string>
+    <string name="text_action">动作</string>
+    <string name="text_click">点击(click)</string>
+    <string name="text_long_click">长按(longClick)</string>
+    <string name="text_set_text">设置文本(setText)</string>
+    <string name="text_scroll_forward">向前/右/下滑动(scrollForward)</string>
+    <string name="text_scroll_backward">向后/上/左滑动(scrollBackward)</string>
+    <string name="text_find_one">直到找到一个(findOne)</string>
+    <string name="text_until_find">直到找到所有(untilFind)</string>
+    <string name="text_wait_for">等待控件出现(waitFor)</string>
+    <string name="text_selector_exists">判断控件存在(exists)</string>
+    <string name="text_options">选项</string>
+    <string name="text_using_id_selector">使用id选择</string>
+    <string name="text_using_text_selector">使用文本选择(text)</string>
+    <string name="text_using_desc_selector">使用描述选择(desc)</string>
+    <string name="text_generate">生成</string>
+    <string name="text_generate_and_open_editor">生成并打开编辑器</string>
+    <string name="text_generate_fail">生成失败了o(╥﹏╥)o</string>
+    <string name="key_documentation_source">key_documentation_source</string>
+    <string name="text_documentation_source">文档源</string>
+    <string name="text_send">发送</string>
+    <string name="text_timed_task">定时任务</string>
+    <string name="text_running_task">运行中脚本</string>
+    <string name="text_done">完成</string>
+    <string name="text_disposable_task">只运行一次</string>
+    <string name="text_daily_task">每天运行</string>
+    <string name="text_weekly_task">按星期运行</string>
+    <string name="text_timing">定时</string>
+    <string name="text_disposable_task_time_before_now">任务时间小于当前时间</string>
+    <string name="text_next_run_time">下次运行</string>
+    <string name="text_day1">一</string>
+    <string name="text_day2">二</string>
+    <string name="text_day3">三</string>
+    <string name="text_day4">四</string>
+    <string name="text_day5">五</string>
+    <string name="text_day6">六</string>
+    <string name="text_day7">日</string>
+    <string name="text_weekly_task_should_check_day_of_week">至少选择一周中的一天</string>
+    <string name="no_apk_builder_plugin">没有安装打包插件，是否立即下载？</string>
+    <string name="text_apk_builder_plugin_unavailable">打包插件不可用</string>
+    <string name="text_detail">详情</string>
+    <string name="text_open">打开</string>
+    <string name="text_generated_code">生成结果</string>
+    <string name="text_copy">复制</string>
+    <string name="format_default_package_name" formatted="true">com.example.script%d</string>
+    <string name="text_should_not_be_empty">不能为空</string>
+    <string name="text_icon">图标</string>
+    <string name="text_device_not_rooted">设备没有root</string>
+    <string name="prompt_device_not_rooted">监测到您的设备没有root, 录制脚本需要root权限, 是否继续?</string>
+    <string name="text_device_rooted">仍要录制</string>
 </resources>

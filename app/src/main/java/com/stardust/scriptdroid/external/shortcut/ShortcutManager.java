@@ -1,14 +1,11 @@
 package com.stardust.scriptdroid.external.shortcut;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-
-import com.stardust.scriptdroid.external.CommonUtils;
 
 import java.util.Collections;
 import java.util.List;

@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.stardust.scriptdroid.App;
-import com.stardust.scriptdroid.external.CommonUtils;
-import com.stardust.scriptdroid.external.ScriptExecutionIntentService;
+import com.stardust.scriptdroid.external.ScriptIntents;
 import com.stardust.scriptdroid.external.open.RunIntentActivity;
 import com.twofortyfouram.locale.sdk.client.receiver.AbstractPluginSettingReceiver;
 
@@ -21,7 +19,7 @@ public class FireSettingReceiver extends AbstractPluginSettingReceiver {
 
     @Override
     protected boolean isBundleValid(@NonNull Bundle bundle) {
-        return CommonUtils.isTaskerBundleValid(bundle);
+        return ScriptIntents.isTaskerBundleValid(bundle);
     }
 
     @Override

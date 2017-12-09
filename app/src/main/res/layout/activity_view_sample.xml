@@ -27,7 +27,7 @@
                 android:layout_gravity="right"
                 android:orientation="horizontal">
 
-                <com.stardust.widget.ToolbarMenuItem
+                <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
                     android:id="@+id/edit"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
@@ -35,7 +35,7 @@
                     app:icon_color="@android:color/white"
                     app:text="@string/text_edit"/>
 
-                <com.stardust.widget.ToolbarMenuItem
+                <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
                     android:id="@+id/run"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"

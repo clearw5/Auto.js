@@ -2,17 +2,13 @@
     <string name="air_title_report_issue">错误报告</string>
 
     <string name="air_title_issue">问题</string>
-    <string name="air_title_login">登录</string>
 
     <string name="air_label_issue_title">标题</string>
     <string name="air_label_issue_description">描述</string>
     <string name="air_label_device_info">设备信息</string>
 
-    <string name="air_label_use_account">使用Github账号发送</string>
     <string name="air_label_use_email">使用Email发送</string>
     <string name="air_label_use_guest">匿名发送</string>
-    <string name="air_label_username">用户名</string>
-    <string name="air_label_password">密码</string>
     <string name="air_label_email">邮箱</string>
     <string name="air_label_email_optional">联系邮箱 (选填)</string>
 

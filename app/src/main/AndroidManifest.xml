@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.stardust.scriptdroid">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -14,25 +15,23 @@
     <!-- Ad SDK Permissions -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
-
     <application
         xmlns:tools="http://schemas.android.com/tools"
         android:name=".App"
         android:allowBackup="false"
-        android:icon="@drawable/autojs_logo"
+        android:icon="@drawable/autojs_material"
         android:label="@string/_app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label, android:icon, android:allowBackup">
-
         <activity
             android:name=".ui.splash.SplashActivity_"
             android:hardwareAccelerated="true"
             android:label="@string/_app_name"
             android:theme="@style/AppTheme.Splash">
-
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER"/>
+
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
@@ -42,16 +41,14 @@
             android:label="@string/_app_name"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.FullScreen">
-
         </activity>
-
         <activity
             android:name=".external.shortcut.ShortcutActivity"
             android:taskAffinity="com.stardust.scriptdroid.external.shortcut.ShortcutActivity"
             android:theme="@android:style/Theme.NoDisplay">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
@@ -68,8 +65,8 @@
 
         <activity
             android:name=".ui.edit.EditActivity_"
-            android:multiprocess="true">
-
+            android:multiprocess="true"
+            android:theme="@style/EditorTheme">
         </activity>
         <activity android:name=".ui.settings.AboutActivity_"/>
         <activity
@@ -78,10 +75,18 @@
         <activity android:name=".ui.error.ErrorReportActivity"/>
         <activity android:name=".external.tasker.TaskerScriptEditActivity_"/>
         <activity android:name=".ui.edit.ViewSampleActivity"/>
-        <activity android:name=".ui.login.LoginActivity_"/>
+        <activity
+            android:name=".ui.user.LoginActivity_"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".ui.user.RegisterActivity_"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".ui.user.WebActivity_"/>
         <activity android:name=".ui.build.BuildActivity_"/>
+        <activity android:name=".ui.log.LogActivity_"/>
         <activity android:name=".ui.doc.DocumentationActivity_"/>
         <activity android:name=".ui.shortcut.ShortcutIconSelectActivity_"/>
+        <activity android:name=".ui.timing.TimedTaskSettingActivity_"/>
         <activity
             android:name=".ui.shortcut.ShortcutCreateActivity"
             android:theme="@style/AppTheme.Transparent"/>
@@ -91,34 +96,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
+            android:name="com.stardust.autojs.core.image.ScreenCaptureRequestActivity"
             android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-
+            android:theme="@android:style/Theme.NoDisplay"/>
         <activity
             android:name=".ui.error.IssueReporterActivity"
             android:theme="@style/IssueReporterTheme"/>
 
 
-        <service android:name="com.stardust.scriptdroid.external.ScriptExecutionIntentService"/>
+        <service android:name=".external.ScriptExecutionIntentService"/>
 
         <activity android:name=".external.tasker.TaskPrefEditActivity_"/>
 
         <activity-alias
-            android:name="com.stardust.scriptdroid.external.tasker.PluginActivity"
+            android:name=".external.tasker.PluginActivity"
             android:exported="true"
             android:icon="@drawable/ic_android_eat_js"
             android:label="@string/_app_name"
-            android:targetActivity="com.stardust.scriptdroid.external.tasker.TaskPrefEditActivity_"
+            android:targetActivity=".external.tasker.TaskPrefEditActivity_"
             tools:ignore="ExportedActivity">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING"/>
             </intent-filter>
         </activity-alias>
 
-
         <receiver
-            android:name="com.stardust.scriptdroid.external.tasker.FireSettingReceiver"
+            android:name=".external.tasker.FireSettingReceiver"
             android:exported="true"
             android:process=":background"
             tools:ignore="ExportedReceiver">
@@ -129,12 +132,10 @@
             </intent-filter>
         </receiver>
 
-
         <activity
             android:name=".external.open.EditIntentActivity"
-            android:icon="@drawable/autojs_logo"
+            android:icon="@drawable/autojs_material"
             android:label="@string/text_edit_script">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.intent.action.EDIT"/>
@@ -147,12 +148,10 @@
                 <data android:mimeType="application/x-javascript"/>
                 <data android:mimeType="text/plain"/>
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".external.open.RunIntentActivity"
-            android:icon="@drawable/autojs_logo"
+            android:icon="@drawable/autojs_material"
             android:label="@string/text_run_script"
             android:taskAffinity="com.stardust.scriptdroid.external.open.RunIntentActivity"
             android:theme="@android:style/Theme.NoDisplay">
@@ -168,23 +167,18 @@
                 <data android:mimeType="application/x-javascript"/>
                 <data android:mimeType="text/plain"/>
             </intent-filter>
-
         </activity>
-
-
         <activity
             android:name=".external.open.ImportIntentActivity"
-            android:icon="@drawable/autojs_logo"
+            android:icon="@drawable/autojs_material"
             android:label="@string/text_import_script"
             android:theme="@style/AppTheme.Transparent">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.intent.action.EDIT"/>
 
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-
 
                 <data android:scheme="file"/>
                 <data android:scheme="content"/>
@@ -194,35 +188,56 @@
         </activity>
 
         <service
-            android:name="com.stardust.scriptdroid.accessibility.AccessibilityService"
+            android:name=".accessibility.AccessibilityService"
             android:label="@string/_app_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService"/>
             </intent-filter>
+
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config"/>
-
+        </service>
+        <service
+            android:name="com.stardust.notification.NotificationListenerService"
+            android:label="@string/_app_name"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService"/>
+            </intent-filter>
         </service>
 
         <receiver android:name=".external.widget.ScriptWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/script_widget_config"/>
+        </receiver>
+
+        <receiver android:name=".timing.TaskReceiver">
+            <intent-filter>
+                <action android:name="com.stardust.autojs.action.task"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".timing.TimedTaskScheduler">
+            <intent-filter>
+                <action android:name="com.stardust.autojs.action.check_task"/>
+            </intent-filter>
         </receiver>
 
         <!-- 声明广告SDK所需要的组件 -->
         <service
             android:name="com.qq.e.comm.DownloadService"
             android:exported="false"/>
+
         <activity
             android:name="com.qq.e.ads.ADActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"/>
-
     </application>
 
 </manifest>

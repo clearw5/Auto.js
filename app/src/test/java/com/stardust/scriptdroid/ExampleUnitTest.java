@@ -3,6 +3,8 @@ package com.stardust.scriptdroid;
 import org.junit.Test;
 
 import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
@@ -20,28 +22,10 @@ public class ExampleUnitTest {
 
     @Test
     public void test() {
-        Observable.fromCallable(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                System.out.println(Thread.currentThread());
-                return "";
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.newThread())
-                .doOnComplete(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        System.out.println(Thread.currentThread());
-                    }
-                })
-                .observeOn(Schedulers.newThread())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(@NonNull String s) throws Exception {
-                        System.out.println(Thread.currentThread());
-                    }
-                });
+        Matcher matcher = Pattern.compile("[0-9]+").matcher("2937Finish!");
+        if (matcher.find()) {
+            System.out.println(matcher.group());
+        }
     }
 
     @Test

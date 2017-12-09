@@ -4,6 +4,7 @@ import android.app.Application;
 import android.app.Fragment;
 
 import com.stardust.auojs.inrt.rt.AutoJs;
+import com.stardust.auojs.inrt.rt.GlobalKeyObserver;
 
 /**
  * Created by Stardust on 2017/7/1.
@@ -22,6 +23,7 @@ public class App extends Application {
         super.onCreate();
         sApp = this;
         AutoJs.initInstance(this);
+        GlobalKeyObserver.init();
     }
 
 }

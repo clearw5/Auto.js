@@ -7,7 +7,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 
 import com.stardust.auojs.inrt.App;
-import com.stardust.autojs.runtime.api.ProcessShell;
+import com.stardust.autojs.core.util.ProcessShell;
 
 import java.util.Locale;
 
@@ -39,8 +39,9 @@ public class AccessibilityServiceTool {
     public static boolean enableAccessibilityServiceByRootAndWaitFor(Context context, long timeOut) {
         if (enableAccessibilityServiceByRoot(context, com.stardust.view.accessibility.AccessibilityService.class)) {
             com.stardust.view.accessibility.AccessibilityService.waitForEnabled(timeOut);
+            return true;
         }
-        return true;
+        return false;
     }
 
     public static void goToAccessibilitySetting() {

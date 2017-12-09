@@ -1,13 +1,18 @@
 package com.stardust.autojs.engine;
 
+import android.net.Uri;
+
+import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.commonjs.module.provider.ModuleSource;
 import org.mozilla.javascript.commonjs.module.provider.UrlModuleSourceProvider;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,7 +35,6 @@ public class AssetAndUrlModuleSourceProvider extends UrlModuleSourceProvider {
             throw new RuntimeException(e);
         }
     }
-
 
     @Override
     protected ModuleSource loadFromPrivilegedLocations(String moduleId, Object validator) throws IOException, URISyntaxException {

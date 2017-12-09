@@ -6,6 +6,7 @@ package com.stardust.scriptdroid.tool;
 
 
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.util.IntentUtil;
+import com.stardust.view.accessibility.AccessibilityService;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -36,6 +38,10 @@ public class CrashHandler implements UncaughtExceptionHandler {
         }
         try {
             Log.e(TAG, "Uncaught Exception", ex);
+            AccessibilityService service = AccessibilityService.getInstance();
+            if (service != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                service.disableSelf();
+            }
             if (crashTooManyTimes())
                 return;
             String msg = App.getApp().getString(R.string.sorry_for_crash) + ex.toString();
@@ -44,6 +50,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
+
     }
 
     private static boolean causedByBadWindowToken(Throwable e) {

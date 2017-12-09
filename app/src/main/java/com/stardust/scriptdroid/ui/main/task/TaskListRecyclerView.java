@@ -2,16 +2,22 @@ package com.stardust.scriptdroid.ui.main.task;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ThemeColorRecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.workground.WrapContentLinearLayoutManager;
 
+import com.bignerdranch.expandablerecyclerview.ChildViewHolder;
+import com.bignerdranch.expandablerecyclerview.ExpandableRecyclerAdapter;
+import com.bignerdranch.expandablerecyclerview.ParentViewHolder;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.execution.ScriptExecution;
@@ -19,9 +25,13 @@ import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.script.AutoFileSource;
-import com.stardust.autojs.script.ScriptSource;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
+import com.stardust.scriptdroid.storage.database.ModelChange;
+import com.stardust.scriptdroid.timing.TaskReceiver;
+import com.stardust.scriptdroid.timing.TimedTask;
+import com.stardust.scriptdroid.timing.TimedTaskManager;
+import com.stardust.scriptdroid.ui.timing.TimedTaskSettingActivity_;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
@@ -30,6 +40,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by Stardust on 2017/3/24.
@@ -38,28 +50,23 @@ import butterknife.OnClick;
 public class TaskListRecyclerView extends ThemeColorRecyclerView implements ScriptEngineManager.EngineLifecycleCallback {
 
 
-    private final OnClickListener mOnItemClickListenerProxy = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
+    private static final String LOG_TAG = "TaskListRecyclerView";
 
-        }
-    };
-
-    private final List<ScriptEngine> mScriptEngines = new ArrayList<>();
+    private final List<TaskGroup> mTaskGroups = new ArrayList<>();
+    private TaskGroup.RunningTaskGroup mRunningTaskGroup;
+    private TaskGroup.PendingTaskGroup mPendingTaskGroup;
     private Adapter mAdapter;
+    private Disposable mTimedTaskChangeDisposable;
     private final ScriptEngineService mScriptEngineService = AutoJs.getInstance().getScriptEngineService();
     private ScriptExecutionListener mScriptExecutionListener = new SimpleScriptExecutionListener() {
         @Override
         public void onStart(final ScriptExecution execution) {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    int position = mScriptEngines.indexOf(execution.getEngine());
-                    if (position >= 0) {
-                        mAdapter.notifyItemChanged(position);
-                    } else {
-                        updateEngineList();
-                    }
+            post(() -> {
+                int position = mRunningTaskGroup.indexOf(execution.getEngine());
+                if (position >= 0) {
+                    mAdapter.notifyChildChanged(0, position);
+                } else {
+                    refresh();
                 }
             });
 
@@ -89,14 +96,21 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
                 .marginResId(R.dimen.script_and_folder_list_divider_left_margin, R.dimen.script_and_folder_list_divider_right_margin)
                 .showLastDivider()
                 .build());
-        mAdapter = new Adapter();
+        mRunningTaskGroup = new TaskGroup.RunningTaskGroup(getContext());
+        mTaskGroups.add(mRunningTaskGroup);
+        mPendingTaskGroup = new TaskGroup.PendingTaskGroup(getContext());
+        mTaskGroups.add(mPendingTaskGroup);
+        mAdapter = new Adapter(mTaskGroups);
         setAdapter(mAdapter);
     }
 
-    public void updateEngineList() {
-        mScriptEngines.clear();
-        mScriptEngines.addAll(mScriptEngineService.getEngines());
-        mAdapter.notifyDataSetChanged();
+    public void refresh() {
+        for (TaskGroup group : mTaskGroups) {
+            group.refresh();
+        }
+        mAdapter = new Adapter(mTaskGroups);
+        setAdapter(mAdapter);
+        //notifyDataSetChanged not working...
     }
 
     @Override
@@ -104,13 +118,16 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
         super.onAttachedToWindow();
         mScriptEngineService.registerEngineLifecycleCallback(this);
         AutoJs.getInstance().getScriptEngineService().registerGlobalScriptExecutionListener(mScriptExecutionListener);
+        mTimedTaskChangeDisposable = TimedTaskManager.getInstance().getTimeTaskChanges()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::onTimedTaskChange);
     }
 
     @Override
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
         if (visibility == VISIBLE) {
-            updateEngineList();
+            refresh();
         }
     }
 
@@ -119,63 +136,84 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
         super.onDetachedFromWindow();
         mScriptEngineService.unregisterEngineLifecycleCallback(this);
         AutoJs.getInstance().getScriptEngineService().unregisterGlobalScriptExecutionListener(mScriptExecutionListener);
+        mTimedTaskChangeDisposable.dispose();
     }
 
-    private void onScriptANR(final ScriptEngine engine) {
-        // TODO: 2017/7/19 强制停止aq1sws2
+    void onTimedTaskChange(ModelChange<TimedTask> taskChange) {
+        if (taskChange.getAction() == BaseModel.Action.INSERT) {
+            mAdapter.notifyChildInserted(1, mPendingTaskGroup.addTask(taskChange.getData()));
+        } else if (taskChange.getAction() == BaseModel.Action.DELETE) {
+            final int i = mPendingTaskGroup.removeTask(taskChange.getData());
+            // FIXME: 2017/11/28 task id is always 0
+            if (i >= 0) {
+                mAdapter.notifyChildRemoved(1, i);
+            } else {
+                Log.w(LOG_TAG, "data inconsistent on change: " + taskChange);
+                refresh();
+            }
+        } else if (taskChange.getAction() == BaseModel.Action.UPDATE) {
+            final int i = mPendingTaskGroup.updateTask(taskChange.getData());
+            if (i >= 0) {
+                mAdapter.notifyChildChanged(1, i);
+            } else {
+                Log.w(LOG_TAG, "data inconsistent on change: " + taskChange);
+                refresh();
+            }
+        }
     }
 
     @Override
     public void onEngineCreate(final ScriptEngine engine) {
-        synchronized (mScriptEngines) {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    mScriptEngines.add(engine);
-                    getAdapter().notifyItemInserted(mScriptEngines.size() - 1);
-                }
-            });
-        }
+        post(() ->
+                mAdapter.notifyChildInserted(0, mRunningTaskGroup.addTask(engine))
+        );
     }
 
     @Override
     public void onEngineRemove(final ScriptEngine engine) {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                final int i = mScriptEngines.indexOf(engine);
-                if (i >= 0) {
-                    mScriptEngines.remove(i);
-                    mAdapter.notifyItemRemoved(i);
-                } else {
-                    updateEngineList();
-                }
-
+        post(() -> {
+            final int i = mRunningTaskGroup.removeTask(engine);
+            if (i >= 0) {
+                mAdapter.notifyChildRemoved(0, i);
+            } else {
+                refresh();
             }
+
         });
     }
 
-    private class Adapter extends RecyclerView.Adapter<ViewHolder> {
+    private class Adapter extends ExpandableRecyclerAdapter<TaskGroup, Task, TaskGroupViewHolder, TaskViewHolder> {
 
+        public Adapter(@NonNull List<TaskGroup> parentList) {
+            super(parentList);
+        }
+
+        @NonNull
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.task_list_recycler_view_item, parent, false));
+        public TaskGroupViewHolder onCreateParentViewHolder(@NonNull ViewGroup parentViewGroup, int viewType) {
+            return new TaskGroupViewHolder(LayoutInflater.from(parentViewGroup.getContext())
+                    .inflate(R.layout.dialog_code_generate_option_group, parentViewGroup, false));
+        }
+
+        @NonNull
+        @Override
+        public TaskViewHolder onCreateChildViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new TaskViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.task_list_recycler_view_item, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            ScriptEngine engine = mScriptEngines.get(position);
-            ScriptSource source = (ScriptSource) mScriptEngines.get(position).getTag(ScriptEngine.TAG_SOURCE);
-            holder.bind(source, engine);
+        public void onBindParentViewHolder(@NonNull TaskGroupViewHolder viewHolder, int parentPosition, @NonNull TaskGroup taskGroup) {
+            viewHolder.title.setText(taskGroup.getTitle());
         }
 
         @Override
-        public int getItemCount() {
-            return mScriptEngines.size();
+        public void onBindChildViewHolder(@NonNull TaskViewHolder viewHolder, int parentPosition, int childPosition, @NonNull Task task) {
+            viewHolder.bind(task);
         }
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+
+    class TaskViewHolder extends ChildViewHolder<Task> {
 
         @BindView(R.id.first_char)
         TextView mFirstChar;
@@ -184,24 +222,21 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
         @BindView(R.id.desc)
         TextView mDesc;
 
-        private ScriptEngine mScriptEngine;
+        private Task mTask;
         private GradientDrawable mFirstCharBackground;
 
-        ViewHolder(View itemView) {
+        TaskViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(mOnItemClickListenerProxy);
+            itemView.setOnClickListener(this::onItemClick);
             ButterKnife.bind(this, itemView);
             mFirstCharBackground = (GradientDrawable) mFirstChar.getBackground();
         }
 
-        public void bind(ScriptSource source, ScriptEngine engine) {
-            mScriptEngine = engine;
-            if (source == null)
-                return;
-            mName.setText(source.getName());
-            mDesc.setText(source.toString());
-            //ignore android studio warning: use equals to compare string
-            if (source.getEngineName() == AutoFileSource.ENGINE) {
+        public void bind(Task task) {
+            mTask = task;
+            mName.setText(task.getName());
+            mDesc.setText(task.getDesc());
+            if (AutoFileSource.ENGINE.equals(mTask.getEngineName())) {
                 mFirstChar.setText("R");
                 mFirstCharBackground.setColor(getResources().getColor(R.color.color_r));
             } else {
@@ -210,11 +245,44 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
             }
         }
 
+
         @OnClick(R.id.stop)
         void stop() {
-            if (mScriptEngine != null) {
-                mScriptEngine.forceStop();
+            if (mTask != null) {
+                mTask.cancel();
             }
+        }
+
+        void onItemClick(View view) {
+            if (mTask instanceof Task.PendingTask) {
+                TimedTaskSettingActivity_.intent(getContext())
+                        .extra(TaskReceiver.EXTRA_TASK_ID, ((Task.PendingTask) mTask).getTimedTask().getId())
+                        .start();
+            }
+        }
+    }
+
+    private class TaskGroupViewHolder extends ParentViewHolder<TaskGroup, Task> {
+
+        TextView title;
+        ImageView icon;
+
+        TaskGroupViewHolder(@NonNull View itemView) {
+            super(itemView);
+            title = (TextView) itemView.findViewById(R.id.title);
+            icon = (ImageView) itemView.findViewById(R.id.icon);
+            itemView.setOnClickListener(view -> {
+                if (isExpanded()) {
+                    collapseView();
+                } else {
+                    expandView();
+                }
+            });
+        }
+
+        @Override
+        public void onExpansionToggled(boolean expanded) {
+            icon.setRotation(expanded ? -90 : 0);
         }
     }
 

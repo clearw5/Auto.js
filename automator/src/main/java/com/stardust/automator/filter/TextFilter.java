@@ -16,6 +16,11 @@ public class TextFilter extends ListFilter.Default {
             CharSequence charSequence = nodeInfo.getText();
             return charSequence == null ? null : charSequence.toString();
         }
+
+        @Override
+        public String toString() {
+            return "text";
+        }
     };
 
     public static ListFilter equals(String text) {
@@ -23,7 +28,7 @@ public class TextFilter extends ListFilter.Default {
     }
 
     public static ListFilter contains(String str) {
-        return new TextFilter(str);
+        return new StringContainsFilter(str, TEXT_GETTER);
     }
 
     public static ListFilter startsWith(String prefix) {

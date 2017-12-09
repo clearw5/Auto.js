@@ -1,22 +1,28 @@
 package com.stardust.scriptdroid.ui.build;
 
-import android.annotation.SuppressLint;
-import android.app.ListActivity;
-import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.autojs.apkbuilder.ApkBuilder;
-import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.build.AutoJsApkBuilder;
-import com.stardust.scriptdroid.io.StorageFileProvider;
+import com.stardust.scriptdroid.build.ApkBuilderPluginHelper;
+import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.model.script.ScriptFile;
+import com.stardust.scriptdroid.tool.BitmapTool;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.scriptdroid.ui.filechooser.FileChooserDialogBuilder;
+import com.stardust.scriptdroid.ui.shortcut.ShortcutIconSelectActivity;
+import com.stardust.scriptdroid.ui.shortcut.ShortcutIconSelectActivity_;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.IntentUtil;
 
@@ -26,10 +32,9 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.concurrent.Callable;
 
-import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -45,23 +50,28 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     private static final String LOG_TAG = "BuildActivity";
 
     @ViewById(R.id.source_path)
-    EditText mSourcePath;
+    TextInputEditText mSourcePath;
 
     @ViewById(R.id.output_path)
-    EditText mOutputPath;
+    TextInputEditText mOutputPath;
 
     @ViewById(R.id.app_name)
-    EditText mAppName;
+    TextInputEditText mAppName;
 
     @ViewById(R.id.package_name)
-    EditText mPackageName;
+    TextInputEditText mPackageName;
 
     @ViewById(R.id.version_name)
-    EditText mVersionName;
+    TextInputEditText mVersionName;
 
     @ViewById(R.id.version_code)
-    EditText mVersionCode;
+    TextInputEditText mVersionCode;
+
+    @ViewById(R.id.icon)
+    ImageView mIcon;
+
     private MaterialDialog mProgressDialog;
+    private boolean mIsDefaultIcon = true;
 
     @AfterViews
     void setupViews() {
@@ -70,13 +80,36 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         if (sourcePath != null) {
             setupWithSourceFile(new ScriptFile(sourcePath));
         }
+        showPluginDownloadDialogIfNeeded();
+    }
 
+    private void showPluginDownloadDialogIfNeeded() {
+        if (ApkBuilderPluginHelper.checkPlugin(this)) {
+            return;
+        }
+        new ThemeColorMaterialDialogBuilder(this)
+                .content(R.string.no_apk_builder_plugin)
+                .positiveText(R.string.ok)
+                .negativeText(R.string.text_exit)
+                .onPositive((dialog, which) -> downloadPlugin())
+                .onNegative((dialog, which) -> finish())
+                .show();
+
+    }
+
+    private void downloadPlugin() {
+        // TODO: 2017/11/29
     }
 
     private void setupWithSourceFile(ScriptFile file) {
         mSourcePath.setText(file.getPath());
-        mOutputPath.setText(file.getParent());
+        String dir = file.getParent();
+        if (dir.startsWith(getFilesDir().getPath())) {
+            dir = StorageFileProvider.DEFAULT_DIRECTORY_PATH;
+        }
+        mOutputPath.setText(dir);
         mAppName.setText(file.getSimplifiedName());
+        mPackageName.setText(getString(R.string.format_default_package_name, System.currentTimeMillis()));
     }
 
     @Override
@@ -109,30 +142,79 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
                 .show();
     }
 
+    @Click(R.id.icon)
+    void selectIcon() {
+        ShortcutIconSelectActivity_.intent(this)
+                .startForResult(31209);
+    }
+
     @Click(R.id.fab)
     void buildApk() {
+        if (!ApkBuilderPluginHelper.checkPlugin(this)) {
+            Toast.makeText(this, R.string.text_apk_builder_plugin_unavailable, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!checkInputs()) {
+            return;
+        }
+        doBuildingApk();
+    }
+
+    private boolean checkInputs() {
+        boolean inputValid = true;
+        inputValid &= checkNotEmpty(mSourcePath);
+        inputValid &= checkNotEmpty(mOutputPath);
+        inputValid &= checkNotEmpty(mAppName);
+        inputValid &= checkNotEmpty(mSourcePath);
+        inputValid &= checkNotEmpty(mVersionCode);
+        inputValid &= checkNotEmpty(mVersionName);
+        inputValid &= checkNotEmpty(mPackageName);
+        return inputValid;
+    }
+
+    private boolean checkNotEmpty(TextInputEditText editText) {
+        if (!TextUtils.isEmpty(editText.getText()))
+            return true;
+        // TODO: 2017/12/8 more beautiful ways?
+        String hint = ((TextInputLayout) editText.getParent().getParent()).getHint().toString();
+        editText.setError(hint + getString(R.string.text_should_not_be_empty));
+        return false;
+    }
+
+    private void doBuildingApk() {
         String jsPath = mSourcePath.getText().toString();
         String versionName = mVersionName.getText().toString();
         int versionCode = Integer.parseInt(mVersionCode.getText().toString());
         String appName = mAppName.getText().toString();
+        String packageName = mPackageName.getText().toString();
         File tmpDir = new File(getCacheDir(), "build/");
         File outApk = new File(mOutputPath.getText().toString(),
                 String.format("%s_v%s.apk", appName, versionName));
         showProgressDialog();
-        Observable.fromCallable(() ->
-                new AutoJsApkBuilder(getAssets().open("template.apk"), outApk, tmpDir.getPath())
-                        .setProgressCallback(BuildActivity.this)
-                        .prepare()
-                        .withConfig(new AutoJsApkBuilder.AppConfig(appName, versionName, versionCode, jsPath))
-                        .build()
-                        .sign()
-                        .cleanWorkspace()
+        Observable.fromCallable(() -> {
+                    InputStream templateApk = ApkBuilderPluginHelper.openTemplateApk(BuildActivity.this);
+                    return new AutoJsApkBuilder(templateApk, outApk, tmpDir.getPath())
+                            .setProgressCallback(BuildActivity.this)
+                            .prepare()
+                            .withConfig(new AutoJsApkBuilder.AppConfig()
+                                    .setAppName(appName)
+                                    .setJsPath(jsPath)
+                                    .setPackageName(packageName)
+                                    .setVersionCode(versionCode)
+                                    .setVersionName(versionName)
+                                    .setIcon(mIsDefaultIcon ? null : (Callable<Bitmap>) () ->
+                                            BitmapTool.drawableToBitmap(mIcon.getDrawable())
+                                    )
+                            )
+                            .build()
+                            .sign()
+                            .cleanWorkspace();
+                }
         )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(apkBuilder -> onBuildSuccessful(outApk),
                         this::onBuildFailed);
-
     }
 
     private void showProgressDialog() {
@@ -184,5 +266,34 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     @Override
     public void onClean(AutoJsApkBuilder builder) {
         mProgressDialog.setContent(R.string.apk_builder_clean);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        String packageName = data.getStringExtra(ShortcutIconSelectActivity.EXTRA_PACKAGE_NAME);
+        if (packageName != null) {
+            try {
+                mIcon.setImageDrawable(getPackageManager().getApplicationIcon(packageName));
+                mIsDefaultIcon = false;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+        if (data.getData() == null)
+            return;
+        Observable.fromCallable(() -> BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData())))
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((bitmap -> {
+                    mIcon.setImageBitmap(bitmap);
+                    mIsDefaultIcon = false;
+                }), error -> {
+                    Log.e(LOG_TAG, "decode stream", error);
+                });
+
     }
 }

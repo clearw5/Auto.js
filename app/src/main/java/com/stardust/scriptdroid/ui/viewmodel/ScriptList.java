@@ -1,5 +1,7 @@
 package com.stardust.scriptdroid.ui.viewmodel;
 
+import android.content.SharedPreferences;
+
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.ui.main.scripts.ScriptListView;
 import com.stardust.util.FileSorter;
@@ -14,41 +16,99 @@ import java.util.Comparator;
 
 public class ScriptList {
 
+    public static class SortConfig {
+
+        private static final String CLASS_NAME = "com.stardust.scriptdroid.ui.viewmodel.ScriptList.SortConfig";
+
+        private int mDirSortType = SORT_TYPE_NAME;
+        private boolean mDirSortedAscending;
+        private boolean mFileSortedAscending;
+        private int mFileSortType = SORT_TYPE_NAME;
+
+        public int getDirSortType() {
+            return mDirSortType;
+        }
+
+        public void setDirSortType(int dirSortType) {
+            mDirSortType = dirSortType;
+        }
+
+        public boolean isDirSortedAscending() {
+            return mDirSortedAscending;
+        }
+
+        public void setDirSortedAscending(boolean dirSortedAscending) {
+            mDirSortedAscending = dirSortedAscending;
+        }
+
+        public boolean isFileSortedAscending() {
+            return mFileSortedAscending;
+        }
+
+        public void setFileSortedAscending(boolean fileSortedAscending) {
+            mFileSortedAscending = fileSortedAscending;
+        }
+
+        public int getFileSortType() {
+            return mFileSortType;
+        }
+
+        public void setFileSortType(int fileSortType) {
+            mFileSortType = fileSortType;
+        }
+
+        public void saveInto(SharedPreferences preferences) {
+            preferences.edit()
+                    .putInt(CLASS_NAME + "." + "file_sort_type", mFileSortType)
+                    .putInt(CLASS_NAME + "." + "dir_sort_type", mDirSortType)
+                    .putBoolean(CLASS_NAME + "." + "file_ascending", mFileSortedAscending)
+                    .putBoolean(CLASS_NAME + "." + "dir_ascending", mDirSortedAscending)
+                    .apply();
+
+        }
+
+        public static SortConfig from(SharedPreferences preferences) {
+            SortConfig config = new SortConfig();
+            config.setDirSortedAscending(preferences.getBoolean(CLASS_NAME + "." + "dir_ascending", false));
+            config.setFileSortedAscending(preferences.getBoolean(CLASS_NAME + "." + "file_ascending", false));
+            config.setDirSortType(preferences.getInt(CLASS_NAME + "." + "dir_sort_type", SORT_TYPE_NAME));
+            config.setFileSortType(preferences.getInt(CLASS_NAME + "." + "file_sort_type", SORT_TYPE_NAME));
+            return config;
+        }
+    }
+
     public static final int SORT_TYPE_NAME = 0x10;
     public static final int SORT_TYPE_TYPE = 0x20;
     public static final int SORT_TYPE_SIZE = 0x30;
     public static final int SORT_TYPE_DATE = 0x40;
 
+    private SortConfig mSortConfig = new SortConfig();
     private ArrayList<ScriptFile> mScriptFiles = new ArrayList<>();
     private ArrayList<ScriptFile> mDirectories = new ArrayList<>();
-    private int mDirSortType = SORT_TYPE_NAME;
-    private boolean mDirSortedAscending;
-    private boolean mFileSortedAscending;
-    private int mFileSortType = SORT_TYPE_NAME;
 
 
     public boolean isDirSortedAscending() {
-        return mDirSortedAscending;
+        return mSortConfig.mDirSortedAscending;
     }
 
     public boolean isFileSortedAscending() {
-        return mFileSortedAscending;
+        return mSortConfig.mFileSortedAscending;
     }
 
     public int getDirSortType() {
-        return mDirSortType;
+        return mSortConfig.mDirSortType;
     }
 
     public int getFileSortType() {
-        return mFileSortType;
+        return mSortConfig.mFileSortType;
     }
 
     public void setDirSortedAscending(boolean dirSortedAscending) {
-        mDirSortedAscending = dirSortedAscending;
+        mSortConfig.mDirSortedAscending = dirSortedAscending;
     }
 
     public void setFileSortedAscending(boolean fileSortedAscending) {
-        mFileSortedAscending = fileSortedAscending;
+        mSortConfig.mFileSortedAscending = fileSortedAscending;
     }
 
     private Comparator<File> getComparator(int sortType) {
@@ -99,26 +159,31 @@ public class ScriptList {
     }
 
     public void sortDir(int sortType) {
-        mDirSortType = sortType;
-        FileSorter.sort(mDirectories, getComparator(sortType), mDirSortedAscending);
+        mSortConfig.mDirSortType = sortType;
+        FileSorter.sort(mDirectories, getComparator(sortType), mSortConfig.mDirSortedAscending);
     }
 
     public void sortFile(int sortType) {
-        mFileSortType = sortType;
-        FileSorter.sort(mScriptFiles, getComparator(sortType), mFileSortedAscending);
+        mSortConfig.mFileSortType = sortType;
+        FileSorter.sort(mScriptFiles, getComparator(sortType), mSortConfig.mFileSortedAscending);
     }
 
     public void sort() {
-        FileSorter.sort(mDirectories, getComparator(mDirSortType), mDirSortedAscending);
-        FileSorter.sort(mScriptFiles, getComparator(mFileSortType), mFileSortedAscending);
+        FileSorter.sort(mDirectories, getComparator(mSortConfig.mDirSortType), mSortConfig.mDirSortedAscending);
+        FileSorter.sort(mScriptFiles, getComparator(mSortConfig.mFileSortType), mSortConfig.mFileSortedAscending);
+    }
+
+    public SortConfig getSortConfig() {
+        return mSortConfig;
+    }
+
+    public void setSortConfig(SortConfig sortConfig) {
+        mSortConfig = sortConfig;
     }
 
     public ScriptList cloneConfig() {
         ScriptList list = new ScriptList();
-        list.mFileSortType = mFileSortType;
-        list.mDirSortType = mDirSortType;
-        list.mDirSortedAscending = mDirSortedAscending;
-        list.mFileSortedAscending = mFileSortedAscending;
+        list.mSortConfig = mSortConfig;
         return list;
     }
 }

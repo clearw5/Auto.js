@@ -11,6 +11,7 @@ import android.support.annotation.RequiresApi;
 import android.view.ViewConfiguration;
 
 import com.stardust.concurrent.VolatileBox;
+import com.stardust.concurrent.VolatileDispose;
 import com.stardust.util.ScreenMetrics;
 
 /**
@@ -110,7 +111,7 @@ public class GlobalActionAutomator {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private boolean gesturesWithHandler(GestureDescription description) {
-        final VolatileBox<Boolean> result = new VolatileBox<>(false);
+        final VolatileDispose<Boolean> result = new VolatileDispose<>();
         mService.dispatchGesture(description, new AccessibilityService.GestureResultCallback() {
             @Override
             public void onCompleted(GestureDescription gestureDescription) {

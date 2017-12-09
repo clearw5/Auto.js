@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.stardust.scriptdroid.R;
 import com.stardust.view.accessibility.NodeInfo;
 import com.stardust.util.ViewUtil;
-import com.stardust.widget.LevelBeamView;
+import com.stardust.scriptdroid.ui.widget.LevelBeamView;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -162,9 +162,7 @@ public class LayoutHierarchyView extends MultiLevelListView {
         Stack<NodeInfo> parents = new Stack<>();
         searchNodeParents(selectedNode, mRootNode, parents);
         mClickedNodeInfo = parents.peek();
-        for (NodeInfo nodeInfo : parents) {
-            mInitiallyExpandedNodes.add(nodeInfo);
-        }
+        mInitiallyExpandedNodes.addAll(parents);
         mAdapter.reloadData();
     }
 
@@ -225,7 +223,7 @@ public class LayoutHierarchyView extends MultiLevelListView {
             NodeInfo nodeInfo = (NodeInfo) object;
             ViewHolder viewHolder;
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.layout_hierarchy_view_item, LayoutHierarchyView.this, false);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.layout_hierarchy_view_item, null);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
             } else {

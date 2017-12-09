@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Dialogs | Auto.js 3.0.0 文档</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/dialogs.html">
+</head>
+<body class="alt apidoc" id="api-section-dialogs">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-synopsis" href="synopsis.html">如何阅读本文档</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的触摸模拟</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs active" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的触摸模拟</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="dialogs" class="interior">
+      <header>
+        <h1>Auto.js 3.0.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#dialogs_dialogs">Dialogs</a></span><ul>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_rawinput_title_default">dialogs.rawInput(title[, default])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_input_title_default">dialogs.input(title[, default])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_prompt_title_default">dialogs.prompt(title[, default])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_alert_title_content">dialogs.alert(title[, content])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_confirm_title_content">dialogs.confirm(title[, content])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_select_title_items">dialogs.select(title, items)</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_singlechoice_title_items_index">dialogs.singleChoice(title, items[, index])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_multichoice_title_items_indexes">dialogs.multiChoice(title, items[, indexes])</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>Dialogs<span><a class="mark" href="#dialogs_dialogs" id="dialogs_dialogs">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>dialogs 模块允许用户通过对话框与脚本进行交互。</p>
+<h2>dialogs.rawInput(title[, default])<span><a class="mark" href="#dialogs_dialogs_rawinput_title_default" id="dialogs_dialogs_rawinput_title_default">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
+<li><code>default</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 可选，对话框内输入框的初始内容。默认为 <code>&quot;&quot;</code> 。</li>
+</ul>
+</div><p>显示一个包含输入框的对话框。如果指定了 <code>default</code> ，那么对话框显示时输入框的内容就为该值。</p>
+<p>该函数也可通过 <code>rawInput(title[, default])</code> 、 <code>prompt(title[, default])</code> 或者 <code>dialogs.prompt(title[, default])</code> 来调用。调用时脚本将阻塞直至对话框被关闭。如果用户输入内容并点击确定，函数将返回输入的内容；否则返回 <code>null</code> 。</p>
+<h2>dialogs.input(title[, default])<span><a class="mark" href="#dialogs_dialogs_input_title_default" id="dialogs_dialogs_input_title_default">#</a></span></h2>
+<p>等效于 <code>eval(dialogs.rawInput(title, default))</code> </p>
+<h2>dialogs.prompt(title[, default])<span><a class="mark" href="#dialogs_dialogs_prompt_title_default" id="dialogs_dialogs_prompt_title_default">#</a></span></h2>
+<p>见 dialogs.rawInput</p>
+<h2>dialogs.alert(title[, content])<span><a class="mark" href="#dialogs_dialogs_alert_title_content" id="dialogs_dialogs_alert_title_content">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
+<li><code>content</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 可选，对话框的内容。默认为空。</li>
+</ul>
+</div><p>显示一个只包含“确定”按钮的提示对话框。</p>
+<p>该函数也可通过 <code>alert(title[, content])</code> 来调用。调用时脚本将阻塞直至对话框被关闭。该函数无返回值。</p>
+<h2>dialogs.confirm(title[, content])<span><a class="mark" href="#dialogs_dialogs_confirm_title_content" id="dialogs_dialogs_confirm_title_content">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
+<li><code>content</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 可选，对话框的内容。默认为空。</li>
+</ul>
+</div><p>显示一个包含“确定”和“取消”按钮的提示对话框。</p>
+<p>该函数也可通过 <code>confirm(title[, content])</code> 来调用。调用时脚本将阻塞直至对话框被关闭。如果用户点击“确定”则返回 <code>true</code> ，否则返回 <code>false</code> 。</p>
+<h2>dialogs.select(title, items)<span><a class="mark" href="#dialogs_dialogs_select_title_items" id="dialogs_dialogs_select_title_items">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
+<li><code>items</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 对话框的选项列表，是一个字符串数组。</li>
+</ul>
+</div><p>显示一个带有选项列表的对话框。</p>
+<p>该函数也可通过 <code>dialogs.select(title, ...items)</code> 来调用。<br>例如： <code>dialogs.select(&quot;标题&quot;, [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;])</code> 可以用  <code>dialogs.select(&quot;标题&quot;, &quot;A&quot;, &quot;B&quot;, &quot;C&quot;)</code> 替代。</p>
+<p>调用时脚本将阻塞直至对话框被关闭。如果用户点击了对话框中的某个选项，该函数会返回该选项的位置（选中第一个选项返回0，第二个选项返回1，以此类推），否则返回-1。</p>
+<h2>dialogs.singleChoice(title, items[, index])<span><a class="mark" href="#dialogs_dialogs_singlechoice_title_items_index" id="dialogs_dialogs_singlechoice_title_items_index">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
+<li><code>items</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 对话框的选项列表，是一个字符串数组。</li>
+<li><code>index</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 可选，对话框的默认选项的位置。默认为0。</li>
+</ul>
+</div><p>显示一个带有单选框选项列表的对话框。</p>
+<p>调用时脚本将阻塞直至对话框被关闭。如果用户选中了对话框中的某个选项并点击“确定”，该函数会返回该选项的位置（选中第一个选项返回0，第二个选项返回1，以此类推），否则返回-1。</p>
+<h2>dialogs.multiChoice(title, items[, indexes])<span><a class="mark" href="#dialogs_dialogs_multichoice_title_items_indexes" id="dialogs_dialogs_multichoice_title_items_indexes">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
+<li><code>items</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 对话框的选项列表，是一个字符串数组。</li>
+<li><code>indexes</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 可选，对话框的默认选项的位置数组。默认为空数组。</li>
+</ul>
+</div><p>显示一个带有多选框选项列表的对话框。</p>
+<p>调用时脚本将阻塞直至对话框被关闭。如果用户点击“确定”按钮，该函数会返回所有已选选项的位置组成的数组，否则返回空数组。</p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

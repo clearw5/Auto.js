@@ -47,7 +47,10 @@ public class AppUtils {
 
     @ScriptInterface
     public boolean launchApp(String appName) {
-        return launchPackage(getPackageName(appName));
+        String pkg = getPackageName(appName);
+        if(pkg == null)
+            return false;
+        return launchPackage(pkg);
     }
 
     @ScriptInterface
@@ -56,7 +59,7 @@ public class AppUtils {
         List<ApplicationInfo> installedApplications = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
         for (ApplicationInfo applicationInfo : installedApplications) {
             if (packageManager.getApplicationLabel(applicationInfo).toString().equals(appName)) {
-                return applicationInfo.processName;
+                return applicationInfo.packageName;
             }
         }
         return null;

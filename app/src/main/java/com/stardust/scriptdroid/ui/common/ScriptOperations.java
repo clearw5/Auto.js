@@ -21,14 +21,17 @@ import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.io.TmpScriptFiles;
+import com.stardust.scriptdroid.external.ScriptIntents;
+import com.stardust.scriptdroid.storage.file.TmpScriptFiles;
+import com.stardust.scriptdroid.model.sample.SampleFile;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
-import com.stardust.scriptdroid.io.StorageFileProvider;
-import com.stardust.scriptdroid.model.sample.Sample;
+import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.network.download.DownloadManager;
+import com.stardust.scriptdroid.tool.SimpleObserver;
 import com.stardust.scriptdroid.ui.filechooser.FileChooserDialogBuilder;
 import com.stardust.scriptdroid.ui.shortcut.ShortcutCreateActivity;
+import com.stardust.scriptdroid.ui.timing.TimedTaskSettingActivity_;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import org.reactivestreams.Publisher;
@@ -40,8 +43,6 @@ import java.io.InputStream;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
@@ -110,51 +111,43 @@ public class ScriptOperations {
     public Observable<String> importFile(final String pathFrom) {
         return showFileNameInputDialog(PFiles.getNameWithoutExtension(pathFrom), PFiles.getExtension(pathFrom))
                 .observeOn(Schedulers.io())
-                .map(new Function<String, String>() {
-                    @Override
-                    public String apply(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        final String pathTo = getCurrentDirectoryPath() + s + "." + PFiles.getExtension(pathFrom);
-                        if (PFiles.copy(pathFrom, pathTo)) {
-                            showMessage(R.string.text_import_succeed);
-                        } else {
-                            showMessage(R.string.text_import_fail);
-                        }
-                        mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(pathTo));
-                        return pathTo;
+                .map(input -> {
+                    final String pathTo = getCurrentDirectoryPath() + input + "." + PFiles.getExtension(pathFrom);
+                    if (PFiles.copy(pathFrom, pathTo)) {
+                        showMessage(R.string.text_import_succeed);
+                    } else {
+                        showMessage(R.string.text_import_fail);
                     }
+                    mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(pathTo));
+                    return pathTo;
                 });
     }
 
     public Observable<String> importFile(String prefix, final InputStream inputStream, final String ext) {
         return showFileNameInputDialog(PFiles.getNameWithoutExtension(prefix), ext)
                 .observeOn(Schedulers.io())
-                .map(new Function<String, String>() {
-                    @Override
-                    public String apply(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        final String pathTo = getCurrentDirectoryPath() + s + "." + ext;
-                        if (PFiles.copyStream(inputStream, pathTo)) {
-                            showMessage(R.string.text_import_succeed);
-                        } else {
-                            showMessage(R.string.text_import_fail);
-                        }
-                        mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(pathTo));
-                        return pathTo;
+                .map(input -> {
+                    final String pathTo = getCurrentDirectoryPath() + input + "." + ext;
+                    if (PFiles.copyStream(inputStream, pathTo)) {
+                        showMessage(R.string.text_import_succeed);
+                    } else {
+                        showMessage(R.string.text_import_fail);
                     }
+                    mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(pathTo));
+                    return pathTo;
                 });
     }
 
 
     public void newDirectory() {
         showNameInputDialog("", new InputCallback())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(@io.reactivex.annotations.NonNull String path) throws Exception {
-                        if (new ScriptFile(getCurrentDirectory(), path).mkdirs()) {
-                            showMessage(R.string.text_already_create);
-                            mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(path));
-                        } else {
-                            showMessage(R.string.text_create_fail);
-                        }
+                .subscribe(path -> {
+                    ScriptFile newDir = new ScriptFile(getCurrentDirectory(), path);
+                    if (newDir.mkdirs()) {
+                        showMessage(R.string.text_already_create);
+                        mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(newDir));
+                    } else {
+                        showMessage(R.string.text_create_fail);
                     }
                 });
     }
@@ -164,12 +157,7 @@ public class ScriptOperations {
             showMessageWithoutThreadSwitch(resId);
         }
         //switch to ui thread to show message
-        App.getApp().getUiHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                showMessageWithoutThreadSwitch(resId);
-            }
-        });
+        App.getApp().getUiHandler().post(() -> showMessageWithoutThreadSwitch(resId));
     }
 
     private void showMessageWithoutThreadSwitch(int resId) {
@@ -191,12 +179,9 @@ public class ScriptOperations {
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .alwaysCallInputCallback()
                 .input(getString(R.string.text_please_input_name), prefix, false, textWatcher)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        input.onNext(dialog.getInputEditText().getText().toString());
-                        input.onComplete();
-                    }
+                .onPositive((dialog, which) -> {
+                    input.onNext(dialog.getInputEditText().getText().toString());
+                    input.onComplete();
                 })
                 .build());
         return input;
@@ -207,9 +192,9 @@ public class ScriptOperations {
         return mContext.getString(resId);
     }
 
-    public Observable<String> importSample(Sample sample) {
+    public Observable<String> importSample(SampleFile sample) {
         try {
-            return importFile(sample.name, mContext.getAssets().open(sample.path), PFiles.getExtension(sample.path));
+            return importFile(sample.getSimplifiedName(), sample.openInputStream(), sample.getExtension());
         } catch (IOException e) {
             e.printStackTrace();
             showMessage(R.string.text_import_fail);
@@ -281,27 +266,31 @@ public class ScriptOperations {
                 .title(fileName)
                 .cancelable(false)
                 .positiveText(R.string.text_cancel_download)
-                .onPositive((dialog, which) -> DownloadManager.getInstance(mContext).cancelDownload(url))
+                .onPositive((dialog, which) -> DownloadManager.getInstance().cancelDownload(url))
                 .show();
     }
 
     public Observable<ScriptFile> download(String url, String path, MaterialDialog progressDialog) {
         PublishSubject<ScriptFile> subject = PublishSubject.create();
-        DownloadManager.getInstance(mContext).download(url, path)
+        DownloadManager.getInstance().download(url, path)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(progressDialog::setProgress)
-                .doOnComplete(() -> {
-                    progressDialog.dismiss();
-                    subject.onNext(new ScriptFile(path));
-                    subject.onComplete();
-                })
-                .doOnError(error -> {
-                    Log.e(LOG_TAG, "Download failed", error);
-                    progressDialog.dismiss();
-                    showMessage(R.string.text_download_failed);
-                    subject.onError(error);
-                })
-                .subscribe();
+                .subscribe(new SimpleObserver<Integer>() {
+                    @Override
+                    public void onComplete() {
+                        progressDialog.dismiss();
+                        subject.onNext(new ScriptFile(path));
+                        subject.onComplete();
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        Log.e(LOG_TAG, "Download failed", error);
+                        progressDialog.dismiss();
+                        showMessage(R.string.text_download_failed);
+                        subject.onError(error);
+                    }
+                });
         return subject;
     }
 
@@ -322,6 +311,12 @@ public class ScriptOperations {
                 .show();
     }
 
+    public void timedTask(ScriptFile scriptFile) {
+        TimedTaskSettingActivity_.intent(mContext)
+                .extra(ScriptIntents.EXTRA_KEY_PATH, scriptFile.getPath())
+                .start();
+    }
+
 
     private class InputCallback implements MaterialDialog.InputCallback {
 
@@ -338,7 +333,7 @@ public class ScriptOperations {
             this(ext, null);
         }
 
-        public InputCallback() {
+        InputCallback() {
             this(null);
         }
 

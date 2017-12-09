@@ -31,18 +31,6 @@ public class UiObjectCollection {
 
     public static final UiObjectCollection EMPTY = UiObjectCollection.of(Collections.<UiObject>emptyList());
 
-    public static UiObjectCollection ofCompat(List<AccessibilityNodeInfoCompat> list) {
-        return new UiObjectCollection(UiObject.compatListToUiObjectList(list));
-    }
-
-    public static UiObjectCollection ofInfo(List<AccessibilityNodeInfo> list) {
-        List<UiObject> compatList = new ArrayList<>(list.size());
-        for (AccessibilityNodeInfo nodeInfo : list) {
-            compatList.add(new UiObject(nodeInfo));
-        }
-        return new UiObjectCollection(compatList);
-    }
-
     public static UiObjectCollection of(List<UiObject> list) {
         return new UiObjectCollection(list);
     }
@@ -51,6 +39,10 @@ public class UiObjectCollection {
 
     private UiObjectCollection(List<UiObject> list) {
         mNodes = list;
+    }
+
+    public UiObject[] toArray(){
+        return mNodes.toArray(new UiObject[mNodes.size()]);
     }
 
     public boolean performAction(int action) {
@@ -202,15 +194,6 @@ public class UiObjectCollection {
             consumer.accept(uiObject);
         }
         return this;
-    }
-
-    public UiObjectCollection filter(Func1<UiObject, Boolean> func1) {
-        List<UiObject> list = new ArrayList<>();
-        for (UiObject uiObject : mNodes) {
-            if (func1.call(uiObject))
-                list.add(uiObject);
-        }
-        return of(list);
     }
 
     public UiObjectCollection find(UiGlobalSelector selector) {

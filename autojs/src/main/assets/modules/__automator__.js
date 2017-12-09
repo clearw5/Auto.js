@@ -118,6 +118,7 @@ module.exports = function(__runtime__, scope){
         }
         mode = mode || 0;
         __runtime__.accessibilityBridge.setMode(mode);
+        __runtime__.accessibilityBridge.ensureServiceEnabled();
     }
 
     scope.__asGlobal__(__runtime__.automator, ['back', 'home', 'powerDialog', 'notifications', 'quickSettings', 'recents', 'splitScreen']);

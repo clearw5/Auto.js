@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.ui.floating;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -18,16 +19,18 @@ import com.stardust.floatingcircularactionmenu.CircularActionMenuFloaty;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.autojs.AutoJs;
-import com.stardust.scriptdroid.autojs.record.GlobalRecorder;
-import com.stardust.scriptdroid.io.StorageFileProvider;
-import com.stardust.scriptdroid.model.script.ScriptFile;
+import com.stardust.scriptdroid.autojs.record.GlobalActionRecorder;
+import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
+import com.stardust.scriptdroid.ui.common.NotAskAgainDialog;
 import com.stardust.scriptdroid.ui.floating.layoutinspector.LayoutBoundsFloatyWindow;
 import com.stardust.scriptdroid.ui.floating.layoutinspector.LayoutHierarchyFloatyWindow;
+import com.stardust.scriptdroid.ui.main.MainActivity_;
 import com.stardust.scriptdroid.ui.main.scripts.ScriptListView;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.view.accessibility.LayoutInspector;
+import com.stericson.RootShell.RootShell;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -63,11 +66,13 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
     public static final int STATE_NORMAL = 0;
     public static final int STATE_RECORDING = 1;
 
+    private static final int IC_ACTION_VIEW = R.drawable.ic_android_eat_js;
+
     CircularActionMenuFloatingWindow mWindow;
     private int mState;
     private ImageView mActionViewIcon;
     private Context mContext;
-    private GlobalRecorder mRecorder;
+    private GlobalActionRecorder mRecorder;
     private MaterialDialog mSettingsDialog;
     private String mRunningPackage, mRunningActivity;
 
@@ -75,24 +80,20 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
         mContext = new ContextThemeWrapper(context, R.style.AppTheme);
         initFloaty();
         setupListeners();
-        mRecorder = GlobalRecorder.getSingleton(context);
+        mRecorder = GlobalActionRecorder.getSingleton(context);
         mRecorder.addOnStateChangedListener(this);
     }
 
     private void setupListeners() {
-        mWindow.setOnActionViewClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mState == STATE_RECORDING) {
-                    stopRecord();
-                } else if (mWindow.isExpanded()) {
-                    mWindow.collapse();
-                } else {
-                    AutoJs.getInstance().getLayoutInspector().captureCurrentWindow();
-                    mWindow.expand();
-                }
+        mWindow.setOnActionViewClickListener(v -> {
+            if (mState == STATE_RECORDING) {
+                stopRecord();
+            } else if (mWindow.isExpanded()) {
+                mWindow.collapse();
+            } else {
+                AutoJs.getInstance().getLayoutInspector().captureCurrentWindow();
+                mWindow.expand();
             }
-
         });
     }
 
@@ -113,7 +114,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
                 return menu;
             }
         });
-        mWindow.setKeepToSideHiddenWidthRadio(0.2f);
+        mWindow.setKeepToSideHiddenWidthRadio(0.25f);
         FloatyService.addWindow(mWindow);
     }
 
@@ -130,12 +131,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
                 .customView(listView, false)
                 .positiveText(R.string.cancel)
                 .build();
-        listView.setOnItemOperatedListener(new ScriptListView.OnItemOperatedListener() {
-            @Override
-            public void OnItemOperated(ScriptFile file) {
-                dialog.dismiss();
-            }
-        });
+        listView.setOnItemOperatedListener(file -> dialog.dismiss());
         DialogUtils.showDialog(dialog);
     }
 
@@ -143,14 +139,25 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
     @OnClick(R.id.record)
     void startRecord() {
         mWindow.collapse();
-        mRecorder.start();
+        if (!RootShell.isRootAvailable()) {
+            new NotAskAgainDialog.Builder(mContext, "root")
+                    .title(R.string.text_device_not_rooted)
+                    .content(R.string.prompt_device_not_rooted)
+                    .neutralText(R.string.text_device_rooted)
+                    .positiveText(R.string.ok)
+                    .onNeutral(((dialog, which) -> mRecorder.start()))
+                    .show();
+        } else {
+            mRecorder.start();
+
+        }
     }
 
     private void setState(int state) {
         int previousState = mState;
         mState = state;
         mActionViewIcon.setImageResource(mState == STATE_RECORDING ? R.drawable.ic_ali_record :
-                R.drawable.autojs_logo);
+                IC_ACTION_VIEW);
         mActionViewIcon.setBackgroundResource(mState == STATE_RECORDING ? R.drawable.circle_red :
                 0);
         if (state == STATE_RECORDING) {
@@ -222,6 +229,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
                         mContext.getString(R.string.text_current_package) + mRunningPackage)
                 .item(R.id.class_name, R.drawable.ic_ali_android,
                         mContext.getString(R.string.text_current_activity) + mRunningActivity)
+                .item(R.id.open_launcher, R.drawable.ic_android_eat_js, R.string.text_open_main_activity)
                 .item(R.id.exit, R.drawable.ic_close_white_48dp, R.string.text_exit_floating_window)
                 .bindItemClick(this)
                 .title(R.string.text_more)
@@ -255,7 +263,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
     }
 
     @Optional
-    @OnClick(R.id.package_name)
+    @OnClick(R.id.class_name)
     void copyActivityName() {
         dismissSettingsDialog();
         if (TextUtils.isEmpty(mRunningActivity))
@@ -265,13 +273,27 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
     }
 
     @Optional
+    @OnClick(R.id.open_launcher)
+    void openLauncher() {
+        dismissSettingsDialog();
+        mContext.startActivity(new Intent(mContext, MainActivity_.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+
+    @Optional
     @OnClick(R.id.exit)
     public void close() {
         dismissSettingsDialog();
-        mWindow.close();
+        try {
+            mWindow.close();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } finally {
+            EventBus.getDefault().post(new StateChangeEvent(STATE_CLOSED, mState));
+            mState = STATE_CLOSED;
+        }
         mRecorder.removeOnStateChangedListener(this);
-        EventBus.getDefault().post(new StateChangeEvent(STATE_CLOSED, mState));
-        mState = STATE_CLOSED;
     }
 
 
@@ -287,7 +309,6 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
 
     @Override
     public void onPause() {
-
     }
 
     @Override
