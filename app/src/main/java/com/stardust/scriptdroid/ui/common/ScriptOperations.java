@@ -43,6 +43,7 @@ import java.io.InputStream;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
@@ -118,9 +119,10 @@ public class ScriptOperations {
                     } else {
                         showMessage(R.string.text_import_fail);
                     }
-                    mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(pathTo));
                     return pathTo;
-                });
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(path -> mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(path)));
     }
 
     public Observable<String> importFile(String prefix, final InputStream inputStream, final String ext) {
@@ -305,7 +307,7 @@ public class ScriptOperations {
         new FileChooserDialogBuilder(mContext)
                 .dir(Environment.getExternalStorageDirectory().getPath())
                 .justScriptFile()
-                .singleChoice(file -> importFile(file.getPath()))
+                .singleChoice(file -> importFile(file.getPath()).subscribe())
                 .title(R.string.text_select_file_to_import)
                 .positiveText(R.string.ok)
                 .show();
