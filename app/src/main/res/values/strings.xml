@@ -91,7 +91,6 @@
     <string name="text_help">帮助</string>
     <string name="text_no_floating_window_permission">没有悬浮窗权限</string>
     <string name="text_no_accessibility_permission_to_capture">无障碍服务未启动</string>
-    <string name="text_reset_background">重置背景图片设置</string>
     <string name="text_record_msg">录制提示</string>
     <string name="text_text_changed">文字改变</string>
     <string name="text_scrolled">滑动</string>
@@ -133,7 +132,6 @@
     <string name="text_do_not_ask_again_for_this_version">此版本不再提示</string>
     <string name="text_code_beautify">格式化代码</string>
     <string name="text_processing">处理中</string>
-    <string name="text_already_reset">已重置</string>
     <string name="text_guard_mode">保护模式</string>
     <string name="summary_guard_mode">在本软件界面无法运行自动操作命令以免误触</string>
     <string name="key_guard_mode">key_guard_mode</string>
@@ -230,10 +228,7 @@
     <string name="text_refactor">重构</string>
     <string name="text_select_variable">选择变量</string>
     <string name="text_show_type">显示变量类型</string>
-    <string name="text_close">关闭</string>
-    <string name="text_adjust">调整</string>
     <string name="text_exit_floating_window">退出悬浮窗</string>
-    <string name="text_save_and_edit">下载并编辑</string>
     <string name="text_select_save_path">保存到</string>
     <string name="text_cancel_download">取消下载</string>
     <string name="text_download">下载</string>
@@ -259,7 +254,6 @@
     <string name="apk_builder_clean">清理临时文件</string>
     <string name="text_source_file_path">脚本文件路径</string>
     <string name="text_search">搜索</string>
-    <string name="text_floating_edit">悬浮编辑</string>
     <string name="text_select_icon">选择图标</string>
     <string name="text_use_android_n_shortcut">添加到安卓7.0 Shortcut</string>
     <string name="text_login_succeed">登录成功</string>
@@ -300,7 +294,6 @@
     <string name="text_using_text_selector">使用文本选择(text)</string>
     <string name="text_using_desc_selector">使用描述选择(desc)</string>
     <string name="text_generate">生成</string>
-    <string name="text_generate_and_open_editor">生成并打开编辑器</string>
     <string name="text_generate_fail">生成失败了o(╥﹏╥)o</string>
     <string name="key_documentation_source">key_documentation_source</string>
     <string name="text_documentation_source">文档源</string>

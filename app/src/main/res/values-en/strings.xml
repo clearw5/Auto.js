@@ -88,7 +88,6 @@
     <string name="text_help">Help</string>
     <string name="text_no_floating_window_permission">No floating window permission</string>
     <string name="text_no_accessibility_permission_to_capture">Accessibility service is not activated</string>
-    <string name="text_reset_background">Reset background settings</string>
     <string name="text_record_msg">Recording Prompt</string>
     <string name="text_text_changed">Text Changed</string>
     <string name="text_scrolled">Scrolled</string>
@@ -116,7 +115,6 @@
     <string name="text_processing">Processing</string>
     <string name="text_pre_execute_script">Pre-execute script</string>
     <string name="text_check_for_updates">Check for updates</string>
-    <string name="text_already_reset">已重置</string>
     <string name="text_layout_inspector_is_dumping">布局分析中，请稍后点击</string>
 
 </resources>
