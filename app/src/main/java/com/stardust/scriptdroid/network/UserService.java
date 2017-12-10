@@ -32,7 +32,6 @@ public class UserService {
         return NodeBB.getInstance()
                 .getConfig()
                 .flatMap(config -> {
-                    Log.d("login", config.toString());
                     return mRetrofit.create(UserApi.class)
                             .login(Collections.singletonMap("x-csrf-token", config.getCsrfToken()),
                                     userName, password);
@@ -43,11 +42,8 @@ public class UserService {
     public Observable<ResponseBody> register(String email, String userName, String password) {
         return NodeBB.getInstance()
                 .getConfig()
-                .flatMap(config -> {
-                    Log.d("login", config.toString());
-                    return mRetrofit.create(UserApi.class)
-                            .register(Collections.singletonMap("x-csrf-token", config.getCsrfToken()),
-                                    email, userName, password);
-                });
+                .flatMap(config -> mRetrofit.create(UserApi.class)
+                        .register(Collections.singletonMap("x-csrf-token", config.getCsrfToken()),
+                                email, userName, password, password));
     }
 }

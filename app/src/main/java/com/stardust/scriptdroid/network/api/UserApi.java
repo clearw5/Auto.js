@@ -28,7 +28,7 @@ public interface UserApi {
     @FormUrlEncoded
     @POST("/register")
     Observable<ResponseBody> register(@HeaderMap Map<String, String> csrfToken, @Field("email") String email,
-                                      @Field("username") String userName, @Field("password") String password);
+                                      @Field("username") String userName, @Field("password") String password, @Field("password-confirm") String repeatPassword);
 
 
 }

@@ -332,4 +332,8 @@
     <string name="text_community_recent">最新</string>
     <string name="text_community_popular">热门</string>
     <string name="text_community_tags">话题</string>
+    <string name="nodebb_error_invalid_login_credentials">无效的登录凭证</string>
+    <string name="nodebb_error_change_password_error_length">密码太短</string>
+    <string name="nodebb_error_email_taken">邮箱已被占用</string>
+    <string name="nodebb_error_change_password_error_match">两次输入的密码不一致</string>
 </resources>
