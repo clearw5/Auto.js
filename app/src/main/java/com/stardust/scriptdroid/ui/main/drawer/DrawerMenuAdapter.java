@@ -27,6 +27,10 @@ public class DrawerMenuAdapter extends RecyclerView.Adapter<BindableViewHolder<D
         mDrawerMenuItems = drawerMenuItems;
     }
 
+    public List<DrawerMenuItem> getDrawerMenuItems() {
+        return mDrawerMenuItems;
+    }
+
     @Override
     public BindableViewHolder<DrawerMenuItem> onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_GROUP) {

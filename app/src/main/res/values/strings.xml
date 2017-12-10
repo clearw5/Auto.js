@@ -327,4 +327,9 @@
     <string name="text_device_not_rooted">设备没有root</string>
     <string name="prompt_device_not_rooted">监测到您的设备没有root, 录制脚本需要root权限, 是否继续?</string>
     <string name="text_device_rooted">仍要录制</string>
+    <string name="text_community_category">版块</string>
+    <string name="text_community_unread">未读</string>
+    <string name="text_community_recent">最新</string>
+    <string name="text_community_popular">热门</string>
+    <string name="text_community_tags">话题</string>
 </resources>

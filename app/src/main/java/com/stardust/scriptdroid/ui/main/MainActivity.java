@@ -31,6 +31,7 @@ import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.doc.DocsFragment_;
 import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
+import com.stardust.scriptdroid.ui.main.community.CommunityFragment;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment_;
 import com.stardust.scriptdroid.ui.log.LogActivity_;
 import com.stardust.scriptdroid.ui.main.sample.SampleListFragment_;
@@ -52,6 +53,7 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Arrays;
 
@@ -84,6 +86,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         checkPermissions();
         mVersionGuard = new VersionGuard(this);
         showAnnunciationIfNeeded();
+        EventBus.getDefault().register(this);
     }
 
     @AfterViews
@@ -275,6 +278,11 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         return super.onOptionsItemSelected(item);
     }
 
+    @Subscribe
+    public void onLoadUrl(CommunityFragment.LoadUrl loadUrl) {
+        mDrawerLayout.closeDrawer(Gravity.START);
+    }
+
 
     private void setUpSearchMenuItem(MenuItem searchMenuItem) {
         mSearchViewItem = new SearchViewItem(this, searchMenuItem) {
@@ -316,5 +324,9 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         EventBus.getDefault().post(event);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

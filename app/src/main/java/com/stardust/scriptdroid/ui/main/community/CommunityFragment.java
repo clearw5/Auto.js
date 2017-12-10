@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.webkit.WebView;
 
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.network.NodeBB;
 import com.stardust.scriptdroid.ui.main.QueryEvent;
 import com.stardust.scriptdroid.ui.main.ViewPagerFragment;
 import com.stardust.util.BackPressedHandler;
@@ -25,6 +26,22 @@ import java.net.URLEncoder;
 @EFragment(R.layout.fragment_community)
 public class CommunityFragment extends ViewPagerFragment implements BackPressedHandler {
 
+    public static class LoadUrl {
+        public final String url;
+
+        public LoadUrl(String url) {
+            this.url = url;
+        }
+
+    }
+
+    public static class VisibilityChange {
+        public final boolean visible;
+
+        public VisibilityChange(boolean visible) {
+            this.visible = visible;
+        }
+    }
 
     private static final String POSTS_PAGE_PATTERN = "[\\S\\s]+/topic/[0-9]+/[\\S\\s]+";
 
@@ -94,6 +111,11 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
     }
 
     @Subscribe
+    public void loadUrl(LoadUrl loadUrl) {
+        mWebView.loadUrl(NodeBB.url(loadUrl.url));
+    }
+
+    @Subscribe
     public void submitQuery(QueryEvent event) {
         if (!isShown() || event == QueryEvent.CLEAR) {
             return;
@@ -113,5 +135,17 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onPageShow() {
+        super.onPageShow();
+        EventBus.getDefault().post(new VisibilityChange(true));
+    }
+
+    @Override
+    public void onPageHide() {
+        super.onPageHide();
+        EventBus.getDefault().post(new VisibilityChange(false));
     }
 }

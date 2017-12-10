@@ -31,6 +31,7 @@ import com.stardust.scriptdroid.network.api.UserApi;
 import com.stardust.scriptdroid.network.entity.user.User;
 import com.stardust.scriptdroid.network.entity.VersionInfo;
 import com.stardust.scriptdroid.tool.SimpleObserver;
+import com.stardust.scriptdroid.ui.main.community.CommunityFragment;
 import com.stardust.scriptdroid.ui.user.LoginActivity_;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity;
 import com.stardust.scriptdroid.ui.update.UpdateInfoDialogBuilder;
@@ -92,6 +93,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
 
     private DrawerMenuAdapter mDrawerMenuAdapter;
     private Disposable mConnectionStateDisposable;
+    private CommunityDrawerMenu mCommunityDrawerMenu = new CommunityDrawerMenu();
 
 
     @Override
@@ -354,6 +356,16 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     @Subscribe
     public void onCircularMenuStateChange(CircularMenu.StateChangeEvent event) {
         setChecked(mFloatingWindowItem, event.getCurrentState() != CircularMenu.STATE_CLOSED);
+    }
+
+    @Subscribe
+    public void onCommunityPageVisibilityChange(CommunityFragment.VisibilityChange change) {
+        if (change.visible) {
+            mCommunityDrawerMenu.showCommunityMenu(mDrawerMenuAdapter);
+        } else {
+            mCommunityDrawerMenu.hideCommunityMenu(mDrawerMenuAdapter);
+        }
+        mDrawerMenu.scrollToPosition(0);
     }
 
 
