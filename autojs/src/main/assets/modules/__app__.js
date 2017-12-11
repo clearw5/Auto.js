@@ -1,5 +1,6 @@
 
 module.exports = function(__runtime__, scope){
+    importClass(android.content.Intent);
     var app = Object.create(__runtime__.app);
     var context = scope.context;
 
@@ -36,6 +37,37 @@ module.exports = function(__runtime__, scope){
 
     app.sendBroadcast = function(i){
         context.sendBroadcast(app.intent(i));
+    }
+
+    app.sendEmail = function(options){
+        options = options || {};
+        var i = new Intent(ACTION_SENDTO);
+        if(options.email){
+            i.putExtra(Intent.EXTRA_EMAIL, toArray(options.email));
+        }
+        if(options.cc){
+            i.putExtra(Intent.EXTRA_CC, toArray(options.cc));
+        }
+        if(options.bcc){
+            i.putExtra(Intent.EXTRA_BCC, toArray(options.bcc));
+        }
+        if(options.subject){
+            i.putExtra(Intent.EXTRA_SUBJECT, options.subject);
+        }
+        if(options.text){
+            i.putExtra(Intent.EXTRA_TEXT, options.text);
+        }
+        if(options.attachment){
+            i.putExtra(Intent.EXTRA_STREAM, android.content.Uri.parse("file://" + options.attachment));
+        }
+        context.startActivity(Intent.createChooser(i, "发送邮件").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    function toArray(arg){
+        if(typeof(arg) == 'string'){
+            return [arg];
+        }
+        return arg;
     }
 
     app.launch = app.launchPackage;
