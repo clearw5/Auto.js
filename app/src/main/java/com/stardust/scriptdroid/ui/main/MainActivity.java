@@ -55,6 +55,7 @@ import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
 import java.util.Arrays;
 
 @EActivity(R.layout.activity_main)

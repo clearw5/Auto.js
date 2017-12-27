@@ -40,7 +40,6 @@ public interface ScriptEngine<S extends ScriptSource> {
 
     Object getTag(String key);
 
-
     /**
      * @hide
      */
@@ -85,6 +84,10 @@ public interface ScriptEngine<S extends ScriptSource> {
             if (mOnDestroyListener != null) {
                 mOnDestroyListener.onDestroy(this);
             }
+        }
+
+        public String cwd() {
+            return (String) getTag(TAG_PATH);
         }
 
         public void setOnDestroyListener(OnDestroyListener onDestroyListener) {

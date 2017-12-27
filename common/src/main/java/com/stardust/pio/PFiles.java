@@ -76,6 +76,10 @@ public class PFiles {
         return false;
     }
 
+    public static boolean createWithDirs(String path) {
+        return createIfNotExists(path);
+    }
+
     public static boolean exists(String path) {
         return new File(path).exists();
     }
@@ -212,6 +216,7 @@ public class PFiles {
     }
 
     public static void append(String path, String text) {
+        create(path);
         try {
             write(new FileOutputStream(path, true), text);
         } catch (FileNotFoundException e) {
@@ -221,6 +226,7 @@ public class PFiles {
 
 
     public static void append(String path, String text, String encoding) {
+        create(path);
         try {
             write(new FileOutputStream(path, true), text, encoding);
         } catch (FileNotFoundException e) {
@@ -238,6 +244,7 @@ public class PFiles {
     }
 
     public static void appendBytes(String path, byte[] bytes) {
+        create(path);
         try {
             writeBytes(new FileOutputStream(path, true), bytes);
         } catch (IOException e) {

@@ -5,7 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.MessageQueue;
 
-import com.stardust.autojs.runtime.api.Loopers;
+import com.stardust.autojs.core.looper.LooperHelper;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.util.Callback;
@@ -62,7 +62,7 @@ public class LoopBasedJavaScriptEngine extends RhinoJavaScriptEngine {
 
     @Override
     public void forceStop() {
-        Loopers.quitForThread(getThread());
+        LooperHelper.quitForThread(getThread());
         super.forceStop();
     }
 
@@ -70,13 +70,13 @@ public class LoopBasedJavaScriptEngine extends RhinoJavaScriptEngine {
     public synchronized void destroy() {
         Thread thread = getThread();
         if (thread != null)
-            Loopers.quitForThread(thread);
+            LooperHelper.quitForThread(thread);
         super.destroy();
     }
 
     @Override
     public void init() {
-        Loopers.prepare();
+        LooperHelper.prepare();
         mHandler = new Handler();
         super.init();
     }

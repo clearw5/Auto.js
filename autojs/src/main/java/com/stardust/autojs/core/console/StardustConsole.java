@@ -122,7 +122,9 @@ public class StardustConsole extends AbstractConsole {
     @Override
     public String println(int level, CharSequence charSequence) {
         Log log = new Log(mIdCounter.getAndIncrement(), level, charSequence, true);
-        mLogs.add(log);
+        synchronized (mLogs) {
+            mLogs.add(log);
+        }
         if (mGlobalConsole != null) {
             mGlobalConsole.println(level, charSequence);
         }
@@ -135,20 +137,15 @@ public class StardustConsole extends AbstractConsole {
 
     @Override
     public void write(int level, CharSequence charSequence) {
-        Log log = new Log(mIdCounter.getAndIncrement(), level, charSequence);
-        mLogs.add(log);
-        if (mGlobalConsole != null) {
-            mGlobalConsole.print(level, charSequence);
-        }
-        if (mLogListener != null && mLogListener.get() != null) {
-            mLogListener.get().onNewLog(log);
-        }
+        println(level, charSequence);
     }
 
 
     @Override
     public void clear() {
-        mLogs.clear();
+        synchronized (mLogs) {
+            mLogs.clear();
+        }
         if (mLogListener != null && mLogListener.get() != null) {
             mLogListener.get().onLogClear();
         }

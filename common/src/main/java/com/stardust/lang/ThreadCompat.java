@@ -10,14 +10,14 @@ import java.util.WeakHashMap;
 
 public class ThreadCompat extends Thread {
 
-    private static volatile WeakHashMap<Thread, Boolean> interruptStatus = new WeakHashMap<>();
+   // private static volatile WeakHashMap<Thread, Boolean> interruptStatus = new WeakHashMap<>();
 
     public ThreadCompat() {
         init();
     }
 
     private void init() {
-        interruptStatus.put(this, false);
+  //      interruptStatus.put(this, false);
     }
 
     public ThreadCompat(Runnable target) {
@@ -59,23 +59,23 @@ public class ThreadCompat extends Thread {
     public void run() {
         try {
             super.run();
-            interruptStatus.remove(this);
+            //   interruptStatus.remove(this);
         } catch (Throwable e) {
-            interruptStatus.remove(this);
+            // interruptStatus.remove(this);
             throw e;
         }
     }
 
     @Override
     public boolean isInterrupted() {
-        Boolean isInterrupted = interruptStatus.get(this);
-        return super.isInterrupted() || isInterrupted == null || isInterrupted;
+        //Boolean isInterrupted = interruptStatus.get(this);
+        return super.isInterrupted();// || isInterrupted == null || isInterrupted;
     }
 
     @Override
     public void interrupt() {
         super.interrupt();
-        interruptStatus.remove(this);
+        //interruptStatus.put(this, true);
     }
 
 }

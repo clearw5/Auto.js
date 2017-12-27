@@ -20,6 +20,7 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.autojs.record.GlobalActionRecorder;
+import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.common.NotAskAgainDialog;
@@ -132,6 +133,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
                 .positiveText(R.string.cancel)
                 .build();
         listView.setOnItemOperatedListener(file -> dialog.dismiss());
+        listView.setOnScriptFileClickListener((view, file) -> Scripts.run(file));
         DialogUtils.showDialog(dialog);
     }
 

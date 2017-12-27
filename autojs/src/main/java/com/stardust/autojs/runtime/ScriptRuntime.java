@@ -17,7 +17,7 @@ import com.stardust.autojs.runtime.api.Device;
 import com.stardust.autojs.runtime.api.Engines;
 import com.stardust.autojs.runtime.api.Events;
 import com.stardust.autojs.runtime.api.Floaty;
-import com.stardust.autojs.runtime.api.Loopers;
+import com.stardust.autojs.core.looper.Loopers;
 import com.stardust.autojs.runtime.api.Threads;
 import com.stardust.autojs.runtime.api.Timers;
 import com.stardust.autojs.core.accessibility.UiSelector;
@@ -168,6 +168,7 @@ public class ScriptRuntime {
     private AbstractShell mRootShell;
     private Supplier<AbstractShell> mShellSupplier;
     private ScreenMetrics mScreenMetrics = new ScreenMetrics();
+    private Thread mThread;
 
 
     protected ScriptRuntime(Builder builder) {
@@ -197,6 +198,7 @@ public class ScriptRuntime {
         timers = new Timers(bridges);
         loopers = new Loopers(this);
         events = new Events(uiHandler.getContext(), accessibilityBridge, this);
+        mThread = Thread.currentThread();
     }
 
     public static void setApplicationContext(Context context) {
@@ -248,12 +250,7 @@ public class ScriptRuntime {
             return ClipboardUtil.getClipOrEmpty(uiHandler.getContext()).toString();
         }
         final VolatileDispose<String> clip = new VolatileDispose<>();
-        uiHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                clip.setAndNotify(ClipboardUtil.getClipOrEmpty(uiHandler.getContext()).toString());
-            }
-        });
+        uiHandler.post(() -> clip.setAndNotify(ClipboardUtil.getClipOrEmpty(uiHandler.getContext()).toString()));
         return clip.blockedGetOrThrow(ScriptInterruptedException.class);
     }
 
@@ -297,7 +294,7 @@ public class ScriptRuntime {
     }
 
     public void exit() {
-        Thread.currentThread().interrupt();
+        mThread.interrupt();
         throw new ScriptInterruptedException();
     }
 
@@ -320,6 +317,8 @@ public class ScriptRuntime {
     }
 
     public void onExit() {
+        //清除interrupt状态
+        Thread.interrupted();
         //悬浮窗需要第一时间关闭以免出现恶意脚本全屏悬浮窗屏蔽屏幕并且在exit中写死循环的问题
         ignoresException(floaty::closeAll);
         try {
@@ -335,11 +334,9 @@ public class ScriptRuntime {
             mRootShell = null;
             mShellSupplier = null;
         });
-        ignoresException(() -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                images.releaseScreenCapturer();
-            }
-        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ignoresException(images::releaseScreenCapturer);
+        }
     }
 
     private void ignoresException(Runnable r) {
