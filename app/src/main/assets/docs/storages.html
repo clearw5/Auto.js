@@ -105,7 +105,7 @@ storage.put(&quot;a&quot;, 123);
 </code></pre><p>而在另一个脚本中是可以获取到ABC以及a的值的：</p>
 <pre><code>var storage = storages.create(&quot;ABC&quot;);
 log(&quot;a = &quot; + storage.get(&quot;a&quot;));
-</code></pre><p>因此，本地存储的名称比较重要，尽量使用含有域名、作者邮箱等信息的名称来避免冲突，例如：</p>
+</code></pre><p>因此，本地存储的名称比较重要，尽量使用含有域名、作者邮箱等唯一信息的名称来避免冲突，例如：</p>
 <pre><code>var storage = storages.create(&quot;2732014414@qq.com:ABC&quot;);
 </code></pre><h2>storages.remove(name)<span><a class="mark" href="#storages_storages_remove_name" id="storages_storages_remove_name">#</a></span></h2>
 <div class="signature"><ul>

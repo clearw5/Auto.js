@@ -157,11 +157,11 @@
 <li>cmd <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要执行的命令</li>
 <li>root <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 是否以root权限运行，默认为false。</li>
 </ul>
-</div><p>返回运行一个对象表示命令的执行结果。其属性如下:</p>
+</div><p>一次性执行命令cmd, 并返回命令的执行结果。返回对象的其属性如下:</p>
 <ul>
 <li>code <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 返回码。执行成功时为0，失败时为非0的数字。</li>
 <li>result <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 运行结果(stdout输出结果)</li>
-<li>error \<String\> 运行的错误信息(stderr输出结果)。例如执行需要root权限的命令但没有授予root权限会返回错误信息&quot;Permission denied&quot;。</li>
+<li>error <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 运行的错误信息(stderr输出结果)。例如执行需要root权限的命令但没有授予root权限会返回错误信息&quot;Permission denied&quot;。</li>
 </ul>
 <p>示例(强制停止微信) ： </p>
 <pre><code>var result = shell(&quot;am force-stop com.tencent.mm&quot;, true);
@@ -180,6 +180,7 @@ if(result.code == 0){
 </ul>
 </div><p>Shell对象的&quot;构造函数&quot;。</p>
 <pre><code>var sh = new Shell(true);
+//强制停止微信
 sh.exec(&quot;am force-stop com.tencent.mm&quot;);
 sh.exit();
 </code></pre><h2>Shell.exec(cmd)<span><a class="mark" href="#shell_shell_exec_cmd" id="shell_shell_exec_cmd">#</a></span></h2>
@@ -190,7 +191,7 @@ sh.exit();
 <p>注意，命令执行是&quot;异步&quot;的、非阻塞的。也就是不会等待命令完成后才继续向下执行。</p>
 <p>尽管这样的设计使用起来有很多不便之处，但受限于终端模拟器，暂时没有解决方式；如果后续能找到解决方案，则将提供<code>Shell.execAndWaitFor</code>函数。</p>
 <h2>Shell.exit()<span><a class="mark" href="#shell_shell_exit" id="shell_shell_exit">#</a></span></h2>
-<p>直接退出shell。这意味着正在执行的命令会被强制退出。</p>
+<p>直接退出shell。正在执行的命令会被强制退出。</p>
 <h2>Shell.exitAndWaitFor()<span><a class="mark" href="#shell_shell_exitandwaitfor" id="shell_shell_exitandwaitfor">#</a></span></h2>
 <p>执行&quot;exit&quot;命令并等待执行命令执行完成、退出shell。</p>
 <p>此函数会执行exit命令来正常退出shell。</p>
@@ -200,21 +201,24 @@ sh.exit();
 </ul>
 </div><p>设置该Shell的回调函数，以便监听Shell的输出。可以包括以下属性：</p>
 <ul>
-<li>onOutput <span class="type">&lt;function&gt;</span> 每当shell有新的输出时便会调用该函数。其参数是一个字符串。</li>
-<li>onNewLine <span class="type">&lt;function&gt;</span> 每当shell有新的一行输出时便会调用该函数。其参数是一个字符串(不包括最后的换行符)。</li>
+<li>onOutput <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 每当shell有新的输出时便会调用该函数。其参数是一个字符串。</li>
+<li>onNewLine <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 每当shell有新的一行输出时便会调用该函数。其参数是一个字符串(不包括最后的换行符)。</li>
 </ul>
 <p>例如:</p>
 <pre><code>var sh = new Shell();
 sh.setCallback({
     onNewLine: function(line){
+        //有新的一行输出时打印到控制台
         log(line);
     }
 })
 while(true){
+    //循环输入命令
     var cmd = dialogs.rawInput(&quot;请输入要执行的命令，输入exit退出&quot;);
     if(cmd == &quot;exit&quot;){
         break;
     }
+    //执行命令
     sh.exec(cmd);
 }
 sh.exit();
@@ -222,7 +226,7 @@ sh.exit();
 <p>以下关于shell命令的资料来自<a href="https://developer.android.com/studio/command-line/adb.html#shellcommands">AndroidStudio用户指南：Shell命令</a>。</p>
 <h2>am命令<span><a class="mark" href="#shell_am" id="shell_am">#</a></span></h2>
 <p>am命令即Activity Manager命令，用于管理应用程序活动、服务等。</p>
-<p><strong>以下命令均以&quot;am &quot;开头，例如&quot;shell(\&quot;am start -p com.tencent.mm\&quot;);&quot;(启动微信)</strong></p>
+<p><strong>以下命令均以&quot;am &quot;开头，例如<code>shell(&#39;am start -p com.tencent.mm&#39;);</code>(启动微信)</strong></p>
 <h3>start [options] intent<span><a class="mark" href="#shell_start_options_intent" id="shell_start_options_intent">#</a></span></h3>
 <p>启动 intent 指定的 Activity(应用程序活动)。<br>请参阅 <a href="#shell_intent">intent 参数的规范</a>。    </p>
 <p>选项包括：</p>

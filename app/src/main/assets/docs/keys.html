@@ -103,27 +103,49 @@
       <div id="apicontent">
         <h1>Keys<span><a class="mark" href="#keys_keys" id="keys_keys">#</a></span></h1>
 <p>按键模拟部分提供了一些模拟物理按键的全局函数，包括Home、音量键、照相键等，有的函数依赖于无障碍服务，有的函数依赖于root权限。</p>
+<p>一般来说，以大写字母开头的函数都依赖于root权限。执行此类函数时，如果没有root权限，则函数执行后没有效果，并会在控制台输出一个警告。</p>
 <h2>back()<span><a class="mark" href="#keys_back" id="keys_back">#</a></span></h2>
-<p>模拟按下返回键。返回是否执行成功。
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>模拟按下返回键。返回是否执行成功。
 此函数依赖于无障碍服务。</p>
 <h2>home()<span><a class="mark" href="#keys_home" id="keys_home">#</a></span></h2>
-<p>模拟按下Home键。返回是否执行成功。
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>模拟按下Home键。返回是否执行成功。
 此函数依赖于无障碍服务。</p>
 <h2>powerDialog()<span><a class="mark" href="#keys_powerdialog" id="keys_powerdialog">#</a></span></h2>
-<p>弹出电源键菜单。返回是否执行成功。
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>弹出电源键菜单。返回是否执行成功。
 此函数依赖于无障碍服务。</p>
 <h2>notifications()<span><a class="mark" href="#keys_notifications" id="keys_notifications">#</a></span></h2>
-<p>弹出通知栏。返回是否执行成功。
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>拉出通知栏。返回是否执行成功。
 此函数依赖于无障碍服务。</p>
 <h2>quickSettings()<span><a class="mark" href="#keys_quicksettings" id="keys_quicksettings">#</a></span></h2>
-<p>显示快速设置(下拉通知栏到底)。返回是否执行成功。
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>显示快速设置(下拉通知栏到底)。返回是否执行成功。
 此函数依赖于无障碍服务。</p>
 <h2>recents()<span><a class="mark" href="#keys_recents" id="keys_recents">#</a></span></h2>
-<p>显示最近任务。返回是否执行成功。
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>显示最近任务。返回是否执行成功。
 此函数依赖于无障碍服务。</p>
 <h2>splitScreen()<span><a class="mark" href="#keys_splitscreen" id="keys_splitscreen">#</a></span></h2>
-<p>分屏。返回是否执行成功。
-此函数依赖于无障碍服务。</p>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>分屏。返回是否执行成功。
+此函数依赖于无障碍服务, 并且需要系统自身功能的支持。</p>
 <h2>Home()<span><a class="mark" href="#keys_home_1" id="keys_home_1">#</a></span></h2>
 <p>模拟按下Home键。
 此函数依赖于root权限。</p>

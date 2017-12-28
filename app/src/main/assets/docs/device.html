@@ -119,17 +119,17 @@
       <div id="apicontent">
         <h1>Device<span><a class="mark" href="#device_device" id="device_device">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>device模块提供了与设备有关的信息与操作，例如获取设备宽高，内存使用率，IMEI，调整设备亮度、音量等。</p>
-<p>此模块的部分函数，例如调整音量，需要&quot;修改系统设置&quot;的权限。如果没有该权限，会抛出异常并跳转到权限设置界面。</p>
+<p>此模块的部分函数，例如调整音量，需要&quot;修改系统设置&quot;的权限。如果没有该权限，会抛出<code>SecurityException</code>并跳转到权限设置界面。</p>
 <h2>device.width<span><a class="mark" href="#device_device_width" id="device_device_width">#</a></span></h2>
 <div class="signature"><ul>
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
 </ul>
-</div><p>设备宽度。例如1080。</p>
+</div><p>设备屏幕分辨率宽度。例如1080。</p>
 <h2>device.height<span><a class="mark" href="#device_device_height" id="device_device_height">#</a></span></h2>
 <div class="signature"><ul>
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
 </ul>
-</div><p>设备高度。例如1920。</p>
+</div><p>设备屏幕分辨率高度。例如1920。</p>
 <h2>device.buildId<span><a class="mark" href="#device_device_buildid" id="device_device_buildid">#</a></span></h2>
 <div class="signature"><ul>
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
