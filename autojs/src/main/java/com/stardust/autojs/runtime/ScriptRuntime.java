@@ -153,7 +153,7 @@ public class ScriptRuntime {
     public final Engines engines;
 
     @ScriptVariable
-    public final Threads threads;
+    public Threads threads;
 
     @ScriptVariable
     public final Floaty floaty;
@@ -187,7 +187,6 @@ public class ScriptRuntime {
         }
         engines = new Engines(builder.mEngineService);
         dialogs = new Dialogs(app, uiHandler, bridges);
-        threads = new Threads(this);
         device = new Device(uiHandler.getContext());
         floaty = new Floaty(uiHandler, ui);
     }
@@ -195,7 +194,8 @@ public class ScriptRuntime {
     public void init() {
         if (loopers != null)
             throw new IllegalStateException("already initialized");
-        timers = new Timers(bridges);
+        threads = new Threads(this);
+        timers = new Timers(bridges, threads);
         loopers = new Loopers(this);
         events = new Events(uiHandler.getContext(), accessibilityBridge, this);
         mThread = Thread.currentThread();

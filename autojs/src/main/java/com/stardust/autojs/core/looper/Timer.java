@@ -109,4 +109,5 @@ public class Timer {
         Log.d(LOG_TAG, "mMaxCallbackUptimeMillisForAllThreads:" + mMaxCallbackUptimeMillis);
         return mMaxCallbackUptimeMillis > SystemClock.uptimeMillis();
     }
+
 }

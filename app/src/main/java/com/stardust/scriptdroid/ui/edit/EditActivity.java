@@ -89,6 +89,13 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     @Override
+    public void onBackPressed() {
+        if (!mEditor.onBackPressed()) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public void finish() {
         if (mEditor.isTextChanged()) {
             showExitConfirmDialog();

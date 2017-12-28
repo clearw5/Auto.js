@@ -91,7 +91,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     FunctionsKeyboardView mFunctionsKeyboard;
 
     @ViewById(R.id.docs)
-    EWebView mEWebView;
+    EWebView mDocsWebView;
 
     @ViewById(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
@@ -201,8 +201,8 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         setUpInputMethodEnhancedBar();
         setUpFunctionsKeyboard();
         setMenuItemStatus(R.id.save, false);
-        mEWebView.getWebView().getSettings().setDisplayZoomControls(true);
-        mEWebView.getWebView().loadUrl(Pref.getDocumentationUrl() + "index.html");
+        mDocsWebView.getWebView().getSettings().setDisplayZoomControls(true);
+        mDocsWebView.getWebView().loadUrl(Pref.getDocumentationUrl() + "index.html");
 
     }
 
@@ -255,6 +255,18 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         mCodeCompletionBar.setTextColor(textColor);
         mSymbolBar.setTextColor(textColor);
         mShowFunctionsButton.setColorFilter(textColor);
+    }
+
+    public boolean onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+            if (mDocsWebView.getWebView().canGoBack()) {
+                mDocsWebView.getWebView().goBack();
+            } else {
+                mDrawerLayout.closeDrawer(Gravity.START);
+            }
+            return true;
+        }
+        return false;
     }
 
 
@@ -414,7 +426,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
                 .title(title)
                 .url(absUrl)
                 .pinToLeft(v -> {
-                    mEWebView.getWebView().loadUrl(absUrl);
+                    mDocsWebView.getWebView().loadUrl(absUrl);
                     mDrawerLayout.openDrawer(Gravity.START);
                 })
                 .show();

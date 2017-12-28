@@ -3,6 +3,7 @@ package com.stardust.autojs.core.eventloop;
 import android.support.annotation.NonNull;
 
 
+import com.stardust.autojs.core.looper.Timer;
 import com.stardust.autojs.runtime.ScriptBridges;
 import com.stardust.autojs.runtime.exception.ScriptException;
 
@@ -18,6 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 
 public class EventEmitter {
+
 
     private static class ListenerWrapper {
         Object listener;
@@ -52,7 +54,11 @@ public class EventEmitter {
             Iterator<ListenerWrapper> listenerIterator = mListenerWrappers.iterator();
             while (listenerIterator.hasNext()) {
                 ListenerWrapper listenerWrapper = listenerIterator.next();
-                mBridges.callFunction(listenerWrapper.listener, EventEmitter.this, args);
+                if (mTimer != null) {
+                    mTimer.setImmediate(listenerWrapper.listener, args);
+                } else {
+                    mBridges.callFunction(listenerWrapper.listener, EventEmitter.this, args);
+                }
                 if (listenerWrapper.isOnce) {
                     listenerIterator.remove();
                 }
@@ -93,8 +99,14 @@ public class EventEmitter {
     public static int defaultMaxListeners = 10;
     private int mMaxListeners = defaultMaxListeners;
     protected ScriptBridges mBridges;
+    private Timer mTimer;
 
     public EventEmitter(ScriptBridges bridges) {
+        mBridges = bridges;
+    }
+
+    public EventEmitter(ScriptBridges bridges, Timer timer) {
+        mTimer = timer;
         mBridges = bridges;
     }
 

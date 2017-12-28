@@ -19,12 +19,17 @@ public class Timers {
     private static final String LOG_TAG = "Timers";
 
     private VolatileBox<Long> mMaxCallbackUptimeMillisForAllThreads = new VolatileBox<>(0L);
-    private Thread mMainThread;
+    private Threads mThreads;
     private Timer mMainTimer;
 
-    public Timers(ScriptBridges bridges) {
-        mMainThread = Thread.currentThread();
+
+    public Timers(ScriptBridges bridges, Threads threads) {
         mMainTimer = new Timer(bridges, mMaxCallbackUptimeMillisForAllThreads);
+        mThreads = threads;
+    }
+
+    public Timer getMainTimer() {
+        return mMainTimer;
     }
 
     public VolatileBox<Long> getMaxCallbackUptimeMillisForAllThreads() {
@@ -32,10 +37,14 @@ public class Timers {
     }
 
     private Timer getTimerForCurrentThread() {
-        if (Thread.currentThread() == mMainThread) {
+        return getTimerForThread(Thread.currentThread());
+    }
+
+    public Timer getTimerForThread(Thread thread) {
+        if (thread == mThreads.getMainThread()) {
             return mMainTimer;
         }
-        return TimerThread.getTimerForCurrentThread();
+        return TimerThread.getTimerForThread(thread);
     }
 
     public int setTimeout(Object callback, long delay, Object... args) {
@@ -64,7 +73,7 @@ public class Timers {
 
     public boolean hasPendingCallbacks() {
         //如果是脚本主线程，则检查所有子线程中的定时回调。mFutureCallbackUptimeMillis用来记录所有子线程中定时最久的一个。
-        if (mMainThread == Thread.currentThread()) {
+        if (mThreads.getMainThread() == Thread.currentThread()) {
             Log.d(LOG_TAG, "[main thread]hasPendingCallbacks:" + (mMaxCallbackUptimeMillisForAllThreads.get() > SystemClock.uptimeMillis()));
             Log.d(LOG_TAG, "mMaxCallbackUptimeMillisForAllThreads:" + mMaxCallbackUptimeMillisForAllThreads.get());
             return mMaxCallbackUptimeMillisForAllThreads.get() > SystemClock.uptimeMillis();

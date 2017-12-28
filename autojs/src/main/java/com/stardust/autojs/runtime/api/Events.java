@@ -14,6 +14,8 @@ import com.stardust.autojs.R;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.eventloop.EventEmitter;
 import com.stardust.autojs.core.looper.Loopers;
+import com.stardust.autojs.core.looper.MainThreadProxy;
+import com.stardust.autojs.core.looper.Timer;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.notification.Notification;
 import com.stardust.notification.NotificationListenerService;
@@ -56,6 +58,15 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
 
     public EventEmitter emitter() {
         return new EventEmitter(mBridges);
+    }
+
+    public EventEmitter emitter(Thread thread) {
+        Timer timer = mScriptRuntime.timers.getTimerForThread(thread);
+        return new EventEmitter(mBridges, timer);
+    }
+
+    public EventEmitter emitter(MainThreadProxy mainThreadProxy) {
+        return new EventEmitter(mBridges, mScriptRuntime.timers.getMainTimer());
     }
 
     public void observeKey() {
