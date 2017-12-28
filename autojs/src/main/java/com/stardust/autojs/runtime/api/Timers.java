@@ -1,6 +1,7 @@
 package com.stardust.autojs.runtime.api;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.SparseArray;
@@ -21,10 +22,12 @@ public class Timers {
     private VolatileBox<Long> mMaxCallbackUptimeMillisForAllThreads = new VolatileBox<>(0L);
     private Threads mThreads;
     private Timer mMainTimer;
+    private Timer mUiTimer;
 
 
     public Timers(ScriptBridges bridges, Threads threads) {
         mMainTimer = new Timer(bridges, mMaxCallbackUptimeMillisForAllThreads);
+        mUiTimer = new Timer(bridges, mMaxCallbackUptimeMillisForAllThreads, Looper.getMainLooper());
         mThreads = threads;
     }
 
@@ -44,7 +47,11 @@ public class Timers {
         if (thread == mThreads.getMainThread()) {
             return mMainTimer;
         }
-        return TimerThread.getTimerForThread(thread);
+        Timer timer = TimerThread.getTimerForThread(thread);
+        if (timer == null && Looper.myLooper() == Looper.getMainLooper()) {
+            return mUiTimer;
+        }
+        return timer;
     }
 
     public int setTimeout(Object callback, long delay, Object... args) {

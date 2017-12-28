@@ -1,6 +1,7 @@
 package com.stardust.autojs.core.looper;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.SparseArray;
@@ -27,15 +28,18 @@ public class Timer {
         mBridges = bridges;
         mMaxCallbackMillisForAllThread = maxCallbackMillisForAllThread;
         mHandler = new Handler();
-        Log.d(LOG_TAG, "Timer: handler = " + mHandler + ", thread = " + Thread.currentThread());
+    }
+
+    public Timer(ScriptBridges bridges, VolatileBox<Long> maxCallbackMillisForAllThread, Looper looper) {
+        mBridges = bridges;
+        mMaxCallbackMillisForAllThread = maxCallbackMillisForAllThread;
+        mHandler = new Handler(looper);
     }
 
     public int setTimeout(final Object callback, final long delay, final Object... args) {
-        Log.d(LOG_TAG, "setTimeout: handler = " + mHandler);
         mCallbackMaxId++;
         final int id = mCallbackMaxId;
         Runnable r = () -> {
-            Log.d(LOG_TAG, "callFunction: handler = " + mHandler);
             mBridges.callFunction(callback, null, args);
             mHandlerCallbacks.remove(id);
         };
@@ -105,8 +109,6 @@ public class Timer {
     }
 
     public boolean hasPendingCallbacks() {
-        Log.d(LOG_TAG, "[thread]hasPendingCallbacks:" + (mMaxCallbackUptimeMillis > SystemClock.uptimeMillis()));
-        Log.d(LOG_TAG, "mMaxCallbackUptimeMillisForAllThreads:" + mMaxCallbackUptimeMillis);
         return mMaxCallbackUptimeMillis > SystemClock.uptimeMillis();
     }
 
