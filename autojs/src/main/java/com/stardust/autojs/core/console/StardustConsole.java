@@ -73,8 +73,6 @@ public class StardustConsole extends AbstractConsole {
     private BlockingQueue<String> mInput = new ArrayBlockingQueue<>(1);
     private WeakReference<ConsoleView> mConsoleView;
     private volatile boolean mShown = false;
-    private int mWidth;
-    private int mHeight;
     private int mX, mY;
 
     public StardustConsole(UiHandler uiHandler) {
@@ -85,14 +83,11 @@ public class StardustConsole extends AbstractConsole {
         mUiHandler = uiHandler;
         mConsoleFloaty = new ConsoleFloaty(this);
         mGlobalConsole = globalConsole;
-        mWidth = mConsoleFloaty.getInitialWidth();
-        mHeight = mConsoleFloaty.getInitialHeight();
         mFloatyWindow = new ResizableExpandableFloatyWindow(mConsoleFloaty) {
             @Override
             public void onCreate(FloatyService service, WindowManager manager) {
                 super.onCreate(service, manager);
                 expand();
-                mFloatyWindow.getWindowBridge().updateMeasure(mWidth, mHeight);
                 mFloatyWindow.getWindowBridge().updatePosition(mX, mY);
                 synchronized (WINDOW_SHOW_LOCK) {
                     mShown = true;
@@ -205,13 +200,10 @@ public class StardustConsole extends AbstractConsole {
     }
 
     public void setSize(int w, int h) {
-        mWidth = w;
-        mHeight = h;
         if (mShown) {
             mUiHandler.post(() -> {
                 if (mShown) {
                     ViewUtil.setViewMeasure(mConsoleFloaty.getExpandedView(), w, h);
-                    mFloatyWindow.getWindowBridge().updateMeasure(w, h);
                 }
             });
         }

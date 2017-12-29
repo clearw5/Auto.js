@@ -21,7 +21,7 @@ public class IssueReporterActivity extends AbstractIssueReporterActivity {
 
     @Override
     protected GithubTarget getTarget() {
-        return new GithubTarget("hyb1996-guest", "AutoJsIssueReport");
+        return new GithubTarget("hyb1996-guest", "auto.js3-issues");
     }
 
 

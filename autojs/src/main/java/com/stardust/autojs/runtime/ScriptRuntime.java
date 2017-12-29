@@ -318,7 +318,7 @@ public class ScriptRuntime {
 
     public void onExit() {
         //清除interrupt状态
-       // Thread.interrupted();
+        Thread.interrupted();
         //悬浮窗需要第一时间关闭以免出现恶意脚本全屏悬浮窗屏蔽屏幕并且在exit中写死循环的问题
         ignoresException(floaty::closeAll);
         try {

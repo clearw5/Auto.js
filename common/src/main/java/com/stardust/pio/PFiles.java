@@ -351,9 +351,12 @@ public class PFiles {
     public static boolean deleteRecursively(File file) {
         if (file.isFile())
             return file.delete();
-        for (File child : file.listFiles()) {
-            if (!deleteRecursively(child))
-                return false;
+        File[] children = file.listFiles();
+        if (children != null) {
+            for (File child : children) {
+                if (!deleteRecursively(child))
+                    return false;
+            }
         }
         return file.delete();
     }

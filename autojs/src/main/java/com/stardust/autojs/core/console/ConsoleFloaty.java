@@ -5,6 +5,7 @@ import android.content.ContextWrapper;
 import android.support.annotation.Nullable;
 import android.view.ContextThemeWrapper;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.stardust.enhancedfloaty.FloatyService;
@@ -37,12 +38,12 @@ public class ConsoleFloaty extends ResizableExpandableFloaty.AbstractResizableEx
 
     @Override
     public int getInitialWidth() {
-        return ScreenMetrics.getDeviceScreenWidth() * 2 / 3;
+        return WindowManager.LayoutParams.WRAP_CONTENT; //ScreenMetrics.getDeviceScreenWidth() * 2 / 3;
     }
 
     @Override
     public int getInitialHeight() {
-        return ScreenMetrics.getDeviceScreenHeight() / 3;
+        return WindowManager.LayoutParams.WRAP_CONTENT;//ScreenMetrics.getDeviceScreenHeight() / 3;
     }
 
     @Override
@@ -73,7 +74,8 @@ public class ConsoleFloaty extends ResizableExpandableFloaty.AbstractResizableEx
     }
 
     private void setInitialMeasure(final View view) {
-        view.post(() -> ViewUtil.setViewMeasure(view, getInitialWidth(), getInitialHeight()));
+        view.post(() -> ViewUtil.setViewMeasure(view, ScreenMetrics.getDeviceScreenWidth() * 2 / 3,
+                ScreenMetrics.getDeviceScreenHeight() / 3));
     }
 
     private void initConsoleTitle(View view) {
@@ -125,12 +127,7 @@ public class ConsoleFloaty extends ResizableExpandableFloaty.AbstractResizableEx
     public void setTitle(final CharSequence title) {
         mTitle = title;
         if (mTitleView != null) {
-            mTitleView.post(new Runnable() {
-                @Override
-                public void run() {
-                    mTitleView.setText(title);
-                }
-            });
+            mTitleView.post(() -> mTitleView.setText(title));
         }
     }
 }
