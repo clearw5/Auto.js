@@ -84,7 +84,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     @ViewById(R.id.symbol_bar)
     CodeCompletionBar mSymbolBar;
 
-    @ViewById(R.id.properties)
+    @ViewById(R.id.functions)
     ImageView mShowFunctionsButton;
 
     @ViewById(R.id.functions_keyboard)

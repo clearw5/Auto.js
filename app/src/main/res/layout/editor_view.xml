@@ -139,7 +139,7 @@
                     android:layout_alignParentBottom="true"/>
 
                 <ImageView
-                    android:id="@+id/properties"
+                    android:id="@+id/functions"
                     android:layout_width="40dp"
                     android:layout_height="35dp"
                     android:layout_alignParentLeft="true"
@@ -156,7 +156,7 @@
                     android:layout_above="@+id/symbol_bar"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
-                    android:layout_toRightOf="@+id/properties"/>
+                    android:layout_toRightOf="@+id/functions"/>
 
             </RelativeLayout>
 

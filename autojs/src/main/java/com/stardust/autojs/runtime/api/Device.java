@@ -10,6 +10,8 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
+import android.os.PowerManager;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -84,6 +86,8 @@ public class Device {
     public static final String serial = Build.SERIAL;
 
     private Context mContext;
+    private PowerManager.WakeLock mWakeLock;
+    private int mWakeLockFlag;
 
     public Device(Context context) {
         mContext = context;
@@ -195,7 +199,6 @@ public class Device {
         return info.availMem;
     }
 
-
     public boolean isCharging() {
         Intent intent = mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (intent == null) {
@@ -204,6 +207,58 @@ public class Device {
         int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
         return plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB;
     }
+
+    public void keepAwake(int flags, long timeout) {
+        checkWakeLock(flags);
+        mWakeLock.acquire(timeout);
+    }
+
+    @SuppressLint("WakelockTimeout")
+    public void keepAwake(int flags) {
+        checkWakeLock(flags);
+        mWakeLock.acquire();
+    }
+
+    public void wakeUp() {
+        keepScreenOn(200);
+    }
+
+    public void keepScreenOn() {
+        keepAwake(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP);
+    }
+
+    public void keepScreenOn(long timeout) {
+        keepAwake(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, timeout);
+    }
+
+    public void keepScreenDim() {
+        keepAwake(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP);
+    }
+
+    public void keepScreenDim(long timeout) {
+        keepAwake(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, timeout);
+    }
+
+    private void checkWakeLock(int flags) {
+        if (mWakeLock == null || flags != mWakeLockFlag) {
+            cancelKeepingAwake();
+            mWakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(flags, Device.class.getName());
+        }
+    }
+
+    public void cancelKeepingAwake() {
+        if (mWakeLock != null && mWakeLock.isHeld())
+            mWakeLock.release();
+    }
+
+    public void vibrate(long millis) {
+        ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(millis);
+    }
+
+    public void cancelVibration() {
+        ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).cancel();
+    }
+
 
     private void checkWriteSettingsPermission() {
         if (SettingsCompat.canWriteSettings(mContext)) {

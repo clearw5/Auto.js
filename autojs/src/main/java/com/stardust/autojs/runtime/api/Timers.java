@@ -35,7 +35,7 @@ public class Timers {
         return mMainTimer;
     }
 
-    public VolatileBox<Long> getMaxCallbackUptimeMillisForAllThreads() {
+    VolatileBox<Long> getMaxCallbackUptimeMillisForAllThreads() {
         return mMaxCallbackUptimeMillisForAllThreads;
     }
 
@@ -81,8 +81,6 @@ public class Timers {
     public boolean hasPendingCallbacks() {
         //如果是脚本主线程，则检查所有子线程中的定时回调。mFutureCallbackUptimeMillis用来记录所有子线程中定时最久的一个。
         if (mThreads.getMainThread() == Thread.currentThread()) {
-            Log.d(LOG_TAG, "[main thread]hasPendingCallbacks:" + (mMaxCallbackUptimeMillisForAllThreads.get() > SystemClock.uptimeMillis()));
-            Log.d(LOG_TAG, "mMaxCallbackUptimeMillisForAllThreads:" + mMaxCallbackUptimeMillisForAllThreads.get());
             return mMaxCallbackUptimeMillisForAllThreads.get() > SystemClock.uptimeMillis();
         }
         //否则检查当前线程的定时回调
