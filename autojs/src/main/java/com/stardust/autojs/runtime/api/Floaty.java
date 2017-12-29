@@ -91,7 +91,7 @@ public class Floaty {
                 FloatyService.addWindow(mWindow);
             });
             mWindow.waitFor();
-            setSize(mWindow.getWindowBridge().getScreenWidth() / 2, mWindow.getWindowBridge().getScreenHeight() / 2);
+            //setSize(mWindow.getWindowBridge().getScreenWidth() / 2, mWindow.getWindowBridge().getScreenHeight() / 2);
             mView = view;
         }
 
@@ -117,11 +117,12 @@ public class Floaty {
 
         public void setSize(int w, int h) {
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                mWindow.getWindowBridge().updateMeasure(w, h);
+                ViewUtil.setViewMeasure(mWindow.getRootView(), w, h);
+               // mWindow.getWindowBridge().updateMeasure(w, h);
             } else {
                 mUiHandler.post(() -> {
-                    ViewUtil.setViewMeasure(mView, w, h);
-                    mWindow.getWindowBridge().updateMeasure(w, h);
+                    ViewUtil.setViewMeasure(mWindow.getRootView(), w, h);
+                    //  mWindow.getWindowBridge().updateMeasure(w, h);
                 });
             }
         }
