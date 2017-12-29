@@ -16,6 +16,8 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.runtime.exception.ScriptException;
@@ -217,6 +219,22 @@ public class Device {
     public void keepAwake(int flags) {
         checkWakeLock(flags);
         mWakeLock.acquire();
+    }
+
+    public boolean isScreenOn() {
+        //按照API文档来说不应该使用PowerManager.isScreenOn()，但是，isScreenOn()和实际不一致的情况通常只会出现在安卓智能手表的类似设备上
+        //因此这里仍然使用PowerManager.isScreenOn()
+        // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+        //   return ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getState() == Display.STATE_ON;
+        //} else {
+        return ((PowerManager) getSystemService(Context.POWER_SERVICE)).isScreenOn();
+        //}
+    }
+
+    public void wakeUpIfNeeded() {
+        if (!isScreenOn()) {
+            wakeUp();
+        }
     }
 
     public void wakeUp() {
