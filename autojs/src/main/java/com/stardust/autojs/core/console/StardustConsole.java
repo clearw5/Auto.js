@@ -2,7 +2,6 @@ package com.stardust.autojs.core.console;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.view.WindowManager;
 
@@ -11,6 +10,7 @@ import com.stardust.autojs.annotation.ScriptInterface;
 import com.stardust.autojs.runtime.api.AbstractConsole;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
+import com.stardust.concurrent.ConcurrentArrayList;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.util.UiHandler;

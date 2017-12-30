@@ -75,7 +75,15 @@ module.exports = function(__runtime__, scope){
         }
         view.longClick = function(listener){
             if(listener){
-                view.setOnLongClickListener(new android.view.View.OnLongClickListener(listener));
+                view.setOnLongClickListener(new android.view.View.OnLongClickListener(function(view){
+                     try{
+                        var r = listener(view);
+                        return !!r;
+                     }catch(e){
+                        console.error(e.getMessage());
+                        return false;
+                     }
+                }));
             }else{
                 view.performLongClick();
             }

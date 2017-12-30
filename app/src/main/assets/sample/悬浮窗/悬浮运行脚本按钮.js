@@ -9,6 +9,8 @@ var window = floaty.window(
     </frame>
 );
 
+setInterval(()=>{}, 1000);
+
 var execution = null;
 
 //记录按键被按下时的触摸坐标
@@ -33,7 +35,7 @@ window.action.setOnTouchListener(function(view, event){
                 windowY + (event.getRawY() - y));
             //如果按下的时间超过1.5秒判断为长按，退出脚本
             if(new Date().getTime() - downTime > 1500){
-              exit();
+                exit();
             }
             return true;
         case event.ACTION_UP:
@@ -58,5 +60,4 @@ function onClick(){
     }
 }
 
-setInterval(()=>{}, 1000);
 

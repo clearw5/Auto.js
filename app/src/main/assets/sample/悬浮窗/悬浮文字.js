@@ -4,6 +4,8 @@ var window = floaty.window(
     </frame>
 );
 
+window.exitOnClose();
+
 window.text.click(()=>{
     window.setAdjustEnabled(!window.isAdjustEnabled());
 });

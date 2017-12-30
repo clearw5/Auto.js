@@ -179,8 +179,6 @@ public class ScriptEngineService {
         int n = stopAll();
         if (n > 0)
             mUiHandler.toast(String.format(mContext.getString(R.string.text_already_stop_n_scripts), n));
-        else
-            mUiHandler.toast(mContext.getString(R.string.text_no_running_script));
     }
 
     public Set<ScriptEngine> getEngines() {

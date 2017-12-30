@@ -23,6 +23,7 @@ public class FloatyWindow extends ResizableFloatyWindow {
     private boolean mCreated = false;
     private View mMoveCursor;
     private View mResizer;
+    private View mCloseButton;
     private MyFloaty mFloaty;
 
 
@@ -59,15 +60,22 @@ public class FloatyWindow extends ResizableFloatyWindow {
         View root = (View) mView.getParent().getParent();
         mMoveCursor = root.findViewById(R.id.move_cursor);
         mResizer = root.findViewById(R.id.resizer);
+        mCloseButton = root.findViewById(R.id.close);
+    }
+
+    public void setOnCloseButtonClickListener(View.OnClickListener listener){
+        mCloseButton.setOnClickListener(listener);
     }
 
     public void setAdjustEnabled(boolean enabled) {
         if (!enabled) {
             mMoveCursor.setVisibility(View.GONE);
             mResizer.setVisibility(View.GONE);
+            mCloseButton.setVisibility(View.GONE);
         } else {
             mMoveCursor.setVisibility(View.VISIBLE);
             mResizer.setVisibility(View.VISIBLE);
+            mCloseButton.setVisibility(View.VISIBLE);
         }
     }
 

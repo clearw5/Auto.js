@@ -188,7 +188,7 @@ public class ScriptRuntime {
         engines = new Engines(builder.mEngineService);
         dialogs = new Dialogs(app, uiHandler, bridges);
         device = new Device(uiHandler.getContext());
-        floaty = new Floaty(uiHandler, ui);
+        floaty = new Floaty(uiHandler, ui, this);
     }
 
     public void init() {
@@ -295,7 +295,9 @@ public class ScriptRuntime {
 
     public void exit() {
         mThread.interrupt();
-        throw new ScriptInterruptedException();
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            throw new ScriptInterruptedException();
+        }
     }
 
     @Deprecated

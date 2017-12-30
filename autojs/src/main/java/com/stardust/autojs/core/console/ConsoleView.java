@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.stardust.autojs.R;
+import com.stardust.concurrent.ConcurrentArrayList;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.util.SparseArrayEntries;
 
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Stardust on 2017/5/2.
- *
+ * <p>
  * TODO: 优化为无锁形式
  */
 public class ConsoleView extends FrameLayout implements StardustConsole.LogListener {
@@ -153,7 +154,7 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
             return;
         int oldSize = mLogs.size();
         ArrayList<StardustConsole.Log> logs = mConsole.getAllLogs();
-        synchronized (logs) {
+        synchronized (mConsole.getAllLogs()) {
             final int size = logs.size();
             if (size == 0) {
                 return;

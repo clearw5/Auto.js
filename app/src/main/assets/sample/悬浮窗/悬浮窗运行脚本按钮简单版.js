@@ -9,6 +9,8 @@ var window = floaty.window(
     </frame>
 );
 
+window.exitOnClose();
+
 var execution = null;
 
 window.action.click(()=>{
