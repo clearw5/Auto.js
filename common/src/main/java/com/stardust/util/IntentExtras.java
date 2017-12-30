@@ -32,15 +32,17 @@ public class IntentExtras implements Serializable {
     }
 
     private Map<String, Object> mMap;
+    private int mId;
 
     private IntentExtras() {
         mMap = new HashMap<>();
-        int id = mMaxId.incrementAndGet();
-        extraStore.put(id, mMap);
+        mId = mMaxId.incrementAndGet();
+        extraStore.put(mId, mMap);
     }
 
 
     private IntentExtras(int id) {
+        mId = id;
         mMap = extraStore.get(id);
         if (mMap == null) {
             mMap = new HashMap<>();
@@ -60,7 +62,7 @@ public class IntentExtras implements Serializable {
     }
 
     public Intent putInIntent(Intent intent) {
-        intent.putExtra(EXTRA_ID, mMaxId);
+        intent.putExtra(EXTRA_ID, mId);
         return intent;
     }
 }
