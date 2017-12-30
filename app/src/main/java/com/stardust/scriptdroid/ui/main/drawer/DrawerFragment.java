@@ -230,7 +230,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 .title(R.string.text_server_address)
                 .input("", host, (dialog, input) -> {
                     Pref.saveServerAddress(input.toString());
-                    DevPluginService.getInstance().connectToServer(host);
+                    DevPluginService.getInstance().connectToServer(input.toString());
                 })
                 .neutralText(R.string.text_help)
                 .onNeutral((dialog, which) -> {
