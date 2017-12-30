@@ -6,6 +6,7 @@ import android.util.SparseArray;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by Stardust on 2017/7/11.
@@ -13,7 +14,7 @@ import java.util.Map;
 
 public class IntentExtras implements Serializable {
 
-    private static int mMaxId = -1;
+    private static AtomicInteger mMaxId = new AtomicInteger(-1);
     private static final String EXTRA_ID = "com.stardust.util.IntentExtras.id";
     private static SparseArray<Map<String, Object>> extraStore = new SparseArray<>();
 
@@ -25,39 +26,32 @@ public class IntentExtras implements Serializable {
     public static IntentExtras fromIntent(Intent intent) {
         int id = intent.getIntExtra(EXTRA_ID, -1);
         if (id < 0) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException();
         }
         return new IntentExtras(id);
     }
 
     private Map<String, Object> mMap;
-    private int mId;
 
     private IntentExtras() {
         mMap = new HashMap<>();
-        mMaxId++;
-        mId = mMaxId;
-        extraStore.put(mId, mMap);
+        int id = mMaxId.incrementAndGet();
+        extraStore.put(id, mMap);
     }
 
 
     private IntentExtras(int id) {
         mMap = extraStore.get(id);
+        if (mMap == null) {
+            mMap = new HashMap<>();
+        }
         extraStore.remove(id);
-        mMaxId = id;
     }
 
 
     @SuppressWarnings("unchecked")
     public <T> T get(String key) {
         return (T) mMap.get(key);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T getAndClear(String key) {
-        T value = (T) mMap.get(key);
-        recycle();
-        return value;
     }
 
     public IntentExtras put(String key, Object value) {
@@ -68,10 +62,5 @@ public class IntentExtras implements Serializable {
     public Intent putInIntent(Intent intent) {
         intent.putExtra(EXTRA_ID, mMaxId);
         return intent;
-    }
-
-    public void recycle() {
-        extraStore.remove(mId);
-        mMap = null;
     }
 }
