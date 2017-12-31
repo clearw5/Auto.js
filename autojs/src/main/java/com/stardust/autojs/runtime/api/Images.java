@@ -108,6 +108,9 @@ public class Images {
             return mPreCaptureImage;
         }
         mPreCapture = capture;
+        if(mPreCaptureImage != null){
+            mPreCaptureImage.recycle();
+        }
         mPreCaptureImage = ImageWrapper.ofImage(capture);
         return mPreCaptureImage;
     }

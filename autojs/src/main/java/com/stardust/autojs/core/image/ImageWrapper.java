@@ -117,4 +117,16 @@ public class ImageWrapper {
     public Bitmap getBitmap() {
         return mBitmap;
     }
+
+    public void recycle() {
+        if (mBitmap != null) {
+            mBitmap.recycle();
+            mBitmap = null;
+        }
+        if (mMat != null) {
+            mMat.release();
+            mMat = null;
+        }
+
+    }
 }

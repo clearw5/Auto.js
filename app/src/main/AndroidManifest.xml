@@ -21,6 +21,7 @@
         android:allowBackup="false"
         android:icon="@drawable/autojs_material"
         android:label="@string/_app_name"
+        android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label, android:icon, android:allowBackup">
