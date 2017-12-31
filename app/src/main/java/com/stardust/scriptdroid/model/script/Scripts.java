@@ -139,7 +139,7 @@ public class Scripts {
                         .setType("text/plain")
                         .putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file)),
                 App.getApp().getString(R.string.text_send)
-        ));
+        ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 
     }
 }
