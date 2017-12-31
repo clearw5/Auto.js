@@ -22,6 +22,7 @@ import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.network.GlideApp;
+import com.stardust.scriptdroid.network.UserService;
 import com.stardust.scriptdroid.pluginclient.DevPluginClient;
 import com.stardust.scriptdroid.ui.floating.CircularMenu;
 import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
@@ -52,6 +53,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -147,8 +149,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
 
     @Click(R.id.avatar)
     void loginOrShowUserInfo() {
-        NodeBB.getInstance().getRetrofit()
-                .create(UserApi.class)
+        UserService.getInstance()
                 .me()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -368,6 +369,13 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         mDrawerMenu.scrollToPosition(0);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLoginStateChange(UserService.LoginStateChange change) {
+        syncUserInfo();
+        if (mCommunityDrawerMenu.isShown()) {
+            mCommunityDrawerMenu.setUserOnlineStatus(mDrawerMenuAdapter, change.isOnline());
+        }
+    }
 
     @Override
     public void onDestroy() {

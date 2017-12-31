@@ -77,4 +77,19 @@ public class DrawerMenuItem {
         if (mAction != null)
             mAction.onClick(holder);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DrawerMenuItem that = (DrawerMenuItem) o;
+
+        return mTitle == that.mTitle;
+    }
+
+    @Override
+    public int hashCode() {
+        return mTitle;
+    }
 }

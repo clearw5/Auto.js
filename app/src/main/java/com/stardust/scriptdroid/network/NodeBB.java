@@ -66,6 +66,10 @@ public class NodeBB {
 
     }
 
+    public void invalidateConfig() {
+        mConfig = null;
+    }
+
     public static String getErrorMessage(Throwable e, Context context, String defaultMsg) {
         if (!(e instanceof HttpException)) {
             return defaultMsg;
@@ -75,7 +79,7 @@ public class NodeBB {
         if (body == null)
             return defaultMsg;
         try {
-            String errorMessage = getErrorMessage(context, e, body.string());
+            String errorMessage = getErrorMessage(context, httpException, body.string());
             return errorMessage == null ? defaultMsg : errorMessage;
         } catch (IOException e1) {
             e1.printStackTrace();
@@ -83,7 +87,7 @@ public class NodeBB {
         }
     }
 
-    private static String getErrorMessage(Context context, Throwable error, String errorBody) {
+    private static String getErrorMessage(Context context, HttpException error, String errorBody) {
         if (errorBody == null)
             return null;
         if (errorBody.contains("invalid-login-credentials")) {
@@ -98,6 +102,9 @@ public class NodeBB {
         }
         if (errorBody.contains("email-taken")) {
             return context.getString(R.string.nodebb_error_email_taken);
+        }
+        if (error.code() == 403) {
+            return context.getString(R.string.nodebb_error_forbidden);
         }
         Log.d(LOG_TAG, "unknown error: " + errorBody, error);
         return null;

@@ -15,6 +15,12 @@
             android:name=".execution.ScriptExecuteActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
+        <activity
+            android:name="com.stardust.autojs.core.image.ScreenCaptureRequestActivity"
+            android:excludeFromRecents="true"
+            android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
+            android:theme="@style/AppTheme.Transparent"/>
+
     </application>
 
 </manifest>

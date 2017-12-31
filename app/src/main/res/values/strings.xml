@@ -336,4 +336,6 @@
     <string name="nodebb_error_change_password_error_length">密码太短</string>
     <string name="nodebb_error_email_taken">邮箱已被占用</string>
     <string name="nodebb_error_change_password_error_match">两次输入的密码不一致</string>
+    <string name="text_logout">退出登录</string>
+    <string name="nodebb_error_forbidden">操作失败，请稍后重试</string>
 </resources>

@@ -31,4 +31,6 @@ public interface UserApi {
                                       @Field("username") String userName, @Field("password") String password, @Field("password-confirm") String repeatPassword);
 
 
+    @POST("/logout")
+    Observable<ResponseBody> logout(@HeaderMap Map<String, String> csrfToken);
 }

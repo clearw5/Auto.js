@@ -6,8 +6,8 @@ package com.stardust.scriptdroid.ui.main.drawer;
 
 public class DrawerMenuGroup extends DrawerMenuItem {
 
-
     public DrawerMenuGroup(int title) {
         super(0, title, null);
     }
+
 }
