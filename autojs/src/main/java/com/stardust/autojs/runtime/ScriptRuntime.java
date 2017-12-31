@@ -8,6 +8,7 @@ import com.stardust.autojs.R;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
+import com.stardust.autojs.core.image.Colors;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.rhino.AndroidClassLoader;
 import com.stardust.autojs.runtime.api.AbstractShell;
@@ -160,6 +161,9 @@ public class ScriptRuntime {
 
     @ScriptVariable
     public UiHandler uiHandler;
+
+    @ScriptVariable
+    public final Colors colors = new Colors();
 
     private Images images;
 

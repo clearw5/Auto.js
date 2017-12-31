@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.ui.main.drawer;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
