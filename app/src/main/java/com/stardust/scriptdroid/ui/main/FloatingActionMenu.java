@@ -41,7 +41,7 @@ public class FloatingActionMenu extends FrameLayout implements View.OnClickListe
     private View[] mFabContainers;
     private boolean mExpanded = false;
     private int mInterval = 30;
-    private int mDuration = 300;
+    private int mDuration = 250;
     private final Interpolator mInterpolator = new FastOutSlowInInterpolator();
     private final PublishSubject<Boolean> mState = PublishSubject.create();
     private OnFloatingActionButtonClickListener mOnFloatingActionButtonClickListener;

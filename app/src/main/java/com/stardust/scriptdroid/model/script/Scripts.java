@@ -135,10 +135,11 @@ public class Scripts {
     }
 
     public static void send(ScriptFile file) {
-        Uri uri = Uri.parse("file://" + file.getPath());
-        App.getApp().startActivity(new Intent(Intent.ACTION_SEND)
-                .setDataAndType(uri, "text/plain")
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        App.getApp().startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND)
+                        .setType("text/plain")
+                        .putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file)),
+                App.getApp().getString(R.string.text_send)
+        ));
 
     }
 }

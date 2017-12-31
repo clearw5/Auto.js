@@ -1,9 +1,18 @@
 
 module.exports = function(__runtime__, scope){
    var images = {};
-   var colors = Object.create(android.graphics.Color);
-   colors.toString = function(color){
-        return '#' + (color >>> 0).toString(16);
+   var colors = Object.create(__runtime__.colors);
+   colors.alpha = function(color){
+        return color >>> 24;
+   }
+   colors.red = function(color){
+        return (color >> 16) & 0xFF;
+   }
+   colors.green = function(color){
+        return (color >> 8) & 0xFF;
+   }
+   colors.blue = function(color){
+        return color & 0xFF;
    }
    if(android.os.Build.VERSION.SDK_INT < 19){
         return images;

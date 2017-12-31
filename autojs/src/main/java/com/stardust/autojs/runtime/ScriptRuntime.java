@@ -8,6 +8,7 @@ import com.stardust.autojs.R;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
+import com.stardust.autojs.core.image.Colors;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.rhino.AndroidClassLoader;
 import com.stardust.autojs.runtime.api.AbstractShell;
@@ -17,7 +18,7 @@ import com.stardust.autojs.runtime.api.Device;
 import com.stardust.autojs.runtime.api.Engines;
 import com.stardust.autojs.runtime.api.Events;
 import com.stardust.autojs.runtime.api.Floaty;
-import com.stardust.autojs.runtime.api.Loopers;
+import com.stardust.autojs.core.looper.Loopers;
 import com.stardust.autojs.runtime.api.Threads;
 import com.stardust.autojs.runtime.api.Timers;
 import com.stardust.autojs.core.accessibility.UiSelector;
@@ -153,13 +154,16 @@ public class ScriptRuntime {
     public final Engines engines;
 
     @ScriptVariable
-    public final Threads threads;
+    public Threads threads;
 
     @ScriptVariable
     public final Floaty floaty;
 
     @ScriptVariable
     public UiHandler uiHandler;
+
+    @ScriptVariable
+    public final Colors colors = new Colors();
 
     private Images images;
 
@@ -168,6 +172,7 @@ public class ScriptRuntime {
     private AbstractShell mRootShell;
     private Supplier<AbstractShell> mShellSupplier;
     private ScreenMetrics mScreenMetrics = new ScreenMetrics();
+    private Thread mThread;
 
 
     protected ScriptRuntime(Builder builder) {
@@ -186,17 +191,18 @@ public class ScriptRuntime {
         }
         engines = new Engines(builder.mEngineService);
         dialogs = new Dialogs(app, uiHandler, bridges);
-        threads = new Threads(this);
         device = new Device(uiHandler.getContext());
-        floaty = new Floaty(uiHandler, ui);
+        floaty = new Floaty(uiHandler, ui, this);
     }
 
     public void init() {
         if (loopers != null)
             throw new IllegalStateException("already initialized");
-        timers = new Timers(bridges);
+        threads = new Threads(this);
+        timers = new Timers(bridges, threads);
         loopers = new Loopers(this);
         events = new Events(uiHandler.getContext(), accessibilityBridge, this);
+        mThread = Thread.currentThread();
     }
 
     public static void setApplicationContext(Context context) {
@@ -248,12 +254,7 @@ public class ScriptRuntime {
             return ClipboardUtil.getClipOrEmpty(uiHandler.getContext()).toString();
         }
         final VolatileDispose<String> clip = new VolatileDispose<>();
-        uiHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                clip.setAndNotify(ClipboardUtil.getClipOrEmpty(uiHandler.getContext()).toString());
-            }
-        });
+        uiHandler.post(() -> clip.setAndNotify(ClipboardUtil.getClipOrEmpty(uiHandler.getContext()).toString()));
         return clip.blockedGetOrThrow(ScriptInterruptedException.class);
     }
 
@@ -297,8 +298,10 @@ public class ScriptRuntime {
     }
 
     public void exit() {
-        Thread.currentThread().interrupt();
-        throw new ScriptInterruptedException();
+        mThread.interrupt();
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            throw new ScriptInterruptedException();
+        }
     }
 
     @Deprecated
@@ -320,6 +323,8 @@ public class ScriptRuntime {
     }
 
     public void onExit() {
+        //清除interrupt状态
+        Thread.interrupted();
         //悬浮窗需要第一时间关闭以免出现恶意脚本全屏悬浮窗屏蔽屏幕并且在exit中写死循环的问题
         ignoresException(floaty::closeAll);
         try {
@@ -335,11 +340,9 @@ public class ScriptRuntime {
             mRootShell = null;
             mShellSupplier = null;
         });
-        ignoresException(() -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                images.releaseScreenCapturer();
-            }
-        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ignoresException(images::releaseScreenCapturer);
+        }
     }
 
     private void ignoresException(Runnable r) {

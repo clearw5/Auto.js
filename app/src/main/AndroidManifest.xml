@@ -95,10 +95,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.stardust.autojs.core.image.ScreenCaptureRequestActivity"
-            android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
-            android:theme="@android:style/Theme.NoDisplay"/>
+
         <activity
             android:name=".ui.error.IssueReporterActivity"
             android:theme="@style/IssueReporterTheme"/>

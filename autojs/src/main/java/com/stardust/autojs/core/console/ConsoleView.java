@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.stardust.autojs.R;
+import com.stardust.concurrent.ConcurrentArrayList;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.util.SparseArrayEntries;
 
@@ -24,6 +25,8 @@ import java.util.ArrayList;
 
 /**
  * Created by Stardust on 2017/5/2.
+ * <p>
+ * TODO: 优化为无锁形式
  */
 public class ConsoleView extends FrameLayout implements StardustConsole.LogListener {
 
@@ -77,12 +80,9 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
 
     private void initSubmitButton() {
         final Button submit = (Button) findViewById(R.id.submit);
-        submit.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CharSequence input = mEditText.getText();
-                submitInput(input);
-            }
+        submit.setOnClickListener(v -> {
+            CharSequence input = mEditText.getText();
+            submitInput(input);
         });
     }
 
@@ -99,13 +99,10 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
         mEditText = (EditText) findViewById(R.id.input);
         mEditText.setFocusableInTouchMode(true);
         mInputContainer = (LinearLayout) findViewById(R.id.input_container);
-        OnClickListener listener = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mWindow != null) {
-                    mWindow.requestWindowFocus();
-                    mEditText.requestFocus();
-                }
+        OnClickListener listener = v -> {
+            if (mWindow != null) {
+                mWindow.requestWindowFocus();
+                mEditText.requestFocus();
             }
         };
         mEditText.setOnClickListener(listener);
@@ -146,12 +143,9 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
 
     @Override
     public void onLogClear() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                mLogs.clear();
-                mLogListRecyclerView.getAdapter().notifyDataSetChanged();
-            }
+        post(() -> {
+            mLogs.clear();
+            mLogListRecyclerView.getAdapter().notifyDataSetChanged();
         });
     }
 
@@ -160,22 +154,24 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
             return;
         int oldSize = mLogs.size();
         ArrayList<StardustConsole.Log> logs = mConsole.getAllLogs();
-        final int size = logs.size();
-        if (size == 0) {
-            return;
-        }
-        if (oldSize >= size) {
-            return;
-        }
-        if (oldSize == 0) {
-            mLogs.addAll(logs);
-        } else {
-            for (int i = oldSize; i < size; i++) {
-                mLogs.add(logs.get(i));
+        synchronized (mConsole.getAllLogs()) {
+            final int size = logs.size();
+            if (size == 0) {
+                return;
             }
+            if (oldSize >= size) {
+                return;
+            }
+            if (oldSize == 0) {
+                mLogs.addAll(logs);
+            } else {
+                for (int i = oldSize; i < size; i++) {
+                    mLogs.add(logs.get(i));
+                }
+            }
+            mLogListRecyclerView.getAdapter().notifyItemRangeInserted(oldSize, size - 1);
+            mLogListRecyclerView.scrollToPosition(size - 1);
         }
-        mLogListRecyclerView.getAdapter().notifyItemRangeInserted(oldSize, size - 1);
-        mLogListRecyclerView.scrollToPosition(size - 1);
     }
 
     public void setWindow(ResizableExpandableFloatyWindow window) {
@@ -183,13 +179,10 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
     }
 
     public void showEditText() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                mWindow.requestWindowFocus();
-                mInputContainer.setVisibility(VISIBLE);
-                mEditText.requestFocus();
-            }
+        post(() -> {
+            mWindow.requestWindowFocus();
+            mInputContainer.setVisibility(VISIBLE);
+            mEditText.requestFocus();
         });
     }
 

@@ -10,10 +10,14 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
+import android.os.PowerManager;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.runtime.exception.ScriptException;
@@ -84,6 +88,8 @@ public class Device {
     public static final String serial = Build.SERIAL;
 
     private Context mContext;
+    private PowerManager.WakeLock mWakeLock;
+    private int mWakeLockFlag;
 
     public Device(Context context) {
         mContext = context;
@@ -195,7 +201,6 @@ public class Device {
         return info.availMem;
     }
 
-
     public boolean isCharging() {
         Intent intent = mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (intent == null) {
@@ -204,6 +209,74 @@ public class Device {
         int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
         return plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB;
     }
+
+    public void keepAwake(int flags, long timeout) {
+        checkWakeLock(flags);
+        mWakeLock.acquire(timeout);
+    }
+
+    @SuppressLint("WakelockTimeout")
+    public void keepAwake(int flags) {
+        checkWakeLock(flags);
+        mWakeLock.acquire();
+    }
+
+    public boolean isScreenOn() {
+        //按照API文档来说不应该使用PowerManager.isScreenOn()，但是，isScreenOn()和实际不一致的情况通常只会出现在安卓智能手表的类似设备上
+        //因此这里仍然使用PowerManager.isScreenOn()
+        // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+        //   return ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getState() == Display.STATE_ON;
+        //} else {
+        return ((PowerManager) getSystemService(Context.POWER_SERVICE)).isScreenOn();
+        //}
+    }
+
+    public void wakeUpIfNeeded() {
+        if (!isScreenOn()) {
+            wakeUp();
+        }
+    }
+
+    public void wakeUp() {
+        keepScreenOn(200);
+    }
+
+    public void keepScreenOn() {
+        keepAwake(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP);
+    }
+
+    public void keepScreenOn(long timeout) {
+        keepAwake(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, timeout);
+    }
+
+    public void keepScreenDim() {
+        keepAwake(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP);
+    }
+
+    public void keepScreenDim(long timeout) {
+        keepAwake(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, timeout);
+    }
+
+    private void checkWakeLock(int flags) {
+        if (mWakeLock == null || flags != mWakeLockFlag) {
+            cancelKeepingAwake();
+            mWakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(flags, Device.class.getName());
+        }
+    }
+
+    public void cancelKeepingAwake() {
+        if (mWakeLock != null && mWakeLock.isHeld())
+            mWakeLock.release();
+    }
+
+    public void vibrate(long millis) {
+        ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(millis);
+    }
+
+    public void cancelVibration() {
+        ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).cancel();
+    }
+
 
     private void checkWriteSettingsPermission() {
         if (SettingsCompat.canWriteSettings(mContext)) {

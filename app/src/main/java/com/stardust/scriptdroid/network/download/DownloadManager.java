@@ -105,7 +105,7 @@ public class DownloadManager {
             mProgress = PublishSubject.create();
         }
 
-        public void start(ResponseBody body) throws IOException {
+        private void startImpl(ResponseBody body) throws IOException {
             byte[] buffer = new byte[4096];
             mFileOutputStream = new FileOutputStream(mPath);
             mInputStream = body.byteStream();
@@ -128,6 +128,14 @@ public class DownloadManager {
             }
             mProgress.onComplete();
             recycle();
+        }
+
+        public void start(ResponseBody body) {
+            try {
+                startImpl(body);
+            } catch (Exception e) {
+                mProgress.onError(e);
+            }
         }
 
         private void onCancel() throws IOException {

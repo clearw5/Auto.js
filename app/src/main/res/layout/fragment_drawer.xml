@@ -63,11 +63,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include
-            layout="@layout/drawer_menu"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/drawer_menu"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>
+
 
         <View
             android:layout_width="match_parent"

@@ -72,15 +72,23 @@
         <h2>目录</h2>
         <ul>
 <li><span class="stability_undefined"><a href="#app_app">App</a></span><ul>
+<li><span class="stability_undefined"><a href="#app_app_launchapp_appname">app.launchApp(appName)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_launch_packagename">app.launch(packageName)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_launchpackage_packagename">app.launchPackage(packageName)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_getpackagename_appname">app.getPackageName(appName)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_getappname_packagename">app.getAppName(packageName)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_openappsetting_packagename">app.openAppSetting(packageName)</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_viewfile_path">app.viewFile(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_editfile_path">app.editFile(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_uninstall_packagename">app.uninstall(packageName)</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_openurl_url">app.openUrl(url)</a></span></li>
-<li><span class="stability_undefined"><a href="#app_app_takephoto_path">app.takePhoto(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_sendemail_options">app.sendEmail(options)</a></span></li>
-<li><span class="stability_undefined"><a href="#app_app_intent_intent">app.intent(intent)</a></span></li>
-<li><span class="stability_undefined"><a href="#app_app_startactivity_intent">app.startActivity(intent)</a></span></li>
-<li><span class="stability_undefined"><a href="#app_app_sendbroadcast_intent">app.sendBroadcast(intent)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#app_intent">进阶: 意图Intent</a></span><ul>
+<li><span class="stability_undefined"><a href="#app_app_intent_options">app.intent(options)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_startactivity_options">app.startActivity(options)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_sendbroadcast_options">app.sendBroadcast(options)</a></span></li>
 </ul>
 </li>
 </ul>
@@ -89,77 +97,146 @@
 
       <div id="apicontent">
         <h1>App<span><a class="mark" href="#app_app" id="app_app">#</a></span></h1>
-<p>app模块提供一系列函数，用于与其他应用的交互。例如打开文件、拍照、发送邮件等。</p>
-<p>同时提供了方便的基础函数startActivity和sendBroadcast，用他们可完成app模块没有内置的和其他应用的交互。</p>
+<p>app模块提供一系列函数，用于使用其他应用、与其他应用交互。例如发送意图、打开文件、发送邮件等。</p>
+<p>同时提供了方便的进阶函数startActivity和sendBroadcast，用他们可完成app模块没有内置的和其他应用的交互。</p>
+<h2>app.launchApp(appName)<span><a class="mark" href="#app_app_launchapp_appname" id="app_app_launchapp_appname">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>appName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 应用名称</li>
+</ul>
+</div><p>通过应用名称启动应用。如果该名称对应的应用不存在，则返回false; 否则返回true。如果该名称对应多个应用，则只启动其中某一个。</p>
+<p>该函数也可以作为全局函数使用。</p>
+<pre><code>launchApp(&quot;Auto.js&quot;);
+</code></pre><h2>app.launch(packageName)<span><a class="mark" href="#app_app_launch_packagename" id="app_app_launch_packagename">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>packageName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 应用包名</li>
+</ul>
+</div><p>通过应用包名启动应用。如果该包名对应的应用不存在，则返回false；否则返回true。</p>
+<p>该函数也可以作为全局函数使用。</p>
+<pre><code>//启动微信
+launch(&quot;com.tencent.mm&quot;);
+</code></pre><h2>app.launchPackage(packageName)<span><a class="mark" href="#app_app_launchpackage_packagename" id="app_app_launchpackage_packagename">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>packageName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 应用包名</li>
+</ul>
+</div><p>相当于<code>app.launch(packageName)</code>。</p>
+<h2>app.getPackageName(appName)<span><a class="mark" href="#app_app_getpackagename_appname" id="app_app_getpackagename_appname">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>appName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 应用名称</li>
+</ul>
+</div><p>获取应用名称对应的已安装的应用的包名。如果该找不到该应用，返回null；如果该名称对应多个应用，则只返回其中某一个的包名。</p>
+<p>该函数也可以作为全局函数使用。</p>
+<pre><code>var name = getPackageName(&quot;QQ&quot;); //返回&quot;com.tencent.mobileqq&quot;
+</code></pre><h2>app.getAppName(packageName)<span><a class="mark" href="#app_app_getappname_packagename" id="app_app_getappname_packagename">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>packageName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 应用包名</li>
+</ul>
+</div><p>获取应用包名对应的已安装的应用的名称。如果该找不到该应用，返回null。</p>
+<p>该函数也可以作为全局函数使用。</p>
+<pre><code>var name = getAppName(&quot;com.tencent.mobileqq&quot;); //返回&quot;QQ&quot;
+</code></pre><h2>app.openAppSetting(packageName)<span><a class="mark" href="#app_app_openappsetting_packagename" id="app_app_openappsetting_packagename">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>packageName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 应用包名</li>
+</ul>
+</div><p>打开应用的详情页(设置页)。如果找不到该应用，返回false; 否则返回true。</p>
+<p>该函数也可以作为全局函数使用。</p>
 <h2>app.viewFile(path)<span><a class="mark" href="#app_app_viewfile_path" id="app_app_viewfile_path">#</a></span></h2>
 <div class="signature"><ul>
 <li>path <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文件路径</li>
 </ul>
-</div><p>用其他应用查看文件。</p>
-<h2>app.editFile(path)<span><a class="mark" href="#app_app_editfile_path" id="app_app_editfile_path">#</a></span></h2>
+</div><p>用其他应用查看文件。文件不存在的情况由查看文件的应用处理。</p>
+<p>如果找不出可以查看该文件的应用，则抛出<code>ActivityNotException</code>。</p>
+<pre><code>//查看文本文件
+app.viewFile(&quot;/sdcard/1.txt&quot;);
+</code></pre><h2>app.editFile(path)<span><a class="mark" href="#app_app_editfile_path" id="app_app_editfile_path">#</a></span></h2>
 <div class="signature"><ul>
 <li>path <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文件路径</li>
 </ul>
-</div><p>用其他应用编辑文件。</p>
-<h2>app.uninstall(packageName)<span><a class="mark" href="#app_app_uninstall_packagename" id="app_app_uninstall_packagename">#</a></span></h2>
+</div><p>用其他应用编辑文件。文件不存在的情况由编辑文件的应用处理。</p>
+<p>如果找不出可以编辑该文件的应用，则抛出<code>ActivityNotException</code>。</p>
+<pre><code>//编辑文本文件
+app.editFile(&quot;/sdcard/1.txt/);
+</code></pre><h2>app.uninstall(packageName)<span><a class="mark" href="#app_app_uninstall_packagename" id="app_app_uninstall_packagename">#</a></span></h2>
 <div class="signature"><ul>
-<li>packageName <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 应用包名</li>
+<li><code>packageName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 应用包名</li>
 </ul>
-</div><p>卸载应用。</p>
-<h2>app.openUrl(url)<span><a class="mark" href="#app_app_openurl_url" id="app_app_openurl_url">#</a></span></h2>
+</div><p>卸载应用。执行后会会弹出卸载应用的提示框。如果该包名的应用未安装，由应用卸载程序处理，可能弹出&quot;未找到应用&quot;的提示。</p>
+<pre><code>//卸载QQ
+app.uninstall(&quot;com.tencent.mobileqq&quot;);
+</code></pre><h2>app.openUrl(url)<span><a class="mark" href="#app_app_openurl_url" id="app_app_openurl_url">#</a></span></h2>
 <div class="signature"><ul>
-<li>url <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 网站的Url</li>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 网站的Url，如果不以&quot;<a href="http://&quot;或&quot;https://&quot;开头则默认是&quot;http://&quot;。">http://&quot;或&quot;https://&quot;开头则默认是&quot;http://&quot;。</a></li>
 </ul>
 </div><p>用浏览器打开网站url。</p>
-<h2>app.takePhoto(path)<span><a class="mark" href="#app_app_takephoto_path" id="app_app_takephoto_path">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 照片保存路径</li>
-</ul>
-</div><p>调用相机应用拍照，完成后保存到路径path。</p>
+<p>如果没有安装浏览器应用，则抛出<code>ActivityNotException</code>。</p>
 <h2>app.sendEmail(options)<span><a class="mark" href="#app_app_sendemail_options" id="app_app_sendemail_options">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 发送邮件的参数。包括:<ul>
-<li>email <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 收件人的邮件地址。如果有多个收件人，则用字符串数组表示</li>
-<li>cc <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 抄送收件人的邮件地址。如果有多个抄送收件人，则用字符串数组表示</li>
-<li>bcc <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 密送收件人的邮件地址。如果有多个密送收件人，则用字符串数组表示</li>
-<li>subject <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a>  邮件主题(标题)</li>
-<li>text <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 邮件正文</li>
-<li>attachment <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 附件的路径。如果有多个附件，则用字符串数组表示</li>
+<li><code>email</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 收件人的邮件地址。如果有多个收件人，则用字符串数组表示</li>
+<li><code>cc</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 抄送收件人的邮件地址。如果有多个抄送收件人，则用字符串数组表示</li>
+<li><code>bcc</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 密送收件人的邮件地址。如果有多个密送收件人，则用字符串数组表示</li>
+<li><code>subject</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a>  邮件主题(标题)</li>
+<li><code>text</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 邮件正文</li>
+<li><code>attachment</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 附件的路径。</li>
 </ul>
 </li>
 </ul>
 </div><p>根据选项options调用邮箱应用发送邮件。这些选项均是可选的。</p>
-<h2>app.intent(intent)<span><a class="mark" href="#app_app_intent_intent" id="app_app_intent_intent">#</a></span></h2>
+<p>如果没有安装邮箱应用，则抛出<code>ActivityNotException</code>。</p>
+<pre><code>//发送邮件给10086@qq.com和10001@qq.com。
+app.sendEmail({
+    email: [&quot;10086@qq.com&quot;, &quot;10001@qq.com&quot;],
+    subject: &quot;这是一个邮件标题&quot;,
+    text: &quot;这是邮件正文&quot;
+});
+</code></pre><h1>进阶: 意图Intent<span><a class="mark" href="#app_intent" id="app_intent">#</a></span></h1>
+<p>Intent(意图) 是一个消息传递对象，您可以使用它从其他应用组件请求操作。尽管 Intent 可以通过多种方式促进组件之间的通信，但其基本用例主要包括以下三个：</p>
+<ul>
+<li><p>启动活动(Activity)：
+  Activity 表示应用中的一个&quot;屏幕&quot;。例如应用主入口都是一个Activity，应用的功能通常也以Activity的形式独立，例如微信的主界面、朋友圈、聊天窗口都是不同的Activity。通过将 Intent 传递给 startActivity()，您可以启动新的 Activity 实例。Intent 描述了要启动的 Activity，并携带了任何必要的数据。</p>
+</li>
+<li><p>启动服务(Service)：
+  Service 是一个不使用用户界面而在后台执行操作的组件。通过将 Intent 传递给 startService()，您可以启动服务执行一次性操作（例如，下载文件）。Intent 描述了要启动的服务，并携带了任何必要的数据。</p>
+</li>
+<li><p>传递广播：
+  广播是任何应用均可接收的消息。系统将针对系统事件（例如：系统启动或设备开始充电时）传递各种广播。通过将 Intent 传递给 sendBroadcast()、sendOrderedBroadcast() 或 sendStickyBroadcast()，您可以将广播传递给其他应用。</p>
+</li>
+</ul>
+<p>本模块提供了构建Intent的函数(<code>app.intent()</code>), 启动Activity的函数<code>app.startActivity()</code>, 发送广播的函数<code>app.sendBroadcast()</code>。</p>
+<p>使用这些方法可以用来方便的调用其他应用。例如直接打开某个QQ号的个人卡片页，打开某个QQ号的聊天窗口等。</p>
+<pre><code>
+</code></pre><h2>app.intent(options)<span><a class="mark" href="#app_app_intent_options" id="app_app_intent_options">#</a></span></h2>
 <div class="signature"><ul>
-<li>intent <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 一个表示Intent对象，其属性可以包括：<ul>
-<li>action <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 这个Intent的Action，比如&quot;android.intent.action.SEND&quot;</li>
-<li>type <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 这个Intent的MimeType，比如&quot;text/plain&quot;</li>
-<li>data <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 这个Intent的Data(Uri)，可以是文件路径或者Url等。</li>
-<li>category \<Array\> 这个Intent的Category的字符串数组。</li>
-<li>packageName <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 目标包名</li>
-<li>className <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 目标Activity或Service等组件的名称</li>
-<li>extras <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 以键值对构成的这个Intent的Extras。</li>
+<li>options <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项，包括：<ul>
+<li><code>action</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 意图的Action，指意图要完成的动作，是一个字符串常量，比如&quot;android.intent.action.SEND&quot;。当action以&quot;android.intent.action&quot;开头时，可以省略前缀，直接用&quot;SEND&quot;代替。常见的action参见<code>常用的意图动作</code>。</li>
+<li><code>type</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 意图的MimeType，表示和该意图直接相关的数据的类型，表示比如&quot;text/plain&quot;为纯文本类型。</li>
+<li><code>data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 意图的Data，表示和该意图直接相关的数据，是一个Uri, 可以是文件路径或者Url等。例如要打开一个文件, action为&quot;android.intent.action.VIEW&quot;, data为&quot;file:///sdcard/1.txt&quot;。</li>
+<li><code>category</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 意图的类别。比较少用。</li>
+<li><code>packageName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 目标包名</li>
+<li><code>className</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 目标Activity或Service等组件的名称</li>
+<li><code>extras</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 以键值对构成的这个Intent的Extras(额外信息)。提供该意图的其他信息，例如发送邮件时的邮件标题、邮件正文。</li>
 </ul>
 </li>
 </ul>
-</div><p>返回用intent对象构造的android.content.Intent对象。</p>
+</div><p>根据选项，构造一个意图Intent对象。</p>
 <p>例如：</p>
-<pre><code>var i = app.intent({
-    action: &quot;android.intent.action.VIEW&quot;,
-    type: &quot;text/plain&quot;,
-    data: &quot;file:///sdcard/1.txt&quot;,
+<pre><code>//打开应用来查看图片文件
+var i = app.intent({
+    action: &quot;VIEW&quot;,
+    type: &quot;image/png&quot;,
+    data: &quot;file:///sdcard/1.png&quot;
 });
-</code></pre><p>如果你看了一脸懵逼，请百度<a href="https://www.baidu.com/s?wd=android%20Intent">安卓Intent</a>。</p>
-<h2>app.startActivity(intent)<span><a class="mark" href="#app_app_startactivity_intent" id="app_app_startactivity_intent">#</a></span></h2>
+app.startActivity(i);
+</code></pre><p>更多信息，请百度<a href="https://www.baidu.com/s?wd=android%20Intent">安卓Intent</a>或参考<a href="https://developer.android.com/guide/components/intents-filters.html#Types">Android指南: Intent</a>。</p>
+<h2>app.startActivity(options)<span><a class="mark" href="#app_app_startactivity_options" id="app_app_startactivity_options">#</a></span></h2>
 <div class="signature"><ul>
-<li>intent <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 与app.intent函数的参数一样的intent对象。</li>
+<li>options <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项</li>
 </ul>
-</div><p>相当于context.startActivity(intent)。</p>
-<h2>app.sendBroadcast(intent)<span><a class="mark" href="#app_app_sendbroadcast_intent" id="app_app_sendbroadcast_intent">#</a></span></h2>
+</div><p>根据选项构造一个Intent，并启动该Activity。</p>
+<h2>app.sendBroadcast(options)<span><a class="mark" href="#app_app_sendbroadcast_options" id="app_app_sendbroadcast_options">#</a></span></h2>
 <div class="signature"><ul>
-<li>intent <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 与app.intent函数的参数一样的intent对象。</li>
+<li>options <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项</li>
 </ul>
-</div><p>相当于context.sendBroadcast(intent)。</p>
+</div><p>根据选项构造一个Intent，并发送该广播。</p>
 
       </div>
     </div>

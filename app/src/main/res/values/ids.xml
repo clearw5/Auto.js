@@ -7,4 +7,5 @@
     <item name="package_name" type="id"/>
     <item name="class_name" type="id"/>
     <item name="open_launcher" type="id"/>
+    <item name="accessibility_service" type="id"/>
 </resources>

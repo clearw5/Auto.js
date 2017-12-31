@@ -26,9 +26,9 @@ public class ApkBuilderPluginHelper {
 
     public static InputStream openTemplateApk(Context context) {
         try {
-            if (BuildConfig.DEBUG) {
-                return context.getAssets().open(TEMPLATE_APK_PATH);
-            }
+            //if (BuildConfig.DEBUG) {
+            //  return context.getAssets().open(TEMPLATE_APK_PATH);
+            //}
             return context.getPackageManager().getResourcesForApplication(PLUGIN_PACKAGE_NAME)
                     .getAssets().open(TEMPLATE_APK_PATH);
         } catch (IOException e) {

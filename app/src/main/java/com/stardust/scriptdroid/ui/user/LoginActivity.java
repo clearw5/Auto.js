@@ -18,6 +18,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.w3c.dom.Node;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -65,8 +66,7 @@ public class LoginActivity extends BaseActivity {
                         }
                         , error -> {
                             dialog.dismiss();
-                            mPassword.setError(getString(R.string.text_login_fail));
-                            error.printStackTrace();
+                            mPassword.setError(NodeBB.getErrorMessage(error, LoginActivity.this, R.string.text_login_fail));
                         });
 
     }

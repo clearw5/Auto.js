@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.network.NodeBB;
 import com.stardust.scriptdroid.network.UserService;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.theme.ThemeColorManager;
@@ -67,8 +68,7 @@ public class RegisterActivity extends BaseActivity {
                         }
                         , error -> {
                             dialog.dismiss();
-                            mPassword.setError(getString(R.string.text_register_fail));
-                            error.printStackTrace();
+                            mPassword.setError(NodeBB.getErrorMessage(error, RegisterActivity.this, R.string.text_register_fail));
                         });
 
     }
@@ -93,6 +93,10 @@ public class RegisterActivity extends BaseActivity {
         }
         if (password.isEmpty()) {
             mUserName.setError(getString(R.string.text_password_cannot_be_empty));
+            return false;
+        }
+        if (password.length() < 6) {
+            mPassword.setError(getString(R.string.nodebb_error_change_password_error_length));
             return false;
         }
         return true;

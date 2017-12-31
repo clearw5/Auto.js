@@ -27,10 +27,6 @@
                 android:title="@string/text_timed_task"/>
 
             <item
-                android:id="@+id/floating_edit"
-                android:title="@string/text_floating_edit"/>
-
-            <item
                 android:id="@+id/create_shortcut"
                 android:title="@string/text_send_shortcut"/>
 

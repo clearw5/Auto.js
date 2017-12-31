@@ -7,4 +7,6 @@
     <dimen name="script_and_folder_list_divider_left_margin">0dp</dimen>
     <dimen name="script_and_folder_list_divider_right_margin">0dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="textSize_item_property">14sp</dimen>
+    <dimen name="divider_drawer_menu_group">6dp</dimen>
 </resources>

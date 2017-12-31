@@ -7,6 +7,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.stardust.autojs.R;
+import com.stardust.autojs.runtime.api.Floaty;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableFloaty;
 import com.stardust.enhancedfloaty.ResizableFloatyWindow;
@@ -22,11 +23,18 @@ public class FloatyWindow extends ResizableFloatyWindow {
     private boolean mCreated = false;
     private View mMoveCursor;
     private View mResizer;
+    private View mCloseButton;
+    private MyFloaty mFloaty;
 
 
     public FloatyWindow(View view) {
-        super(new MyFloaty(view));
+        this(new MyFloaty(view));
         mView = view;
+    }
+
+    private FloatyWindow(MyFloaty floaty) {
+        super(floaty);
+        mFloaty = floaty;
     }
 
     public void waitFor() {
@@ -52,15 +60,22 @@ public class FloatyWindow extends ResizableFloatyWindow {
         View root = (View) mView.getParent().getParent();
         mMoveCursor = root.findViewById(R.id.move_cursor);
         mResizer = root.findViewById(R.id.resizer);
+        mCloseButton = root.findViewById(R.id.close);
+    }
+
+    public void setOnCloseButtonClickListener(View.OnClickListener listener){
+        mCloseButton.setOnClickListener(listener);
     }
 
     public void setAdjustEnabled(boolean enabled) {
         if (!enabled) {
             mMoveCursor.setVisibility(View.GONE);
             mResizer.setVisibility(View.GONE);
+            mCloseButton.setVisibility(View.GONE);
         } else {
             mMoveCursor.setVisibility(View.VISIBLE);
             mResizer.setVisibility(View.VISIBLE);
+            mCloseButton.setVisibility(View.VISIBLE);
         }
     }
 
@@ -68,10 +83,15 @@ public class FloatyWindow extends ResizableFloatyWindow {
         return mMoveCursor.getVisibility() == View.VISIBLE;
     }
 
+    public View getRootView() {
+        return mFloaty.mRootView;
+    }
+
     private static class MyFloaty implements ResizableFloaty {
 
 
         private View mContentView;
+        private View mRootView;
 
 
         public MyFloaty(View view) {
@@ -80,9 +100,9 @@ public class FloatyWindow extends ResizableFloatyWindow {
 
         @Override
         public View inflateView(FloatyService floatyService, ResizableFloatyWindow resizableFloatyWindow) {
-            View view = View.inflate(mContentView.getContext(), R.layout.floaty_window, null);
-            ((FrameLayout) view.findViewById(R.id.container)).addView(mContentView);
-            return view;
+            mRootView = View.inflate(mContentView.getContext(), R.layout.floaty_window, null);
+            ((FrameLayout) mRootView.findViewById(R.id.container)).addView(mContentView);
+            return mRootView;
         }
 
         @Nullable

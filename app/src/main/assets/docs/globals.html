@@ -72,14 +72,9 @@
         <h2>目录</h2>
         <ul>
 <li><span class="stability_undefined"><a href="#globals">全局变量与函数</a></span><ul>
-<li><span class="stability_undefined"><a href="#globals_sleep_n">sleep([n])</a></span></li>
-<li><span class="stability_undefined"><a href="#globals_launchpackage_packagename">launchPackage(packageName)</a></span></li>
-<li><span class="stability_undefined"><a href="#globals_launchapp_appname">launchApp(appName)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_sleep_n">sleep(n)</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_currentpackage">currentPackage()</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_currentactivity">currentActivity()</a></span></li>
-<li><span class="stability_undefined"><a href="#globals_getpackagename_appname">getPackageName(appName)</a></span></li>
-<li><span class="stability_undefined"><a href="#globals_getappname_packagename">getAppName(packageName)</a></span></li>
-<li><span class="stability_undefined"><a href="#globals_openappsetting_packagename">openAppSetting(packageName)</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_setclip_text">setClip(text)</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_getclip">getClip()</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_toast_message">toast(message)</a></span></li>
@@ -98,64 +93,51 @@
 
       <div id="apicontent">
         <h1>全局变量与函数<span><a class="mark" href="#globals" id="globals">#</a></span></h1>
-<p>全局变量和函数在所有模块中均可使用。 但以下变量的作用域只在模块内，详见 module文档：</p>
+<p>全局变量和函数在所有模块中均可使用。 但以下变量的作用域只在模块内，详见 <a href="modules.html">module</a>：</p>
 <ul>
 <li>exports</li>
 <li>module</li>
 <li>require()
 以下的对象是特定于 Auto.js 的。 有些内置对象是 JavaScript 语言本身的一部分，它们也是全局的。</li>
 </ul>
-<p>一些模块中的函数为了使用方便也可以直接全局使用，这些函数在此不再赘述。例如timers模块的setInterval等函数。</p>
-<h2>sleep([n])<span><a class="mark" href="#globals_sleep_n" id="globals_sleep_n">#</a></span></h2>
+<p>一些模块中的函数为了使用方便也可以直接全局使用，这些函数在此不再赘述。例如timers模块的setInterval, setTimeout等函数。</p>
+<h2>sleep(n)<span><a class="mark" href="#globals_sleep_n" id="globals_sleep_n">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>n</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 毫秒数</li>
 </ul>
 </div><p>暂停运行n<strong>毫秒</strong>的时间。1秒等于1000毫秒。</p>
-<h2>launchPackage(packageName)<span><a class="mark" href="#globals_launchpackage_packagename" id="globals_launchpackage_packagename">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>packageName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 应用包名</li>
-</ul>
-</div><p>运行包名为packageName的应用主界面(Launcher)。例如，打开微信为：</p>
-<pre><code>launchPackage(&quot;com.tencent.mm&quot;);
-</code></pre><p>如果存在多个应用包名相同的情况（如双开应用），如何处理取决于操作系统。在MIUI中会弹出多开应用的选择界面。</p>
-<h2>launchApp(appName)<span><a class="mark" href="#globals_launchapp_appname" id="globals_launchapp_appname">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>appName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;String&gt;</a> 应用名称</li>
-</ul>
-</div><p>运行应用名称为appName的应用主界面。当有应用名称相同时只运行其中某一个。<br>例如，打开微信为：</p>
-<pre><code>launchApp(&quot;微信&quot;);
+<pre><code>//暂停5毫秒
+sleep(5000);
 </code></pre><h2>currentPackage()<span><a class="mark" href="#globals_currentpackage" id="globals_currentpackage">#</a></span></h2>
-<p>返回最近一次监测到的正在运行的应用的包名，一般可以认为就是当前正在运行的应用的包名。</p>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回最近一次监测到的正在运行的应用的包名，一般可以认为就是当前正在运行的应用的包名。</p>
+<p>此函数依赖于无障碍服务，如果服务未启动，则抛出异常并提示用户启动。</p>
 <h2>currentActivity()<span><a class="mark" href="#globals_currentactivity" id="globals_currentactivity">#</a></span></h2>
-<p>返回最近一次监测到的正在运行的Activity的名称，一般可以认为就是当前正在运行的Activity的名称。</p>
-<h2>getPackageName(appName)<span><a class="mark" href="#globals_getpackagename_appname" id="globals_getpackagename_appname">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>appName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 应用名称</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
 </ul>
-</div><p>获取应用的包名。例如getPackageName(&quot;QQ&quot;)为&quot;com.tencent.mobileqq&quot;。如果有相同名称的应用，只返回其中某一个的包名。如果不存在这个名称的应用，会返回null。</p>
-<h2>getAppName(packageName)<span><a class="mark" href="#globals_getappname_packagename" id="globals_getappname_packagename">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>packageName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 应用包名</li>
-</ul>
-</div><p>返回对应包名的应用的名称。如果应用不存在，返回null。</p>
-<h2>openAppSetting(packageName)<span><a class="mark" href="#globals_openappsetting_packagename" id="globals_openappsetting_packagename">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>packageName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 应用包名</li>
-</ul>
-</div><p>打开某个应用的应用详情页，也就是管理应用权限和可以停止其运行的页面。如果应用包名不存在，则返回false；否则返回true。</p>
+</div><p>返回最近一次监测到的正在运行的Activity的名称，一般可以认为就是当前正在运行的Activity的名称。</p>
+<p>此函数依赖于无障碍服务，如果服务未启动，则抛出异常并提示用户启动。</p>
 <h2>setClip(text)<span><a class="mark" href="#globals_setclip_text" id="globals_setclip_text">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>text</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文本</li>
 </ul>
 </div><p>设置剪贴板内容。此剪贴板即系统剪贴板，在一般应用的输入框中&quot;粘贴&quot;既可使用。</p>
-<h2>getClip()<span><a class="mark" href="#globals_getclip" id="globals_getclip">#</a></span></h2>
-<p>返回系统剪贴板的内容。</p>
-<h2>toast(message)<span><a class="mark" href="#globals_toast_message" id="globals_toast_message">#</a></span></h2>
+<pre><code>setClip(&quot;剪贴板文本&quot;);
+</code></pre><h2>getClip()<span><a class="mark" href="#globals_getclip" id="globals_getclip">#</a></span></h2>
 <div class="signature"><ul>
-<li>message <span class="type">&lt;string>&gt;</span> | <span class="type">&lt;{Object&gt;</span> 要显示的信息</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回系统剪贴板的内容。</p>
+<pre><code>toast(&quot;剪贴板内容为:&quot; + getClip());
+</code></pre><h2>toast(message)<span><a class="mark" href="#globals_toast_message" id="globals_toast_message">#</a></span></h2>
+<div class="signature"><ul>
+<li>message <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要显示的信息</li>
 </ul>
 </div><p>以气泡显示信息message几秒。(具体时间取决于安卓系统，一般都是2秒)</p>
-<p>注意，信息的显示是&quot;异步&quot;执行的(不属于Looper循环)，并且，不会等待信息消失程序才继续执行。如果在循环中执行该命令，可能出现脚本停止运行后仍然有不断的气泡信息出现的情况。
+<p>注意，信息的显示是&quot;异步&quot;执行的，并且，不会等待信息消失程序才继续执行。如果在循环中执行该命令，可能出现脚本停止运行后仍然有不断的气泡信息出现的情况。
 例如:</p>
 <pre><code>for(var i = 0; i &lt; 100; i++){
   toast(i);
@@ -174,11 +156,10 @@ toast = function(message){
 }
 for(var i = 0; i &lt; 100; i++){
   toast(i);
-  sleep(2000);
 }
 </code></pre><h2>toastLog(message)<span><a class="mark" href="#globals_toastlog_message" id="globals_toastlog_message">#</a></span></h2>
 <div class="signature"><ul>
-<li>message \<String\> | \<Object\> 要显示的信息</li>
+<li>message <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要显示的信息</li>
 </ul>
 </div><p>相当于<code>toast(message);log(message)</code>。显示信息message并在控制台中输出。参见console.log。</p>
 <h2>waitForActivity(activity[, period = 200])<span><a class="mark" href="#globals_waitforactivity_activity_period_200" id="globals_waitforactivity_activity_period_200">#</a></span></h2>
@@ -195,14 +176,19 @@ for(var i = 0; i &lt; 100; i++){
 </div><p>等待指定的应用出现。例如<code>waitForPackage(&quot;com.tencent.mm&quot;)</code>为等待当前界面为微信。</p>
 <h2>exit()<span><a class="mark" href="#globals_exit" id="globals_exit">#</a></span></h2>
 <p>立即停止脚本运行。</p>
+<p>立即停止是通过抛出<code>ScriptInterrupttedException</code>来实现的，因此如果用<code>try...catch</code>把exit()函数的异常捕捉，则脚本不会立即停止，仍会运行几行后再停止。</p>
 <h2>random(min, max)<span><a class="mark" href="#globals_random_min_max" id="globals_random_min_max">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>min</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 随机数产生的区间下界</li>
 <li><code>max</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 随机数产生的区间上界</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
 </ul>
-</div><p>返回一个在[min...max]之间的随机数。例如random(0, 2)可能产生0, 1, 2.</p>
+</div><p>返回一个在[min...max]之间的随机数。例如random(0, 2)可能产生0, 1, 2。</p>
 <h2>random()<span><a class="mark" href="#globals_random" id="globals_random">#</a></span></h2>
-<p>返回在[0, 1)的随机浮点数。</p>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回在[0, 1)的随机浮点数。</p>
 <h2>context<span><a class="mark" href="#globals_context" id="globals_context">#</a></span></h2>
 <p>全局变量。一个android.content.Context对象。</p>
 <p>注意该对象为ApplicationContext，因此不能用于界面、对话框等的创建。</p>

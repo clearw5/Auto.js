@@ -49,7 +49,6 @@ var __that__ = this;
 var Promise = require('promise.js');
 var JSON = require('__json2__.js');
 var util = require('__util__.js');
-var threads = __runtime__.threads;
 var device = __runtime__.device;
 
 var __asGlobal__ = function(obj, functions){
@@ -65,7 +64,7 @@ require("__general__")(__runtime__, this);
 
 (function(scope){
     var modules = ['app', 'automator', 'console', 'dialogs', 'io', 'selector', 'shell', 'web', 'ui',
-        "images", "timers", "events", "engines", "RootAutomator", "http", "storages", "floaty"];
+        "images", "timers", "threads", "events", "engines", "RootAutomator", "http", "storages", "floaty"];
     var len = modules.length;
     for(var i = 0; i < len; i++) {
         var m = modules[i];

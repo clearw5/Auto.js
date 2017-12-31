@@ -72,14 +72,14 @@
         <h2>目录</h2>
         <ul>
 <li><span class="stability_2"><a href="#dialogs_dialogs">Dialogs</a></span><ul>
-<li><span class="stability_undefined"><a href="#dialogs_dialogs_rawinput_title_default">dialogs.rawInput(title[, default])</a></span></li>
-<li><span class="stability_undefined"><a href="#dialogs_dialogs_input_title_default">dialogs.input(title[, default])</a></span></li>
-<li><span class="stability_undefined"><a href="#dialogs_dialogs_prompt_title_default">dialogs.prompt(title[, default])</a></span></li>
-<li><span class="stability_undefined"><a href="#dialogs_dialogs_alert_title_content">dialogs.alert(title[, content])</a></span></li>
-<li><span class="stability_undefined"><a href="#dialogs_dialogs_confirm_title_content">dialogs.confirm(title[, content])</a></span></li>
-<li><span class="stability_undefined"><a href="#dialogs_dialogs_select_title_items">dialogs.select(title, items)</a></span></li>
-<li><span class="stability_undefined"><a href="#dialogs_dialogs_singlechoice_title_items_index">dialogs.singleChoice(title, items[, index])</a></span></li>
-<li><span class="stability_undefined"><a href="#dialogs_dialogs_multichoice_title_items_indexes">dialogs.multiChoice(title, items[, indexes])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_alert_title_content_callback">dialogs.alert(title[, content, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_confirm_title_content_callback">dialogs.confirm(title[, content, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_rawinput_title_prefill_callback">dialogs.rawInput(title[, prefill, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_input_title_prefill_callback">dialogs.input(title[, prefill, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_prompt_title_prefill_callback">dialogs.prompt(title[, prefill, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_select_title_items_callback">dialogs.select(title, items, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_singlechoice_title_items_index_callback">dialogs.singleChoice(title, items[, index, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialogs_multichoice_title_items_indices_callback">dialogs.multiChoice(title, items[, indices, callback])</a></span></li>
 </ul>
 </li>
 </ul>
@@ -88,56 +88,128 @@
 
       <div id="apicontent">
         <h1>Dialogs<span><a class="mark" href="#dialogs_dialogs" id="dialogs_dialogs">#</a></span></h1>
-<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>dialogs 模块允许用户通过对话框与脚本进行交互。</p>
-<h2>dialogs.rawInput(title[, default])<span><a class="mark" href="#dialogs_dialogs_rawinput_title_default" id="dialogs_dialogs_rawinput_title_default">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
-<li><code>default</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 可选，对话框内输入框的初始内容。默认为 <code>&quot;&quot;</code> 。</li>
-</ul>
-</div><p>显示一个包含输入框的对话框。如果指定了 <code>default</code> ，那么对话框显示时输入框的内容就为该值。</p>
-<p>该函数也可通过 <code>rawInput(title[, default])</code> 、 <code>prompt(title[, default])</code> 或者 <code>dialogs.prompt(title[, default])</code> 来调用。调用时脚本将阻塞直至对话框被关闭。如果用户输入内容并点击确定，函数将返回输入的内容；否则返回 <code>null</code> 。</p>
-<h2>dialogs.input(title[, default])<span><a class="mark" href="#dialogs_dialogs_input_title_default" id="dialogs_dialogs_input_title_default">#</a></span></h2>
-<p>等效于 <code>eval(dialogs.rawInput(title, default))</code> </p>
-<h2>dialogs.prompt(title[, default])<span><a class="mark" href="#dialogs_dialogs_prompt_title_default" id="dialogs_dialogs_prompt_title_default">#</a></span></h2>
-<p>见 dialogs.rawInput</p>
-<h2>dialogs.alert(title[, content])<span><a class="mark" href="#dialogs_dialogs_alert_title_content" id="dialogs_dialogs_alert_title_content">#</a></span></h2>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>dialogs 模块提供了简单的对话框支持，可以通过对话框和用户进行交互。最简单的例子如下：</p>
+<pre><code>alert(&quot;您好&quot;);
+</code></pre><p>这段代码会弹出一个消息提示框显示&quot;您好&quot;，并在用户点击&quot;确定&quot;后继续运行。稍微复杂一点的例子如下：</p>
+<pre><code>var clear = confirm(&quot;要清除所有缓存吗?&quot;);
+if(clear){
+    alert(&quot;清除成功!&quot;);
+}
+</code></pre><p><code>confirm()</code>会弹出一个对话框并让用户选择&quot;是&quot;或&quot;否&quot;，如果选择&quot;是&quot;则返回true。</p>
+<p>需要特别注意的是，对话框在ui模式下不能像通常那样使用，应该使用回调函数或者<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>的形式。理解这一点可能稍有困难。举个例子:</p>
+<pre><code>&quot;ui&quot;;
+//回调形式
+ confirm(&quot;要清除所有缓存吗?&quot;, function(clear){
+     if(clear){
+          alert(&quot;清除成功!&quot;);
+     }
+ });
+//Promise形式
+confirm(&quot;要清除所有缓存吗?&quot;)
+    .then(clear =&gt; {
+        if(clear){
+          alert(&quot;清除成功!&quot;);
+        }
+    });
+</code></pre><h2>dialogs.alert(title[, content, callback])<span><a class="mark" href="#dialogs_dialogs_alert_title_content_callback" id="dialogs_dialogs_alert_title_content_callback">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
 <li><code>content</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 可选，对话框的内容。默认为空。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调函数，可选。当用户点击确定时被调用,一般用于ui模式。</li>
 </ul>
-</div><p>显示一个只包含“确定”按钮的提示对话框。</p>
-<p>该函数也可通过 <code>alert(title[, content])</code> 来调用。调用时脚本将阻塞直至对话框被关闭。该函数无返回值。</p>
-<h2>dialogs.confirm(title[, content])<span><a class="mark" href="#dialogs_dialogs_confirm_title_content" id="dialogs_dialogs_confirm_title_content">#</a></span></h2>
+</div><p>显示一个只包含“确定”按钮的提示对话框。直至用户点击确定脚本才继续运行。</p>
+<p>该函数也可以作为全局函数使用。</p>
+<pre><code>alert(&quot;出现错误~&quot;, &quot;出现未知错误，请联系脚本作者”);
+</code></pre><p>在ui模式下该函数返回一个<code>Promise</code>。例如:</p>
+<pre><code>&quot;ui&quot;;
+alert(&quot;嘿嘿嘿&quot;).then(()=&gt;{
+    //当点击确定后会执行这里
+});
+</code></pre><h2>dialogs.confirm(title[, content, callback])<span><a class="mark" href="#dialogs_dialogs_confirm_title_content_callback" id="dialogs_dialogs_confirm_title_content_callback">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
 <li><code>content</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 可选，对话框的内容。默认为空。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调函数，可选。当用户点击确定时被调用,一般用于ui模式。</li>
 </ul>
-</div><p>显示一个包含“确定”和“取消”按钮的提示对话框。</p>
-<p>该函数也可通过 <code>confirm(title[, content])</code> 来调用。调用时脚本将阻塞直至对话框被关闭。如果用户点击“确定”则返回 <code>true</code> ，否则返回 <code>false</code> 。</p>
-<h2>dialogs.select(title, items)<span><a class="mark" href="#dialogs_dialogs_select_title_items" id="dialogs_dialogs_select_title_items">#</a></span></h2>
+</div><p>显示一个包含“确定”和“取消”按钮的提示对话框。如果用户点击“确定”则返回 <code>true</code> ，否则返回 <code>false</code> 。</p>
+<p>该函数也可以作为全局函数使用。</p>
+<p>在ui模式下该函数返回一个<code>Promise</code>。例如:</p>
+<pre><code>&quot;ui&quot;;
+confirm(&quot;确定吗&quot;).then(value=&gt;{
+    //当点击确定后会执行这里, value为true或false, 表示点击&quot;确定&quot;或&quot;取消&quot;
+});
+</code></pre><h2>dialogs.rawInput(title[, prefill, callback])<span><a class="mark" href="#dialogs_dialogs_rawinput_title_prefill_callback" id="dialogs_dialogs_rawinput_title_prefill_callback">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
+<li><code>prefill</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 输入框的初始内容，可选，默认为空。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调函数，可选。当用户点击确定时被调用,一般用于ui模式。</li>
+</ul>
+</div><p>显示一个包含输入框的对话框，等待用户输入内容，并在用户点击确定时将输入的字符串返回。如果用户取消了输入，返回null。</p>
+<p>该函数也可以作为全局函数使用。</p>
+<pre><code>var name = rawInput(&quot;请输入您的名字&quot;, &quot;小明&quot;);
+alert(&quot;您的名字是&quot; + name);
+</code></pre><p>在ui模式下该函数返回一个<code>Promise</code>。例如:</p>
+<pre><code>&quot;ui&quot;;
+rawInput(&quot;请输入您的名字&quot;, &quot;小明&quot;).then(name =&gt; {
+    alert(&quot;您的名字是&quot; + name);
+});
+</code></pre><p>当然也可以使用回调函数，例如:</p>
+<pre><code>rawInput(&quot;请输入您的名字&quot;, &quot;小明&quot;, name =&gt; {
+     alert(&quot;您的名字是&quot; + name);
+});
+</code></pre><h2>dialogs.input(title[, prefill, callback])<span><a class="mark" href="#dialogs_dialogs_input_title_prefill_callback" id="dialogs_dialogs_input_title_prefill_callback">#</a></span></h2>
+<p>等效于 <code>eval(dialogs.rawInput(title, prefill, callback))</code>, 该函数和rawInput的区别在于，会把输入的字符串用eval计算一遍再返回，返回的可能不是字符串。</p>
+<p>可以用该函数输入数字、数组等。例如：</p>
+<pre><code>var age = dialogs.input(&quot;请输入您的年龄&quot;, &quot;18&quot;);
+// new Date().getYear() + 1900 可获取当前年份
+var year = new Date().getYear() + 1900 - age;
+alert(&quot;您的出生年份是&quot; + year);
+</code></pre><p>在ui模式下该函数返回一个<code>Promise</code>。例如:</p>
+<pre><code>&quot;ui&quot;;
+dialogs.input(&quot;请输入您的年龄&quot;, &quot;18&quot;).then(age =&gt; {
+    var year = new Date().getYear() + 1900 - age;
+    alert(&quot;您的出生年份是&quot; + year);
+});
+</code></pre><h2>dialogs.prompt(title[, prefill, callback])<span><a class="mark" href="#dialogs_dialogs_prompt_title_prefill_callback" id="dialogs_dialogs_prompt_title_prefill_callback">#</a></span></h2>
+<p>相当于 <code>dialogs.rawInput()</code>;</p>
+<h2>dialogs.select(title, items, callback)<span><a class="mark" href="#dialogs_dialogs_select_title_items_callback" id="dialogs_dialogs_select_title_items_callback">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
 <li><code>items</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 对话框的选项列表，是一个字符串数组。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调函数，可选。当用户点击确定时被调用,一般用于ui模式。</li>
 </ul>
-</div><p>显示一个带有选项列表的对话框。</p>
-<p>该函数也可通过 <code>dialogs.select(title, ...items)</code> 来调用。<br>例如： <code>dialogs.select(&quot;标题&quot;, [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;])</code> 可以用  <code>dialogs.select(&quot;标题&quot;, &quot;A&quot;, &quot;B&quot;, &quot;C&quot;)</code> 替代。</p>
-<p>调用时脚本将阻塞直至对话框被关闭。如果用户点击了对话框中的某个选项，该函数会返回该选项的位置（选中第一个选项返回0，第二个选项返回1，以此类推），否则返回-1。</p>
-<h2>dialogs.singleChoice(title, items[, index])<span><a class="mark" href="#dialogs_dialogs_singlechoice_title_items_index" id="dialogs_dialogs_singlechoice_title_items_index">#</a></span></h2>
+</div><p>显示一个带有选项列表的对话框，等待用户选择，返回用户选择的选项索引(0 ~ item.length - 1)。如果用户取消了选择，返回-1。</p>
+<pre><code>var options = [&quot;选项A&quot;, &quot;选项B&quot;, &quot;选项C&quot;, &quot;选项D&quot;]
+var i = dialogs.select(&quot;请选择一个选项&quot;, options);
+if(i &gt;= 0){
+    toast(&quot;您选择的是&quot; + options[i]);
+}else{
+    toast(&quot;您取消了选择&quot;);
+}
+</code></pre><p>在ui模式下该函数返回一个<code>Promise</code>。例如:</p>
+<pre><code>&quot;ui&quot;;
+dialogs.select(&quot;请选择一个选项&quot;, [&quot;选项A&quot;, &quot;选项B&quot;, &quot;选项C&quot;, &quot;选项D&quot;])
+    .then(i =&gt; {
+        toast(i);
+    });
+</code></pre><h2>dialogs.singleChoice(title, items[, index, callback])<span><a class="mark" href="#dialogs_dialogs_singlechoice_title_items_index_callback" id="dialogs_dialogs_singlechoice_title_items_index_callback">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
 <li><code>items</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 对话框的选项列表，是一个字符串数组。</li>
-<li><code>index</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 可选，对话框的默认选项的位置。默认为0。</li>
+<li><code>index</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 对话框的初始选项的位置，默认为0。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调函数，可选。当用户点击确定时被调用,一般用于ui模式。</li>
 </ul>
-</div><p>显示一个带有单选框选项列表的对话框。</p>
-<p>调用时脚本将阻塞直至对话框被关闭。如果用户选中了对话框中的某个选项并点击“确定”，该函数会返回该选项的位置（选中第一个选项返回0，第二个选项返回1，以此类推），否则返回-1。</p>
-<h2>dialogs.multiChoice(title, items[, indexes])<span><a class="mark" href="#dialogs_dialogs_multichoice_title_items_indexes" id="dialogs_dialogs_multichoice_title_items_indexes">#</a></span></h2>
+</div><p>显示一个单选列表对话框，等待用户选择，返回用户选择的选项索引(0 ~ item.length - 1)。如果用户取消了选择，返回-1。</p>
+<p>在ui模式下该函数返回一个<code>Promise</code>。</p>
+<h2>dialogs.multiChoice(title, items[, indices, callback])<span><a class="mark" href="#dialogs_dialogs_multichoice_title_items_indices_callback" id="dialogs_dialogs_multichoice_title_items_indices_callback">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>title</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框的标题。</li>
 <li><code>items</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 对话框的选项列表，是一个字符串数组。</li>
-<li><code>indexes</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 可选，对话框的默认选项的位置数组。默认为空数组。</li>
+<li><code>indices</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 选项列表中初始选中的项目索引的数组，默认为空数组。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调函数，可选。当用户点击确定时被调用,一般用于ui模式。</li>
 </ul>
-</div><p>显示一个带有多选框选项列表的对话框。</p>
-<p>调用时脚本将阻塞直至对话框被关闭。如果用户点击“确定”按钮，该函数会返回所有已选选项的位置组成的数组，否则返回空数组。</p>
+</div><p>显示一个多选列表对话框，等待用户选择，返回用户选择的选项索引的数组。如果用户取消了选择，返回<code>[]</code>。</p>
+<p>在ui模式下该函数返回一个<code>Promise</code>。</p>
 
       </div>
     </div>

@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.ui.widget;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -205,7 +206,12 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
             if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file://")) {
                 view.loadUrl(url);
             } else {
-                getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                try {
+                    getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                } catch (ActivityNotFoundException e) {
+                    e.printStackTrace();
+                    return false;
+                }
             }
             return true;
         }

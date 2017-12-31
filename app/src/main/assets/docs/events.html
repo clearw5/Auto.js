@@ -89,11 +89,31 @@
 <li><span class="stability_undefined"><a href="#events_key_down">事件: &#39;key_down&#39;</a></span></li>
 <li><span class="stability_undefined"><a href="#events_key_up">事件: &#39;key_up&#39;</a></span></li>
 <li><span class="stability_undefined"><a href="#events_exit">事件: &#39;exit`</a></span></li>
-<li><span class="stability_undefined"><a href="#events_obversenotification">obverseNotification()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_observenotification">events.observeNotification()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_observetoast">events.observeToast()</a></span></li>
 <li><span class="stability_undefined"><a href="#events_toast">事件: &#39;toast&#39;</a></span></li>
 <li><span class="stability_undefined"><a href="#events_notification">事件: &#39;notification&#39;</a></span></li>
 </ul>
 </li>
+<li><span class="stability_undefined"><a href="#events_notification_1">Notification</a></span><ul>
+<li><span class="stability_undefined"><a href="#events_notification_number">Notification.number</a></span></li>
+<li><span class="stability_undefined"><a href="#events_notification_when">Notification.when</a></span></li>
+<li><span class="stability_undefined"><a href="#events_notification_getpackagename">Notification.getPackageName()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_notification_gettitle">Notification.getTitle()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_notification_gettext">Notification.getText()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_notification_click">Notification.click()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_notification_delete">Notification.delete()</a></span></li>
+</ul>
+</li>
+<li><span class="stability_2"><a href="#events_keyevent">KeyEvent</a></span><ul>
+<li><span class="stability_undefined"><a href="#events_keyevent_getaction">KeyEvent.getAction()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_keyevent_getkeycode">KeyEvent.getKeyCode()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_keyevent_geteventtime">KeyEvent.getEventTime()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_keyevent_getdowntime">KeyEvent.getDownTime()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_keyevent_keycodetostring_keycode">KeyEvent.keyCodeToString(keyCode)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_2"><a href="#events_keys">keys</a></span></li>
 <li><span class="stability_2"><a href="#events_eventemitter">EventEmitter</a></span><ul>
 <li><span class="stability_undefined"><a href="#events_eventemitter_defaultmaxlisteners">EventEmitter.defaultMaxListeners</a></span></li>
 <li><span class="stability_undefined"><a href="#events_eventemitter_addlistener_eventname_listener">EventEmitter.addListener(eventName, listener)</a></span></li>
@@ -111,15 +131,6 @@
 <li><span class="stability_undefined"><a href="#events_eventemitter_setmaxlisteners_n">EventEmitter.setMaxListeners(n)</a></span></li>
 </ul>
 </li>
-<li><span class="stability_2"><a href="#events_keyevent">KeyEvent</a></span><ul>
-<li><span class="stability_undefined"><a href="#events_keyevent_getaction">KeyEvent.getAction()</a></span></li>
-<li><span class="stability_undefined"><a href="#events_keyevent_getkeycode">KeyEvent.getKeyCode()</a></span></li>
-<li><span class="stability_undefined"><a href="#events_keyevent_geteventtime">KeyEvent.getEventTime()</a></span></li>
-<li><span class="stability_undefined"><a href="#events_keyevent_getdowntime">KeyEvent.getDownTime()</a></span></li>
-<li><span class="stability_undefined"><a href="#events_keyevent_keycodetostring_keycode">KeyEvent.keyCodeToString(keyCode)</a></span></li>
-</ul>
-</li>
-<li><span class="stability_2"><a href="#events_keys">Keys</a></span></li>
 </ul>
 
       </div>
@@ -128,18 +139,28 @@
         <h1>Events<span><a class="mark" href="#events_events" id="events_events">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>events模块提供了监听手机通知、按键、触摸的接口。您可以用他配合自动操作函数完成自动化工作。</p>
 <p>events本身是一个<a href="#events_eventemitter">EventEmiiter</a>, 但内置了一些事件、包括按键事件、通知事件、Toast事件等。</p>
-<h2>events.emitter()<span><a class="mark" href="#events_events_emitter" id="events_events_emitter">#</a></span></h2>
-<p>返回一个新的[EventEmitter][]。这个EventEmitter没有内置任何事件。</p>
+<p>需要注意的是，事件的处理是单线程的，并且仍然在原线程执行，如果脚本主体或者其他事件处理中有耗时操作、轮询等，则事件将无法得到及时处理（会进入事件队列等待脚本主体或其他事件处理完成才执行）。例如:</p>
+<pre><code>auto();
+events.observeNotification();
+events.on(&#39;toast&#39;, function(t){
+    //这段代码将得不到执行
+    log(t);
+});
+while(true){
+    //死循环
+}
+</code></pre><h2>events.emitter()<span><a class="mark" href="#events_events_emitter" id="events_events_emitter">#</a></span></h2>
+<p>返回一个新的<a href="#events_eventemitter">EventEmitter</a>。这个EventEmitter没有内置任何事件。</p>
 <h2>events.observeKey()<span><a class="mark" href="#events_events_observekey" id="events_events_observekey">#</a></span></h2>
-<p>启用按键监听，例如音量键、Home键。此函数使用无障碍服务实现，因此此函数会调用auto()确保无障碍服务启用。</p>
-<p>只有这个函数成功执行后, [onKeyDown][], [onKeyUp][]等按键事件的监听才有效。</p>
+<p>启用按键监听，例如音量键、Home键。按键监听使用无障碍服务实现，如果无障碍服务未启用会抛出异常并提示开启。</p>
+<p>只有这个函数成功执行后, <code>onKeyDown</code>, <code>onKeyUp</code>等按键事件的监听才有效。</p>
 <p>该函数在安卓4.3以上才能使用。</p>
 <h2>events.onKeyDown(keyName, listener)<span><a class="mark" href="#events_events_onkeydown_keyname_listener" id="events_events_onkeydown_keyname_listener">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>keyName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要监听的按键名称</li>
 <li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 按键监听器。参数为一个<a href="#events_keyevent">KeyEvent</a>。</li>
 </ul>
-</div><p>注册一个按键监听函数，当有keyName对应的按键被按下会调用该函数。可用的按键名称参见[Keys][]。</p>
+</div><p>注册一个按键监听函数，当有keyName对应的按键被按下会调用该函数。可用的按键名称参见<a href="#events_keys">Keys</a>。</p>
 <p>例如:</p>
 <pre><code>//启用按键监听
 events.observeKey();
@@ -198,7 +219,7 @@ events.onKeyDown(&quot;home&quot;, function(event){
 <h2>events.observeTouch()<span><a class="mark" href="#events_events_observetouch" id="events_events_observetouch">#</a></span></h2>
 <p>启用屏幕触摸监听。（需要root权限）</p>
 <p>只有这个函数被成功执行后, 触摸事件的监听才有效。</p>
-<p>没有root权限调用该函数则什么也不会发生。(<strong>注意</strong>: 这个行为未来可能会更改为抛出异常)</p>
+<p>没有root权限调用该函数则什么也不会发生。</p>
 <h2>events.setTouchEventTimeout(timeout)<span><a class="mark" href="#events_events_settoucheventtimeout_timeout" id="events_events_settoucheventtimeout_timeout">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>timeout</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 两个触摸事件的最小间隔。单位毫秒。默认为10毫秒。如果number小于0，视为0处理。</li>
@@ -210,7 +231,7 @@ events.onKeyDown(&quot;home&quot;, function(event){
 <p>返回触摸事件的最小时间间隔。</p>
 <h2>events.onTouch(listener)<span><a class="mark" href="#events_events_ontouch_listener" id="events_events_ontouch_listener">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 参数为[Point][]的函数</li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 参数为<a href="images.html#images_point">Point</a>的函数</li>
 </ul>
 </div><p>注册一个触摸监听函数。相当于<code>on(&quot;touch&quot;, listener)</code>。</p>
 <p>例如:</p>
@@ -237,13 +258,21 @@ events.on(&quot;key&quot;, function(keyCode, event){
 });
 </code></pre><p>其中监听器的参数KeyCode包括：</p>
 <ul>
-<li><code>KeyEvent.KEYCODE_HOME</code> 主页键</li>
-<li><code>KeyEvent.KEYCODE_BACK</code> 返回键</li>
-<li><code>KeyEvent.KEYCODE_MENU</code> 菜单键</li>
-<li><code>KeyEvent.KEYCODE_VOLUMEUP</code> 音量上键</li>
-<li><code>KeyEvent.KEYCODE_VOLUMEDOWN</code> 音量下键</li>
+<li><code>keys.home</code> 主页键</li>
+<li><code>keys.back</code> 返回键</li>
+<li><code>keys.menu</code> 菜单键</li>
+<li><code>keys.volume_up</code> 音量上键</li>
+<li><code>keys.volume_down</code> 音量下键</li>
 </ul>
-<h2>事件: &#39;key_down&#39;<span><a class="mark" href="#events_key_down" id="events_key_down">#</a></span></h2>
+<p>例如：</p>
+<pre><code>auto();
+events.observeKey();
+events.on(&quot;key&quot;, function(keyCode, event){
+    if(keyCode == keys.menu &amp;&amp; event.getAction() == event.ACTION_UP){
+        toast(&quot;菜单键按下&quot;);
+    }
+});
+</code></pre><h2>事件: &#39;key_down&#39;<span><a class="mark" href="#events_key_down" id="events_key_down">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>keyCode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 键值</li>
 <li><code>event</code> <span class="type">&lt;KeyEvent&gt;</span> 事件</li>
@@ -274,18 +303,18 @@ events.on(&quot;exit&quot;, function(){
     log(&quot;结束运行&quot;);
 });
 log(&quot;即将结束运行&quot;);
-</code></pre><h2>obverseNotification()<span><a class="mark" href="#events_obversenotification" id="events_obversenotification">#</a></span></h2>
-<p>开启通知(包括Toast)监听。</p>
-<p>通知与Toast监听依赖于无障碍服务，因此这个函数会调用<code>auto()</code>来确保无障碍服务启用。</p>
+</code></pre><h2>events.observeNotification()<span><a class="mark" href="#events_events_observenotification" id="events_events_observenotification">#</a></span></h2>
+<p>开启通知监听。例如QQ消息、微信消息、推送等通知。</p>
+<p>通知监听依赖于通知服务，如果通知服务没有运行，会抛出异常并跳转到通知权限开启界面。（有时即使通知权限已经开启通知服务也没有运行，这时需要关闭权限再重新开启一次）</p>
 <p>例如：</p>
 <pre><code>events.obverseNotification();
 events.onNotification(function(notification){
     log(notification.getText());
 });
-events.onToast(function(toast){
-    log(toast.getText());
-});
-</code></pre><h2>事件: &#39;toast&#39;<span><a class="mark" href="#events_toast" id="events_toast">#</a></span></h2>
+</code></pre><h2>events.observeToast()<span><a class="mark" href="#events_events_observetoast" id="events_events_observetoast">#</a></span></h2>
+<p>开启Toast监听。</p>
+<p>Toast监听依赖于无障碍服务，因此此函数会确保无障碍服务运行。</p>
+<h2>事件: &#39;toast&#39;<span><a class="mark" href="#events_toast" id="events_toast">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>toast</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a><ul>
 <li><code>getText()</code> 获取Toast的文本内容</li>
@@ -293,23 +322,91 @@ events.onToast(function(toast){
 </ul>
 </li>
 </ul>
-</div><p>当有应用发出toast(气泡消息)时会触发该事件。但Auto.js软件本身的toast除外。
-例如，要记录发出所有toast的应用：</p>
-<pre><code>events.obverseNotification();
+</div><p>当有应用发出toast(气泡消息)时会触发该事件。但Auto.js软件本身的toast除外。</p>
+<p>例如，要记录发出所有toast的应用：</p>
+<pre><code>events.observeToast();
 events.onToast(function(toast){
     log(&quot;Toast内容: &quot; + toast.getText() + &quot; 包名: &quot; + toast.getPackageName());
 });
 </code></pre><h2>事件: &#39;notification&#39;<span><a class="mark" href="#events_notification" id="events_notification">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>notification</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 通知</li>
+<li><code>notification</code> <a href="#events_notification">Notification</a> 通知对象</li>
 </ul>
-</div><p>当有应用发出通知时会触发该事件。</p>
+</div><p>当有应用发出通知时会触发该事件，参数为<a href="#events_notification">Notification</a>。</p>
 <p>例如：</p>
 <pre><code>events.observeNotification();
-events.on(&quot;notification&quot;, function(notification){
-    log(notification);
+events.on(&quot;notification&quot;, function(n){
+    log(&quot;收到新通知:\n 标题: %s, 内容: %s, \n包名: %s&quot;, n.getTitle(), n.getText(), n.getPackageName());
 });
-</code></pre><p><strong>注意</strong>: 这是一个实验性功能。实测只有某些情况下的通知才能被正确捕捉。</p>
+</code></pre><h1>Notification<span><a class="mark" href="#events_notification_1" id="events_notification_1">#</a></span></h1>
+<p>通知对象，可以获取通知详情，包括通知标题、内容、发出通知的包名、时间等，也可以对通知进行操作，比如点击、删除。</p>
+<h2>Notification.number<span><a class="mark" href="#events_notification_number" id="events_notification_number">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>通知数量。例如QQ连续收到两条消息时number为2。</p>
+<h2>Notification.when<span><a class="mark" href="#events_notification_when" id="events_notification_when">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>通知发出时间的时间戳，可以用于构造<code>Date</code>对象。例如：</p>
+<pre><code>events.observeNotification();
+events.on(&quot;notification&quot;, function(n){
+    log(&quot;通知时间为}&quot; + new Date(n.when));
+});
+</code></pre><h2>Notification.getPackageName()<span><a class="mark" href="#events_notification_getpackagename" id="events_notification_getpackagename">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>获取发出通知的应用包名。</p>
+<h2>Notification.getTitle()<span><a class="mark" href="#events_notification_gettitle" id="events_notification_gettitle">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>获取通知的标题。</p>
+<h2>Notification.getText()<span><a class="mark" href="#events_notification_gettext" id="events_notification_gettext">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>获取通知的内容。</p>
+<h2>Notification.click()<span><a class="mark" href="#events_notification_click" id="events_notification_click">#</a></span></h2>
+<p>点击该通知。例如对于一条QQ消息，点击会进入具体的聊天界面。</p>
+<h2>Notification.delete()<span><a class="mark" href="#events_notification_delete" id="events_notification_delete">#</a></span></h2>
+<p>删除该通知。该通知将从通知栏中消失。</p>
+<h1>KeyEvent<span><a class="mark" href="#events_keyevent" id="events_keyevent">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><h2>KeyEvent.getAction()<span><a class="mark" href="#events_keyevent_getaction" id="events_keyevent_getaction">#</a></span></h2>
+<p>返回事件的动作。包括：</p>
+<ul>
+<li><code>KeyEvent.ACTION_DOWN</code> 按下事件</li>
+<li><code>KeyEvent.ACTION_UP</code> 弹起事件</li>
+</ul>
+<h2>KeyEvent.getKeyCode()<span><a class="mark" href="#events_keyevent_getkeycode" id="events_keyevent_getkeycode">#</a></span></h2>
+<p>返回按键的键值。包括：</p>
+<ul>
+<li><code>KeyEvent.KEYCODE_HOME</code> 主页键</li>
+<li><code>KeyEvent.KEYCODE_BACK</code> 返回键</li>
+<li><code>KeyEvent.KEYCODE_MENU</code> 菜单键</li>
+<li><code>KeyEvent.KEYCODE_VOLUME_UP</code> 音量上键</li>
+<li><code>KeyEvent.KEYCODE_VOLUME_DOWN</code> 音量下键</li>
+</ul>
+<h2>KeyEvent.getEventTime()<span><a class="mark" href="#events_keyevent_geteventtime" id="events_keyevent_geteventtime">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回事件发生的时间戳。</p>
+<h2>KeyEvent.getDownTime()<span><a class="mark" href="#events_keyevent_getdowntime" id="events_keyevent_getdowntime">#</a></span></h2>
+<p>返回最近一次按下事件的时间戳。如果本身是按下事件，则与<code>getEventTime()</code>相同。</p>
+<h2>KeyEvent.keyCodeToString(keyCode)<span><a class="mark" href="#events_keyevent_keycodetostring_keycode" id="events_keyevent_keycodetostring_keycode">#</a></span></h2>
+<p>把键值转换为字符串。例如KEYCODE_HOME转换为&quot;KEYCODE_HOME&quot;。</p>
+<h1>keys<span><a class="mark" href="#events_keys" id="events_keys">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>按键事件中所有可用的按键名称为：</p>
+<ul>
+<li><code>volume_up</code>  音量上键</li>
+<li><code>volume_down</code> 音量下键</li>
+<li><code>home</code> 主屏幕键</li>
+<li><code>back</code> 返回键</li>
+<li><code>menu</code> 菜单键</li>
+</ul>
 <h1>EventEmitter<span><a class="mark" href="#events_eventemitter" id="events_eventemitter">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><h2>EventEmitter.defaultMaxListeners<span><a class="mark" href="#events_eventemitter_defaultmaxlisteners" id="events_eventemitter_defaultmaxlisteners">#</a></span></h2>
 <p>每个事件默认可以注册最多 10 个监听器。 单个 EventEmitter 实例的限制可以使用 emitter.setMaxListeners(n) 方法改变。 所有 EventEmitter 实例的默认值可以使用 EventEmitter.defaultMaxListeners 属性改变。 </p>
@@ -473,37 +570,6 @@ myEmitter.emit(&#39;event&#39;);
 </ul>
 </div><p>默认情况下，如果为特定事件添加了超过 10 个监听器，则 EventEmitter 会打印一个警告。 此限制有助于寻找内存泄露。 但是，并不是所有的事件都要被限为 10 个。 emitter.setMaxListeners() 方法允许修改指定的 EventEmitter 实例的限制。 值设为 Infinity（或 0）表明不限制监听器的数量。</p>
 <p>返回一个 EventEmitter 引用，可以链式调用。</p>
-<h1>KeyEvent<span><a class="mark" href="#events_keyevent" id="events_keyevent">#</a></span></h1>
-<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><h2>KeyEvent.getAction()<span><a class="mark" href="#events_keyevent_getaction" id="events_keyevent_getaction">#</a></span></h2>
-<p>返回事件的动作。包括：</p>
-<ul>
-<li><code>KeyEvent.ACTION_DOWN</code> 按下事件</li>
-<li><code>KeyEvent.ACTION_UP</code> 弹起事件</li>
-</ul>
-<h2>KeyEvent.getKeyCode()<span><a class="mark" href="#events_keyevent_getkeycode" id="events_keyevent_getkeycode">#</a></span></h2>
-<p>返回按键的键值。包括：</p>
-<ul>
-<li><code>KeyEvent.KEYCODE_HOME</code> 主页键</li>
-<li><code>KeyEvent.KEYCODE_BACK</code> 返回键</li>
-<li><code>KeyEvent.KEYCODE_MENU</code> 菜单键</li>
-<li><code>KeyEvent.KEYCODE_VOLUME_UP</code> 音量上键</li>
-<li><code>KeyEvent.KEYCODE_VOLUME_DOWN</code> 音量下键</li>
-</ul>
-<h2>KeyEvent.getEventTime()<span><a class="mark" href="#events_keyevent_geteventtime" id="events_keyevent_geteventtime">#</a></span></h2>
-<p>返回事件发生的时间戳。返回值的类型是number。</p>
-<h2>KeyEvent.getDownTime()<span><a class="mark" href="#events_keyevent_getdowntime" id="events_keyevent_getdowntime">#</a></span></h2>
-<p>返回最近一次按下事件的时间戳。如果本身是按下事件，则与getEventTime()相同。</p>
-<h2>KeyEvent.keyCodeToString(keyCode)<span><a class="mark" href="#events_keyevent_keycodetostring_keycode" id="events_keyevent_keycodetostring_keycode">#</a></span></h2>
-<p>把键值转换为字符串。例如KEYCODE_HOME转换为&quot;KEYCODE_HOME&quot;。</p>
-<h1>Keys<span><a class="mark" href="#events_keys" id="events_keys">#</a></span></h1>
-<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>按键事件中所有可用的按键名称为：</p>
-<ul>
-<li><code>volume_up</code>  音量上键</li>
-<li><code>volume_down</code> 音量下键</li>
-<li><code>home</code> 主屏幕键</li>
-<li><code>back</code> 返回键</li>
-<li><code>menu</code> 菜单键</li>
-</ul>
 
       </div>
     </div>

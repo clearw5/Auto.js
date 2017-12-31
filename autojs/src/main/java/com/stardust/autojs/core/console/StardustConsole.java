@@ -2,7 +2,6 @@ package com.stardust.autojs.core.console;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.view.WindowManager;
 
@@ -11,6 +10,7 @@ import com.stardust.autojs.annotation.ScriptInterface;
 import com.stardust.autojs.runtime.api.AbstractConsole;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
+import com.stardust.concurrent.ConcurrentArrayList;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.util.UiHandler;
@@ -73,8 +73,6 @@ public class StardustConsole extends AbstractConsole {
     private BlockingQueue<String> mInput = new ArrayBlockingQueue<>(1);
     private WeakReference<ConsoleView> mConsoleView;
     private volatile boolean mShown = false;
-    private int mWidth;
-    private int mHeight;
     private int mX, mY;
 
     public StardustConsole(UiHandler uiHandler) {
@@ -85,14 +83,11 @@ public class StardustConsole extends AbstractConsole {
         mUiHandler = uiHandler;
         mConsoleFloaty = new ConsoleFloaty(this);
         mGlobalConsole = globalConsole;
-        mWidth = mConsoleFloaty.getInitialWidth();
-        mHeight = mConsoleFloaty.getInitialHeight();
         mFloatyWindow = new ResizableExpandableFloatyWindow(mConsoleFloaty) {
             @Override
             public void onCreate(FloatyService service, WindowManager manager) {
                 super.onCreate(service, manager);
                 expand();
-                mFloatyWindow.getWindowBridge().updateMeasure(mWidth, mHeight);
                 mFloatyWindow.getWindowBridge().updatePosition(mX, mY);
                 synchronized (WINDOW_SHOW_LOCK) {
                     mShown = true;
@@ -122,7 +117,9 @@ public class StardustConsole extends AbstractConsole {
     @Override
     public String println(int level, CharSequence charSequence) {
         Log log = new Log(mIdCounter.getAndIncrement(), level, charSequence, true);
-        mLogs.add(log);
+        synchronized (mLogs) {
+            mLogs.add(log);
+        }
         if (mGlobalConsole != null) {
             mGlobalConsole.println(level, charSequence);
         }
@@ -135,20 +132,15 @@ public class StardustConsole extends AbstractConsole {
 
     @Override
     public void write(int level, CharSequence charSequence) {
-        Log log = new Log(mIdCounter.getAndIncrement(), level, charSequence);
-        mLogs.add(log);
-        if (mGlobalConsole != null) {
-            mGlobalConsole.print(level, charSequence);
-        }
-        if (mLogListener != null && mLogListener.get() != null) {
-            mLogListener.get().onNewLog(log);
-        }
+        println(level, charSequence);
     }
 
 
     @Override
     public void clear() {
-        mLogs.clear();
+        synchronized (mLogs) {
+            mLogs.clear();
+        }
         if (mLogListener != null && mLogListener.get() != null) {
             mLogListener.get().onLogClear();
         }
@@ -208,13 +200,10 @@ public class StardustConsole extends AbstractConsole {
     }
 
     public void setSize(int w, int h) {
-        mWidth = w;
-        mHeight = h;
         if (mShown) {
             mUiHandler.post(() -> {
                 if (mShown) {
                     ViewUtil.setViewMeasure(mConsoleFloaty.getExpandedView(), w, h);
-                    mFloatyWindow.getWindowBridge().updateMeasure(w, h);
                 }
             });
         }

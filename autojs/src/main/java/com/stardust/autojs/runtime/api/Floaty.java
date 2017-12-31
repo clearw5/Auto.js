@@ -10,22 +10,15 @@ import com.stardust.autojs.R;
 import com.stardust.autojs.core.floaty.FloatyWindow;
 import com.stardust.autojs.core.ui.JsLayoutInflater;
 import com.stardust.autojs.core.ui.JsViewHelper;
-import com.stardust.autojs.rhino.ProxyObject;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.concurrent.VolatileDispose;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.util.UiHandler;
 import com.stardust.util.ViewUtil;
 
-import org.mozilla.javascript.NativeJavaObject;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.UniqueTag;
-
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -38,9 +31,11 @@ public class Floaty {
     private Context mContext;
     private UiHandler mUiHandler;
     private Set<JsFloatyWindow> mWindows = new HashSet<>();
+    private ScriptRuntime mRuntime;
 
-    public Floaty(UiHandler uiHandler, UI ui) {
+    public Floaty(UiHandler uiHandler, UI ui, ScriptRuntime runtime) {
         mUiHandler = uiHandler;
+        mRuntime = runtime;
         mContext = new ContextThemeWrapper(mUiHandler.getContext(), R.style.AppTheme);
         mJsLayoutInflater = ui.getJsLayoutInflater();
     }
@@ -69,20 +64,16 @@ public class Floaty {
         Iterator<JsFloatyWindow> iterator = mWindows.iterator();
         while (iterator.hasNext()) {
             JsFloatyWindow window = iterator.next();
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                window.mWindow.close();
-            } else {
-                mUiHandler.post(() -> window.mWindow.close());
-            }
+            window.close();
             iterator.remove();
         }
     }
 
     public class JsFloatyWindow {
 
-        private Map<String, View> mViewCache = new HashMap<>();
         private View mView;
         private FloatyWindow mWindow;
+        private boolean mExitOnClose = false;
 
         public JsFloatyWindow(View view) {
             mWindow = new FloatyWindow(view);
@@ -91,7 +82,8 @@ public class Floaty {
                 FloatyService.addWindow(mWindow);
             });
             mWindow.waitFor();
-            setSize(mWindow.getWindowBridge().getScreenWidth() / 2, mWindow.getWindowBridge().getScreenHeight() / 2);
+            mWindow.setOnCloseButtonClickListener(v -> close());
+            //setSize(mWindow.getWindowBridge().getScreenWidth() / 2, mWindow.getWindowBridge().getScreenHeight() / 2);
             mView = view;
         }
 
@@ -108,20 +100,21 @@ public class Floaty {
         }
 
         public int getWidth() {
-            return mWindow.getWindowBridge().getWidth();
+            return mWindow.getRootView().getWidth();
         }
 
         public int getHeight() {
-            return mWindow.getWindowBridge().getHeight();
+            return mWindow.getRootView().getHeight();
         }
 
         public void setSize(int w, int h) {
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                mWindow.getWindowBridge().updateMeasure(w, h);
+                ViewUtil.setViewMeasure(mWindow.getRootView(), w, h);
+                // mWindow.getWindowBridge().updateMeasure(w, h);
             } else {
                 mUiHandler.post(() -> {
-                    ViewUtil.setViewMeasure(mView, w, h);
-                    mWindow.getWindowBridge().updateMeasure(w, h);
+                    ViewUtil.setViewMeasure(mWindow.getRootView(), w, h);
+                    //  mWindow.getWindowBridge().updateMeasure(w, h);
                 });
             }
         }
@@ -146,6 +139,10 @@ public class Floaty {
             return mWindow.isAdjustEnabled();
         }
 
+        public void exitOnClose() {
+            mExitOnClose = true;
+        }
+
         public void close() {
             if (!mWindows.remove(this)) {
                 return;
@@ -154,6 +151,9 @@ public class Floaty {
                 mWindow.close();
             } else {
                 mUiHandler.post(() -> mWindow.close());
+            }
+            if (mExitOnClose) {
+                mRuntime.exit();
             }
         }
     }

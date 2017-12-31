@@ -1,0 +1,1036 @@
+[
+  {
+    "name": "app",
+    "url": "app.html",
+    "summary": "应用",
+    "properties": [
+      {
+        "key": "uninstall",
+        "url": "app.html#app_app_uninstall_packagename",
+        "summary": "卸载"
+      },
+      {
+        "key": "viewFile",
+        "url": "app.html#app_app_viewfile_path",
+        "summary": "查看文件"
+      },
+      {
+        "key": "editFile",
+        "url": "app.html#app_app_editfile_path",
+        "summary": "编辑文件"
+      },
+      {
+        "key": "openUrl",
+        "url": "app.html#app_app_openurl_url",
+        "summary": "打开链接"
+      },
+      {
+        "key": "launchPackage",
+        "url": "app.html#app_app_takephoto_path",
+        "summary": "启动包名"
+      },
+      {
+        "key": "launch",
+        "url": "globals.html#globals_launchpackage_packagename",
+        "summary": "启动",
+        "global": true
+      },
+      {
+        "key": "launchApp",
+        "url": "globals.html#globals_launchapp_appname",
+        "summary": "启动应用",
+        "global": true
+      },
+      {
+        "key": "getPackageName",
+        "url": "globals.html#globals_getpackagename_appname",
+        "summary": "获取包名"
+      },
+      {
+        "key": "openAppSetting",
+        "url": "globals.html#globals_getappname_packagename",
+        "summary": "应用设置页"
+      }
+    ]
+  },
+  {
+    "name": "automator",
+    "url": "widgets-based-automation.html",
+    "summary": "自动操作",
+    "properties": [
+      {
+        "key": "click",
+        "url": "widgets-based-automation.html#widgets_based_automation_click_text_i",
+        "summary": "点击",
+        "global": true
+      },
+      {
+        "key": "longClick",
+        "url": "widgets-based-automation.html#widgets_based_automation_longclick_text_i",
+        "summary": "长按",
+        "global": true
+      },
+      {
+        "key": "press",
+        "url": "",
+        "summary": "按住",
+        "global": true
+      },
+      {
+        "key": "swipe",
+        "url": "",
+        "summary": "滑动",
+        "global": true
+      },
+      {
+        "key": "gesture",
+        "url": "",
+        "summary": "手势",
+        "global": true
+      },
+      {
+        "key": "gestures",
+        "url": "",
+        "summary": "异步手势",
+        "global": true
+      },
+      {
+        "key": "gestureAsync",
+        "url": "",
+        "summary": "多手势",
+        "global": true
+      },
+      {
+        "key": "gesturesAsync",
+        "url": "",
+        "summary": "异步多手势",
+        "global": true
+      },
+      {
+        "key": "scrollDown",
+        "url": "widgets-based-automation.html#widgets_based_automation_scrollup_i",
+        "summary": "下滑",
+        "global": true
+      },
+      {
+        "key": "scrollUp",
+        "url": "widgets-based-automation.html#widgets_based_automation_scrollup_i",
+        "summary": "上滑",
+        "global": true
+      },
+      {
+        "key": "input",
+        "url": "widgets-based-automation.html#widgets_based_automation_input_i_text",
+        "summary": "输入文本",
+        "global": true
+      },
+      {
+        "key": "setText",
+        "url": "widgets-based-automation.html#widgets_based_automation_settext_i_text",
+        "summary": "设置文本",
+        "global": true
+      }
+    ]
+  },
+  {
+    "name": "console",
+    "url": "console.html",
+    "summary": "控制台",
+    "properties": [
+      {
+        "key": "show",
+        "url": "console.html#console_console_show",
+        "summary": "显示"
+      },
+      {
+        "key": "hide",
+        "url": "console.html#console_console_hide",
+        "summary": "隐藏"
+      },
+      {
+        "key": "clear",
+        "url": "console.html#console_console_clear",
+        "summary": "清空"
+      },
+      {
+        "key": "verbose",
+        "url": "console.html#console_console_verbose_data_args",
+        "summary": "不重要日志"
+      },
+      {
+        "key": "info",
+        "url": "console.html#console_console_info_data_args",
+        "summary": "打印信息"
+      },
+      {
+        "key": "log",
+        "url": "console.html#console_console_log_data_args",
+        "summary": "打印日志"
+      },
+      {
+        "key": "warn",
+        "url": "console.html#console_console_warn_data_args",
+        "summary": "打印警告"
+      },
+      {
+        "key": "error",
+        "url": "console.html#console_console_error_data_args",
+        "summary": "打印错误"
+      },
+      {
+        "key": "assert",
+        "url": "console.html#console_console_assert_value_message",
+        "summary": "断言"
+      }
+    ]
+  },
+  {
+    "name": "dialogs",
+    "url": "dialogs.html",
+    "summary": "对话框",
+    "properties": [
+      {
+        "key": "select",
+        "url": "",
+        "summary": "选择"
+      },
+      {
+        "key": "singleChoice",
+        "url": "",
+        "summary": "单选"
+      },
+      {
+        "key": "multiChoice",
+        "url": "",
+        "summary": "多选"
+      },
+      {
+        "key": "rawInput",
+        "url": "",
+        "summary": "输入字符串"
+      },
+      {
+        "key": "input",
+        "url": "",
+        "summary": "输入"
+      },
+      {
+        "key": "alert",
+        "url": "",
+        "summary": "消息框"
+      },
+      {
+        "key": "confirm",
+        "url": "",
+        "summary": "确认框"
+      },
+      {
+        "key": "prompt",
+        "url": "",
+        "summary": "输入字符串"
+      }
+    ]
+  },
+  {
+    "name": "images",
+    "url": "images.html",
+    "summary": "图色",
+    "properties": [
+      {
+        "key": "saveImage",
+        "url": "images.html#images_images_saveimage_image_path",
+        "summary": "保存图片"
+      },
+      {
+        "key": "pixel",
+        "url": "images.html#images_images_pixel_image_x_y",
+        "summary": "取色"
+      },
+      {
+        "key": "read",
+        "url": "",
+        "summary": "读取图片"
+      },
+      {
+        "key": "requestScreenCapture",
+        "url": "images.html#images_requestscreencapture_width_height",
+        "summary": "请求截屏",
+        "global": true
+      },
+      {
+        "key": "captureScreen",
+        "url": "images.html#images_capturescreen",
+        "summary": "截屏",
+        "global": true
+      },
+      {
+        "key": "findColor",
+        "url": "images.html#images_images_findcolor_image_color_options",
+        "summary": "找色",
+        "global": true
+      },
+      {
+        "key": "findColorInRegion",
+        "url": "images.html#images_images_findcolorinregion_img_color_x_y_width_height_threads_algorithm_threshold",
+        "summary": "区域找色",
+        "global": true
+      },
+      {
+        "key": "findColorEquals",
+        "url": "images.html#images_images_findcolorequals_img_color_x_y_width_height_threads",
+        "summary": "精确找色",
+        "global": true
+      }
+    ]
+  },
+  {
+    "name": "colors",
+    "url": "colors.html",
+    "summary": "颜色",
+    "properties": [
+      {
+        "key": "red",
+        "url": "images.html#images_colors_red_color",
+        "summary": "R值"
+      },
+      {
+        "key": "green",
+        "url": "images.html#images_colors_green_color",
+        "summary": "G值"
+      },
+      {
+        "key": "blue",
+        "url": "images.html#images_colors_blue_color",
+        "summary": "B值"
+      },
+      {
+        "key": "alpha",
+        "url": "images.html#images_colors_alpha_color",
+        "summary": "透明度"
+      },
+      {
+        "key": "toString",
+        "url": "images.html#images_colors_tostring_color",
+        "summary": "颜色转字符串"
+      },
+      {
+        "key": "rgb",
+        "url": "images.html#images_colors_rgb_red_green_blue",
+        "summary": ""
+      },
+      {
+        "key": "argb",
+        "url": "images.html#images_colors_argb_alpha_red_green_blue",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "name": "events",
+    "url": "events.html",
+    "summary": "事件",
+    "properties": [
+      {
+        "key": "emitter",
+        "url": "events.html#events_events_emitter",
+        "summary": ""
+      },
+      {
+        "key": "observeKey",
+        "url": "events.html#events_events_observekey",
+        "summary": "监听按键"
+      },
+      {
+        "key": "observeTouch",
+        "url": "events.html#events_events_observetouch",
+        "summary": "监听触摸"
+      },
+      {
+        "key": "observeNotification",
+        "url": "events.html#events_obversenotification",
+        "summary": "监听通知"
+      },
+      {
+        "key": "onKeyDown",
+        "url": "events.html#events_events_onkeydown_keyname_listener",
+        "summary": "按键按下事件"
+      },
+      {
+        "key": "onKeyUp",
+        "url": "events.html#events_events_onkeyup_keyname_listener",
+        "summary": "按键弹起事件"
+      },
+      {
+        "key": "onceKeyDown",
+        "url": "events.html#events_events_oncekeydown_keyname_listener",
+        "summary": ""
+      },
+      {
+        "key": "onceKeyUp",
+        "url": "events.html#events_events_oncekeyup_keyname_listener",
+        "summary": ""
+      },
+      {
+        "key": "onToast",
+        "url": "events.html#events_toast",
+        "summary": "toast事件"
+      },
+      {
+        "key": "onNotification",
+        "url": "events.html#events_notification",
+        "summary": "通知事件"
+      },
+      {
+        "key": "removeAllKeyDownListeners",
+        "url": "events.html#events_events_removeallkeydownlisteners_keyname",
+        "summary": ""
+      },
+      {
+        "key": "removeAllKeyUpListeners",
+        "url": "events.html#events_events_removeallkeyuplisteners_keyname",
+        "summary": ""
+      },
+      {
+        "key": "onTouch",
+        "url": "events.html#events_events_ontouch_listener",
+        "summary": "触摸事件"
+      },
+      {
+        "key": "removeAllTouchListeners",
+        "url": "events.html#events_events_removealltouchlisteners",
+        "summary": ""
+      },
+      {
+        "key": "getTouchEventTimeout",
+        "url": "events.html#events_events_gettoucheventtimeout",
+        "summary": ""
+      },
+      {
+        "key": "setTouchEventTimeout",
+        "url": "events.html#events_events_settoucheventtimeout_timeout",
+        "summary": ""
+      },
+      {
+        "key": "on",
+        "url": "events.html#events_eventemitter_on_eventname_listener",
+        "summary": ""
+      },
+      {
+        "key": "once",
+        "url": "events.html#events_eventemitter_once_eventname_listener",
+        "summary": ""
+      },
+      {
+        "key": "emit",
+        "url": "events.html#events_eventemitter_emit_eventname_args",
+        "summary": ""
+      },
+      {
+        "key": "getListeners",
+        "url": "",
+        "summary": ""
+      },
+      {
+        "key": "addListener",
+        "url": "events.html#events_eventemitter_addlistener_eventname_listener",
+        "summary": ""
+      },
+      {
+        "key": "eventNames",
+        "url": "events.html#events_eventemitter_eventnames",
+        "summary": ""
+      },
+      {
+        "key": "listenerCount",
+        "url": "events.html#events_eventemitter_listenercount_eventname",
+        "summary": ""
+      },
+      {
+        "key": "listeners",
+        "url": "events.html#events_eventemitter_listeners_eventname",
+        "summary": ""
+      },
+      {
+        "key": "prependListener",
+        "url": "events.html#events_eventemitter_prependlistener_eventname_listener",
+        "summary": ""
+      },
+      {
+        "key": "prependOnceListener",
+        "url": "events.html#events_eventemitter_prependoncelistener_eventname_listener",
+        "summary": ""
+      },
+      {
+        "key": "removeAllListeners",
+        "url": "events.html#events_eventemitter_removealllisteners_eventname",
+        "summary": ""
+      },
+      {
+        "key": "removeListener",
+        "url": "events.html#events_eventemitter_removelistener_eventname_listener",
+        "summary": ""
+      },
+      {
+        "key": "setMaxListeners",
+        "url": "events.html#events_eventemitter_setmaxlisteners_n",
+        "summary": ""
+      },
+      {
+        "key": "getMaxListeners",
+        "url": "events.html#events_eventemitter_getmaxlisteners",
+        "summary": ""
+      },
+      {
+        "key": "defaultMaxListeners",
+        "url": "events.html#events_eventemitter_defaultmaxlisteners",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "name": "files",
+    "url": "files.html",
+    "summary": "文件",
+    "properties": [
+      {
+        "key": "open",
+        "url": "",
+        "summary": "打开文件",
+        "global": true
+      },
+      {
+        "key": "isFile",
+        "url": "files.html#files_files_isfile_path",
+        "summary": "文件判断"
+      },
+      {
+        "key": "isDir",
+        "url": "files.html#files_files_isdir_path",
+        "summary": "文件夹判断"
+      },
+      {
+        "key": "isEmptyDir",
+        "url": "files.html#files_files_isemptydir_path",
+        "summary": "空文件夹判断"
+      },
+      {
+        "key": "join",
+        "url": "files.html#files_files_join_parent_child",
+        "summary": "连接路径"
+      },
+      {
+        "key": "create",
+        "url": "files.html#files_files_create_path",
+        "summary": "创建文件"
+      },
+      {
+        "key": "createIfNotExists",
+        "url": "files.html#files_files_createifnotexists_path",
+        "summary": "创建文件"
+      },
+      {
+        "key": "exists",
+        "url": "files.html#files_files_exists_path",
+        "summary": "判断文件存在"
+      },
+      {
+        "key": "ensureDir",
+        "url": "files.html#files_files_ensuredir_path",
+        "summary": "确保文件夹"
+      },
+      {
+        "key": "read",
+        "url": "files.html#files_files_read_path_encoding_utf_8",
+        "summary": "读取文本"
+      },
+      {
+        "key": "write",
+        "url": "files.html#files_files_write_path_text_encoding_utf_8",
+        "summary": "写入文本"
+      },
+      {
+        "key": "copy",
+        "url": "files.html#files_files_copy_frompath_topath",
+        "summary": "复制"
+      },
+      {
+        "key": "move",
+        "url": "files.html#files_files_move_frompath_topath",
+        "summary": "移动"
+      },
+      {
+        "key": "rename",
+        "url": "files.html#files_files_rename_path_newname",
+        "summary": "重命名"
+      },
+      {
+        "key": "renameWithoutExtension",
+        "url": "files.html#files_files_renamewithoutextension_path_newname",
+        "summary": "重命名"
+      },
+      {
+        "key": "getName",
+        "url": "files.html#files_files_getname_path",
+        "summary": "获取文件名"
+      },
+      {
+        "key": "getExtension",
+        "url": "files.html#files_files_getextension_path",
+        "summary": "获取拓展名"
+      },
+      {
+        "key": "getNameWithoutExtension",
+        "url": "files.html#files_files_getnamewithoutextension_path",
+        "summary": "获取文件名"
+      },
+      {
+        "key": "remove",
+        "url": "files.html#files_files_remove_path",
+        "summary": "删除"
+      },
+      {
+        "key": "removeDir",
+        "url": "files.html#files_files_removedir_path",
+        "summary": "删除文件夹"
+      },
+      {
+        "key": "getSdcardPath",
+        "url": "files.html#files_files_getsdcardpath",
+        "summary": "SD卡路径"
+      },
+      {
+        "key": "listDir",
+        "url": "files.html#files_files_listdir_path_filter",
+        "summary": "列表文件夹"
+      }
+    ]
+  },
+  {
+    "name": "timers",
+    "url": "timers.html",
+    "summary": "定时器",
+    "properties": [
+      {
+        "key": "setTimeout",
+        "url": "timers.html#timers_settimeout_callback_delay_args",
+        "summary": "定时执行",
+        "global": true
+      },
+      {
+        "key": "clearTimeout",
+        "url": "timers.html#timers_cleartimeout_id",
+        "summary": "取消定时",
+        "global": true
+      },
+      {
+        "key": "setInterval",
+        "url": "timers.html#timers_setinterval_callback_delay_args",
+        "summary": "循环执行",
+        "global": true
+      },
+      {
+        "key": "clearInterval",
+        "url": "timers.html#timers_clearinterval_id",
+        "summary": "清除循环",
+        "global": true
+      },
+      {
+        "key": "setImmediate",
+        "url": "timers.html#timers_setimmediate_callback_args",
+        "summary": "\"立即\"执行",
+        "global": true
+      },
+      {
+        "key": "clearImmediate",
+        "url": "timers.html#timers_clearimmediate_id",
+        "summary": "清除\"立即\"",
+        "global": true
+      }
+    ]
+  },
+  {
+    "name": "selector",
+    "url": "widgets-based-automation.html",
+    "summary": "选择器",
+    "properties": [
+      {
+        "key": "id",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "idContains",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "idStartsWith",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "idEndsWith",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "idMatches",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "text",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "textContains",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "textStartsWith",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "textEndsWith",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "textMatches",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "desc",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "descContains",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "descStartsWith",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "descEndsWith",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "descMatches",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "className",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "classNameContains",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "classNameStartsWith",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "classNameEndsWith",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "classNameMatches",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "packageName",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "packageNameContains",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "packageNameStartsWith",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "packageNameEndsWith",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "packageNameMatches",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "bounds",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "boundsInside",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "boundsContains",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "drawingOrder",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "checkable",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "checked",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "focusable",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "focused",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "visibleToUser",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "accessibilityFocused",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "selected",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "clickable",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "longClickable",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "enabled",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "password",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "scrollable",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "editable",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "contentInvalid",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "contextClickable",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "multiLine",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "dismissable",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "checkable",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "checked",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "focusable",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "focused",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "visibleToUser",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "accessibilityFocused",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "selected",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "clickable",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "longClickable",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "enabled",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "password",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "scrollable",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "editable",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "contentInvalid",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "contextClickable",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "multiLine",
+        "url": "",
+        "summary": "",
+        "global": true
+      },
+      {
+        "key": "dismissable",
+        "url": "",
+        "summary": "",
+        "global": true
+      }
+    ]
+  }
+]

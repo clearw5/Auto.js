@@ -110,6 +110,14 @@
 <li><span class="stability_undefined"><a href="#device_device_ischarging">device.isCharging()</a></span></li>
 <li><span class="stability_undefined"><a href="#device_device_gettotalmem">device.getTotalMem()</a></span></li>
 <li><span class="stability_undefined"><a href="#device_device_getavailmem">device.getAvailMem()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_isscreenon">device.isScreenOn()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_wakeup">device.wakeUp()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_wakeupifneeded">device.wakeUpIfNeeded()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_keepscreenon_timeout">device.keepScreenOn([timeout])</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_keepscreendim_timeout">device.keepScreenDim([timeout])</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_cancelkeepingawake">device.cancelKeepingAwake()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_vibrate_millis">device.vibrate(millis)</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_cancelvibration">device.cancelVibration()</a></span></li>
 </ul>
 </li>
 </ul>
@@ -119,17 +127,17 @@
       <div id="apicontent">
         <h1>Device<span><a class="mark" href="#device_device" id="device_device">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>device模块提供了与设备有关的信息与操作，例如获取设备宽高，内存使用率，IMEI，调整设备亮度、音量等。</p>
-<p>此模块的部分函数，例如调整音量，需要&quot;修改系统设置&quot;的权限。如果没有该权限，会抛出异常并跳转到权限设置界面。</p>
+<p>此模块的部分函数，例如调整音量，需要&quot;修改系统设置&quot;的权限。如果没有该权限，会抛出<code>SecurityException</code>并跳转到权限设置界面。</p>
 <h2>device.width<span><a class="mark" href="#device_device_width" id="device_device_width">#</a></span></h2>
 <div class="signature"><ul>
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
 </ul>
-</div><p>设备宽度。例如1080。</p>
+</div><p>设备屏幕分辨率宽度。例如1080。</p>
 <h2>device.height<span><a class="mark" href="#device_device_height" id="device_device_height">#</a></span></h2>
 <div class="signature"><ul>
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
 </ul>
-</div><p>设备高度。例如1920。</p>
+</div><p>设备屏幕分辨率高度。例如1920。</p>
 <h2>device.buildId<span><a class="mark" href="#device_device_buildid" id="device_device_buildid">#</a></span></h2>
 <div class="signature"><ul>
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
@@ -331,6 +339,44 @@
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
 </ul>
 </div><p>返回设备当前可用的内存，单位字节(B)。</p>
+<h2>device.isScreenOn()<span><a class="mark" href="#device_device_isscreenon" id="device_device_isscreenon">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>返回设备屏幕是否是亮着的。如果屏幕亮着，返回<code>true</code>; 否则返回<code>false</code>。</p>
+<p>需要注意的是，类似于vivo xplay系列的息屏时钟不属于&quot;屏幕亮着&quot;的情况，虽然屏幕确实亮着但只能显示时钟而且不可交互，此时<code>isScreenOn()</code>也会返回<code>false</code>。</p>
+<h2>device.wakeUp()<span><a class="mark" href="#device_device_wakeup" id="device_device_wakeup">#</a></span></h2>
+<p>唤醒设备。包括唤醒设备CPU、屏幕等。可以用来点亮屏幕。</p>
+<h2>device.wakeUpIfNeeded()<span><a class="mark" href="#device_device_wakeupifneeded" id="device_device_wakeupifneeded">#</a></span></h2>
+<p>如果屏幕没有点亮，则唤醒设备。</p>
+<h2>device.keepScreenOn([timeout])<span><a class="mark" href="#device_device_keepscreenon_timeout" id="device_device_keepscreenon_timeout">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>timeout</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 屏幕保持常亮的时间, 单位毫秒。如果不加此参数，则一直保持屏幕常亮。</li>
+</ul>
+</div><p>保持屏幕常亮。</p>
+<p>此函数无法阻止用户使用锁屏键等正常关闭屏幕，只能使得设备在无人操作的情况下保持屏幕常亮；同时，如果此函数调用时屏幕没有点亮，则会唤醒屏幕。</p>
+<p>在某些设备上，如果不加参数timeout，只能在Auto.js的界面保持屏幕常亮，在其他界面会自动失效，这是因为设备的省电策略造成的。因此，建议使用比较长的时长来代替&quot;一直保持屏幕常亮&quot;的功能，例如<code>device.keepScreenOn(3600 * 1000)</code>。</p>
+<p>可以使用<code>device.cancelKeepingAwake()</code>来取消屏幕常亮。</p>
+<pre><code>//一直保持屏幕常亮
+device.keepScreenOn()
+</code></pre><h2>device.keepScreenDim([timeout])<span><a class="mark" href="#device_device_keepscreendim_timeout" id="device_device_keepscreendim_timeout">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>timeout</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 屏幕保持常亮的时间, 单位毫秒。如果不加此参数，则一直保持屏幕常亮。</li>
+</ul>
+</div><p>保持屏幕常亮，但允许屏幕变暗来节省电量。此函数可以用于定时脚本唤醒屏幕操作，不需要用户观看屏幕，可以让屏幕变暗来节省电量。</p>
+<p>此函数无法阻止用户使用锁屏键等正常关闭屏幕，只能使得设备在无人操作的情况下保持屏幕常亮；同时，如果此函数调用时屏幕没有点亮，则会唤醒屏幕。</p>
+<p>可以使用<code>device.cancelKeepingAwake()</code>来取消屏幕常亮。</p>
+<h2>device.cancelKeepingAwake()<span><a class="mark" href="#device_device_cancelkeepingawake" id="device_device_cancelkeepingawake">#</a></span></h2>
+<p>取消设备保持唤醒状态。用于取消<code>device.keepScreenOn()</code>, <code>device.keepScreenDim()</code>等函数设置的屏幕常亮。</p>
+<h2>device.vibrate(millis)<span><a class="mark" href="#device_device_vibrate_millis" id="device_device_vibrate_millis">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>millis</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 震动时间，单位毫秒</li>
+</ul>
+</div><p>使设备震动一段时间。</p>
+<pre><code>//震动两秒
+device.vibrate(2000);
+</code></pre><h2>device.cancelVibration()<span><a class="mark" href="#device_device_cancelvibration" id="device_device_cancelvibration">#</a></span></h2>
+<p>如果设备处于震动状态，则取消震动。</p>
 
       </div>
     </div>

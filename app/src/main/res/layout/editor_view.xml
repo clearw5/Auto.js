@@ -157,7 +157,14 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
                     android:layout_toRightOf="@+id/functions"/>
+
             </RelativeLayout>
+
+            <com.stardust.scriptdroid.ui.edit.keyboard.FunctionsKeyboardView
+                android:id="@+id/functions_keyboard"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
 
         </LinearLayout>
 
@@ -166,8 +173,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"/>
-
     </android.support.v4.widget.DrawerLayout>
-
 
 </LinearLayout>

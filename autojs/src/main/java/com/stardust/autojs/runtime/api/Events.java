@@ -2,19 +2,23 @@ package com.stardust.autojs.runtime.api;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Handler;
+import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.view.KeyEvent;
-import android.view.accessibility.AccessibilityEvent;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.eventloop.EventEmitter;
+import com.stardust.autojs.core.looper.Loopers;
+import com.stardust.autojs.core.looper.MainThreadProxy;
+import com.stardust.autojs.core.looper.Timer;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.notification.Notification;
 import com.stardust.notification.NotificationListenerService;
-import com.stardust.autojs.runtime.ScriptBridges;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.core.inputevent.InputEventObserver;
 import com.stardust.autojs.core.inputevent.TouchObserver;
@@ -41,6 +45,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     private Loopers mLoopers;
     private Handler mHandler;
     private boolean mListeningNotification = false;
+    private boolean mListeningToast = false;
     private ScriptRuntime mScriptRuntime;
 
     public Events(Context context, AccessibilityBridge accessibilityBridge, ScriptRuntime runtime) {
@@ -53,6 +58,15 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
 
     public EventEmitter emitter() {
         return new EventEmitter(mBridges);
+    }
+
+    public EventEmitter emitter(Thread thread) {
+        Timer timer = mScriptRuntime.timers.getTimerForThread(thread);
+        return new EventEmitter(mBridges, timer);
+    }
+
+    public EventEmitter emitter(MainThreadProxy mainThreadProxy) {
+        return new EventEmitter(mBridges, mScriptRuntime.timers.getMainTimer());
     }
 
     public void observeKey() {
@@ -136,20 +150,30 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
         mTouchEventTimeout = touchEventTimeout;
     }
 
-
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public void observeNotification() {
+        mScriptRuntime.requiresApi(18);
         if (mListeningNotification)
             return;
-        mAccessibilityBridge.ensureServiceEnabled();
         mListeningNotification = true;
         ensureHandler();
         mLoopers.waitWhenIdle(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
-                && NotificationListenerService.getInstance() != null) {
-            NotificationListenerService.getInstance().addListener(this);
-        } else {
-            mAccessibilityBridge.getNotificationObserver().addNotificationListener(this);
+        if (NotificationListenerService.getInstance() == null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                mContext.startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
+            }
+            throw new ScriptException(mContext.getString(R.string.exception_notification_service_disabled));
         }
+        NotificationListenerService.getInstance().addListener(this);
+    }
+
+    public void observeToast() {
+        if (mListeningToast)
+            return;
+        mAccessibilityBridge.ensureServiceEnabled();
+        mListeningToast = true;
+        ensureHandler();
+        mLoopers.waitWhenIdle(true);
         mAccessibilityBridge.getNotificationObserver().addToastListener(this);
     }
 
@@ -187,20 +211,17 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
 
     @Override
     public void onKeyEvent(final int keyCode, final KeyEvent event) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                String keyName = KeyEvent.keyCodeToString(keyCode).substring(8).toLowerCase();
-                emit(keyName, event);
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    emit(PREFIX_KEY_DOWN + keyName, event);
-                    emit("key_down", keyCode, event);
-                } else if (event.getAction() == KeyEvent.ACTION_UP) {
-                    emit(PREFIX_KEY_UP + keyName, event);
-                    emit("key_up", keyCode, event);
-                }
-                emit("key", keyCode, event);
+        mHandler.post(() -> {
+            String keyName = KeyEvent.keyCodeToString(keyCode).substring(8).toLowerCase();
+            emit(keyName, event);
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                emit(PREFIX_KEY_DOWN + keyName, event);
+                emit("key_down", keyCode, event);
+            } else if (event.getAction() == KeyEvent.ACTION_UP) {
+                emit(PREFIX_KEY_UP + keyName, event);
+                emit("key_up", keyCode, event);
             }
+            emit("key", keyCode, event);
         });
     }
 
@@ -210,31 +231,16 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
             return;
         }
         mLastTouchEventMillis = System.currentTimeMillis();
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                emit("touch", new Point(x, y));
-            }
-        });
+        mHandler.post(() -> emit("touch", new Point(x, y)));
     }
 
     public void onNotification(final Notification notification) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                emit("notification", notification);
-            }
-        });
+        mHandler.post(() -> emit("notification", notification));
 
     }
 
     @Override
     public void onToast(final AccessibilityNotificationObserver.Toast toast) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                emit("toast", toast);
-            }
-        });
+        mHandler.post(() -> emit("toast", toast));
     }
 }
