@@ -13,6 +13,7 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
@@ -85,22 +86,20 @@ public class ScreenCapturer {
 
     private void setImageListener(Handler handler) {
         mImageReader.setOnImageAvailableListener(reader -> {
-            if (mCachedImage != null) {
-                synchronized (mCachedImageLock) {
-                    if (mCachedImage != null) {
-                        mCachedImage.close();
-                    }
-                    mCachedImage = reader.acquireLatestImage();
+            synchronized (mCachedImageLock) {
+                if (mCachedImage != null) {
+                    mCachedImage.close();
+                }
+                mCachedImage = reader.acquireLatestImage();
+                if (mCachedImage != null) {
                     mImageAvailable = true;
                     mCachedImageLock.notify();
-                    return;
                 }
             }
-            mCachedImage = reader.acquireLatestImage();
         }, handler);
     }
 
-    @Nullable
+    @NonNull
     public Image capture() {
         if (!mImageAvailable) {
             waitForImageAvailable();
