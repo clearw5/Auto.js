@@ -75,6 +75,7 @@ public class ImageWrapper {
         int rowPadding = plane.getRowStride() - pixelStride * image.getWidth();
         Bitmap bitmap = Bitmap.createBitmap(image.getWidth() + rowPadding / pixelStride, image.getHeight(), Bitmap.Config.ARGB_8888);
         bitmap.copyPixelsFromBuffer(buffer);
+        bitmap = Bitmap.createBitmap(bitmap, 0, 0, image.getWidth(), image.getHeight());
         return bitmap;
     }
 
