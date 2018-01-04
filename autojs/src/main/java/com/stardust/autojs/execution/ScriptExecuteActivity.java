@@ -49,7 +49,7 @@ public class ScriptExecuteActivity extends AppCompatActivity implements Thread.U
         mScriptSource = mScriptExecution.getSource();
         mScriptEngine = mScriptExecution.getEngine();
         mExecutionListener = mScriptExecution.getListener();
-        ((RhinoJavaScriptEngine) mScriptEngine).setUiThreadExceptionHandler((t, e) -> onException((Exception) e));
+        ((RhinoJavaScriptEngine) mScriptEngine).setUncaughtExceptionHandler((t, e) -> onException((Exception) e));
         runScript();
     }
 

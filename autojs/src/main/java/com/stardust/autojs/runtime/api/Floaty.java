@@ -20,6 +20,7 @@ import com.stardust.util.ViewUtil;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Created by Stardust on 2017/12/5.
@@ -30,7 +31,7 @@ public class Floaty {
     private JsLayoutInflater mJsLayoutInflater;
     private Context mContext;
     private UiHandler mUiHandler;
-    private Set<JsFloatyWindow> mWindows = new HashSet<>();
+    private Set<JsFloatyWindow> mWindows = new CopyOnWriteArraySet<>();
     private ScriptRuntime mRuntime;
 
     public Floaty(UiHandler uiHandler, UI ui, ScriptRuntime runtime) {

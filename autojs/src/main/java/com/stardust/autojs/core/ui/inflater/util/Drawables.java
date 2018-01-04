@@ -110,7 +110,7 @@ public class Drawables {
         } else if(value.startsWith("data:")) {
             loadDataInto(view, value);
         }else {
-            view.setImageDrawable(com.stardust.autojs.core.ui.inflater.util.Drawables.parse(view, value));
+            view.setImageDrawable(Drawables.parse(view, value));
         }
     }
 

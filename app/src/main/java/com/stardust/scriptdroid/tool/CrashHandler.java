@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
 import com.stardust.util.IntentUtil;
 import com.stardust.view.accessibility.AccessibilityService;
@@ -25,32 +26,37 @@ public class CrashHandler implements UncaughtExceptionHandler {
     private static int crashCount = 0;
     private static long firstCrashMillis = 0;
     private final Class<?> mErrorReportClass;
+    private UncaughtExceptionHandler mDefaultHandler;
 
     public CrashHandler(Class<?> errorReportClass) {
         this.mErrorReportClass = errorReportClass;
+        mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
     }
 
     public void uncaughtException(Thread thread, Throwable ex) {
+        AccessibilityService service = AccessibilityService.getInstance();
+        if (service != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            service.disableSelf();
+        }
+        if(BuildConfig.DEBUG){
+            mDefaultHandler.uncaughtException(thread, ex);
+            return;
+        }
         if (causedByBadWindowToken(ex)) {
             Toast.makeText(App.getApp(), R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
             IntentUtil.goToAppDetailSettings(App.getApp());
-            return;
-        }
-        try {
-            Log.e(TAG, "Uncaught Exception", ex);
-            AccessibilityService service = AccessibilityService.getInstance();
-            if (service != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                service.disableSelf();
+        }else {
+            try {
+                Log.e(TAG, "Uncaught Exception", ex);
+                if (crashTooManyTimes())
+                    return;
+                String msg = App.getApp().getString(R.string.sorry_for_crash) + ex.toString();
+                startErrorReportActivity(msg, throwableToString(ex));
+                System.exit(1);
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
-            if (crashTooManyTimes())
-                return;
-            String msg = App.getApp().getString(R.string.sorry_for_crash) + ex.toString();
-            startErrorReportActivity(msg, throwableToString(ex));
-            System.exit(0);
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
         }
-
     }
 
     private static boolean causedByBadWindowToken(Throwable e) {

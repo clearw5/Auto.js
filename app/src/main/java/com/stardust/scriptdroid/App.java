@@ -69,8 +69,7 @@ public class App extends MultiDexApplication {
             return;
         }
         LeakCanary.install(this);
-        if (!BuildConfig.DEBUG)
-            Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
+        Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
     }
 
     private void init() {

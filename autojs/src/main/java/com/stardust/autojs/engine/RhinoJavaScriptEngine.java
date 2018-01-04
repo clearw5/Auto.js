@@ -4,9 +4,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.stardust.autojs.BuildConfig;
-import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.rhino.AndroidContextFactory;
-import com.stardust.autojs.rhino.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
@@ -16,8 +14,6 @@ import com.stardust.pio.UncheckedIOException;
 
 import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.ErrorReporter;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -48,7 +44,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine  {
     private Scriptable mScriptable;
     private Thread mThread;
     private android.content.Context mAndroidContext;
-    private Thread.UncaughtExceptionHandler mUiThreadExceptionHandler;
+    private Thread.UncaughtExceptionHandler mUncaughtExceptionHandler;
 
     public RhinoJavaScriptEngine(android.content.Context context) {
         mAndroidContext = context;
@@ -165,8 +161,12 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine  {
         context.setWrapFactory(new WrapFactory());
     }
 
-    public void setUiThreadExceptionHandler(Thread.UncaughtExceptionHandler uiThreadExceptionHandler) {
-        mUiThreadExceptionHandler = uiThreadExceptionHandler;
+    public void setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler uiThreadExceptionHandler) {
+        mUncaughtExceptionHandler = uiThreadExceptionHandler;
+    }
+
+    public Thread.UncaughtExceptionHandler getUncaughtExceptionHandler() {
+        return mUncaughtExceptionHandler;
     }
 
     private class WrapFactory extends org.mozilla.javascript.WrapFactory {
@@ -212,7 +212,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine  {
                 try {
                     return super.doTopCall(callable, cx, scope, thisObj, args);
                 } catch (Exception e) {
-                    mUiThreadExceptionHandler.uncaughtException(Thread.currentThread(), e);
+                    mUncaughtExceptionHandler.uncaughtException(Thread.currentThread(), e);
                     return null;
                 }
             }

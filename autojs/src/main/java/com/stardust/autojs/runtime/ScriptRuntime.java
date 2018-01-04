@@ -9,6 +9,7 @@ import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.image.Colors;
+import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.rhino.AndroidClassLoader;
 import com.stardust.autojs.runtime.api.AbstractShell;
@@ -35,6 +36,7 @@ import com.stardust.lang.ThreadCompat;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.autojs.core.util.ProcessShell;
+import com.stardust.util.Objects;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.SdkVersionUtil;
 import com.stardust.util.Supplier;
@@ -42,6 +44,7 @@ import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 
 import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.RhinoException;
 
 import java.io.File;
 import java.io.IOException;
@@ -302,6 +305,25 @@ public class ScriptRuntime {
         mThread.interrupt();
         if (Looper.myLooper() != Looper.getMainLooper()) {
             throw new ScriptInterruptedException();
+        }
+    }
+
+    public void exit(Object obj) throws Throwable {
+        mThread.interrupt();
+        if (!(obj instanceof Throwable)) {
+            console.error(obj);
+            return;
+        }
+        Throwable e = (Exception) obj;
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            throw e;
+        } else {
+            Thread.UncaughtExceptionHandler handler = ((RhinoJavaScriptEngine) engines.myEngine()).getUncaughtExceptionHandler();
+            if (handler != null) {
+                handler.uncaughtException(Thread.currentThread(), e);
+            } else {
+                console.error(e);
+            }
         }
     }
 

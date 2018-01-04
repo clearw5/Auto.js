@@ -23,9 +23,8 @@ module.exports = function(__runtime__, scope){
 
     scope.isRunning = scope.notStopped;
 
-    scope.exit = function(){
-        __runtime__.exit();
-    }
+    scope.exit = __runtime__.exit.bind(__runtime__);
+
 
     scope.stop = scope.exit;
 

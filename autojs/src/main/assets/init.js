@@ -10,10 +10,6 @@ var importClass = function(pack){
     }
 }
 
-var loadJar = function(path){
-    __runtime__.loadJar(path);
-}
-
 __runtime__.bridges.setBridges({
     call: function(func, target, args){
        var arr = [];
@@ -59,7 +55,24 @@ var __asGlobal__ = function(obj, functions){
     }
 }
 
-require("__general__")(__runtime__, this);
+var __exitIfError__ = function(action, defReturnValue){
+    try{
+       return action();
+    }catch(err){
+        log(err.toString());
+        if(err instanceof java.lang.Throwable){
+            exit(err);
+        }else if(err instanceof Error){
+            exit(new org.mozilla.javascript.EvaluatorException(err.name + ": " + err.message, err.fileName, err.lineNumber));
+            //new java.lang.RuntimeException(err.name + ": " + err.message + "\n" + err.stack));
+        }else{
+            exit();
+        }
+        return defReturnValue;
+    }
+};
+
+require("__globals__")(__runtime__, this);
 
 
 (function(scope){
