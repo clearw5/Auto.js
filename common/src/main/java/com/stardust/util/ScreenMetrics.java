@@ -20,7 +20,7 @@ public class ScreenMetrics {
     public static void initIfNeeded(Activity activity) {
         if (!initialized) {
             DisplayMetrics metrics = new DisplayMetrics();
-            activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            activity.getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
             deviceScreenHeight = metrics.heightPixels;
             deviceScreenWidth = metrics.widthPixels;
             deviceScreenDensity = metrics.densityDpi;

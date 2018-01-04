@@ -13,7 +13,6 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
@@ -63,7 +62,7 @@ public class ScreenCapturer {
     private void initVirtualDisplay(MediaProjectionManager manager, Intent data, int screenWidth, int screenHeight, int screenDensity) {
         mImageReader = ImageReader.newInstance(screenWidth, screenHeight, PixelFormat.RGBA_8888, 2);
         mMediaProjection = manager.getMediaProjection(Activity.RESULT_OK, data);
-        mVirtualDisplay = mMediaProjection.createVirtualDisplay("screen-mirror",
+        mVirtualDisplay = mMediaProjection.createVirtualDisplay(LOG_TAG,
                 screenWidth, screenHeight, screenDensity, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
                 mImageReader.getSurface(), null, null);
     }
@@ -83,20 +82,22 @@ public class ScreenCapturer {
 
     private void setImageListener(Handler handler) {
         mImageReader.setOnImageAvailableListener(reader -> {
-            synchronized (mCachedImageLock) {
-                if (mCachedImage != null) {
-                    mCachedImage.close();
-                }
-                mCachedImage = reader.acquireLatestImage();
-                if (mCachedImage != null) {
+            if (mCachedImage != null) {
+                synchronized (mCachedImageLock) {
+                    if (mCachedImage != null) {
+                        mCachedImage.close();
+                    }
+                    mCachedImage = reader.acquireLatestImage();
                     mImageAvailable = true;
                     mCachedImageLock.notify();
+                    return;
                 }
             }
+            mCachedImage = reader.acquireLatestImage();
         }, handler);
     }
 
-    @NonNull
+    @Nullable
     public Image capture() {
         if (!mImageAvailable) {
             waitForImageAvailable();

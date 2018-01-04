@@ -3,6 +3,7 @@ package com.stardust.autojs.core.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -71,6 +72,7 @@ public class BlockedMaterialDialog extends MaterialDialog {
 
         public MaterialDialog.Builder input(@Nullable CharSequence hint, @Nullable CharSequence prefill, boolean allowEmptyInput) {
             super.input(hint, prefill, allowEmptyInput, (dialog, input) -> setAndNotify(input.toString()));
+            cancelListener(dialog -> setAndNotify(null));
             return this;
         }
 
