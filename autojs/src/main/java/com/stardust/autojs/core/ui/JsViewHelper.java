@@ -1,13 +1,10 @@
 package com.stardust.autojs.core.ui;
 
-import android.content.res.Resources;
 import android.support.annotation.Nullable;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.autojs.dynamiclayoutinflater.util.Ids;
+import com.stardust.autojs.core.ui.inflater.util.Ids;
 
 
 /**

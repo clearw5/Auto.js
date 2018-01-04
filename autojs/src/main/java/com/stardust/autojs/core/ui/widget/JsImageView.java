@@ -1,13 +1,11 @@
 package com.stardust.autojs.core.ui.widget;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.util.AttributeSet;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 
-import org.autojs.dynamiclayoutinflater.util.Drawables;
+import com.stardust.autojs.core.ui.inflater.util.Drawables;
 
 /**
  * Created by Stardust on 2017/11/30.
@@ -41,14 +39,15 @@ public class JsImageView extends RoundedImageView {
     }
 
     public void setSource(String uri) {
-        Drawables.loadInto(this, Uri.parse(uri));
+        Drawables.setupWithImage(this, uri);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth());
         if (mCircle) {
-            setCornerRadius(Math.min(getWidth(), getHeight()) / 2);
+            setCornerRadius(getMeasuredWidth() / 2);
         }
     }
 }

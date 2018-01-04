@@ -1,23 +1,14 @@
 package com.stardust.autojs.core.ui;
 
 import android.content.Context;
-import android.text.InputType;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
 import com.stardust.autojs.core.ui.widget.JsFrameLayout;
 import com.stardust.autojs.core.ui.widget.JsImageView;
-import com.stardust.autojs.core.ui.xml.JsImageViewAttrSetter;
+import com.stardust.autojs.core.ui.inflater.attrsetter.JsImageViewAttrSetter;
 import com.stardust.autojs.core.ui.xml.XmlConverter;
-import com.stardust.util.MapEntries;
 
-import org.autojs.dynamiclayoutinflater.DynamicLayoutInflater;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.Map;
 
 /**
  * Created by Stardust on 2017/5/14.

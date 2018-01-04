@@ -31,6 +31,7 @@ import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.core.accessibility.SimpleActionAutomator;
 import com.stardust.autojs.runtime.api.UI;
 import com.stardust.concurrent.VolatileDispose;
+import com.stardust.lang.ThreadCompat;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.autojs.core.util.ProcessShell;
@@ -324,7 +325,7 @@ public class ScriptRuntime {
 
     public void onExit() {
         //清除interrupt状态
-        Thread.interrupted();
+        ThreadCompat.interrupted();
         //悬浮窗需要第一时间关闭以免出现恶意脚本全屏悬浮窗屏蔽屏幕并且在exit中写死循环的问题
         ignoresException(floaty::closeAll);
         try {
@@ -334,7 +335,7 @@ public class ScriptRuntime {
         }
         ignoresException(threads::shutDownAll);
         ignoresException(events::recycle);
-        ignoresException(loopers::quitAll);
+        ignoresException(loopers::recycle);
         ignoresException(() -> {
             if (mRootShell != null) mRootShell.exitAndWaitFor();
             mRootShell = null;

@@ -73,14 +73,11 @@ public class ScreenCapturer {
             setImageListener(mHandler);
             return;
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                mImageAcquireLooper = Looper.myLooper();
-                setImageListener(new Handler());
-                Looper.loop();
-            }
+        new Thread(() -> {
+            Looper.prepare();
+            mImageAcquireLooper = Looper.myLooper();
+            setImageListener(new Handler());
+            Looper.loop();
         }).start();
     }
 

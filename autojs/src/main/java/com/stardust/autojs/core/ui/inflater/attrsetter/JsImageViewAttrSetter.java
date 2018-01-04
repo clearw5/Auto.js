@@ -1,16 +1,14 @@
-package com.stardust.autojs.core.ui.xml;
+package com.stardust.autojs.core.ui.inflater.attrsetter;
 
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
+import com.makeramen.roundedimageview.Corner;
+import com.stardust.autojs.core.ui.inflater.util.Colors;
+import com.stardust.autojs.core.ui.inflater.util.Dimensions;
+import com.stardust.autojs.core.ui.inflater.util.ValueMapper;
 import com.stardust.autojs.core.ui.widget.JsImageView;
 
-import org.autojs.dynamiclayoutinflater.attrsetter.BaseViewAttrSetter;
-import org.autojs.dynamiclayoutinflater.attrsetter.ImageViewAttrSetter;
-import org.autojs.dynamiclayoutinflater.util.Colors;
-import org.autojs.dynamiclayoutinflater.util.Dimensions;
-import org.autojs.dynamiclayoutinflater.util.ValueMapper;
 
 import java.util.Map;
 
@@ -36,6 +34,18 @@ public class JsImageViewAttrSetter<V extends JsImageView> extends ImageViewAttrS
         switch (attr) {
             case "radius":
                 view.setCornerRadius(Dimensions.parseToPixel(value, view));
+                break;
+            case "radiusTopLeft":
+                view.setCornerRadius(Dimensions.parseToPixel(value, view), view.getCornerRadius(Corner.TOP_RIGHT), view.getCornerRadius(Corner.BOTTOM_LEFT), view.getCornerRadius(Corner.BOTTOM_RIGHT));
+                break;
+            case "radiusTopRight":
+                view.setCornerRadius(view.getCornerRadius(Corner.TOP_LEFT), Dimensions.parseToPixel(value, view), view.getCornerRadius(Corner.BOTTOM_LEFT), view.getCornerRadius(Corner.BOTTOM_RIGHT));
+                break;
+            case "radiusBottomLeft":
+                view.setCornerRadius(view.getCornerRadius(Corner.TOP_LEFT), view.getCornerRadius(Corner.TOP_RIGHT), Dimensions.parseToPixel(value, view), view.getCornerRadius(Corner.BOTTOM_RIGHT));
+                break;
+            case "radiusBottomRight":
+                view.setCornerRadius(view.getCornerRadius(Corner.TOP_LEFT), view.getCornerRadius(Corner.TOP_RIGHT), view.getCornerRadius(Corner.BOTTOM_LEFT), Dimensions.parseToPixel(value, view));
                 break;
             case "borderWidth":
                 view.setBorderWidth(Dimensions.parseToPixel(value, view));

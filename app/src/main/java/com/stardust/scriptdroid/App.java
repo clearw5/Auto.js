@@ -15,6 +15,8 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.runtime.DirectModelNotifier;
 import com.squareup.leakcanary.LeakCanary;
+import com.stardust.autojs.core.ui.inflater.ImageLoader;
+import com.stardust.autojs.core.ui.inflater.util.Drawables;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.autojs.key.GlobalKeyObserver;
 import com.stardust.scriptdroid.network.GlideApp;
@@ -26,8 +28,6 @@ import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.UiHandler;
 
-import org.autojs.dynamiclayoutinflater.ImageLoader;
-import org.autojs.dynamiclayoutinflater.util.Drawables;
 
 import java.lang.ref.WeakReference;
 
