@@ -278,7 +278,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     public void run() {
         Snackbar.make(this, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
-        mScriptExecution = Scripts.runWithBroadcastSender(new JavaScriptFileSource(mName, mFile), mFile.getParent());
+        mScriptExecution = Scripts.runWithBroadcastSender(mFile);
         setMenuItemStatus(R.id.run, false);
     }
 

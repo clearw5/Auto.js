@@ -23,8 +23,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public interface ScriptEngine<S extends ScriptSource> {
 
 
-    String TAG_PATH = "execute_path";
+    String TAG_ENV_PATH = "env_path";
     String TAG_SOURCE = "source";
+    String TAG_EXECUTE_PATH = "execute_path";
 
     void put(String name, Object value);
 
@@ -87,7 +88,7 @@ public interface ScriptEngine<S extends ScriptSource> {
         }
 
         public String cwd() {
-            return (String) getTag(TAG_PATH);
+            return (String) getTag(TAG_EXECUTE_PATH);
         }
 
         public void setOnDestroyListener(OnDestroyListener onDestroyListener) {

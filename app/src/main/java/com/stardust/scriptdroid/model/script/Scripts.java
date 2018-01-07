@@ -9,6 +9,7 @@ import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
+import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
@@ -91,35 +92,27 @@ public class Scripts {
     }
 
     public static ScriptExecution run(ScriptFile file) {
-        return run(file.toSource(), file.getParent());
+        return AutoJs.getInstance().getScriptEngineService().execute(new JavaScriptFileSource(file), new ExecutionConfig()
+                .executePath(file.getParent()));
     }
 
-    public static ScriptExecution run(ScriptSource source, String directoryPath) {
-        return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
-                .path(directoryPath, StorageFileProvider.DEFAULT_DIRECTORY_PATH));
-    }
 
     public static ScriptExecution run(ScriptSource source) {
         return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
-                .path(StorageFileProvider.DEFAULT_DIRECTORY_PATH));
+                .executePath(StorageFileProvider.DEFAULT_DIRECTORY_PATH));
     }
 
-    public static ScriptExecution runWithBroadcastSender(ScriptSource scriptSource, String directoryPath) {
-        return AutoJs.getInstance().getScriptEngineService().execute(scriptSource, BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER,
-                new ExecutionConfig().path(directoryPath, StorageFileProvider.DEFAULT_DIRECTORY_PATH));
+    public static ScriptExecution runWithBroadcastSender(File file) {
+        return AutoJs.getInstance().getScriptEngineService().execute(new JavaScriptFileSource(file), BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER,
+                new ExecutionConfig().executePath(file.getParent()));
     }
 
-
-    public static ScriptExecution runWithBroadcastSender(ScriptSource source) {
-        return AutoJs.getInstance().getScriptEngineService().execute(source, BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER,
-                new ExecutionConfig().path(StorageFileProvider.DEFAULT_DIRECTORY_PATH));
-    }
 
     public static ScriptExecution runRepeatedly(ScriptFile scriptFile, int loopTimes, long delay, long interval) {
         ScriptSource source = scriptFile.toSource();
         String directoryPath = scriptFile.getParent();
         return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
-                .path(directoryPath, StorageFileProvider.DEFAULT_DIRECTORY_PATH)
+                .executePath(directoryPath)
                 .loop(delay, loopTimes, interval));
     }
 

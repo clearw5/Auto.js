@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,13 +33,13 @@ import java.util.Locale;
  * Created by Stardust on 2017/4/2.
  */
 
-public class RhinoJavaScriptEngine extends JavaScriptEngine  {
+public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
 
     private static int contextCount = 0;
     private static StringScriptSource sInitScript;
-    private String[] mRequirePath = new String[0];
+    private List<String> mRequirePath = Collections.emptyList();
 
     private Context mContext;
     private Scriptable mScriptable;
@@ -93,11 +94,12 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine  {
         return mThread;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void init() {
         mThread = Thread.currentThread();
         ScriptableObject.putProperty(mScriptable, "__engine__", this);
-        mRequirePath = (String[]) getTag(TAG_PATH);
+        mRequirePath = (List<String>) getTag(TAG_ENV_PATH);
         initRequireBuilder(mContext, mScriptable);
         mContext.evaluateString(mScriptable, getInitScript().getScript(), "<init>", 1, null);
     }
@@ -118,8 +120,10 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine  {
 
     void initRequireBuilder(Context context, Scriptable scope) {
         List<URI> list = new ArrayList<>();
-        for (String path : mRequirePath) {
-            list.add(new File(path).toURI());
+        if (mRequirePath != null) {
+            for (String path : mRequirePath) {
+                list.add(new File(path).toURI());
+            }
         }
         AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(mAndroidContext, list);
         new RequireBuilder()
