@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.network.download;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.stardust.concurrent.VolatileBox;
+import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.network.NodeBB;
 import com.stardust.scriptdroid.network.api.DownloadApi;
 
@@ -132,6 +133,7 @@ public class DownloadManager {
 
         public void start(ResponseBody body) {
             try {
+                PFiles.ensureDir(mPath);
                 startImpl(body);
             } catch (Exception e) {
                 mProgress.onError(e);

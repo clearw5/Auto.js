@@ -131,11 +131,6 @@
 
         <Preference
             android:layout="@layout/preference_custom"
-            android:title="@string/text_join_qq_group"
-            />
-
-        <Preference
-            android:layout="@layout/preference_custom"
             android:title="@string/text_issue_report"
             />
 
