@@ -172,7 +172,7 @@ public class CodeMirrorEditor extends FrameLayout {
             @Override
             public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
                 InputConnection connection = super.onCreateInputConnection(outAttrs);
-                return connection == null ? null : new MyInputConnection(connection);
+                return connection;// == null ? null : new MyInputConnection(connection);
             }
         };
         setupWebSettings();
@@ -446,12 +446,7 @@ public class CodeMirrorEditor extends FrameLayout {
             if (mCallback == null) {
                 return;
             }
-            mWebView.post(new Runnable() {
-                @Override
-                public void run() {
-                    mCallback.onChange();
-                }
-            });
+            mWebView.post(() -> mCallback.onChange());
         }
 
         @JavascriptInterface
@@ -459,12 +454,7 @@ public class CodeMirrorEditor extends FrameLayout {
             if (mCallback == null) {
                 return;
             }
-            mWebView.post(new Runnable() {
-                @Override
-                public void run() {
-                    mCallback.updateCodeCompletion(fromLine, fromCh, toLine, toCh, list, urls);
-                }
-            });
+            mWebView.post(() -> mCallback.updateCodeCompletion(fromLine, fromCh, toLine, toCh, list, urls));
         }
 
     }
@@ -500,12 +490,7 @@ public class CodeMirrorEditor extends FrameLayout {
         private void showRenamePrompt(String name, String defaultValue, final JsPromptResult result) {
             new ThemeColorMaterialDialogBuilder(getContext())
                     .title(getResources().getString(R.string.text_rename) + name)
-                    .input("", defaultValue, new MaterialDialog.InputCallback() {
-                        @Override
-                        public void onInput(@android.support.annotation.NonNull MaterialDialog dialog, CharSequence input) {
-                            result.confirm(input.toString());
-                        }
-                    })
+                    .input("", defaultValue, (dialog, input) -> result.confirm(input.toString()))
                     .show();
         }
 

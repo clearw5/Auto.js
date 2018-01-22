@@ -10,7 +10,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.Collections;
 
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import okhttp3.ResponseBody;
@@ -37,10 +36,12 @@ public class UserService {
 
     private static final UserService sInstance = new UserService();
     private final Retrofit mRetrofit;
+    private UserApi mUserApi;
     private volatile User mUser;
 
     UserService() {
         mRetrofit = NodeBB.getInstance().getRetrofit();
+        mUserApi = mRetrofit.create(UserApi.class);
     }
 
     public static UserService getInstance() {
@@ -49,14 +50,12 @@ public class UserService {
 
     public Observable<ResponseBody> login(String userName, final String password) {
         return NodeBB.getInstance()
-                .getConfig()
-                .flatMap(config ->
-                        mRetrofit.create(UserApi.class)
-                                .login(Collections.singletonMap("x-csrf-token", config.getCsrfToken()),
-                                        userName, password)
+                .getXCsrfToken()
+                .flatMap(token ->
+                        mUserApi.login(token, userName, password)
                                 .doOnError(error -> {
                                     if (error instanceof HttpException && ((HttpException) error).code() == 403) {
-                                        NodeBB.getInstance().invalidateConfig();
+                                        NodeBB.getInstance().invalidateXCsrfToken();
                                     }
                                 }))
                 .doOnComplete(this::refreshOnlineStatus);
@@ -66,10 +65,8 @@ public class UserService {
 
     public Observable<ResponseBody> register(String email, String userName, String password) {
         return NodeBB.getInstance()
-                .getConfig()
-                .flatMap(config -> mRetrofit.create(UserApi.class)
-                        .register(Collections.singletonMap("x-csrf-token", config.getCsrfToken()),
-                                email, userName, password, password));
+                .getXCsrfToken()
+                .flatMap(token -> mUserApi.register(token, email, userName, password, password));
     }
 
     public boolean isOnline() {
@@ -81,7 +78,7 @@ public class UserService {
         mUser = user;
         if (!Objects.equals(old, mUser)) {
             if (user == null) {
-                NodeBB.getInstance().invalidateConfig();
+                NodeBB.getInstance().invalidateXCsrfToken();
             }
             EventBus.getDefault().post(new LoginStateChange(user != null));
         }
@@ -106,11 +103,8 @@ public class UserService {
 
     public Observable<ResponseBody> logout() {
         return NodeBB.getInstance()
-                .getConfig()
-                .flatMap(config ->
-                        mRetrofit.create(UserApi.class)
-                                .logout(Collections.singletonMap("x-csrf-token", config.getCsrfToken()))
-                )
+                .getXCsrfToken()
+                .flatMap(mUserApi::logout)
                 .doOnError(Throwable::printStackTrace)
                 .doOnComplete(this::refreshOnlineStatus);
     }

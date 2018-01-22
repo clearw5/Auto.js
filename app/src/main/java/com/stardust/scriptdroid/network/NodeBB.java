@@ -8,16 +8,15 @@ import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.network.api.ConfigApi;
-import com.stardust.scriptdroid.network.entity.config.Config;
 import com.stardust.scriptdroid.network.util.WebkitCookieManagerProxy;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
 
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -30,8 +29,7 @@ public class NodeBB {
     public static final String BASE_URL = "http://www.autojs.org/";
     private static final NodeBB sInstance = new NodeBB();
     private static final String LOG_TAG = "NodeBB";
-    private Config mConfig;
-
+    private Map<String, String> mXCsrfToken;
 
     private Retrofit mRetrofit;
 
@@ -56,18 +54,17 @@ public class NodeBB {
         return mRetrofit;
     }
 
-    public Observable<Config> getConfig() {
-        if (mConfig == null) {
-            return mRetrofit.create(ConfigApi.class)
-                    .getConfig()
-                    .doOnNext(config -> mConfig = config);
-        }
-        return Observable.just(mConfig);
 
+    public Observable<Map<String, String>> getXCsrfToken() {
+        if (mXCsrfToken != null)
+            return Observable.just(mXCsrfToken);
+        return mRetrofit.create(ConfigApi.class)
+                .getConfig()
+                .map(config -> mXCsrfToken = Collections.singletonMap("x-csrf-token", config.getCsrfToken()));
     }
 
-    public void invalidateConfig() {
-        mConfig = null;
+    public void invalidateXCsrfToken() {
+        mXCsrfToken = null;
     }
 
     public static String getErrorMessage(Throwable e, Context context, String defaultMsg) {

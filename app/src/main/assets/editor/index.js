@@ -67,11 +67,17 @@ editor.setOption("hintOptions", {
     completeSingle: false,
     globalScope: autoJsGlobalScope()
 });
+var id = null;
 editor.on("keyup", function(editor, event)
 {
     if (!ExcludedIntelliSenseTriggerKeys[(event.keyCode || event.which).toString()] )
     {
-        editor.execCommand("autocomplete");
+        if(id != null){
+            clearTimeout(id);
+        }
+        id = setTimeout(function(){
+            editor.execCommand("autocomplete");
+        }, 100);
     }
 });
 editor.setCursor({line: 0, ch: 0});
