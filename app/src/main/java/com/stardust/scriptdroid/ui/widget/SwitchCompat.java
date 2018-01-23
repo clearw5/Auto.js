@@ -40,7 +40,7 @@ public class SwitchCompat extends android.support.v7.widget.SwitchCompat {
 
     public void setChecked(boolean checked, boolean notify) {
         mIgnoreCheckedChange = !notify;
-        setChecked(checked);
+        super.setChecked(checked);
         mIgnoreCheckedChange = false;
     }
 

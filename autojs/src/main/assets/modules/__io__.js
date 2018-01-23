@@ -1,6 +1,6 @@
 
 module.exports = function(__runtime__, scope){
-    var files = Object.create(com.stardust.pio.PFiles);
+    var files = Object.create(com.stardust.autojs.runtime.api);
     files.cwd = function(){
         return scope.engines.myEngine().cwd();
     }

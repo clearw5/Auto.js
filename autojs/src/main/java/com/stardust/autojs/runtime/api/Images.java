@@ -27,6 +27,7 @@ import com.stardust.concurrent.VolatileDispose;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;

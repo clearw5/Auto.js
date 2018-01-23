@@ -70,10 +70,12 @@ public class DrawerMenuItemViewHolder extends BindableViewHolder<DrawerMenuItem>
         }
         mSwitchCompat.setVisibility(VISIBLE);
         int prefKey = item.getPrefKey();
-        if (prefKey != 0) {
+        if(prefKey == 0){
+            mSwitchCompat.setChecked(item.isChecked());
+            mSwitchCompat.setPrefKey(null);
+        }else {
             mSwitchCompat.setPrefKey(itemView.getResources().getString(prefKey));
         }
-        mSwitchCompat.setChecked(item.isChecked());
     }
 
     private void onClick() {
