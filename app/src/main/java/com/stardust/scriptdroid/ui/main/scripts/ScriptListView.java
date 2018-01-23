@@ -26,6 +26,7 @@ import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.viewmodel.ScriptList;
 import com.stardust.scriptdroid.ui.widget.BindableViewHolder;
+import com.stardust.theme.widget.ThemeColorSwipeRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -41,7 +42,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Stardust on 2017/8/21.
  */
 
-public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
+public class ScriptListView extends ThemeColorSwipeRefreshLayout implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
 
     private static final String LOG_TAG = "ScriptListView";
