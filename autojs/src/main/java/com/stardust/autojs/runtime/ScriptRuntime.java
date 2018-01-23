@@ -18,6 +18,7 @@ import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.Device;
 import com.stardust.autojs.runtime.api.Engines;
 import com.stardust.autojs.runtime.api.Events;
+import com.stardust.autojs.runtime.api.Files;
 import com.stardust.autojs.runtime.api.Floaty;
 import com.stardust.autojs.core.looper.Loopers;
 import com.stardust.autojs.runtime.api.Threads;
@@ -169,6 +170,9 @@ public class ScriptRuntime {
     @ScriptVariable
     public final Colors colors = new Colors();
 
+    @ScriptVariable
+    public final Files files;
+
     private Images images;
 
     private static WeakReference<Context> applicationContext;
@@ -197,6 +201,7 @@ public class ScriptRuntime {
         dialogs = new Dialogs(app, uiHandler, bridges);
         device = new Device(uiHandler.getContext());
         floaty = new Floaty(uiHandler, ui, this);
+        files = new Files(this);
     }
 
     public void init() {

@@ -3,6 +3,9 @@ package com.stardust.autojs.runtime.api;
 import android.content.Context;
 import android.content.res.AssetManager;
 
+import com.stardust.autojs.engine.ScriptEngine;
+import com.stardust.autojs.runtime.ScriptRuntime;
+import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.pio.PFileInterface;
 import com.stardust.pio.PFiles;
 import com.stardust.util.Func1;
@@ -17,6 +20,16 @@ import java.io.OutputStream;
  */
 
 public class Files {
+
+    private final ScriptRuntime mRuntime;
+
+    public Files(ScriptRuntime runtime) {
+        mRuntime = runtime;
+    }
+
+    public String cwd() {
+        return ((ScriptEngine.AbstractScriptEngine) mRuntime.engines.myEngine()).cwd();
+    }
 
     public static PFileInterface open(String path, String mode, String encoding, int bufferSize) {
         return PFiles.open(path, mode, encoding, bufferSize);
@@ -218,7 +231,7 @@ public class Files {
         return PFiles.isEmptyDir(path);
     }
 
-    public static String join(String parent, String child) {
+    public static String join(String parent, String... child) {
         return PFiles.join(parent, child);
     }
 

@@ -409,8 +409,12 @@ public class PFiles {
         return file.isDirectory() && file.list().length == 0;
     }
 
-    public static String join(String parent, String child) {
-        return new File(parent, child).getPath();
+    public static String join(String base, String... paths) {
+        File file = new File(base);
+        for (String path : paths) {
+            file = new File(file, path);
+        }
+        return file.getPath();
     }
 
     public static String getHumanReadableSize(long bytes) {
