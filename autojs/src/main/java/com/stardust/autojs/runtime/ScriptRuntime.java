@@ -189,7 +189,7 @@ public class ScriptRuntime {
         console = builder.mConsole;
         accessibilityBridge = builder.mAccessibilityBridge;
         mShellSupplier = builder.mShellSupplier;
-        ui = new UI(uiHandler.getContext());
+        ui = new UI(uiHandler.getContext(), this);
         this.automator = new SimpleActionAutomator(accessibilityBridge, this);
         automator.setScreenMetrics(mScreenMetrics);
         this.info = accessibilityBridge.getInfoProvider();

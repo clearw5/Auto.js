@@ -32,7 +32,9 @@ import com.stardust.autojs.core.ui.inflater.attrsetter.TextViewAttrSetter;
 import com.stardust.autojs.core.ui.inflater.attrsetter.TimePickerAttrSetter;
 import com.stardust.autojs.core.ui.inflater.attrsetter.ToolbarAttrSetter;
 import com.stardust.autojs.core.ui.inflater.attrsetter.ViewGroupAttrSetter;
+import com.stardust.autojs.core.ui.inflater.util.Drawables;
 import com.stardust.autojs.core.ui.inflater.util.Res;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -77,22 +79,27 @@ public class DynamicLayoutInflater {
     private Map<String, ViewAttrSetter<?>> mViewAttrSetters = new HashMap<>();
     private Map<String, com.stardust.autojs.core.ui.inflater.ViewCreator<?>> mViewCreators = new HashMap<>();
     private Context mContext;
+    private ValueParser mValueParser;
 
-    public DynamicLayoutInflater(Context context) {
+    public DynamicLayoutInflater(Context context, ValueParser valueParser) {
         mContext = context;
-        registerViewAttrSetter(TextView.class.getName(), new TextViewAttrSetter<>());
-        registerViewAttrSetter(EditText.class.getName(), new TextViewAttrSetter<>());
-        registerViewAttrSetter(ImageView.class.getName(), new ImageViewAttrSetter<>());
-        registerViewAttrSetter(LinearLayout.class.getName(), new LinearLayoutAttrSetter<>());
-        registerViewAttrSetter(FrameLayout.class.getName(), new FrameLayoutAttrSetter<>());
-        registerViewAttrSetter(View.class.getName(), new BaseViewAttrSetter<>());
-        registerViewAttrSetter(Toolbar.class.getName(), new ToolbarAttrSetter<>());
-        registerViewAttrSetter(DatePicker.class.getName(), new DatePickerAttrSetter());
-        registerViewAttrSetter(RadioGroup.class.getName(), new RadioGroupAttrSetter<>());
-        registerViewAttrSetter(ProgressBar.class.getName(), new ProgressBarAttrSetter<>());
-        registerViewAttrSetter(Spinner.class.getName(), new SpinnerAttrSetter());
-        registerViewAttrSetter(TimePicker.class.getName(), new TimePickerAttrSetter());
+        mValueParser = valueParser;
+        registerViewAttrSetters();
+    }
 
+    protected void registerViewAttrSetters() {
+        registerViewAttrSetter(TextView.class.getName(), new TextViewAttrSetter<>(mValueParser));
+        registerViewAttrSetter(EditText.class.getName(), new TextViewAttrSetter<>(mValueParser));
+        registerViewAttrSetter(ImageView.class.getName(), new ImageViewAttrSetter<>(mValueParser));
+        registerViewAttrSetter(LinearLayout.class.getName(), new LinearLayoutAttrSetter<>(mValueParser));
+        registerViewAttrSetter(FrameLayout.class.getName(), new FrameLayoutAttrSetter<>(mValueParser));
+        registerViewAttrSetter(View.class.getName(), new BaseViewAttrSetter<>(mValueParser));
+        registerViewAttrSetter(Toolbar.class.getName(), new ToolbarAttrSetter<>(mValueParser));
+        registerViewAttrSetter(DatePicker.class.getName(), new DatePickerAttrSetter(mValueParser));
+        registerViewAttrSetter(RadioGroup.class.getName(), new RadioGroupAttrSetter<>(mValueParser));
+        registerViewAttrSetter(ProgressBar.class.getName(), new ProgressBarAttrSetter<>(mValueParser));
+        registerViewAttrSetter(Spinner.class.getName(), new SpinnerAttrSetter(mValueParser));
+        registerViewAttrSetter(TimePicker.class.getName(), new TimePickerAttrSetter(mValueParser));
     }
 
     public void registerViewAttrSetter(String fullName, ViewAttrSetter<?> setter) {

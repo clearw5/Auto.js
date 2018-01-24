@@ -26,8 +26,106 @@ import java.util.regex.Pattern;
 
 public class Drawables {
 
-    private static final Pattern DATA_PATTERN = Pattern.compile("data:(\\w+/\\w+);base64,(.+)");
-    private static ImageLoader sImageLoader = new ImageLoader() {
+    private final Pattern DATA_PATTERN = Pattern.compile("data:(\\w+/\\w+);base64,(.+)");
+    private static ImageLoader sDefaultImageLoader = new DefaultImageLoader();
+    private ImageLoader mImageLoader = sDefaultImageLoader;
+
+    public static void setDefaultImageLoader(ImageLoader defaultImageLoader) {
+        sDefaultImageLoader = defaultImageLoader;
+    }
+
+    public Drawable parse(Context context, String value) {
+        Resources resources = context.getResources();
+        if (value.startsWith("@color/") || value.startsWith("@android:color/") || value.startsWith("#")) {
+            return new ColorDrawable(Colors.parse(context, value));
+        }
+        if (value.startsWith("?")) {
+            return loadAttrResources(context, value);
+        }
+        if (value.startsWith("file://")) {
+            return decodeImage(value.substring(7));
+        }
+        return loadDrawableResources(context, value);
+    }
+
+    public Drawable loadDrawableResources(Context context, String value) {
+        return context.getResources().getDrawable(context.getResources().getIdentifier(value, "drawable",
+                context.getPackageName()));
+    }
+
+    public Drawable loadAttrResources(Context context, String value) {
+        int[] attr = {context.getResources().getIdentifier(value.substring(1), "attr",
+                context.getPackageName())};
+        TypedArray ta = context.obtainStyledAttributes(attr);
+        Drawable drawable = ta.getDrawable(0 /* index */);
+        ta.recycle();
+        return drawable;
+    }
+
+    public Drawable decodeImage(String path) {
+        return new BitmapDrawable(BitmapFactory.decodeFile(path));
+    }
+
+    public Drawable parse(View view, String name) {
+        return parse(view.getContext(), name);
+    }
+
+    public void loadInto(ImageView view, Uri uri) {
+        mImageLoader.loadInto(view, uri);
+    }
+
+    public void loadIntoBackground(View view, Uri uri) {
+        mImageLoader.loadIntoBackground(view, uri);
+    }
+
+    public <V extends ImageView> void setupWithImage(V view, String value) {
+        if (value.startsWith("http://") || value.startsWith("https://")) {
+            loadInto(view, Uri.parse(value));
+        } else if (value.startsWith("data:")) {
+            loadDataInto(view, value);
+        } else {
+            view.setImageDrawable(parse(view, value));
+        }
+    }
+
+    private void loadDataInto(ImageView view, String data) {
+        Bitmap bitmap = loadData(data);
+        view.setImageBitmap(bitmap);
+    }
+
+    public Bitmap loadData(String data) {
+        Matcher matcher = DATA_PATTERN.matcher(data);
+        if (!matcher.matches() || matcher.groupCount() != 2) {
+            return null;
+        }
+        String mimeType = matcher.group(1);
+        String base64 = matcher.group(2);
+        byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
+
+    public void setupWithViewBackground(View view, String value) {
+        if (value.startsWith("http://") || value.startsWith("https://")) {
+            loadIntoBackground(view, Uri.parse(value));
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                view.setBackground(parse(view, value));
+            } else {
+                view.setBackgroundDrawable(parse(view, value));
+            }
+        }
+    }
+
+    public void setImageLoader(ImageLoader imageLoader) {
+        mImageLoader = imageLoader;
+    }
+
+    public ImageLoader getImageLoader() {
+        return mImageLoader;
+    }
+
+    private static class DefaultImageLoader implements ImageLoader {
+
         @Override
         public void loadInto(final ImageView view, Uri uri) {
             load(view, uri, view::setImageDrawable);
@@ -66,87 +164,6 @@ public class Drawables {
                 }
             }).start();
         }
-    };
-
-    public static Drawable parse(Context context, String value) {
-        Resources resources = context.getResources();
-        if (value.startsWith("@color/") || value.startsWith("@android:color/") || value.startsWith("#")) {
-            return new ColorDrawable(Colors.parse(context, value));
-        }
-        if (value.startsWith("?")) {
-            int[] attr = {resources.getIdentifier(value.substring(1), "attr",
-                    context.getPackageName())};
-            TypedArray ta = context.obtainStyledAttributes(attr);
-            Drawable drawable = ta.getDrawable(0 /* index */);
-            ta.recycle();
-            return drawable;
-        }
-        if (value.startsWith("file://")) {
-            return decodeImage(value.substring(7));
-        }
-        return resources.getDrawable(resources.getIdentifier(value, "drawable",
-                context.getPackageName()));
-    }
-
-    private static Drawable decodeImage(String path) {
-        return new BitmapDrawable(BitmapFactory.decodeFile(path));
-    }
-
-    public static Drawable parse(View view, String name) {
-        return parse(view.getContext(), name);
-    }
-
-    public static void loadInto(ImageView view, Uri uri) {
-        sImageLoader.loadInto(view, uri);
-    }
-
-    public static void loadIntoBackground(View view, Uri uri) {
-        sImageLoader.loadIntoBackground(view, uri);
-    }
-
-    public static <V extends ImageView> void setupWithImage(V view, String value) {
-        if (value.startsWith("http://") || value.startsWith("https://")) {
-            loadInto(view, Uri.parse(value));
-        } else if(value.startsWith("data:")) {
-            loadDataInto(view, value);
-        }else {
-            view.setImageDrawable(Drawables.parse(view, value));
-        }
-    }
-
-    private static void loadDataInto(ImageView view, String data) {
-        Bitmap bitmap = loadData(data);
-        view.setImageBitmap(bitmap);
-    }
-
-    public static Bitmap loadData(String data){
-        Matcher matcher = DATA_PATTERN.matcher(data);
-        if(!matcher.matches() || matcher.groupCount() != 2){
-            return null;
-        }
-        String mimeType = matcher.group(1);
-        String base64 = matcher.group(2);
-        byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-    }
-
-    public static void setupWithViewBackground(View view, String value) {
-        if (value.startsWith("http://") || value.startsWith("https://")) {
-            loadIntoBackground(view, Uri.parse(value));
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                view.setBackground(com.stardust.autojs.core.ui.inflater.util.Drawables.parse(view, value));
-            } else {
-                view.setBackgroundDrawable(com.stardust.autojs.core.ui.inflater.util.Drawables.parse(view, value));
-            }
-        }
-    }
-
-    public static void setImageLoader(ImageLoader imageLoader) {
-        sImageLoader = imageLoader;
-    }
-
-    public static ImageLoader getImageLoader() {
-        return sImageLoader;
     }
 }
+

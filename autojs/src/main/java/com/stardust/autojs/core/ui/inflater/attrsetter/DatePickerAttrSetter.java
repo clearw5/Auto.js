@@ -9,6 +9,7 @@ import android.widget.DatePicker;
 
 
 import com.stardust.autojs.R;
+import com.stardust.autojs.core.ui.inflater.ValueParser;
 import com.stardust.autojs.core.ui.inflater.ViewCreator;
 
 import java.text.ParseException;
@@ -23,6 +24,10 @@ import java.util.Map;
 public class DatePickerAttrSetter extends BaseViewAttrSetter<DatePicker> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("mm/dd/yyyy", Locale.getDefault());
+
+    public DatePickerAttrSetter(ValueParser valueParser) {
+        super(valueParser);
+    }
 
     @Override
     public boolean setAttr(DatePicker view, String attr, String value, ViewGroup parent, Map<String, String> attrs) {

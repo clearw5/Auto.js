@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 
+import com.stardust.autojs.core.ui.inflater.ValueParser;
 import com.stardust.autojs.core.ui.inflater.ViewAttrSetter;
 import com.stardust.autojs.core.ui.inflater.ViewCreator;
 import com.stardust.autojs.core.ui.inflater.util.Colors;
@@ -89,6 +90,17 @@ public class BaseViewAttrSetter<V extends View> implements ViewAttrSetter<V> {
             .map("textStart", 2)
             .map("viewEnd", 6)
             .map("viewStart", 5);
+
+    private final ValueParser mValueParser;
+
+    public BaseViewAttrSetter(ValueParser valueParser) {
+        mValueParser = valueParser;
+    }
+
+    public Drawables getDrawables(){
+        return mValueParser.getDrawables();
+    }
+
 
     @Override
     public boolean setAttr(V view, String attr, String value, ViewGroup parent, Map<String, String> attrs) {
@@ -252,7 +264,7 @@ public class BaseViewAttrSetter<V extends View> implements ViewAttrSetter<V> {
                 view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight(), Dimensions.parseToIntPixel(value, view));
                 break;
             case "background":
-                Drawables.setupWithViewBackground(view, value);
+                getDrawables().setupWithViewBackground(view, value);
                 break;
             case "accessibilityLiveRegion":
             case "accessibilityTraversalAfter":
@@ -333,7 +345,7 @@ public class BaseViewAttrSetter<V extends View> implements ViewAttrSetter<V> {
                 break;
             case "foreground":
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    view.setForeground(Drawables.parse(view, value));
+                    view.setForeground(getDrawables().parse(view, value));
                 }
                 break;
             case "foregroundGravity":

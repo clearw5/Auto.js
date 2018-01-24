@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 
+import com.stardust.autojs.core.ui.inflater.ValueParser;
 import com.stardust.autojs.core.ui.inflater.ViewCreator;
 import com.stardust.autojs.core.ui.inflater.util.Dimensions;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
@@ -26,6 +27,10 @@ public class SpinnerAttrSetter extends BaseViewAttrSetter<Spinner> {
     protected static final ValueMapper<Integer> SPINNER_MODES = new ValueMapper<Integer>("spinnerMode")
             .map("dialog", Spinner.MODE_DIALOG)
             .map("dropdown", Spinner.MODE_DROPDOWN);
+
+    public SpinnerAttrSetter(ValueParser valueParser) {
+        super(valueParser);
+    }
 
     @Override
     public boolean setAttr(Spinner view, String attr, String value, ViewGroup parent, Map<String, String> attrs) {
@@ -50,7 +55,7 @@ public class SpinnerAttrSetter extends BaseViewAttrSetter<Spinner> {
                 break;
             case "popupBackground":
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setPopupBackgroundDrawable(Drawables.parse(view, value));
+                    view.setPopupBackgroundDrawable(getDrawables().parse(view, value));
                 }
                 break;
             case "prompt":

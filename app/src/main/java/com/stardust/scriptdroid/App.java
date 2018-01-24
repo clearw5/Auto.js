@@ -87,7 +87,7 @@ public class App extends MultiDexApplication {
     }
 
     private void setupDrawableImageLoader() {
-        Drawables.setImageLoader(new ImageLoader() {
+        Drawables.setDefaultImageLoader(new ImageLoader() {
             @Override
             public void loadInto(ImageView imageView, Uri uri) {
                 GlideApp.with(App.this)

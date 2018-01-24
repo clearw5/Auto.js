@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.TimePicker;
 
 import com.stardust.autojs.R;
+import com.stardust.autojs.core.ui.inflater.ValueParser;
 import com.stardust.autojs.core.ui.inflater.ViewCreator;
 
 /**
@@ -12,6 +13,10 @@ import com.stardust.autojs.core.ui.inflater.ViewCreator;
  */
 
 public class TimePickerAttrSetter extends BaseViewAttrSetter<TimePicker> {
+
+    public TimePickerAttrSetter(ValueParser valueParser) {
+        super(valueParser);
+    }
 
     @Nullable
     @Override

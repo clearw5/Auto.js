@@ -4,6 +4,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.stardust.autojs.core.ui.inflater.ValueParser;
 import com.stardust.autojs.core.ui.inflater.util.Gravities;
 
 import java.util.Map;
@@ -15,6 +16,10 @@ import java.util.Map;
 public class FrameLayoutAttrSetter<V extends FrameLayout> extends ViewGroupAttrSetter<V> {
 
     private Integer mGravity;
+
+    public FrameLayoutAttrSetter(ValueParser valueParser) {
+        super(valueParser);
+    }
 
     @Override
     public boolean setAttr(V view, String attr, String value, ViewGroup parent, Map<String, String> attrs) {

@@ -3,6 +3,7 @@ package com.stardust.autojs.core.ui.inflater.attrsetter;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
 
+import com.stardust.autojs.core.ui.inflater.ValueParser;
 import com.stardust.autojs.core.ui.inflater.util.Ids;
 
 import java.util.Map;
@@ -14,6 +15,10 @@ import java.util.Map;
 public class RadioGroupAttrSetter<V extends RadioGroup> extends LinearLayoutAttrSetter<V> {
 
     private Integer mCheckedButton;
+
+    public RadioGroupAttrSetter(ValueParser valueParser) {
+        super(valueParser);
+    }
 
     @Override
     public boolean setAttr(V view, String attr, String value, ViewGroup parent, Map<String, String> attrs) {

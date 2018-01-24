@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import com.stardust.autojs.core.ui.inflater.ValueParser;
 import com.stardust.autojs.core.ui.inflater.util.Colors;
 import com.stardust.autojs.core.ui.inflater.util.Dimensions;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
@@ -122,6 +123,10 @@ public class TextViewAttrSetter<V extends TextView> extends BaseViewAttrSetter<V
     private Integer mTextStyle;
     private String mTypeface;
 
+    public TextViewAttrSetter(ValueParser valueParser) {
+        super(valueParser);
+    }
+
     @Override
     public boolean setAttr(V view, String attrName, String value, ViewGroup parent, Map<String, String> attrs) {
         if (super.setAttr(view, attrName, value, parent, attrs)) {
@@ -148,16 +153,16 @@ public class TextViewAttrSetter<V extends TextView> extends BaseViewAttrSetter<V
                 }
                 break;
             case "drawableBottom":
-                mDrawableBottom = Drawables.parse(view, value);
+                mDrawableBottom = getDrawables().parse(view, value);
                 break;
             case "drawableTop":
-                mDrawableTop = Drawables.parse(view, value);
+                mDrawableTop = getDrawables().parse(view, value);
                 break;
             case "drawableLeft":
-                mDrawableLeft = Drawables.parse(view, value);
+                mDrawableLeft = getDrawables().parse(view, value);
                 break;
             case "drawableRight":
-                mDrawableRight = Drawables.parse(view, value);
+                mDrawableRight = getDrawables().parse(view, value);
                 break;
             case "drawablePadding":
                 view.setCompoundDrawablePadding(Dimensions.parseToIntPixel(value, view));

@@ -5,6 +5,7 @@ import android.view.InflateException;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.stardust.autojs.core.ui.inflater.ValueParser;
 import com.stardust.autojs.core.ui.inflater.util.Colors;
 import com.stardust.autojs.core.ui.inflater.util.Dimensions;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
@@ -16,6 +17,10 @@ import java.util.Map;
  */
 
 public class ImageViewAttrSetter<V extends ImageView> extends BaseViewAttrSetter<V> {
+
+    public ImageViewAttrSetter(ValueParser valueParser) {
+        super(valueParser);
+    }
 
     @Override
     public boolean setAttr(V view, String attr, String value, ViewGroup parent, Map<String, String> attrs) {
@@ -44,13 +49,13 @@ public class ImageViewAttrSetter<V extends ImageView> extends BaseViewAttrSetter
                 view.setMaxWidth(Dimensions.parseToIntPixel(value, view));
                 break;
             case "path":
-                Drawables.setupWithImage(view,  wrapAsPath(value));
+                getDrawables().setupWithImage(view,  wrapAsPath(value));
                 break;
             case "scaleType":
                 view.setScaleType(parseScaleType(value));
                 break;
             case "src":
-                Drawables.setupWithImage(view, value);
+                getDrawables().setupWithImage(view, value);
                 break;
             case "tint":
                 view.setColorFilter(Colors.parse(view, value));
@@ -61,7 +66,7 @@ public class ImageViewAttrSetter<V extends ImageView> extends BaseViewAttrSetter
                 }
                 break;
             case "url":
-                Drawables.setupWithImage(view,  wrapAsUrl(value));
+                getDrawables().setupWithImage(view,  wrapAsUrl(value));
                 break;
             default:
                 return false;

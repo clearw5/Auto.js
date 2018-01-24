@@ -5,8 +5,6 @@ import android.view.View;
 
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
 import com.stardust.autojs.core.ui.widget.JsFrameLayout;
-import com.stardust.autojs.core.ui.widget.JsImageView;
-import com.stardust.autojs.core.ui.inflater.attrsetter.JsImageViewAttrSetter;
 import com.stardust.autojs.core.ui.xml.XmlConverter;
 
 
@@ -18,22 +16,12 @@ public class ConvertLayoutInflater implements JsLayoutInflater {
 
     private DynamicLayoutInflater mDynamicLayoutInflater;
 
-    public ConvertLayoutInflater() {
-
-    }
-
-    private void ensureInflater(Context context) {
-        if (mDynamicLayoutInflater != null) {
-            return;
-        }
-        mDynamicLayoutInflater = new DynamicLayoutInflater(context);
-        mDynamicLayoutInflater.registerViewAttrSetter(JsImageView.class.getName(),
-                new JsImageViewAttrSetter<>());
+    public ConvertLayoutInflater(DynamicLayoutInflater dynamicLayoutInflater) {
+        mDynamicLayoutInflater = dynamicLayoutInflater;
     }
 
     @Override
     public View inflate(Context context, String xml) {
-        ensureInflater(context);
         try {
             String androidLayoutXml = XmlConverter.convertToAndroidLayout(xml);
             JsFrameLayout root = new JsFrameLayout(context);

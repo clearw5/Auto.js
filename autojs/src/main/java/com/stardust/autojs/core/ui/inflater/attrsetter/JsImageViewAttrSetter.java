@@ -1,9 +1,13 @@
 package com.stardust.autojs.core.ui.inflater.attrsetter;
 
+import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
 
 import com.makeramen.roundedimageview.Corner;
+import com.stardust.autojs.core.ui.inflater.ValueParser;
+import com.stardust.autojs.core.ui.inflater.ViewCreator;
 import com.stardust.autojs.core.ui.inflater.util.Colors;
 import com.stardust.autojs.core.ui.inflater.util.Dimensions;
 import com.stardust.autojs.core.ui.inflater.util.ValueMapper;
@@ -16,7 +20,7 @@ import java.util.Map;
  * Created by Stardust on 2017/11/30.
  */
 
-public class JsImageViewAttrSetter<V extends JsImageView> extends ImageViewAttrSetter<V> {
+public class JsImageViewAttrSetter extends ImageViewAttrSetter<JsImageView> {
 
 
     protected static final ValueMapper<ScaleType> SCALE_TYPES = new ValueMapper<ScaleType>("scaleType")
@@ -29,8 +33,12 @@ public class JsImageViewAttrSetter<V extends JsImageView> extends ImageViewAttrS
             .map("fitXY", ScaleType.FIT_XY)
             .map("matrix", ScaleType.MATRIX);
 
+    public JsImageViewAttrSetter(ValueParser valueParser) {
+        super(valueParser);
+    }
+
     @Override
-    public boolean setAttr(V view, String attr, String value, ViewGroup parent, Map<String, String> attrs) {
+    public boolean setAttr(JsImageView view, String attr, String value, ViewGroup parent, Map<String, String> attrs) {
         switch (attr) {
             case "radius":
                 view.setCornerRadius(Dimensions.parseToPixel(value, view));
@@ -63,5 +71,15 @@ public class JsImageViewAttrSetter<V extends JsImageView> extends ImageViewAttrS
                 return super.setAttr(view, attr, value, parent, attrs);
         }
         return true;
+    }
+
+    @Nullable
+    @Override
+    public ViewCreator<JsImageView> getCreator() {
+        return (context, attrs) -> {
+            JsImageView imageView = new JsImageView(context);
+            imageView.setDrawables(getDrawables());
+            return imageView;
+        };
     }
 }

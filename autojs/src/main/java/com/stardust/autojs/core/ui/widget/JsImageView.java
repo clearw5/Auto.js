@@ -14,6 +14,7 @@ import com.stardust.autojs.core.ui.inflater.util.Drawables;
 public class JsImageView extends RoundedImageView {
 
     private boolean mCircle;
+    private Drawables mDrawables;
 
     public JsImageView(Context context) {
         super(context);
@@ -39,7 +40,7 @@ public class JsImageView extends RoundedImageView {
     }
 
     public void setSource(String uri) {
-        Drawables.setupWithImage(this, uri);
+        getDrawables().setupWithImage(this, uri);
     }
 
     @Override
@@ -49,5 +50,13 @@ public class JsImageView extends RoundedImageView {
         if (mCircle) {
             setCornerRadius(getMeasuredWidth() / 2);
         }
+    }
+
+    public void setDrawables(Drawables drawables) {
+        mDrawables = drawables;
+    }
+
+    public Drawables getDrawables() {
+        return mDrawables;
     }
 }

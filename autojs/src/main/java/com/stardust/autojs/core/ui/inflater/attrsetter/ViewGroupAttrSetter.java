@@ -4,6 +4,7 @@ import android.animation.LayoutTransition;
 import android.os.Build;
 import android.view.ViewGroup;
 
+import com.stardust.autojs.core.ui.inflater.ValueParser;
 import com.stardust.autojs.core.ui.inflater.util.ValueMapper;
 
 import java.util.Map;
@@ -28,6 +29,10 @@ public class ViewGroupAttrSetter<V extends ViewGroup> extends BaseViewAttrSetter
             .map("afterDescendants", ViewGroup.FOCUS_AFTER_DESCENDANTS)
             .map("beforeDescendants", ViewGroup.FOCUS_BEFORE_DESCENDANTS)
             .map("blocksDescendants", ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+
+    public ViewGroupAttrSetter(ValueParser valueParser) {
+        super(valueParser);
+    }
 
 
     @Override

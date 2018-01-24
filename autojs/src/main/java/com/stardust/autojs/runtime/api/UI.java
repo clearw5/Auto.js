@@ -1,10 +1,16 @@
 package com.stardust.autojs.runtime.api;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 
 import com.stardust.autojs.core.ui.ConvertLayoutInflater;
 import com.stardust.autojs.core.ui.JsLayoutInflater;
+import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
+import com.stardust.autojs.core.ui.inflater.ValueParser;
+import com.stardust.autojs.core.ui.inflater.attrsetter.JsImageViewAttrSetter;
+import com.stardust.autojs.core.ui.widget.JsImageView;
 import com.stardust.autojs.rhino.ProxyObject;
+import com.stardust.autojs.runtime.ScriptRuntime;
 
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.UniqueTag;
@@ -22,15 +28,18 @@ public class UI extends ProxyObject {
     private Context mContext;
     private Map<String, Object> mProperties = new ConcurrentHashMap<>();
     private JsLayoutInflater mJsLayoutInflater;
+    private ScriptRuntime mRuntime;
+    private ValueParser mValueParser;
 
-    public UI(Context context, JsLayoutInflater layoutInflater) {
+    public UI(Context context, ScriptRuntime runtime) {
         mContext = context;
-        mProperties.put("layoutInflater", layoutInflater);
-        mJsLayoutInflater = layoutInflater;
-    }
-
-    public UI(Context context) {
-        this(context, new ConvertLayoutInflater());
+        mRuntime = runtime;
+        mValueParser = new ValueParser(new Drawables());
+        DynamicLayoutInflater inflater = new DynamicLayoutInflater(context, mValueParser);
+        inflater.registerViewAttrSetter(JsImageView.class.getName(),
+                new JsImageViewAttrSetter(mValueParser));
+        mJsLayoutInflater = new ConvertLayoutInflater(inflater);
+        mProperties.put("layoutInflater", mJsLayoutInflater);
     }
 
 
@@ -57,6 +66,13 @@ public class UI extends ProxyObject {
     }
 
 
+    private class Drawables extends com.stardust.autojs.core.ui.inflater.util.Drawables {
+
+        @Override
+        public Drawable decodeImage(String path) {
+            return super.decodeImage(mRuntime.files.path(path));
+        }
+    }
 
 
 }

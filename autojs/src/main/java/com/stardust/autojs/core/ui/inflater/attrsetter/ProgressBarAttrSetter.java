@@ -5,6 +5,7 @@ import android.os.Build;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.stardust.autojs.core.ui.inflater.ValueParser;
 import com.stardust.autojs.core.ui.inflater.util.Colors;
 import com.stardust.autojs.core.ui.inflater.util.Dimensions;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
@@ -16,6 +17,10 @@ import java.util.Map;
  */
 
 public class ProgressBarAttrSetter<V extends ProgressBar> extends BaseViewAttrSetter<V> {
+
+    public ProgressBarAttrSetter(ValueParser valueParser) {
+        super(valueParser);
+    }
 
     @Override
     public boolean setAttr(V view, String attr, String value, ViewGroup parent, Map<String, String> attrs) {
@@ -30,7 +35,7 @@ public class ProgressBarAttrSetter<V extends ProgressBar> extends BaseViewAttrSe
                 Exceptions.unsupports(view, attr, value);
                 break;
             case "indeterminateDrawable":
-                view.setIndeterminateDrawable(Drawables.parse(view, value));
+                view.setIndeterminateDrawable(getDrawables().parse(view, value));
                 break;
             case "indeterminateDuration":
                 Exceptions.unsupports(view, attr, value);
@@ -86,7 +91,7 @@ public class ProgressBarAttrSetter<V extends ProgressBar> extends BaseViewAttrSe
                 }
                 break;
             case "progressDrawable":
-                view.setProgressDrawable(Drawables.parse(view, value));
+                view.setProgressDrawable(getDrawables().parse(view, value));
                 break;
             case "progressTint":
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

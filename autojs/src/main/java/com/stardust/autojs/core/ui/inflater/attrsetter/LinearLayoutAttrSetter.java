@@ -3,6 +3,7 @@ package com.stardust.autojs.core.ui.inflater.attrsetter;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.stardust.autojs.core.ui.inflater.ValueParser;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
 import com.stardust.autojs.core.ui.inflater.util.Gravities;
 import com.stardust.autojs.core.ui.inflater.util.ValueMapper;
@@ -19,6 +20,10 @@ public class LinearLayoutAttrSetter<V extends LinearLayout> extends ViewGroupAtt
             .map("vertical", LinearLayout.VERTICAL)
             .map("horizontal", LinearLayout.HORIZONTAL);
 
+    public LinearLayoutAttrSetter(ValueParser valueParser) {
+        super(valueParser);
+    }
+
     @Override
     public boolean setAttr(V view, String attr, String value, ViewGroup parent, Map<String, String> attrs) {
         switch (attr) {
@@ -29,7 +34,7 @@ public class LinearLayoutAttrSetter<V extends LinearLayout> extends ViewGroupAtt
                 view.setBaselineAlignedChildIndex(Integer.valueOf(value));
                 break;
             case "divider":
-                view.setDividerDrawable(Drawables.parse(view, value));
+                view.setDividerDrawable(getDrawables().parse(view, value));
                 break;
             case "gravity":
                 view.setGravity(Gravities.parse(value));
