@@ -8,8 +8,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 240
-        versionName "3.0.0 Alpha40"
+        versionCode 242
+        versionName "3.0.0 Alpha42"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
