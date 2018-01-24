@@ -109,7 +109,7 @@ public class Images {
             return mPreCaptureImage;
         }
         mPreCapture = capture;
-        if(mPreCaptureImage != null){
+        if (mPreCaptureImage != null) {
             mPreCaptureImage.recycle();
         }
         mPreCaptureImage = ImageWrapper.ofImage(capture);
@@ -132,12 +132,16 @@ public class Images {
     }
 
     public static int pixel(ImageWrapper image, int x, int y) {
-        if(image == null){
+        if (image == null) {
             throw new NullPointerException("image = null");
         }
         x = ScreenMetrics.rescaleX(x, image.getWidth());
         y = ScreenMetrics.rescaleY(y, image.getHeight());
         return image.pixel(x, y);
+    }
+
+    public ImageWrapper clip(ImageWrapper img, int x, int y, int w, int h) {
+        return ImageWrapper.ofBitmap(Bitmap.createBitmap(img.getBitmap(), x, y, w, h));
     }
 
 

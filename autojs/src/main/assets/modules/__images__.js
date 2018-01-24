@@ -32,6 +32,8 @@ module.exports = function(__runtime__, scope){
 
    images.saveImage = rtImages.saveImage.bind(rtImages);
 
+   images.clip = rtImages.clip.bind(rtImages);
+
    images.save = rtImages.saveImage;
 
    images.pixel = rtImages.pixel;
