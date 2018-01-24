@@ -118,6 +118,7 @@ public class Images {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean captureScreen(String path) {
+        path = mScriptRuntime.files.path(path);
         ImageWrapper image = captureScreen();
         if (image != null) {
             saveImage(image, path);
@@ -130,21 +131,10 @@ public class Images {
         image.saveTo(path);
     }
 
-
-    public static int pixel(Image image, int x, int y) {
-        int originX = x;
-        int originY = y;
-        ScreenMetrics metrics = new ScreenMetrics(image.getWidth(), image.getHeight());
-        x = metrics.rescaleX(x);
-        y = metrics.rescaleY(y);
-        Image.Plane plane = image.getPlanes()[0];
-        int offset = y * plane.getRowStride() + x * plane.getPixelStride();
-        int c = plane.getBuffer().getInt(offset);
-        Log.d("Images", String.format(Locale.getDefault(), "(%d, %d)→(%d, %d)", originX, originY, x, y));
-        return (c & 0xff000000) + ((c & 0xff) << 16) + (c & 0x00ff00) + ((c & 0xff0000) >> 16);
-    }
-
     public static int pixel(ImageWrapper image, int x, int y) {
+        if(image == null){
+            throw new NullPointerException("image = null");
+        }
         x = ScreenMetrics.rescaleX(x, image.getWidth());
         y = ScreenMetrics.rescaleY(y, image.getHeight());
         return image.pixel(x, y);
@@ -152,6 +142,7 @@ public class Images {
 
 
     public ImageWrapper read(String path) {
+        path = mScriptRuntime.files.path(path);
         Bitmap bitmap = BitmapFactory.decodeFile(path);
         return ImageWrapper.ofBitmap(bitmap);
     }

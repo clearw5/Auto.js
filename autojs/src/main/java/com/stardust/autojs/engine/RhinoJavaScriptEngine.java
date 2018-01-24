@@ -39,7 +39,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private static int contextCount = 0;
     private static StringScriptSource sInitScript;
-    private List<String> mRequirePath = Collections.emptyList();
 
     private Context mContext;
     private Scriptable mScriptable;
@@ -99,7 +98,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     public void init() {
         mThread = Thread.currentThread();
         ScriptableObject.putProperty(mScriptable, "__engine__", this);
-        mRequirePath = (List<String>) getTag(TAG_ENV_PATH);
         initRequireBuilder(mContext, mScriptable);
         mContext.evaluateString(mScriptable, getInitScript().getScript(), "<init>", 1, null);
     }
@@ -119,13 +117,8 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     }
 
     void initRequireBuilder(Context context, Scriptable scope) {
-        List<URI> list = new ArrayList<>();
-        if (mRequirePath != null) {
-            for (String path : mRequirePath) {
-                list.add(new File(path).toURI());
-            }
-        }
-        AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(mAndroidContext, list);
+        AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(mAndroidContext,
+                Collections.singletonList(new File("/").toURI()));
         new RequireBuilder()
                 .setModuleScriptProvider(new SoftCachingModuleScriptProvider(provider))
                 .setSandboxed(false)

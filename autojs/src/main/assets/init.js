@@ -88,3 +88,11 @@ require("__globals__")(__runtime__, this);
 __importClass__(android.view.KeyEvent);
 __importClass__(com.stardust.autojs.core.util.Shell);
 
+(function(){
+    var __require__ = require;
+    require = function(path){
+        path = files.path(path);
+        return __require__(path);
+    };
+})();
+

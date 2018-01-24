@@ -27,219 +27,165 @@ public class Files {
         mRuntime = runtime;
     }
 
+    public String path(String relativePath) {
+        String cwd = cwd();
+        if (cwd == null || relativePath == null || relativePath.startsWith("/"))
+            return relativePath;
+        File f = new File(cwd);
+        String[] paths = relativePath.split("/");
+        for (String path : paths) {
+            if (path.equals("."))
+                continue;
+            if (path.equals("..")) {
+                f = f.getParentFile();
+                continue;
+            }
+            f = new File(f, path);
+        }
+        return f.getPath();
+    }
+
     public String cwd() {
         return ((ScriptEngine.AbstractScriptEngine) mRuntime.engines.myEngine()).cwd();
     }
 
-    public static PFileInterface open(String path, String mode, String encoding, int bufferSize) {
-        return PFiles.open(path, mode, encoding, bufferSize);
+    public PFileInterface open(String path, String mode, String encoding, int bufferSize) {
+        return PFiles.open(path(path), mode, encoding, bufferSize);
     }
 
-    public static Object open(String path, String mode, String encoding) {
-        return PFiles.open(path, mode, encoding);
+    public Object open(String path, String mode, String encoding) {
+        return PFiles.open(path(path), mode, encoding);
     }
 
-    public static Object open(String path, String mode) {
-        return PFiles.open(path, mode);
+    public Object open(String path, String mode) {
+        return PFiles.open(path(path), mode);
     }
 
-    public static Object open(String path) {
-        return PFiles.open(path);
+    public Object open(String path) {
+        return PFiles.open(path(path));
     }
 
-    public static boolean create(String path) {
-        return PFiles.create(path);
+    public boolean create(String path) {
+        return PFiles.create(path(path));
     }
 
-    public static boolean createIfNotExists(String path) {
-        return PFiles.createIfNotExists(path);
+    public boolean createIfNotExists(String path) {
+        return PFiles.createIfNotExists(path(path));
     }
 
-    public static boolean createWithDirs(String path) {
-        return PFiles.createWithDirs(path);
+    public boolean createWithDirs(String path) {
+        return PFiles.createWithDirs(path(path));
     }
 
-    public static boolean exists(String path) {
-        return PFiles.exists(path);
+    public boolean exists(String path) {
+        return PFiles.exists(path(path));
     }
 
-    public static boolean ensureDir(String path) {
-        return PFiles.ensureDir(path);
+    public boolean ensureDir(String path) {
+        return PFiles.ensureDir(path(path));
     }
 
-    public static String read(String path, String encoding) {
-        return PFiles.read(path, encoding);
+    public String read(String path, String encoding) {
+        return PFiles.read(path(path), encoding);
     }
 
-    public static String read(String path) {
-        return PFiles.read(path);
+    public String read(String path) {
+        return PFiles.read(path(path));
     }
 
-    public static String read(File file, String encoding) {
-        return PFiles.read(file, encoding);
+    public void write(String path, String text) {
+        PFiles.write(path(path), text);
     }
 
-    public static String read(File file) {
-        return PFiles.read(file);
+    public void write(String path, String text, String encoding) {
+        PFiles.write(path(path), text, encoding);
     }
 
-    public static String read(InputStream is, String encoding) {
-        return PFiles.read(is, encoding);
+    public void append(String path, String text) {
+        PFiles.append(path(path), text);
     }
 
-    public static String read(InputStream inputStream) {
-        return PFiles.read(inputStream);
+    public void append(String path, String text, String encoding) {
+        PFiles.append(path(path), text, encoding);
     }
 
-    public static byte[] readBytes(InputStream is) {
-        return PFiles.readBytes(is);
+    public void appendBytes(String path, byte[] bytes) {
+        PFiles.appendBytes(path(path), bytes);
     }
 
-    public static boolean copyRaw(Context context, int rawId, String path) {
-        return PFiles.copyRaw(context, rawId, path);
+    public void writeBytes(String path, byte[] bytes) {
+        PFiles.writeBytes(path(path), bytes);
     }
 
-    public static boolean copyStream(InputStream is, String path) {
-        return PFiles.copyStream(is, path);
+    public boolean copy(String pathFrom, String pathTo) {
+        return PFiles.copy(path(pathFrom), path(pathTo));
     }
 
-    public static void write(InputStream is, OutputStream os) {
-        PFiles.write(is, os);
+    public boolean renameWithoutExtension(String path, String newName) {
+        return PFiles.renameWithoutExtension(path(path), newName);
     }
 
-    public static void write(String path, String text) {
-        PFiles.write(path, text);
+    public boolean rename(String path, String newName) {
+        return PFiles.rename(path(path), newName);
     }
 
-    public static void write(String path, String text, String encoding) {
-        PFiles.write(path, text, encoding);
+    public boolean move(String path, String newPath) {
+        return PFiles.move(path(path), newPath);
     }
 
-    public static void write(File file, String text) {
-        PFiles.write(file, text);
-    }
-
-    public static void write(FileOutputStream fileOutputStream, String text) {
-        PFiles.write(fileOutputStream, text);
-    }
-
-    public static void write(OutputStream outputStream, String text, String encoding) {
-        PFiles.write(outputStream, text, encoding);
-    }
-
-    public static void append(String path, String text) {
-        PFiles.append(path, text);
-    }
-
-    public static void append(String path, String text, String encoding) {
-        PFiles.append(path, text, encoding);
-    }
-
-    public static void writeBytes(OutputStream outputStream, byte[] bytes) {
-        PFiles.writeBytes(outputStream, bytes);
-    }
-
-    public static void appendBytes(String path, byte[] bytes) {
-        PFiles.appendBytes(path, bytes);
-    }
-
-    public static void writeBytes(String path, byte[] bytes) {
-        PFiles.writeBytes(path, bytes);
-    }
-
-    public static boolean copy(String pathFrom, String pathTo) {
-        return PFiles.copy(pathFrom, pathTo);
-    }
-
-    public static boolean copyAsset(Context context, String assetFile, String path) {
-        return PFiles.copyAsset(context, assetFile, path);
-    }
-
-    public static String renameWithoutExtensionAndReturnNewPath(String path, String newName) {
-        return PFiles.renameWithoutExtensionAndReturnNewPath(path, newName);
-    }
-
-    public static boolean renameWithoutExtension(String path, String newName) {
-        return PFiles.renameWithoutExtension(path, newName);
-    }
-
-    public static boolean rename(String path, String newName) {
-        return PFiles.rename(path, newName);
-    }
-
-    public static boolean move(String path, String newPath) {
-        return PFiles.move(path, newPath);
-    }
-
-    public static String getExtension(String fileName) {
+    public String getExtension(String fileName) {
         return PFiles.getExtension(fileName);
     }
 
-    public static String generateNotExistingPath(String path, String extension) {
-        return PFiles.generateNotExistingPath(path, extension);
-    }
-
-    public static String getName(String filePath) {
+    public String getName(String filePath) {
         return PFiles.getName(filePath);
     }
 
-    public static String getNameWithoutExtension(String filePath) {
+    public String getNameWithoutExtension(String filePath) {
         return PFiles.getNameWithoutExtension(filePath);
     }
 
-    public static File copyAssetToTmpFile(Context context, String path) {
-        return PFiles.copyAssetToTmpFile(context, path);
+    public boolean remove(String path) {
+        return PFiles.remove(path(path));
     }
 
-    public static boolean deleteRecursively(File file) {
-        return PFiles.deleteRecursively(file);
+    public boolean removeDir(String path) {
+        return PFiles.removeDir(path(path));
     }
 
-    public static boolean remove(String path) {
-        return PFiles.remove(path);
-    }
-
-    public static boolean removeDir(String path) {
-        return PFiles.removeDir(path);
-    }
-
-    public static String getSdcardPath() {
+    public String getSdcardPath() {
         return PFiles.getSdcardPath();
     }
 
-    public static String readAsset(AssetManager assets, String path) {
-        return PFiles.readAsset(assets, path);
+    public String[] listDir(String path) {
+        return PFiles.listDir(path(path));
     }
 
-    public static String[] listDir(String path) {
-        return PFiles.listDir(path);
+    public String[] listDir(String path, Func1<String, Boolean> filter) {
+        return PFiles.listDir(path(path), filter);
     }
 
-    public static String[] listDir(String path, Func1<String, Boolean> filter) {
-        return PFiles.listDir(path, filter);
+    public boolean isFile(String path) {
+        return PFiles.isFile(path(path));
     }
 
-    public static boolean isFile(String path) {
-        return PFiles.isFile(path);
+    public boolean isDir(String path) {
+        return PFiles.isDir(path(path));
     }
 
-    public static boolean isDir(String path) {
-        return PFiles.isDir(path);
-    }
-
-    public static boolean isEmptyDir(String path) {
-        return PFiles.isEmptyDir(path);
+    public boolean isEmptyDir(String path) {
+        return PFiles.isEmptyDir(path(path));
     }
 
     public static String join(String parent, String... child) {
         return PFiles.join(parent, child);
     }
 
-    public static String getHumanReadableSize(long bytes) {
+    public String getHumanReadableSize(long bytes) {
         return PFiles.getHumanReadableSize(bytes);
     }
 
-    public static String getSimplifiedPath(String path) {
+    public String getSimplifiedPath(String path) {
         return PFiles.getSimplifiedPath(path);
     }
 }
