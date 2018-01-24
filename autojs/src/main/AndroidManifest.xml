@@ -13,14 +13,13 @@
         >
         <activity
             android:name=".execution.ScriptExecuteActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/AppTheme"/>
 
         <activity
             android:name="com.stardust.autojs.core.image.ScreenCaptureRequestActivity"
             android:excludeFromRecents="true"
             android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
             android:theme="@style/AppTheme.Transparent"/>
-
 
 
     </application>

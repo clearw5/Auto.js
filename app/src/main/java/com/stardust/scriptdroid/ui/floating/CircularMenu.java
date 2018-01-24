@@ -31,9 +31,12 @@ import com.stardust.scriptdroid.ui.main.scripts.ScriptListView;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.view.accessibility.LayoutInspector;
+import com.stardust.view.accessibility.NodeInfo;
 import com.stericson.RootShell.RootShell;
 
 import org.greenrobot.eventbus.EventBus;
+import org.jdeferred.Deferred;
+import org.jdeferred.impl.DeferredObject;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -43,7 +46,8 @@ import butterknife.Optional;
  * Created by Stardust on 2017/10/18.
  */
 
-public class CircularMenu implements Recorder.OnStateChangedListener {
+public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInspector.CaptureAvailableListener {
+
 
     public static class StateChangeEvent {
         private int currentState;
@@ -76,6 +80,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
     private GlobalActionRecorder mRecorder;
     private MaterialDialog mSettingsDialog;
     private String mRunningPackage, mRunningActivity;
+    private Deferred<NodeInfo, Void, Void> mCaptureDeferred;
 
     public CircularMenu(Context context) {
         mContext = new ContextThemeWrapper(context, R.style.AppTheme);
@@ -83,6 +88,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
         setupListeners();
         mRecorder = GlobalActionRecorder.getSingleton(context);
         mRecorder.addOnStateChangedListener(this);
+        AutoJs.getInstance().getLayoutInspector().addCaptureAvailableListener(this);
     }
 
     private void setupListeners() {
@@ -92,6 +98,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
             } else if (mWindow.isExpanded()) {
                 mWindow.collapse();
             } else {
+                mCaptureDeferred = new DeferredObject<>();
                 AutoJs.getInstance().getLayoutInspector().captureCurrentWindow();
                 mWindow.expand();
             }
@@ -182,11 +189,13 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
         if (!ensureCapture()) {
             return;
         }
-        LayoutBoundsFloatyWindow window = new LayoutBoundsFloatyWindow(
-                AutoJs.getInstance().getLayoutInspector().getCapture()
-        );
-        FloatyService.addWindow(window);
+        mCaptureDeferred.promise()
+                .done(capture -> {
+                    LayoutBoundsFloatyWindow window = new LayoutBoundsFloatyWindow(capture);
+                    mActionViewIcon.post(() -> FloatyService.addWindow(window));
+                });
     }
+
 
     @Optional
     @OnClick(R.id.layout_hierarchy)
@@ -195,20 +204,28 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
         if (!ensureCapture()) {
             return;
         }
-        LayoutHierarchyFloatyWindow window = new LayoutHierarchyFloatyWindow(
-                AutoJs.getInstance().getLayoutInspector().getCapture()
-        );
-        FloatyService.addWindow(window);
+        mCaptureDeferred.promise()
+                .done(capture -> {
+                    LayoutHierarchyFloatyWindow window = new LayoutHierarchyFloatyWindow(capture);
+                    mActionViewIcon.post(() -> FloatyService.addWindow(window));
+                });
+
+    }
+
+    @Override
+    public void onCaptureAvailable(NodeInfo capture) {
+        mCaptureDeferred.resolve(capture);
     }
 
     private boolean ensureCapture() {
         LayoutInspector inspector = AutoJs.getInstance().getLayoutInspector();
         if (inspector.isDumping()) {
             Toast.makeText(mContext, R.string.text_layout_inspector_is_dumping, Toast.LENGTH_SHORT).show();
-            return false;
+            return true;
         }
         if (AccessibilityService.getInstance() == null) {
             Toast.makeText(mContext, R.string.text_no_accessibility_permission_to_capture, Toast.LENGTH_SHORT).show();
+            AccessibilityServiceTool.goToAccessibilitySetting();
             return false;
         }
         if (inspector.getCapture() == null) {
@@ -296,6 +313,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener {
             mState = STATE_CLOSED;
         }
         mRecorder.removeOnStateChangedListener(this);
+        AutoJs.getInstance().getLayoutInspector().removeCaptureAvailableListener(this);
     }
 
 

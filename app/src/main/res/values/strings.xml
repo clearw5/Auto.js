@@ -135,7 +135,7 @@
     <string name="text_guard_mode">保护模式</string>
     <string name="summary_guard_mode">在本软件界面无法运行自动操作命令以免误触</string>
     <string name="key_guard_mode">key_guard_mode</string>
-    <string name="text_layout_inspector_is_dumping">布局分析中，请稍后点击</string>
+    <string name="text_layout_inspector_is_dumping">布局分析中</string>
     <string name="text_force_stop">强制停止</string>
     <string name="text_execution_finished" formatted="false">\n------------\n[%s]运行结束，用时%f秒</string>
     <string name="text_again">又</string>

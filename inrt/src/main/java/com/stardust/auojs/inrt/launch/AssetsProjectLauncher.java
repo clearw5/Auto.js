@@ -8,6 +8,8 @@ import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.pio.PFiles;
 
+import org.mozilla.javascript.optimizer.ClassCompiler;
+
 import java.io.File;
 
 /**

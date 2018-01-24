@@ -50,7 +50,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         mAndroidContext = context;
         mContext = createContext();
         mScriptable = createScope(mContext);
-
     }
 
     @Override
