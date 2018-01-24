@@ -26,7 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NodeBB {
 
-    public static final String BASE_URL = "http://www.autojs.org/";
+    public static final String BASE_URL = "https://www.autojs.org/";
     private static final NodeBB sInstance = new NodeBB();
     private static final String LOG_TAG = "NodeBB";
     private Map<String, String> mXCsrfToken;
