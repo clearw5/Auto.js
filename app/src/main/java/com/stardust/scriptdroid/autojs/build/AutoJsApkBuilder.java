@@ -1,14 +1,13 @@
 package com.stardust.scriptdroid.autojs.build;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import com.stardust.autojs.apkbuilder.ApkBuilder;
 import com.stardust.autojs.apkbuilder.ManifestEditor;
 import com.stardust.autojs.apkbuilder.util.StreamUtils;
+import com.stardust.autojs.project.ProjectConfig;
+import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.App;
-
-import org.androidannotations.annotations.Click;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -105,8 +104,26 @@ public class AutoJsApkBuilder extends ApkBuilder {
     }
 
     public AutoJsApkBuilder setScriptFile(String path) throws IOException {
-        replaceFile("assets/script.js", path);
+        if (PFiles.isDir(path)) {
+            copyDir("assets/project/", path);
+        } else {
+            replaceFile("assets/project/main.js", path);
+        }
         return this;
+    }
+
+    public void copyDir(String relativePath, String path) throws IOException {
+        File fromDir = new File(path);
+        File toDir = new File(this.mWorkspacePath, relativePath);
+        toDir.mkdir();
+        for (File child : fromDir.listFiles()) {
+            if (child.isFile()) {
+                StreamUtils.write(new FileInputStream(child),
+                        new FileOutputStream(new File(toDir, child.getName())));
+            } else {
+                copyDir(PFiles.join(relativePath, child.getName() + "/"), child.getPath());
+            }
+        }
     }
 
     @Override
@@ -123,8 +140,40 @@ public class AutoJsApkBuilder extends ApkBuilder {
                 .setVersionCode(config.versionCode)
                 .setPackageName(config.packageName);
         setArscPackageName(config.packageName);
+        updateProjectConfig(config);
         setScriptFile(config.jsPath);
         return this;
+    }
+
+    private void updateProjectConfig(AppConfig config) {
+        if (!PFiles.isDir(config.jsPath)) {
+            return;
+        }
+        ProjectConfig projectConfig = ProjectConfig.fromProjectDir(config.jsPath);
+        if (projectConfig == null)
+            projectConfig = new ProjectConfig();
+        projectConfig.setName(config.appName)
+                .setPackageName(config.packageName)
+                .setVersionCode(config.versionCode)
+                .setVersionName(config.versionName)
+                .setMainScriptFile("main.js");
+        updateProjectConfigAssets(projectConfig, config.jsPath, config.jsPath);
+        PFiles.write(ProjectConfig.configFileOfDir(config.jsPath), projectConfig.toJson());
+    }
+
+    private void updateProjectConfigAssets(ProjectConfig config, String projectDir, String dir) {
+        File main = new File(projectDir, config.getMainScriptFile());
+        for (File file : new File(dir).listFiles()) {
+            if (file.isDirectory()) {
+                updateProjectConfigAssets(config, projectDir, file.getPath());
+                continue;
+            }
+            if (file.equals(main)) {
+                continue;
+            }
+            String relative = new File(projectDir).toURI().relativize(file.toURI()).getPath();
+            config.getAssets().add(relative);
+        }
     }
 
     @Override

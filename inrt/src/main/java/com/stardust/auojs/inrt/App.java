@@ -1,10 +1,9 @@
 package com.stardust.auojs.inrt;
 
 import android.app.Application;
-import android.app.Fragment;
 
-import com.stardust.auojs.inrt.rt.AutoJs;
-import com.stardust.auojs.inrt.rt.GlobalKeyObserver;
+import com.stardust.auojs.inrt.autojs.AutoJs;
+import com.stardust.auojs.inrt.autojs.GlobalKeyObserver;
 
 /**
  * Created by Stardust on 2017/7/1.

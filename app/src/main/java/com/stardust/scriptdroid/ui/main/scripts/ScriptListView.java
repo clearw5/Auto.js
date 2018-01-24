@@ -22,6 +22,8 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
+import com.stardust.scriptdroid.ui.build.BuildActivity;
+import com.stardust.scriptdroid.ui.build.BuildActivity_;
 import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.viewmodel.ScriptList;
@@ -244,6 +246,12 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
             case R.id.timed_task:
                 new ScriptOperations(getContext(), this)
                         .timedTask(mSelectedScriptFile);
+                notifyOperated();
+                break;
+            case R.id.action_build_apk:
+                BuildActivity_.intent(getContext())
+                        .extra(BuildActivity.EXTRA_SOURCE_FILE, mSelectedScriptFile.getPath())
+                        .start();
                 notifyOperated();
                 break;
             case R.id.action_sort_by_date:

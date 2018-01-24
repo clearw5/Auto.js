@@ -65,6 +65,8 @@ public interface ScriptEngine<S extends ScriptSource> {
 
         @Override
         public synchronized void setTag(String key, Object value) {
+            if(value == null)
+                return;
             mTags.put(key, value);
         }
 

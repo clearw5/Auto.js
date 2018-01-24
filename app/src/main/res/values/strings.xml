@@ -252,7 +252,7 @@
     <string name="apk_builder_build">构建中</string>
     <string name="apk_builder_package">打包中</string>
     <string name="apk_builder_clean">清理临时文件</string>
-    <string name="text_source_file_path">脚本文件路径</string>
+    <string name="text_source_file_path">脚本文件(夹)路径</string>
     <string name="text_search">搜索</string>
     <string name="text_select_icon">选择图标</string>
     <string name="text_use_android_n_shortcut">添加到安卓7.0 Shortcut</string>

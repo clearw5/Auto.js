@@ -11,11 +11,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.stardust.auojs.inrt.rt.AutoJs;
+import com.stardust.auojs.inrt.autojs.AutoJs;
+import com.stardust.auojs.inrt.launch.AssetsProjectLauncher;
 import com.stardust.autojs.core.console.ConsoleView;
 import com.stardust.autojs.core.console.StardustConsole;
-import com.stardust.autojs.script.StringScriptSource;
-import com.stardust.pio.PFiles;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,15 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void runScript() {
-        new Thread(() -> {
-            try {
-                String js = PFiles.read(getAssets().open("script.js"));
-                StringScriptSource source = new StringScriptSource("main", js);
-                AutoJs.getInstance().getScriptEngineService().execute(source);
-            } catch (Exception e) {
-                AutoJs.getInstance().getGlobalConsole().log(e);
-            }
-        }).start();
+        new Thread(() -> new AssetsProjectLauncher("project", this).launch()).start();
         if (!Pref.shouldShowMainActivity()) {
             finish();
         }

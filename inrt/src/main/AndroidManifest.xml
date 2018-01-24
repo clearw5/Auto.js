@@ -28,7 +28,7 @@
         <activity android:name=".SettingsActivity"/>
 
         <service
-            android:name=".rt.AccessibilityService"
+            android:name=".autojs.AccessibilityService"
             android:label="inrt"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
