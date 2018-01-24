@@ -37,7 +37,6 @@ import com.stardust.lang.ThreadCompat;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.autojs.core.util.ProcessShell;
-import com.stardust.util.Objects;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.SdkVersionUtil;
 import com.stardust.util.Supplier;
@@ -45,7 +44,6 @@ import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 
 import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.RhinoException;
 
 import java.io.File;
 import java.io.IOException;
@@ -197,7 +195,7 @@ public class ScriptRuntime {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             images = new Images(context, this, builder.mScreenCaptureRequester);
         }
-        engines = new Engines(builder.mEngineService);
+        engines = new Engines(builder.mEngineService, this);
         dialogs = new Dialogs(app, uiHandler, bridges);
         device = new Device(uiHandler.getContext());
         floaty = new Floaty(uiHandler, ui, this);
