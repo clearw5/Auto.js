@@ -18,15 +18,15 @@ public class ScreenMetrics {
     private static Display display;
 
     public static void initIfNeeded(Activity activity) {
-        if (!initialized) {
-            DisplayMetrics metrics = new DisplayMetrics();
-            activity.getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
-            deviceScreenHeight = metrics.heightPixels;
-            deviceScreenWidth = metrics.widthPixels;
-            deviceScreenDensity = metrics.densityDpi;
-            display = activity.getWindowManager().getDefaultDisplay();
-            initialized = true;
-        }
+        if(initialized)
+            return;
+        DisplayMetrics metrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+        deviceScreenHeight = metrics.heightPixels;
+        deviceScreenWidth = metrics.widthPixels;
+        deviceScreenDensity = metrics.densityDpi;
+        display = activity.getWindowManager().getDefaultDisplay();
+        initialized = true;
     }
 
     public static int getDeviceScreenHeight() {

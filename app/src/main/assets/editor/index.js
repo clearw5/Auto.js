@@ -76,7 +76,9 @@ editor.on("keyup", function(editor, event)
             clearTimeout(id);
         }
         id = setTimeout(function(){
-            editor.execCommand("autocomplete");
+            editor.showHint({
+                completeSingle: false
+            })
         }, 100);
     }
 });

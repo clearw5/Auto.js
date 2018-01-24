@@ -197,14 +197,6 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config"/>
         </service>
-        <service
-            android:name="com.stardust.notification.NotificationListenerService"
-            android:label="@string/_app_name"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
-            <intent-filter>
-                <action android:name="android.service.notification.NotificationListenerService"/>
-            </intent-filter>
-        </service>
 
         <receiver android:name=".external.widget.ScriptWidget">
             <intent-filter>
