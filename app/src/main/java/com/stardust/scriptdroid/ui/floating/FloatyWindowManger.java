@@ -59,14 +59,16 @@ public class FloatyWindowManger {
         return sCircularMenu != null && sCircularMenu.get() != null;
     }
 
-    public static void showCircularMenu() {
+    public static boolean showCircularMenu() {
         if (!SettingsCompat.canDrawOverlays(App.getApp())) {
             Toast.makeText(App.getApp(), R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
             manageDrawOverlays(App.getApp());
+            return false;
         } else {
             App.getApp().startService(new Intent(App.getApp(), FloatyService.class));
             CircularMenu menu = new CircularMenu(App.getApp());
             sCircularMenu = new WeakReference<>(menu);
+            return true;
         }
     }
 

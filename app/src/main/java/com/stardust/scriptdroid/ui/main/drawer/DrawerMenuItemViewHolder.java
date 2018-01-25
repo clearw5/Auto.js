@@ -77,10 +77,10 @@ public class DrawerMenuItemViewHolder extends BindableViewHolder<DrawerMenuItem>
         } else {
             mSwitchCompat.setPrefKey(itemView.getResources().getString(prefKey));
         }
-        mSwitchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> mDrawerMenuItem.setChecked(isChecked));
     }
 
     private void onClick() {
+        mDrawerMenuItem.setChecked(mSwitchCompat.isChecked());
         if (mAntiShake && (System.currentTimeMillis() - mLastClickMillis < CLICK_TIMEOUT)) {
             Toast.makeText(itemView.getContext(), R.string.text_click_too_frequently, Toast.LENGTH_SHORT).show();
             mSwitchCompat.setChecked(!mSwitchCompat.isChecked(), false);

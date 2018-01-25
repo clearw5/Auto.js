@@ -203,7 +203,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
             Pref.setFloatingMenuShown(checked);
         }
         if (checked && !isFloatingWindowShowing) {
-            FloatyWindowManger.showCircularMenu();
+            setChecked(mFloatingWindowItem, FloatyWindowManger.showCircularMenu());
             enableAccessibilityServiceByRootIfNeeded();
         } else if (!checked && isFloatingWindowShowing) {
             FloatyWindowManger.hideCircularMenu();
