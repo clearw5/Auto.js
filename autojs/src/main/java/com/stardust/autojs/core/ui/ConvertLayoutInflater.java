@@ -25,6 +25,7 @@ public class ConvertLayoutInflater implements JsLayoutInflater {
         try {
             String androidLayoutXml = XmlConverter.convertToAndroidLayout(xml);
             JsFrameLayout root = new JsFrameLayout(context);
+            mDynamicLayoutInflater.setContext(context);
             mDynamicLayoutInflater.inflate(androidLayoutXml, root);
             return root;
         } catch (Exception e) {

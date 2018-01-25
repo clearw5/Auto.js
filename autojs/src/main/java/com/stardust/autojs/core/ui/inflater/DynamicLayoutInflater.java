@@ -81,10 +81,17 @@ public class DynamicLayoutInflater {
     private Context mContext;
     private ValueParser mValueParser;
 
-    public DynamicLayoutInflater(Context context, ValueParser valueParser) {
-        mContext = context;
+    public DynamicLayoutInflater(ValueParser valueParser) {
         mValueParser = valueParser;
         registerViewAttrSetters();
+    }
+
+    public Context getContext() {
+        return mContext;
+    }
+
+    public void setContext(Context context) {
+        mContext = context;
     }
 
     protected void registerViewAttrSetters() {

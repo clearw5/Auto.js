@@ -35,7 +35,7 @@ public class UI extends ProxyObject {
         mContext = context;
         mRuntime = runtime;
         mValueParser = new ValueParser(new Drawables());
-        DynamicLayoutInflater inflater = new DynamicLayoutInflater(context, mValueParser);
+        DynamicLayoutInflater inflater = new DynamicLayoutInflater(mValueParser);
         inflater.registerViewAttrSetter(JsImageView.class.getName(),
                 new JsImageViewAttrSetter(mValueParser));
         mJsLayoutInflater = new ConvertLayoutInflater(inflater);

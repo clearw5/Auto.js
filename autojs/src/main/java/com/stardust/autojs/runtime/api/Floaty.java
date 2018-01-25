@@ -63,8 +63,8 @@ public class Floaty {
         Iterator<JsFloatyWindow> iterator = mWindows.iterator();
         while (iterator.hasNext()) {
             JsFloatyWindow window = iterator.next();
-            window.close();
             iterator.remove();
+            window.close(false);
         }
     }
 
@@ -141,7 +141,11 @@ public class Floaty {
         }
 
         public void close() {
-            if (mWindow == null || !mWindows.remove(this)) {
+            close(true);
+        }
+
+        void close(boolean removeFromWindows) {
+            if (removeFromWindows && !mWindows.remove(this)) {
                 return;
             }
             runWithWindow(() -> {
