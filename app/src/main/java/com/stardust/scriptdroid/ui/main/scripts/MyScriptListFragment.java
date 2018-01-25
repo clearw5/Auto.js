@@ -6,7 +6,9 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 
+import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.tool.SimpleObserver;
@@ -53,7 +55,11 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
         ScriptList.SortConfig sortConfig = ScriptList.SortConfig.from(PreferenceManager.getDefaultSharedPreferences(getContext()));
         mScriptFileList.setSortConfig(sortConfig);
         mScriptFileList.setStorageFileProvider(StorageFileProvider.getDefault());
-        mScriptFileList.setOnScriptFileClickListener((view, file) -> Scripts.edit(file));
+        mScriptFileList.setOnScriptFileClickListener((view, file) -> {
+            if (file.getType() == ScriptFile.TYPE_JAVA_SCRIPT) {
+                Scripts.edit(file);
+            }
+        });
     }
 
     @Override

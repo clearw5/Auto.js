@@ -144,6 +144,14 @@ public class UiObject extends AccessibilityNodeInfoCompat {
         return t == null ? "" : t.toString();
     }
 
+    @Override
+    public CharSequence getText() {
+        if (isPassword()) {
+            return "";
+        }
+        return super.getText();
+    }
+
     public String desc() {
         CharSequence d = getContentDescription();
         return d == null ? null : d.toString();

@@ -17,9 +17,7 @@ import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.util.UiHandler;
 import com.stardust.util.ViewUtil;
 
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -31,7 +29,7 @@ public class Floaty {
     private JsLayoutInflater mJsLayoutInflater;
     private Context mContext;
     private UiHandler mUiHandler;
-    private Set<JsFloatyWindow> mWindows = new CopyOnWriteArraySet<>();
+    private CopyOnWriteArraySet<JsFloatyWindow> mWindows = new CopyOnWriteArraySet<>();
     private ScriptRuntime mRuntime;
 
     public Floaty(UiHandler uiHandler, UI ui, ScriptRuntime runtime) {
@@ -73,7 +71,7 @@ public class Floaty {
     public class JsFloatyWindow {
 
         private View mView;
-        private FloatyWindow mWindow;
+        private volatile FloatyWindow mWindow;
         private boolean mExitOnClose = false;
 
         public JsFloatyWindow(View view) {
@@ -109,31 +107,29 @@ public class Floaty {
         }
 
         public void setSize(int w, int h) {
+            runWithWindow(() -> ViewUtil.setViewMeasure(mWindow.getRootView(), w, h));
+        }
+
+        private void runWithWindow(Runnable r) {
+            if (mWindow == null)
+                return;
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                ViewUtil.setViewMeasure(mWindow.getRootView(), w, h);
-                // mWindow.getWindowBridge().updateMeasure(w, h);
-            } else {
-                mUiHandler.post(() -> {
-                    ViewUtil.setViewMeasure(mWindow.getRootView(), w, h);
-                    //  mWindow.getWindowBridge().updateMeasure(w, h);
-                });
+                r.run();
+                return;
             }
+            mUiHandler.post(() -> {
+                if (mWindow == null)
+                    return;
+                r.run();
+            });
         }
 
         public void setPosition(int x, int y) {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                mWindow.getWindowBridge().updatePosition(x, y);
-            } else {
-                mUiHandler.post(() -> mWindow.getWindowBridge().updatePosition(x, y));
-            }
+            runWithWindow(() -> mWindow.getWindowBridge().updatePosition(x, y));
         }
 
         public void setAdjustEnabled(boolean enabled) {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                mWindow.setAdjustEnabled(enabled);
-            } else {
-                mUiHandler.post(() -> mWindow.setAdjustEnabled(enabled));
-            }
+            runWithWindow(() -> mWindow.setAdjustEnabled(enabled));
         }
 
         public boolean isAdjustEnabled() {
@@ -145,17 +141,16 @@ public class Floaty {
         }
 
         public void close() {
-            if (!mWindows.remove(this)) {
+            if (mWindow == null || !mWindows.remove(this)) {
                 return;
             }
-            if (Looper.myLooper() == Looper.getMainLooper()) {
+            runWithWindow(() -> {
                 mWindow.close();
-            } else {
-                mUiHandler.post(() -> mWindow.close());
-            }
-            if (mExitOnClose) {
-                mRuntime.exit();
-            }
+                mWindow = null;
+                if (mExitOnClose) {
+                    mRuntime.exit();
+                }
+            });
         }
     }
 
