@@ -18,7 +18,8 @@
       </div>
       <ul>
 <li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
-<li><a class="nav-synopsis" href="synopsis.html">如何阅读本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript教程</a></li>
 </ul>
 <div class="line"></div>
 
@@ -97,6 +98,7 @@
 <li><span class="stability_undefined"><a href="#files_files_removedir_path">files.removeDir(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#files_files_getsdcardpath">files.getSdcardPath()</a></span></li>
 <li><span class="stability_undefined"><a href="#files_files_cwd">files.cwd()</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_path_relativepath">files.path(relativePath)</a></span></li>
 <li><span class="stability_undefined"><a href="#files_files_listdir_path_filter">files.listDir(path[, filter])</a></span></li>
 <li><span class="stability_undefined"><a href="#files_open_path_mode_r_encoding_utf_8_buffersize_8192">open(path[, mode = &quot;r&quot;, encoding = &quot;utf-8&quot;, bufferSize = 8192])</a></span></li>
 </ul>
@@ -308,6 +310,12 @@ app.viewFile(&quot;/sdcard/1.txt&quot;);
 </ul>
 </div><p>返回脚本的&quot;当前工作文件夹路径&quot;。该路径指的是，如果脚本本身为脚本文件，则返回这个脚本文件所在目录；否则返回<code>null</code>获取其他设定路径。</p>
 <p>例如，对于脚本文件&quot;/sdcard/脚本/1.js&quot;运行<code>files.cwd()</code>返回&quot;/sdcard/脚本/&quot;。</p>
+<h2>files.path(relativePath)<span><a class="mark" href="#files_files_path_relativepath" id="files_files_path_relativepath">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>relativePath</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 相对路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回相对路径对应的绝对路径。例如<code>files.path(&quot;./1.png&quot;)</code>，如果运行这个语句的脚本位于文件夹&quot;/sdcard/脚本/&quot;中，则返回<code>&quot;/sdcard/脚本/1.png&quot;</code>。</p>
 <h2>files.listDir(path[, filter])<span><a class="mark" href="#files_files_listdir_path_filter" id="files_files_listdir_path_filter">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>

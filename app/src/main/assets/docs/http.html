@@ -18,7 +18,8 @@
       </div>
       <ul>
 <li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
-<li><a class="nav-synopsis" href="synopsis.html">如何阅读本文档</a></li>
+<li><a class="nav-http active-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript教程</a></li>
 </ul>
 <div class="line"></div>
 
@@ -35,7 +36,7 @@
 <li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
 <li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
 <li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
-<li><a class="nav-http active" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
 <li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
 <li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
 <li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
@@ -174,7 +175,14 @@ if(html.contains(&quot;页面跳转中&quot;)){
 </div><p>以JSON格式向目标Url发起POST请求。如果没有回调函数，则在请求完成或失败时返回此次请求的响应(参见[Response][])。</p>
 <p>JSON格式指的是，将会调用<code>JSON.stringify()</code>把data对象转换为JSON字符串，并在HTTP头部信息中把&quot;Content-Type&quot;属性置为&quot;application/json&quot;。这种方式是AngularJS的ajax函数的默认方式。</p>
 <p>一个调用图灵机器人接口的例子如下：</p>
-<h2>http.postMultipart(url, files[, options, callback])<span><a class="mark" href="#http_http_postmultipart_url_files_options_callback" id="http_http_postmultipart_url_files_options_callback">#</a></span></h2>
+<pre><code>var url = &quot;http://www.tuling123.com/openapi/api&quot;;
+r = http.postJson(url, {
+    key: &quot;65458a5df537443b89b31f1c03202a80&quot;,
+    info: &quot;你好啊&quot;,
+    userid: &quot;1&quot;,
+});
+toastLog(r.body.string());
+</code></pre><h2>http.postMultipart(url, files[, options, callback])<span><a class="mark" href="#http_http_postmultipart_url_files_options_callback" id="http_http_postmultipart_url_files_options_callback">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 请求的URL地址，需要以&quot;<a href="http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。">http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。</a></li>
 <li><code>files</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> POST数据。</li>

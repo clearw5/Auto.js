@@ -18,7 +18,8 @@
       </div>
       <ul>
 <li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
-<li><a class="nav-synopsis" href="synopsis.html">如何阅读本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript教程</a></li>
 </ul>
 <div class="line"></div>
 
@@ -79,6 +80,7 @@
 <li><span class="stability_undefined"><a href="#images_images_save_image_path">images.save(image, path)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_read_path">images.read(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_load_url">images.load(url)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_clip_img_x_y_w_h">images.clip(img, x, y, w, h)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findcolor_image_color_options">images.findColor(image, color, options)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findcolorinregion_img_color_x_y_width_height_threshold">images.findColorInRegion(img, color, x, y[, width, height, threshold])</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findcolorequals_img_color_x_y_width_height">images.findColorEquals(img, color[, x, y, width, height])</a></span></li>
@@ -185,7 +187,20 @@ toast(colors.toString(color));
 <li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片URL地址</li>
 </ul>
 </div><p>加载在地址URL的网络图片并返回一个Image对象。如果地址不存在或者图片无法解码则返回null。</p>
-<h2>images.findColor(image, color, options)<span><a class="mark" href="#images_images_findcolor_image_color_options" id="images_images_findcolor_image_color_options">#</a></span></h2>
+<h2>images.clip(img, x, y, w, h)<span><a class="mark" href="#images_images_clip_img_x_y_w_h" id="images_images_clip_img_x_y_w_h">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的左上角横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的左上角纵坐标</li>
+<li><code>w</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的宽度</li>
+<li><code>h</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的高度</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+</div><p>从图片img的位置(x, y)处剪切大小为w * h的区域，并返回该剪切区域的新图片。</p>
+<pre><code>var src = images.read(&quot;/sdcard/1.png&quot;);
+var clip = images.clip(src, 100, 100, 400, 400);
+images.save(clip, &quot;/sdcard/clip.png&quot;);
+</code></pre><h2>images.findColor(image, color, options)<span><a class="mark" href="#images_images_findcolor_image_color_options" id="images_images_findcolor_image_color_options">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
 <li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要寻找的颜色的RGB值。如果是一个整数，则以0xRRGGBB的形式代表RGB值（A通道会被忽略）；如果是字符串，则以&quot;#RRGGBB&quot;代表其RGB值。</li>
