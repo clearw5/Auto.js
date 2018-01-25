@@ -338,4 +338,5 @@
     <string name="nodebb_error_change_password_error_match">两次输入的密码不一致</string>
     <string name="text_logout">退出登录</string>
     <string name="nodebb_error_forbidden">操作失败，请稍后重试</string>
+    <string name="description_stable_mode">稳定模式通过省略布局细节使脚本抓取布局时更稳定，但同时获取到的屏幕上的控件可能会减少。</string>
 </resources>

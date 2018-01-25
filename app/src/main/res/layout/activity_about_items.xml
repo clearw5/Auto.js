@@ -109,29 +109,4 @@
     </LinearLayout>
 
     <include layout="@layout/divider"/>
-
-    <LinearLayout
-        android:id="@+id/donate"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:background="?selectableItemBackground"
-        android:clickable="true"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_money_black"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/donate_developer"
-            android:textColor="@android:color/secondary_text_light"
-            android:textSize="16sp"/>
-    </LinearLayout>
-
-    <include layout="@layout/divider"/>
 </LinearLayout>

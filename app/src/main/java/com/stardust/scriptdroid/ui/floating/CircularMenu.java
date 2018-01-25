@@ -149,7 +149,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     void startRecord() {
         mWindow.collapse();
         if (!RootShell.isRootAvailable()) {
-            new NotAskAgainDialog.Builder(mContext, "root")
+            new NotAskAgainDialog.Builder(mContext, "CircularMenu.root")
                     .title(R.string.text_device_not_rooted)
                     .content(R.string.prompt_device_not_rooted)
                     .neutralText(R.string.text_device_rooted)

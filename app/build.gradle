@@ -85,8 +85,6 @@ dependencies {
     })
     // Common Markdown
     compile 'com.github.atlassian:commonmark-java:commonmark-parent-0.9.0'
-    // AlipayZeroSdk
-    compile 'moe.feng:AlipayZeroSdk:1.1'
     // Android issue reporter (a github issue reporter)
     compile('com.heinrichreimersoftware:android-issue-reporter:1.3.1', {
         exclude group: 'com.afollestad.material-dialogs'

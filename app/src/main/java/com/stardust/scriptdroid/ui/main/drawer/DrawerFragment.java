@@ -25,6 +25,7 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.network.GlideApp;
 import com.stardust.scriptdroid.network.UserService;
 import com.stardust.scriptdroid.pluginclient.DevPluginClient;
+import com.stardust.scriptdroid.ui.common.NotAskAgainDialog;
 import com.stardust.scriptdroid.ui.floating.CircularMenu;
 import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
 import com.stardust.scriptdroid.network.NodeBB;
@@ -90,6 +91,15 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
 
     private DrawerMenuItem mConnectionItem = new DrawerMenuItem(R.drawable.ic_debug, R.string.debug, 0, this::connectOrDisconnectToRemote);
     private DrawerMenuItem mAccessibilityServiceItem = new DrawerMenuItem(R.drawable.ic_service_green, R.string.text_accessibility_service, 0, this::enableOrDisableAccessibilityService);
+    private DrawerMenuItem mStableModeItem = new DrawerMenuItem(R.drawable.ic_stable, R.string.text_stable_mode, R.string.key_stable_mode, null) {
+        @Override
+        public void setChecked(boolean checked) {
+            super.setChecked(checked);
+            if (checked)
+                showStableModePromptIfNeeded();
+        }
+    };
+
     private DrawerMenuItem mNotificationPermissionItem = new DrawerMenuItem(R.drawable.ic_ali_notification, R.string.text_notification_permission, 0, this::goToNotificationServiceSettings);
     private DrawerMenuItem mFloatingWindowItem = new DrawerMenuItem(R.drawable.ic_robot_64, R.string.text_floating_window, 0, this::showOrDismissFloatingWindow);
     private DrawerMenuItem mCheckForUpdatesItem = new DrawerMenuItem(R.drawable.ic_check_for_updates, R.string.text_check_for_updates, this::checkForUpdates);
@@ -131,7 +141,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         mDrawerMenuAdapter = new DrawerMenuAdapter(new ArrayList<>(Arrays.asList(
                 new DrawerMenuGroup(R.string.text_service),
                 mAccessibilityServiceItem,
-                new DrawerMenuItem(R.drawable.ic_stable, R.string.text_stable_mode, R.string.key_stable_mode, null),
+                mStableModeItem,
                 mNotificationPermissionItem,
 
                 new DrawerMenuGroup(R.string.text_script_record),
@@ -377,6 +387,16 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
             mCommunityDrawerMenu.setUserOnlineStatus(mDrawerMenuAdapter, change.isOnline());
         }
     }
+
+
+    private void showStableModePromptIfNeeded() {
+        new NotAskAgainDialog.Builder(getContext(), "DrawerFragment.stable_mode")
+                .title(R.string.text_stable_mode)
+                .content(R.string.description_stable_mode)
+                .positiveText(R.string.ok)
+                .show();
+    }
+
 
     @Override
     public void onDestroy() {

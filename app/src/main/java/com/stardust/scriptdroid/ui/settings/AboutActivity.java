@@ -24,8 +24,6 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
-import moe.feng.alipay.zerosdk.AlipayZeroSdk;
-
 /**
  * Created by Stardust on 2017/2/2.
  */
@@ -69,26 +67,6 @@ public class AboutActivity extends BaseActivity {
         IntentUtil.sendMailTo(this, email);
     }
 
-
-    @Click(R.id.donate)
-    void showDonateMeDialog() {
-        new ThemeColorMaterialDialogBuilder(this)
-                .title(R.string.text_donate)
-                .items("支付宝")
-                .itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                        if (position == 0) {
-                            if (AlipayZeroSdk.hasInstalledAlipayClient(AboutActivity.this)) {
-                                AlipayZeroSdk.startAlipayClient(AboutActivity.this, "aex04370fwjf8angrv1te9e");
-                            } else {
-                                Toast.makeText(AboutActivity.this, "未安装支付宝", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                })
-                .show();
-    }
 
     @Click(R.id.share)
     void share() {

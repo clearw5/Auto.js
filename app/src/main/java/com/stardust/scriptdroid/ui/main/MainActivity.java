@@ -128,7 +128,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         if (AccessibilityServiceTool.isAccessibilityServiceEnabled(this)) {
             return;
         }
-        new NotAskAgainDialog.Builder(this, "Eating...love you...miss you...17.4.12")
+        new NotAskAgainDialog.Builder(this, "MainActivity.accessibility")
                 .title(R.string.text_need_to_enable_accessibility_service)
                 .content(R.string.explain_accessibility_permission)
                 .positiveText(R.string.text_go_to_setting)
