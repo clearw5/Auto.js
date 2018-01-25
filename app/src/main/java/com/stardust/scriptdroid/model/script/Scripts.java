@@ -92,7 +92,7 @@ public class Scripts {
     }
 
     public static ScriptExecution run(ScriptFile file) {
-        return AutoJs.getInstance().getScriptEngineService().execute(new JavaScriptFileSource(file), new ExecutionConfig()
+        return AutoJs.getInstance().getScriptEngineService().execute(file.toSource(), new ExecutionConfig()
                 .executePath(file.getParent()));
     }
 
@@ -103,7 +103,7 @@ public class Scripts {
     }
 
     public static ScriptExecution runWithBroadcastSender(File file) {
-        return AutoJs.getInstance().getScriptEngineService().execute(new JavaScriptFileSource(file), BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER,
+        return AutoJs.getInstance().getScriptEngineService().execute(new ScriptFile(file).toSource(), BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER,
                 new ExecutionConfig().executePath(file.getParent()));
     }
 
