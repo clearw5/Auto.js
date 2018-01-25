@@ -29,8 +29,8 @@ public class Pref {
         return getPreferences().getBoolean(getString(R.string.key_enable_accessibility_service_by_root), false);
     }
 
-    public static boolean shouldShowMainActivity() {
-        return !getPreferences().getBoolean(getString(R.string.key_dont_show_main_activity), false);
+    public static boolean shouldHideLogs() {
+        return getPreferences().getBoolean(getString(R.string.key_dont_show_main_activity), false);
     }
 
     public static boolean shouldStopAllScriptsWhenVolumeUp() {

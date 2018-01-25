@@ -46,9 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void runScript() {
         new Thread(() -> new AssetsProjectLauncher("project", this).launch()).start();
-        if (!Pref.shouldShowMainActivity()) {
-            finish();
-        }
     }
 
     @Override

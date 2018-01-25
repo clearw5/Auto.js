@@ -41,6 +41,9 @@ public class ProjectConfig {
     @SerializedName("assets")
     private List<String> mAssets = new ArrayList<>();
 
+    @SerializedName("launchConfig")
+    private LaunchConfig mLaunchConfig;
+
     public static ProjectConfig fromJson(String json) {
         if (json == null) {
             return null;
@@ -122,11 +125,25 @@ public class ProjectConfig {
     }
 
     public List<String> getAssets() {
+        if (mAssets == null) {
+            mAssets = new ArrayList<>();
+        }
         return mAssets;
     }
 
     public void setAssets(List<String> assets) {
         mAssets = assets;
+    }
+
+    public LaunchConfig getLaunchConfig() {
+        if (mLaunchConfig == null) {
+            mLaunchConfig = new LaunchConfig();
+        }
+        return mLaunchConfig;
+    }
+
+    public void setLaunchConfig(LaunchConfig launchConfig) {
+        mLaunchConfig = launchConfig;
     }
 
     public String toJson() {

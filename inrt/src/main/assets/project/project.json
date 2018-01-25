@@ -6,5 +6,8 @@
   "main": "main.js",
   "assets" : [
       "auto.js.png"
-  ]
+  ],
+  "launchConfig": {
+    "hideLogs": true
+  }
 }

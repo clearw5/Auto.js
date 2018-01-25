@@ -1,14 +1,13 @@
 package com.stardust.auojs.inrt.launch;
 
-import android.content.Context;
+import android.app.Activity;
 
+import com.stardust.auojs.inrt.Pref;
 import com.stardust.auojs.inrt.autojs.AutoJs;
 import com.stardust.autojs.execution.ExecutionConfig;
 import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.pio.PFiles;
-
-import org.mozilla.javascript.optimizer.ClassCompiler;
 
 import java.io.File;
 
@@ -22,18 +21,27 @@ public class AssetsProjectLauncher {
     private String mProjectDir;
     private File mMainScriptFile;
     private ProjectConfig mProjectConfig;
-    private Context mContext;
+    private Activity mActivity;
 
-    public AssetsProjectLauncher(String projectDir, Context context) {
+    public AssetsProjectLauncher(String projectDir, Activity activity) {
         mAssetsProjectDir = projectDir;
-        mContext = context;
-        mProjectDir = new File(context.getFilesDir(), "project/").getPath();
-        mProjectConfig = ProjectConfig.fromAssets(context, ProjectConfig.configFileOfDir(mAssetsProjectDir));
+        mActivity = activity;
+        mProjectDir = new File(activity.getFilesDir(), "project/").getPath();
+        mProjectConfig = ProjectConfig.fromAssets(activity, ProjectConfig.configFileOfDir(mAssetsProjectDir));
         mMainScriptFile = new File(mProjectDir, mProjectConfig.getMainScriptFile());
     }
 
     public void launch() {
         prepare();
+        if (mProjectConfig.getLaunchConfig().shouldHideLogs() || Pref.shouldHideLogs()) {
+            mActivity.runOnUiThread(mActivity::finish);
+        }
+        mActivity = null;
+        runScript();
+
+    }
+
+    private void runScript() {
         try {
             JavaScriptFileSource source = new JavaScriptFileSource(mMainScriptFile);
             AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
@@ -47,10 +55,10 @@ public class AssetsProjectLauncher {
         if (mMainScriptFile.exists()) {
             return;
         }
-        PFiles.copyAsset(mContext, PFiles.join(mAssetsProjectDir, mProjectConfig.getMainScriptFile()),
+        PFiles.copyAsset(mActivity, PFiles.join(mAssetsProjectDir, mProjectConfig.getMainScriptFile()),
                 mMainScriptFile.getPath());
         for (String asset : mProjectConfig.getAssets()) {
-            PFiles.copyAsset(mContext, PFiles.join(mAssetsProjectDir, asset), PFiles.join(mProjectDir, asset));
+            PFiles.copyAsset(mActivity, PFiles.join(mAssetsProjectDir, asset), PFiles.join(mProjectDir, asset));
         }
     }
 
