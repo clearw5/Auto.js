@@ -49,6 +49,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.4.0'
+    //Glide
+    compile('com.github.bumptech.glide:glide:4.2.0', {
+        exclude group: 'com.android.support'
+    })
     testCompile 'junit:junit:4.12'
     compile project(':automator')
     compile project(':common')
