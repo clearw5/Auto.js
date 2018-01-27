@@ -29,19 +29,25 @@ import java.util.concurrent.TimeUnit;
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class ColorFinder {
 
-    public static Point findColorEquals(ImageWrapper imageWrapper, int color) {
+    private ScreenMetrics mScreenMetrics;
+
+    public ColorFinder(ScreenMetrics screenMetrics) {
+        mScreenMetrics = screenMetrics;
+    }
+
+    public Point findColorEquals(ImageWrapper imageWrapper, int color) {
         return findColorEquals(imageWrapper, color, null);
     }
 
-    public static Point findColorEquals(ImageWrapper imageWrapper, int color, Rect region) {
+    public Point findColorEquals(ImageWrapper imageWrapper, int color, Rect region) {
         return findColor(imageWrapper, color, 0, region);
     }
 
-    public static Point findColor(ImageWrapper imageWrapper, int color, int threshold) {
+    public Point findColor(ImageWrapper imageWrapper, int color, int threshold) {
         return findColor(imageWrapper, color, threshold, null);
     }
 
-    public static Point findColor(ImageWrapper imageWrapper, int color, int threshold, Rect region) {
+    public Point findColor(ImageWrapper imageWrapper, int color, int threshold, Rect region) {
         Point[] points = findAllColors(imageWrapper, color, threshold, region);
         if (points.length == 0) {
             return null;
@@ -49,7 +55,7 @@ public class ColorFinder {
         return points[0];
     }
 
-    public static Point[] findAllColors(ImageWrapper image, int color, int threshold, Rect rect) {
+    public Point[] findAllColors(ImageWrapper image, int color, int threshold, Rect rect) {
         Mat bi = new Mat();
         Scalar lowerBound = new Scalar(Color.red(color) - threshold, Color.green(color) - threshold,
                 Color.blue(color) - threshold, 255);
@@ -68,8 +74,8 @@ public class ColorFinder {
         Point[] points = new MatOfPoint(nonZeroPos).toArray();
         if (rect != null) {
             for (int i = 0; i < points.length; i++) {
-                points[i].x += rect.x;
-                points[i].y += rect.y;
+                points[i].x = mScreenMetrics.scaleX((int) (points[i].x + rect.x));
+                points[i].y = mScreenMetrics.scaleX((int) (points[i].y + rect.y));
             }
         }
         return points;

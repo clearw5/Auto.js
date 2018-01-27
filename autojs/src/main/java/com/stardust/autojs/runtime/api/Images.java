@@ -53,6 +53,7 @@ public class Images {
     private Display mDisplay;
     private Image mPreCapture;
     private ImageWrapper mPreCaptureImage;
+    private ScreenMetrics mScreenMetrics;
 
     @ScriptVariable
     public final ColorFinder colorFinder;
@@ -62,7 +63,8 @@ public class Images {
         mScreenCaptureRequester = screenCaptureRequester;
         mContext = context;
         mDisplay = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        colorFinder = new ColorFinder();
+        mScreenMetrics = mScriptRuntime.getScreenMetrics();
+        colorFinder = new ColorFinder(mScreenMetrics);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -135,8 +137,6 @@ public class Images {
         if (image == null) {
             throw new NullPointerException("image = null");
         }
-        x = ScreenMetrics.rescaleX(x, image.getWidth());
-        y = ScreenMetrics.rescaleY(y, image.getHeight());
         return image.pixel(x, y);
     }
 
@@ -212,8 +212,8 @@ public class Images {
         org.opencv.core.Point point = TemplateMatching.fastTemplateMatching(src, template.getMat(), TemplateMatching.MATCHING_METHOD_DEFAULT,
                 weakThreshold, threshold, maxLevel);
         if (point != null && rect != null) {
-            point.x += rect.x;
-            point.y += rect.y;
+            point.x = mScreenMetrics.scaleX((int) (point.x + rect.x));
+            point.y = mScreenMetrics.scaleX((int) (point.y + rect.y));
         }
         return point;
     }
