@@ -21,6 +21,7 @@ import com.stardust.autojs.core.image.ImageWrapper;
 import com.stardust.autojs.core.image.ScreenCaptureRequester;
 import com.stardust.autojs.core.image.ScreenCapturer;
 import com.stardust.autojs.core.image.TemplateMatching;
+import com.stardust.autojs.core.ui.inflater.util.Drawables;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.concurrent.VolatileDispose;
@@ -149,6 +150,10 @@ public class Images {
         path = mScriptRuntime.files.path(path);
         Bitmap bitmap = BitmapFactory.decodeFile(path);
         return ImageWrapper.ofBitmap(bitmap);
+    }
+
+    public ImageWrapper decodeBase64(String data){
+        return ImageWrapper.ofBitmap(Drawables.loadData(data));
     }
 
     public ImageWrapper load(String src) {

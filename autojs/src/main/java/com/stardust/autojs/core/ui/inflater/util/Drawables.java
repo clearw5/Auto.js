@@ -26,12 +26,18 @@ import java.util.regex.Pattern;
 
 public class Drawables {
 
-    private final Pattern DATA_PATTERN = Pattern.compile("data:(\\w+/\\w+);base64,(.+)");
+    private static final Pattern DATA_PATTERN = Pattern.compile("data:(\\w+/\\w+);base64,(.+)");
     private static ImageLoader sDefaultImageLoader = new DefaultImageLoader();
     private ImageLoader mImageLoader = sDefaultImageLoader;
 
     public static void setDefaultImageLoader(ImageLoader defaultImageLoader) {
+        if (defaultImageLoader == null)
+            throw new NullPointerException();
         sDefaultImageLoader = defaultImageLoader;
+    }
+
+    public static ImageLoader getDefaultImageLoader() {
+        return sDefaultImageLoader;
     }
 
     public Drawable parse(Context context, String value) {
@@ -93,7 +99,7 @@ public class Drawables {
         view.setImageBitmap(bitmap);
     }
 
-    public Bitmap loadData(String data) {
+    public static Bitmap loadData(String data) {
         Matcher matcher = DATA_PATTERN.matcher(data);
         if (!matcher.matches() || matcher.groupCount() != 2) {
             return null;
