@@ -10,6 +10,7 @@ import android.webkit.ValueCallback;
 import android.webkit.WebView;
 
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.network.NodeBB;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.network.download.DownloadManager;
@@ -99,7 +100,7 @@ public class CommunityWebView extends EWebView {
 
     private class MyWebViewClient extends EWebView.MyWebViewClient {
 
-        private final Pattern UPLOAD_FILE_PATTERN = Pattern.compile("http://www.autojs.org/assets/uploads/files/.+(\\.js|\\.auto)");
+        private final Pattern UPLOAD_FILE_PATTERN = Pattern.compile(NodeBB.url("assets/uploads/files/.+(\\.js|\\.auto)"));
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {

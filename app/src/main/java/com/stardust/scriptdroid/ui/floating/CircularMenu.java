@@ -12,6 +12,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.DialogUtils;
 import com.stardust.app.OperationDialogBuilder;
 import com.stardust.autojs.core.record.Recorder;
+import com.stardust.autojs.runtime.api.Dialogs;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.floatingcircularactionmenu.CircularActionMenu;
 import com.stardust.floatingcircularactionmenu.CircularActionMenuFloatingWindow;
@@ -23,6 +24,7 @@ import com.stardust.scriptdroid.autojs.record.GlobalActionRecorder;
 import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
+import com.stardust.scriptdroid.tool.RootTool;
 import com.stardust.scriptdroid.ui.common.NotAskAgainDialog;
 import com.stardust.scriptdroid.ui.floating.layoutinspector.LayoutBoundsFloatyWindow;
 import com.stardust.scriptdroid.ui.floating.layoutinspector.LayoutHierarchyFloatyWindow;
@@ -148,14 +150,14 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     @OnClick(R.id.record)
     void startRecord() {
         mWindow.collapse();
-        if (!RootShell.isRootAvailable()) {
-            new NotAskAgainDialog.Builder(mContext, "CircularMenu.root")
+        if (!RootTool.isRootAvailable()) {
+            DialogUtils.showDialog(new NotAskAgainDialog.Builder(mContext, "CircularMenu.root")
                     .title(R.string.text_device_not_rooted)
                     .content(R.string.prompt_device_not_rooted)
                     .neutralText(R.string.text_device_rooted)
                     .positiveText(R.string.ok)
                     .onNeutral(((dialog, which) -> mRecorder.start()))
-                    .show();
+                    .build());
         } else {
             mRecorder.start();
 
