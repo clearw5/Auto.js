@@ -282,7 +282,7 @@ public class ScriptRuntime {
         return ProcessShell.execCommand(cmd, root != 0);
     }
 
-    public UiSelector selector(ScriptEngine engine) {
+    public UiSelector selector() {
         return new UiSelector(accessibilityBridge);
     }
 

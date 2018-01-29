@@ -1,8 +1,10 @@
 package com.stardust.autojs.core.floaty;
 
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 
 import com.stardust.autojs.R;

@@ -152,7 +152,7 @@ public class Images {
         return ImageWrapper.ofBitmap(bitmap);
     }
 
-    public ImageWrapper decodeBase64(String data){
+    public ImageWrapper decodeBase64(String data) {
         return ImageWrapper.ofBitmap(Drawables.loadData(data));
     }
 
@@ -216,10 +216,15 @@ public class Images {
         }
         org.opencv.core.Point point = TemplateMatching.fastTemplateMatching(src, template.getMat(), TemplateMatching.MATCHING_METHOD_DEFAULT,
                 weakThreshold, threshold, maxLevel);
-        if (point != null && rect != null) {
-            point.x = mScreenMetrics.scaleX((int) (point.x + rect.x));
-            point.y = mScreenMetrics.scaleX((int) (point.y + rect.y));
+        if (point != null) {
+            if (rect != null) {
+                point.x += rect.x;
+                point.y += rect.y;
+            }
+            point.x = mScreenMetrics.scaleX((int) point.x);
+            point.y = mScreenMetrics.scaleX((int) point.y);
         }
+
         return point;
     }
 
