@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">common</string>
+    <string name="text_no_floating_window_permission">没有悬浮窗权限</string>
 </resources>

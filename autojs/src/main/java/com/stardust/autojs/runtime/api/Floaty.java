@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Looper;
 import android.view.ContextThemeWrapper;
 import android.view.View;
+import android.widget.Toast;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.floaty.FloatyWindow;
@@ -12,6 +13,7 @@ import com.stardust.autojs.core.ui.JsLayoutInflater;
 import com.stardust.autojs.core.ui.JsViewHelper;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
+import com.stardust.autojs.util.FloatingPermission;
 import com.stardust.concurrent.VolatileDispose;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.util.UiHandler;
@@ -19,6 +21,8 @@ import com.stardust.util.ViewUtil;
 
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArraySet;
+
+import ezy.assist.compat.SettingsCompat;
 
 /**
  * Created by Stardust on 2017/12/5.
@@ -44,6 +48,11 @@ public class Floaty {
     }
 
     public JsFloatyWindow window(View view) {
+        try {
+            FloatingPermission.waitForPermissionGranted(view.getContext());
+        } catch (InterruptedException e) {
+            throw new ScriptInterruptedException();
+        }
         JsFloatyWindow window = new JsFloatyWindow(view);
         mWindows.add(window);
         return window;
