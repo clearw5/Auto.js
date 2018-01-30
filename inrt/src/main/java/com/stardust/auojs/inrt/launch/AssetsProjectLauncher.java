@@ -43,7 +43,7 @@ public class AssetsProjectLauncher {
 
     private void runScript() {
         try {
-            JavaScriptFileSource source = new JavaScriptFileSource(mMainScriptFile);
+            JavaScriptFileSource source = new JavaScriptFileSource("main", mMainScriptFile);
             AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
                     .executePath(mProjectDir));
         } catch (Exception e) {
