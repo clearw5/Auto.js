@@ -77,7 +77,13 @@ public class CodeGenerator {
     }
 
     protected String generateCode(UiSelectorGenerator generator, UiObject root, UiObject target, int maxParentLevel, int maxChildrenLevel, boolean withFind) {
-        String selector = withFind ? generator.generateSelectorCode() : generator.generateSelector().toString();
+        String selector;
+        if (withFind) {
+            selector = generator.generateSelectorCode();
+        } else {
+            UiGlobalSelector s = generator.generateSelector();
+            selector = s == null ? null : s.toString();
+        }
         if (selector != null) {
             return selector;
         }
