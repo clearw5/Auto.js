@@ -15,8 +15,12 @@ module.exports = function(__runtime__, scope){
           }
       }
       if (i.category) {
-          for (var key in i.category) {
-              intent.addCategory(key, i.category[key]);
+          if(i.category instanceof Array){
+              for(var j = 0; i < i.category.length; j++){
+                  intent.addCategory(i.category[j]);
+              }
+          }else{
+              intent.addCategory(i.category);
           }
       }
       if (i.action) {
