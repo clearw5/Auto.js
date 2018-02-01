@@ -29,4 +29,5 @@
         <item quantity="one">描述至少要 %d 个字.</item>
         <item quantity="other">描述至少要 %d 个字.</item>
     </plurals>
+    <string name="theme_color_red">R</string>
 </resources>

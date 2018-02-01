@@ -29,8 +29,8 @@
     <string name="text_do_not_remind_again">不再提示</string>
     <string name="copyright">Copyright©2016 All right reserves.</string>
     <string name="developer">星尘幻影</string>
-    <string name="qq">2732014414</string>
-    <string name="email">hybbbb1996@gmail.com</string>
+    <string name="qq" translatable="false">2732014414</string>
+    <string name="email" translatable="false">hybbbb1996@gmail.com</string>
     <string name="github">软件源代码</string>
     <string name="text_already_copy_to_clip">已复制到剪贴板</string>
     <string name="donate_developer">打赏作者</string>
@@ -134,7 +134,7 @@
     <string name="text_processing">处理中</string>
     <string name="text_guard_mode">保护模式</string>
     <string name="summary_guard_mode">在本软件界面无法运行自动操作命令以免误触</string>
-    <string name="key_guard_mode">key_guard_mode</string>
+    <string name="key_guard_mode" translatable="false">key_guard_mode</string>
     <string name="text_layout_inspector_is_dumping">布局分析中</string>
     <string name="text_force_stop">强制停止</string>
     <string name="text_execution_finished" formatted="false">\n------------\n[%s]运行结束，用时%f秒</string>

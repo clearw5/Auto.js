@@ -1,12 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AutoJs</string>
-    <string name="text_error">Error: </string>
-    <string name="text_start_running">开始运行</string>
-    <string name="text_path_is_empty">路径为空</string>
-    <string name="text_file_not_exists">文件不存在</string>
-    <string name="text_no_file_rw_permission">无文件读写权限</string>
-    <string name="text_no_running_script">没有正在运行的脚本</string>
-    <string name="text_already_stop_n_scripts">已停止%d个正在运行的脚本</string>
-    <string name="text_requires_sdk_version_to_run_the_script">本脚本需要此安卓版本以上才能运行:</string>
+    <string name="text_error">Error:</string>
+    <string name="text_start_running">Script Running</string>
+    <string name="text_path_is_empty">Path is empty</string>
+    <string name="text_file_not_exists">File does not exist</string>
+    <string name="text_no_file_rw_permission">No file reading&amp;writing permission</string>
+    <string name="text_no_running_script">No running script</string>
+    <string name="text_already_stop_n_scripts">Stop %d script(s)</string>
+    <string name="text_requires_sdk_version_to_run_the_script">Required Android OS version:</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="text_console">Console</string>
+    <string name="text_no_floating_window_permission">No drawing overlay permission</string>
+    <string name="text_accessibility_service_description">Auto.js</string>
+    <string name="_app_name">AutoJs</string>
+    <string name="text_should_enable_key_observing">Key observing is disabled, please enable in settings</string>
+    <string name="no_write_settings_permissin">No writing settings permission</string>
+    <string name="exception_notification_service_disabled">通知服务未运行，请重新启用通知权限</string>
+
+
 </resources>
