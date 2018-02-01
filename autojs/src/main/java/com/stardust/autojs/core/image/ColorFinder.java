@@ -4,23 +4,14 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
-import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
-import com.stardust.concurrent.VolatileBox;
 import com.stardust.util.ScreenMetrics;
 
-import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
-
-import java.util.List;
-import java.util.Vector;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Stardust on 2017/5/18.
@@ -47,15 +38,35 @@ public class ColorFinder {
         return findColor(imageWrapper, color, threshold, null);
     }
 
-    public Point findColor(ImageWrapper imageWrapper, int color, int threshold, Rect region) {
-        Point[] points = findAllColors(imageWrapper, color, threshold, region);
-        if (points.length == 0) {
+    public Point findColor(ImageWrapper image, int color, int threshold, Rect rect) {
+        MatOfPoint matOfPoint = findColorInner(image, color, threshold, rect);
+        if (matOfPoint == null) {
             return null;
         }
-        return points[0];
+        Point point = matOfPoint.toArray()[0];
+        if (rect != null) {
+            point.x = mScreenMetrics.scaleX((int) (point.x + rect.x));
+            point.y = mScreenMetrics.scaleX((int) (point.y + rect.y));
+        }
+        return point;
     }
 
-    public Point[] findAllColors(ImageWrapper image, int color, int threshold, Rect rect) {
+    public Point[] findAllPointsForColor(ImageWrapper image, int color, int threshold, Rect rect) {
+        MatOfPoint matOfPoint = findColorInner(image, color, threshold, rect);
+        if (matOfPoint == null) {
+            return new Point[0];
+        }
+        Point[] points = matOfPoint.toArray();
+        if (rect != null) {
+            for (int i = 0; i < points.length; i++) {
+                points[i].x = mScreenMetrics.scaleX((int) (points[i].x + rect.x));
+                points[i].y = mScreenMetrics.scaleX((int) (points[i].y + rect.y));
+            }
+        }
+        return points;
+    }
+
+    private MatOfPoint findColorInner(ImageWrapper image, int color, int threshold, Rect rect) {
         Mat bi = new Mat();
         Scalar lowerBound = new Scalar(Color.red(color) - threshold, Color.green(color) - threshold,
                 Color.blue(color) - threshold, 255);
@@ -69,16 +80,35 @@ public class ColorFinder {
         Mat nonZeroPos = new Mat();
         Core.findNonZero(bi, nonZeroPos);
         if (nonZeroPos.rows() == 0 || nonZeroPos.cols() == 0) {
-            return new Point[0];
+            return null;
         }
-        Point[] points = new MatOfPoint(nonZeroPos).toArray();
-        if (rect != null) {
-            for (int i = 0; i < points.length; i++) {
-                points[i].x = mScreenMetrics.scaleX((int) (points[i].x + rect.x));
-                points[i].y = mScreenMetrics.scaleX((int) (points[i].y + rect.y));
-            }
-        }
-        return points;
+        return new MatOfPoint(nonZeroPos);
     }
 
+    public Point findMultiColors(ImageWrapper image, int firstColor, int threshold, Rect rect, int[] points) {
+        Point[] firstPoints = findAllPointsForColor(image, firstColor, threshold, rect);
+        for (Point firstPoint : firstPoints) {
+            if (firstPoint == null)
+                continue;
+            if (checksPath(image, firstPoint, threshold, rect, points)) {
+                return firstPoint;
+            }
+        }
+        return null;
+    }
+
+    private boolean checksPath(ImageWrapper image, Point startingPoint, int threshold, Rect rect, int[] points) {
+        for (int i = 0; i < points.length; i += 3) {
+            int x = points[i];
+            int y = points[i + 1];
+            int color = points[i + 2];
+            ColorDetector colorDetector = new ColorDetector.DifferenceDetector(color, threshold);
+            int c = image.pixel((int) (x + startingPoint.x), (int) (y + startingPoint.y));
+            if (!colorDetector.detectsColor(Color.red(c), Color.green(c), Color.blue(c))) {
+                return false;
+            }
+
+        }
+        return true;
+    }
 }

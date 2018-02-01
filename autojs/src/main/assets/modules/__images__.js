@@ -1,5 +1,7 @@
 
 module.exports = function(__runtime__, scope){
+   const defaultColorThreshold = 4;
+
    var images = {};
    var colors = Object.create(__runtime__.colors);
    colors.alpha = function(color){
@@ -41,7 +43,7 @@ module.exports = function(__runtime__, scope){
    images.detectsColor = function(img, color, x, y, threshold, algorithm){
         color = parseColor(color);
         algorithm =  algorithm || "diff";
-        threshold = threshold || 16;
+        threshold = threshold || defaultColorThreshold;
         var colorDetector = getColorDetector(color, algorithm, threshold);
         var pixel = images.pixel(img, x, y);
         return colorDetector.detectsColor(colors.red(pixel), colors.green(pixel), colors.blue(pixel));
@@ -54,7 +56,7 @@ module.exports = function(__runtime__, scope){
         if(options.similarity){
             var threshold = parseInt(255 * (1 - options.similarity));
         }else{
-            var threshold = options.threshold || 16;
+            var threshold = options.threshold || defaultColorThreshold;
         }
         if(options.region){
             return colorFinder.findColor(img, color, threshold, buildRegion(options.region, img));
@@ -77,19 +79,34 @@ module.exports = function(__runtime__, scope){
        });
    }
 
-   images.findColors = function(img, color, options){
+   images.findAllPointsForColor = function(img, color, options){
        color = parseColor(color);
        options = options || {};
        if(options.similarity){
            var threshold = parseInt(255 * (1 - options.similarity));
        }else{
-           var threshold = options.threshold || 16;
+           var threshold = options.threshold || defaultColorThreshold;
        }
        if(options.region){
-           return toPointArray(colorFinder.findAllColors(img, color, threshold, buildRegion(options.region, img)));
+           return toPointArray(colorFinder.findAllPointsForColor(img, color, threshold, buildRegion(options.region, img)));
        }else{
-           return toPointArray(colorFinder.findAllColors(img, color, threshold, null));
+           return toPointArray(colorFinder.findAllPointsForColor(img, color, threshold, null));
        }
+  }
+
+  images.findMultiColors = function(img, firstColor, paths, options){
+      options = options || {};
+      firstColor = parseColor(firstColor);
+      var list = java.lang.reflect.Array.newInstance(java.lang.Integer.TYPE, paths.length * 3);
+      for(var i = 0; i < paths.length; i++){
+          var p = paths[i];
+          list[i * 3] = p[0];
+          list[i * 3 + 1] = p[1];
+          list[i * 3 + 2] = parseColor(p[2]);
+      }
+      var region = options.region ? buildRegion(options.region, img) : null;
+      var threshold = options.threshold === undefined ? defaultColorThreshold : options.threshold;
+      return colorFinder.findMultiColors(img, firstColor, threshold, region, list);
   }
 
   images.findImage = function(img, template, options){
@@ -159,7 +176,7 @@ module.exports = function(__runtime__, scope){
       return color;
    }
 
-   scope.__asGlobal__(images, ['requestScreenCapture', 'captureScreen', 'findImage', 'findImageInRegion', 'findColor', 'findColorInRegion', 'findColorEquals']);
+   scope.__asGlobal__(images, ['requestScreenCapture', 'captureScreen', 'findImage', 'findImageInRegion', 'findColor', 'findColorInRegion', 'findColorEquals', 'findMultiColors']);
 
    scope.colors = colors;
 
