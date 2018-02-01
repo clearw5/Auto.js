@@ -138,7 +138,7 @@ public class Pref {
         if (docSource == null || docSource.equals("Local")) {
             return "file:///android_asset/docs/";
         } else {
-            return "https://hyb1996.github.io/AutoJs-Docs/";
+            return "https://www.autojs.org/assets/autojs/docs/";
         }
     }
 

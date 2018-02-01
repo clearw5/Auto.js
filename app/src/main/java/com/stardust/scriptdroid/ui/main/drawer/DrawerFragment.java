@@ -1,7 +1,6 @@
 package com.stardust.scriptdroid.ui.main.drawer;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -73,7 +72,7 @@ import io.reactivex.schedulers.Schedulers;
 @EFragment(R.layout.fragment_drawer)
 public class DrawerFragment extends android.support.v4.app.Fragment {
 
-    private static final String URL_SUBLIME_PLUGIN_HELP = "https://github.com/hyb1996/AutoJs-Sublime-Plugin/blob/master/Readme.md";
+    private static final String URL_DEV_PLUGIN = "https://www.autojs.org/topic/968/";
 
     @ViewById(R.id.header)
     View mHeaderView;
@@ -247,7 +246,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 .neutralText(R.string.text_help)
                 .onNeutral((dialog, which) -> {
                     setChecked(mConnectionItem, false);
-                    IntentUtil.browse(getActivity(), URL_SUBLIME_PLUGIN_HELP);
+                    IntentUtil.browse(getActivity(), URL_DEV_PLUGIN);
                 })
                 .cancelListener(dialog -> setChecked(mConnectionItem, false))
                 .show();

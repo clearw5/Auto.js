@@ -169,6 +169,10 @@ public class UiSelector extends UiGlobalSelector {
         return uiObjectCollection.get(0);
     }
 
+    public UiObject findOnce() {
+        return findOnce(0);
+    }
+
     public UiObject findOnce(int index) {
         UiObjectCollection uiObjectCollection = find();
         while (uiObjectCollection.empty()) {
