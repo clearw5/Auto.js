@@ -26,18 +26,18 @@
       },
       {
         "key": "launchPackage",
-        "url": "app.html#app_app_takephoto_path",
+        "url": "app.html#app_app_launchpackage_packagename",
         "summary": "启动包名"
       },
       {
         "key": "launch",
-        "url": "globals.html#globals_launchpackage_packagename",
+        "url": "app.html#app_app_launch_packagename",
         "summary": "启动",
         "global": true
       },
       {
         "key": "launchApp",
-        "url": "globals.html#globals_launchapp_appname",
+        "url": "app.html#app_app_launchapp_appname",
         "summary": "启动应用",
         "global": true
       },
@@ -47,9 +47,34 @@
         "summary": "获取包名"
       },
       {
+        "key": "getAppName",
+        "url": "app.html#app_app_getappname_packagename",
+        "summary": "获取应用名"
+      },
+      {
         "key": "openAppSetting",
         "url": "globals.html#globals_getappname_packagename",
         "summary": "应用设置页"
+      },
+      {
+        "key": "sendEmail",
+        "url": "globals.html#globals_getappname_packagename",
+        "summary": "应用设置页"
+      },
+      {
+        "key": "intent",
+        "url": "globals.html#globals_getpackagename_appname",
+        "summary": "获取包名"
+      },
+      {
+        "key": "startActivity",
+        "url": "globals.html#globals_getpackagename_appname",
+        "summary": "获取包名"
+      },
+      {
+        "key": "sendBroadcast",
+        "url": "globals.html#globals_getpackagename_appname",
+        "summary": "获取包名"
       }
     ]
   },

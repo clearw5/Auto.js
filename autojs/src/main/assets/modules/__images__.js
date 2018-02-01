@@ -101,7 +101,7 @@ module.exports = function(__runtime__, scope){
        }
        var weakThreshold = options.weakThreshold || 0.7;
        if(options.region){
-            return rtImages.findImage(img, template, weakThreshold, threshold, buildRegion(options, img), maxLevel);
+            return rtImages.findImage(img, template, weakThreshold, threshold, buildRegion(options.region, img), maxLevel);
        }else{
             return rtImages.findImage(img, template, weakThreshold, threshold, null, maxLevel);
        }
@@ -140,11 +140,12 @@ module.exports = function(__runtime__, scope){
   }
 
   function buildRegion(region, img){
-     var x = region[0] || 0;
-     var y = region[1] || 0;
-     var width = region[2] || (img.getWidth() - x);
-     var height = region[3] || (img.getHeight() - y);
-     return new org.opencv.core.Rect(x, y, width, height);
+     var x = region[0] === undefined ? 0 : region[0];
+     var y = region[1] === undefined ? 0 : region[1];
+     var width = region[2] === undefined ? img.getWidth() - x : region[2];
+     var height = region[3] === undefined ? (img.getHeight() - y) : region[3];
+     var r = new org.opencv.core.Rect(x, y, width, height);
+     return r;
   }
 
    function parseColor(color){

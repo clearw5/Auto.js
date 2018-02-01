@@ -45,7 +45,7 @@ module.exports = function(__runtime__, scope){
 
     app.sendEmail = function(options){
         options = options || {};
-        var i = new Intent(ACTION_SENDTO);
+        var i = new Intent(Intent.ACTION_SENDTO);
         if(options.email){
             i.putExtra(Intent.EXTRA_EMAIL, toArray(options.email));
         }

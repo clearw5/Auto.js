@@ -210,6 +210,10 @@ public class Images {
     }
 
     public Point findImage(ImageWrapper image, ImageWrapper template, float weakThreshold, float threshold, Rect rect, int maxLevel) {
+        if(image == null)
+            throw new NullPointerException("image = null");
+        if(template == null)
+            throw new NullPointerException("template = null");
         Mat src = image.getMat();
         if (rect != null) {
             src = new Mat(src, rect);

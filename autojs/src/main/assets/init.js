@@ -10,6 +10,12 @@ var importClass = function(pack){
     }
 }
 
+var __that__ = this;
+var Promise = require('promise.js');
+var JSON = require('__json2__.js');
+var util = require('__util__.js');
+
+
 __runtime__.bridges.setBridges({
     call: function(func, target, args){
        var arr = [];
@@ -41,10 +47,6 @@ __runtime__.bridges.setBridges({
     }
 });
 
-var __that__ = this;
-var Promise = require('promise.js');
-var JSON = require('__json2__.js');
-var util = require('__util__.js');
 var device = __runtime__.device;
 
 var __asGlobal__ = function(obj, functions){
