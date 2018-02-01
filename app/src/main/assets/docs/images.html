@@ -84,6 +84,7 @@
 <li><span class="stability_undefined"><a href="#images_images_findcolor_image_color_options">images.findColor(image, color, options)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findcolorinregion_img_color_x_y_width_height_threshold">images.findColorInRegion(img, color, x, y[, width, height, threshold])</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findcolorequals_img_color_x_y_width_height">images.findColorEquals(img, color[, x, y, width, height])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findmulticolors_img_firstcolor_colors_options">images.findMultiColors(img, firstColor, colors[, options])</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff">images.detectsColor(image, color, x, y[, threshold = 16, algorithm = &quot;diff&quot;])</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findimage_img_template_options">images.findImage(img, template[, options])</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findimageinregion_img_template_x_y_width_height_threshold">images.findImageInRegion(img, template, x, y[, width, height, threshold])</a></span></li>
@@ -210,7 +211,7 @@ images.save(clip, &quot;/sdcard/clip.png&quot;);
 <p>选项包括：</p>
 <ul>
 <li><code>region</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 找色区域。是一个两个或四个元素的数组。(region[0], region[1])表示找色区域的左上角；region[2]*region[3]表示找色区域的宽高。如果只有region只有两个元素，则找色区域为(region[0], region[1])到屏幕右下角。如果不指定region选项，则找色区域为整张图片。</li>
-<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色时颜色相似度的临界值，范围为0~255（越小越相似，0为颜色相等，255为任何颜色都能匹配）。默认为16。threshold和浮点数相似度(0.0~1.0)的换算为 similarity = (255 - threshold) / 255.</li>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色时颜色相似度的临界值，范围为0~255（越小越相似，0为颜色相等，255为任何颜色都能匹配）。默认为4。threshold和浮点数相似度(0.0~1.0)的换算为 similarity = (255 - threshold) / 255.</li>
 </ul>
 <p>该函数也可以作为全局函数使用。</p>
 <p>一个循环找色的例子如下：</p>
@@ -274,6 +275,28 @@ if(p){
 }else{
     toast(&quot;没有未读消息&quot;);
 }
+</code></pre><h2>images.findMultiColors(img, firstColor, colors[, options])<span><a class="mark" href="#images_images_findmulticolors_img_firstcolor_colors_options" id="images_images_findmulticolors_img_firstcolor_colors_options">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 要找色的图片</li>
+<li><code>firstColor</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 第一个点的颜色</li>
+<li><code>colors</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 表示剩下的点相对于第一个点的位置和颜色的数组，数组的每个元素为[x, y, color]</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项，包括：<ul>
+<li><code>region</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 找色区域。是一个两个或四个元素的数组。(region[0], region[1])表示找色区域的左上角；region[2]*region[3]表示找色区域的宽高。如果只有region只有两个元素，则找色区域为(region[0], region[1])到屏幕右下角。如果不指定region选项，则找色区域为整张图片。</li>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色时颜色相似度的临界值，范围为0~255（越小越相似，0为颜色相等，255为任何颜色都能匹配）。默认为4。threshold和浮点数相似度(0.0~1.0)的换算为 similarity = (255 - threshold) / 255.</li>
+</ul>
+</li>
+</ul>
+</div><p>多点找色，类似于按键精灵的多点找色，其过程如下：</p>
+<ol>
+<li>在图片img中找到颜色firstColor的位置(x0, y0)</li>
+<li>对于数组colors的每个元素[x, y, color]，检查图片img在位置(x + x0, y + y0)上的像素是否是颜色color，是的话返回(x0, y0)，否则继续寻找firstColor的位置，重新执行第1步</li>
+<li>整张图片都找不到时返回<code>null</code></li>
+</ol>
+<p>例如，对于代码<code>images.findMultiColors(img, &quot;#123456&quot;, [[10, 20, &quot;#ffffff&quot;], [30, 40, &quot;#000000&quot;]])</code>，假设图片在(100, 200)的位置的颜色为#123456, 这时如果(110, 220)的位置的颜色为#fffff且(130, 240)的位置的颜色为#000000，则函数返回点(100, 200)。</p>
+<p>如果要指定找色区域，则在options中指定，例如:</p>
+<pre><code>var p = images.findMultiColors(img, &quot;#123456&quot;, [[10, 20, &quot;#ffffff&quot;], [30, 40, &quot;#000000&quot;]], {
+    region: [0, 960, 1080, 960]
+});
 </code></pre><h2>images.detectsColor(image, color, x, y[, threshold = 16, algorithm = &quot;diff&quot;])<span><a class="mark" href="#images_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff" id="images_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
