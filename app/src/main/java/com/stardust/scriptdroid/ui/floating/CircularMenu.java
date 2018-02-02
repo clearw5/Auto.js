@@ -5,14 +5,13 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.stardust.app.DialogUtils;
 import com.stardust.app.OperationDialogBuilder;
 import com.stardust.autojs.core.record.Recorder;
-import com.stardust.autojs.runtime.api.Dialogs;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.floatingcircularactionmenu.CircularActionMenu;
 import com.stardust.floatingcircularactionmenu.CircularActionMenuFloatingWindow;
@@ -34,7 +33,6 @@ import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.view.accessibility.LayoutInspector;
 import com.stardust.view.accessibility.NodeInfo;
-import com.stericson.RootShell.RootShell;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jdeferred.Deferred;
@@ -77,7 +75,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
 
     CircularActionMenuFloatingWindow mWindow;
     private int mState;
-    private ImageView mActionViewIcon;
+    private RoundedImageView mActionViewIcon;
     private Context mContext;
     private GlobalActionRecorder mRecorder;
     private MaterialDialog mSettingsDialog;
@@ -113,7 +111,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
             @Override
             public View inflateActionView(FloatyService service, CircularActionMenuFloatingWindow window) {
                 View actionView = View.inflate(service, R.layout.circular_action_view, null);
-                mActionViewIcon = (ImageView) actionView.findViewById(R.id.icon);
+                mActionViewIcon = (RoundedImageView) actionView.findViewById(R.id.icon);
                 return actionView;
             }
 
@@ -169,13 +167,13 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
         mState = state;
         mActionViewIcon.setImageResource(mState == STATE_RECORDING ? R.drawable.ic_ali_record :
                 IC_ACTION_VIEW);
+        //  mActionViewIcon.setBackgroundColor(mState == STATE_RECORDING ? mContext.getResources().getColor(R.color.color_red) :
+        //        Color.WHITE);
         mActionViewIcon.setBackgroundResource(mState == STATE_RECORDING ? R.drawable.circle_red :
-                0);
-        if (state == STATE_RECORDING) {
-            mActionViewIcon.setPadding(28, 28, 28, 28);
-        } else {
-            mActionViewIcon.setPadding(0, 0, 0, 0);
-        }
+                R.drawable.circle_white);
+        int padding = (int) mContext.getResources().getDimension(mState == STATE_RECORDING ?
+                R.dimen.padding_circular_menu_recording : R.dimen.padding_circular_menu_normal);
+        mActionViewIcon.setPadding(padding, padding, padding, padding);
         EventBus.getDefault().post(new StateChangeEvent(mState, previousState));
 
     }

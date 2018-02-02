@@ -5,17 +5,31 @@ module.exports = function(__runtime__, scope){
    var images = {};
    var colors = Object.create(__runtime__.colors);
    colors.alpha = function(color){
+        color = parseColor(color);
         return color >>> 24;
    }
    colors.red = function(color){
+        color = parseColor(color);
         return (color >> 16) & 0xFF;
    }
    colors.green = function(color){
+        color = parseColor(color);
         return (color >> 8) & 0xFF;
    }
    colors.blue = function(color){
+        color = parseColor(color);
         return color & 0xFF;
    }
+
+   colors.isSimilar = function(c1, c2, threshold, algorithm){
+        c1 = parseColor(c1);
+        c2 = parseColor(c2);
+        threshold = threshold == undefined ? 4 : threshold;
+        algorithm = algorithm == undefined ? "diff" : algorithm;
+        var colorDetector = getColorDetector(c1, algorithm, threshold);
+        return colorDetector.detectsColor(colors.red(c2), colors.green(c2), colors.blue(c2));
+   }
+
    if(android.os.Build.VERSION.SDK_INT < 19){
         return images;
    }
@@ -167,12 +181,8 @@ module.exports = function(__runtime__, scope){
 
    function parseColor(color){
      if(typeof(color) == 'string'){
-        if(color.startsWith('#')){
-           return parseInt('0x' + color.substring(1));
-        }else{
-           return parseInt('0x' + color);
-        }
-      }
+        color = colors.parseColor(color);
+     }
       return color;
    }
 

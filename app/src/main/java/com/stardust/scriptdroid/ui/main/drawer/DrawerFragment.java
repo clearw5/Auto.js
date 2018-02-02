@@ -131,6 +131,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         ThemeColorManager.addViewBackground(mHeaderView);
         initMenuItems();
         if (Pref.isFloatingMenuShown()) {
+            FloatyWindowManger.showCircularMenu();
             setChecked(mFloatingWindowItem, true);
         }
         setChecked(mConnectionItem, DevPluginService.getInstance().isConnected());

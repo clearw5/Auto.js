@@ -18,6 +18,12 @@
         android:theme="@style/AppTheme"
         tools:replace="android:label, android:allowBackup">
         <activity android:name=".MainActivity">
+
+        </activity>
+
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

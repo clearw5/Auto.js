@@ -9,4 +9,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="textSize_item_property">14sp</dimen>
     <dimen name="divider_drawer_menu_group">6dp</dimen>
+    <dimen name="padding_circular_menu_recording">8dp</dimen>
+    <dimen name="padding_circular_menu_normal">5dp</dimen>
 </resources>

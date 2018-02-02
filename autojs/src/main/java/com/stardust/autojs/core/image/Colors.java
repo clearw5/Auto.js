@@ -50,6 +50,28 @@ public class Colors {
     }
 
     public String toString(int color) {
-        return "#" + Integer.toHexString(color);
+        StringBuilder c = new StringBuilder(Integer.toHexString(color));
+        while (c.length() < 6) {
+            c.insert(0, "0");
+        }
+        return "#" + c;
     }
+
+    public boolean equals(int c1, int c2) {
+        return (c1 & 0xffffff) == (c2 & 0xffffff);
+    }
+
+    public boolean equals(int c1, String c2) {
+        return equals(c1, parseColor(c2));
+    }
+
+    public boolean equals(String c1, int c2) {
+        return equals(parseColor(c1), c2);
+    }
+
+    public boolean equals(String c1, String c2) {
+        return equals(parseColor(c1), parseColor(c2));
+    }
+
+
 }

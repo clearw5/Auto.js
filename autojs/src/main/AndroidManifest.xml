@@ -15,6 +15,7 @@
             android:name=".execution.ScriptExecuteActivity"
             android:theme="@style/AppTheme"/>
 
+
         <activity
             android:name="com.stardust.autojs.core.image.ScreenCaptureRequestActivity"
             android:excludeFromRecents="true"

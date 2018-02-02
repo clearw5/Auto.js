@@ -10,4 +10,5 @@
     <color name="prefTextColorSecondary">#9DA0A2</color>
     <color name="prefTextColorPrimary">#282C2F</color>
     <color name="divider_functions_keyboard">#f0f0f0</color>
+    <color name="color_red">#ef5350</color>
 </resources>
