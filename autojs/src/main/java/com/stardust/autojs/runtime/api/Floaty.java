@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Looper;
 import android.view.ContextThemeWrapper;
 import android.view.View;
-import android.widget.Toast;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.floaty.FloatyWindow;
@@ -19,10 +18,7 @@ import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.util.UiHandler;
 import com.stardust.util.ViewUtil;
 
-import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArraySet;
-
-import ezy.assist.compat.SettingsCompat;
 
 /**
  * Created by Stardust on 2017/12/5.
@@ -54,8 +50,16 @@ public class Floaty {
             throw new ScriptInterruptedException();
         }
         JsFloatyWindow window = new JsFloatyWindow(view);
-        mWindows.add(window);
+        addWindow(window);
         return window;
+    }
+
+    private synchronized void addWindow(JsFloatyWindow window) {
+        mWindows.add(window);
+    }
+
+    private synchronized boolean removeWindow(JsFloatyWindow window) {
+        return mWindows.remove(window);
     }
 
     private View inflate(String xml) {
@@ -68,13 +72,11 @@ public class Floaty {
         }
     }
 
-    public void closeAll() {
-        Iterator<JsFloatyWindow> iterator = mWindows.iterator();
-        while (iterator.hasNext()) {
-            JsFloatyWindow window = iterator.next();
-            iterator.remove();
+    public synchronized void closeAll() {
+        for (JsFloatyWindow window : mWindows) {
             window.close(false);
         }
+        mWindows.clear();
     }
 
     public class JsFloatyWindow {
@@ -154,7 +156,7 @@ public class Floaty {
         }
 
         void close(boolean removeFromWindows) {
-            if (removeFromWindows && !mWindows.remove(this)) {
+            if (removeFromWindows && !removeWindow(this)) {
                 return;
             }
             runWithWindow(() -> {
