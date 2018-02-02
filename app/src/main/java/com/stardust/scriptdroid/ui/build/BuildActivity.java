@@ -100,7 +100,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     }
 
     private void downloadPlugin() {
-        // TODO: 2017/11/29
+        IntentUtil.browse(this, "https://www.autojs.org/topic/977");
     }
 
     private void setupWithSourceFile(ScriptFile file) {

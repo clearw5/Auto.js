@@ -100,8 +100,6 @@ public class Pref {
                 }
                 def().edit().putLong(KEY_LAST_SHOW_AD_MILLIS, System.currentTimeMillis()).apply();
                 return true;
-            case "Off":
-                return false;
         }
         return true;
     }
