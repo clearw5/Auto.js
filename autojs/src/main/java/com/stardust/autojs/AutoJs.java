@@ -23,6 +23,7 @@ import com.stardust.autojs.engine.RootAutomatorEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.runtime.ScriptRuntime;
+import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.exception.ScriptException;
@@ -108,12 +109,7 @@ public abstract class AutoJs {
                     .setShellSupplier(() -> new Shell(mContext, true)).build());
             return engine;
         });
-        mScriptEngineManager.registerEngine(AutoFileSource.ENGINE, new Supplier<ScriptEngine>() {
-            @Override
-            public ScriptEngine get() {
-                return new RootAutomatorEngine(mContext);
-            }
-        });
+        mScriptEngineManager.registerEngine(AutoFileSource.ENGINE, () -> new RootAutomatorEngine(mContext));
 
     }
 
@@ -174,7 +170,15 @@ public abstract class AutoJs {
     }
 
 
+    protected AccessibilityConfig createAccessibilityConfig() {
+        return new AccessibilityConfig();
+    }
+
     private class AccessibilityBridgeImpl extends AccessibilityBridge {
+
+        public AccessibilityBridgeImpl() {
+            super(createAccessibilityConfig());
+        }
 
         @Override
         public void ensureServiceEnabled() {

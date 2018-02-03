@@ -55,7 +55,6 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         }
     }
 
-
     @Override
     protected Application getApplication() {
         return App.getApp();

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.stardust.autojs.runtime.accessibility.AutomatorConfig;
+import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 
 import java.util.concurrent.TimeUnit;
 
@@ -23,13 +23,13 @@ public class Pref {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equals(getString(R.string.key_guard_mode))) {
-                AutomatorConfig.setIsUnintendedGuardEnabled(sharedPreferences.getBoolean(getString(R.string.key_guard_mode), false));
+                AccessibilityConfig.setIsUnintendedGuardEnabled(sharedPreferences.getBoolean(getString(R.string.key_guard_mode), false));
             }
         }
     };
 
     static {
-        AutomatorConfig.setIsUnintendedGuardEnabled(def().getBoolean(getString(R.string.key_guard_mode), false));
+        AccessibilityConfig.setIsUnintendedGuardEnabled(def().getBoolean(getString(R.string.key_guard_mode), false));
     }
 
     private static SharedPreferences def() {
