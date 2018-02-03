@@ -20,6 +20,16 @@ public class Property {
     @SerializedName("global")
     private boolean mGlobal;
 
+    public Property() {
+    }
+
+    public Property(String key, String url, String summary, boolean global) {
+        mUrl = url;
+        mKey = key;
+        mSummary = summary;
+        mGlobal = global;
+    }
+
     public String getUrl() {
         return mUrl;
     }

@@ -63,9 +63,9 @@ public class CodeMirrorEditor extends FrameLayout {
 
 
     public interface Callback {
-        void onChange();
 
-        void updateCodeCompletion(int fromLine, int fromCh, int toLine, int toCh, String[] list, String[] urls);
+        void onKeyUp(String line, int ch);
+
     }
 
     private static String[] sAvailableThemes;
@@ -134,17 +134,14 @@ public class CodeMirrorEditor extends FrameLayout {
     }
 
     public void setTheme(final String theme) {
-        mPageFinished.promise().done(new DoneCallback<Void>() {
-            @Override
-            public void onDone(Void result) {
-                evalJavaScript(String.format(Locale.getDefault(),
-                        "var e = document.createElement('link');e.setAttribute('rel', 'stylesheet');" +
-                                "e.setAttribute('type', 'text/css');e.setAttribute('href', '%s');" +
-                                "document.getElementsByTagName('head')[0].appendChild(e);",
-                        "codemirror/theme/" + theme + ".css"));
-                evalJavaScript(String.format(Locale.getDefault(), "editor.setOption('theme', '%s');", theme));
-                mTheme = theme;
-            }
+        mPageFinished.promise().done(result -> {
+            evalJavaScript(String.format(Locale.getDefault(),
+                    "var e = document.createElement('link');e.setAttribute('rel', 'stylesheet');" +
+                            "e.setAttribute('type', 'text/css');e.setAttribute('href', '%s');" +
+                            "document.getElementsByTagName('head')[0].appendChild(e);",
+                    "codemirror/theme/" + theme + ".css"));
+            evalJavaScript(String.format(Locale.getDefault(), "editor.setOption('theme', '%s');", theme));
+            mTheme = theme;
         });
     }
 
@@ -442,19 +439,11 @@ public class CodeMirrorEditor extends FrameLayout {
         }
 
         @JavascriptInterface
-        public void onTextChange() {
+        public void onKeyUp(String line, int cursor) {
             if (mCallback == null) {
                 return;
             }
-            mWebView.post(() -> mCallback.onChange());
-        }
-
-        @JavascriptInterface
-        public void updateCodeCompletion(final int fromLine, final int fromCh, final int toLine, final int toCh, final String[] list, final String[] urls) {
-            if (mCallback == null) {
-                return;
-            }
-            mWebView.post(() -> mCallback.updateCodeCompletion(fromLine, fromCh, toLine, toCh, list, urls));
+            mWebView.post(() -> mCallback.onKeyUp(line, cursor));
         }
 
     }
@@ -534,28 +523,4 @@ public class CodeMirrorEditor extends FrameLayout {
         }
     }
 
-    private class MyInputConnection extends InputConnectProxy {
-
-        public MyInputConnection(InputConnection inputConnection) {
-            super(inputConnection);
-        }
-
-        @Override
-        public boolean sendKeyEvent(KeyEvent event) {
-            Log.d(LOG_TAG, "sendKeyEvent: " + event);
-            return super.sendKeyEvent(event);
-        }
-
-        @Override
-        public boolean performContextMenuAction(int id) {
-            if (id == android.R.id.selectAll) {
-                post(CodeMirrorEditor.this::selectAll);
-                return true;
-            }
-            if (id == android.R.id.startSelectingText) {
-                evalJavaScript("editor.setSelection(editor.getCursor(), {line: editor.getCursor().line, ch: editor.getCursor().ch - 1});");
-            }
-            return super.performContextMenuAction(id);
-        }
-    }
 }

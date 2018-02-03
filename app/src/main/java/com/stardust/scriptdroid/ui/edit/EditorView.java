@@ -19,18 +19,19 @@ import android.widget.ImageView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
-import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
+import com.stardust.scriptdroid.model.autocomplete.AutoCompletion;
+import com.stardust.scriptdroid.model.autocomplete.CodeCompletion;
 import com.stardust.scriptdroid.model.indices.Module;
 import com.stardust.scriptdroid.model.indices.Property;
 import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.ui.doc.ManualDialog;
-import com.stardust.scriptdroid.ui.edit.completion.CodeCompletions;
+import com.stardust.scriptdroid.model.autocomplete.CodeCompletions;
 import com.stardust.scriptdroid.ui.edit.completion.CodeCompletionBar;
 import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhancedBarColors;
-import com.stardust.scriptdroid.ui.edit.completion.Symbols;
+import com.stardust.scriptdroid.model.autocomplete.Symbols;
 import com.stardust.scriptdroid.ui.edit.keyboard.FunctionsKeyboardHelper;
 import com.stardust.scriptdroid.ui.edit.keyboard.FunctionsKeyboardView;
 import com.stardust.scriptdroid.ui.log.LogActivity_;
@@ -101,9 +102,9 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     private String mName;
     private File mFile;
     private boolean mReadOnly = false;
-
     private ScriptExecution mScriptExecution;
     private boolean mTextChanged = false;
+    private AutoCompletion mAutoCompletion;
     private FunctionsKeyboardHelper mFunctionsKeyboardHelper;
     private BroadcastReceiver mOnRunFinishedReceiver = new BroadcastReceiver() {
         @Override
@@ -220,32 +221,25 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         mSymbolBar.setCodeCompletions(Symbols.getSymbols());
         mCodeCompletionBar.setOnHintClickListener(this);
         mSymbolBar.setOnHintClickListener(this);
+        mAutoCompletion = new AutoCompletion(getContext());
+        mAutoCompletion.setAutoCompleteCallback(mCodeCompletionBar::setCodeCompletions);
     }
 
 
     private void setUpEditor() {
         setTheme(PreferenceManager.getDefaultSharedPreferences(getContext())
                 .getString(KEY_EDITOR_THEME, mEditor.getTheme()));
-        mEditor.setCallback(new CodeMirrorEditor.Callback() {
-            @Override
-            public void onChange() {
-                mTextChanged = true;
-                setMenuItemStatus(R.id.save, true);
-            }
-
-
-            @Override
-            public void updateCodeCompletion(int fromLine, int fromCh, int toLine, int toCh, final String[] list, final String[] urls) {
-                mCodeCompletionBar.setCodeCompletions(new CodeCompletions(
-                        new CodeCompletions.Pos(fromLine, fromCh),
-                        new CodeCompletions.Pos(toLine, toCh),
-                        Arrays.asList(list),
-                        Arrays.asList(urls)
-                ));
-            }
+        mEditor.setCallback((line, cursor) -> {
+            mTextChanged = true;
+            setMenuItemStatus(R.id.save, true);
+            autoComplete(line, cursor);
         });
 
 
+    }
+
+    private void autoComplete(String line, int cursor) {
+        mAutoCompletion.onCursorChange(line, cursor);
     }
 
     public void setTheme(String theme) {
@@ -403,21 +397,16 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     @Override
     public void onHintClick(CodeCompletions completions, int pos) {
-        if (completions.shouldBeInserted()) {
-            mEditor.insert(completions.getHints().get(pos));
-            return;
-        }
-        mEditor.replace(completions.getHints().get(pos), completions.getFrom().line, completions.getFrom().ch,
-                completions.getTo().line, completions.getTo().ch);
+        CodeCompletion completion = completions.get(pos);
+        mEditor.insert(completion.getInsertText());
     }
 
     @Override
     public void onHintLongClick(CodeCompletions completions, int pos) {
-        String url = completions.getUrltAt(pos);
-        if (url == null)
+        CodeCompletion completion = completions.get(pos);
+        if (completion.getUrl() == null)
             return;
-        showManual(url, completions.getHints().get(pos));
-
+        showManual(completion.getUrl(), completion.getHint());
     }
 
     private void showManual(String url, String title) {

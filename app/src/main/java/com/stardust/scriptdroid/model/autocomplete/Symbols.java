@@ -1,4 +1,4 @@
-package com.stardust.scriptdroid.ui.edit.completion;
+package com.stardust.scriptdroid.model.autocomplete;
 
 import java.util.Arrays;
 

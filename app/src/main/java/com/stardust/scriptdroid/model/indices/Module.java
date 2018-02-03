@@ -12,7 +12,6 @@ import java.util.List;
 public class Module {
 
     @SerializedName("properties")
-
     private List<Property> mProperties = new ArrayList<>();
 
     @SerializedName("url")
@@ -52,5 +51,9 @@ public class Module {
 
     public void setSummary(String summary) {
         mSummary = summary;
+    }
+
+    public Property asGlobalProperty() {
+        return new Property(mName, mUrl, mSummary, true);
     }
 }
