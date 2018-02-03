@@ -40,7 +40,7 @@ public class VersionService {
 
     public VersionService() {
         mRetrofit = new Retrofit.Builder()
-                .baseUrl("https://raw.githubusercontent.com/")
+                .baseUrl("https://www.autojs.org/")
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder()
                         .setLenient()
                         .create()))

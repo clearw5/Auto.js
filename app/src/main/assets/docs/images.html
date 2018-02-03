@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Images | Auto.js 3.0.0 文档</title>
+  <title>colors | Auto.js 3.0.0 文档</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
@@ -18,7 +18,8 @@
       </div>
       <ul>
 <li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
-<li><a class="nav-synopsis" href="synopsis.html">如何阅读本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
 </ul>
 <div class="line"></div>
 
@@ -27,7 +28,7 @@
 <li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
 <li><a class="nav-app" href="app.html">App - 应用</a></li>
 <li><a class="nav-console" href="console.html">Console - 控制台</a></li>
-<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的触摸模拟</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
 <li><a class="nav-device" href="device.html">Device - 设备</a></li>
 <li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
 <li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
@@ -39,7 +40,7 @@
 <li><a class="nav-images active" href="images.html">Images - 图片与图色处理</a></li>
 <li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
 <li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
-<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的触摸模拟</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
 <li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
 <li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
 <li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
@@ -71,22 +72,6 @@
       <div id="toc">
         <h2>目录</h2>
         <ul>
-<li><span class="stability_2"><a href="#images_images">Images</a></span><ul>
-<li><span class="stability_undefined"><a href="#images_images_requestscreencapture_landscape">images.requestScreenCapture([landscape])</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_capturescreen">images.captureScreen()</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_capturescreen_path">images.captureScreen(path)</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_pixel_image_x_y">images.pixel(image, x, y)</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_save_image_path">images.save(image, path)</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_read_path">images.read(path)</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_load_url">images.load(url)</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_findcolor_image_color_options">images.findColor(image, color, options)</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_findcolorinregion_img_color_x_y_width_height_threshold">images.findColorInRegion(img, color, x, y[, width, height, threshold])</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_findcolorequals_img_color_x_y_width_height">images.findColorEquals(img, color[, x, y, width, height])</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff">images.detectsColor(image, color, x, y[, threshold = 16, algorithm = &quot;diff&quot;])</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_findimage_img_template_options">images.findImage(img, template[, options])</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_findimageinregion_img_template_x_y_width_height_threshold">images.findImageInRegion(img, template, x, y[, width, height, threshold])</a></span></li>
-</ul>
-</li>
 <li><span class="stability_2"><a href="#images_colors">colors</a></span><ul>
 <li><span class="stability_undefined"><a href="#images_colors_tostring_color">colors.toString(color)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_colors_red_color">colors.red(color)</a></span></li>
@@ -95,6 +80,27 @@
 <li><span class="stability_undefined"><a href="#images_colors_alpha_color">colors.alpha(color)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_colors_rgb_red_green_blue">colors.rgb(red, green, blue)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_colors_argb_alpha_red_green_blue">colors.argb(alpha, red, green, blue)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_parsecolor_colorstr">colors.parseColor(colorStr)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_issimilar_color2_color2_threshold_algorithm">colors.isSimilar(color2, color2[, threshold, algorithm])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_equals_color1_color2">colors.equals(color1, color2)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_2"><a href="#images_images">Images</a></span><ul>
+<li><span class="stability_undefined"><a href="#images_images_requestscreencapture_landscape">images.requestScreenCapture([landscape])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_capturescreen">images.captureScreen()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_capturescreen_path">images.captureScreen(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_pixel_image_x_y">images.pixel(image, x, y)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_save_image_path">images.save(image, path)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_read_path">images.read(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_load_url">images.load(url)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_clip_img_x_y_w_h">images.clip(img, x, y, w, h)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findcolor_image_color_options">images.findColor(image, color, options)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findcolorinregion_img_color_x_y_width_height_threshold">images.findColorInRegion(img, color, x, y[, width, height, threshold])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findcolorequals_img_color_x_y_width_height">images.findColorEquals(img, color[, x, y, width, height])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findmulticolors_img_firstcolor_colors_options">images.findMultiColors(img, firstColor, colors[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff">images.detectsColor(image, color, x, y[, threshold = 16, algorithm = &quot;diff&quot;])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findimage_img_template_options">images.findImage(img, template[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findimageinregion_img_template_x_y_width_height_threshold">images.findImageInRegion(img, template, x, y[, width, height, threshold])</a></span></li>
 </ul>
 </li>
 <li><span class="stability_undefined"><a href="#images_image">Image</a></span><ul>
@@ -114,7 +120,89 @@
       </div>
 
       <div id="apicontent">
-        <h1>Images<span><a class="mark" href="#images_images" id="images_images">#</a></span></h1>
+        <h1>colors<span><a class="mark" href="#images_colors" id="images_colors">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>在Auto.js有两种方式表示一个颜色。</p>
+<p>一种是使用一个字符串&quot;#AARRGGBB&quot;或&quot;#RRGGBB&quot;，其中 AA 是Alpha通道(透明度)的值，RR 是R通道(红色)的值，GG 是G通道(绿色)的值，BB是B通道(蓝色)的值。例如&quot;#ffffff&quot;表示白色, &quot;#7F000000&quot;表示半透明的黑色。</p>
+<p>另一种是使用一个16进制的&quot;32位整数&quot; 0xAARRGGBB 来表示一个颜色，例如 <code>0xFF112233</code>表示颜色&quot;#112233&quot;, <code>0x11223344</code>表示颜色&quot;#11223344&quot;。</p>
+<p>可以通过<code>colors.toString()</code>把颜色整数转换为字符串，通过<code>colors.parseColor()</code>把颜色字符串解析为颜色整数。</p>
+<h2>colors.toString(color)<span><a class="mark" href="#images_colors_tostring_color" id="images_colors_tostring_color">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回颜色值的字符串，格式为 &quot;#AARRGGBB&quot;。</p>
+<h2>colors.red(color)<span><a class="mark" href="#images_colors_red_color" id="images_colors_red_color">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回颜色color的R通道的值，范围0~255.</p>
+<h2>colors.green(color)<span><a class="mark" href="#images_colors_green_color" id="images_colors_green_color">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回颜色color的G通道的值，范围0~255.</p>
+<h2>colors.blue(color)<span><a class="mark" href="#images_colors_blue_color" id="images_colors_blue_color">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回颜色color的B通道的值，范围0~255.</p>
+<h2>colors.alpha(color)<span><a class="mark" href="#images_colors_alpha_color" id="images_colors_alpha_color">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回颜色color的Alpha通道的值，范围0~255.</p>
+<h2>colors.rgb(red, green, blue)<span><a class="mark" href="#images_colors_rgb_red_green_blue" id="images_colors_rgb_red_green_blue">#</a></span></h2>
+<div class="signature"><ul>
+<li>red <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的R通道的值</li>
+<li>blue <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的G通道的值</li>
+<li>green <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的B通道的值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回这些颜色通道构成的整数颜色值。Alpha通道将是255（不透明）。</p>
+<h2>colors.argb(alpha, red, green, blue)<span><a class="mark" href="#images_colors_argb_alpha_red_green_blue" id="images_colors_argb_alpha_red_green_blue">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>alpha</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的Alpha通道的值</li>
+<li><code>red</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a>  颜色的R通道的值</li>
+<li><code>green</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的G通道的值</li>
+<li><code>blue</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的B通道的值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回这些颜色通道构成的整数颜色值。</p>
+<h2>colors.parseColor(colorStr)<span><a class="mark" href="#images_colors_parsecolor_colorstr" id="images_colors_parsecolor_colorstr">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>colorStr</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 表示颜色的字符串，例如&quot;#112233&quot;</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回颜色的整数值。</p>
+<h2>colors.isSimilar(color2, color2[, threshold, algorithm])<span><a class="mark" href="#images_colors_issimilar_color2_color2_threshold_algorithm" id="images_colors_issimilar_color2_color2_threshold_algorithm">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>color1</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值1</li>
+<li><code>color1</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值2</li>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色相似度临界值，默认为4。取值范围为0~255。这个值越大表示允许的相似程度越小，如果这个值为0，则两个颜色相等时该函数才会返回true。</li>
+<li><code>algorithm</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色匹配算法，默认为&quot;diff&quot;, 包括:<ul>
+<li>&quot;diff&quot;: 差值匹配。与给定颜色的R、G、B差的绝对值之和小于threshold时匹配。</li>
+<li>&quot;rgb&quot;: rgb欧拉距离相似度。与给定颜色color的rgb欧拉距离小于等于threshold时匹配。</li>
+<li>&quot;rgb+&quot;: 加权rgb欧拉距离匹配(<a href="https://en.wikipedia.org/wiki/Color_difference">LAB Delta E</a>)。</li>
+<li>&quot;hs&quot;: hs欧拉距离匹配。hs为HSV空间的色调值。</li>
+</ul>
+</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a></li>
+</ul>
+</div><p>返回两个颜色是否相似。</p>
+<h2>colors.equals(color1, color2)<span><a class="mark" href="#images_colors_equals_color1_color2" id="images_colors_equals_color1_color2">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>color1</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值1</li>
+<li><code>color1</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值2</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a></li>
+</ul>
+</div><p>返回两个颜色是否相等。<em>*注意该函数会忽略Alpha通道的值进行比较</em>。</p>
+<pre><code>log(colors.equals(&quot;#112233&quot;, &quot;#112234&quot;));
+log(colors.equals(0xFF112233, 0xFF223344));
+</code></pre><h1>Images<span><a class="mark" href="#images_images" id="images_images">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>images模块提供了一些手机设备中常见的图片处理函数，包括截图、读写图片、图片剪裁、找色、找图等。</p>
 <h2>images.requestScreenCapture([landscape])<span><a class="mark" href="#images_images_requestscreencapture_landscape" id="images_images_requestscreencapture_landscape">#</a></span></h2>
 <div class="signature"><ul>
@@ -122,8 +210,8 @@
 </ul>
 </div><p>向系统申请屏幕截图权限，返回是否请求成功。</p>
 <p>第一次使用该函数会弹出截图权限请求，建议选择“总是允许”。</p>
-<p>这个函数只是申请截图权限，并不会真正执行截图，真正的截图函数是[captureScreen][]。</p>
-<p>该函数在截图脚本中只需执行一次，而无需每次调用[captureScreen][]都调用一次。</p>
+<p>这个函数只是申请截图权限，并不会真正执行截图，真正的截图函数是<code>captureScreen()</code>。</p>
+<p>该函数在截图脚本中只需执行一次，而无需每次调用<code>captureScreen()</code>都调用一次。</p>
 <p><strong>如果不指定landscape值，则截图方向由当前设备屏幕方向决定</strong>，因此务必注意执行该函数时的屏幕方向。</p>
 <p>建议在本软件界面运行该函数，在其他软件界面运行时容易出现一闪而过的黑屏现象。  </p>
 <p>示例:</p>
@@ -185,7 +273,20 @@ toast(colors.toString(color));
 <li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片URL地址</li>
 </ul>
 </div><p>加载在地址URL的网络图片并返回一个Image对象。如果地址不存在或者图片无法解码则返回null。</p>
-<h2>images.findColor(image, color, options)<span><a class="mark" href="#images_images_findcolor_image_color_options" id="images_images_findcolor_image_color_options">#</a></span></h2>
+<h2>images.clip(img, x, y, w, h)<span><a class="mark" href="#images_images_clip_img_x_y_w_h" id="images_images_clip_img_x_y_w_h">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的左上角横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的左上角纵坐标</li>
+<li><code>w</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的宽度</li>
+<li><code>h</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的高度</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+</div><p>从图片img的位置(x, y)处剪切大小为w * h的区域，并返回该剪切区域的新图片。</p>
+<pre><code>var src = images.read(&quot;/sdcard/1.png&quot;);
+var clip = images.clip(src, 100, 100, 400, 400);
+images.save(clip, &quot;/sdcard/clip.png&quot;);
+</code></pre><h2>images.findColor(image, color, options)<span><a class="mark" href="#images_images_findcolor_image_color_options" id="images_images_findcolor_image_color_options">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
 <li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要寻找的颜色的RGB值。如果是一个整数，则以0xRRGGBB的形式代表RGB值（A通道会被忽略）；如果是字符串，则以&quot;#RRGGBB&quot;代表其RGB值。</li>
@@ -195,7 +296,7 @@ toast(colors.toString(color));
 <p>选项包括：</p>
 <ul>
 <li><code>region</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 找色区域。是一个两个或四个元素的数组。(region[0], region[1])表示找色区域的左上角；region[2]*region[3]表示找色区域的宽高。如果只有region只有两个元素，则找色区域为(region[0], region[1])到屏幕右下角。如果不指定region选项，则找色区域为整张图片。</li>
-<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色时颜色相似度的临界值，范围为0~255（越小越相似，0为颜色相等，255为任何颜色都能匹配）。默认为16。threshold和浮点数相似度(0.0~1.0)的换算为 similarity = (255 - threshold) / 255.</li>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色时颜色相似度的临界值，范围为0~255（越小越相似，0为颜色相等，255为任何颜色都能匹配）。默认为4。threshold和浮点数相似度(0.0~1.0)的换算为 similarity = (255 - threshold) / 255.</li>
 </ul>
 <p>该函数也可以作为全局函数使用。</p>
 <p>一个循环找色的例子如下：</p>
@@ -236,13 +337,18 @@ if(point){
 });
 </code></pre><p>该函数也可以作为全局函数使用。</p>
 <h2>images.findColorEquals(img, color[, x, y, width, height])<span><a class="mark" href="#images_images_findcolorequals_img_color_x_y_width_height" id="images_images_findcolorequals_img_color_x_y_width_height">#</a></span></h2>
-<p>严格找色的简便方法。找色时要求颜色完全相等才匹配。</p>
-<p>相当于</p>
-<pre><code>images.findColor(img, color, {
-   region: [x, y, width, height],
-   threshold: 0
-});
-</code></pre><p>该函数也可以作为全局函数使用。</p>
+<div class="signature"><ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要寻找的颜色</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色区域的左上角横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色区域的左上角纵坐标</li>
+<li><code>width</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色区域的宽度</li>
+<li><code>height</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色区域的高度</li>
+<li>返回 <span class="type">&lt;Point&gt;</span></li>
+</ul>
+</div><p>在图片img指定区域中找到颜色和color完全相等的某个点，并返回该点的左边；如果没有找到，则返回<code>null</code>。</p>
+<p>找色区域通过<code>x</code>, <code>y</code>, <code>width</code>, <code>height</code>指定，如果不指定找色区域，则在整张图片中寻找。</p>
+<p>该函数也可以作为全局函数使用。</p>
 <p>示例：
 (通过找QQ红点的颜色来判断是否有未读消息)</p>
 <pre><code>requestScreenCapture();
@@ -254,6 +360,28 @@ if(p){
 }else{
     toast(&quot;没有未读消息&quot;);
 }
+</code></pre><h2>images.findMultiColors(img, firstColor, colors[, options])<span><a class="mark" href="#images_images_findmulticolors_img_firstcolor_colors_options" id="images_images_findmulticolors_img_firstcolor_colors_options">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 要找色的图片</li>
+<li><code>firstColor</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 第一个点的颜色</li>
+<li><code>colors</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 表示剩下的点相对于第一个点的位置和颜色的数组，数组的每个元素为[x, y, color]</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项，包括：<ul>
+<li><code>region</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 找色区域。是一个两个或四个元素的数组。(region[0], region[1])表示找色区域的左上角；region[2]*region[3]表示找色区域的宽高。如果只有region只有两个元素，则找色区域为(region[0], region[1])到屏幕右下角。如果不指定region选项，则找色区域为整张图片。</li>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色时颜色相似度的临界值，范围为0~255（越小越相似，0为颜色相等，255为任何颜色都能匹配）。默认为4。threshold和浮点数相似度(0.0~1.0)的换算为 similarity = (255 - threshold) / 255.</li>
+</ul>
+</li>
+</ul>
+</div><p>多点找色，类似于按键精灵的多点找色，其过程如下：</p>
+<ol>
+<li>在图片img中找到颜色firstColor的位置(x0, y0)</li>
+<li>对于数组colors的每个元素[x, y, color]，检查图片img在位置(x + x0, y + y0)上的像素是否是颜色color，是的话返回(x0, y0)，否则继续寻找firstColor的位置，重新执行第1步</li>
+<li>整张图片都找不到时返回<code>null</code></li>
+</ol>
+<p>例如，对于代码<code>images.findMultiColors(img, &quot;#123456&quot;, [[10, 20, &quot;#ffffff&quot;], [30, 40, &quot;#000000&quot;]])</code>，假设图片在(100, 200)的位置的颜色为#123456, 这时如果(110, 220)的位置的颜色为#fffff且(130, 240)的位置的颜色为#000000，则函数返回点(100, 200)。</p>
+<p>如果要指定找色区域，则在options中指定，例如:</p>
+<pre><code>var p = images.findMultiColors(img, &quot;#123456&quot;, [[10, 20, &quot;#ffffff&quot;], [30, 40, &quot;#000000&quot;]], {
+    region: [0, 960, 1080, 960]
+});
 </code></pre><h2>images.detectsColor(image, color, x, y[, threshold = 16, algorithm = &quot;diff&quot;])<span><a class="mark" href="#images_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff" id="images_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
@@ -261,11 +389,14 @@ if(p){
 <li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要检测的位置横坐标</li>
 <li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要检测的位置纵坐标</li>
 <li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色相似度临界值，默认为16。取值范围为0~255。</li>
-<li><code>algorithm</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色匹配算法，包括:<ul>
+<li><p><code>algorithm</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色匹配算法，包括:</p>
+<ul>
 <li>&quot;equal&quot;: 相等匹配，只有与给定颜色color完全相等时才匹配。</li>
 <li>&quot;diff&quot;: 差值匹配。与给定颜色的R、G、B差的绝对值之和小于threshold时匹配。</li>
-<li>&quot;rgb&quot;: rgb欧拉距离相似度。与给定颜色color的rgb欧拉距离小于等于threshold时匹配。</li>
-<li>&quot;rgb+&quot;: 加权rgb欧拉距离匹配(<a href="https://en.wikipedia.org/wiki/Color_difference">LAB Delta E</a>)。</li>
+<li><p>&quot;rgb&quot;: rgb欧拉距离相似度。与给定颜色color的rgb欧拉距离小于等于threshold时匹配。</p>
+</li>
+<li><p>&quot;rgb+&quot;: 加权rgb欧拉距离匹配(<a href="https://en.wikipedia.org/wiki/Color_difference">LAB Delta E</a>)。</p>
+</li>
 <li>&quot;hs&quot;: hs欧拉距离匹配。hs为HSV空间的色调值。</li>
 </ul>
 </li>
@@ -333,48 +464,6 @@ if(p){
     threshold: threshold
 })
 </code></pre><p>该函数也可以作为全局函数使用。</p>
-<h1>colors<span><a class="mark" href="#images_colors" id="images_colors">#</a></span></h1>
-<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>colors是颜色处理的工具对象。包含一些常用方法，包括android.graphics.Color的所有方法以及toString方法。</p>
-<h2>colors.toString(color)<span><a class="mark" href="#images_colors_tostring_color" id="images_colors_tostring_color">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
-</ul>
-</div><p>返回颜色值的字符串，格式为 #AARRGGBB。</p>
-<h2>colors.red(color)<span><a class="mark" href="#images_colors_red_color" id="images_colors_red_color">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
-</ul>
-</div><p>返回颜色color的R通道的值，范围0~255.</p>
-<h2>colors.green(color)<span><a class="mark" href="#images_colors_green_color" id="images_colors_green_color">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
-</ul>
-</div><p>返回颜色color的G通道的值，范围0~255.</p>
-<h2>colors.blue(color)<span><a class="mark" href="#images_colors_blue_color" id="images_colors_blue_color">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
-</ul>
-</div><p>返回颜色color的B通道的值，范围0~255.</p>
-<h2>colors.alpha(color)<span><a class="mark" href="#images_colors_alpha_color" id="images_colors_alpha_color">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
-</ul>
-</div><p>返回颜色color的Alpha通道的值，范围0~255.</p>
-<h2>colors.rgb(red, green, blue)<span><a class="mark" href="#images_colors_rgb_red_green_blue" id="images_colors_rgb_red_green_blue">#</a></span></h2>
-<div class="signature"><ul>
-<li>red <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的R通道的值</li>
-<li>blue <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的G通道的值</li>
-<li>green <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的B通道的值</li>
-</ul>
-</div><p>返回这些颜色通道构成的整数颜色值。Alpha通道将是255（不透明）。</p>
-<h2>colors.argb(alpha, red, green, blue)<span><a class="mark" href="#images_colors_argb_alpha_red_green_blue" id="images_colors_argb_alpha_red_green_blue">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>alpha</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的Alpha通道的值</li>
-<li><code>red</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a>  颜色的R通道的值</li>
-<li><code>green</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的G通道的值</li>
-<li><code>blue</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的B通道的值</li>
-</ul>
-</div><p>返回这些颜色通道构成的整数颜色值。</p>
 <h1>Image<span><a class="mark" href="#images_image" id="images_image">#</a></span></h1>
 <p>表示一张图片，可以是截图的图片，或者本地读取的图片，或者从网络获取的图片。</p>
 <h2>Image.getWidth()<span><a class="mark" href="#images_image_getwidth" id="images_image_getwidth">#</a></span></h2>

@@ -1,8 +1,10 @@
 
 module.exports = function(__runtime__, scope){
-    var files = Object.create(com.stardust.pio.PFiles);
-    files.cwd = function(){
-        return scope.engines.myEngine().cwd();
+    var fs = __runtime__.files;
+    var files = Object.create(fs);
+    files.join = function(base){
+        var paths = Array.prototype.slice.call(arguments, 1);
+        return fs.join(base, paths);
     }
     scope.files = files;
     scope.open = function(path, mode, encoding, bufferSize){

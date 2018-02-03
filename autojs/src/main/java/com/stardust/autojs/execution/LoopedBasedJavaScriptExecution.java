@@ -23,7 +23,7 @@ public class LoopedBasedJavaScriptExecution extends RunnableScriptExecution {
         long delay = getConfig().delay;
         sleep(delay);
         final LoopBasedJavaScriptEngine javaScriptEngine = (LoopBasedJavaScriptEngine) engine;
-        javaScriptEngine.setUiThreadExceptionHandler((t, e) -> {
+        javaScriptEngine.setUncaughtExceptionHandler((t, e) -> {
             javaScriptEngine.forceStop();
             getListener().onException(this, (Exception) e);
         });

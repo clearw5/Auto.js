@@ -5,13 +5,11 @@
     <string-array name="ad_showing_mode_keys">
         <item>默认</item>
         <item>每天显示一次</item>
-        <item>关闭广告</item>
     </string-array>
 
     <string-array name="ad_showing_mode_values">
         <item>Default</item>
         <item>OncePerDay</item>
-        <item>Off</item>
     </string-array>
 
 

@@ -18,6 +18,7 @@ public class JavaScriptFileSource extends JavaScriptSource {
 
     private File mFile;
     private String mScript;
+    private boolean mCustomsName = false;
 
     public JavaScriptFileSource(File file) {
         super(PFiles.getNameWithoutExtension(file.getName()));
@@ -30,6 +31,7 @@ public class JavaScriptFileSource extends JavaScriptSource {
 
     public JavaScriptFileSource(String name, File file) {
         super(name);
+        mCustomsName = true;
         mFile = file;
     }
 
@@ -56,6 +58,9 @@ public class JavaScriptFileSource extends JavaScriptSource {
 
     @Override
     public String toString() {
+        if (mCustomsName) {
+            return super.toString();
+        }
         return mFile.toString();
     }
 }

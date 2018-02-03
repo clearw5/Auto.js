@@ -5,7 +5,7 @@
              android:background="@android:color/white">
 
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.stardust.theme.widget.ThemeColorSwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.stardust.theme.widget.ThemeColorSwipeRefreshLayout>
 
     <TextView
         android:id="@+id/notice_no_running_script"

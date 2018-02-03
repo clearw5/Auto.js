@@ -49,9 +49,9 @@ public class ScriptIntents {
             } else {
                 source = fileScriptSource;
             }
-            config.path(new File(path).getParent(), StorageFileProvider.DEFAULT_DIRECTORY_PATH);
+            config.executePath(new File(path).getParent());
         } else {
-            config.path(StorageFileProvider.DEFAULT_DIRECTORY_PATH);
+            config.executePath(StorageFileProvider.DEFAULT_DIRECTORY_PATH);
         }
         if (source == null) {
             return false;

@@ -11,7 +11,7 @@ import retrofit2.http.GET;
 
 public interface UpdateCheckApi {
 
-    @GET("/hyb1996/NoRootScriptDroid/new_ui/version.json")
+    @GET("/assets/autojs/version.json")
     Observable<VersionInfo> checkForUpdates();
 
 }

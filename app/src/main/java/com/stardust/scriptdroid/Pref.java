@@ -100,8 +100,6 @@ public class Pref {
                 }
                 def().edit().putLong(KEY_LAST_SHOW_AD_MILLIS, System.currentTimeMillis()).apply();
                 return true;
-            case "Off":
-                return false;
         }
         return true;
     }
@@ -138,7 +136,7 @@ public class Pref {
         if (docSource == null || docSource.equals("Local")) {
             return "file:///android_asset/docs/";
         } else {
-            return "https://hyb1996.github.io/AutoJs-Docs/";
+            return "https://www.autojs.org/assets/autojs/docs/";
         }
     }
 

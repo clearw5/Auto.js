@@ -8,6 +8,8 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.util.UnderuseExecutors;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -17,29 +19,45 @@ import java.util.concurrent.Executors;
 
 public class LayoutInspector {
 
+    public interface CaptureAvailableListener {
+        void onCaptureAvailable(NodeInfo capture);
+    }
+
     private static final String LOG_TAG = LayoutInspector.class.getSimpleName();
     private volatile NodeInfo mCapture;
     private volatile boolean mDumping = false;
     private Executor mExecutor = Executors.newSingleThreadExecutor();
+    private CopyOnWriteArrayList<CaptureAvailableListener> mCaptureAvailableListeners = new CopyOnWriteArrayList<>();
 
     public void captureCurrentWindow() {
         AccessibilityService service = AccessibilityService.getInstance();
         if (service == null) {
             Log.d(LOG_TAG, "captureCurrentWindow: service = null");
             mCapture = null;
-        } else {
-            final AccessibilityNodeInfo root = getRootInActiveWindow(service);
-            if (root == null) {
-                Log.d(LOG_TAG, "captureCurrentWindow: root = null");
-                mCapture = null;
-            } else {
-                mExecutor.execute(() -> {
-                    mDumping = true;
-                    mCapture = NodeInfo.capture(root);
-                    mDumping = false;
-                });
-            }
+            return;
         }
+        final AccessibilityNodeInfo root = getRootInActiveWindow(service);
+        if (root == null) {
+            Log.d(LOG_TAG, "captureCurrentWindow: root = null");
+            mCapture = null;
+            return;
+        }
+        mExecutor.execute(() -> {
+            mDumping = true;
+            mCapture = NodeInfo.capture(root);
+            mDumping = false;
+            for (CaptureAvailableListener l : mCaptureAvailableListeners) {
+                l.onCaptureAvailable(mCapture);
+            }
+        });
+    }
+
+    public void addCaptureAvailableListener(CaptureAvailableListener l){
+        mCaptureAvailableListeners.add(l);
+    }
+
+    public boolean removeCaptureAvailableListener(CaptureAvailableListener l){
+        return mCaptureAvailableListeners.remove(l);
     }
 
     private AccessibilityNodeInfo getRootInActiveWindow(AccessibilityService service) {

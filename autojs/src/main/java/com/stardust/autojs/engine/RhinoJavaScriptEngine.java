@@ -4,9 +4,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.stardust.autojs.BuildConfig;
-import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.rhino.AndroidContextFactory;
-import com.stardust.autojs.rhino.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
@@ -16,8 +14,6 @@ import com.stardust.pio.UncheckedIOException;
 
 import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.ErrorReporter;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -29,6 +25,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,25 +33,23 @@ import java.util.Locale;
  * Created by Stardust on 2017/4/2.
  */
 
-public class RhinoJavaScriptEngine extends JavaScriptEngine  {
+public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
 
     private static int contextCount = 0;
     private static StringScriptSource sInitScript;
-    private String[] mRequirePath = new String[0];
 
     private Context mContext;
     private Scriptable mScriptable;
     private Thread mThread;
     private android.content.Context mAndroidContext;
-    private Thread.UncaughtExceptionHandler mUiThreadExceptionHandler;
+    private Thread.UncaughtExceptionHandler mUncaughtExceptionHandler;
 
     public RhinoJavaScriptEngine(android.content.Context context) {
         mAndroidContext = context;
         mContext = createContext();
         mScriptable = createScope(mContext);
-
     }
 
     @Override
@@ -97,11 +92,11 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine  {
         return mThread;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void init() {
         mThread = Thread.currentThread();
         ScriptableObject.putProperty(mScriptable, "__engine__", this);
-        mRequirePath = (String[]) getTag(TAG_PATH);
         initRequireBuilder(mContext, mScriptable);
         mContext.evaluateString(mScriptable, getInitScript().getScript(), "<init>", 1, null);
     }
@@ -121,11 +116,8 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine  {
     }
 
     void initRequireBuilder(Context context, Scriptable scope) {
-        List<URI> list = new ArrayList<>();
-        for (String path : mRequirePath) {
-            list.add(new File(path).toURI());
-        }
-        AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(mAndroidContext, list);
+        AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(mAndroidContext,
+                Collections.singletonList(new File("/").toURI()));
         new RequireBuilder()
                 .setModuleScriptProvider(new SoftCachingModuleScriptProvider(provider))
                 .setSandboxed(false)
@@ -165,8 +157,12 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine  {
         context.setWrapFactory(new WrapFactory());
     }
 
-    public void setUiThreadExceptionHandler(Thread.UncaughtExceptionHandler uiThreadExceptionHandler) {
-        mUiThreadExceptionHandler = uiThreadExceptionHandler;
+    public void setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler uiThreadExceptionHandler) {
+        mUncaughtExceptionHandler = uiThreadExceptionHandler;
+    }
+
+    public Thread.UncaughtExceptionHandler getUncaughtExceptionHandler() {
+        return mUncaughtExceptionHandler;
     }
 
     private class WrapFactory extends org.mozilla.javascript.WrapFactory {
@@ -212,7 +208,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine  {
                 try {
                     return super.doTopCall(callable, cx, scope, thisObj, args);
                 } catch (Exception e) {
-                    mUiThreadExceptionHandler.uncaughtException(Thread.currentThread(), e);
+                    mUncaughtExceptionHandler.uncaughtException(Thread.currentThread(), e);
                     return null;
                 }
             }

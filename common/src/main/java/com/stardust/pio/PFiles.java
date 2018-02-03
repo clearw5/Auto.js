@@ -278,6 +278,34 @@ public class PFiles {
         }
     }
 
+
+    public static boolean copyAssetDir(Context context, String assetsDir, String toDir) {
+        new File(toDir).mkdirs();
+        AssetManager manager = context.getAssets();
+        try {
+            String[] list = manager.list(assetsDir);
+            if (list == null)
+                return false;
+            for (String file : list) {
+                InputStream stream;
+                try {
+                    stream = manager.open(join(assetsDir, file));
+                } catch (IOException e) {
+                    if (!copyAssetDir(context, join(assetsDir, file), join(toDir, file))) {
+                        return false;
+                    }
+                    continue;
+                }
+                copyStream(stream, join(toDir, file));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+
+    }
+
     public static String renameWithoutExtensionAndReturnNewPath(String path, String newName) {
         File file = new File(path);
         File newFile = new File(file.getParent(), newName + "." + getExtension(file.getName()));
@@ -409,8 +437,12 @@ public class PFiles {
         return file.isDirectory() && file.list().length == 0;
     }
 
-    public static String join(String parent, String child) {
-        return new File(parent, child).getPath();
+    public static String join(String base, String... paths) {
+        File file = new File(base);
+        for (String path : paths) {
+            file = new File(file, path);
+        }
+        return file.getPath();
     }
 
     public static String getHumanReadableSize(long bytes) {
@@ -427,4 +459,5 @@ public class PFiles {
         }
         return path;
     }
+
 }

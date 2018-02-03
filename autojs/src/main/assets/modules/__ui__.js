@@ -15,29 +15,47 @@ module.exports = function(__runtime__, scope){
         });
     }
 
-    ui.id = function(id){
+    ui.findById = function(id){
         if(!ui.view)
             return null;
-        var v = ui.findViewByStringId(ui.view.getChildAt(0), id);
+        var v = ui.findByStringId(ui.view.getChildAt(0), id);
         if(v){
             v = decorate(v);
         }
         return v;
     }
 
+    ui.isUiThread = function(){
+        importClass(android.os.Looper);
+        return Looper.myLooper() == Looper.getMainLooper();
+    }
+
     ui.run = function(action){
-        __runtime__.uiHandler.post(action);
-    }
-
-    ui.nonUi = function(action){
-        if(!ui.__executor__){
-            ui.__executor__ = java.util.concurrent.Executors.newSingleThreadExecutor();
+        if(ui.isUiThread()){
+            return action();
         }
-        ui.__executor__.submit(action);
+        var err = null;
+        var result;
+        var disposable = scope.threads.disposable();
+        __runtime__.uiHandler.post(function(){
+            try{
+                result = action();
+                disposable.setAndNotify(true);
+            }catch(e){
+                err = e;
+                disposable.setAndNotify(true);
+            }
+        });
+        disposable.blockedGet();
+        if(err){
+            throw err;
+        }
+        return result;
     }
 
-    ui.postDelay = function(action, delay){
-        __runtime__.getUiHandler().postDelay(action, delay);
+    ui.post = function(action, delay){
+        delay = delay || 0;
+        __runtime__.getUiHandler().postDelay(wrapUiAction(action), delay);
     }
 
     ui.statusBarColor = function(color){
@@ -57,33 +75,25 @@ module.exports = function(__runtime__, scope){
         });
     }
 
-    ui.findViewByStringId = function(view, id){
+    ui.findByStringId = function(view, id){
         return com.stardust.autojs.core.ui.JsViewHelper.findViewByStringId(view, id);
     }
 
     function decorate(view){
         var view = Object.create(view);
         view._id = function(id){
-            return ui.findViewByStringId(view, id);
+            return ui.findByStringId(view, id);
         }
         view.click = function(listener){
             if(listener){
-                view.setOnClickListener(new android.view.View.OnClickListener(listener));
+                view.setOnClickListener(new android.view.View.OnClickListener(wrapUiAction(listener)));
             }else{
                 view.performClick();
             }
         }
         view.longClick = function(listener){
             if(listener){
-                view.setOnLongClickListener(new android.view.View.OnLongClickListener(function(view){
-                     try{
-                        var r = listener(view);
-                        return !!r;
-                     }catch(e){
-                        console.error(e.getMessage());
-                        return false;
-                     }
-                }));
+                view.setOnLongClickListener(wrapUiAction(listener, false));
             }else{
                 view.performLongClick();
             }
@@ -92,6 +102,15 @@ module.exports = function(__runtime__, scope){
     }
 
     ui.__decorate__ = decorate;
+
+    function wrapUiAction(action, defReturnValue){
+        if(typeof(activity)  != 'undefined'){
+            return function(){return action();};
+        }
+        return function(){
+            return __exitIfError__(action, defReturnValue);
+        }
+    }
 
     var proxy = __runtime__.ui;
     proxy.__proxy__ = {
@@ -104,7 +123,7 @@ module.exports = function(__runtime__, scope){
                if(cacheView){
                    return cacheView;
                }
-               cacheView = ui.id(name);
+               cacheView = ui.findById(name);
                if(cacheView){
                    ui.__view_cache__[name] = cacheView;
                    return cacheView;

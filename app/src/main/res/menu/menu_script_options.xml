@@ -33,6 +33,10 @@
             <item
                 android:id="@+id/open_by_other_apps"
                 android:title="@string/text_open_by_other_apps"/>
+
+            <item
+                android:id="@+id/action_build_apk"
+                android:title="@string/text_build_apk"/>
         </menu>
     </item>
 

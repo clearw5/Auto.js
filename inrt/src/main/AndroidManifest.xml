@@ -18,6 +18,12 @@
         android:theme="@style/AppTheme"
         tools:replace="android:label, android:allowBackup">
         <activity android:name=".MainActivity">
+
+        </activity>
+
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -28,7 +34,7 @@
         <activity android:name=".SettingsActivity"/>
 
         <service
-            android:name=".rt.AccessibilityService"
+            android:name=".autojs.AccessibilityService"
             android:label="inrt"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
@@ -38,6 +44,15 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config"/>
 
+        </service>
+
+        <service
+            android:name="com.stardust.notification.NotificationListenerService"
+            android:label="inrt"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService"/>
+            </intent-filter>
         </service>
     </application>
 

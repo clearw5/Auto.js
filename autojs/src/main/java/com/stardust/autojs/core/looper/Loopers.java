@@ -2,6 +2,7 @@ package com.stardust.autojs.core.looper;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.os.MessageQueue;
 
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.Threads;
@@ -13,7 +14,7 @@ import com.stardust.lang.ThreadCompat;
  * Created by Stardust on 2017/7/29.
  */
 
-public class Loopers {
+public class Loopers implements MessageQueue.IdleHandler {
 
     public interface LooperQuitHandler {
         boolean shouldQuit();
@@ -30,6 +31,7 @@ public class Loopers {
     private Handler mMainHandler;
     private Looper mMainLooper;
     private Threads mThreads;
+    private MessageQueue mMainMessageQueue;
 
     public Loopers(ScriptRuntime runtime) {
         mTimers = runtime.timers;
@@ -38,6 +40,7 @@ public class Loopers {
         prepare();
         mMainLooper = Looper.myLooper();
         mMainHandler = new Handler();
+        mMainMessageQueue = Looper.myQueue();
     }
 
 
@@ -92,33 +95,37 @@ public class Loopers {
         waitWhenIdle.set(b);
     }
 
-    public void quitAll() {
+    public void recycle() {
         quitServantLooper();
+        mMainMessageQueue.removeIdleHandler(this);
     }
 
     public void setMainLooperQuitHandler(LooperQuitHandler mainLooperQuitHandler) {
         mMainLooperQuitHandler = mainLooperQuitHandler;
     }
 
+    @Override
+    public boolean queueIdle() {
+        Looper l = Looper.myLooper();
+        if (l == null)
+            return true;
+        if (l == mMainLooper) {
+            if (shouldQuitLooper() && !mThreads.hasRunningThreads() &&
+                    mMainLooperQuitHandler != null && mMainLooperQuitHandler.shouldQuit()) {
+                l.quit();
+            }
+        } else {
+            if (shouldQuitLooper()) {
+                l.quit();
+            }
+        }
+        return true;
+    }
+
     public void prepare() {
         if (Looper.myLooper() == null)
             Looper.prepare();
-        Looper.myQueue().addIdleHandler(() -> {
-            Looper l = Looper.myLooper();
-            if (l == null)
-                return true;
-            if (l == mMainLooper) {
-                if (shouldQuitLooper() && !mThreads.hasRunningThreads() &&
-                        mMainLooperQuitHandler != null && mMainLooperQuitHandler.shouldQuit()) {
-                    l.quit();
-                }
-            } else {
-                if (shouldQuitLooper()) {
-                    l.quit();
-                }
-            }
-            return true;
-        });
+        Looper.myQueue().addIdleHandler(this);
         waitWhenIdle.set(Looper.myLooper() == Looper.getMainLooper());
     }
 

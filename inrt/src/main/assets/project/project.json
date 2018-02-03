@@ -1,0 +1,7 @@
+{
+  "name": "Hello World",
+  "versionName": "1.0.0",
+  "versionCode": 1,
+  "packageName": "org.autojs.example",
+  "main": "main.js"
+}

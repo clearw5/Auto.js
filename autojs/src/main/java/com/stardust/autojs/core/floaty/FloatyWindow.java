@@ -1,13 +1,13 @@
 package com.stardust.autojs.core.floaty;
 
-import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 
 import com.stardust.autojs.R;
-import com.stardust.autojs.runtime.api.Floaty;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableFloaty;
 import com.stardust.enhancedfloaty.ResizableFloatyWindow;
@@ -18,7 +18,7 @@ import com.stardust.enhancedfloaty.ResizableFloatyWindow;
 
 public class FloatyWindow extends ResizableFloatyWindow {
 
-    private static final Object LOCK = new Object();
+    private final Object mLock = new Object();
     private View mView;
     private boolean mCreated = false;
     private View mMoveCursor;
@@ -38,12 +38,12 @@ public class FloatyWindow extends ResizableFloatyWindow {
     }
 
     public void waitFor() {
-        synchronized (LOCK) {
+        synchronized (mLock) {
             if (mCreated) {
                 return;
             }
             try {
-                LOCK.wait();
+                mLock.wait();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -53,17 +53,17 @@ public class FloatyWindow extends ResizableFloatyWindow {
     @Override
     public void onCreate(FloatyService service, WindowManager manager) {
         super.onCreate(service, manager);
-        synchronized (LOCK) {
-            mCreated = true;
-            LOCK.notify();
-        }
         View root = (View) mView.getParent().getParent();
         mMoveCursor = root.findViewById(R.id.move_cursor);
         mResizer = root.findViewById(R.id.resizer);
         mCloseButton = root.findViewById(R.id.close);
+        synchronized (mLock) {
+            mCreated = true;
+            mLock.notify();
+        }
     }
 
-    public void setOnCloseButtonClickListener(View.OnClickListener listener){
+    public void setOnCloseButtonClickListener(View.OnClickListener listener) {
         mCloseButton.setOnClickListener(listener);
     }
 

@@ -1,4 +1,4 @@
-package com.stardust.auojs.inrt.rt;
+package com.stardust.auojs.inrt.autojs;
 
 import android.util.Log;
 import android.view.KeyEvent;

@@ -75,8 +75,10 @@ public class ImageWrapper {
         int rowPadding = plane.getRowStride() - pixelStride * image.getWidth();
         Bitmap bitmap = Bitmap.createBitmap(image.getWidth() + rowPadding / pixelStride, image.getHeight(), Bitmap.Config.ARGB_8888);
         bitmap.copyPixelsFromBuffer(buffer);
-        bitmap = Bitmap.createBitmap(bitmap, 0, 0, image.getWidth(), image.getHeight());
-        return bitmap;
+        if(rowPadding == 0){
+            return bitmap;
+        }
+        return Bitmap.createBitmap(bitmap, 0, 0, image.getWidth(), image.getHeight());
     }
 
     public int getWidth() {
@@ -117,5 +119,17 @@ public class ImageWrapper {
 
     public Bitmap getBitmap() {
         return mBitmap;
+    }
+
+    public void recycle() {
+        if (mBitmap != null) {
+            mBitmap.recycle();
+            mBitmap = null;
+        }
+        if (mMat != null) {
+            mMat.release();
+            mMat = null;
+        }
+
     }
 }

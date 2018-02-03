@@ -84,6 +84,38 @@ public class UiSelector extends UiGlobalSelector {
         return findOf(UiObject.createRoot(root, mAllocator));
     }
 
+    @Override
+    public UiGlobalSelector textMatches(String regex) {
+        return super.textMatches(convertRegex(regex));
+    }
+
+    // TODO: 2018/1/30 更好的实现方式。
+    private String convertRegex(String regex) {
+        if (regex.startsWith("/") && regex.endsWith("/") && regex.length() > 2) {
+            return regex.substring(1, regex.length() - 1);
+        }
+        return regex;
+    }
+
+    @Override
+    public UiGlobalSelector classNameMatches(String regex) {
+        return super.classNameMatches(convertRegex(regex));
+    }
+
+    @Override
+    public UiGlobalSelector idMatches(String regex) {
+        return super.idMatches(convertRegex(regex));
+    }
+
+    @Override
+    public UiGlobalSelector packageNameMatches(String regex) {
+        return super.packageNameMatches(convertRegex(regex));
+    }
+
+    @Override
+    public UiGlobalSelector descMatches(String regex) {
+        return super.descMatches(convertRegex(regex));
+    }
 
     private void ensureAccessibilityServiceEnabled() {
         mAccessibilityBridge.ensureServiceEnabled();
@@ -135,6 +167,10 @@ public class UiSelector extends UiGlobalSelector {
         }
 
         return uiObjectCollection.get(0);
+    }
+
+    public UiObject findOnce() {
+        return findOnce(0);
     }
 
     public UiObject findOnce(int index) {

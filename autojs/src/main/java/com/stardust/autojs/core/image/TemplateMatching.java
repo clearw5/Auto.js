@@ -76,18 +76,18 @@ public class TemplateMatching {
                 Pair<Point, Double> bestMatched = getBestMatched(matchResult, matchMethod, weakThreshold);
                 //不满足弱阈值，返回null
                 if (bestMatched.second < weakThreshold) {
-                    p = null;
-                    break;
+                    //    p = null;
+                    //  break;
                 }
                 p = bestMatched.first;
                 similarity = bestMatched.second;
                 p.x += r.x;
                 p.y += r.y;
-                //满足强阈值，返回当前结果
-                if (bestMatched.second >= strictThreshold) {
-                    pyrUp(p, level);
-                    break;
-                }
+            }
+            //满足强阈值，返回当前结果
+            if (similarity >= strictThreshold) {
+                pyrUp(p, level);
+                break;
             }
             logger.addSplit("level:" + level + " point:" + p);
             isFirstMatching = false;
@@ -150,8 +150,8 @@ public class TemplateMatching {
 
     private static int selectPyramidLevel(Mat img, Mat template) {
         int minDim = Nath.min(img.rows(), img.cols(), template.rows(), template.cols());
-        //这里选取12为图像缩小后的最小宽高，从而用log(2, minDim / 16)得到最多可以经过几次缩小。
-        int maxLevel = (int) (Math.log(minDim / 7) / Math.log(2));
+        //这里选取16为图像缩小后的最小宽高，从而用log(2, minDim / 16)得到最多可以经过几次缩小。
+        int maxLevel = (int) (Math.log(minDim / 16) / Math.log(2));
         if (maxLevel < 0) {
             return 0;
         }

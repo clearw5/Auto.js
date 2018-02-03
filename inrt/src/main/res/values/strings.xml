@@ -19,4 +19,5 @@
     <string name="key_dont_show_main_activity">key_dont_show_main_activity</string>
     <string name="summary_dont_show_main_activity">打开应用后直接运行脚本</string>
     <string name="text_others">其他</string>
+    <string name="powered_by_autojs">Powered by Auto.js</string>
 </resources>

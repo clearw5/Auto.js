@@ -1,9 +1,7 @@
-package com.stardust.auojs.inrt.rt;
+package com.stardust.auojs.inrt.autojs;
 
 import android.app.Application;
 import android.content.Context;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 import com.stardust.auojs.inrt.App;
 import com.stardust.auojs.inrt.Pref;

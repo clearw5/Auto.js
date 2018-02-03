@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.build.AutoJsApkBuilder;
 import com.stardust.scriptdroid.build.ApkBuilderPluginHelper;
@@ -98,11 +100,10 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     }
 
     private void downloadPlugin() {
-        // TODO: 2017/11/29
+        IntentUtil.browse(this, "https://www.autojs.org/assets/autojs/plugin.apk");
     }
 
     private void setupWithSourceFile(ScriptFile file) {
-        mSourcePath.setText(file.getPath());
         String dir = file.getParent();
         if (dir.startsWith(getFilesDir().getPath())) {
             dir = StorageFileProvider.DEFAULT_DIRECTORY_PATH;
@@ -110,6 +111,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         mOutputPath.setText(dir);
         mAppName.setText(file.getSimplifiedName());
         mPackageName.setText(getString(R.string.format_default_package_name, System.currentTimeMillis()));
+        setSource(file);
     }
 
     @Override
@@ -123,10 +125,23 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         String initialDir = new File(mSourcePath.getText().toString()).getParent();
         new FileChooserDialogBuilder(this)
                 .title(R.string.text_source_file_path)
-                .dir(initialDir == null ? StorageFileProvider.DEFAULT_DIRECTORY_PATH : initialDir)
-                .justScriptFile()
-                .singleChoice(file -> mSourcePath.setText(file.getPath()))
+                .dir(Environment.getExternalStorageDirectory().getPath(),
+                        initialDir == null ? StorageFileProvider.DEFAULT_DIRECTORY_PATH : initialDir)
+                .singleChoice(this::setSource)
                 .show();
+    }
+
+    private void setSource(File file) {
+        mSourcePath.setText(file.getPath());
+        if (!file.isDirectory())
+            return;
+        ProjectConfig config = ProjectConfig.fromProjectDir(file.getPath());
+        if (config == null)
+            return;
+        mAppName.setText(config.getName());
+        mPackageName.setText(config.getPackageName());
+        mVersionCode.setText(String.valueOf(config.getVersionCode()));
+        mVersionName.setText(config.getVersionName());
     }
 
 
@@ -221,6 +236,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         mProgressDialog = new MaterialDialog.Builder(this)
                 .progress(true, 100)
                 .content(R.string.text_on_progress)
+                .cancelable(false)
                 .show();
     }
 

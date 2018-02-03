@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">common</string>
+    <string name="text_no_floating_window_permission">No drawing overlay permission</string>
+</resources>

@@ -28,8 +28,8 @@ public class SettingsActivity extends AppCompatActivity {
         getFragmentManager().beginTransaction().replace(R.id.fragment_setting, new PreferenceFragment()).commit();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.text_settings);
-        toolbar.setNavigationOnClickListener(v -> finish());
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(v -> finish());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

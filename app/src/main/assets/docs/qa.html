@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Index | Auto.js 3.0.0 文档</title>
+  <title>Q & A | Auto.js 3.0.0 文档</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
@@ -18,7 +18,8 @@
       </div>
       <ul>
 <li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
-<li><a class="nav-synopsis" href="synopsis.html">如何阅读本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
 </ul>
 <div class="line"></div>
 
@@ -27,7 +28,7 @@
 <li><a class="nav-qa active" href="qa.html">Q&amp;A - 常见问题</a></li>
 <li><a class="nav-app" href="app.html">App - 应用</a></li>
 <li><a class="nav-console" href="console.html">Console - 控制台</a></li>
-<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的触摸模拟</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
 <li><a class="nav-device" href="device.html">Device - 设备</a></li>
 <li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
 <li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
@@ -39,7 +40,7 @@
 <li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
 <li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
 <li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
-<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的触摸模拟</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
 <li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
 <li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
 <li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
@@ -70,11 +71,79 @@
 
       <div id="toc">
         <h2>目录</h2>
-        
+        <ul>
+<li><span class="stability_undefined"><a href="#qa_q_a">Q &amp; A</a></span><ul>
+<li><span class="stability_undefined"><a href="#qa">如何定时运行脚本</a></span></li>
+<li><span class="stability_undefined"><a href="#qa_1">如何把图片和脚本一起打包，或者打包多个脚本</a></span></li>
+<li><span class="stability_undefined"><a href="#qa_2">如何使打包的应用不显示主界面</a></span></li>
+<li><span class="stability_undefined"><a href="#qa_auto_js">Auto.js自带的模块和函数中没有的功能如何实现</a></span></li>
+</ul>
+</li>
+</ul>
+
       </div>
 
       <div id="apicontent">
-        
+        <h1>Q &amp; A<span><a class="mark" href="#qa_q_a" id="qa_q_a">#</a></span></h1>
+<h2>如何定时运行脚本<span><a class="mark" href="#qa" id="qa">#</a></span></h2>
+<p>点击脚本右边的菜单按钮-&gt;更多-&gt;定时任务即可定时运行脚本，但是必须保持Auto.js后台运行(自启动白名单、电源管理白名单等)。同时，可以在脚本的开头使用<code>device.wakeUp()</code>来唤醒屏幕；但是，Auto.js没有解锁屏幕的功能，因此难以在有锁屏密码的设备上达到效果。</p>
+<h2>如何把图片和脚本一起打包，或者打包多个脚本<span><a class="mark" href="#qa_1" id="qa_1">#</a></span></h2>
+<p>如果除了单脚本以外还有其他脚本、图片、音乐等资源一起打包，则需要使用项目打包功能。</p>
+<ol>
+<li>新建一个文件夹，命名为项目名称。</li>
+<li>在该文件夹下新建脚本，或者移动脚本到该文件夹，命名为main.js，表示主脚本。脚本打包后将会从该脚本开始运行。</li>
+<li>把其他资源或脚本放在该文件夹，并通过相对路径引用。</li>
+<li>通过文件夹菜单的&quot;打包&quot;功能来打包该项目</li>
+</ol>
+<p>例如，主脚本要读取同一文件夹下的图片1.png，再执行找图，则可以通过<code>images.read(&quot;./1.png&quot;)</code>来读取，其中&quot;./1.png&quot;表示同一目录1.png图片；ui中的图片控件要引用同一文件夹的2.png图片则为<code>&lt;img src=&quot;file://2.png&quot;/&gt;</code>。Auto.js内置的函数和模块都支持相对路径，但是，其他情况则需要使用<code>files.path()</code>函数来把相对路径转换为绝对路径。</p>
+<p>目前Auto.js还不支持项目的图形化管理，后续会加入。</p>
+<h2>如何使打包的应用不显示主界面<span><a class="mark" href="#qa_2" id="qa_2">#</a></span></h2>
+<p>需要使用项目打包功能。</p>
+<ol>
+<li>新建一个文件夹，命名为项目名称。</li>
+<li>在该文件夹下新建脚本，或者移动脚本到该文件夹，命名为main.js，表示主脚本。脚本打包后将会从该脚本开始运行。</li>
+<li>在该文件夹下新建一个project.json的文件，其内容如下：<pre><code>{
+&quot;name&quot;: &quot;项目名称&quot;,
+&quot;versionName&quot;: &quot;1.0.0&quot;,
+&quot;versionCode&quot;: 1,
+&quot;packageName&quot;: &quot;org.autojs.example&quot;,
+&quot;main&quot;: &quot;main.js&quot;,
+&quot;launchConfig&quot;: {
+   &quot;hideLogs&quot;: true
+}
+}
+</code></pre>其中，项目名称改为自己的项目名称，&quot;org.autojs.example&quot;改成自己的包名，下面的&quot;launchConfig&quot;表示启动配置，&quot;hideLogs&quot;表示隐藏日志。</li>
+<li>通过文件夹菜单的&quot;打包&quot;功能来打包该项目</li>
+</ol>
+<p>有关项目打包和配置的更多信息，参见项目与项目配置(待补)。</p>
+<h2>Auto.js自带的模块和函数中没有的功能如何实现<span><a class="mark" href="#qa_auto_js" id="qa_auto_js">#</a></span></h2>
+<p>由于Auto.js支持直接调用Android的API，对于Auto.js没有内置的函数，可以直接通过修改Android代码为JavaScript代码实现。例如旋转图片的Android代码为：</p>
+<pre><code>import android.graphics.Bitmap;
+import android.graphics.Matrix;
+
+public static Bitmap rotate(final Bitmap src,
+                            final int degrees,
+                            final float px,
+                            final float py) {
+    if (degrees == 0) return src;
+    Matrix matrix = new Matrix();
+    matrix.setRotate(degrees, px, py);
+    Bitmap ret = Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
+    return ret;
+}
+</code></pre><p>转换为JavaScript的代码后为：</p>
+<pre><code>importClass(android.graphics.Bitmap);
+importClass(android.graphics.Matrix);
+
+function rotate(src, degrees, px, py){
+    if (degrees == 0) return src;
+    var matrix = new Matrix();
+    matrix.setRotate(degrees, px, py);
+    var ret = Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
+    return ret;
+}
+</code></pre><p>有关调用Android和Java的API的更多信息，参见<a href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java</a>。</p>
+
       </div>
     </div>
   </div>

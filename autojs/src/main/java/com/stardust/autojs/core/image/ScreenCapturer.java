@@ -62,7 +62,7 @@ public class ScreenCapturer {
     private void initVirtualDisplay(MediaProjectionManager manager, Intent data, int screenWidth, int screenHeight, int screenDensity) {
         mImageReader = ImageReader.newInstance(screenWidth, screenHeight, PixelFormat.RGBA_8888, 2);
         mMediaProjection = manager.getMediaProjection(Activity.RESULT_OK, data);
-        mVirtualDisplay = mMediaProjection.createVirtualDisplay("screen-mirror",
+        mVirtualDisplay = mMediaProjection.createVirtualDisplay(LOG_TAG,
                 screenWidth, screenHeight, screenDensity, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
                 mImageReader.getSurface(), null, null);
     }
@@ -72,14 +72,11 @@ public class ScreenCapturer {
             setImageListener(mHandler);
             return;
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                mImageAcquireLooper = Looper.myLooper();
-                setImageListener(new Handler());
-                Looper.loop();
-            }
+        new Thread(() -> {
+            Looper.prepare();
+            mImageAcquireLooper = Looper.myLooper();
+            setImageListener(new Handler());
+            Looper.loop();
         }).start();
     }
 

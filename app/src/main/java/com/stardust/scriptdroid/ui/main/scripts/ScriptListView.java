@@ -22,10 +22,13 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
 import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
+import com.stardust.scriptdroid.ui.build.BuildActivity;
+import com.stardust.scriptdroid.ui.build.BuildActivity_;
 import com.stardust.scriptdroid.ui.common.ScriptLoopDialog;
 import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.viewmodel.ScriptList;
 import com.stardust.scriptdroid.ui.widget.BindableViewHolder;
+import com.stardust.theme.widget.ThemeColorSwipeRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -41,7 +44,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Stardust on 2017/8/21.
  */
 
-public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
+public class ScriptListView extends ThemeColorSwipeRefreshLayout implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
 
     private static final String LOG_TAG = "ScriptListView";
@@ -243,6 +246,12 @@ public class ScriptListView extends SwipeRefreshLayout implements SwipeRefreshLa
             case R.id.timed_task:
                 new ScriptOperations(getContext(), this)
                         .timedTask(mSelectedScriptFile);
+                notifyOperated();
+                break;
+            case R.id.action_build_apk:
+                BuildActivity_.intent(getContext())
+                        .extra(BuildActivity.EXTRA_SOURCE_FILE, mSelectedScriptFile.getPath())
+                        .start();
                 notifyOperated();
                 break;
             case R.id.action_sort_by_date:

@@ -9,6 +9,7 @@ import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.image.Colors;
+import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.rhino.AndroidClassLoader;
 import com.stardust.autojs.runtime.api.AbstractShell;
@@ -17,6 +18,7 @@ import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.Device;
 import com.stardust.autojs.runtime.api.Engines;
 import com.stardust.autojs.runtime.api.Events;
+import com.stardust.autojs.runtime.api.Files;
 import com.stardust.autojs.runtime.api.Floaty;
 import com.stardust.autojs.core.looper.Loopers;
 import com.stardust.autojs.runtime.api.Threads;
@@ -31,6 +33,7 @@ import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.core.accessibility.SimpleActionAutomator;
 import com.stardust.autojs.runtime.api.UI;
 import com.stardust.concurrent.VolatileDispose;
+import com.stardust.lang.ThreadCompat;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.autojs.core.util.ProcessShell;
@@ -165,6 +168,9 @@ public class ScriptRuntime {
     @ScriptVariable
     public final Colors colors = new Colors();
 
+    @ScriptVariable
+    public final Files files;
+
     private Images images;
 
     private static WeakReference<Context> applicationContext;
@@ -181,7 +187,7 @@ public class ScriptRuntime {
         console = builder.mConsole;
         accessibilityBridge = builder.mAccessibilityBridge;
         mShellSupplier = builder.mShellSupplier;
-        ui = new UI(uiHandler.getContext());
+        ui = new UI(uiHandler.getContext(), this);
         this.automator = new SimpleActionAutomator(accessibilityBridge, this);
         automator.setScreenMetrics(mScreenMetrics);
         this.info = accessibilityBridge.getInfoProvider();
@@ -189,10 +195,11 @@ public class ScriptRuntime {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             images = new Images(context, this, builder.mScreenCaptureRequester);
         }
-        engines = new Engines(builder.mEngineService);
+        engines = new Engines(builder.mEngineService, this);
         dialogs = new Dialogs(app, uiHandler, bridges);
         device = new Device(uiHandler.getContext());
         floaty = new Floaty(uiHandler, ui, this);
+        files = new Files(this);
     }
 
     public void init() {
@@ -275,7 +282,7 @@ public class ScriptRuntime {
         return ProcessShell.execCommand(cmd, root != 0);
     }
 
-    public UiSelector selector(ScriptEngine engine) {
+    public UiSelector selector() {
         return new UiSelector(accessibilityBridge);
     }
 
@@ -304,6 +311,25 @@ public class ScriptRuntime {
         }
     }
 
+    public void exit(Object obj) throws Throwable {
+        mThread.interrupt();
+        if (!(obj instanceof Throwable)) {
+            console.error(obj);
+            return;
+        }
+        Throwable e = (Exception) obj;
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            throw e;
+        } else {
+            Thread.UncaughtExceptionHandler handler = ((RhinoJavaScriptEngine) engines.myEngine()).getUncaughtExceptionHandler();
+            if (handler != null) {
+                handler.uncaughtException(Thread.currentThread(), e);
+            } else {
+                console.error(e);
+            }
+        }
+    }
+
     @Deprecated
     public void stop() {
         exit();
@@ -324,7 +350,7 @@ public class ScriptRuntime {
 
     public void onExit() {
         //清除interrupt状态
-        Thread.interrupted();
+        ThreadCompat.interrupted();
         //悬浮窗需要第一时间关闭以免出现恶意脚本全屏悬浮窗屏蔽屏幕并且在exit中写死循环的问题
         ignoresException(floaty::closeAll);
         try {
@@ -334,7 +360,7 @@ public class ScriptRuntime {
         }
         ignoresException(threads::shutDownAll);
         ignoresException(events::recycle);
-        ignoresException(loopers::quitAll);
+        ignoresException(loopers::recycle);
         ignoresException(() -> {
             if (mRootShell != null) mRootShell.exitAndWaitFor();
             mRootShell = null;

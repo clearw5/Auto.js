@@ -21,19 +21,15 @@ public class ScreenMetrics {
     private static Display display;
 
     public static void initIfNeeded(Activity activity) {
-        if (!initialized) {
-            DisplayMetrics metrics = new DisplayMetrics();
-            activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-//            deviceScreenHeight = metrics.heightPixels;
-//            deviceScreenWidth = metrics.widthPixels;
-            deviceScreenDensity = metrics.densityDpi;
-            Point size = new Point();
-            activity.getWindowManager().getDefaultDisplay().getRealSize(size);
-            deviceScreenHeight = size.y;
-            deviceScreenWidth = size.x;
-            display = activity.getWindowManager().getDefaultDisplay();
-            initialized = true;
-        }
+        if (initialized)
+            return;
+        DisplayMetrics metrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+        deviceScreenHeight = metrics.heightPixels;
+        deviceScreenWidth = metrics.widthPixels;
+        deviceScreenDensity = metrics.densityDpi;
+        display = activity.getWindowManager().getDefaultDisplay();
+        initialized = true;
     }
 
     public static int getDeviceScreenHeight() {
@@ -93,17 +89,11 @@ public class ScreenMetrics {
     }
 
     public int scaleX(int x) {
-        if (display.getRotation() == Surface.ROTATION_0 || display.getRotation() == Surface.ROTATION_180)
-            return scaleX(x, mDesignWidth);
-        else
-            return scaleY(x, mDesignWidth);
+        return scaleX(x, mDesignWidth);
     }
 
     public int scaleY(int y) {
-        if (display.getRotation() == Surface.ROTATION_0 || display.getRotation() == Surface.ROTATION_180)
-            return scaleY(y, mDesignHeight);
-        else
-            return scaleX(y, mDesignHeight);
+        return scaleY(y, mDesignHeight);
     }
 
 
@@ -113,17 +103,11 @@ public class ScreenMetrics {
     }
 
     public int rescaleX(int x) {
-        if (display.getRotation() == Surface.ROTATION_0 || display.getRotation() == Surface.ROTATION_180)
-            return rescaleX(x, mDesignWidth);
-        else
-            return rescaleY(x, mDesignWidth);
+        return rescaleX(x, mDesignWidth);
     }
 
 
     public int rescaleY(int y) {
-        if (display.getRotation() == Surface.ROTATION_0 || display.getRotation() == Surface.ROTATION_180)
-            return rescaleY(y, mDesignHeight);
-        else
-            return rescaleX(y, mDesignHeight);
+        return rescaleY(y, mDesignHeight);
     }
 }

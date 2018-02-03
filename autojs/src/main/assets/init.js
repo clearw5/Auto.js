@@ -10,9 +10,11 @@ var importClass = function(pack){
     }
 }
 
-var loadJar = function(path){
-    __runtime__.loadJar(path);
-}
+var __that__ = this;
+var Promise = require('promise.js');
+var JSON = require('__json2__.js');
+var util = require('__util__.js');
+
 
 __runtime__.bridges.setBridges({
     call: function(func, target, args){
@@ -45,10 +47,6 @@ __runtime__.bridges.setBridges({
     }
 });
 
-var __that__ = this;
-var Promise = require('promise.js');
-var JSON = require('__json2__.js');
-var util = require('__util__.js');
 var device = __runtime__.device;
 
 var __asGlobal__ = function(obj, functions){
@@ -59,7 +57,24 @@ var __asGlobal__ = function(obj, functions){
     }
 }
 
-require("__general__")(__runtime__, this);
+var __exitIfError__ = function(action, defReturnValue){
+    try{
+       return action();
+    }catch(err){
+        log(err.toString());
+        if(err instanceof java.lang.Throwable){
+            exit(err);
+        }else if(err instanceof Error){
+            exit(new org.mozilla.javascript.EvaluatorException(err.name + ": " + err.message, err.fileName, err.lineNumber));
+            //new java.lang.RuntimeException(err.name + ": " + err.message + "\n" + err.stack));
+        }else{
+            exit();
+        }
+        return defReturnValue;
+    }
+};
+
+require("__globals__")(__runtime__, this);
 
 
 (function(scope){
@@ -74,4 +89,12 @@ require("__general__")(__runtime__, this);
 
 __importClass__(android.view.KeyEvent);
 __importClass__(com.stardust.autojs.core.util.Shell);
+
+(function(){
+    var __require__ = require;
+    require = function(path){
+        path = files.path(path);
+        return __require__(path);
+    };
+})();
 

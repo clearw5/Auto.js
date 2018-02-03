@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.ui.main.drawer;
 
 import android.content.pm.PackageManager;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,13 +71,16 @@ public class DrawerMenuItemViewHolder extends BindableViewHolder<DrawerMenuItem>
         }
         mSwitchCompat.setVisibility(VISIBLE);
         int prefKey = item.getPrefKey();
-        if (prefKey != 0) {
+        if (prefKey == 0) {
+            mSwitchCompat.setChecked(item.isChecked(), false);
+            mSwitchCompat.setPrefKey(null);
+        } else {
             mSwitchCompat.setPrefKey(itemView.getResources().getString(prefKey));
         }
-        mSwitchCompat.setChecked(item.isChecked());
     }
 
     private void onClick() {
+        mDrawerMenuItem.setChecked(mSwitchCompat.isChecked());
         if (mAntiShake && (System.currentTimeMillis() - mLastClickMillis < CLICK_TIMEOUT)) {
             Toast.makeText(itemView.getContext(), R.string.text_click_too_frequently, Toast.LENGTH_SHORT).show();
             mSwitchCompat.setChecked(!mSwitchCompat.isChecked(), false);

@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 
 public class Pref {
 
+    private static final String KEY_FIRST_USING = "key_first_using";
     private static SharedPreferences sPreferences;
 
     public static SharedPreferences getPreferences() {
@@ -29,11 +30,19 @@ public class Pref {
         return getPreferences().getBoolean(getString(R.string.key_enable_accessibility_service_by_root), false);
     }
 
-    public static boolean shouldShowMainActivity() {
-        return !getPreferences().getBoolean(getString(R.string.key_dont_show_main_activity), false);
+    public static boolean shouldHideLogs() {
+        return getPreferences().getBoolean(getString(R.string.key_dont_show_main_activity), false);
     }
 
     public static boolean shouldStopAllScriptsWhenVolumeUp() {
         return getPreferences().getBoolean(getString(R.string.key_use_volume_control_running), true);
+    }
+
+    public static boolean isFirstUsing() {
+        boolean firstUsing = getPreferences().getBoolean(KEY_FIRST_USING, true);
+        if (firstUsing) {
+            getPreferences().edit().putBoolean(KEY_FIRST_USING, false).apply();
+        }
+        return firstUsing;
     }
 }

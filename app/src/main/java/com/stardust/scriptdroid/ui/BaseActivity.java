@@ -85,12 +85,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         toolbar.setTitle(title);
         activity.setSupportActionBar(toolbar);
         if (activity.getSupportActionBar() != null) {
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    activity.finish();
-                }
-            });
+            toolbar.setNavigationOnClickListener(v -> activity.finish());
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }

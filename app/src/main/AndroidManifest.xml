@@ -21,6 +21,7 @@
         android:allowBackup="false"
         android:icon="@drawable/autojs_material"
         android:label="@string/_app_name"
+        android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label, android:icon, android:allowBackup">
@@ -196,6 +197,7 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config"/>
         </service>
+
         <service
             android:name="com.stardust.notification.NotificationListenerService"
             android:label="@string/_app_name"
