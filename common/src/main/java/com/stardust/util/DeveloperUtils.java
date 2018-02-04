@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.pm.ServiceInfo;
 import android.content.pm.Signature;
 import android.support.annotation.Nullable;
 import android.util.Base64;
@@ -73,14 +75,38 @@ public class DeveloperUtils {
 
 
     public static boolean isActivityRegistered(Context context, Class<? extends Activity> c) {
-        List<ResolveInfo> list = context.getPackageManager().queryIntentActivities(new Intent(context, c),
-                PackageManager.MATCH_DEFAULT_ONLY);
-        return list != null && list.size() > 0;
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_ACTIVITIES);
+            ActivityInfo[] activities = packageInfo.activities;
+            if (activities == null) {
+                return false;
+            }
+            for (ActivityInfo info : activities) {
+                if (c.getName().equals(info.name)) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 
     public static boolean isServiceRegistered(Context context, Class<? extends Service> c) {
-        List<ResolveInfo> list = context.getPackageManager().queryIntentServices(new Intent(context, c),
-                PackageManager.MATCH_DEFAULT_ONLY);
-        return list != null && list.size() > 0;
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_SERVICES);
+            ServiceInfo[] activities = packageInfo.services;
+            if (activities == null) {
+                return false;
+            }
+            for (ServiceInfo info : activities) {
+                if (c.getName().equals(info.name)) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 }

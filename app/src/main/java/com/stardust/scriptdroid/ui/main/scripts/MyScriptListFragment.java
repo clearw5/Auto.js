@@ -163,6 +163,8 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
 
     @Override
     public void onClick(FloatingActionButton button, int pos) {
+        if (mScriptFileList == null)
+            return;
         switch (pos) {
             case 0:
                 new ScriptOperations(getContext(), mScriptFileList, mScriptFileList.getCurrentDirectory())

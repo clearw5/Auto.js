@@ -50,6 +50,13 @@ public class FloatyWindowManger {
         return sCircularMenu != null && sCircularMenu.get() != null;
     }
 
+    public static void showCircularMenuIfNeeded() {
+        if (isCircularMenuShowing()) {
+            return;
+        }
+        showCircularMenu();
+    }
+
     public static boolean showCircularMenu() {
         if (!SettingsCompat.canDrawOverlays(App.getApp())) {
             Toast.makeText(App.getApp(), R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();

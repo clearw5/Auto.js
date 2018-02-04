@@ -131,7 +131,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         ThemeColorManager.addViewBackground(mHeaderView);
         initMenuItems();
         if (Pref.isFloatingMenuShown()) {
-            FloatyWindowManger.showCircularMenu();
+            FloatyWindowManger.showCircularMenuIfNeeded();
             setChecked(mFloatingWindowItem, true);
         }
         setChecked(mConnectionItem, DevPluginService.getInstance().isConnected());
@@ -164,12 +164,20 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 .me()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((user ->
-                                WebActivity_.intent(this)
-                                        .extra(WebActivity.EXTRA_URL, NodeBB.url("user/" + user.getUserslug()))
-                                        .extra(Intent.EXTRA_TITLE, user.getUsername())
-                                        .start()),
-                        error -> LoginActivity_.intent(getActivity()).start());
+                .subscribe(user -> {
+                            if (getActivity() == null)
+                                return;
+                            WebActivity_.intent(this)
+                                    .extra(WebActivity.EXTRA_URL, NodeBB.url("user/" + user.getUserslug()))
+                                    .extra(Intent.EXTRA_TITLE, user.getUsername())
+                                    .start();
+                        },
+                        error -> {
+                            if (getActivity() == null)
+                                return;
+                            LoginActivity_.intent(getActivity()).start();
+                        }
+                );
     }
 
 

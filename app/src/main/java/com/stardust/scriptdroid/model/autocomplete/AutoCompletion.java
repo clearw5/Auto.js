@@ -7,6 +7,7 @@ import com.stardust.scriptdroid.model.indices.Modules;
 import com.stardust.scriptdroid.model.indices.Property;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -120,6 +121,8 @@ public class AutoCompletion {
     }
 
     private List<CodeCompletion> findCodeCompletionForGlobal(String propertyPrefill) {
+        if (propertyPrefill == null)
+            return Collections.emptyList();
         List<DictionaryTree.Entry<Property>> result = mGlobalPropertyTree.searchByPrefill(propertyPrefill);
         List<CodeCompletion> completions = new ArrayList<>();
         for (DictionaryTree.Entry<Property> entry : result) {
