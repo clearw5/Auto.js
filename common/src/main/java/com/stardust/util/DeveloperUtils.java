@@ -22,7 +22,7 @@ import java.util.List;
 public class DeveloperUtils {
 
     private static final String PACKAGE_NAME = "com.stardust.scriptdroid";
-    private static final String SIGNATURE = "nPNPcy4Lk/eP6fLvZitP0VPbHdFCbKua77m59vis5fA=";
+    private static final String SIGNATURE = "nPNPcy4Lk/eP6fLvZitP0VPbHdFCbKua77m59vis5fA=\n";
 
     public static void ensureRunningPackageNotSelf(@Nullable String runningPackage) {
         if (PACKAGE_NAME.equals(runningPackage)) {

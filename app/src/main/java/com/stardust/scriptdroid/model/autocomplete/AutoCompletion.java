@@ -67,9 +67,9 @@ public class AutoCompletion {
         if (mModules == null || mAutoCompleteCallback == null)
             return;
         findStatementOnCursor(line, cursor);
-        if (mPropertyPrefill == null && mModuleName == null)
-            return;
         Module module = getModule(mModuleName);
+        if (mPropertyPrefill == null && module == null)
+            return;
         List<CodeCompletion> completions = findCodeCompletion(module, mPropertyPrefill);
         CodeCompletions codeCompletions = new CodeCompletions(cursor, completions);
         mAutoCompleteCallback.updateCodeCompletion(codeCompletions);
