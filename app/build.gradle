@@ -8,8 +8,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 247
-        versionName "3.0.0 Alpha47"
+        versionCode 248
+        versionName "3.0.0 Beta2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -39,7 +39,7 @@ android {
     }
     android.applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "${variant.name}-${variant.versionName}-${variant.flavorName}.apk"
+            outputFileName = "${variant.name}-${variant.versionName}.apk"
         }
     }
 

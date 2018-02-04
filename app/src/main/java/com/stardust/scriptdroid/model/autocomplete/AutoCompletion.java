@@ -51,7 +51,8 @@ public class AutoCompletion {
 
     private void buildDictionaryTree(List<Module> modules) {
         for (Module module : modules) {
-            mGlobalPropertyTree.putWord(module.getName(), module.asGlobalProperty());
+            if (!module.getName().equals("globals"))
+                mGlobalPropertyTree.putWord(module.getName(), module.asGlobalProperty());
             for (Property property : module.getProperties()) {
                 if (property.isGlobal())
                     mGlobalPropertyTree.putWord(property.getKey(), property);

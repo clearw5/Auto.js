@@ -1,5 +1,84 @@
 [
   {
+    "name": "globals",
+    "url": "globals.html",
+    "summary": "全局函数",
+    "properties": [
+      {
+        "key": "sleep",
+        "url": "globals.html#globals_sleep_n",
+        "summary": "暂停运行",
+        "global": true
+      },
+      {
+        "key": "currentPackage",
+        "url": "globals.html#globals_currentpackage",
+        "summary": "当前包名",
+        "global": true
+      },
+      {
+        "key": "currentActivity",
+        "url": "globals.html#globals_currentactivity",
+        "summary": "当前活动",
+        "global": true
+      },
+      {
+        "key": "setClip",
+        "url": "globals.html#globals_setclip_text",
+        "summary": "设置剪贴板",
+        "global": true
+      },
+      {
+        "key": "getClip",
+        "url": "globals.html#globals_getclip",
+        "summary": "获取剪贴板",
+        "global": true
+      },
+      {
+        "key": "toast",
+        "url": "globals.html#globals_toast_message",
+        "summary": "气泡提示",
+        "global": true
+      },
+      {
+        "key": "toastLog",
+        "url": "globals.html#globals_toastlog_messagep",
+        "summary": "提示&打印",
+        "global": true
+      },
+      {
+        "key": "waitForActivity",
+        "url": "globals.html#globals_waitforactivity_activity_period_200",
+        "summary": "等待活动",
+        "global": true
+      },
+      {
+        "key": "waitForPackage",
+        "url": "globals.html#globals_waitforpackage_package_period_200",
+        "summary": "等待包名",
+        "global": true
+      },{
+        "key": "exit",
+        "url": "globals.html#globals_exit",
+        "summary": "退出",
+        "global": true
+      },
+      {
+        "key": "random",
+        "url": "globals.html#globals_random_min_max",
+        "summary": "随机数",
+        "global": true
+      },
+      {
+        "key": "context",
+        "url": "globals.html#globals_context",
+        "summary": "",
+        "global": true,
+        "variable": true
+      }
+    ]
+  },
+  {
     "name": "app",
     "url": "app.html",
     "summary": "应用",
@@ -190,7 +269,8 @@
       {
         "key": "log",
         "url": "console.html#console_console_log_data_args",
-        "summary": "打印日志"
+        "summary": "打印日志",
+        "global": true
       },
       {
         "key": "warn",

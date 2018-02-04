@@ -20,6 +20,9 @@ public class Property {
     @SerializedName("global")
     private boolean mGlobal;
 
+    @SerializedName("variable")
+    private boolean mVariable = false;
+
     public Property() {
     }
 
@@ -60,5 +63,13 @@ public class Property {
 
     public void setGlobal(boolean global) {
         mGlobal = global;
+    }
+
+    public boolean isVariable() {
+        return mVariable;
+    }
+
+    public void setVariable(boolean variable) {
+        mVariable = variable;
     }
 }
