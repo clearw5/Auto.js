@@ -76,7 +76,7 @@ public class DownloadManager {
         DownloadTask task = new DownloadTask(url, path);
         mDownloadApi.download(url)
                 .subscribeOn(Schedulers.io())
-                .subscribe(task::start);
+                .subscribe(task::start, error -> task.progress().onError(error));
         return task.progress();
     }
 
@@ -163,7 +163,7 @@ public class DownloadManager {
 
         }
 
-        public Observable<Integer> progress() {
+        public PublishSubject<Integer> progress() {
             return mProgress;
         }
 
