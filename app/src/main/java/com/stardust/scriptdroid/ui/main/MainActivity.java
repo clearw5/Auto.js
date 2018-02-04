@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.qq.e.ads.ADActivity;
 import com.qq.e.comm.DownloadService;
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.OnActivityResultDelegate;
@@ -27,7 +28,6 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.ui.common.NotAskAgainDialog;
-import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.doc.DocsFragment_;
 import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
@@ -55,7 +55,6 @@ import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.File;
 import java.util.Arrays;
 
 @EActivity(R.layout.activity_main)
@@ -236,6 +235,11 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         if (!BuildConfig.DEBUG && !DeveloperUtils.checkSignature(this)) {
             finish();
         }
+        if (!DeveloperUtils.isActivityRegistered(this, ADActivity.class) ||
+                !DeveloperUtils.isServiceRegistered(this, DownloadService.class)) {
+            finish();
+        }
+
     }
 
 
