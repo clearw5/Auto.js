@@ -339,4 +339,7 @@
     <string name="text_logout">退出登录</string>
     <string name="nodebb_error_forbidden">操作失败，请稍后重试</string>
     <string name="description_stable_mode">稳定模式通过省略布局细节使脚本抓取布局时更稳定，但同时获取到的屏幕上的控件可能会减少。\n\n重新启动无障碍服务才能生效。</string>
+    <string name="text_no_phone_state_permission">获取权限失败 :-(</string>
+    <string name="text_request_permission">重新授予</string>
+    <string name="info_no_phone_state_permission">软件需要显示启动页广告来维持服务器和软件的开发和维护，因此需要\"读取手机状态\"的权限。\n如果您不喜欢广告，可以在设置中设定广告每天只显示一次。</string>
 </resources>
