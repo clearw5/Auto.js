@@ -41,11 +41,6 @@ public class FloatyWindowManger {
         }
     }
 
-
-    public static void closeWindow(FloatyWindow window) {
-        window.close();
-    }
-
     public static boolean isCircularMenuShowing() {
         return sCircularMenu != null && sCircularMenu.get() != null;
     }

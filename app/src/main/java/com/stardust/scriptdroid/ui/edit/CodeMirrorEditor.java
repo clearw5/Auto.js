@@ -1,7 +1,6 @@
 package com.stardust.scriptdroid.ui.edit;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -27,28 +25,22 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
 
 import org.jdeferred.Deferred;
-import org.jdeferred.DoneCallback;
 import org.jdeferred.impl.DeferredObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
@@ -75,11 +67,6 @@ public class CodeMirrorEditor extends FrameLayout {
     private JavaScriptBridge mJavaScriptBridge = new JavaScriptBridge();
     private Callback mCallback;
     private Deferred<Void, Void, Void> mPageFinished = new DeferredObject<>();
-
-    private PublishSubject<String> mStringFromJs;
-    private PublishSubject<Integer> mIntFromJs;
-    private String mTextFromAndroid;
-
 
     public CodeMirrorEditor(Context context) {
         super(context);
@@ -212,41 +199,25 @@ public class CodeMirrorEditor extends FrameLayout {
     }
 
     public void setText(final String text) {
-        mTextFromAndroid = text;
-        mPageFinished.promise().done(result -> evalJavaScript("editor.setValue(__bridge__.getStringFromAndroid());"));
+        int id = SharedVariables.put(text);
+        mPageFinished.promise().done(result -> evalJavaScript(String.format(Locale.getDefault(),
+                "editor.setValue(__bridge__.getStringFromAndroid(%d));", id)));
     }
+
 
     public void insert(String text) {
-        mTextFromAndroid = text;
-        mPageFinished.promise().done(result -> evalJavaScript("editor.replaceSelection(__bridge__.getStringFromAndroid());"));
+        int id = SharedVariables.put(text);
+        mPageFinished.promise().done(result -> evalJavaScript(String.format(Locale.getDefault(),
+                "editor.replaceSelection(__bridge__.getStringFromAndroid(%d));", id)));
     }
 
-
-    public void loadFile(final File file) {
-        setProgress(true);
-        Observable.fromCallable(() -> PFiles.read(file))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> {
-                    setText(s);
-                    setProgress(false);
-                }, err -> {
-                    err.printStackTrace();
-                    Toast.makeText(getContext(), getContext().getString(R.string.text_cannot_read_file, file.getPath()),
-                            Toast.LENGTH_SHORT).show();
-                });
-    }
 
     public Observable<String> getText() {
-        mStringFromJs = PublishSubject.create();
-        evalJavaScript("__bridge__.setStringFromJs(editor.getValue());");
-        return mStringFromJs;
+        return evalString("editor.getValue()");
     }
 
     public Observable<String> getLine() {
-        mStringFromJs = PublishSubject.create();
-        evalJavaScript("__bridge__.setStringFromJs(editor.getLine(editor.getCursor().line))");
-        return mStringFromJs;
+        return evalString("editor.getLine(editor.getCursor().line)");
     }
 
     public void deleteLine() {
@@ -297,9 +268,10 @@ public class CodeMirrorEditor extends FrameLayout {
     }
 
     public Observable<Integer> getLineCount() {
-        mIntFromJs = PublishSubject.create();
-        evalJavaScript("__bridge__.setIntFromJs(editor.lineCount())");
-        return mIntFromJs;
+        PublishSubject<Integer> publishSubject = PublishSubject.create();
+        int id = SharedVariables.put(publishSubject);
+        evalJavaScript(String.format(Locale.getDefault(), "__bridge__.setIntFromJs(%d, editor.lineCount())", id));
+        return publishSubject;
     }
 
 
@@ -387,9 +359,14 @@ public class CodeMirrorEditor extends FrameLayout {
     }
 
     public Observable<String> getSelection() {
-        mStringFromJs = PublishSubject.create();
-        evalJavaScript("__bridge__.setStringFromJs(editor.getSelection());");
-        return mStringFromJs;
+        return evalString("editor.getSelection()");
+    }
+
+    private Observable<String> evalString(String expr) {
+        PublishSubject<String> publishSubject = PublishSubject.create();
+        int id = SharedVariables.put(publishSubject);
+        evalJavaScript(String.format(Locale.getDefault(), "__bridge__.setStringFromJs(%d, %s);", id, expr));
+        return publishSubject;
     }
 
     public void replaceSelection() {
@@ -412,30 +389,26 @@ public class CodeMirrorEditor extends FrameLayout {
     public class JavaScriptBridge {
 
         @JavascriptInterface
-        public void setStringFromJs(String text) {
-            if (mStringFromJs == null) {
+        public void setStringFromJs(int id, String text) {
+            PublishSubject<String> publishSubject = SharedVariables.remove(id);
+            if (publishSubject == null)
                 return;
-            }
-            mStringFromJs.onNext(text);
-            mStringFromJs.onComplete();
-            mStringFromJs = null;
+            publishSubject.onNext(text);
+            publishSubject.onComplete();
         }
 
         @JavascriptInterface
-        public void setIntFromJs(int i) {
-            if (mIntFromJs == null) {
+        public void setIntFromJs(int id, int i) {
+            PublishSubject<Integer> publishSubject = SharedVariables.remove(id);
+            if (publishSubject == null)
                 return;
-            }
-            mIntFromJs.onNext(i);
-            mIntFromJs.onComplete();
-            mIntFromJs = null;
+            publishSubject.onNext(i);
+            publishSubject.onComplete();
         }
 
         @JavascriptInterface
-        public String getStringFromAndroid() {
-            String t = mTextFromAndroid;
-            mTextFromAndroid = null;
-            return t;
+        public String getStringFromAndroid(int id) {
+            return SharedVariables.remove(id);
         }
 
         @JavascriptInterface

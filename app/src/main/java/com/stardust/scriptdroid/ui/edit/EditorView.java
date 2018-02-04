@@ -15,6 +15,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.engine.JavaScriptEngine;
@@ -104,6 +105,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     private boolean mReadOnly = false;
     private ScriptExecution mScriptExecution;
     private boolean mTextChanged = false;
+    private boolean mInitialText = false;
     private AutoCompletion mAutoCompletion;
     private FunctionsKeyboardHelper mFunctionsKeyboardHelper;
     private BroadcastReceiver mOnRunFinishedReceiver = new BroadcastReceiver() {
@@ -180,14 +182,36 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         String path = intent.getStringExtra(EXTRA_PATH);
         String content = intent.getStringExtra(EXTRA_CONTENT);
         if (content != null) {
-            mEditor.setText(content);
+            setInitialText(content);
         } else {
             mFile = new File(path);
             if (mName == null) {
                 mName = mFile.getName();
             }
-            mEditor.loadFile(mFile);
+            loadFile(mFile);
         }
+    }
+
+
+    private void loadFile(final File file) {
+        mEditor.setProgress(true);
+        Observable.fromCallable(() -> PFiles.read(file))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    setInitialText(s);
+                    mEditor.setProgress(false);
+                }, err -> {
+                    err.printStackTrace();
+                    Toast.makeText(getContext(), getContext().getString(R.string.text_cannot_read_file, file.getPath()),
+                            Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void setInitialText(String text) {
+        mInitialText = true;
+        mTextChanged = false;
+        mEditor.setText(text);
     }
 
 
@@ -230,9 +254,13 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         setTheme(PreferenceManager.getDefaultSharedPreferences(getContext())
                 .getString(KEY_EDITOR_THEME, mEditor.getTheme()));
         mEditor.setCallback((line, cursor) -> {
-            mTextChanged = true;
-            setMenuItemStatus(R.id.save, true);
-            autoComplete(line, cursor);
+            if (mInitialText) {
+                mInitialText = false;
+            } else {
+                mTextChanged = true;
+                setMenuItemStatus(R.id.save, true);
+                autoComplete(line, cursor);
+            }
         });
 
 
