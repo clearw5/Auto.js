@@ -52,9 +52,12 @@ public class AssetsProjectLauncher {
     }
 
     private void prepare() {
-        if (mMainScriptFile.exists()) {
+        String projectConfigPath = PFiles.join(mProjectDir, ProjectConfig.CONFIG_FILE_NAME);
+        ProjectConfig projectConfig = ProjectConfig.fromFile(projectConfigPath);
+        if (projectConfig != null && projectConfig.getVersionCode() == mProjectConfig.getVersionCode()) {
             return;
         }
+        PFiles.copyAsset(mActivity, PFiles.join(mAssetsProjectDir, ProjectConfig.CONFIG_FILE_NAME), projectConfigPath);
         PFiles.copyAsset(mActivity, PFiles.join(mAssetsProjectDir, mProjectConfig.getMainScriptFile()),
                 mMainScriptFile.getPath());
         for (String asset : mProjectConfig.getAssets()) {
