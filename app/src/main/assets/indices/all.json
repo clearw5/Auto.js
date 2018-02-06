@@ -662,121 +662,151 @@
   },
   {
     "name": "files",
-    "url": "files.html",
-    "summary": "文件",
     "properties": [
       {
-        "key": "open",
-        "url": "",
-        "summary": "打开文件",
-        "global": true
-      },
-      {
         "key": "isFile",
-        "url": "files.html#files_files_isfile_path",
-        "summary": "文件判断"
+        "summary": "文件判断",
+        "url": "files.html#files_files_isfile_path"
       },
       {
         "key": "isDir",
-        "url": "files.html#files_files_isdir_path",
-        "summary": "文件夹判断"
+        "summary": "文件夹判断",
+        "url": "files.html#files_files_isdir_path"
       },
       {
         "key": "isEmptyDir",
-        "url": "files.html#files_files_isemptydir_path",
-        "summary": "空文件夹判断"
+        "summary": "空文件夹判断",
+        "url": "files.html#files_files_isemptydir_path"
       },
       {
         "key": "join",
-        "url": "files.html#files_files_join_parent_child",
-        "summary": "连接路径"
+        "summary": "连接路径",
+        "url": "files.html#files_files_join_parent_child"
       },
       {
         "key": "create",
-        "url": "files.html#files_files_create_path",
-        "summary": "创建文件"
+        "summary": "创建文件",
+        "url": "files.html#files_files_create_path"
       },
       {
         "key": "createWithDirs",
-        "url": "files.html#files_files_createwithdirs_path",
-        "summary": "创建文件"
+        "summary": "创建文件",
+        "url": "files.html#files_files_createwithdirs_path"
       },
       {
         "key": "exists",
-        "url": "files.html#files_files_exists_path",
-        "summary": "判断文件存在"
+        "summary": "判断文件存在",
+        "url": "files.html#files_files_exists_path"
       },
       {
         "key": "ensureDir",
-        "url": "files.html#files_files_ensuredir_path",
-        "summary": "确保文件夹"
+        "summary": "确保文件夹",
+        "url": "files.html#files_files_ensuredir_path"
       },
       {
         "key": "read",
-        "url": "files.html#files_files_read_path_encoding_utf_8",
-        "summary": "读取文本"
+        "summary": "读取文本",
+        "url": "files.html#files_files_read_path_encoding_utf_8"
+      },
+      {
+        "key": "readBytes",
+        "summary": "读取字节",
+        "url": "files.html#files_files_readbytes_path"
       },
       {
         "key": "write",
-        "url": "files.html#files_files_write_path_text_encoding_utf_8",
-        "summary": "写入文本"
+        "summary": "写入文本",
+        "url": "files.html#files_files_write_path_text_encoding_utf_8"
+      },
+      {
+        "key": "writeBytes",
+        "summary": "写入字节",
+        "url": "files.html#files_files_writebytes_path_bytes"
+      },
+      {
+        "key": "append",
+        "summary": "附加文本",
+        "url": "files.html#files_files_append_path_text_encoding_utf_8"
+      },
+      {
+        "key": "appendBytes",
+        "summary": "附加字节",
+        "url": "files.html#files_files_appendbytes_path_text_encoding_utf_8"
       },
       {
         "key": "copy",
-        "url": "files.html#files_files_copy_frompath_topath",
-        "summary": "复制"
+        "summary": "复制",
+        "url": "files.html#files_files_copy_frompath_topath"
       },
       {
         "key": "move",
-        "url": "files.html#files_files_move_frompath_topath",
-        "summary": "移动"
+        "summary": "移动",
+        "url": "files.html#files_files_move_frompath_topath"
       },
       {
         "key": "rename",
-        "url": "files.html#files_files_rename_path_newname",
-        "summary": "重命名"
+        "summary": "重命名",
+        "url": "files.html#files_files_rename_path_newname"
       },
       {
         "key": "renameWithoutExtension",
-        "url": "files.html#files_files_renamewithoutextension_path_newname",
-        "summary": "重命名"
+        "summary": "重命名",
+        "url": "files.html#files_files_renamewithoutextension_path_newname"
       },
       {
         "key": "getName",
-        "url": "files.html#files_files_getname_path",
-        "summary": "获取文件名"
-      },
-      {
-        "key": "getExtension",
-        "url": "files.html#files_files_getextension_path",
-        "summary": "获取拓展名"
+        "summary": "获取文件名",
+        "url": "files.html#files_files_getname_path"
       },
       {
         "key": "getNameWithoutExtension",
-        "url": "files.html#files_files_getnamewithoutextension_path",
-        "summary": "获取文件名"
+        "summary": "获取文件名",
+        "url": "files.html#files_files_getnamewithoutextension_path"
+      },
+      {
+        "key": "getExtension",
+        "summary": "获取拓展名",
+        "url": "files.html#files_files_getextension_path"
       },
       {
         "key": "remove",
-        "url": "files.html#files_files_remove_path",
-        "summary": "删除"
+        "summary": "删除",
+        "url": "files.html#files_files_remove_path"
       },
       {
         "key": "removeDir",
-        "url": "files.html#files_files_removedir_path",
-        "summary": "删除文件夹"
+        "summary": "删除文件夹",
+        "url": "files.html#files_files_removedir_path"
       },
       {
         "key": "getSdcardPath",
-        "url": "files.html#files_files_getsdcardpath",
-        "summary": "SD卡路径"
+        "summary": "SD卡路径",
+        "url": "files.html#files_files_getsdcardpath"
+      },
+      {
+        "key": "cwd",
+        "summary": "当前文件夹",
+        "url": "files.html#files_files_cwd"
+      },
+      {
+        "key": "path",
+        "summary": "解析路径",
+        "url": "files.html#files_files_path_relativepath"
       },
       {
         "key": "listDir",
-        "url": "files.html#files_files_listdir_path_filter",
-        "summary": "列表文件夹"
+        "summary": "列表文件夹",
+        "url": "files.html#files_files_listdir_path_filter"
+      },
+      {
+        "global": true,
+        "key": "open",
+        "summary": "打开文件",
+        "url": "files.html#files_open_path_mode_r_encoding_utf_8_buffersize_8192"
       }
-    ]
+    ],
+    "summary": "文件",
+    "url": "files.html"
   },
   {
     "name": "timers",
@@ -1205,5 +1235,496 @@
         "global": true
       }
     ]
+  },
+  {
+    "name": "floaty",
+    "properties": [
+      {
+        "key": "window",
+        "summary": "",
+        "url": "floaty.html#floaty_floaty_window_layout"
+      },
+      {
+        "key": "closeAll",
+        "summary": "",
+        "url": "floaty.html#floaty_floaty_closeall"
+      }
+    ],
+    "url": "floaty.html",
+    "summary": "悬浮窗"
+  },
+  {
+    "name": "device",
+    "properties": [
+      {
+        "key": "width",
+        "summary": "屏幕宽度",
+        "url": "device.html#device_device_width",
+        "variable": true
+      },
+      {
+        "key": "height",
+        "summary": "屏幕高度",
+        "url": "device.html#device_device_height",
+        "variable": true
+      },
+      {
+        "key": "buildId",
+        "summary": "修订版本号",
+        "url": "device.html#device_device_buildid",
+        "variable": true
+      },
+      {
+        "key": "broad",
+        "summary": "",
+        "url": "device.html#device_device_broad",
+        "variable": true
+      },
+      {
+        "key": "brand",
+        "summary": "品牌",
+        "url": "device.html#device_device_brand",
+        "variable": true
+      },
+      {
+        "key": "device",
+        "summary": "",
+        "url": "device.html#device_device_device",
+        "variable": true
+      },
+      {
+        "key": "model",
+        "summary": "设备型号",
+        "url": "device.html#device_deivce_model",
+        "variable": true
+      },
+      {
+        "key": "product",
+        "summary": "",
+        "url": "device.html#device_device_product",
+        "variable": true
+      },
+      {
+        "key": "bootloader",
+        "summary": "",
+        "url": "device.html#device_device_bootloader",
+        "variable": true
+      },
+      {
+        "key": "hardware",
+        "summary": "",
+        "url": "device.html#device_device_hardware",
+        "variable": true
+      },
+      {
+        "key": "fingerprint",
+        "summary": "",
+        "url": "device.html#device_device_fingerprint",
+        "variable": true
+      },
+      {
+        "key": "serial",
+        "summary": "",
+        "url": "device.html#device_device_serial",
+        "variable": true
+      },
+      {
+        "key": "sdkInt",
+        "summary": "安卓API版本",
+        "url": "device.html#device_device_sdkint",
+        "variable": true
+      },
+      {
+        "key": "incremental",
+        "summary": "",
+        "url": "device.html#device_device_incremental",
+        "variable": true
+      },
+      {
+        "key": "release",
+        "summary": "安卓版本",
+        "url": "device.html#device_device_release",
+        "variable": true
+      },
+      {
+        "key": "baseOS",
+        "summary": "",
+        "url": "device.html#device_device_baseos",
+        "variable": true
+      },
+      {
+        "key": "securityPatch",
+        "summary": "",
+        "url": "device.html#device_device_securitypatch",
+        "variable": true
+      },
+      {
+        "key": "codename",
+        "summary": "",
+        "url": "device.html#device_device_codename",
+        "variable": true
+      },
+      {
+        "key": "getIMEI",
+        "summary": "IMEI",
+        "url": "device.html#device_device_getimei"
+      },
+      {
+        "key": "getAndroidId",
+        "summary": "AndroidID",
+        "url": "device.html#device_device_getandroidid"
+      },
+      {
+        "key": "getMacAddress",
+        "summary": "MAC地址",
+        "url": "device.html#device_device_getmacaddress"
+      },
+      {
+        "key": "getBrightness",
+        "summary": "屏幕亮度",
+        "url": "device.html#device_device_getbrightness"
+      },
+      {
+        "key": "getBrightnessMode",
+        "summary": "亮度模式",
+        "url": "device.html#device_device_getbrightnessmode"
+      },
+      {
+        "key": "setBrightness",
+        "summary": "设置亮度",
+        "url": "device.html#device_device_setbrightness_b"
+      },
+      {
+        "key": "setBrightnessMode",
+        "summary": "设亮度模式",
+        "url": "device.html#device_device_setbrightnessmode_mode"
+      },
+      {
+        "key": "getMusicVolume",
+        "summary": "媒体音量",
+        "url": "device.html#device_device_getmusicvolume"
+      },
+      {
+        "key": "getNotificationVolume",
+        "summary": "通知音量",
+        "url": "device.html#device_device_getnotificationvolume"
+      },
+      {
+        "key": "getAlarmVolume",
+        "summary": "闹钟音量",
+        "url": "device.html#device_device_getalarmvolume"
+      },
+      {
+        "key": "getMusicMaxVolume",
+        "summary": "媒体最大音量",
+        "url": "device.html#device_device_getmusicmaxvolume"
+      },
+      {
+        "key": "getNotificationMaxVolume",
+        "summary": "通知最大音量",
+        "url": "device.html#device_device_getnotificationmaxvolume"
+      },
+      {
+        "key": "getAlarmMaxVolume",
+        "summary": "闹钟最大音量",
+        "url": "device.html#device_device_getalarmmaxvolume"
+      },
+      {
+        "key": "setMusicVolume",
+        "summary": "设媒体音量",
+        "url": "device.html#device_device_setmusicvolume_volume"
+      },
+      {
+        "key": "setNotificationVolume",
+        "summary": "设通知音量",
+        "url": "device.html#device_device_setnotificationvolume_volume"
+      },
+      {
+        "key": "setAlarmVolume",
+        "summary": "设闹钟音量",
+        "url": "device.html#device_device_setalarmvolume_volume"
+      },
+      {
+        "key": "getBattery",
+        "summary": "获取电量",
+        "url": "device.html#device_device_getbattery"
+      },
+      {
+        "key": "isCharging",
+        "summary": "是否充电",
+        "url": "device.html#device_device_ischarging"
+      },
+      {
+        "key": "getTotalMem",
+        "summary": "全部内存",
+        "url": "device.html#device_device_gettotalmem"
+      },
+      {
+        "key": "getAvailMem",
+        "summary": "可用内存",
+        "url": "device.html#device_device_getavailmem"
+      },
+      {
+        "key": "isScreenOn",
+        "summary": "屏幕是否亮",
+        "url": "device.html#device_device_isscreenon"
+      },
+      {
+        "key": "wakeUp",
+        "summary": "唤醒设备",
+        "url": "device.html#device_device_wakeup"
+      },
+      {
+        "key": "wakeUpIfNeeded",
+        "summary": "唤醒",
+        "url": "device.html#device_device_wakeupifneeded"
+      },
+      {
+        "key": "keepScreenOn",
+        "summary": "屏幕常亮",
+        "url": "device.html#device_device_keepscreenon_timeout"
+      },
+      {
+        "key": "keepScreenDim",
+        "summary": "屏幕常半亮",
+        "url": "device.html#device_device_keepscreendim_timeout"
+      },
+      {
+        "key": "cancelKeepingAwake",
+        "summary": "取消保持唤醒",
+        "url": "device.html#device_device_cancelkeepingawake"
+      },
+      {
+        "key": "vibrate",
+        "summary": "震动",
+        "url": "device.html#device_device_vibrate_millis"
+      },
+      {
+        "key": "cancelVibration",
+        "summary": "取消震动",
+        "url": "device.html#device_device_cancelvibration"
+      }
+    ],
+    "url": "device.html",
+    "summary": "设备"
+  },
+  {
+    "name": "http",
+    "properties": [
+      {
+        "key": "get",
+        "summary": "GET请求",
+        "url": "http.html#http_http_get_url_options_callback"
+      },
+      {
+        "key": "post",
+        "summary": "POST请求",
+        "url": "http.html#http_http_post_url_data_options_callback"
+      },
+      {
+        "key": "postJson",
+        "summary": "",
+        "url": "http.html#http_http_postjson_url_data_options_callback"
+      },
+      {
+        "key": "postMultipart",
+        "summary": "",
+        "url": "http.html#http_http_postmultipart_url_files_options_callback"
+      },
+      {
+        "key": "request",
+        "summary": "",
+        "url": "http.html#http_http_request_url_options_callback"
+      }
+    ],
+    "url": "http.html",
+    "summary": "HTTP"
+  },
+  {
+    "name": "keys",
+    "properties": [
+      {
+        "global": true,
+        "key": "back",
+        "summary": "返回",
+        "url": "keys.html#keys_back"
+      },
+      {
+        "global": true,
+        "key": "home",
+        "summary": "HOME键",
+        "url": "keys.html#keys_home"
+      },
+      {
+        "global": true,
+        "key": "powerDialog",
+        "summary": "电源菜单",
+        "url": "keys.html#keys_powerdialog"
+      },
+      {
+        "global": true,
+        "key": "notifications",
+        "summary": "拉通知栏",
+        "url": "keys.html#keys_notifications"
+      },
+      {
+        "global": true,
+        "key": "quickSettings",
+        "summary": "长拉通知栏",
+        "url": "keys.html#keys_quicksettings"
+      },
+      {
+        "global": true,
+        "key": "recents",
+        "summary": "最近任务",
+        "url": "keys.html#keys_recents"
+      },
+      {
+        "global": true,
+        "key": "splitScreen",
+        "summary": "分屏",
+        "url": "keys.html#keys_splitscreen"
+      },
+      {
+        "global": true,
+        "key": "Home",
+        "summary": "HOME键",
+        "url": "keys.html#keys_home_1"
+      },
+      {
+        "global": true,
+        "key": "Back",
+        "summary": "返回键",
+        "url": "keys.html#keys_back_1"
+      },
+      {
+        "global": true,
+        "key": "Power",
+        "summary": "电源键",
+        "url": "keys.html#keys_power"
+      },
+      {
+        "global": true,
+        "key": "Menu",
+        "summary": "菜单键",
+        "url": "keys.html#keys_menu"
+      },
+      {
+        "global": true,
+        "key": "VolumeUp",
+        "summary": "音量上键",
+        "url": "keys.html#keys_volumeup"
+      },
+      {
+        "global": true,
+        "key": "VolumeDown",
+        "summary": "音量下键",
+        "url": "keys.html#keys_volumedown"
+      },
+      {
+        "global": true,
+        "key": "Camera",
+        "summary": "照相键",
+        "url": "keys.html#keys_camera"
+      },
+      {
+        "global": true,
+        "key": "Up",
+        "summary": "上键",
+        "url": "keys.html#keys_up"
+      },
+      {
+        "global": true,
+        "key": "Down",
+        "summary": "下键",
+        "url": "keys.html#keys_down"
+      },
+      {
+        "global": true,
+        "key": "Left",
+        "summary": "左键",
+        "url": "keys.html#keys_left"
+      },
+      {
+        "global": true,
+        "key": "Right",
+        "summary": "右键",
+        "url": "keys.html#keys_right"
+      },
+      {
+        "global": true,
+        "key": "OK",
+        "summary": "确定键",
+        "url": "keys.html#keys_ok"
+      },
+      {
+        "global": true,
+        "key": "Text",
+        "summary": "输入文本",
+        "url": "keys.html#keys_text_text"
+      },
+      {
+        "global": true,
+        "key": "KeyCode",
+        "summary": "键值模拟",
+        "url": "keys.html#keys_keycode_code"
+      }
+    ],
+    "url": "keys.html",
+    "summary": "按键"
+  },
+  {
+    "name": "storages",
+    "properties": [
+      {
+        "key": "create",
+        "summary": "创建",
+        "url": "storages.html#storages_storages_create_name"
+      },
+      {
+        "key": "remove",
+        "summary": "移除",
+        "url": "storages.html#storages_storages_remove_name"
+      }
+    ],
+    "url": "storages.html",
+    "summary": "本地存储"
+  },
+  {
+    "name": "threads",
+    "properties": [
+      {
+        "key": "start",
+        "summary": "新线程",
+        "url": "threads.html#threads_threads_start_action"
+      },
+      {
+        "key": "shutDownAll",
+        "summary": "关闭所有线程",
+        "url": "threads.html#threads_threads_shutdownall"
+      },
+      {
+        "key": "currentThread",
+        "summary": "当前线程",
+        "url": "threads.html#threads_threads_currentthread"
+      },
+      {
+        "key": "disposable",
+        "summary": "",
+        "url": "threads.html#threads_threads_disposable"
+      },
+      {
+        "key": "atomic",
+        "summary": "原子整数",
+        "url": "threads.html#threads_threads_atomic_initialvalue"
+      },
+      {
+        "key": "lock",
+        "summary": "创建锁",
+        "url": "threads.html#threads_threads_lock"
+      }
+    ],
+    "url": "threads.html",
+    "summary": "多线程"
   }
 ]

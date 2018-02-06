@@ -21,6 +21,7 @@ import com.stardust.autojs.runtime.api.Events;
 import com.stardust.autojs.runtime.api.Files;
 import com.stardust.autojs.runtime.api.Floaty;
 import com.stardust.autojs.core.looper.Loopers;
+import com.stardust.autojs.runtime.api.Sensors;
 import com.stardust.autojs.runtime.api.Threads;
 import com.stardust.autojs.runtime.api.Timers;
 import com.stardust.autojs.core.accessibility.UiSelector;
@@ -171,6 +172,10 @@ public class ScriptRuntime {
     @ScriptVariable
     public final Files files;
 
+    @ScriptVariable
+    public final Sensors sensors;
+
+
     private Images images;
 
     private static WeakReference<Context> applicationContext;
@@ -182,24 +187,25 @@ public class ScriptRuntime {
 
 
     protected ScriptRuntime(Builder builder) {
-        app = builder.mAppUtils;
         uiHandler = builder.mUiHandler;
+        Context context = uiHandler.getContext();
+        app = builder.mAppUtils;
         console = builder.mConsole;
         accessibilityBridge = builder.mAccessibilityBridge;
         mShellSupplier = builder.mShellSupplier;
-        ui = new UI(uiHandler.getContext(), this);
+        ui = new UI(context, this);
         this.automator = new SimpleActionAutomator(accessibilityBridge, this);
         automator.setScreenMetrics(mScreenMetrics);
         this.info = accessibilityBridge.getInfoProvider();
-        Context context = uiHandler.getContext();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             images = new Images(context, this, builder.mScreenCaptureRequester);
         }
         engines = new Engines(builder.mEngineService, this);
         dialogs = new Dialogs(app, uiHandler, bridges);
-        device = new Device(uiHandler.getContext());
+        device = new Device(context);
         floaty = new Floaty(uiHandler, ui, this);
         files = new Files(this);
+        sensors = new Sensors(context, bridges);
     }
 
     public void init() {
@@ -369,6 +375,7 @@ public class ScriptRuntime {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             ignoresException(images::releaseScreenCapturer);
         }
+        ignoresException(sensors::unregisterAll);
     }
 
     private void ignoresException(Runnable r) {
