@@ -173,7 +173,7 @@ public class ScriptRuntime {
     public final Files files;
 
     @ScriptVariable
-    public final Sensors sensors;
+    public Sensors sensors;
 
 
     private Images images;
@@ -205,7 +205,6 @@ public class ScriptRuntime {
         device = new Device(context);
         floaty = new Floaty(uiHandler, ui, this);
         files = new Files(this);
-        sensors = new Sensors(context, bridges);
     }
 
     public void init() {
@@ -216,6 +215,7 @@ public class ScriptRuntime {
         loopers = new Loopers(this);
         events = new Events(uiHandler.getContext(), accessibilityBridge, this);
         mThread = Thread.currentThread();
+        sensors = new Sensors(uiHandler.getContext(), this);
     }
 
     public static void setApplicationContext(Context context) {

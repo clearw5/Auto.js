@@ -8,9 +8,12 @@ import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
 
 import com.stardust.autojs.core.eventloop.EventEmitter;
+import com.stardust.autojs.core.looper.Loopers;
 import com.stardust.autojs.runtime.ScriptBridges;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.util.MapEntries;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +23,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * Created by Stardust on 2018/2/5.
  */
 
-public class Sensors extends EventEmitter {
+public class Sensors extends EventEmitter implements Loopers.LooperQuitHandler {
+
 
     public class SensorEventEmitter extends EventEmitter implements SensorEventListener {
 
@@ -79,13 +83,16 @@ public class Sensors extends EventEmitter {
     private final SensorManager mSensorManager;
     private final ScriptBridges mScriptBridges;
     private final SensorEventEmitter mNoOpSensorEventEmitter;
+    private final ScriptRuntime mScriptRuntime;
 
 
-    public Sensors(Context context, ScriptBridges bridges) {
-        super(bridges);
+    public Sensors(Context context, ScriptRuntime runtime) {
+        super(runtime.bridges);
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        mScriptBridges = bridges;
-        mNoOpSensorEventEmitter = new SensorEventEmitter(bridges);
+        mScriptBridges = runtime.bridges;
+        mNoOpSensorEventEmitter = new SensorEventEmitter(runtime.bridges);
+        mScriptRuntime = runtime;
+        runtime.loopers.addLooperQuiteHandler(this);
     }
 
     public SensorEventEmitter register(String sensorName) {
@@ -107,23 +114,6 @@ public class Sensors extends EventEmitter {
         return register(sensor, delay);
     }
 
-    public SensorEventEmitter registerByType(int sensorType, int delay) {
-        Sensor sensor = mSensorManager.getDefaultSensor(sensorType);
-        if (sensor == null) {
-            if (ignoresUnsupportedSensor) {
-                emit("unsupported_sensor", null, sensorType);
-                return mNoOpSensorEventEmitter;
-            } else {
-                return null;
-            }
-        }
-        return register(sensor, delay);
-    }
-
-    public SensorEventEmitter registerByType(int sensorType) {
-        return registerByType(sensorType, delay.normal);
-    }
-
     private SensorEventEmitter register(@NonNull Sensor sensor, int delay) {
         SensorEventEmitter emitter = new SensorEventEmitter(mScriptBridges);
         mSensorManager.registerListener(emitter, sensor, delay);
@@ -134,11 +124,31 @@ public class Sensors extends EventEmitter {
     }
 
 
-    private Sensor getSensor(String sensorName) {
+    @Override
+    public boolean shouldQuit() {
+        if (mSensorEventEmitters.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    public Sensor getSensor(String sensorName) {
         Integer type = SENSORS.get(sensorName.toUpperCase());
+        if (type == null)
+            type = getSensorTypeByReflect(sensorName);
         if (type == null)
             return null;
         return mSensorManager.getDefaultSensor(type);
+    }
+
+    private Integer getSensorTypeByReflect(String sensorName) {
+        sensorName = sensorName.toUpperCase();
+        try {
+            Field field = Sensor.class.getField("TYPE_" + sensorName);
+            return (Integer) field.get(null);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void unregister(SensorEventEmitter emitter) {

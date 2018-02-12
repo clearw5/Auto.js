@@ -10,6 +10,8 @@ import com.stardust.autojs.runtime.api.Timers;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.lang.ThreadCompat;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * Created by Stardust on 2017/7/29.
  */
@@ -24,6 +26,7 @@ public class Loopers implements MessageQueue.IdleHandler {
     };
 
     private volatile ThreadLocal<Boolean> waitWhenIdle = new ThreadLocal<>();
+    private volatile ThreadLocal<CopyOnWriteArrayList<LooperQuitHandler>> looperQuitHanders = new ThreadLocal<>();
     private volatile Looper mServantLooper;
     private Timers mTimers;
     private ScriptRuntime mScriptRuntime;
@@ -48,6 +51,20 @@ public class Loopers implements MessageQueue.IdleHandler {
         return mMainLooper;
     }
 
+    public void addLooperQuiteHandler(LooperQuitHandler handler) {
+        CopyOnWriteArrayList<LooperQuitHandler> handlers = looperQuitHanders.get();
+        if (handlers == null) {
+            handlers = new CopyOnWriteArrayList<>();
+            looperQuitHanders.set(handlers);
+        }
+        handlers.add(handler);
+    }
+
+    public boolean removeLooperQuiteHandler(LooperQuitHandler handler) {
+        CopyOnWriteArrayList<LooperQuitHandler> handlers = looperQuitHanders.get();
+        return handlers != null && handlers.remove(handler);
+    }
+
     private boolean shouldQuitLooper() {
         if (Thread.currentThread().isInterrupted()) {
             return true;
@@ -55,7 +72,19 @@ public class Loopers implements MessageQueue.IdleHandler {
         if (mTimers.hasPendingCallbacks()) {
             return false;
         }
-        return !waitWhenIdle.get();
+        if (waitWhenIdle.get()) {
+            return false;
+        }
+        CopyOnWriteArrayList<LooperQuitHandler> handlers = looperQuitHanders.get();
+        if (handlers == null) {
+            return true;
+        }
+        for (LooperQuitHandler handler : handlers) {
+            if (!handler.shouldQuit()) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
