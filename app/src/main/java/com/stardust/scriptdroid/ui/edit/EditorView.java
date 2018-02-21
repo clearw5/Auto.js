@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
@@ -17,7 +16,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.pio.PFiles;
@@ -31,10 +29,11 @@ import com.stardust.scriptdroid.model.script.Scripts;
 import com.stardust.scriptdroid.ui.doc.ManualDialog;
 import com.stardust.scriptdroid.model.autocomplete.CodeCompletions;
 import com.stardust.scriptdroid.ui.edit.completion.CodeCompletionBar;
-import com.stardust.scriptdroid.ui.edit.completion.InputMethodEnhancedBarColors;
 import com.stardust.scriptdroid.model.autocomplete.Symbols;
+import com.stardust.scriptdroid.ui.edit.editor.CodeEditor;
 import com.stardust.scriptdroid.ui.edit.keyboard.FunctionsKeyboardHelper;
 import com.stardust.scriptdroid.ui.edit.keyboard.FunctionsKeyboardView;
+import com.stardust.scriptdroid.ui.edit.theme.Theme;
 import com.stardust.scriptdroid.ui.log.LogActivity_;
 import com.stardust.scriptdroid.ui.widget.EWebView;
 import com.stardust.scriptdroid.ui.widget.ToolbarMenuItem;
@@ -47,7 +46,6 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
-import java.util.Arrays;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -69,7 +67,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     public static final String EXTRA_RUN_ENABLED = "Love you with my life...really...17.9.28";
 
     @ViewById(R.id.editor)
-    CodeMirrorEditor mEditor;
+    CodeEditor mEditor;
 
     @ViewById(R.id.code_completion_bar)
     CodeCompletionBar mCodeCompletionBar;
@@ -104,9 +102,8 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     private File mFile;
     private boolean mReadOnly = false;
     private ScriptExecution mScriptExecution;
-    private boolean mTextChanged = false;
-    private boolean mInitialText = false;
     private AutoCompletion mAutoCompletion;
+    private Theme mEditorTheme;
     private FunctionsKeyboardHelper mFunctionsKeyboardHelper;
     private BroadcastReceiver mOnRunFinishedReceiver = new BroadcastReceiver() {
         @Override
@@ -209,9 +206,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     private void setInitialText(String text) {
-        mInitialText = true;
-        mTextChanged = false;
-        mEditor.setText(text);
+        mEditor.setInitialText(text);
     }
 
 
@@ -222,6 +217,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     @AfterViews
     void init() {
+        setTheme(Theme.getDefault(getContext()));
         setUpEditor();
         setUpInputMethodEnhancedBar();
         setUpFunctionsKeyboard();
@@ -236,7 +232,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
                 .setContent(mEditor)
                 .setFunctionsTrigger(mShowFunctionsButton)
                 .setFunctionsView(mFunctionsKeyboard)
-                .setEditView(mEditor.getWebView())
+                .setEditView(mEditor.getCodeEditText())
                 .build();
         mFunctionsKeyboard.setClickCallback(this);
     }
@@ -251,16 +247,9 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
 
     private void setUpEditor() {
-        setTheme(PreferenceManager.getDefaultSharedPreferences(getContext())
-                .getString(KEY_EDITOR_THEME, mEditor.getTheme()));
-        mEditor.setCallback((line, cursor) -> {
-            if (mInitialText) {
-                mInitialText = false;
-            } else {
-                mTextChanged = true;
-                setMenuItemStatus(R.id.save, true);
-                autoComplete(line, cursor);
-            }
+        mEditor.setCursorChangeCallback((line, cursor) -> {
+            setMenuItemStatus(R.id.save, mEditor.isTextChanged());
+            autoComplete(line, cursor);
         });
 
 
@@ -270,10 +259,11 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         mAutoCompletion.onCursorChange(line, cursor);
     }
 
-    public void setTheme(String theme) {
+    public void setTheme(Theme theme) {
+        mEditorTheme = theme;
         mEditor.setTheme(theme);
-        mInputMethodEnhanceBar.setBackgroundColor(InputMethodEnhancedBarColors.getBackgroundColor(theme));
-        int textColor = InputMethodEnhancedBarColors.getTextColor(theme);
+        mInputMethodEnhanceBar.setBackgroundColor(theme.getImeBarBackgroundColor());
+        int textColor = theme.getImeBarForegroundColor();
         mCodeCompletionBar.setTextColor(textColor);
         mSymbolBar.setTextColor(textColor);
         mShowFunctionsButton.setColorFilter(textColor);
@@ -321,7 +311,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
                 .doOnNext(s -> PFiles.write(mFile, s))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(s -> {
-                    mTextChanged = false;
+                    mEditor.markTextAsSaved();
                     setMenuItemStatus(R.id.save, false);
                 });
     }
@@ -362,7 +352,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     public boolean isTextChanged() {
-        return mTextChanged;
+        return mEditor.isTextChanged();
     }
 
     public void showConsole() {
@@ -381,22 +371,10 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     public void selectEditorTheme() {
-        String[] themes = mEditor.getAvailableThemes();
-        int i = Arrays.asList(themes).indexOf(mEditor.getTheme());
-        new MaterialDialog.Builder(getContext())
-                .title(R.string.text_editor_theme)
-                .items((CharSequence[]) themes)
-                .itemsCallbackSingleChoice(i, (dialog, itemView, which, text) -> {
-                    PreferenceManager.getDefaultSharedPreferences(getContext()).edit()
-                            .putString(KEY_EDITOR_THEME, text.toString())
-                            .apply();
-                    setTheme(text.toString());
-                    return true;
-                })
-                .show();
+
     }
 
-    public CodeMirrorEditor getEditor() {
+    public CodeEditor getEditor() {
         return mEditor;
     }
 
@@ -466,7 +444,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
             mEditor.insert(m.getName() + "." + p);
         }
         if (!property.isVariable()) {
-            mEditor.moveCursor(0, -1);
+            mEditor.moveCursor(-1);
         }
         mFunctionsKeyboardHelper.hideFunctionsLayout(true);
     }

@@ -5,12 +5,11 @@ import android.support.design.widget.Snackbar;
 import android.text.InputType;
 import android.view.MenuItem;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.ui.build.BuildActivity;
 import com.stardust.scriptdroid.ui.build.BuildActivity_;
+import com.stardust.scriptdroid.ui.edit.editor.CodeEditor;
 import com.stardust.scriptdroid.ui.log.LogActivity_;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
@@ -20,7 +19,6 @@ import java.util.Locale;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -31,12 +29,12 @@ public class EditorMenu {
 
     private EditorView mEditorView;
     private Context mContext;
-    private CodeMirrorEditor mEditor;
+    private CodeEditor mEditor;
 
     public EditorMenu(EditorView editorView) {
         mEditorView = editorView;
         mContext = editorView.getContext();
-        mEditor = editorView.mEditor;
+        mEditor = editorView.getEditor();
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -69,9 +67,6 @@ public class EditorMenu {
             case R.id.action_jump_to_line:
                 jumpToLine();
                 return true;
-            case R.id.action_jump_to_def:
-                mEditor.jumpToDef();
-                return true;
             case R.id.action_jump_to_start:
                 mEditor.jumpToStart();
                 return true;
@@ -94,10 +89,10 @@ public class EditorMenu {
                 beautifyCode();
                 return true;
             case R.id.action_rename:
-                mEditor.rename();
+                //mEditor.rename();
                 return true;
             case R.id.action_select_variable:
-                mEditor.selectName();
+                //mEditor.selectName();
                 return true;
         }
         return false;
@@ -110,7 +105,7 @@ public class EditorMenu {
                 showConsole();
                 return true;
             case R.id.action_show_type:
-                mEditor.showType();
+                // mEditor.showType();
                 return true;
             case R.id.action_editor_theme:
                 mEditorView.selectEditorTheme();
@@ -212,14 +207,11 @@ public class EditorMenu {
     private void findOrReplace() {
         mEditor.getSelection()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(@NonNull String s) throws Exception {
+                .subscribe(s ->
                         new FindOrReplaceDialogBuilder(mContext, mEditorView)
                                 .setQueryIfNotEmpty(s)
-                                .show();
-                    }
-                });
+                                .show()
+                );
 
     }
 

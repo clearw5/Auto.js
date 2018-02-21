@@ -119,7 +119,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.stardust.scriptdroid.ui.edit.CodeMirrorEditor
+            <com.stardust.scriptdroid.ui.edit.editor.CodeEditor
                 android:id="@+id/editor"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
