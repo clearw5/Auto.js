@@ -192,9 +192,7 @@ public class CodeEditText extends AppCompatEditText {
     }
 
     private int getRealScrollY() {
-        int scrollY = mScrollView.getScrollY();
-        View parent = (View) mScrollView.getParent();
-        return scrollY + parent.getScrollY();
+        return mScrollView.getScrollY() + getScrollY();
     }
 
     @Override
