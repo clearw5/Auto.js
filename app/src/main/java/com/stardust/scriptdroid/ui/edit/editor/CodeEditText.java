@@ -23,11 +23,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.widget.AppCompatEditText;
-import android.text.Editable;
 import android.text.Layout;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 
 import com.stardust.scriptdroid.ui.edit.theme.Theme;
 
@@ -128,7 +127,9 @@ public class CodeEditText extends AppCompatEditText {
         int fontCount = 0;
         int previousColor = mHighlightTokens.getCharColor(lineStart);
         int previousColorPos = lineStart;
-        for (int i = lineStart; i < lineEnd; i++) {
+        int visibleCharStart = getVisibleCharIndex(paint, getScrollX(), lineStart, lineEnd);
+        int visibleCharEnd = getVisibleCharIndex(paint, getScrollX() + getWidth(), lineStart, lineEnd) + 1;
+        for (int i = visibleCharStart; i < visibleCharEnd && i < lineEnd; i++) {
             fontCount++;
             int color = mHighlightTokens.getCharColor(i);
             if (previousColor != color) {
@@ -137,11 +138,28 @@ public class CodeEditText extends AppCompatEditText {
                 previousColorPos = i;
                 fontCount = 1;
             }
-            if (i == lineEnd - 1) {
+            if (i == visibleCharEnd - 1) {
                 drawText(canvas, paint, paddingLeft, lineBaseline, lineStart, previousColorPos, previousColorPos + fontCount, previousColor);
             }
         }
 
+    }
+
+    private int getVisibleCharIndex(Paint paint, int x, int lineStart, int lineEnd) {
+        if (x == 0)
+            return lineStart;
+        int low = lineStart;
+        int high = lineEnd - 1;
+        while (low < high) {
+            int mid = (high + low) >>> 1;
+            float midX = paint.measureText(getText(), lineStart, mid + 1);
+            if (x < midX) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return low;
     }
 
     private void drawText(Canvas canvas, Paint paint, int paddingLeft, int lineBaseline, int lineStart, int start, int end, int color) {
@@ -162,14 +180,21 @@ public class CodeEditText extends AppCompatEditText {
 
     private long getLineRangeForDraw(Layout layout, Canvas canvas) {
         canvas.save();
-        float clipTop = (mScrollView.getScrollY() == 0) ? 0
-                : getExtendedPaddingTop() + mScrollView.getScrollY()
+        int scrollY = getRealScrollY();
+        float clipTop = (scrollY == 0) ? 0
+                : getExtendedPaddingTop() + scrollY
                 - mScrollView.getPaddingTop();
-        canvas.clipRect(0, clipTop, getWidth(), mScrollView.getScrollY()
+        canvas.clipRect(0, clipTop, getWidth(), scrollY
                 + mScrollView.getHeight());
         long lineRangeForDraw = LayoutHelper.getLineRangeForDraw(layout, canvas);
         canvas.restore();
         return lineRangeForDraw;
+    }
+
+    private int getRealScrollY() {
+        int scrollY = mScrollView.getScrollY();
+        View parent = (View) mScrollView.getParent();
+        return scrollY + parent.getScrollY();
     }
 
     @Override
@@ -206,7 +231,6 @@ public class CodeEditText extends AppCompatEditText {
 
     public void updateHighlightTokens(JavaScriptHighlighter.HighlightTokens highlightTokens) {
         mHighlightTokens = highlightTokens;
-        Log.d(LOG_TAG, "tokens = " + highlightTokens);
-        invalidate();
+        postInvalidate();
     }
 }

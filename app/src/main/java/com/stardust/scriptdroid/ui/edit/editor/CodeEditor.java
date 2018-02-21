@@ -35,10 +35,41 @@ import io.reactivex.Observable;
  */
 public class CodeEditor extends HVScrollView {
 
+    public interface CursorChangeCallback {
+
+        void onCursorChange(String line, int ch);
+
+    }
+
 
     private CharSequence mReplacement = "";
     private String mKeywords;
     private int mFoundIndex = -1;
+    private CodeEditText mCodeEditText;
+    private PreformEdit mPreformEdit;
+    private JavaScriptHighlighter mJavaScriptHighlighter;
+    private Theme mTheme;
+
+    public CodeEditor(Context context) {
+        super(context);
+        init();
+    }
+
+    public CodeEditor(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+
+    private void init() {
+        setFillViewport(true);
+        inflate(getContext(), R.layout.code_editor, this);
+        mCodeEditText = (CodeEditText) findViewById(R.id.code_edit_text);
+        mPreformEdit = new PreformEdit(mCodeEditText);
+        mJavaScriptHighlighter = new JavaScriptHighlighter(mTheme, mCodeEditText);
+        setTheme(Theme.getDefault(getContext()));
+
+    }
 
     public Observable<Integer> getLineCount() {
         return Observable.just(mCodeEditText.getLayout().getLineCount());
@@ -97,39 +128,6 @@ public class CodeEditor extends HVScrollView {
         if (line < 0 || line >= mCodeEditText.getLayout().getLineCount())
             return;
         mCodeEditText.setSelection(mCodeEditText.getLayout().getLineEnd(line) - 1);
-
-    }
-
-
-    public interface CursorChangeCallback {
-
-        void onCursorChange(String line, int ch);
-
-    }
-
-    private CodeEditText mCodeEditText;
-    private PreformEdit mPreformEdit;
-    private JavaScriptHighlighter mJavaScriptHighlighter;
-    private Theme mTheme;
-
-    public CodeEditor(Context context) {
-        super(context);
-        init();
-    }
-
-    public CodeEditor(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-
-    private void init() {
-        setFillViewport(true);
-        inflate(getContext(), R.layout.code_editor, this);
-        mCodeEditText = (CodeEditText) findViewById(R.id.code_edit_text);
-        mPreformEdit = new PreformEdit(mCodeEditText);
-        mJavaScriptHighlighter = new JavaScriptHighlighter(mTheme, mCodeEditText);
-        setTheme(Theme.getDefault(getContext()));
 
     }
 

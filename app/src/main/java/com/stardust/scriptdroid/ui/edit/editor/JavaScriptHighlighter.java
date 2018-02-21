@@ -24,6 +24,7 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
 
         private int[] mColors;
         private String mText;
+        private int mCount;
 
         public HighlightTokens(String text) {
             mColors = new int[text.length()];
@@ -40,6 +41,7 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
             for (int i = tokenStart; i < tokenEnd; i++) {
                 mColors[i] = color;
             }
+            mCount = tokenEnd;
         }
 
         @Override
@@ -50,7 +52,7 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
         }
 
         public int getCharCount() {
-            return mColors.length;
+            return mCount;
         }
 
         public String getText() {
@@ -101,9 +103,10 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
             int color = mTheme.getColorForToken(token);
             highlightTokens.addToken(ts.getTokenBeg(), ts.getTokenEnd(), color);
         }
+        if (highlightTokens.getCharCount() < sourceString.length()) {
+            highlightTokens.addToken(highlightTokens.getCharCount(), sourceString.length(), mTheme.getColorForToken(Token.NAME));
+        }
         mCodeEditText.updateHighlightTokens(highlightTokens);
-        Log.d("Highlighter", "code = " + sourceString);
-        Log.d("Highlighter", "tokens = " + highlightTokens);
     }
 
 
