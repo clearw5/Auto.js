@@ -49,9 +49,6 @@ public class EditorMenu {
                 if (onEditOptionsSelected(item)) {
                     return true;
                 }
-                if (onRefactorOptionsSelected(item)) {
-                    return true;
-                }
                 if (onJumpOptionsSelected(item)) {
                     return true;
                 }
@@ -83,29 +80,11 @@ public class EditorMenu {
         return false;
     }
 
-    private boolean onRefactorOptionsSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_beautify:
-                beautifyCode();
-                return true;
-            case R.id.action_rename:
-                //mEditor.rename();
-                return true;
-            case R.id.action_select_variable:
-                //mEditor.selectName();
-                return true;
-        }
-        return false;
-    }
-
 
     private boolean onMoreOptionsSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_console:
                 showConsole();
-                return true;
-            case R.id.action_show_type:
-                // mEditor.showType();
                 return true;
             case R.id.action_editor_theme:
                 mEditorView.selectEditorTheme();
@@ -139,9 +118,6 @@ public class EditorMenu {
             case R.id.action_copy_all:
                 copyAll();
                 return true;
-            case R.id.action_paste:
-                paste();
-                return true;
             case R.id.action_copy_line:
                 copyLine();
                 return true;
@@ -150,6 +126,9 @@ public class EditorMenu {
                 return true;
             case R.id.action_clear:
                 mEditor.setText("");
+                return true;
+            case R.id.action_beautify:
+                beautifyCode();
                 return true;
         }
         return false;

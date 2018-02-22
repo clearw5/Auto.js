@@ -178,6 +178,8 @@ public class CodeEditor extends HVScrollView {
             }
             mProcessDialog = new MaterialDialog.Builder(getContext())
                     .content(R.string.text_processing)
+                    .progress(true, 0)
+                    .cancelable(false)
                     .show();
         } else {
             if (mProcessDialog != null) {
