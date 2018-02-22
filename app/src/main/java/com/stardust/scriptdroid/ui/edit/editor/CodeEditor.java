@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.autojs.script.JsBeautifier;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.edit.theme.Theme;
 import com.stardust.util.ClipboardUtil;
@@ -49,6 +51,8 @@ public class CodeEditor extends HVScrollView {
     private PreformEdit mPreformEdit;
     private JavaScriptHighlighter mJavaScriptHighlighter;
     private Theme mTheme;
+    private JsBeautifier mJsBeautifier;
+    private MaterialDialog mProcessDialog;
 
     public CodeEditor(Context context) {
         super(context);
@@ -68,6 +72,7 @@ public class CodeEditor extends HVScrollView {
         mPreformEdit = new PreformEdit(mCodeEditText);
         mJavaScriptHighlighter = new JavaScriptHighlighter(mTheme, mCodeEditText);
         setTheme(Theme.getDefault(getContext()));
+        mJsBeautifier = new JsBeautifier(this, "js/beautify.js");
 
     }
 
@@ -160,9 +165,6 @@ public class CodeEditor extends HVScrollView {
 
     public void jumpTo(int line, int col) {
         mCodeEditText.setSelection(mCodeEditText.getLayout().getLineStart(line) + col);
-        //int top = mCodeEditText.getLayout().getLineTop(line - 1);
-        //post(() -> scrollTo(0, top));
-
     }
 
     public void setReadOnly(boolean readOnly) {
@@ -170,6 +172,19 @@ public class CodeEditor extends HVScrollView {
     }
 
     public void setProgress(boolean progress) {
+        if (progress) {
+            if (mProcessDialog != null) {
+                mProcessDialog.dismiss();
+            }
+            mProcessDialog = new MaterialDialog.Builder(getContext())
+                    .content(R.string.text_processing)
+                    .show();
+        } else {
+            if (mProcessDialog != null) {
+                mProcessDialog.dismiss();
+                mProcessDialog = null;
+            }
+        }
 
     }
 
@@ -218,7 +233,20 @@ public class CodeEditor extends HVScrollView {
     }
 
     public void beautifyCode() {
+        setProgress(true);
+        mJsBeautifier.beautify(mCodeEditText.getText().toString(), new JsBeautifier.Callback() {
+            @Override
+            public void onSuccess(String beautifiedCode) {
+                setProgress(false);
+                mCodeEditText.setText(beautifiedCode);
+            }
 
+            @Override
+            public void onException(Exception e) {
+                setProgress(false);
+                e.printStackTrace();
+            }
+        });
     }
 
     public void find(String keywords, boolean usingRegex) {
