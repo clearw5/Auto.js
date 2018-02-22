@@ -138,9 +138,11 @@ public class CodeEditor extends HVScrollView {
 
     public void setTheme(Theme theme) {
         mTheme = theme;
-        mJavaScriptHighlighter.setTheme(theme);
         setBackgroundColor(mTheme.getBackgroundColor());
-
+        mJavaScriptHighlighter.setTheme(theme);
+        mJavaScriptHighlighter.updateTokens(mCodeEditText.getText().toString());
+        mCodeEditText.setTheme(mTheme);
+        invalidate();
     }
 
 

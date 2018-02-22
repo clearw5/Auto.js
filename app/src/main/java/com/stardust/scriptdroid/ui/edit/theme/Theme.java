@@ -1,22 +1,14 @@
 package com.stardust.scriptdroid.ui.edit.theme;
 
 import android.graphics.Color;
-import android.util.SparseArray;
 import android.util.SparseIntArray;
 
-import com.google.gson.Gson;
 import com.stardust.scriptdroid.model.editor.EditorTheme;
 import com.stardust.scriptdroid.model.editor.TokenColor;
-
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Token;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Map;
-
-import static org.mozilla.javascript.Token.*;
 
 /**
  * Created by Stardust on 2018/2/16.
@@ -25,19 +17,21 @@ import static org.mozilla.javascript.Token.*;
 public class Theme {
 
 
-    private int mBackgroundColor;
-    private int mForegroundColor;
-    private int mLineNumberColor;
+    private int mBackgroundColor = Color.WHITE;
+    private int mForegroundColor = Color.BLACK;
+    private int mLineNumberColor = Color.GRAY;
     private SparseIntArray mTokenColors = new SparseIntArray();
-    private int mImeBarBackgroundColor;
-    private int mImeBarForegroundColor;
+    private int mImeBarBackgroundColor = 0xDDFFFFFF;
+    private int mImeBarForegroundColor = Color.WHITE;
+    private EditorTheme mEditorTheme;
 
     public Theme(EditorTheme theme) {
-        mBackgroundColor = Color.parseColor(theme.getEditorColors().getEditorBackground());
-        mForegroundColor = Color.parseColor(theme.getEditorColors().getEditorForeground());
-        mLineNumberColor = Color.parseColor(theme.getEditorColors().getEditorIndentGuideBackground());
-        mImeBarBackgroundColor = Color.parseColor(theme.getEditorColors().getImeBackgroundColor());
-        mImeBarForegroundColor = Color.parseColor(theme.getEditorColors().getImeForegroundColor());
+        mEditorTheme = theme;
+        mBackgroundColor = parseColor(theme.getEditorColors().getEditorBackground(), mBackgroundColor);
+        mForegroundColor = parseColor(theme.getEditorColors().getEditorForeground(), mForegroundColor);
+        mLineNumberColor = parseColor(theme.getEditorColors().getLineNumberForeground(), mLineNumberColor);
+        mImeBarBackgroundColor = parseColor(theme.getEditorColors().getImeBackgroundColor(), mImeBarBackgroundColor);
+        mImeBarForegroundColor = parseColor(theme.getEditorColors().getImeForegroundColor(), mImeBarForegroundColor);
 
         for (TokenColor tokenColor : theme.getTokenColors()) {
             String foregroundStr = tokenColor.getSettings().getForeground();
@@ -48,6 +42,20 @@ public class Theme {
                 setTokenColor(scope, foreground);
             }
         }
+    }
+
+    private int parseColor(String color, int defaultValue) {
+        if (color == null)
+            return defaultValue;
+        try {
+            return Color.parseColor(color);
+        } catch (Exception ignored) {
+            return defaultValue;
+        }
+    }
+
+    public String getName() {
+        return mEditorTheme.getName();
     }
 
     private void setTokenColor(String scope, int foreground) {
@@ -111,4 +119,19 @@ public class Theme {
     public void setImeBarForegroundColor(int imeBarForegroundColor) {
         mImeBarForegroundColor = imeBarForegroundColor;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Theme theme = (Theme) o;
+
+        return mEditorTheme.getName() != null ? mEditorTheme.getName().equals(theme.mEditorTheme.getName()) : theme.mEditorTheme.getName() == null;
+    }
+
+    public String toString() {
+        return getName();
+    }
+
 }

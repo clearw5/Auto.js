@@ -79,12 +79,11 @@ public class CodeEditText extends AppCompatEditText {
         if (mScrollView == null) {
             mScrollView = (HVScrollView) getParent();
         }
-        // 根据行号计算左边距padding
+        // 根据行号计算左边距padding 留出绘制行号的空间
         String max = Integer.toString(getLineCount());
-        float lineNumberSize = getPaint().measureText(max) + 20;
-        if (getPaddingLeft() != lineNumberSize) {
-            setPadding((int) lineNumberSize, 0, 0, 0);
-            invalidate();
+        float gutterWidth = getPaint().measureText(max) + 20;
+        if (getPaddingLeft() != gutterWidth) {
+            setPadding((int) gutterWidth, 0, 0, 0);
         }
         super.onDraw(canvas);
         // 画文字
@@ -92,7 +91,6 @@ public class CodeEditText extends AppCompatEditText {
         canvas.translate(0, getExtendedPaddingTop());
         drawText(canvas);
         canvas.restore();
-
     }
 
     // 绘制文本着色

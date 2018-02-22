@@ -19,6 +19,8 @@ public class Pref {
     private static final String KEY_FIRST_SHOW_AD = "En, Today is 17.7.7, but, I'm still love you so....";
     private static final String KEY_LAST_SHOW_AD_MILLIS = "But... it seems that...you will not come back any more...";
     private static final String KEY_FLOATING_MENU_SHOWN = "17.10.28 I have idea of what you think...maybe...I'm overthinking...";
+    private static final String KEY_EDITOR_THEME = "editor.theme";
+
     private static SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -146,5 +148,13 @@ public class Pref {
 
     public static void setFloatingMenuShown(boolean checked) {
         def().edit().putBoolean(KEY_FLOATING_MENU_SHOWN, checked).apply();
+    }
+
+    public static String getCurrentTheme() {
+        return def().getString(KEY_EDITOR_THEME, null);
+    }
+
+    public static void setCurrentTheme(String theme) {
+        def().edit().putString(KEY_EDITOR_THEME, theme).apply();
     }
 }

@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.pio.PFiles;
@@ -34,6 +35,7 @@ import com.stardust.scriptdroid.ui.edit.editor.CodeEditor;
 import com.stardust.scriptdroid.ui.edit.keyboard.FunctionsKeyboardHelper;
 import com.stardust.scriptdroid.ui.edit.keyboard.FunctionsKeyboardView;
 import com.stardust.scriptdroid.ui.edit.theme.Theme;
+import com.stardust.scriptdroid.ui.edit.theme.Themes;
 import com.stardust.scriptdroid.ui.log.LogActivity_;
 import com.stardust.scriptdroid.ui.widget.EWebView;
 import com.stardust.scriptdroid.ui.widget.ToolbarMenuItem;
@@ -46,6 +48,7 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -224,7 +227,9 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         setMenuItemStatus(R.id.save, false);
         mDocsWebView.getWebView().getSettings().setDisplayZoomControls(true);
         mDocsWebView.getWebView().loadUrl(Pref.getDocumentationUrl() + "index.html");
-
+        Themes.getCurrent(getContext()).
+                observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::setTheme);
     }
 
     private void setUpFunctionsKeyboard() {
@@ -267,6 +272,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         mCodeCompletionBar.setTextColor(textColor);
         mSymbolBar.setTextColor(textColor);
         mShowFunctionsButton.setColorFilter(textColor);
+        invalidate();
     }
 
     public boolean onBackPressed() {
@@ -371,7 +377,30 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     public void selectEditorTheme() {
+        mEditor.setProgress(true);
+        Themes.getAllThemes(getContext())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(themes -> {
+                    mEditor.setProgress(false);
+                    selectEditorTheme(themes);
+                });
+    }
 
+    private void selectEditorTheme(List<Theme> themes) {
+        int i = themes.indexOf(mEditorTheme);
+        if (i < 0) {
+            i = 0;
+        }
+        new MaterialDialog.Builder(getContext())
+                .title(R.string.text_editor_theme)
+                .items(themes)
+                .itemsCallbackSingleChoice(i, (dialog, itemView, which, text) -> {
+                    setTheme(themes.get(which));
+                    Themes.setCurrent(themes.get(which).getName());
+                    return true;
+                })
+                .show();
     }
 
     public CodeEditor getEditor() {

@@ -1,8 +1,6 @@
 
 package com.stardust.scriptdroid.model.editor;
 
-import android.graphics.Color;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
@@ -10,8 +8,6 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
-
-import static org.mozilla.javascript.Token.*;
 
 public class EditorTheme {
 

@@ -12,8 +12,8 @@ public class EditorColors {
     private String mEditorForeground;
     @SerializedName("editor.inactiveSelectionBackground")
     private String mEditorInactiveSelectionBackground;
-    @SerializedName("editorIndentGuide.background")
-    private String mEditorIndentGuideBackground;
+    @SerializedName("lineNumber.foreground")
+    private String mLineNumberForeground;
     @SerializedName("editor.selectionHighlightBackground")
     private String mEditorSelectionHighlightBackground;
     @SerializedName("imeBar.background")
@@ -45,12 +45,12 @@ public class EditorColors {
         mEditorInactiveSelectionBackground = editorInactiveSelectionBackground;
     }
 
-    public String getEditorIndentGuideBackground() {
-        return mEditorIndentGuideBackground;
+    public String getLineNumberForeground() {
+        return mLineNumberForeground;
     }
 
-    public void setEditorIndentGuideBackground(String editorIndentGuideBackground) {
-        mEditorIndentGuideBackground = editorIndentGuideBackground;
+    public void setLineNumberForeground(String lineNumberForeground) {
+        mLineNumberForeground = lineNumberForeground;
     }
 
     public String getEditorSelectionHighlightBackground() {

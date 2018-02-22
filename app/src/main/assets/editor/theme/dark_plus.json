@@ -4,11 +4,10 @@
   "colors": {
     "editor.background": "#1E1E1E",
     "editor.foreground": "#D4D4D4",
-    "editor.inactiveSelectionBackground": "#3A3D41",
-    "editorIndentGuide.background": "#404040",
-    "editor.selectionHighlightBackground": "#ADD6FF26",
+    "lineNumber.foreground": "#404040",
     "imeBar.background": "#dd1e1e1e",
-    "imeBar.foreground": "#f1f1f1"
+    "imeBar.foreground": "#f1f1f1",
+    "editor.selectionHighlightBackground": "#ADD6FF26"
   },
   "tokenColors": [
     {
