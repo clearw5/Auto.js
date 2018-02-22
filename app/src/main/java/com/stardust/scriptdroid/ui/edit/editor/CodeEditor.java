@@ -164,6 +164,9 @@ public class CodeEditor extends HVScrollView {
     }
 
     public void jumpTo(int line, int col) {
+        if (line >= mCodeEditText.getLayout().getLineCount() || line < 0) {
+            return;
+        }
         mCodeEditText.setSelection(mCodeEditText.getLayout().getLineStart(line) + col);
     }
 

@@ -24,6 +24,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Layout;
+import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -63,6 +64,8 @@ public class CodeEditText extends AppCompatEditText {
         setTextColor(Color.TRANSPARENT);
         // 设置字体
         setTypeface(Typeface.MONOSPACE);
+        setMovementMethod(ScrollingMovementMethod.getInstance());
+        setHorizontallyScrolling(true);
         mTheme = Theme.getDefault(getContext());
     }
 
@@ -230,5 +233,16 @@ public class CodeEditText extends AppCompatEditText {
     public void updateHighlightTokens(JavaScriptHighlighter.HighlightTokens highlightTokens) {
         mHighlightTokens = highlightTokens;
         postInvalidate();
+    }
+
+    @Override
+    public void setSelection(int index) {
+        if (index < 0) {
+            index = 0;
+        }
+        if (index > getText().length()) {
+            index = getText().length();
+        }
+        super.setSelection(index);
     }
 }
