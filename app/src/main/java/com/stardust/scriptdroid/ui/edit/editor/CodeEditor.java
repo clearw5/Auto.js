@@ -10,9 +10,6 @@ import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.edit.theme.Theme;
 import com.stardust.util.ClipboardUtil;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +34,7 @@ import io.reactivex.Observable;
  */
 public class CodeEditor extends HVScrollView {
 
+
     public interface CursorChangeCallback {
 
         void onCursorChange(String line, int ch);
@@ -48,7 +46,7 @@ public class CodeEditor extends HVScrollView {
     private String mKeywords;
     private int mFoundIndex = -1;
     private CodeEditText mCodeEditText;
-    private PreformEdit mPreformEdit;
+    private TextViewRedoUndo mTextViewRedoUndo;
     private JavaScriptHighlighter mJavaScriptHighlighter;
     private Theme mTheme;
     private JsBeautifier mJsBeautifier;
@@ -69,7 +67,7 @@ public class CodeEditor extends HVScrollView {
         setFillViewport(true);
         inflate(getContext(), R.layout.code_editor, this);
         mCodeEditText = (CodeEditText) findViewById(R.id.code_edit_text);
-        mPreformEdit = new PreformEdit(mCodeEditText);
+        mTextViewRedoUndo = new TextViewRedoUndo(mCodeEditText);
         mJavaScriptHighlighter = new JavaScriptHighlighter(mTheme, mCodeEditText);
         setTheme(Theme.getDefault(getContext()));
         mJsBeautifier = new JsBeautifier(this, "js/beautify.js");
@@ -147,7 +145,15 @@ public class CodeEditor extends HVScrollView {
 
 
     public boolean isTextChanged() {
-        return mPreformEdit.isTextChanged();
+        return mTextViewRedoUndo.isTextChanged();
+    }
+
+    public boolean canUndo() {
+        return mTextViewRedoUndo.canUndo();
+    }
+
+    public boolean canRedo(){
+        return mTextViewRedoUndo.canRedo();
     }
 
     @Override
@@ -162,7 +168,7 @@ public class CodeEditor extends HVScrollView {
 
     public void setInitialText(String text) {
         mCodeEditText.setText(text);
-        mPreformEdit.setDefaultText(text);
+        mTextViewRedoUndo.setDefaultText(text);
     }
 
     public void jumpTo(int line, int col) {
@@ -205,11 +211,11 @@ public class CodeEditor extends HVScrollView {
 
 
     public void undo() {
-        mPreformEdit.undo();
+        mTextViewRedoUndo.undo();
     }
 
     public void redo() {
-        mPreformEdit.redo();
+        mTextViewRedoUndo.redo();
     }
 
 
@@ -304,7 +310,7 @@ public class CodeEditor extends HVScrollView {
 
 
     public void markTextAsSaved() {
-        mPreformEdit.clearHistory();
+        mTextViewRedoUndo.clearHistory();
     }
 
 }

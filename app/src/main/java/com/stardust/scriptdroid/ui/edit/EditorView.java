@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -38,6 +39,7 @@ import com.stardust.scriptdroid.ui.edit.theme.Theme;
 import com.stardust.scriptdroid.ui.edit.theme.Themes;
 import com.stardust.scriptdroid.ui.log.LogActivity_;
 import com.stardust.scriptdroid.ui.widget.EWebView;
+import com.stardust.scriptdroid.ui.widget.SimpleTextWatcher;
 import com.stardust.scriptdroid.ui.widget.ToolbarMenuItem;
 import com.stardust.util.BackPressedHandler;
 import com.stardust.widget.ViewSwitcher;
@@ -99,8 +101,6 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     @ViewById(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
 
-    private static final String KEY_EDITOR_THEME = "我...深爱着...你呀...17.9.28";
-
     private String mName;
     private File mFile;
     private boolean mReadOnly = false;
@@ -111,7 +111,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     private BroadcastReceiver mOnRunFinishedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(ACTION_ON_EXECUTION_FINISHED)) {
+            if (ACTION_ON_EXECUTION_FINISHED.equals(intent.getAction())) {
                 mScriptExecution = null;
                 setMenuItemStatus(R.id.run, true);
                 String msg = intent.getStringExtra(Scripts.EXTRA_EXCEPTION_MESSAGE);
@@ -252,12 +252,12 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
 
     private void setUpEditor() {
-        mEditor.setCursorChangeCallback((line, cursor) -> {
+        mEditor.getCodeEditText().addTextChangedListener(new SimpleTextWatcher(s -> {
             setMenuItemStatus(R.id.save, mEditor.isTextChanged());
-            autoComplete(line, cursor);
-        });
-
-
+            setMenuItemStatus(R.id.undo, mEditor.canUndo());
+            setMenuItemStatus(R.id.redo, mEditor.canRedo());
+        }));
+        mEditor.setCursorChangeCallback(this::autoComplete);
     }
 
     private void autoComplete(String line, int cursor) {
@@ -319,6 +319,9 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
                 .doOnNext(s -> {
                     mEditor.markTextAsSaved();
                     setMenuItemStatus(R.id.save, false);
+                    setMenuItemStatus(R.id.undo, false);
+                    setMenuItemStatus(R.id.redo, false);
+
                 });
     }
 

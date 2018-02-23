@@ -27,7 +27,7 @@ import java.util.Stack;
  * 撤销和恢复撤销
  * Created by 沈钦赐 on 16/6/23.
  */
-public class PreformEdit {
+public class TextViewRedoUndo {
     //操作序号(一次编辑可能对应多个操作，如替换文字，就是删除+插入)
     int index;
     //撤销栈
@@ -40,7 +40,7 @@ public class PreformEdit {
     //自动操作标志，防止重复回调,导致无限撤销
     private boolean flag = false;
 
-    public PreformEdit(@NonNull EditText editText) {
+    public TextViewRedoUndo(@NonNull EditText editText) {
         CheckNull(editText, "EditText不能为空");
         this.editable = editText.getText();
         this.editText = editText;
@@ -219,7 +219,7 @@ public class PreformEdit {
                 editable = s;
                 onEditableChanged(s);
             }
-            PreformEdit.this.onTextChanged(s);
+            TextViewRedoUndo.this.onTextChanged(s);
         }
 
     }
