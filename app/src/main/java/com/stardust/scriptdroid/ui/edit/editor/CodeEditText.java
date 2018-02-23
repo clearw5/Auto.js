@@ -24,10 +24,10 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Layout;
-import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.TimingLogger;
 import android.view.Gravity;
-import android.view.View;
 
 import com.stardust.scriptdroid.ui.edit.theme.Theme;
 
@@ -38,13 +38,15 @@ import com.stardust.scriptdroid.ui.edit.theme.Theme;
 public class CodeEditText extends AppCompatEditText {
 
 
-    private static final String LOG_TAG = "CodeEditText";
+    static final String LOG_TAG = "CodeEditText";
+    private static final boolean DEBUG = true;
     // 文字范围
-    protected HVScrollView mScrollView;
+    protected HVScrollView mParentScrollView;
 
     private CodeEditor.CursorChangeCallback mCallback;
     private volatile JavaScriptHighlighter.HighlightTokens mHighlightTokens;
     private Theme mTheme;
+    private TimingLogger mLogger = new TimingLogger(LOG_TAG, "draw");
 
     public CodeEditText(Context context) {
         super(context);
@@ -64,7 +66,6 @@ public class CodeEditText extends AppCompatEditText {
         setTextColor(Color.TRANSPARENT);
         // 设置字体
         setTypeface(Typeface.MONOSPACE);
-        setMovementMethod(ScrollingMovementMethod.getInstance());
         setHorizontallyScrolling(true);
         mTheme = Theme.getDefault(getContext());
     }
@@ -76,8 +77,9 @@ public class CodeEditText extends AppCompatEditText {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mScrollView == null) {
-            mScrollView = (HVScrollView) getParent();
+        mLogger.reset();
+        if (mParentScrollView == null) {
+            mParentScrollView = (HVScrollView) getParent();
         }
         // 根据行号计算左边距padding 留出绘制行号的空间
         String max = Integer.toString(getLineCount());
@@ -86,11 +88,14 @@ public class CodeEditText extends AppCompatEditText {
             setPadding((int) gutterWidth, 0, 0, 0);
         }
         super.onDraw(canvas);
+        mLogger.addSplit("super draw");
         // 画文字
         canvas.save();
         canvas.translate(0, getExtendedPaddingTop());
         drawText(canvas);
+        mLogger.addSplit("draw text");
         canvas.restore();
+        mLogger.dumpToLog();
     }
 
     // 绘制文本着色
@@ -106,6 +111,8 @@ public class CodeEditText extends AppCompatEditText {
         int lineCount = getLineCount();
         int paddingLeft = getPaddingLeft();
         Paint paint = getPaint();
+        if (DEBUG)
+            Log.d(LOG_TAG, "draw line: " + (lastLineForDraw - firstLineForDraw + 1));
         for (int line = firstLineForDraw; line <= lastLineForDraw && line < lineCount; line++) {
             int lineBottom = layout.getLineTop(line + 1);
             int lineBaseline = lineBottom - layout.getLineDescent(line);
@@ -115,7 +122,6 @@ public class CodeEditText extends AppCompatEditText {
                 continue;
 
             drawCode(canvas, paint, paddingLeft, line, layout, lineBaseline, highlightTokens);
-
         }
     }
 
@@ -126,10 +132,13 @@ public class CodeEditText extends AppCompatEditText {
         }
         int lineEnd = layout.getLineVisibleEnd(line);
         int fontCount = 0;
-        int previousColor = mHighlightTokens.getCharColor(lineStart);
-        int previousColorPos = lineStart;
-        int visibleCharStart = getVisibleCharIndex(paint, getScrollX(), lineStart, lineEnd);
-        int visibleCharEnd = getVisibleCharIndex(paint, getScrollX() + getWidth(), lineStart, lineEnd) + 1;
+        int scrollX = Math.max(getRealScrollX() - paddingLeft, 0);
+        int visibleCharStart = getVisibleCharIndex(paint, scrollX, lineStart, lineEnd);
+        int visibleCharEnd = getVisibleCharIndex(paint, scrollX + mParentScrollView.getWidth(), lineStart, lineEnd) + 1;
+        int previousColorPos = visibleCharStart;
+        int previousColor = mHighlightTokens.getCharColor(previousColorPos);
+        if (DEBUG)
+            Log.d(LOG_TAG, "draw line " + line + ": " + (visibleCharEnd - visibleCharStart));
         for (int i = visibleCharStart; i < visibleCharEnd && i < lineEnd; i++) {
             fontCount++;
             int color = mHighlightTokens.getCharColor(i);
@@ -145,6 +154,7 @@ public class CodeEditText extends AppCompatEditText {
         }
 
     }
+
 
     private int getVisibleCharIndex(Paint paint, int x, int lineStart, int lineEnd) {
         if (x == 0)
@@ -184,21 +194,27 @@ public class CodeEditText extends AppCompatEditText {
         int scrollY = getRealScrollY();
         float clipTop = (scrollY == 0) ? 0
                 : getExtendedPaddingTop() + scrollY
-                - mScrollView.getPaddingTop();
+                - mParentScrollView.getPaddingTop();
         canvas.clipRect(0, clipTop, getWidth(), scrollY
-                + mScrollView.getHeight());
+                + mParentScrollView.getHeight());
         long lineRangeForDraw = LayoutHelper.getLineRangeForDraw(layout, canvas);
         canvas.restore();
         return lineRangeForDraw;
     }
 
     private int getRealScrollY() {
-        return mScrollView.getScrollY() + getScrollY();
+        return mParentScrollView.getScrollY() + getScrollY();
+    }
+
+
+    private int getRealScrollX() {
+        return mParentScrollView.getScrollX() + getScrollX();
     }
 
     @Override
     protected void onSelectionChanged(int selStart, int selEnd) {
-        super.onSelectionChanged(selStart, selEnd);
+        //调用父类的onSelectionChanged时会发送一个AccessibilityEvent，当文本过大时造成异常
+        //super.onSelectionChanged(selStart, selEnd);
         if (mCallback == null || selStart != selEnd) {
             return;
         }

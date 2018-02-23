@@ -3,6 +3,7 @@ package com.stardust.scriptdroid.ui.edit.editor;
 
 import android.text.Editable;
 import android.util.Log;
+import android.util.TimingLogger;
 
 import com.stardust.autojs.rhino.TokenStream;
 import com.stardust.pio.UncheckedIOException;
@@ -64,6 +65,7 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
     private CodeEditText mCodeEditText;
     private ExecutorService mExecutorService = Executors.newSingleThreadExecutor();
     private AtomicInteger mRunningHighlighterId = new AtomicInteger();
+    private TimingLogger mLogger = new TimingLogger(CodeEditText.LOG_TAG, "highlight");
 
     public JavaScriptHighlighter(Theme theme, CodeEditText codeEditText) {
         mTheme = theme;
@@ -85,7 +87,10 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
         final int id = mRunningHighlighterId.incrementAndGet();
         mExecutorService.execute(() -> {
             try {
+                mLogger.reset();
                 updateTokens(sourceString, id);
+                mLogger.addSplit("parse tokens");
+                mLogger.dumpToLog();
             } catch (IOException neverHappen) {
                 throw new UncheckedIOException(neverHappen);
             }
