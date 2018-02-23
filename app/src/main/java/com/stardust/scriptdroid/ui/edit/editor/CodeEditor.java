@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.ui.edit.editor;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 
@@ -64,7 +65,7 @@ public class CodeEditor extends HVScrollView {
 
 
     private void init() {
-        setFillViewport(true);
+        //setFillViewport(true);
         inflate(getContext(), R.layout.code_editor, this);
         mCodeEditText = (CodeEditText) findViewById(R.id.code_edit_text);
         mTextViewRedoUndo = new TextViewRedoUndo(mCodeEditText);
@@ -152,7 +153,7 @@ public class CodeEditor extends HVScrollView {
         return mTextViewRedoUndo.canUndo();
     }
 
-    public boolean canRedo(){
+    public boolean canRedo() {
         return mTextViewRedoUndo.canRedo();
     }
 
@@ -313,4 +314,15 @@ public class CodeEditor extends HVScrollView {
         mTextViewRedoUndo.clearHistory();
     }
 
+    @Override
+    protected void onDraw(Canvas canvas) {
+        int codeWidth = getWidth() - getPaddingLeft() - getPaddingRight();
+        int codeHeight = getHeight() - getPaddingTop() - getPaddingBottom();
+        if (mCodeEditText.getMinWidth() != codeWidth || mCodeEditText.getMinWidth() != codeWidth) {
+            mCodeEditText.setMinWidth(codeWidth);
+            mCodeEditText.setMinHeight(codeHeight);
+            invalidate();
+        }
+        super.onDraw(canvas);
+    }
 }

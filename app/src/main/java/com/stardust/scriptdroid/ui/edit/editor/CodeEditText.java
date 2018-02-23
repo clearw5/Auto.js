@@ -24,11 +24,13 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Layout;
+import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TimingLogger;
 import android.view.Gravity;
 
+import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.ui.edit.theme.Theme;
 
 /**
@@ -39,7 +41,8 @@ public class CodeEditText extends AppCompatEditText {
 
 
     static final String LOG_TAG = "CodeEditText";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = BuildConfig.DEBUG;
+    
     // 文字范围
     protected HVScrollView mParentScrollView;
 
