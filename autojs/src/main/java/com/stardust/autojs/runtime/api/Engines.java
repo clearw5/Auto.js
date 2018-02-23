@@ -47,6 +47,8 @@ public class Engines {
 
 
     public void setCurrentEngine(ScriptEngine<JavaScriptSource> engine) {
+        if (mScriptEngine != null)
+            throw new IllegalStateException();
         mScriptEngine = engine;
     }
 

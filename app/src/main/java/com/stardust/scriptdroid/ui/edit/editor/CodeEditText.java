@@ -42,7 +42,7 @@ public class CodeEditText extends AppCompatEditText {
 
     static final String LOG_TAG = "CodeEditText";
     private static final boolean DEBUG = BuildConfig.DEBUG;
-    
+
     // 文字范围
     protected HVScrollView mParentScrollView;
 

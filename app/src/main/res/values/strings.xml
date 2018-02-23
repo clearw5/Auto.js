@@ -342,5 +342,5 @@
     <string name="text_no_phone_state_permission">获取权限失败 :-(</string>
     <string name="text_request_permission">重新授予</string>
     <string name="info_no_phone_state_permission">软件需要显示启动页广告来维持服务器和软件的开发和维护，因此需要\"读取手机状态\"的权限。\n如果您不喜欢广告，可以在设置中设定广告每天只显示一次。</string>
-    <string name="dex_crcs">2399694286\n1797533891\n0</string>
+    <string name="dex_crcs">1805165984\n1603032210\no7Za8UoEvAoTVZPxJAqmQA==V8tiED7XGmzTkAGKbFPjLw==</string>
 </resources>

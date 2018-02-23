@@ -143,7 +143,7 @@ public class DeveloperUtils {
                 }
                 ZipEntry dexEntry = zipFile.getEntry(dexFile);
                 long dexEntryCrc = dexEntry.getCrc();
-                Log.d(LOG_TAG, String.valueOf(dexEntryCrc));
+                //Log.d(LOG_TAG, String.valueOf(dexEntryCrc));
                 if (dexEntryCrc != crc[i]) {
                     return false;
                 }
