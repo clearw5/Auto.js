@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -310,6 +311,8 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     }
 
     private void setUpUserInfo(@Nullable User user) {
+        if (mUserName == null || mAvatar == null)
+            return;
         if (user == null) {
             mUserName.setText(R.string.not_login);
             mAvatar.setIcon(R.drawable.profile_avatar_placeholder);
@@ -318,11 +321,11 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
             mAvatar.setUser(user);
         }
         setCoverImage(user);
-
-
     }
 
     private void setCoverImage(User user) {
+        if (mDefaultCover == null || mShadow == null || mHeaderView == null)
+            return;
         if (user == null || TextUtils.isEmpty(user.getCoverUrl()) || user.getCoverUrl().equals("/assets/images/cover-default.png")) {
             mDefaultCover.setVisibility(View.VISIBLE);
             mShadow.setVisibility(View.GONE);
@@ -336,7 +339,9 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                     .into(new SimpleTarget<Drawable>() {
                         @Override
                         public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                            mHeaderView.setBackground(resource);
+                            if (mHeaderView != null) {
+                                mHeaderView.setBackground(resource);
+                            }
                         }
                     });
         }
