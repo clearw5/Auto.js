@@ -41,7 +41,6 @@ import com.stardust.scriptdroid.ui.widget.EWebView;
 import com.stardust.scriptdroid.ui.widget.SimpleTextWatcher;
 import com.stardust.scriptdroid.ui.widget.ToolbarMenuItem;
 import com.stardust.util.BackPressedHandler;
-import com.stardust.util.ViewUtil;
 import com.stardust.util.ViewUtils;
 import com.stardust.widget.ViewSwitcher;
 
@@ -393,7 +392,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     public void selectTextSize() {
-        new TextSizeChangeDialogBuilder(getContext())
+        new TextSizeSettingDialogBuilder(getContext())
                 .initialValue((int) ViewUtils.pxToSp(getContext(), mEditor.getCodeEditText().getTextSize()))
                 .callback(this::setTextSize)
                 .show();

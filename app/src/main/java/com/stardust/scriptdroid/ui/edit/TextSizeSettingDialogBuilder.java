@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
  * Created by Stardust on 2018/2/24.
  */
 
-public class TextSizeChangeDialogBuilder extends ThemeColorMaterialDialogBuilder implements SeekBar.OnSeekBarChangeListener {
+public class TextSizeSettingDialogBuilder extends ThemeColorMaterialDialogBuilder implements SeekBar.OnSeekBarChangeListener {
 
 
     public interface PositiveCallback {
@@ -36,9 +36,9 @@ public class TextSizeChangeDialogBuilder extends ThemeColorMaterialDialogBuilder
     private int mTextSize;
     private MaterialDialog mMaterialDialog;
 
-    public TextSizeChangeDialogBuilder(@NonNull Context context) {
+    public TextSizeSettingDialogBuilder(@NonNull Context context) {
         super(context);
-        View view = View.inflate(context, R.layout.dialog_text_size_change, null);
+        View view = View.inflate(context, R.layout.dialog_text_size_setting, null);
         customView(view, false);
         title(R.string.text_text_size);
         positiveText(R.string.ok);
@@ -58,12 +58,12 @@ public class TextSizeChangeDialogBuilder extends ThemeColorMaterialDialogBuilder
         mPreviewText.setTextSize(textSize);
     }
 
-    public TextSizeChangeDialogBuilder initialValue(int value) {
+    public TextSizeSettingDialogBuilder initialValue(int value) {
         mSeekBar.setProgress(value - MIN);
         return this;
     }
 
-    public TextSizeChangeDialogBuilder callback(PositiveCallback callback) {
+    public TextSizeSettingDialogBuilder callback(PositiveCallback callback) {
         onPositive((dialog, which) -> callback.onPositive(mTextSize));
         return this;
     }

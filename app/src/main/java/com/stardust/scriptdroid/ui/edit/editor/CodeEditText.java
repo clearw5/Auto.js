@@ -33,6 +33,7 @@ import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.ui.edit.theme.Theme;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 
 /**
  * Created by Administrator on 2018/2/11.
