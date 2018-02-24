@@ -52,11 +52,6 @@
         <menu>
 
             <item
-                android:id="@+id/action_jump_to_def"
-                android:title="@string/text_jump_to_def"
-                app:showAsAction="never"/>
-
-            <item
                 android:id="@+id/action_jump_to_line"
                 android:title="@string/text_jump_to_line"
                 app:showAsAction="never"/>
@@ -104,6 +99,11 @@
             <item
                 android:id="@+id/action_info"
                 android:title="@string/text_info"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_editor_text_size"
+                android:title="@string/text_text_size"
                 app:showAsAction="never"/>
 
             <item

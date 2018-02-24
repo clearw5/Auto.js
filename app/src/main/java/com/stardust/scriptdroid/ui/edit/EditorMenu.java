@@ -86,6 +86,9 @@ public class EditorMenu {
             case R.id.action_console:
                 showConsole();
                 return true;
+            case R.id.action_editor_text_size:
+                mEditorView.selectTextSize();
+                return true;
             case R.id.action_editor_theme:
                 mEditorView.selectEditorTheme();
                 return true;

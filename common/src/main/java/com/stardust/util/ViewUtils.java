@@ -1,5 +1,7 @@
 package com.stardust.util;
 
+import android.content.Context;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewParent;
 
@@ -20,4 +22,8 @@ public class ViewUtils {
         return findParentById(viewParent, id);
     }
 
+    public static float pxToSp(Context context, float px) {
+        float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
+        return px / scaledDensity;
+    }
 }

@@ -32,6 +32,8 @@ import android.view.Gravity;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.ui.edit.theme.Theme;
 
+import java.lang.reflect.Array;
+
 /**
  * Created by Administrator on 2018/2/11.
  */

@@ -20,6 +20,7 @@ public class Pref {
     private static final String KEY_LAST_SHOW_AD_MILLIS = "But... it seems that...you will not come back any more...";
     private static final String KEY_FLOATING_MENU_SHOWN = "17.10.28 I have idea of what you think...maybe...I'm overthinking...";
     private static final String KEY_EDITOR_THEME = "editor.theme";
+    private static final String KEY_EDITOR_TEXT_SIZE = "editor.textSize";
 
     private static SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
@@ -156,5 +157,13 @@ public class Pref {
 
     public static void setCurrentTheme(String theme) {
         def().edit().putString(KEY_EDITOR_THEME, theme).apply();
+    }
+
+    public static void setEditorTextSize(int value) {
+        def().edit().putInt(KEY_EDITOR_TEXT_SIZE, value).apply();
+    }
+
+    public static int getEditorTextSize(int defVlaue) {
+        return def().getInt(KEY_EDITOR_TEXT_SIZE, defVlaue);
     }
 }

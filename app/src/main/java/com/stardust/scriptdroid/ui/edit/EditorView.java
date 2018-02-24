@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -42,6 +41,8 @@ import com.stardust.scriptdroid.ui.widget.EWebView;
 import com.stardust.scriptdroid.ui.widget.SimpleTextWatcher;
 import com.stardust.scriptdroid.ui.widget.ToolbarMenuItem;
 import com.stardust.util.BackPressedHandler;
+import com.stardust.util.ViewUtil;
+import com.stardust.util.ViewUtils;
 import com.stardust.widget.ViewSwitcher;
 
 import org.androidannotations.annotations.AfterViews;
@@ -258,6 +259,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
             setMenuItemStatus(R.id.redo, mEditor.canRedo());
         }));
         mEditor.setCursorChangeCallback(this::autoComplete);
+        mEditor.getCodeEditText().setTextSize(Pref.getEditorTextSize((int) ViewUtils.pxToSp(getContext(), mEditor.getCodeEditText().getTextSize())));
     }
 
     private void autoComplete(String line, int cursor) {
@@ -388,6 +390,18 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
                     mEditor.setProgress(false);
                     selectEditorTheme(themes);
                 });
+    }
+
+    public void selectTextSize() {
+        new TextSizeChangeDialogBuilder(getContext())
+                .initialValue((int) ViewUtils.pxToSp(getContext(), mEditor.getCodeEditText().getTextSize()))
+                .callback(this::setTextSize)
+                .show();
+    }
+
+    public void setTextSize(int value) {
+        Pref.setEditorTextSize(value);
+        mEditor.getCodeEditText().setTextSize(value);
     }
 
     private void selectEditorTheme(List<Theme> themes) {
