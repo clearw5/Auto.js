@@ -21,6 +21,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
+import java.util.Objects;
 import java.util.Stack;
 
 /**
@@ -40,8 +41,9 @@ public class TextViewRedoUndo {
     //自动操作标志，防止重复回调,导致无限撤销
     private boolean flag = false;
 
+    private int mInitialHistoryStackSize;
+
     public TextViewRedoUndo(@NonNull EditText editText) {
-        CheckNull(editText, "EditText不能为空");
         this.editable = editText.getText();
         this.editText = editText;
         editText.addTextChangedListener(new Watcher());
@@ -52,7 +54,9 @@ public class TextViewRedoUndo {
     }
 
     protected void onTextChanged(Editable s) {
-
+        if (history.size() < mInitialHistoryStackSize) {
+            mInitialHistoryStackSize = 0;
+        }
     }
 
 
@@ -63,6 +67,7 @@ public class TextViewRedoUndo {
     public final void clearHistory() {
         history.clear();
         historyBack.clear();
+        mInitialHistoryStackSize = 0;
     }
 
     public boolean canUndo() {
@@ -144,7 +149,11 @@ public class TextViewRedoUndo {
     }
 
     public boolean isTextChanged() {
-        return !history.empty();
+        return history.size() != mInitialHistoryStackSize;
+    }
+
+    public void markTextAsUnchanged() {
+        mInitialHistoryStackSize = history.size();
     }
 
     private class Watcher implements TextWatcher {
@@ -261,7 +270,4 @@ public class TextViewRedoUndo {
     }
 
 
-    private static void CheckNull(Object o, String message) {
-        if (o == null) throw new IllegalStateException(message);
-    }
 }

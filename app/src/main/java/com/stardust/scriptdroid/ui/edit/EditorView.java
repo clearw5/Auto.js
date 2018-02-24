@@ -320,9 +320,6 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
                 .doOnNext(s -> {
                     mEditor.markTextAsSaved();
                     setMenuItemStatus(R.id.save, false);
-                    setMenuItemStatus(R.id.undo, false);
-                    setMenuItemStatus(R.id.redo, false);
-
                 });
     }
 

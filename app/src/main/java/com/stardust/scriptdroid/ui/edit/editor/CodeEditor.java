@@ -297,7 +297,7 @@ public class CodeEditor extends HVScrollView {
 
 
     public void markTextAsSaved() {
-        mTextViewRedoUndo.clearHistory();
+        mTextViewRedoUndo.markTextAsUnchanged();
     }
 
     @Override

@@ -31,6 +31,7 @@ import android.view.Gravity;
 
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.ui.edit.theme.Theme;
+import com.stardust.util.TextUtils;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -261,25 +262,35 @@ public class CodeEditText extends AppCompatEditText {
         if (mCallback == null || selStart != selEnd) {
             return;
         }
-        String text = getText().toString();
-        if (text.isEmpty()) {
+        callCursorChangeCallback(getText(), selStart);
+        checkParenthesesPairs(getText(), selStart);
+    }
+
+    private void checkParenthesesPairs(CharSequence text, int sel) {
+        // TODO: 2018/2/24
+    }
+
+    private void callCursorChangeCallback(CharSequence text, int sel) {
+        if (getText().length() == 0) {
             return;
         }
-        int lineStart = text.lastIndexOf("\n", selStart) + 1;
+        if (mCallback == null)
+            return;
+        int lineStart = TextUtils.lastIndexOf(text, '\n', sel) + 1;
         if (lineStart < 0) {
             lineStart = 0;
         }
         if (lineStart > text.length() - 1) {
             lineStart = text.length() - 1;
         }
-        int lineEnd = text.indexOf("\n", selStart);
+        int lineEnd = TextUtils.indexOf(text, '\n', sel);
         if (lineEnd < 0) {
             lineEnd = text.length();
         }
         if (lineEnd < lineStart || lineStart < 0 || lineEnd > text.length())
             return;
-        String line = text.substring(lineStart, lineEnd);
-        int cursor = selStart - lineStart;
+        String line = text.subSequence(lineStart, lineEnd).toString();
+        int cursor = sel - lineStart;
         mCallback.onCursorChange(line, cursor);
     }
 

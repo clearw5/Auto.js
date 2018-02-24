@@ -23,7 +23,7 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
 
     public static class HighlightTokens {
 
-        private int[] mColors;
+        private final int[] mColors;
         private String mText;
         private int mCount;
 
