@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.ui.edit.editor;
 
+import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.text.Layout;
@@ -49,6 +50,25 @@ public class LayoutHelper {
 
     public static int unpackRangeEndFromLong(long range) {
         return (int) (range & 0x00000000FFFFFFFFL);
+    }
+
+
+    public static int getLineOfChar(Layout layout, int charIndex) {
+        int low = 0;
+        int high = layout.getLineCount() - 1;
+        while (low < high) {
+            int mid = (low + high) >>> 1;
+            int midVal = layout.getLineEnd(mid);
+
+            if (charIndex > midVal) {
+                low = mid + 1;
+            } else if (charIndex < midVal) {
+                high = mid;
+            } else {
+                return Math.min(layout.getLineCount() - 1, mid + 1);
+            }
+        }
+        return low;
     }
 
 }

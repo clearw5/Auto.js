@@ -24,7 +24,6 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Layout;
-import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TimingLogger;
@@ -50,6 +49,8 @@ public class CodeEditText extends AppCompatEditText {
     private volatile JavaScriptHighlighter.HighlightTokens mHighlightTokens;
     private Theme mTheme;
     private TimingLogger mLogger = new TimingLogger(LOG_TAG, "draw");
+    private Paint mLineHighlightPaint = new Paint();
+    private int mFirstLineForDraw = -1, mLastLineForDraw;
 
     public CodeEditText(Context context) {
         super(context);
@@ -71,6 +72,7 @@ public class CodeEditText extends AppCompatEditText {
         setTypeface(Typeface.MONOSPACE);
         setHorizontallyScrolling(true);
         mTheme = Theme.getDefault(getContext());
+        mLineHighlightPaint.setStyle(Paint.Style.FILL);
     }
 
     public void setTheme(Theme theme) {
@@ -84,39 +86,57 @@ public class CodeEditText extends AppCompatEditText {
         if (mParentScrollView == null) {
             mParentScrollView = (HVScrollView) getParent();
         }
+        updatePaddingForGutter();
+        updateLineRangeForDraw(canvas);
+
+        //绘制当前行高亮需要在绘制光标之前
+        drawLineHighlight(canvas, mLineHighlightPaint, getCurrentLine());
+
+        //调用super.onDraw绘制光标和选择高亮。因为字体颜色被设置为透明因此super.onDraw()绘制的字体不显示
+        // TODO: 2018/2/24 优化效率。不绘制透明字体。
+        super.onDraw(canvas);
+        mLogger.addSplit("super draw");
+
+        canvas.save();
+        canvas.translate(0, getExtendedPaddingTop());
+        drawText(canvas);
+        mLogger.addSplit("draw text");
+        canvas.restore();
+
+        mLogger.dumpToLog();
+    }
+
+    private void updateLineRangeForDraw(Canvas canvas) {
+        Layout layout = getLayout();
+        if (layout == null)
+            return;
+        long lineRange = getLineRangeForDraw(layout, canvas);
+        mFirstLineForDraw = LayoutHelper.unpackRangeStartFromLong(lineRange);
+        mLastLineForDraw = LayoutHelper.unpackRangeEndFromLong(lineRange);
+    }
+
+    private void updatePaddingForGutter() {
         // 根据行号计算左边距padding 留出绘制行号的空间
         String max = Integer.toString(getLineCount());
         float gutterWidth = getPaint().measureText(max) + 20;
         if (getPaddingLeft() != gutterWidth) {
             setPadding((int) gutterWidth, 0, 0, 0);
         }
-        super.onDraw(canvas);
-        mLogger.addSplit("super draw");
-        // 画文字
-        canvas.save();
-        canvas.translate(0, getExtendedPaddingTop());
-        drawText(canvas);
-        mLogger.addSplit("draw text");
-        canvas.restore();
-        mLogger.dumpToLog();
     }
 
     // 绘制文本着色
     private void drawText(Canvas canvas) {
-        JavaScriptHighlighter.HighlightTokens highlightTokens = mHighlightTokens;
-        Layout layout = getLayout();
-        long lineRange = getLineRangeForDraw(layout, canvas);
-        int firstLineForDraw = LayoutHelper.unpackRangeStartFromLong(lineRange);
-        int lastLineForDraw = LayoutHelper.unpackRangeEndFromLong(lineRange);
-        if (firstLineForDraw < 0) {
+        if (mFirstLineForDraw < 0) {
             return;
         }
+        JavaScriptHighlighter.HighlightTokens highlightTokens = mHighlightTokens;
+        Layout layout = getLayout();
         int lineCount = getLineCount();
         int paddingLeft = getPaddingLeft();
         Paint paint = getPaint();
         if (DEBUG)
-            Log.d(LOG_TAG, "draw line: " + (lastLineForDraw - firstLineForDraw + 1));
-        for (int line = firstLineForDraw; line <= lastLineForDraw && line < lineCount; line++) {
+            Log.d(LOG_TAG, "draw line: " + (mLastLineForDraw - mFirstLineForDraw + 1));
+        for (int line = mFirstLineForDraw; line <= mLastLineForDraw && line < lineCount; line++) {
             int lineBottom = layout.getLineTop(line + 1);
             int lineBaseline = lineBottom - layout.getLineDescent(line);
 
@@ -126,6 +146,23 @@ public class CodeEditText extends AppCompatEditText {
 
             drawCode(canvas, paint, paddingLeft, line, layout, lineBaseline, highlightTokens);
         }
+    }
+
+    private void drawLineHighlight(Canvas canvas, Paint paint, int line) {
+        if (line < mFirstLineForDraw || line > mLastLineForDraw || mFirstLineForDraw < 0 || line < 0) {
+            return;
+        }
+        int lineTop = getLayout().getLineTop(line);
+        int lineBottom = getLayout().getLineTop(line + 1);
+        paint.setColor(mTheme.getLineHighlightBackgroundColor());
+        canvas.drawRect(0, lineTop, canvas.getWidth(), lineBottom, paint);
+    }
+
+    private int getCurrentLine() {
+        Layout layout = getLayout();
+        if (layout == null)
+            return -1;
+        return LayoutHelper.getLineOfChar(getLayout(), getSelectionStart());
     }
 
     private void drawCode(Canvas canvas, Paint paint, int paddingLeft, int line, Layout layout, int lineBaseline, JavaScriptHighlighter.HighlightTokens highlightTokens) {

@@ -80,7 +80,7 @@ public class CodeEditor extends HVScrollView {
     }
 
     public void copyLine() {
-        int line = getLineOfChar(mCodeEditText.getSelectionStart());
+        int line = LayoutHelper.getLineOfChar(mCodeEditText.getLayout(), mCodeEditText.getSelectionStart());
         if (line < 0 || line >= mCodeEditText.getLayout().getLineCount())
             return;
         CharSequence lineText = mCodeEditText.getText().subSequence(mCodeEditText.getLayout().getLineStart(line),
@@ -89,23 +89,9 @@ public class CodeEditor extends HVScrollView {
         Snackbar.make(this, R.string.text_already_copy_to_clip, Snackbar.LENGTH_SHORT).show();
     }
 
-    private int getLineOfChar(int i) {
-        int low = 0;
-        int high = mCodeEditText.getLineCount() - 1;
-        while (low < high) {
-            int mid = (low + high) >>> 1;
-            int midVal = mCodeEditText.getLayout().getLineEnd(mid);
-
-            if (midVal <= i)
-                low = mid + 1;
-            else if (midVal > i)
-                high = mid - 1;
-        }
-        return low;
-    }
 
     public void deleteLine() {
-        int line = getLineOfChar(mCodeEditText.getSelectionStart());
+        int line = LayoutHelper.getLineOfChar(mCodeEditText.getLayout(), mCodeEditText.getSelectionStart());
         if (line < 0 || line >= mCodeEditText.getLayout().getLineCount())
             return;
         mCodeEditText.getText().replace(mCodeEditText.getLayout().getLineStart(line),
@@ -121,14 +107,14 @@ public class CodeEditor extends HVScrollView {
     }
 
     public void jumpToLineStart() {
-        int line = getLineOfChar(mCodeEditText.getSelectionStart());
+        int line = LayoutHelper.getLineOfChar(mCodeEditText.getLayout(), mCodeEditText.getSelectionStart());
         if (line < 0 || line >= mCodeEditText.getLayout().getLineCount())
             return;
         mCodeEditText.setSelection(mCodeEditText.getLayout().getLineStart(line));
     }
 
     public void jumpToLineEnd() {
-        int line = getLineOfChar(mCodeEditText.getSelectionStart());
+        int line = LayoutHelper.getLineOfChar(mCodeEditText.getLayout(), mCodeEditText.getSelectionStart());
         if (line < 0 || line >= mCodeEditText.getLayout().getLineCount())
             return;
         mCodeEditText.setSelection(mCodeEditText.getLayout().getLineEnd(line) - 1);

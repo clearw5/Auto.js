@@ -12,7 +12,7 @@ public class EditorColors {
     private String mEditorForeground;
     @SerializedName("editor.inactiveSelectionBackground")
     private String mEditorInactiveSelectionBackground;
-    @SerializedName("lineNumber.foreground")
+    @SerializedName("editorLineNumber.foreground")
     private String mLineNumberForeground;
     @SerializedName("editor.selectionHighlightBackground")
     private String mEditorSelectionHighlightBackground;
@@ -20,6 +20,16 @@ public class EditorColors {
     private String mImeBackgroundColor;
     @SerializedName("imeBar.foreground")
     private String mImeForegroundColor;
+    @SerializedName("editor.lineHighlightBackground")
+    private String mLineHighlightBackground;
+
+    public String getLineHighlightBackground() {
+        return mLineHighlightBackground;
+    }
+
+    public void setLineHighlightBackground(String lineHighlightBackground) {
+        mLineHighlightBackground = lineHighlightBackground;
+    }
 
     public String getEditorBackground() {
         return mEditorBackground;

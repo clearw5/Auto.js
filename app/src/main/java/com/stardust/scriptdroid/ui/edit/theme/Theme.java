@@ -24,6 +24,7 @@ public class Theme {
     private int mImeBarBackgroundColor = 0xDDFFFFFF;
     private int mImeBarForegroundColor = Color.WHITE;
     private EditorTheme mEditorTheme;
+    private int mLineHighlightBackground;
 
     public Theme(EditorTheme theme) {
         mEditorTheme = theme;
@@ -32,6 +33,7 @@ public class Theme {
         mLineNumberColor = parseColor(theme.getEditorColors().getLineNumberForeground(), mLineNumberColor);
         mImeBarBackgroundColor = parseColor(theme.getEditorColors().getImeBackgroundColor(), mImeBarBackgroundColor);
         mImeBarForegroundColor = parseColor(theme.getEditorColors().getImeForegroundColor(), mImeBarForegroundColor);
+        mLineHighlightBackground = parseColor(theme.getEditorColors().getLineHighlightBackground(), mLineHighlightBackground);
 
         for (TokenColor tokenColor : theme.getTokenColors()) {
             String foregroundStr = tokenColor.getSettings().getForeground();
@@ -118,6 +120,10 @@ public class Theme {
 
     public void setImeBarForegroundColor(int imeBarForegroundColor) {
         mImeBarForegroundColor = imeBarForegroundColor;
+    }
+
+    public int getLineHighlightBackgroundColor() {
+        return mLineHighlightBackground;
     }
 
     @Override
