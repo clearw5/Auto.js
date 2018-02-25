@@ -68,6 +68,7 @@ public class CodeEditor extends HVScrollView {
         //setFillViewport(true);
         inflate(getContext(), R.layout.code_editor, this);
         mCodeEditText = (CodeEditText) findViewById(R.id.code_edit_text);
+        mCodeEditText.addTextChangedListener(new AutoIndent(mCodeEditText));
         mTextViewRedoUndo = new TextViewRedoUndo(mCodeEditText);
         mJavaScriptHighlighter = new JavaScriptHighlighter(mTheme, mCodeEditText);
         setTheme(Theme.getDefault(getContext()));

@@ -2828,7 +2828,7 @@ if (typeof define === "function" && define.amd) {
 
 function beautify(source){
     return js_beautify(source, {
-           'indent_size': 2,
+           'indent_size': 4,
            'e4x': true
     });
 }

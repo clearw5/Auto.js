@@ -22,6 +22,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Layout;
 import android.util.AttributeSet;
