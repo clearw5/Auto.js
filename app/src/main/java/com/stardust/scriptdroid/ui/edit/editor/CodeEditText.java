@@ -22,7 +22,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.speech.tts.TextToSpeech;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Layout;
 import android.util.AttributeSet;
@@ -32,10 +31,12 @@ import android.view.Gravity;
 
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.ui.edit.theme.Theme;
+import com.stardust.scriptdroid.ui.edit.theme.TokenMapping;
 import com.stardust.util.TextUtils;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
+import org.mozilla.javascript.Token;
+
+import static com.stardust.scriptdroid.ui.edit.editor.BracketMatching.UNMATCHED_BRACKET;
 
 /**
  * Created by Administrator on 2018/2/11.
@@ -56,6 +57,8 @@ public class CodeEditText extends AppCompatEditText {
     private TimingLogger mLogger = new TimingLogger(LOG_TAG, "draw");
     private Paint mLineHighlightPaint = new Paint();
     private int mFirstLineForDraw = -1, mLastLineForDraw;
+    private int[] mMatchingBrackets = {-1, -1};
+    private int mUnmatchedBracket = -1;
 
     public CodeEditText(Context context) {
         super(context);
@@ -181,23 +184,31 @@ public class CodeEditText extends AppCompatEditText {
         int visibleCharStart = getVisibleCharIndex(paint, scrollX, lineStart, lineEnd);
         int visibleCharEnd = getVisibleCharIndex(paint, scrollX + mParentScrollView.getWidth(), lineStart, lineEnd) + 1;
         int previousColorPos = visibleCharStart;
-        int previousColor = mHighlightTokens.getCharColor(previousColorPos);
+        int previousColor = getCharColor(previousColorPos);
         if (DEBUG)
             Log.d(LOG_TAG, "draw line " + line + ": " + (visibleCharEnd - visibleCharStart));
-        for (int i = visibleCharStart; i < visibleCharEnd && i < lineEnd; i++) {
+        int i;
+        for (i = visibleCharStart; i < visibleCharEnd; i++) {
             fontCount++;
-            int color = mHighlightTokens.getCharColor(i);
+            int color = getCharColor(i);
             if (previousColor != color) {
-                drawText(canvas, paint, paddingLeft, lineBaseline, lineStart, previousColorPos, previousColorPos + fontCount, previousColor);
+                drawText(canvas, paint, paddingLeft, lineBaseline, lineStart, previousColorPos, i, previousColor);
                 previousColor = color;
                 previousColorPos = i;
                 fontCount = 1;
             }
-            if (i == visibleCharEnd - 1) {
-                drawText(canvas, paint, paddingLeft, lineBaseline, lineStart, previousColorPos, previousColorPos + fontCount, previousColor);
-            }
         }
+        drawText(canvas, paint, paddingLeft, lineBaseline, lineStart, previousColorPos, visibleCharEnd, previousColor);
+    }
 
+    private int getCharColor(int i) {
+        if (i == mUnmatchedBracket) {
+            return mTheme.getColorForToken(Token.ERROR);
+        }
+        if (i == mMatchingBrackets[0] || i == mMatchingBrackets[1]) {
+            return mTheme.getColorForToken(TokenMapping.TOKEN_MATCHED_BRACKET);
+        }
+        return mHighlightTokens.getCharColor(i);
     }
 
 
@@ -264,11 +275,39 @@ public class CodeEditText extends AppCompatEditText {
             return;
         }
         callCursorChangeCallback(getText(), selStart);
-        checkParenthesesPairs(getText(), selStart);
+        matchesBracket(getText(), selStart);
     }
 
-    private void checkParenthesesPairs(CharSequence text, int sel) {
-        // TODO: 2018/2/24
+    private void matchesBracket(CharSequence text, int cursor) {
+        if (checkBracketMatchingAt(text, cursor)) {
+            return;
+        }
+        if (checkBracketMatchingAt(text, cursor - 1)) {
+            return;
+        }
+        mMatchingBrackets[0] = -1;
+        mMatchingBrackets[1] = -1;
+        mUnmatchedBracket = -1;
+    }
+
+    private boolean checkBracketMatchingAt(CharSequence text, int cursor) {
+        if (cursor < 0 || cursor >= text.length()) {
+            return false;
+        }
+        int i = BracketMatching.bracketMatching(text, cursor);
+        if (i >= 0) {
+            mMatchingBrackets[0] = cursor;
+            mMatchingBrackets[1] = i;
+            mUnmatchedBracket = -1;
+            return true;
+        } else if (i == UNMATCHED_BRACKET) {
+            mUnmatchedBracket = cursor;
+            mMatchingBrackets[0] = -1;
+            mMatchingBrackets[1] = -1;
+            return true;
+        }
+        return false;
+
     }
 
     private void callCursorChangeCallback(CharSequence text, int sel) {

@@ -15,6 +15,8 @@ import java.util.List;
 public class TokenMapping {
 
 
+    public static final int TOKEN_MATCHED_BRACKET = Token.LAST_TOKEN + 1;
+
     private static final List<Integer> KEYWORD = tokenNamesToTypes(Arrays.asList("return", "new", "delete", "typeof", "null", "this", "false", "true", "throw", "in", "instanceof", "yield", "try", "function", "if", "else", "switch", "case", "default", "while", "do", "for", "break", "continue", "var", "with", "catch", "finally", "void", "let", "const", "debugger"));
     private static final List<Integer> KEYWORD_CONTROL = tokenNamesToTypes(Arrays.asList("if", "else", "switch", "case", "break", "continue", "goto", "return", "try", "catch", "throw", "finally"));
     private static final List<Integer> KEYWORD_OPERATOR = Collections.emptyList();
@@ -29,11 +31,15 @@ public class TokenMapping {
                 return KEYWORD_CONTROL;
             default:
                 int token = tokenNameToType(scope);
-                if (Token.isValidToken(token)) {
+                if (isValidToken(token)) {
                     return Collections.singletonList(token);
                 }
         }
         return Collections.emptyList();
+    }
+
+    public static boolean isValidToken(int token) {
+        return token >= -1;
     }
 
     public static int tokenNameToType(String name) {
@@ -46,6 +52,8 @@ public class TokenMapping {
                 return Token.NAME;
             case "constant.numeric":
                 return Token.NUMBER;
+            case "bracket.matched":
+                return TOKEN_MATCHED_BRACKET;
 
         }
         for (int token = Token.ERROR; token < Token.LAST_TOKEN; token++) {

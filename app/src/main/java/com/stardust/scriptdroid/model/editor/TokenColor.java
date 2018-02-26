@@ -46,4 +46,12 @@ public class TokenColor {
     public void setSettings(TokenColorSettings settings) {
         mSettings = settings;
     }
+
+    @Override
+    public String toString() {
+        return "TokenColor{" +
+                "scope=" + mScope +
+                ", settings=" + mSettings.getForeground() +
+                '}';
+    }
 }

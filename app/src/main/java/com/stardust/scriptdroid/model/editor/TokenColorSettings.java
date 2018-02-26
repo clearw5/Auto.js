@@ -32,4 +32,6 @@ public class TokenColorSettings {
     public void setFontStyle(String fontStyle) {
         mFontStyle = fontStyle;
     }
+
+
 }

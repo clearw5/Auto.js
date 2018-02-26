@@ -11,7 +11,18 @@
   },
   "tokenColors": [
     {
-      "scope": [
+      "scope": "bracket.matched",
+      "settings": {
+        "foreground": "#76ff03"
+      }
+    },
+    {
+      "scope": "error",
+      "settings": {
+        "foreground": "#f44336"
+      }
+    },
+    { "scope": [
         "meta.embedded",
         "source.groovy.embedded"
       ],

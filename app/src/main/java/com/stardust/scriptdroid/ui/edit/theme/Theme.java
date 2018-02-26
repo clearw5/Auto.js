@@ -75,7 +75,7 @@ public class Theme {
     }
 
     public static Theme getDefault(android.content.Context context) {
-        return fromAssetsJson(context, "editor/theme/dark_plus.json");
+        return fromAssetsJson(context, "editor/theme/light_plus.json");
     }
 
     public static Theme fromJson(String json) {
@@ -139,5 +139,6 @@ public class Theme {
     public String toString() {
         return getName();
     }
+
 
 }
