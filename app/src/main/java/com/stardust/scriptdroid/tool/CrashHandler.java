@@ -7,6 +7,7 @@ package com.stardust.scriptdroid.tool;
 
 import android.content.Intent;
 import android.os.Build;
+import android.os.Looper;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -34,18 +35,22 @@ public class CrashHandler implements UncaughtExceptionHandler {
     }
 
     public void uncaughtException(Thread thread, Throwable ex) {
+        if (thread != Looper.getMainLooper().getThread()) {
+            Log.e(TAG, "Uncaught Exception", ex);
+            return;
+        }
         AccessibilityService service = AccessibilityService.getInstance();
         if (service != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             service.disableSelf();
         }
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             mDefaultHandler.uncaughtException(thread, ex);
             return;
         }
         if (causedByBadWindowToken(ex)) {
             Toast.makeText(App.getApp(), R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
             IntentUtil.goToAppDetailSettings(App.getApp());
-        }else {
+        } else {
             try {
                 Log.e(TAG, "Uncaught Exception", ex);
                 if (crashTooManyTimes())
