@@ -2,7 +2,6 @@ package com.stardust.scriptdroid.ui.edit.editor;
 
 
 import android.text.Editable;
-import android.util.Log;
 import android.util.TimingLogger;
 
 import com.stardust.autojs.rhino.TokenStream;
@@ -23,24 +22,19 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
 
     public static class HighlightTokens {
 
-        private final int[] mColors;
+        public final int[] colors;
         private String mText;
         private int mCount;
 
         public HighlightTokens(String text) {
-            mColors = new int[text.length()];
+            colors = new int[text.length()];
             mText = text;
-        }
-
-
-        public int getCharColor(int i) {
-            return mColors[i];
         }
 
 
         public void addToken(int tokenStart, int tokenEnd, int color) {
             for (int i = tokenStart; i < tokenEnd; i++) {
-                mColors[i] = color;
+                colors[i] = color;
             }
             mCount = tokenEnd;
         }
@@ -48,7 +42,7 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
         @Override
         public String toString() {
             return "HighlightTokens{" +
-                    "mColors=" + Arrays.toString(mColors) +
+                    "colors=" + Arrays.toString(colors) +
                     '}';
         }
 

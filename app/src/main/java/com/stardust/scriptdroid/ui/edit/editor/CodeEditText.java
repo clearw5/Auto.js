@@ -23,6 +23,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.Editable;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -59,6 +60,7 @@ public class CodeEditText extends AppCompatEditText {
     private int mFirstLineForDraw = -1, mLastLineForDraw;
     private int[] mMatchingBrackets = {-1, -1};
     private int mUnmatchedBracket = -1;
+
 
     public CodeEditText(Context context) {
         super(context);
@@ -132,6 +134,7 @@ public class CodeEditText extends AppCompatEditText {
         }
     }
 
+    //该方法中内联了很多函数来提高效率 但是 这是必要的吗？？？
     // 绘制文本着色
     private void drawText(Canvas canvas) {
         if (mFirstLineForDraw < 0) {
@@ -140,19 +143,68 @@ public class CodeEditText extends AppCompatEditText {
         JavaScriptHighlighter.HighlightTokens highlightTokens = mHighlightTokens;
         Layout layout = getLayout();
         int lineCount = getLineCount();
+        int textLength = highlightTokens == null ? 0 : highlightTokens.getText().length();
+        Editable text = getText();
         int paddingLeft = getPaddingLeft();
+        int scrollX = Math.max(getRealScrollX() - paddingLeft, 0);
         Paint paint = getPaint();
+        int lineNumberColor = mTheme.getLineNumberColor();
         if (DEBUG)
             Log.d(LOG_TAG, "draw line: " + (mLastLineForDraw - mFirstLineForDraw + 1));
         for (int line = mFirstLineForDraw; line <= mLastLineForDraw && line < lineCount; line++) {
             int lineBottom = layout.getLineTop(line + 1);
             int lineBaseline = lineBottom - layout.getLineDescent(line);
 
-            drawLineNumber(canvas, paint, line, lineBaseline);
+            //drawLineNumber
+            String lineNumberText = Integer.toString(line + 1);
+            paint.setColor(lineNumberColor);
+            canvas.drawText(lineNumberText, 0, lineNumberText.length(), 10,
+                    lineBaseline, paint);
+
             if (highlightTokens == null)
                 continue;
 
-            drawCode(canvas, paint, paddingLeft, line, layout, lineBaseline, highlightTokens);
+            //drawCode
+            int lineStart = layout.getLineStart(line);
+            if (lineStart >= textLength) {
+                return;
+            }
+            int lineEnd = layout.getLineVisibleEnd(line);
+            int visibleCharStart = getVisibleCharIndex(paint, scrollX, lineStart, lineEnd);
+            int visibleCharEnd = getVisibleCharIndex(paint, scrollX + mParentScrollView.getWidth(), lineStart, lineEnd) + 1;
+            int previousColorPos = visibleCharStart;
+            int previousColor;
+            if (previousColorPos == mUnmatchedBracket) {
+                previousColor = mTheme.getColorForToken(Token.ERROR);
+            } else if (previousColorPos == mMatchingBrackets[0] || previousColorPos == mMatchingBrackets[1]) {
+                previousColor = mTheme.getColorForToken(TokenMapping.TOKEN_MATCHED_BRACKET);
+            } else {
+                previousColor = highlightTokens.colors[previousColorPos];
+            }
+            if (DEBUG)
+                Log.d(LOG_TAG, "draw line " + line + ": " + (visibleCharEnd - visibleCharStart));
+            int i;
+            for (i = visibleCharStart; i < visibleCharEnd; i++) {
+                int color;
+                if (i == mUnmatchedBracket) {
+                    color = mTheme.getColorForToken(Token.ERROR);
+                } else if (i == mMatchingBrackets[0] || i == mMatchingBrackets[1]) {
+                    color = mTheme.getColorForToken(TokenMapping.TOKEN_MATCHED_BRACKET);
+                } else {
+                    color = highlightTokens.colors[i];
+                }
+                if (previousColor != color) {
+                    paint.setColor(previousColor);
+                    float offsetX = paint.measureText(text, lineStart, previousColorPos);
+                    canvas.drawText(text, previousColorPos, i, paddingLeft + offsetX, lineBaseline, paint);
+                    previousColor = color;
+                    previousColorPos = i;
+                }
+            }
+            paint.setColor(previousColor);
+            float offsetX = paint.measureText(text, lineStart, previousColorPos);
+            canvas.drawText(text, previousColorPos, visibleCharEnd, paddingLeft + offsetX, lineBaseline, paint);
+
         }
     }
 
@@ -173,44 +225,6 @@ public class CodeEditText extends AppCompatEditText {
         return LayoutHelper.getLineOfChar(getLayout(), getSelectionStart());
     }
 
-    private void drawCode(Canvas canvas, Paint paint, int paddingLeft, int line, Layout layout, int lineBaseline, JavaScriptHighlighter.HighlightTokens highlightTokens) {
-        int lineStart = layout.getLineStart(line);
-        if (lineStart >= mHighlightTokens.getText().length()) {
-            return;
-        }
-        int lineEnd = layout.getLineVisibleEnd(line);
-        int fontCount = 0;
-        int scrollX = Math.max(getRealScrollX() - paddingLeft, 0);
-        int visibleCharStart = getVisibleCharIndex(paint, scrollX, lineStart, lineEnd);
-        int visibleCharEnd = getVisibleCharIndex(paint, scrollX + mParentScrollView.getWidth(), lineStart, lineEnd) + 1;
-        int previousColorPos = visibleCharStart;
-        int previousColor = getCharColor(previousColorPos);
-        if (DEBUG)
-            Log.d(LOG_TAG, "draw line " + line + ": " + (visibleCharEnd - visibleCharStart));
-        int i;
-        for (i = visibleCharStart; i < visibleCharEnd; i++) {
-            fontCount++;
-            int color = getCharColor(i);
-            if (previousColor != color) {
-                drawText(canvas, paint, paddingLeft, lineBaseline, lineStart, previousColorPos, i, previousColor);
-                previousColor = color;
-                previousColorPos = i;
-                fontCount = 1;
-            }
-        }
-        drawText(canvas, paint, paddingLeft, lineBaseline, lineStart, previousColorPos, visibleCharEnd, previousColor);
-    }
-
-    private int getCharColor(int i) {
-        if (i == mUnmatchedBracket) {
-            return mTheme.getColorForToken(Token.ERROR);
-        }
-        if (i == mMatchingBrackets[0] || i == mMatchingBrackets[1]) {
-            return mTheme.getColorForToken(TokenMapping.TOKEN_MATCHED_BRACKET);
-        }
-        return mHighlightTokens.getCharColor(i);
-    }
-
 
     private int getVisibleCharIndex(Paint paint, int x, int lineStart, int lineEnd) {
         if (x == 0)
@@ -227,22 +241,6 @@ public class CodeEditText extends AppCompatEditText {
             }
         }
         return low;
-    }
-
-    private void drawText(Canvas canvas, Paint paint, int paddingLeft, int lineBaseline, int lineStart, int start, int end, int color) {
-        if (start >= end) {
-            return;
-        }
-        paint.setColor(color);
-        float offsetX = paint.measureText(getText(), lineStart, start);
-        canvas.drawText(getText(), start, end, paddingLeft + offsetX, lineBaseline, paint);
-    }
-
-    private void drawLineNumber(Canvas canvas, Paint paint, int line, int lineBaseline) {
-        String lineNumberText = Integer.toString(line + 1);
-        paint.setColor(mTheme.getLineNumberColor());
-        canvas.drawText(lineNumberText, 0, lineNumberText.length(), 10,
-                lineBaseline, paint);
     }
 
     private long getLineRangeForDraw(Layout layout, Canvas canvas) {
