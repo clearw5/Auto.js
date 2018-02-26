@@ -1,14 +1,18 @@
 package com.stardust.scriptdroid.model.autocomplete;
 
 import android.content.Context;
+import android.widget.EditText;
 
 import com.stardust.scriptdroid.model.indices.Module;
 import com.stardust.scriptdroid.model.indices.Modules;
 import com.stardust.scriptdroid.model.indices.Property;
+import com.stardust.scriptdroid.ui.widget.SimpleTextWatcher;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,9 +37,13 @@ public class AutoCompletion {
     private List<Module> mModules;
     private DictionaryTree<Property> mGlobalPropertyTree = new DictionaryTree<>();
     private AutoCompleteCallback mAutoCompleteCallback;
+    private ExecutorService mExecutorService = Executors.newSingleThreadExecutor();
+    private AnyWordsCompletion mAnyWordsCompletion;
 
-    public AutoCompletion(Context context) {
+    public AutoCompletion(Context context, EditText editText) {
         buildDictionaryTree(context);
+        mAnyWordsCompletion = new AnyWordsCompletion(mExecutorService);
+        editText.addTextChangedListener(new SimpleTextWatcher(mAnyWordsCompletion));
     }
 
     public void setAutoCompleteCallback(AutoCompleteCallback autoCompleteCallback) {
@@ -71,9 +79,13 @@ public class AutoCompletion {
         Module module = getModule(mModuleName);
         if (mPropertyPrefill == null && module == null)
             return;
-        List<CodeCompletion> completions = findCodeCompletion(module, mPropertyPrefill);
-        CodeCompletions codeCompletions = new CodeCompletions(cursor, completions);
-        mAutoCompleteCallback.updateCodeCompletion(codeCompletions);
+        String prefill = mPropertyPrefill;
+        mExecutorService.execute(() -> {
+            List<CodeCompletion> completions = findCodeCompletion(module, prefill);
+            CodeCompletions codeCompletions = new CodeCompletions(cursor, completions);
+            mAutoCompleteCallback.updateCodeCompletion(codeCompletions);
+        });
+
     }
 
     private Module getModule(String moduleName) {
@@ -123,12 +135,13 @@ public class AutoCompletion {
     private List<CodeCompletion> findCodeCompletionForGlobal(String propertyPrefill) {
         if (propertyPrefill == null)
             return Collections.emptyList();
-        List<DictionaryTree.Entry<Property>> result = mGlobalPropertyTree.searchByPrefill(propertyPrefill);
         List<CodeCompletion> completions = new ArrayList<>();
+        List<DictionaryTree.Entry<Property>> result = mGlobalPropertyTree.searchByPrefill(propertyPrefill);
         for (DictionaryTree.Entry<Property> entry : result) {
             Property property = entry.tag;
             completions.add(new CodeCompletion(property.getKey(), property.getUrl(), propertyPrefill.length()));
         }
+        mAnyWordsCompletion.findCodeCompletion(completions, propertyPrefill);
         return completions;
     }
 

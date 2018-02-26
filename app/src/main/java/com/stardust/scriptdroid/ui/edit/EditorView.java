@@ -246,7 +246,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         mSymbolBar.setCodeCompletions(Symbols.getSymbols());
         mCodeCompletionBar.setOnHintClickListener(this);
         mSymbolBar.setOnHintClickListener(this);
-        mAutoCompletion = new AutoCompletion(getContext());
+        mAutoCompletion = new AutoCompletion(getContext(), mEditor.getCodeEditText());
         mAutoCompletion.setAutoCompleteCallback(mCodeCompletionBar::setCodeCompletions);
     }
 

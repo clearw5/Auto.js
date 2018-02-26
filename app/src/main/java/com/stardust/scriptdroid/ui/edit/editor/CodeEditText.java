@@ -309,12 +309,12 @@ public class CodeEditText extends AppCompatEditText {
     }
 
     private void callCursorChangeCallback(CharSequence text, int sel) {
-        if (getText().length() == 0) {
+        if (text.length() == 0) {
             return;
         }
         if (mCallback == null)
             return;
-        int lineStart = TextUtils.lastIndexOf(text, '\n', sel) + 1;
+        int lineStart = TextUtils.lastIndexOf(text, '\n', sel - 1) + 1;
         if (lineStart < 0) {
             lineStart = 0;
         }
