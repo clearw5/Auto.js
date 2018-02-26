@@ -4,12 +4,15 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.android.dx.util.IntList;
 import com.stardust.autojs.script.JsBeautifier;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.edit.theme.Theme;
 import com.stardust.util.ClipboardUtil;
+import com.stardust.util.TextUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,15 +46,18 @@ public class CodeEditor extends HVScrollView {
     }
 
 
-    private CharSequence mReplacement = "";
-    private String mKeywords;
-    private int mFoundIndex = -1;
     private CodeEditText mCodeEditText;
     private TextViewRedoUndo mTextViewRedoUndo;
     private JavaScriptHighlighter mJavaScriptHighlighter;
     private Theme mTheme;
     private JsBeautifier mJsBeautifier;
     private MaterialDialog mProcessDialog;
+
+
+    private CharSequence mReplacement = "";
+    private String mKeywords;
+    private Matcher mMatcher;
+    private int mFoundIndex = -1;
 
     public CodeEditor(Context context) {
         super(context);
@@ -206,23 +212,68 @@ public class CodeEditor extends HVScrollView {
         mTextViewRedoUndo.redo();
     }
 
+    public void find(String keywords, boolean usingRegex) {
+        if (usingRegex) {
+            mMatcher = Pattern.compile(keywords).matcher(mCodeEditText.getText());
+            mKeywords = null;
+        } else {
+            mKeywords = keywords;
+            mMatcher = null;
+        }
+        findNext();
+    }
+
+    public void replace(String keywords, String replacement, boolean usingRegex) {
+        mReplacement = replacement == null ? "" : replacement;
+        find(keywords, usingRegex);
+    }
+
+    public void replaceAll(String keywords, String replacement, boolean usingRegex) {
+        if (!usingRegex) {
+            keywords = Pattern.quote(keywords);
+        }
+        String text = mCodeEditText.getText().toString();
+        text = text.replaceAll(keywords, replacement);
+        setText(text);
+    }
 
     public void findNext() {
-        Matcher matcher = Pattern.compile(mKeywords).matcher(mCodeEditText.getText());
-        if (!matcher.find(mFoundIndex + 1)) {
-            return;
+        int foundIndex;
+        if (mMatcher == null) {
+            if (mKeywords == null)
+                return;
+            foundIndex = TextUtils.indexOf(mCodeEditText.getText(), mKeywords, mFoundIndex + 1);
+            if (foundIndex >= 0)
+                mCodeEditText.setSelection(foundIndex, foundIndex + mKeywords.length());
+        } else if (mMatcher.find(mFoundIndex + 1)) {
+            foundIndex = mMatcher.start();
+            mCodeEditText.setSelection(foundIndex, foundIndex + mMatcher.group().length());
+        } else {
+            foundIndex = -1;
         }
-        mFoundIndex = matcher.start();
-        mCodeEditText.setSelection(mFoundIndex, mFoundIndex + mKeywords.length());
+        if (foundIndex < 0 && mFoundIndex >= 0) {
+            mFoundIndex = -1;
+            findNext();
+        } else {
+            mFoundIndex = foundIndex;
+        }
     }
 
     public void findPrev() {
-        // FIXME: 2018/2/21 lastIndexOf不支持正则
+        if (mMatcher != null){
+            Toast.makeText(getContext(), R.string.error_regex_find_prev, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        int len = mCodeEditText.getText().length();
         if (mFoundIndex <= 0) {
-            mFoundIndex = mCodeEditText.getText().length();
+            mFoundIndex = len;
         }
         int index = mCodeEditText.getText().toString().lastIndexOf(mKeywords, mFoundIndex - 1);
         if (index < 0) {
+            if (mFoundIndex != len) {
+                mFoundIndex = len;
+                findPrev();
+            }
             return;
         }
         mFoundIndex = index;
@@ -250,29 +301,6 @@ public class CodeEditor extends HVScrollView {
         });
     }
 
-    public void find(String keywords, boolean usingRegex) {
-        if (usingRegex) {
-            mKeywords = keywords;
-        } else {
-            mKeywords = Pattern.quote(keywords);
-        }
-        mFoundIndex = -1;
-        findNext();
-    }
-
-    public void replace(String keywords, String replacement, boolean usingRegex) {
-        mReplacement = replacement == null ? "" : replacement;
-        find(keywords, usingRegex);
-    }
-
-    public void replaceAll(String keywords, String replacement, boolean usingRegex) {
-        if (!usingRegex) {
-            keywords = Pattern.quote(keywords);
-        }
-        String text = mCodeEditText.getText().toString();
-        text = text.replaceAll(keywords, replacement);
-        setText(text);
-    }
 
     public void insert(String insertText) {
         int selection = Math.max(mCodeEditText.getSelectionStart(), 0);
