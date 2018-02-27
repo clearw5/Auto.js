@@ -21,9 +21,10 @@ public class Media implements MediaScannerConnection.MediaScannerConnectionClien
 
     public Media(Context context) {
         mScannerConnection = new MediaScannerConnection(context, this);
+        mScannerConnection.connect();
     }
 
-    public void scan(String path) {
+    public void scanFile(String path) {
         String mimeType = MimeTypes.fromFileOr(path, null);
         mScannerConnection.scanFile(path, mimeType);
     }
@@ -33,6 +34,14 @@ public class Media implements MediaScannerConnection.MediaScannerConnectionClien
 
     }
 
+    public void playMusic(String path, float volume) {
+        playMusic(path, volume, false);
+    }
+
+    public void playMusic(String path) {
+        playMusic(path, 1.0f);
+    }
+
     public void playMusic(String path, float volume, boolean looping) {
         if (mMediaPlayer == null) {
             mMediaPlayer = new MediaPlayerWrapper();
@@ -40,11 +49,12 @@ public class Media implements MediaScannerConnection.MediaScannerConnectionClien
         mMediaPlayer.stopAndReset();
         try {
             mMediaPlayer.setDataSource(path);
+            mMediaPlayer.setVolume(volume, volume);
+            mMediaPlayer.setLooping(looping);
+            mMediaPlayer.prepare();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-        mMediaPlayer.setVolume(volume, volume);
-        mMediaPlayer.setLooping(looping);
         mMediaPlayer.start();
     }
 

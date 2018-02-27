@@ -21,6 +21,7 @@ import com.stardust.autojs.runtime.api.Events;
 import com.stardust.autojs.runtime.api.Files;
 import com.stardust.autojs.runtime.api.Floaty;
 import com.stardust.autojs.core.looper.Loopers;
+import com.stardust.autojs.runtime.api.Media;
 import com.stardust.autojs.runtime.api.Sensors;
 import com.stardust.autojs.runtime.api.Threads;
 import com.stardust.autojs.runtime.api.Timers;
@@ -175,6 +176,8 @@ public class ScriptRuntime {
     @ScriptVariable
     public Sensors sensors;
 
+    @ScriptVariable
+    public final Media media;
 
     private Images images;
 
@@ -205,6 +208,7 @@ public class ScriptRuntime {
         device = new Device(context);
         floaty = new Floaty(uiHandler, ui, this);
         files = new Files(this);
+        media = new Media(context);
     }
 
     public void init() {
@@ -366,6 +370,7 @@ public class ScriptRuntime {
         }
         ignoresException(threads::shutDownAll);
         ignoresException(events::recycle);
+        ignoresException(media::recycle);
         ignoresException(loopers::recycle);
         ignoresException(() -> {
             if (mRootShell != null) mRootShell.exitAndWaitFor();
