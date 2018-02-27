@@ -33,7 +33,7 @@ public abstract class JavaScriptEngine extends ScriptEngine.AbstractScriptEngine
         }
         mRuntime = runtime;
         mRuntime.engines.setCurrentEngine(this);
-        put("__runtime__", runtime);
+        put("runtime", runtime);
     }
 
 

@@ -1,101 +1,112 @@
+var global = this;
 
-__runtime__.init();
-
-__importClass__ = importClass;
-var importClass = function(pack){
-    if(typeof(pack) == "string"){
-        __importClass__(Packages[pack]);
-    }else{
-        __importClass__(pack);
-    }
-}
-
-var __that__ = this;
-var Promise = require('promise.js');
-var JSON = require('__json2__.js');
-var util = require('__util__.js');
-
-
-__runtime__.bridges.setBridges({
-    call: function(func, target, args){
-       var arr = [];
-       var len = args.length;
-       for(var i = 0; i < len; i++){
-          arr.push(args[i]);
-       }
-       return func.apply(target, arr);
-    },
-    toArray: function(o){
-        var arr = [];
-        for(var i = 0; i < o.size(); i++){
-            arr.push(o.get(i));
-        }
-        for(var key in o){
-            if(arr[key])
-                continue;
-            var v = o[key];
-            if(typeof(v) == 'function'){
-                arr[key] = v.bind(o);
-            }else{
-                arr[key] = v;
-            }
-        }
-        return arr;
-    },
-    toString: function(o){
-        return String(o);
-    }
-});
-
-var device = __runtime__.device;
-
-var __asGlobal__ = function(obj, functions){
-    var len = functions.length;
-    for(var i = 0; i < len; i++) {
-        var funcName = functions[i];
-        __that__[funcName] = obj[funcName].bind(obj);
-    }
-}
-
-var __exitIfError__ = function(action, defReturnValue){
-    try{
-       return action();
-    }catch(err){
-        log(err.toString());
-        if(err instanceof java.lang.Throwable){
-            exit(err);
-        }else if(err instanceof Error){
-            exit(new org.mozilla.javascript.EvaluatorException(err.name + ": " + err.message, err.fileName, err.lineNumber));
-            //new java.lang.RuntimeException(err.name + ": " + err.message + "\n" + err.stack));
-        }else{
-            exit();
-        }
-        return defReturnValue;
-    }
-};
-
-require("__globals__")(__runtime__, this);
-
-
-(function(scope){
-    var modules = ['app', 'automator', 'console', 'dialogs', 'io', 'selector', 'shell', 'web', 'ui',
-        "images", "timers", "threads", "events", "engines", "RootAutomator", "http", "storages", "floaty",
-        "sensors", "media"];
-    var len = modules.length;
-    for(var i = 0; i < len; i++) {
-        var m = modules[i];
-        scope[m] = require('__' + m + '__')(scope.__runtime__, scope);
-    }
-})(__that__);
-
-__importClass__(android.view.KeyEvent);
-__importClass__(com.stardust.autojs.core.util.Shell);
+runtime.init();
 
 (function(){
-    var __require__ = require;
-    require = function(path){
-        path = files.path(path);
-        return __require__(path);
+    //重定向importClass使得其支持字符串参数
+    global.importClass =
+    (function(){
+        var __importClass__ = importClass;
+        return function(pack){
+            if(typeof(pack) == "string"){
+                __importClass__(Packages[pack]);
+            }else{
+                __importClass__(pack);
+            }
+        }
+    })();
+
+
+    //初始化不依赖环境的模块
+    global.Promise = require('promise.js');
+    global.JSON = require('__json2__.js');
+    global.util = require('__util__.js');
+    global.device = runtime.device;
+
+    //设置JavaScriptBridges用于与Java层的交互和数据转换
+    runtime.bridges.setBridges({
+        call: function(func, target, args){
+           var arr = [];
+           var len = args.length;
+           for(var i = 0; i < len; i++){
+              arr.push(args[i]);
+           }
+           return func.apply(target, arr);
+        },
+        toArray: function(list){
+            var arr = [];
+            for(var i = 0; i < list.size(); i++){
+                arr.push(list.get(i));
+            }
+            for(var key in list){
+                if(arr[key])
+                    continue;
+                var v = list[key];
+                if(typeof(v) == 'function'){
+                    arr[key] = v.bind(list);
+                }else{
+                    arr[key] = v;
+                }
+            }
+            return arr;
+        },
+        toString: function(o){
+            return String(o);
+        }
+    });
+
+    //一些内部函数
+    global.__asGlobal__ = function(obj, functions){
+        var len = functions.length;
+        for(var i = 0; i < len; i++) {
+            var funcName = functions[i];
+            global[funcName] = obj[funcName].bind(obj);
+        }
+    }
+
+    global.__exitIfError__ = function(action, defReturnValue){
+        try{
+           return action();
+        }catch(err){
+            log(err.toString());
+            if(err instanceof java.lang.Throwable){
+                exit(err);
+            }else if(err instanceof Error){
+                exit(new org.mozilla.javascript.EvaluatorException(err.name + ": " + err.message, err.fileName, err.lineNumber));
+                //new java.lang.RuntimeException(err.name + ": " + err.message + "\n" + err.stack));
+            }else{
+                exit();
+            }
+            return defReturnValue;
+        }
     };
+
+    //初始化一般模块
+    require("__globals__")(runtime, global);
+    (function(scope){
+        var modules = ['app', 'automator', 'console', 'dialogs', 'io', 'selector', 'shell', 'web', 'ui',
+            "images", "timers", "threads", "events", "engines", "RootAutomator", "http", "storages", "floaty",
+            "sensors", "media"];
+        var len = modules.length;
+        for(var i = 0; i < len; i++) {
+            var m = modules[i];
+            scope[m] = require('__' + m + '__')(scope.runtime, scope);
+        }
+    })(global);
+
+    importClass(android.view.KeyEvent);
+    importClass(com.stardust.autojs.core.util.Shell);
+
+    //重定向require以便支持相对路径
+    (function(){
+        var __require__ = require;
+        global.require = function(path){
+            path = files.path(path);
+            return __require__(path);
+        };
+    })();
+
+
 })();
+
 
