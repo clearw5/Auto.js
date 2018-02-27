@@ -31,6 +31,7 @@ public class LogActivity extends BaseActivity {
         setToolbarAsBack(getString(R.string.text_log));
         mStardustConsole = (StardustConsole) AutoJs.getInstance().getGlobalConsole();
         mConsoleView.setConsole(mStardustConsole);
+        mConsoleView.findViewById(R.id.input_container).setVisibility(View.GONE);
     }
 
     @Click(R.id.fab)

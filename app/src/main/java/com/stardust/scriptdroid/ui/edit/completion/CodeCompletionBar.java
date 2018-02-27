@@ -1,6 +1,7 @@
 package com.stardust.scriptdroid.ui.edit.completion;
 
 import android.content.Context;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -74,6 +75,10 @@ public class CodeCompletionBar extends RecyclerView {
     }
 
     public void setCodeCompletions(CodeCompletions codeCompletions) {
+        if (Looper.getMainLooper() != Looper.myLooper()) {
+            post(() -> setCodeCompletions(codeCompletions));
+            return;
+        }
         mCodeCompletions = codeCompletions;
         getAdapter().notifyDataSetChanged();
     }
@@ -123,7 +128,6 @@ public class CodeCompletionBar extends RecyclerView {
             itemView.setOnLongClickListener(mOnCodeCompletionItemLongClickListener);
         }
     }
-
 
 
 }

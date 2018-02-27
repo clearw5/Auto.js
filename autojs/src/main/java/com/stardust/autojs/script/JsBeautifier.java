@@ -2,6 +2,7 @@ package com.stardust.autojs.script;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
@@ -33,30 +34,26 @@ public class JsBeautifier {
     private org.mozilla.javascript.Context mScriptContext;
     private Scriptable mScriptable;
     private final String mBeautifyJsPath;
+    private View mView;
 
-    public JsBeautifier(Context context, String beautifyJsPath) {
-        mContext = context;
+    public JsBeautifier(View view, String beautifyJsPath) {
+        mContext = view.getContext();
+        mView = view;
         mBeautifyJsPath = beautifyJsPath;
     }
 
     public void beautify(final String code, final Callback callback) {
-        mExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    prepareIfNeeded();
-                    enterContext();
-                    Object beautifiedCode = mJsBeautifyFunction.call(mScriptContext, mScriptable, mScriptable, new Object[]{code});
-                    Object o = mScriptContext.evaluateString(mScriptable, " (<xml id=\"foo\"></xml>).attributes()[0].name()", "<e4x>", 1, null);
-                    Log.i("e4x", o + "");
-                    callback.onSuccess(beautifiedCode.toString());
-                } catch (Exception e) {
-                    callback.onException(e);
-                } finally {
-                    exitContext();
-                }
+        mExecutor.execute(() -> {
+            try {
+                prepareIfNeeded();
+                enterContext();
+                Object beautifiedCode = mJsBeautifyFunction.call(mScriptContext, mScriptable, mScriptable, new Object[]{code});
+                mView.post(() -> callback.onSuccess(beautifiedCode.toString()));
+            } catch (Exception e) {
+                mView.post(() -> callback.onException(e));
+            } finally {
+                exitContext();
             }
-
         });
     }
 
@@ -76,16 +73,12 @@ public class JsBeautifier {
     }
 
     public void prepare() {
-        mExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    prepareIfNeeded();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        mExecutor.execute(() -> {
+            try {
+                prepareIfNeeded();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
         });
     }
 
@@ -102,7 +95,7 @@ public class JsBeautifier {
             InputStream is = mContext.getAssets().open(mBeautifyJsPath);
             if (mScriptable == null)
                 mScriptable = mScriptContext.initSafeStandardObjects();
-            mJsBeautifyFunction = mScriptContext.compileFunction(mScriptable, PFiles.read(is), "<js_beautify>", 1, null);
+            mJsBeautifyFunction = (Function) mScriptContext.evaluateString(mScriptable, PFiles.read(is), "<js_beautify>", 1, null);
         } catch (IOException e) {
             exitContext();
             throw new UncheckedIOException(e);

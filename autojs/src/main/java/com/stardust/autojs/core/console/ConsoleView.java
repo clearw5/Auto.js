@@ -181,7 +181,7 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
     public void showEditText() {
         post(() -> {
             mWindow.requestWindowFocus();
-            mInputContainer.setVisibility(VISIBLE);
+            //mInputContainer.setVisibility(VISIBLE);
             mEditText.requestFocus();
         });
     }

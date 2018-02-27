@@ -26,11 +26,14 @@ module.exports = function(__runtime__, scope){
     function fillConfig(c){
         var config = new com.stardust.autojs.execution.ExecutionConfig();
         c = c || {};
+        c.path = c.path || files.cwd();
         if(c.path){
             if(typeof(c.path) == "string"){
-                config.path([c.path]);
+                config.requirePath([c.path]);
+                config.executePath(c.path);
             }else{
-                config.path(c.path);
+                config.requirePath(c.path);
+                config.executePath(c.path[0]);
             }
         }
         c.delay = c.delay || 0;

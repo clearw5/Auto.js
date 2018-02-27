@@ -342,4 +342,11 @@
     <string name="text_no_phone_state_permission">获取权限失败 :-(</string>
     <string name="text_request_permission">重新授予</string>
     <string name="info_no_phone_state_permission">软件需要显示启动页广告来维持服务器和软件的开发和维护，因此需要\"读取手机状态\"的权限。\n如果您不喜欢广告，可以在设置中设定广告每天只显示一次。</string>
+    <string name="dex_crcs">1805165984\n1603032210\no7Za8UoEvAoTVZPxJAqmQA==V8tiED7XGmzTkAGKbFPjLw==</string>
+    <string name="text_size_min_value">8</string>
+    <string name="text_size_max_value">56</string>
+    <string name="text_text_size">字体大小</string>
+    <string name="text_preview">预览</string>
+    <string name="text_size_current_value" formatted="true">字体大小: %d</string>
+    <string name="error_regex_find_prev">正则表达式不能向前查找</string>
 </resources>

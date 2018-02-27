@@ -3,10 +3,8 @@ package com.stardust.scriptdroid.ui.main;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -41,7 +39,6 @@ import com.stardust.scriptdroid.ui.main.sample.SampleListFragment_;
 import com.stardust.scriptdroid.ui.main.scripts.MyScriptListFragment_;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
 import com.stardust.theme.ThemeColorManager;
-import com.stardust.theme.app.ThemeColorMaterialDialog;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.DeveloperUtils;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
@@ -253,8 +250,8 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     @Override
     protected void onStart() {
         super.onStart();
-        if (!BuildConfig.DEBUG && !DeveloperUtils.checkSignature(this)) {
-            finish();
+        if (!BuildConfig.DEBUG) {
+            DeveloperUtils.verifyApk(this, R.string.dex_crcs);
         }
         if (!DeveloperUtils.isActivityRegistered(this, ADActivity.class) ||
                 !DeveloperUtils.isServiceRegistered(this, DownloadService.class)) {
