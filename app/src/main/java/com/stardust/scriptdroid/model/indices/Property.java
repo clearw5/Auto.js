@@ -20,6 +20,19 @@ public class Property {
     @SerializedName("global")
     private boolean mGlobal;
 
+    @SerializedName("variable")
+    private boolean mVariable = false;
+
+    public Property() {
+    }
+
+    public Property(String key, String url, String summary, boolean global) {
+        mUrl = url;
+        mKey = key;
+        mSummary = summary;
+        mGlobal = global;
+    }
+
     public String getUrl() {
         return mUrl;
     }
@@ -50,5 +63,13 @@ public class Property {
 
     public void setGlobal(boolean global) {
         mGlobal = global;
+    }
+
+    public boolean isVariable() {
+        return mVariable;
+    }
+
+    public void setVariable(boolean variable) {
+        mVariable = variable;
     }
 }

@@ -1,9 +1,7 @@
 package com.stardust.scriptdroid.ui.edit.completion;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -11,26 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.workground.WrapContentLinearLayoutManager;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.stardust.pio.UncheckedIOException;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.tool.GsonUtils;
-import com.stardust.util.ClipboardUtil;
-import com.stardust.util.UnderuseExecutors;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.stardust.scriptdroid.model.autocomplete.CodeCompletions;
 
 /**
  * Created by Stardust on 2017/2/17.
@@ -51,7 +33,7 @@ public class CodeCompletionBar extends RecyclerView {
         @Override
         public void onClick(View v) {
             int position = getChildViewHolder(v).getAdapterPosition();
-            if (position >= 0 && position < mCodeCompletions.getHints().size()) {
+            if (position >= 0 && position < mCodeCompletions.size()) {
                 if (mOnHintClickListener != null) {
                     mOnHintClickListener.onHintClick(mCodeCompletions, position);
                 }
@@ -64,7 +46,7 @@ public class CodeCompletionBar extends RecyclerView {
         @Override
         public boolean onLongClick(View v) {
             int position = getChildViewHolder(v).getAdapterPosition();
-            if (position < 0 || position >= mCodeCompletions.getHints().size())
+            if (position < 0 || position >= mCodeCompletions.size())
                 return false;
             if (mOnHintClickListener != null) {
                 mOnHintClickListener.onHintLongClick(mCodeCompletions, position);
@@ -93,6 +75,10 @@ public class CodeCompletionBar extends RecyclerView {
     }
 
     public void setCodeCompletions(CodeCompletions codeCompletions) {
+        if (Looper.getMainLooper() != Looper.myLooper()) {
+            post(() -> setCodeCompletions(codeCompletions));
+            return;
+        }
         mCodeCompletions = codeCompletions;
         getAdapter().notifyDataSetChanged();
     }
@@ -122,7 +108,7 @@ public class CodeCompletionBar extends RecyclerView {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             TextView textView = ((TextView) holder.itemView);
-            textView.setText(mCodeCompletions.getHints().get(position));
+            textView.setText(mCodeCompletions.getHint(position));
             if (mTextColor != 0) {
                 textView.setTextColor(mTextColor);
             }
@@ -130,7 +116,7 @@ public class CodeCompletionBar extends RecyclerView {
 
         @Override
         public int getItemCount() {
-            return mCodeCompletions == null ? 0 : mCodeCompletions.getHints().size();
+            return mCodeCompletions == null ? 0 : mCodeCompletions.size();
         }
     }
 
@@ -142,7 +128,6 @@ public class CodeCompletionBar extends RecyclerView {
             itemView.setOnLongClickListener(mOnCodeCompletionItemLongClickListener);
         }
     }
-
 
 
 }

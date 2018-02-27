@@ -9,6 +9,7 @@ import com.stardust.scriptdroid.network.api.DownloadApi;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 import java.net.URLDecoder;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -76,7 +77,7 @@ public class DownloadManager {
         DownloadTask task = new DownloadTask(url, path);
         mDownloadApi.download(url)
                 .subscribeOn(Schedulers.io())
-                .subscribe(task::start);
+                .subscribe(task::start, error -> task.progress().onError(error));
         return task.progress();
     }
 
@@ -163,7 +164,7 @@ public class DownloadManager {
 
         }
 
-        public Observable<Integer> progress() {
+        public PublishSubject<Integer> progress() {
             return mProgress;
         }
 

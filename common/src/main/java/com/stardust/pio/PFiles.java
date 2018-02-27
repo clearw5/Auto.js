@@ -460,4 +460,11 @@ public class PFiles {
         return path;
     }
 
+    public static byte[] readBytes(String path) {
+        try {
+            return readBytes(new FileInputStream(path));
+        } catch (FileNotFoundException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 }

@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.util.ScreenMetrics;
 
@@ -35,6 +36,7 @@ public class ScreenCapturer {
     private volatile Image mUnderUsingImage;
     private volatile Image mCachedImage;
     private volatile boolean mImageAvailable = false;
+    private volatile Exception mException;
     private final int mScreenWidth;
     private final int mScreenHeight;
     private final int mScreenDensity;
@@ -82,18 +84,23 @@ public class ScreenCapturer {
 
     private void setImageListener(Handler handler) {
         mImageReader.setOnImageAvailableListener(reader -> {
-            if (mCachedImage != null) {
-                synchronized (mCachedImageLock) {
-                    if (mCachedImage != null) {
-                        mCachedImage.close();
+            try {
+                if (mCachedImage != null) {
+                    synchronized (mCachedImageLock) {
+                        if (mCachedImage != null) {
+                            mCachedImage.close();
+                        }
+                        mCachedImage = reader.acquireLatestImage();
+                        mImageAvailable = true;
+                        mCachedImageLock.notify();
+                        return;
                     }
-                    mCachedImage = reader.acquireLatestImage();
-                    mImageAvailable = true;
-                    mCachedImageLock.notify();
-                    return;
                 }
+                mCachedImage = reader.acquireLatestImage();
+            } catch (Exception e) {
+                mException = e;
             }
-            mCachedImage = reader.acquireLatestImage();
+
         }, handler);
     }
 
@@ -101,6 +108,11 @@ public class ScreenCapturer {
     public Image capture() {
         if (!mImageAvailable) {
             waitForImageAvailable();
+        }
+        if (mException != null) {
+            Exception e = mException;
+            mException = null;
+            throw new ScriptException(e);
         }
         synchronized (mCachedImageLock) {
             if (mCachedImage != null) {

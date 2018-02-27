@@ -4,9 +4,11 @@ import android.app.Application;
 import android.content.Context;
 
 import com.stardust.autojs.core.console.GlobalStardustConsole;
+import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.scriptdroid.App;
+import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.pluginclient.DevPluginService;
@@ -68,6 +70,15 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
             AccessibilityServiceTool.goToAccessibilitySetting();
             throw new ScriptException(errorMessage);
         }
+    }
+
+    @Override
+    protected AccessibilityConfig createAccessibilityConfig() {
+        AccessibilityConfig config = super.createAccessibilityConfig();
+        if (BuildConfig.CHANNEL.equals("coolapk")) {
+            config.addWhiteList("com.coolapk.market");
+        }
+        return config;
     }
 
     @Override

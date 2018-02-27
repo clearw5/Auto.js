@@ -1,19 +1,12 @@
 package com.stardust.autojs.runtime.api;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.runtime.ScriptRuntime;
-import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.pio.PFileInterface;
 import com.stardust.pio.PFiles;
 import com.stardust.util.Func1;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Created by Stardust on 2018/1/23.
@@ -91,6 +84,10 @@ public class Files {
 
     public String read(String path) {
         return PFiles.read(path(path));
+    }
+
+    public byte[] readBytes(String path){
+        return PFiles.readBytes(path(path));
     }
 
     public void write(String path, String text) {

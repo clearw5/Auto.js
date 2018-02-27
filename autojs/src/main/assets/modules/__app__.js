@@ -24,12 +24,18 @@ module.exports = function(__runtime__, scope){
           }
       }
       if (i.action) {
+          if(i.action.indexOf(".") == -1){
+              i.action = "android.intent.action." + i.action;
+          }
           intent.setAction(i.action);
       }
       if (i.type) {
-          intent.setType(i.type);
-      }
-      if (i.data) {
+          if(i.data){
+              intent.setDataAndType(android.net.Uri.parse(i.data), i.type);
+          }else{
+              intent.setType(i.type);
+          }
+      }else if (i.data) {
           intent.setData(android.net.Uri.parse(i.data));
       }
       return intent;

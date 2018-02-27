@@ -43,7 +43,21 @@ public class GlobalActionRecorder implements Recorder.OnStateChangedListener {
 
     public GlobalActionRecorder(Context context) {
         mContext = new ContextThemeWrapper(context.getApplicationContext(), R.style.AppTheme);
-        mTouchRecorder = new TouchRecorder(context) {
+    }
+
+
+    public void start() {
+        if (mTouchRecorder == null) {
+            mTouchRecorder = createTouchRecorder();
+        }
+        mTouchRecorder.reset();
+        mDiscard = false;
+        mTouchRecorder.setOnStateChangedListener(this);
+        mTouchRecorder.start();
+    }
+
+    private TouchRecorder createTouchRecorder() {
+        return new TouchRecorder(mContext) {
             @Override
             protected InputEventRecorder createInputEventRecorder() {
                 if (Pref.rootRecordGeneratesBinary())
@@ -52,14 +66,6 @@ public class GlobalActionRecorder implements Recorder.OnStateChangedListener {
                     return new InputEventToRootAutomatorRecorder();
             }
         };
-    }
-
-
-    public void start() {
-        mTouchRecorder.reset();
-        mDiscard = false;
-        mTouchRecorder.setOnStateChangedListener(this);
-        mTouchRecorder.start();
     }
 
     public void pause() {

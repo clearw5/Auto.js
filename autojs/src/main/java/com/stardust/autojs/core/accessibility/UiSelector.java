@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.autojs.annotation.ScriptInterface;
-import com.stardust.autojs.runtime.accessibility.AutomatorConfig;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.automator.ActionArgument;
 import com.stardust.automator.UiGlobalSelector;
@@ -73,12 +72,12 @@ public class UiSelector extends UiGlobalSelector {
     @ScriptInterface
     public UiObjectCollection find() {
         ensureAccessibilityServiceEnabled();
-        if (AutomatorConfig.isUnintendedGuardEnabled() && isRunningPackageSelf()) {
-            Log.d(TAG, "isSelfPackage return null");
-            return UiObjectCollection.EMPTY;
-        }
         AccessibilityNodeInfo root = mAccessibilityBridge.getRootInActiveWindow();
         if (root == null) {
+            return UiObjectCollection.EMPTY;
+        }
+        if (root.getPackageName() != null && mAccessibilityBridge.getConfig().whiteListContains(root.getPackageName().toString())) {
+            Log.d(TAG, "package in white list, return null");
             return UiObjectCollection.EMPTY;
         }
         return findOf(UiObject.createRoot(root, mAllocator));
@@ -120,11 +119,6 @@ public class UiSelector extends UiGlobalSelector {
     private void ensureAccessibilityServiceEnabled() {
         mAccessibilityBridge.ensureServiceEnabled();
     }
-
-    private boolean isRunningPackageSelf() {
-        return DeveloperUtils.isSelfPackage(mAccessibilityBridge.getInfoProvider().getLatestPackage());
-    }
-
 
     @ScriptInterface
     @NonNull

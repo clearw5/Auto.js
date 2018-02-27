@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.stardust.autojs.runtime.accessibility.AutomatorConfig;
+import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,17 +19,20 @@ public class Pref {
     private static final String KEY_FIRST_SHOW_AD = "En, Today is 17.7.7, but, I'm still love you so....";
     private static final String KEY_LAST_SHOW_AD_MILLIS = "But... it seems that...you will not come back any more...";
     private static final String KEY_FLOATING_MENU_SHOWN = "17.10.28 I have idea of what you think...maybe...I'm overthinking...";
+    private static final String KEY_EDITOR_THEME = "editor.theme";
+    private static final String KEY_EDITOR_TEXT_SIZE = "editor.textSize";
+
     private static SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equals(getString(R.string.key_guard_mode))) {
-                AutomatorConfig.setIsUnintendedGuardEnabled(sharedPreferences.getBoolean(getString(R.string.key_guard_mode), false));
+                AccessibilityConfig.setIsUnintendedGuardEnabled(sharedPreferences.getBoolean(getString(R.string.key_guard_mode), false));
             }
         }
     };
 
     static {
-        AutomatorConfig.setIsUnintendedGuardEnabled(def().getBoolean(getString(R.string.key_guard_mode), false));
+        AccessibilityConfig.setIsUnintendedGuardEnabled(def().getBoolean(getString(R.string.key_guard_mode), false));
     }
 
     private static SharedPreferences def() {
@@ -146,5 +149,21 @@ public class Pref {
 
     public static void setFloatingMenuShown(boolean checked) {
         def().edit().putBoolean(KEY_FLOATING_MENU_SHOWN, checked).apply();
+    }
+
+    public static String getCurrentTheme() {
+        return def().getString(KEY_EDITOR_THEME, null);
+    }
+
+    public static void setCurrentTheme(String theme) {
+        def().edit().putString(KEY_EDITOR_THEME, theme).apply();
+    }
+
+    public static void setEditorTextSize(int value) {
+        def().edit().putInt(KEY_EDITOR_TEXT_SIZE, value).apply();
+    }
+
+    public static int getEditorTextSize(int defVlaue) {
+        return def().getInt(KEY_EDITOR_TEXT_SIZE, defVlaue);
     }
 }

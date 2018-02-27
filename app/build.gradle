@@ -8,8 +8,8 @@ android {
         applicationId "com.stardust.scriptdroid"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 246
-        versionName "3.0.0 Beta"
+        versionCode 255
+        versionName "3.1.0 Alpha5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -46,7 +46,21 @@ android {
     configurations.all {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
     }
+
+    flavorDimensions "channel"
+
+    productFlavors {
+        common {
+            buildConfigField "String", "CHANNEL", '"common"'
+        }
+        coolapk {
+            buildConfigField "String", "CHANNEL", '"coolapk"'
+        }
+    }
+
 }
+
+
 
 repositories {
     flatDir {

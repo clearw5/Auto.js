@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -17,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.qq.e.ads.ADActivity;
 import com.qq.e.comm.DownloadService;
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.OnActivityResultDelegate;
@@ -27,7 +29,6 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.scriptdroid.ui.common.NotAskAgainDialog;
-import com.stardust.scriptdroid.ui.common.ScriptOperations;
 import com.stardust.scriptdroid.ui.doc.DocsFragment_;
 import com.stardust.scriptdroid.ui.floating.FloatyWindowManger;
 import com.stardust.scriptdroid.storage.file.StorageFileProvider;
@@ -38,6 +39,7 @@ import com.stardust.scriptdroid.ui.main.sample.SampleListFragment_;
 import com.stardust.scriptdroid.ui.main.scripts.MyScriptListFragment_;
 import com.stardust.scriptdroid.ui.main.task.TaskManagerFragment_;
 import com.stardust.theme.ThemeColorManager;
+import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.DeveloperUtils;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 import com.stardust.scriptdroid.ui.BaseActivity;
@@ -55,7 +57,6 @@ import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.File;
 import java.util.Arrays;
 
 @EActivity(R.layout.activity_main)
@@ -85,6 +86,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkPermissions();
+        showAccessibilitySettingPromptIfDisabled();
         mVersionGuard = new VersionGuard(this);
         showAnnunciationIfNeeded();
         EventBus.getDefault().register(this);
@@ -121,7 +123,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     private void checkPermissions() {
         checkPermission(Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_EXTERNAL_STORAGE);
-        showAccessibilitySettingPromptIfDisabled();
     }
 
     private void showAccessibilitySettingPromptIfDisabled() {
@@ -221,21 +222,42 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        int i = Arrays.asList(permissions).indexOf(Manifest.permission.READ_EXTERNAL_STORAGE);
-        if (i < 0) {
-            return;
-        }
-        if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+        if (getGrantResult(Manifest.permission.READ_EXTERNAL_STORAGE, permissions, grantResults) == PackageManager.PERMISSION_GRANTED) {
             StorageFileProvider.getDefault().notifyStoragePermissionGranted();
         }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED) {
+            new ThemeColorMaterialDialogBuilder(this)
+                    .title(R.string.text_no_phone_state_permission)
+                    .content(R.string.info_no_phone_state_permission)
+                    .positiveText(R.string.text_request_permission)
+                    .negativeText(R.string.text_exit)
+                    .cancelable(false)
+                    .onPositive(((dialog, which) -> checkPermissions()))
+                    .onNegative((dialog, which) -> finish())
+                    .show();
+        }
+    }
+
+    private int getGrantResult(String permission, String[] permissions, int[] grantResults) {
+        int i = Arrays.asList(permissions).indexOf(permission);
+        if (i < 0) {
+            return 2;
+        }
+        return grantResults[i];
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (!BuildConfig.DEBUG && !DeveloperUtils.checkSignature(this)) {
+        if (!BuildConfig.DEBUG) {
+            DeveloperUtils.verifyApk(this, R.string.dex_crcs);
+        }
+        if (!DeveloperUtils.isActivityRegistered(this, ADActivity.class) ||
+                !DeveloperUtils.isServiceRegistered(this, DownloadService.class)) {
             finish();
         }
+
     }
 
 

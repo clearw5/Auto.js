@@ -7,13 +7,16 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.media.Image;
+import android.media.MediaScannerConnection;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
+import android.webkit.MimeTypeMap;
 
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.image.ColorFinder;
@@ -40,6 +43,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
+
+import okhttp3.MediaType;
+
+import static com.stardust.pio.PFiles.getExtension;
 
 /**
  * Created by Stardust on 2017/5/20.
@@ -232,5 +239,9 @@ public class Images {
         return point;
     }
 
+
+    public void notityImageInserted(String path){
+
+    }
 
 }

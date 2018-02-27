@@ -214,7 +214,8 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
 
     @Override
     public void onCaptureAvailable(NodeInfo capture) {
-        mCaptureDeferred.resolve(capture);
+        if (mCaptureDeferred != null && mCaptureDeferred.isPending())
+            mCaptureDeferred.resolve(capture);
     }
 
     private boolean ensureCapture() {
