@@ -1,7 +1,10 @@
 package com.stardust.auojs.inrt.launch;
 
 import android.app.Activity;
+import android.content.Intent;
 
+import com.stardust.auojs.inrt.BuildConfig;
+import com.stardust.auojs.inrt.LogActivity;
 import com.stardust.auojs.inrt.Pref;
 import com.stardust.auojs.inrt.autojs.AutoJs;
 import com.stardust.autojs.execution.ExecutionConfig;
@@ -33,12 +36,17 @@ public class AssetsProjectLauncher {
 
     public void launch() {
         prepare();
-        if (mProjectConfig.getLaunchConfig().shouldHideLogs() || Pref.shouldHideLogs()) {
-            mActivity.runOnUiThread(mActivity::finish);
+        if (!(mProjectConfig.getLaunchConfig().shouldHideLogs() || Pref.shouldHideLogs())) {
+            mActivity.runOnUiThread(() -> {
+                mActivity.startActivity(new Intent(mActivity, LogActivity.class));
+                mActivity.finish();
+                mActivity = null;
+            });
+        } else {
+            mActivity.finish();
+            mActivity = null;
         }
-        mActivity = null;
         runScript();
-
     }
 
     private void runScript() {
@@ -54,7 +62,7 @@ public class AssetsProjectLauncher {
     private void prepare() {
         String projectConfigPath = PFiles.join(mProjectDir, ProjectConfig.CONFIG_FILE_NAME);
         ProjectConfig projectConfig = ProjectConfig.fromFile(projectConfigPath);
-        if (projectConfig != null && projectConfig.getVersionCode() == mProjectConfig.getVersionCode()) {
+        if (!BuildConfig.DEBUG && projectConfig != null && projectConfig.getVersionCode() == mProjectConfig.getVersionCode()) {
             return;
         }
         PFiles.copyAsset(mActivity, PFiles.join(mAssetsProjectDir, ProjectConfig.CONFIG_FILE_NAME), projectConfigPath);

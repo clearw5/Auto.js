@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.stardust.autojs.core.console.GlobalStardustConsole;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.api.Console;
@@ -12,6 +13,9 @@ import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.pluginclient.DevPluginService;
+import com.stardust.scriptdroid.ui.log.LogActivity_;
+import com.stardust.scriptdroid.ui.settings.SettingsActivity;
+import com.stardust.scriptdroid.ui.settings.SettingsActivity_;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.scriptdroid.tool.AccessibilityServiceTool;
 
@@ -84,6 +88,14 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
     @Override
     protected Application getApplication() {
         return App.getApp();
+    }
+
+    @Override
+    protected ScriptRuntime createRuntime() {
+        ScriptRuntime runtime = super.createRuntime();
+        runtime.putProperty("class.settings", SettingsActivity_.class);
+        runtime.putProperty("class.console", LogActivity_.class);
+        return runtime;
     }
 
 }

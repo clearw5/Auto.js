@@ -99,18 +99,22 @@ public abstract class AutoJs {
         mScriptEngineManager = new ScriptEngineManager(mContext);
         mScriptEngineManager.registerEngine(JavaScriptSource.ENGINE, () -> {
             LoopBasedJavaScriptEngine engine = new LoopBasedJavaScriptEngine(mContext);
-            engine.setRuntime(new ScriptRuntime.Builder()
-                    .setConsole(new StardustConsole(mUiHandler, mGlobalConsole))
-                    .setScreenCaptureRequester(mScreenCaptureRequester)
-                    .setAccessibilityBridge(new AccessibilityBridgeImpl())
-                    .setUiHandler(mUiHandler)
-                    .setAppUtils(mAppUtils)
-                    .setEngineService(mScriptEngineService)
-                    .setShellSupplier(() -> new Shell(mContext, true)).build());
+            engine.setRuntime(createRuntime());
             return engine;
         });
         mScriptEngineManager.registerEngine(AutoFileSource.ENGINE, () -> new RootAutomatorEngine(mContext));
 
+    }
+
+    protected ScriptRuntime createRuntime() {
+        return new ScriptRuntime.Builder()
+                .setConsole(new StardustConsole(mUiHandler, mGlobalConsole))
+                .setScreenCaptureRequester(mScreenCaptureRequester)
+                .setAccessibilityBridge(new AccessibilityBridgeImpl())
+                .setUiHandler(mUiHandler)
+                .setAppUtils(mAppUtils)
+                .setEngineService(mScriptEngineService)
+                .setShellSupplier(() -> new Shell(mContext, true)).build();
     }
 
     protected void registerActivityLifecycleCallbacks() {

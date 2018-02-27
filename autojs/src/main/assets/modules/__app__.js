@@ -42,7 +42,16 @@ module.exports = function(__runtime__, scope){
     }
 
     app.startActivity = function(i){
-        context.startActivity(app.intent(i).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK));
+        if(typeof(i) == "string"){
+            if(__runtime__.getProperty("class." + i)){
+                context.startActivity(new Intent(context, __runtime__.getProperty("class." + i))
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                return;
+            }else{
+                throw new Error("class " + i + " not found");
+            }
+        }
+        context.startActivity(app.intent(i).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     app.sendBroadcast = function(i){

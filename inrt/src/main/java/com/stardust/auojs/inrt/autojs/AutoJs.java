@@ -4,8 +4,11 @@ import android.app.Application;
 import android.content.Context;
 
 import com.stardust.auojs.inrt.App;
+import com.stardust.auojs.inrt.LogActivity;
 import com.stardust.auojs.inrt.Pref;
 import com.stardust.auojs.inrt.R;
+import com.stardust.auojs.inrt.SettingsActivity;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
@@ -58,5 +61,13 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
     @Override
     protected Application getApplication() {
         return App.getApp();
+    }
+
+    @Override
+    protected ScriptRuntime createRuntime() {
+        ScriptRuntime runtime = super.createRuntime();
+        runtime.putProperty("class.settings", SettingsActivity.class);
+        runtime.putProperty("class.console", LogActivity.class);
+        return runtime;
     }
 }
