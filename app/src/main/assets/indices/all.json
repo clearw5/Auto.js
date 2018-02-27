@@ -1726,5 +1726,85 @@
     ],
     "url": "threads.html",
     "summary": "多线程"
+  },
+  {
+    "name": "media",
+    "properties": [
+      {
+        "key": "scanFile",
+        "summary": "扫描文件",
+        "url": "media.html#media_media_scanfile_path"
+      },
+      {
+        "key": "playMusic",
+        "summary": "播放音乐",
+        "url": "media.html#media_media_playmusic_path_volume_looping"
+      },
+      {
+        "key": "musicSeekTo",
+        "summary": "调整进度",
+        "url": "media.html#media_media_musicseekto_msec"
+      },
+      {
+        "key": "pauseMusic",
+        "summary": "暂停音乐",
+        "url": "media.html#media_media_pausemusic"
+      },
+      {
+        "key": "resumeMusic",
+        "summary": "继续播放",
+        "url": "media.html#media_media_resumemusic"
+      },
+      {
+        "key": "stopMusic",
+        "summary": "停止音乐",
+        "url": "media.html#media_media_stopmusic"
+      },
+      {
+        "key": "isMusicPlaying",
+        "summary": "是否在播放",
+        "url": "media.html#media_media_ismusicplaying"
+      },
+      {
+        "key": "getMusicDuration",
+        "summary": "音乐时长",
+        "url": "media.html#media_media_getmusicduration"
+      },
+      {
+        "key": "getMusicCurrentPosition",
+        "summary": "当前位置",
+        "url": "media.html#media_media_getmusiccurrentposition"
+      }
+    ],
+    "url": "media.html",
+    "summary": "多媒体"
+  },
+  {
+    "name": "sensors",
+    "properties": [
+      {
+        "key": "register",
+        "summary": "注册监听",
+        "url": "sensors.html#sensors_sensors_register_sensorname_delay"
+      },
+      {
+        "key": "unregister",
+        "summary": "注销监听",
+        "url": "sensors.html#sensors_sensors_unregister_emitter"
+      },
+      {
+        "key": "unregisterAll",
+        "summary": "注销所有",
+        "url": "sensors.html#sensors_sensors_unregisterall"
+      },
+      {
+        "key": "ignoresUnsupportedSensor",
+        "summary": "忽略不支持传感器",
+        "url": "sensors.html#sensors_sensors_ignoresunsupportedsensor",
+        "variable": true
+      }
+    ],
+    "url": "sensors.html",
+    "summary": "传感器"
   }
 ]
