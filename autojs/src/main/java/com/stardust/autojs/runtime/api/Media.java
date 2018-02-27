@@ -58,6 +58,16 @@ public class Media implements MediaScannerConnection.MediaScannerConnectionClien
         mMediaPlayer.start();
     }
 
+    public void musicSeekTo(int m) {
+        if (mMediaPlayer == null)
+            return;
+        mMediaPlayer.seekTo(m);
+    }
+
+    public boolean isMuiscPlaying() {
+        return mMediaPlayer != null && mMediaPlayer.isPlaying();
+    }
+
     public void pauseMusic() {
         if (mMediaPlayer == null)
             return;
@@ -68,6 +78,19 @@ public class Media implements MediaScannerConnection.MediaScannerConnectionClien
         if (mMediaPlayer == null)
             return;
         mMediaPlayer.start();
+    }
+
+    public int getMusicDuration() {
+        if (mMediaPlayer == null) {
+            return 0;
+        }
+        return mMediaPlayer.getDuration();
+    }
+
+    public int getMusicCurrentPosition() {
+        if (mMediaPlayer == null)
+            return -1;
+        return mMediaPlayer.getCurrentPosition();
     }
 
     public void stopMusic() {

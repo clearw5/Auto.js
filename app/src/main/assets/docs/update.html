@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>module (模块) | Auto.js 3.0.0 文档</title>
+  <title>Index | Auto.js 3.0.0 文档</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
-  <link rel="canonical" href="https://nodejs.org/api/modules.html">
+  <link rel="canonical" href="https://nodejs.org/api/update.html">
 </head>
-<body class="alt apidoc" id="api-section-modules">
+<body class="alt apidoc" id="api-section-update">
   <div id="content" class="clearfix">
     <div id="column2" class="interior">
       <div id="intro" class="interior">
@@ -40,9 +40,8 @@
 <li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
 <li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
 <li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
-<li><a class="nav-modules active" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
 <li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
-<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
 <li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
 <li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
 <li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
@@ -59,7 +58,7 @@
 
     </div>
 
-    <div id="column1" data-id="modules" class="interior">
+    <div id="column1" data-id="update" class="interior">
       <header>
         <h1>Auto.js 3.0.0 文档</h1>
         <div id="gtoc">
@@ -73,45 +72,22 @@
 
       <div id="toc">
         <h2>目录</h2>
-        <ul>
-<li><span class="stability_2"><a href="#modules_module">module (模块)</a></span></li>
-</ul>
-
+        
       </div>
 
       <div id="apicontent">
-        <h1>module (模块)<span><a class="mark" href="#modules_module" id="modules_module">#</a></span></h1>
-<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>Auto.js 有一个简单的模块加载系统。 在 Auto.js 中，文件和模块是一一对应的（每个文件被视为一个独立的模块）。</p>
-<p>例子，假设有一个名为 foo.js 的文件：</p>
-<pre><code>const circle = require(&#39;circle.js&#39;);
-console.log(&quot;半径为 4 的圆的面积是 %d&quot;, circle.area(4));
-</code></pre><p>在第一行中，foo.js 加载了同一目录下的 circle.js 模块。</p>
-<p>circle.js 文件的内容为：</p>
-<pre><code>const PI = Math.PI;
+        <ul>
+<li>全新的界面，更方便地浏览和管理</li>
+<li>全新的编辑器，支持自动补全，长按函数弹出帮助，插入函数，侧拉菜单帮助等</li>
+<li>全新的文档</li>
+<li>加入脚本交流社区，可以在社区直接提问、发布脚本、下载脚本</li>
+<li>支持定时任务</li>
+<li>简单的代码生成功能，对于简单情况的控件可以直接生成代码</li>
+<li>代码打包功能，可以把代码打包成apk，支持和图片等静态资源一起打包</li>
+<li>支持编写</li>
+<li>更丰富的函数和模块，包括找图找色、悬浮窗、多线程、本地存储、设备设置和信息等功能</li>
+</ul>
 
-var circle = {};
-
-circle.area = (r) =&gt; PI * r ** 2;
-
-circle.circumference = (r) =&gt; 2 * PI * r;
-
-module.exports = circle;
-</code></pre><p>circle.js 模块导出了 area() 和 circumference() 两个函数。 通过在特殊的 exports 对象上指定额外的属性，函数和对象可以被添加到模块的根部。</p>
-<p>模块内的本地变量是私有的。 在这个例子中，变量 PI 是 circle.js 私有的，不会影响到加载他的脚本的变量环境。</p>
-<p>module.exports属性可以被赋予一个新的值（例如函数或对象）。</p>
-<p>如下，bar.js 会用到 square 模块，square 导出一个构造函数：</p>
-<pre><code>const square = require(&#39;square.js&#39;);
-const mySquare = square(2);
-console.log(&quot;正方形的面积是 %d&quot;, mySquare.area());
-square 模块定义在 square.js 中：
-
-// 赋值给 `exports` 不会修改模块，必须使用 `module.exports`
-module.exports = function(width) {
-  return {
-    area: () =&gt; width ** 2
-  };
-};
-</code></pre>
       </div>
     </div>
   </div>
