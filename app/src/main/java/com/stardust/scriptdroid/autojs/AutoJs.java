@@ -8,6 +8,7 @@ import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.api.Console;
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.Pref;
@@ -73,6 +74,31 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         if (errorMessage != null) {
             AccessibilityServiceTool.goToAccessibilitySetting();
             throw new ScriptException(errorMessage);
+        }
+    }
+
+    @Override
+    public void waitForAccessibilityServiceEnabled() {
+        if (AccessibilityService.getInstance() != null) {
+            return;
+        }
+        String errorMessage = null;
+        if (AccessibilityServiceTool.isAccessibilityServiceEnabled(App.getApp())) {
+            errorMessage = App.getApp().getString(R.string.text_auto_operate_service_enabled_but_not_running);
+        } else {
+            if (Pref.shouldEnableAccessibilityServiceByRoot()) {
+                if (!AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(2000)) {
+                    errorMessage = App.getApp().getString(R.string.text_enable_accessibility_service_by_root_timeout);
+                }
+            } else {
+                errorMessage = App.getApp().getString(R.string.text_no_accessibility_permission);
+            }
+        }
+        if (errorMessage != null) {
+            AccessibilityServiceTool.goToAccessibilitySetting();
+            if (!com.stardust.scriptdroid.accessibility.AccessibilityService.waitForEnabled(-1)) {
+                throw new ScriptInterruptedException();
+            }
         }
     }
 

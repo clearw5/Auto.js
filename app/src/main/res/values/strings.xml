@@ -10,7 +10,7 @@
     <string name="text_path_is_empty">路径为空</string>
     <string name="text_file_not_exists">文件不存在</string>
     <string name="text_no_file_rw_permission">无文件读写权限</string>
-    <string name="text_no_accessibility_permission">无障碍服务未启动，脚本已停止运行</string>
+    <string name="text_no_accessibility_permission">无障碍服务未启动</string>
     <string name="text_drawer_close">关闭侧拉菜单</string>
     <string name="text_drawer_open">打开侧拉菜单</string>
     <string name="text_undo">撤销</string>
@@ -81,7 +81,7 @@
     <string name="text_file_exists">文件已存在</string>
     <string name="text_accessibility_service">无障碍服务</string>
     <string name="text_enable_accessibility_service_by_root">通过Root权限自动启用服务</string>
-    <string name="text_auto_operate_service_enabled_but_not_running">无障碍服务已启用但并未运行，这可能是安卓的BUG，您可能需要重启手机</string>
+    <string name="text_auto_operate_service_enabled_but_not_running">无障碍服务已启用但并未运行，这可能是安卓的BUG，您可能需要重启手机或重启无障碍服务</string>
     <string name="key_enable_accessibility_service_by_root">key_enable_accessibility_service_by_root</string>
     <string name="text_enable_accessibility_service_by_root_timeout">使用Root权限启动无障碍服务超时</string>
     <string name="summary_enable_accessibility_service_by_root">开启后运行脚本会使用Root权限自动开启无障碍服务</string>

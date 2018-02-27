@@ -1,72 +1,72 @@
 
-module.exports = function(__runtime__, scope){
-    scope.toast = function(text){
-        __runtime__.toast(text);
+module.exports = function(runtime, global){
+    global.toast = function(text){
+        runtime.toast(text);
     }
 
-    scope.toastLog = function(text){
-        __runtime__.toast(text);
-        scope.log(text);
+    global.toastLog = function(text){
+        runtime.toast(text);
+        global.log(text);
     }
 
-    scope.sleep = __runtime__.sleep.bind(__runtime__);
+    global.sleep = runtime.sleep.bind(runtime);
 
-    scope.isStopped = function(){
-        return __runtime__.isStopped();
+    global.isStopped = function(){
+        return runtime.isStopped();
     }
 
-    scope.isShuttingDown = scope.isShopped;
+    global.isShuttingDown = global.isShopped;
 
-    scope.notStopped = function(){
+    global.notStopped = function(){
         return !isStopped();
     }
 
-    scope.isRunning = scope.notStopped;
+    global.isRunning = global.notStopped;
 
-    scope.exit = __runtime__.exit.bind(__runtime__);
+    global.exit = runtime.exit.bind(runtime);
 
 
-    scope.stop = scope.exit;
+    global.stop = global.exit;
 
-    scope.setClip = function(text){
-        __runtime__.setClip(text);
+    global.setClip = function(text){
+        runtime.setClip(text);
     }
 
-    scope.getClip = function(text){
-       return __runtime__.getClip();
+    global.getClip = function(text){
+       return runtime.getClip();
     }
 
-    scope.currentPackage = function(){
-        scope.auto();
-        return __runtime__.info.getLatestPackage();
+    global.currentPackage = function(){
+        global.auto();
+        return runtime.info.getLatestPackage();
     }
 
-    scope.currentActivity = function(){
-        scope.auto();
-        return __runtime__.info.getLatestActivity();
+    global.currentActivity = function(){
+        global.auto();
+        return runtime.info.getLatestActivity();
     }
 
-    scope.waitForActivity = function(activity, period){
+    global.waitForActivity = function(activity, period){
         period = period || 200;
-        while(scope.currentActivity() != activity){
+        while(global.currentActivity() != activity){
             sleep(period);
         }
     }
 
-    scope.waitForPackage = function(packageName, period){
+    global.waitForPackage = function(packageName, period){
         period = period || 200;
-        while(scope.currentPackage() != packageName){
+        while(global.currentPackage() != packageName){
             sleep(period);
         }
     }
 
-    scope.random = function(min, max){
+    global.random = function(min, max){
         if(arguments.length == 0){
             return Math.random();
         }
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    scope.setScreenMetrics = __runtime__.setScreenMetrics.bind(__runtime__);
+    global.setScreenMetrics = runtime.setScreenMetrics.bind(runtime);
 
 }

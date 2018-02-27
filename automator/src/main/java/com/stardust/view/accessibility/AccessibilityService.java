@@ -152,6 +152,12 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
             return true;
         LOCK.lock();
         try {
+            if (instance != null)
+                return true;
+            if (timeOut == -1) {
+                ENABLED.await();
+                return true;
+            }
             return ENABLED.await(timeOut, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();

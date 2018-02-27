@@ -174,6 +174,8 @@ public abstract class AutoJs {
     }
 
 
+    public abstract void waitForAccessibilityServiceEnabled();
+
     protected AccessibilityConfig createAccessibilityConfig() {
         return new AccessibilityConfig();
     }
@@ -187,6 +189,11 @@ public abstract class AutoJs {
         @Override
         public void ensureServiceEnabled() {
             AutoJs.this.ensureAccessibilityServiceEnabled();
+        }
+
+        @Override
+        public void waitForServiceEnabled() {
+            AutoJs.this.waitForAccessibilityServiceEnabled();
         }
 
         @Nullable

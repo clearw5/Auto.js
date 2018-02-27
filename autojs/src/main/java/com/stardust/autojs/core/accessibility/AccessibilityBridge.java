@@ -29,6 +29,8 @@ public abstract class AccessibilityBridge {
 
     public abstract void ensureServiceEnabled();
 
+    public abstract void waitForServiceEnabled();
+
     @Nullable
     public abstract AccessibilityService getService();
 
