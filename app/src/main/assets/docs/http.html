@@ -118,8 +118,8 @@ http.get(&quot;www.baidu.com&quot;, {}, function(res, err){
         console.error(err);
         return;
     }
-    log(&quot;code = &quot; + r.statusCode);
-    log(&quot;html = &quot; + r.body.string());
+    log(&quot;code = &quot; + res.statusCode);
+    log(&quot;html = &quot; + res.body.string());
 });
 </code></pre><p>如果要增加HTTP头部信息，则在options参数中添加，例如：</p>
 <pre><code>console.show();

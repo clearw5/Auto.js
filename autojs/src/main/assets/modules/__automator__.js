@@ -111,18 +111,21 @@ module.exports = function(runtime, global){
 
     global.auto = function(mode){
         if(mode){
-            if(typeof(mode) !== "string"){
-                throw new TypeError("mode should be a string");
-            }
-            mode = modes[mode.toLowerCase()];
+            global.auto.setMode(mode);
         }
-        mode = mode || 0;
-        runtime.accessibilityBridge.setMode(mode);
         runtime.accessibilityBridge.ensureServiceEnabled();
     }
 
     global.auto.waitFor = function(){
         runtime.accessibilityBridge.waitForServiceEnabled();
+    }
+
+    global.auto.setMode = function(mode){
+        if(typeof(mode) !== "string"){
+            throw new TypeError("mode should be a string");
+        }
+        mode = modes[mode.toLowerCase()] || 0;
+        runtime.accessibilityBridge.setMode(mode);
     }
 
 

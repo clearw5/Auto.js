@@ -86,6 +86,7 @@
 <li><span class="stability_undefined"><a href="#app_app_uninstall_packagename">app.uninstall(packageName)</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_openurl_url">app.openUrl(url)</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_sendemail_options">app.sendEmail(options)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_startactivity_name">app.startActivity(name)</a></span></li>
 </ul>
 </li>
 <li><span class="stability_undefined"><a href="#app_intent">进阶: 意图Intent</a></span><ul>
@@ -191,6 +192,16 @@ app.sendEmail({
     subject: &quot;这是一个邮件标题&quot;,
     text: &quot;这是邮件正文&quot;
 });
+</code></pre><h2>app.startActivity(name)<span><a class="mark" href="#app_app_startactivity_name" id="app_app_startactivity_name">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 活动名称，可选的值为:<ul>
+<li><code>console</code> 日志界面</li>
+<li><code>settings</code> 设置界面</li>
+</ul>
+</li>
+</ul>
+</div><p>启动Auto.js的特定界面。该函数在Auto.js内运行则会打开Auto.js内的界面，在打包应用中运行则会打开打包应用的相应界面。</p>
+<pre><code>app.startActivity(&quot;console&quot;);
 </code></pre><h1>进阶: 意图Intent<span><a class="mark" href="#app_intent" id="app_intent">#</a></span></h1>
 <p>Intent(意图) 是一个消息传递对象，您可以使用它从其他应用组件请求操作。尽管 Intent 可以通过多种方式促进组件之间的通信，但其基本用例主要包括以下三个：</p>
 <ul>

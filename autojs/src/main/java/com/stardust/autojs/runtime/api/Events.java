@@ -9,8 +9,6 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.view.KeyEvent;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
@@ -29,6 +27,9 @@ import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.KeyInterceptor;
 import com.stardust.view.accessibility.NotificationListener;
 import com.stardust.view.accessibility.OnKeyListener;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Stardust on 2017/7/18.
@@ -50,8 +51,9 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     private boolean mListeningNotification = false;
     private boolean mListeningToast = false;
     private ScriptRuntime mScriptRuntime;
-    private volatile boolean mInterceptsKey = false;
+    private volatile boolean mInterceptsAllKey = false;
     private KeyInterceptor mKeyInterceptor;
+    private Set<String> mInterceptedKeys = new HashSet<>();
 
     public Events(Context context, AccessibilityBridge accessibilityBridge, ScriptRuntime runtime) {
         super(runtime.bridges);
@@ -105,11 +107,31 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     }
 
     public void setKeyInterceptionEnabled(boolean enabled) {
-        mInterceptsKey = enabled;
-        if (mInterceptsKey && mKeyInterceptor == null) {
-            mKeyInterceptor = event -> mInterceptsKey;
-            getAccessibilityService().getKeyInterrupterObserver().addKeyInterrupter(mKeyInterceptor);
+        mInterceptsAllKey = enabled;
+        if (mInterceptsAllKey) {
+            ensureKeyInterceptor();
         }
+    }
+
+    public void setKeyInterceptionEnabled(String key, boolean enabled) {
+        if (enabled) {
+            mInterceptedKeys.add(key);
+            ensureKeyInterceptor();
+        } else {
+            mInterceptedKeys.remove(key);
+        }
+    }
+
+    private void ensureKeyInterceptor() {
+        if (mKeyInterceptor != null)
+            return;
+        mKeyInterceptor = event -> {
+            if (mInterceptsAllKey)
+                return true;
+            String keyName = KeyEvent.keyCodeToString(event.getKeyCode()).substring(8).toLowerCase();
+            return mInterceptedKeys.contains(keyName);
+        };
+        getAccessibilityService().getKeyInterrupterObserver().addKeyInterrupter(mKeyInterceptor);
     }
 
     private AccessibilityService getAccessibilityService() {

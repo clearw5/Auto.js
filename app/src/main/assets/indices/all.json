@@ -514,6 +514,11 @@
         "summary": "监听按键"
       },
       {
+        "key": "setKeyInterceptionEnabled",
+        "url": "events.html#events_events_setkeyinterceptionenabled_key_enabled",
+        "summary": "屏蔽按键"
+      },
+      {
         "key": "observeTouch",
         "url": "events.html#events_events_observetouch",
         "summary": "监听触摸"
