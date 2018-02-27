@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
+import com.stardust.scriptdroid.autojs.key.GlobalKeyObserver;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,9 +25,12 @@ public class Pref {
 
     private static SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        public void onSharedPreferenceChanged(SharedPreferences p, String key) {
             if (key.equals(getString(R.string.key_guard_mode))) {
-                AccessibilityConfig.setIsUnintendedGuardEnabled(sharedPreferences.getBoolean(getString(R.string.key_guard_mode), false));
+                AccessibilityConfig.setIsUnintendedGuardEnabled(p.getBoolean(getString(R.string.key_guard_mode), false));
+            } else if ((key.equals(getString(R.string.key_use_volume_control_record)) || key.equals(getString(R.string.key_use_volume_control_running)))
+                    && p.getBoolean(key, false)) {
+                GlobalKeyObserver.init();
             }
         }
     };

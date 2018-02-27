@@ -81,7 +81,9 @@ public class App extends MultiDexApplication {
         ThemeColorManager.setDefaultThemeColor(new ThemeColor(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorPrimaryDark), getResources().getColor(R.color.colorAccent)));
         ThemeColorManager.init(this);
         AutoJs.initInstance(this);
-        GlobalKeyObserver.getSingleton();
+        if (Pref.isRunningVolumeControlEnabled()) {
+            GlobalKeyObserver.init();
+        }
         setupDrawableImageLoader();
         TimedTaskScheduler.setupRepeating(this);
     }

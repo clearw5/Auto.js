@@ -25,7 +25,7 @@ public class GlobalKeyObserver implements OnKeyListener, ShellKeyObserver.KeyLis
     private static final EventDispatcher.Event<OnVolumeDownListener> VOLUME_DOWN_EVENT = OnVolumeDownListener::onVolumeDown;
     private static final String LOG_TAG = "GlobalKeyObserver";
     private static final long EVENT_TIMEOUT = 200;
-    private static GlobalKeyObserver sSingleton = new GlobalKeyObserver();
+    private static GlobalKeyObserver sSingleton;
     private EventDispatcher<OnVolumeDownListener> mVolumeDownEventDispatcher = new EventDispatcher<>();
     private boolean mVolumeDownFromShell, mVolumeDownFromAccessibility;
     private boolean mVolumeUpFromShell, mVolumeUpFromAccessibility;
@@ -39,11 +39,14 @@ public class GlobalKeyObserver implements OnKeyListener, ShellKeyObserver.KeyLis
     }
 
     public static GlobalKeyObserver getSingleton() {
+        if (sSingleton == null) {
+            sSingleton = new GlobalKeyObserver();
+        }
         return sSingleton;
     }
 
     public static void init() {
-        //do nothing
+        getSingleton();
     }
 
     public void onVolumeUp() {
