@@ -151,6 +151,7 @@ public class CodeEditText extends AppCompatEditText {
         int lineNumberColor = mTheme.getLineNumberColor();
         if (DEBUG)
             Log.d(LOG_TAG, "draw line: " + (mLastLineForDraw - mFirstLineForDraw + 1));
+        mLogger.addSplit("before draw line");
         for (int line = mFirstLineForDraw; line <= mLastLineForDraw && line < lineCount; line++) {
             int lineBottom = layout.getLineTop(line + 1);
             int lineBaseline = lineBottom - layout.getLineDescent(line);
@@ -181,8 +182,6 @@ public class CodeEditText extends AppCompatEditText {
             } else {
                 previousColor = highlightTokens.colors[previousColorPos];
             }
-            if (DEBUG)
-                Log.d(LOG_TAG, "draw line " + line + ": " + (visibleCharEnd - visibleCharStart));
             int i;
             for (i = visibleCharStart; i < visibleCharEnd; i++) {
                 int color;
@@ -204,7 +203,9 @@ public class CodeEditText extends AppCompatEditText {
             paint.setColor(previousColor);
             float offsetX = paint.measureText(text, lineStart, previousColorPos);
             canvas.drawText(text, previousColorPos, visibleCharEnd, paddingLeft + offsetX, lineBaseline, paint);
-
+            if (DEBUG) {
+                mLogger.addSplit("draw line " + line + " (" + (visibleCharEnd - visibleCharStart) + ") ");
+            }
         }
     }
 
