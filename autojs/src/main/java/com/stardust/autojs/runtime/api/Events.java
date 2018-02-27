@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
@@ -24,6 +26,7 @@ import com.stardust.autojs.core.inputevent.InputEventObserver;
 import com.stardust.autojs.core.inputevent.TouchObserver;
 import com.stardust.view.accessibility.AccessibilityNotificationObserver;
 import com.stardust.view.accessibility.AccessibilityService;
+import com.stardust.view.accessibility.KeyInterceptor;
 import com.stardust.view.accessibility.NotificationListener;
 import com.stardust.view.accessibility.OnKeyListener;
 
@@ -47,6 +50,8 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     private boolean mListeningNotification = false;
     private boolean mListeningToast = false;
     private ScriptRuntime mScriptRuntime;
+    private volatile boolean mInterceptsKey = false;
+    private KeyInterceptor mKeyInterceptor;
 
     public Events(Context context, AccessibilityBridge accessibilityBridge, ScriptRuntime runtime) {
         super(runtime.bridges);
@@ -72,10 +77,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     public void observeKey() {
         if (mListeningKey)
             return;
-        mScriptRuntime.ensureAccessibilityServiceEnabled();
-        AccessibilityService service = mAccessibilityBridge.getService();
-        if (service == null)
-            throw new ScriptException("AccessibilityService = null");
+        AccessibilityService service = getAccessibilityService();
         if ((service.getServiceInfo().flags & AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS) == 0) {
             throw new ScriptException(mContext.getString(R.string.text_should_enable_key_observing));
         }
@@ -101,6 +103,23 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
         mTouchObserver.setOnTouchEventListener(this);
         mTouchObserver.observe();
     }
+
+    public void setKeyInterceptionEnabled(boolean enabled) {
+        mInterceptsKey = enabled;
+        if (mInterceptsKey && mKeyInterceptor == null) {
+            mKeyInterceptor = event -> mInterceptsKey;
+            getAccessibilityService().getKeyInterrupterObserver().addKeyInterrupter(mKeyInterceptor);
+        }
+    }
+
+    private AccessibilityService getAccessibilityService() {
+        mScriptRuntime.ensureAccessibilityServiceEnabled();
+        AccessibilityService service = mAccessibilityBridge.getService();
+        if (service == null)
+            throw new ScriptException("AccessibilityService = null");
+        return service;
+    }
+
 
     public Events onKeyDown(String keyName, Object listener) {
         on(PREFIX_KEY_DOWN + keyName, listener);
@@ -207,6 +226,13 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
                 NotificationListenerService.getInstance().removeListener(this);
             }
         }
+        if (mKeyInterceptor != null) {
+            AccessibilityService service = mAccessibilityBridge.getService();
+            if (service != null) {
+                service.getKeyInterrupterObserver().removeKeyInterrupter(mKeyInterceptor);
+            }
+            mKeyInterceptor = null;
+        }
     }
 
     @Override
@@ -243,4 +269,5 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     public void onToast(final AccessibilityNotificationObserver.Toast toast) {
         mHandler.post(() -> emit("toast", toast));
     }
+
 }
