@@ -8,8 +8,8 @@ android {
         applicationId "com.stardust.auojs.inrt"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 34
-        versionName "1.0.0 Alpha34"
+        versionCode 56
+        versionName "1.1.0 Alpha6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             abiFilters 'armeabi-v7a'

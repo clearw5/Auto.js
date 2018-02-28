@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.stardust.auojs.inrt.autojs.AutoJs;
 import com.stardust.auojs.inrt.launch.AssetsProjectLauncher;
@@ -38,7 +39,7 @@ public class LogActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ConsoleView consoleView = (ConsoleView) findViewById(R.id.console);
         consoleView.setConsole((StardustConsole) AutoJs.getInstance().getGlobalConsole());
-
+        consoleView.findViewById(R.id.input_container).setVisibility(View.GONE);
     }
 
     @Override

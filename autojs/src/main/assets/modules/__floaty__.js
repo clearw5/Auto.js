@@ -1,18 +1,18 @@
 
-module.exports = function(__runtime__, scope){
+module.exports = function(runtime, global){
     var floaty = {};
 
     floaty.window = function(layout){
         if(typeof(layout) == 'xml'){
             layout = layout.toString();
         }
-        return wrap(__runtime__.floaty.window(layout));
+        return wrap(runtime.floaty.window(layout));
     }
 
     floaty.__view_cache__ = {};
 
     function wrap(window){
-        var proxyObject = new com.stardust.autojs.rhino.ProxyJavaObject(scope, window, window.getClass());
+        var proxyObject = new com.stardust.autojs.rhino.ProxyJavaObject(global, window, window.getClass());
         proxyObject.__proxy__ = {
             set: function(name, value){
                 window[name] = value;
@@ -37,6 +37,8 @@ module.exports = function(__runtime__, scope){
         };
         return proxyObject;
     }
+    
+    floaty.closeAll = runtime.floaty.closeAll.bind(runtime.floaty);
 
     return floaty;
 }
