@@ -169,17 +169,6 @@ public class UiSelector extends UiGlobalSelector {
 
     public UiObject findOnce(int index) {
         UiObjectCollection uiObjectCollection = find();
-        while (uiObjectCollection.empty()) {
-            if (Thread.currentThread().isInterrupted()) {
-                throw new ScriptInterruptedException();
-            }
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                throw new ScriptInterruptedException();
-            }
-            uiObjectCollection = find();
-        }
         if (index >= uiObjectCollection.size()) {
             return null;
         }

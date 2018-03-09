@@ -167,10 +167,10 @@ public class DeveloperUtils {
                     a.finish();
                     return;
                 }
-                //long[] crc = readCrc(a.getString(crcRes));
-                //if (!checkDexFile(a, crc)) {
-                //  a.finish();
-                //}
+                long[] crc = readCrc(a.getString(crcRes));
+                if (!checkDexFile(a, crc)) {
+                  a.finish();
+                }
 
             }
         });
