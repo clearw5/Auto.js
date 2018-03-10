@@ -11,7 +11,7 @@ module.exports = function(__runtime__, scope){
       }
       if (i.extras) {
           for (var key in i.extras) {
-              intent.putExtra(key, i.extras[key].toString());
+              intent.putExtra(key, i.extras[key]);
           }
       }
       if (i.category) {
