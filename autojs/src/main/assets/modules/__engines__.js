@@ -28,12 +28,12 @@ module.exports = function(__runtime__, scope){
         c = c || {};
         c.path = c.path || files.cwd();
         if(c.path){
-            if(typeof(c.path) == "string"){
-                config.requirePath([c.path]);
-                config.executePath(c.path);
-            }else{
+            if(Array.isArray(c.path)){
                 config.requirePath(c.path);
                 config.executePath(c.path[0]);
+            }else{
+                config.requirePath([c.path]);
+                config.executePath(c.path);
             }
         }
         c.delay = c.delay || 0;
