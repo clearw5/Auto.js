@@ -57,6 +57,12 @@ public class TimerThread extends ThreadCompat {
         }
     }
 
+    @Override
+    public void interrupt() {
+        LooperHelper.quitForThread(this);
+        super.interrupt();
+    }
+
     private void notifyRunning() {
         synchronized (mRunningLock) {
             mRunning = true;

@@ -170,7 +170,7 @@ public class CodeEditText extends AppCompatEditText {
             if (lineStart >= textLength) {
                 return;
             }
-            int lineEnd = layout.getLineVisibleEnd(line);
+            int lineEnd = Math.min(layout.getLineVisibleEnd(line), highlightTokens.colors.length);
             int visibleCharStart = getVisibleCharIndex(paint, scrollX, lineStart, lineEnd);
             int visibleCharEnd = getVisibleCharIndex(paint, scrollX + mParentScrollView.getWidth(), lineStart, lineEnd) + 1;
             int previousColorPos = visibleCharStart;
