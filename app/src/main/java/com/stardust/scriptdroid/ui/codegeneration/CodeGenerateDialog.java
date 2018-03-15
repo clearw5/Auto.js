@@ -126,7 +126,7 @@ public class CodeGenerateDialog extends ThemeColorMaterialDialogBuilder {
         if (selectMode.getOption(R.string.text_wait_for).checked) {
             return CodeGenerator.WAIT_FOR;
         }
-        if (selectMode.getOption(R.string.text_wait_for).checked) {
+        if (selectMode.getOption(R.string.text_selector_exists).checked) {
             return CodeGenerator.EXISTS;
         }
         return CodeGenerator.FIND_ONE;

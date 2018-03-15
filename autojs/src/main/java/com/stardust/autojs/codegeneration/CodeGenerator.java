@@ -66,15 +66,12 @@ public class CodeGenerator {
         generator.setUsingDesc(mUsingDesc);
         generator.setUsingId(mUsingId);
         generator.setUsingText(mUsingText);
-        String selector = generateCode(generator, mRoot, mTarget, 2, 2);
+        String selector = generateCode(generator, mRoot, mTarget, 2, 2, true);
         if (selector == null)
             return null;
         return generateAction(selector);
     }
 
-    protected String generateCode(UiSelectorGenerator generator, UiObject root, UiObject target, int maxParentLevel, int maxChildrenLevel) {
-        return generateCode(generator, root, target, maxParentLevel, maxChildrenLevel, true);
-    }
 
     protected String generateCode(UiSelectorGenerator generator, UiObject root, UiObject target, int maxParentLevel, int maxChildrenLevel, boolean withFind) {
         String selector;
