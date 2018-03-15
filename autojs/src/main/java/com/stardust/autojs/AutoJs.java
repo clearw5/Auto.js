@@ -3,6 +3,7 @@ package com.stardust.autojs;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -215,6 +216,16 @@ public abstract class AutoJs {
     }
 
     private class ScreenCaptureRequesterImpl extends ScreenCaptureRequester.AbstractScreenCaptureRequester {
+
+
+        @Override
+        public void setOnActivityResultCallback(Callback callback) {
+            super.setOnActivityResultCallback((result, data) -> {
+                mResult = data;
+                callback.onRequestResult(result, data);
+            });
+        }
+
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void request() {

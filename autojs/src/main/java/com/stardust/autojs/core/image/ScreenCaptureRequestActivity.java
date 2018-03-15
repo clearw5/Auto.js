@@ -30,13 +30,23 @@ public class ScreenCaptureRequestActivity extends Activity {
     }
 
     private OnActivityResultDelegate.Mediator mOnActivityResultDelegateMediator = new OnActivityResultDelegate.Mediator();
+    private ScreenCaptureRequester mScreenCaptureRequester;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ScreenCaptureRequester requester = new ScreenCaptureRequester.ActivityScreenCaptureRequester(mOnActivityResultDelegateMediator, this);
-        requester.setOnActivityResultCallback(sCallback);
-        requester.request();
+        mScreenCaptureRequester = new ScreenCaptureRequester.ActivityScreenCaptureRequester(mOnActivityResultDelegateMediator, this);
+        mScreenCaptureRequester.setOnActivityResultCallback(sCallback);
+        mScreenCaptureRequester.request();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mScreenCaptureRequester == null)
+            return;
+        mScreenCaptureRequester.cancel();
+        mScreenCaptureRequester = null;
     }
 
     @Override

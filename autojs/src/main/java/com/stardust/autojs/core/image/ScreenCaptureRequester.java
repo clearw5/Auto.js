@@ -15,6 +15,8 @@ import com.stardust.app.OnActivityResultDelegate;
 
 public interface ScreenCaptureRequester {
 
+    void cancel();
+
     interface Callback {
 
         void onRequestResult(int result, Intent data);
@@ -28,10 +30,25 @@ public interface ScreenCaptureRequester {
     abstract class AbstractScreenCaptureRequester implements ScreenCaptureRequester {
 
         protected Callback mCallback;
+        protected Intent mResult;
 
         @Override
         public void setOnActivityResultCallback(Callback callback) {
             mCallback = callback;
+        }
+
+        public void onResult(int resultCode, Intent data) {
+            mResult = data;
+            if (mCallback != null)
+                mCallback.onRequestResult(resultCode, data);
+        }
+
+        @Override
+        public void cancel() {
+            if (mResult != null)
+                return;
+            if (mCallback != null)
+                mCallback.onRequestResult(Activity.RESULT_CANCELED, null);
         }
     }
 
@@ -48,6 +65,7 @@ public interface ScreenCaptureRequester {
             mMediator.addDelegate(REQUEST_CODE_MEDIA_PROJECTION, this);
         }
 
+
         @Override
         public void request() {
             mActivity.startActivityForResult(((MediaProjectionManager) mActivity.getSystemService(Context.MEDIA_PROJECTION_SERVICE)).createScreenCaptureIntent(), REQUEST_CODE_MEDIA_PROJECTION);
@@ -55,9 +73,9 @@ public interface ScreenCaptureRequester {
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            mResult = data;
             mMediator.removeDelegate(this);
-            if (mCallback != null)
-                mCallback.onRequestResult(resultCode, data);
+            onResult(resultCode, data);
         }
     }
 
