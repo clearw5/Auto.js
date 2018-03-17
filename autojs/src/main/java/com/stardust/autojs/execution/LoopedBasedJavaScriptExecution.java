@@ -23,10 +23,6 @@ public class LoopedBasedJavaScriptExecution extends RunnableScriptExecution {
         long delay = getConfig().delay;
         sleep(delay);
         final LoopBasedJavaScriptEngine javaScriptEngine = (LoopBasedJavaScriptEngine) engine;
-        javaScriptEngine.setUncaughtExceptionHandler((t, e) -> {
-            javaScriptEngine.forceStop();
-            getListener().onException(this, (Exception) e);
-        });
         final long interval = getConfig().interval;
         javaScriptEngine.getRuntime().loopers.setMainLooperQuitHandler(new Loopers.LooperQuitHandler() {
             long times = getConfig().loopTimes == 0 ? Integer.MAX_VALUE : getConfig().loopTimes;

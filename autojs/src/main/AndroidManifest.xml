@@ -13,6 +13,7 @@
         >
         <activity
             android:name=".execution.ScriptExecuteActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme"/>
 
 

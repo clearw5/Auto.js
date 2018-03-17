@@ -87,7 +87,7 @@ public class TimerThread extends ThreadCompat {
         return getTimer().setTimeout(callback, delay, args);
     }
 
-    private Timer getTimer() {
+    public Timer getTimer() {
         if (mTimer == null) {
             throw new IllegalStateException("thread is not alive");
         }

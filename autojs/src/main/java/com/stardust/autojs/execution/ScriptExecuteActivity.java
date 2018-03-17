@@ -1,5 +1,6 @@
 package com.stardust.autojs.execution;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
 import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
+import com.stardust.autojs.engine.ScriptEngineProxy;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.util.IntentExtras;
 
@@ -16,7 +18,7 @@ import com.stardust.util.IntentExtras;
  * Created by Stardust on 2017/2/5.
  */
 
-public class ScriptExecuteActivity extends AppCompatActivity implements Thread.UncaughtExceptionHandler {
+public class ScriptExecuteActivity extends AppCompatActivity {
 
 
     private static final String EXTRA_EXECUTION = ScriptExecuteActivity.class.getName() + ".execution";
@@ -24,7 +26,8 @@ public class ScriptExecuteActivity extends AppCompatActivity implements Thread.U
     private ScriptEngine mScriptEngine;
     private ScriptExecutionListener mExecutionListener;
     private ScriptSource mScriptSource;
-    private ScriptExecution mScriptExecution;
+    private ActivityScriptExecution mScriptExecution;
+    private IntentExtras mIntentExtras;
 
     public static ActivityScriptExecution execute(Context context, ScriptEngineManager manager, ScriptExecutionTask task) {
         ActivityScriptExecution execution = new ActivityScriptExecution(manager, task);
@@ -37,20 +40,32 @@ public class ScriptExecuteActivity extends AppCompatActivity implements Thread.U
         return execution;
     }
 
+    // FIXME: 2018/3/16 如果Activity被回收则得不到改进
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        IntentExtras extras = IntentExtras.fromIntent(getIntent());
-        if (extras.get(EXTRA_EXECUTION) == null) {
+        mIntentExtras = readIntentExtras(savedInstanceState);
+        if (mIntentExtras == null || mIntentExtras.get(EXTRA_EXECUTION) == null) {
             finish();
             return;
         }
-        mScriptExecution = extras.get(EXTRA_EXECUTION);
+        mScriptExecution = mIntentExtras.get(EXTRA_EXECUTION);
         mScriptSource = mScriptExecution.getSource();
-        mScriptEngine = mScriptExecution.getEngine();
+        mScriptEngine = mScriptExecution.createEngine(this);
         mExecutionListener = mScriptExecution.getListener();
-        ((RhinoJavaScriptEngine) mScriptEngine).setUncaughtExceptionHandler((t, e) -> onException((Exception) e));
         runScript();
+    }
+
+    private IntentExtras readIntentExtras(Bundle savedInstanceState) {
+        IntentExtras extras = IntentExtras.fromIntent(getIntent());
+        if (extras == null && savedInstanceState != null) {
+            int id = savedInstanceState.getInt(IntentExtras.EXTRA_ID, -1);
+            if (id == -1) {
+                return null;
+            }
+            extras = IntentExtras.fromId(id);
+        }
+        return extras;
     }
 
     private void runScript() {
@@ -93,7 +108,12 @@ public class ScriptExecuteActivity extends AppCompatActivity implements Thread.U
 
     @Override
     public void finish() {
-        mExecutionListener.onSuccess(mScriptExecution, mResult);
+        Exception exception = mScriptEngine.getUncaughtException();
+        if (exception != null) {
+            onException(exception);
+        } else {
+            mExecutionListener.onSuccess(mScriptExecution, mResult);
+        }
         super.finish();
     }
 
@@ -106,8 +126,12 @@ public class ScriptExecuteActivity extends AppCompatActivity implements Thread.U
     }
 
     @Override
-    public void uncaughtException(Thread t, Throwable e) {
-        onException((Exception) e);
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mIntentExtras == null)
+            return;
+        IntentExtras extras = IntentExtras.newExtras().putAll(mIntentExtras);
+        outState.putInt(IntentExtras.EXTRA_ID, extras.getId());
     }
 
     private static class ActivityScriptExecution extends ScriptExecution.AbstractScriptExecution {
@@ -120,12 +144,23 @@ public class ScriptExecuteActivity extends AppCompatActivity implements Thread.U
             mScriptEngineManager = manager;
         }
 
+        @SuppressWarnings("unchecked")
+        public ScriptEngine createEngine(Activity activity) {
+            if (mScriptEngine != null) {
+                mScriptEngine.forceStop();
+            }
+            mScriptEngine = new ScriptEngineProxy(mScriptEngineManager.createEngineOfSourceOrThrow(getSource())) {
+                @Override
+                public void forceStop() {
+                    super.forceStop();
+                    activity.finish();
+                }
+            };
+            return mScriptEngine;
+        }
 
         @Override
         public ScriptEngine getEngine() {
-            if (mScriptEngine == null) {
-                mScriptEngine = mScriptEngineManager.createEngineOfSourceOrThrow(getSource());
-            }
             return mScriptEngine;
         }
 

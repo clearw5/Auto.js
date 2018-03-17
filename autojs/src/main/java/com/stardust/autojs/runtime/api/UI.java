@@ -3,10 +3,12 @@ package com.stardust.autojs.runtime.api;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
+import com.stardust.autojs.core.graphics.ScriptCanvasView;
 import com.stardust.autojs.core.ui.ConvertLayoutInflater;
 import com.stardust.autojs.core.ui.JsLayoutInflater;
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
 import com.stardust.autojs.core.ui.inflater.ValueParser;
+import com.stardust.autojs.core.ui.inflater.attrsetter.CanvasViewAttrSetter;
 import com.stardust.autojs.core.ui.inflater.attrsetter.JsImageViewAttrSetter;
 import com.stardust.autojs.core.ui.widget.JsImageView;
 import com.stardust.autojs.rhino.ProxyObject;
@@ -38,6 +40,8 @@ public class UI extends ProxyObject {
         DynamicLayoutInflater inflater = new DynamicLayoutInflater(mValueParser);
         inflater.registerViewAttrSetter(JsImageView.class.getName(),
                 new JsImageViewAttrSetter(mValueParser));
+        inflater.registerViewAttrSetter(ScriptCanvasView.class.getName(),
+                new CanvasViewAttrSetter(mValueParser, runtime));
         mJsLayoutInflater = new ConvertLayoutInflater(inflater);
         mProperties.put("layoutInflater", mJsLayoutInflater);
     }

@@ -12,6 +12,7 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
+import com.stardust.autojs.core.graphics.ScriptCanvasView;
 import com.stardust.autojs.core.ui.widget.JsButton;
 import com.stardust.autojs.core.ui.widget.JsEditText;
 import com.stardust.autojs.core.ui.widget.JsFrameLayout;
@@ -64,6 +65,7 @@ public class XmlConverter {
                     .map("checkbox", CheckBox.class.getName())
                     .map("scroll", ScrollView.class.getName())
                     .map("toolbar", Toolbar.class.getName())
+                    .map("canvas", ScriptCanvasView.class.getName())
             );
 
     private static final AttributeHandler ATTRIBUTE_HANDLER = new AttributeHandler.AttrNameRouter()

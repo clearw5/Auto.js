@@ -9,6 +9,7 @@ import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.image.Colors;
+import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.rhino.AndroidClassLoader;
@@ -321,22 +322,10 @@ public class ScriptRuntime {
         }
     }
 
-    public void exit(Object obj) throws Throwable {
-        mThread.interrupt();
-        if (!(obj instanceof Throwable)) {
-            console.error(obj);
-            return;
-        }
-        Throwable e = (Exception) obj;
+    public void exit(Exception e) {
+        engines.myEngine().uncaughtException(e);
         if (Looper.myLooper() != Looper.getMainLooper()) {
-            throw e;
-        } else {
-            Thread.UncaughtExceptionHandler handler = ((RhinoJavaScriptEngine) engines.myEngine()).getUncaughtExceptionHandler();
-            if (handler != null) {
-                handler.uncaughtException(Thread.currentThread(), e);
-            } else {
-                console.error(e);
-            }
+            throw new ScriptException(e);
         }
     }
 

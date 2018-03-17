@@ -96,12 +96,15 @@ runtime.init();
 
     importClass(android.view.KeyEvent);
     importClass(com.stardust.autojs.core.util.Shell);
+    importClass(android.graphics.Paint);
 
     //重定向require以便支持相对路径
     (function(){
         var __require__ = require;
         global.require = function(path){
-            path = files.path(path);
+            if(!path.startsWith("http://") && !path.startsWith("https://")){
+               path = files.path(path);
+            }
             return __require__(path);
         };
     })();

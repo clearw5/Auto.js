@@ -76,9 +76,10 @@ public class AboutActivity extends BaseActivity {
     @Click(R.id.icon)
     void lol() {
         mLolClickCount++;
-        Toast.makeText(this, R.string.text_lll, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, R.string.text_lll, Toast.LENGTH_LONG).show();
         if (mLolClickCount >= 5) {
-            crashTest();
+            //crashTest();
+            showEasterEgg();
         }
     }
 
@@ -92,11 +93,8 @@ public class AboutActivity extends BaseActivity {
         new ThemeColorMaterialDialogBuilder(this)
                 .title("Crash Test")
                 .positiveText("Crash")
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        throw new RuntimeException("Crash Test");
-                    }
+                .onPositive((dialog, which) -> {
+                    throw new RuntimeException("Crash Test");
                 }).show();
     }
 

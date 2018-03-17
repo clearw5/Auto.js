@@ -96,14 +96,15 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
         TokenStream ts = new TokenStream(null, sourceString, 0);
         HighlightTokens highlightTokens = new HighlightTokens(sourceString);
         int token;
+        int color = mTheme.getColorForToken(Token.NAME);
         while ((token = ts.getToken()) != Token.EOF) {
             if (mRunningHighlighterId.get() != id)
                 return;
-            int color = mTheme.getColorForToken(token);
+            color = mTheme.getColorForToken(token);
             highlightTokens.addToken(ts.getTokenBeg(), ts.getTokenEnd(), color);
         }
         if (highlightTokens.getCharCount() < sourceString.length()) {
-            highlightTokens.addToken(highlightTokens.getCharCount(), sourceString.length(), mTheme.getColorForToken(Token.NAME));
+            highlightTokens.addToken(highlightTokens.getCharCount(), sourceString.length(), color);
         }
         mCodeEditText.updateHighlightTokens(highlightTokens);
     }

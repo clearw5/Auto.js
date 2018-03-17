@@ -44,7 +44,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     private Scriptable mScriptable;
     private Thread mThread;
     private android.content.Context mAndroidContext;
-    private Thread.UncaughtExceptionHandler mUncaughtExceptionHandler;
 
     public RhinoJavaScriptEngine(android.content.Context context) {
         mAndroidContext = context;
@@ -157,14 +156,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         context.setWrapFactory(new WrapFactory());
     }
 
-    public void setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler uiThreadExceptionHandler) {
-        mUncaughtExceptionHandler = uiThreadExceptionHandler;
-    }
-
-    public Thread.UncaughtExceptionHandler getUncaughtExceptionHandler() {
-        return mUncaughtExceptionHandler;
-    }
-
     private class WrapFactory extends org.mozilla.javascript.WrapFactory {
 
         @Override
@@ -208,7 +199,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
                 try {
                     return super.doTopCall(callable, cx, scope, thisObj, args);
                 } catch (Exception e) {
-                    mUncaughtExceptionHandler.uncaughtException(Thread.currentThread(), e);
+                    getRuntime().exit(e);
                     return null;
                 }
             }

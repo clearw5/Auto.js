@@ -110,6 +110,10 @@ public class EventEmitter {
         mBridges = bridges;
     }
 
+    protected void setTimer(Timer timer) {
+        mTimer = timer;
+    }
+
     public EventEmitter once(String eventName, Object listener) {
         getListeners(eventName).add(listener, true);
         return this;

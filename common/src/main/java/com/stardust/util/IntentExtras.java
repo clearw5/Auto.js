@@ -14,8 +14,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class IntentExtras implements Serializable {
 
+    public static final String EXTRA_ID = "com.stardust.util.IntentExtras.id";
+
     private static AtomicInteger mMaxId = new AtomicInteger(-1);
-    private static final String EXTRA_ID = "com.stardust.util.IntentExtras.id";
     private static SparseArray<Map<String, Object>> extraStore = new SparseArray<>();
 
 
@@ -26,9 +27,18 @@ public class IntentExtras implements Serializable {
     public static IntentExtras fromIntent(Intent intent) {
         int id = intent.getIntExtra(EXTRA_ID, -1);
         if (id < 0) {
-            throw new IllegalArgumentException();
+            return null;
         }
-        return new IntentExtras(id);
+        return fromId(id);
+    }
+
+    public static IntentExtras fromId(int id) {
+        Map<String, Object> map = extraStore.get(id);
+        if (map == null) {
+            return null;
+        }
+        extraStore.remove(id);
+        return new IntentExtras(id, map);
     }
 
     private Map<String, Object> mMap;
@@ -41,15 +51,14 @@ public class IntentExtras implements Serializable {
     }
 
 
-    private IntentExtras(int id) {
+    private IntentExtras(int id, Map<String, Object> map) {
         mId = id;
-        mMap = extraStore.get(id);
-        if (mMap == null) {
-            mMap = new HashMap<>();
-        }
-        extraStore.remove(id);
+        mMap = map;
     }
 
+    public int getId() {
+        return mId;
+    }
 
     @SuppressWarnings("unchecked")
     public <T> T get(String key) {
@@ -61,8 +70,15 @@ public class IntentExtras implements Serializable {
         return this;
     }
 
+    public IntentExtras putAll(IntentExtras extras) {
+        mMap.putAll(extras.mMap);
+        return this;
+    }
+
     public Intent putInIntent(Intent intent) {
         intent.putExtra(EXTRA_ID, mId);
         return intent;
     }
+
+
 }
