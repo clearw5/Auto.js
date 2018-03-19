@@ -14,6 +14,10 @@ public class ScriptEngineProxy<S extends ScriptSource> implements ScriptEngine<S
         mScriptEngine = scriptEngine;
     }
 
+    public ScriptEngine<S> getInner() {
+        return mScriptEngine;
+    }
+
     @Override
     public void put(String name, Object value) {
         mScriptEngine.put(name, value);

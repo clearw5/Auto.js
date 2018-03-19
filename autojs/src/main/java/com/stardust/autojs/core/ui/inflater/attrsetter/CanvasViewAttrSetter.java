@@ -27,6 +27,6 @@ public class CanvasViewAttrSetter extends BaseViewAttrSetter<ScriptCanvasView> {
     @Nullable
     @Override
     public ViewCreator<ScriptCanvasView> getCreator() {
-        return (context, attrs) -> new ScriptCanvasView(context, new EventEmitter(mScriptRuntime.bridges));
+        return (context, attrs) -> new ScriptCanvasView(context, mScriptRuntime);
     }
 }

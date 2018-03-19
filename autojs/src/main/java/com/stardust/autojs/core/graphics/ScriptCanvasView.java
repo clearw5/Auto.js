@@ -9,6 +9,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.stardust.autojs.core.eventloop.EventEmitter;
+import com.stardust.autojs.runtime.ScriptRuntime;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,11 +26,13 @@ public class ScriptCanvasView extends SurfaceView implements SurfaceHolder.Callb
     private EventEmitter mEventEmitter;
     private final SurfaceHolder mHolder;
     private ExecutorService mDrawingThreadPool;
+    private ScriptRuntime mScriptRuntime;
 
 
-    public ScriptCanvasView(Context context, EventEmitter eventEmitter) {
+    public ScriptCanvasView(Context context, ScriptRuntime scriptRuntime) {
         super(context);
-        mEventEmitter = eventEmitter;
+        mScriptRuntime = scriptRuntime;
+        mEventEmitter = new EventEmitter(mScriptRuntime.bridges);
         mHolder = getHolder();
         init();
     }
@@ -52,14 +55,24 @@ public class ScriptCanvasView extends SurfaceView implements SurfaceHolder.Callb
         if (mDrawingThreadPool == null)
             mDrawingThreadPool = Executors.newCachedThreadPool();
         mDrawingThreadPool.execute(() -> {
+            Canvas canvas = null;
             SurfaceHolder holder = getHolder();
-            while (mDrawing) {
-                Canvas canvas = holder.lockCanvas();
-                canvas.drawColor(Color.WHITE);
-                emit("draw", canvas, this);
-                holder.unlockCanvasAndPost(canvas);
+            try {
+                while (mDrawing) {
+                    canvas = holder.lockCanvas();
+                    canvas.drawColor(Color.WHITE);
+                    emit("draw", canvas, this);
+                    holder.unlockCanvasAndPost(canvas);
+                    canvas = null;
+                }
+            } catch (Exception e) {
+                mScriptRuntime.exit(e);
+                mDrawing = false;
+            } finally {
+                if (canvas != null) {
+                    holder.unlockCanvasAndPost(canvas);
+                }
             }
-            Log.d(LOG_TAG, "drawing thread: mRunning = false");
         });
     }
 

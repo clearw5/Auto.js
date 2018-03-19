@@ -101,6 +101,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
 
     private void prepare() {
         mScriptEngine.put("activity", this);
+        mScriptEngine.setTag("activity", this);
         mScriptEngine.setTag(ScriptEngine.TAG_ENV_PATH, mScriptExecution.getConfig().getRequirePath());
         mScriptEngine.setTag(ScriptEngine.TAG_EXECUTE_PATH, mScriptExecution.getConfig().getExecutePath());
         mScriptEngine.init();
@@ -121,6 +122,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mScriptEngine.put("activity", null);
+        mScriptEngine.setTag("activity", null);
         mScriptEngine.destroy();
         mScriptExecution = null;
     }
@@ -149,13 +151,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
             if (mScriptEngine != null) {
                 mScriptEngine.forceStop();
             }
-            mScriptEngine = new ScriptEngineProxy(mScriptEngineManager.createEngineOfSourceOrThrow(getSource())) {
-                @Override
-                public void forceStop() {
-                    super.forceStop();
-                    activity.finish();
-                }
-            };
+            mScriptEngine = mScriptEngineManager.createEngineOfSourceOrThrow(getSource());
             return mScriptEngine;
         }
 
