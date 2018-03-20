@@ -68,7 +68,6 @@ runtime.init();
         try{
            return action();
         }catch(err){
-            log(err.toString());
             if(err instanceof java.lang.Throwable){
                 exit(err);
             }else if(err instanceof Error){
@@ -101,11 +100,18 @@ runtime.init();
     //重定向require以便支持相对路径
     (function(){
         var __require__ = require;
+        var builtInModules = ["lodash.js"];
         global.require = function(path){
-            if(!path.startsWith("http://") && !path.startsWith("https://")){
-               path = files.path(path);
+            if(!path.endsWith(".js")){
+                path = path + ".js";
             }
-            return __require__(path);
+            if(builtInModules.indexOf(path) >= 0 && !files.exists(path)){
+                return __require__(path);
+            }
+            if(path.startsWith("http://") || path.startsWith("https://")){
+               return __require__(path);
+            }
+            return __require__(files.path(path));
         };
     })();
 

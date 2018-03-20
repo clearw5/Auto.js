@@ -80,7 +80,71 @@ module.exports = function(__runtime__, scope){
     }
 
     function decorate(view){
-        var view = Object.create(view);
+        var view = scope.events.__asEmitter__(Object.create(view));
+        var gestureDetector = new android.view.GestureDetector(context, {
+            onDown: function(e){
+                e = wrapMotionEvent(e);
+                scope.__exitIfError__(function(){
+                    view.emit("touch_down", e, view);
+                });
+                return e.consumed;
+            },
+            onShowPress: function(e){
+                e = wrapMotionEvent(e);
+                view.emit("show_press", e, view);
+            },
+            onSingleTapUp: function(e){
+               e = wrapMotionEvent(e);
+               scope.__exitIfError__(function(){
+                    view.emit("single_tap", e, view);
+               });
+               return e.consumed;
+            },
+            onScroll: function(e1, e2, distanceX, distanceY){
+                 e1 = wrapMotionEvent(e1);
+                 e2 = wrapMotionEvent(e2);
+                 scope.__exitIfError__(function(){
+                    view.emit("scroll", e1, e2, distanceX, distanceY, view);
+                 });
+                 return e1.consumed || e2.consumed;
+            },
+            onLongPress: function(e){
+                 e = wrapMotionEvent(e);
+                 view.emit("long_press", e, view);
+            },
+            onFling: function(e1, e2, velocityX, velocityY){
+                 e1 = wrapMotionEvent(e1);
+                 e2 = wrapMotionEvent(e2);
+                 scope.__exitIfError__(function(){
+                    view.emit("fling", e1, e2, velocityX, velocityY, view);
+                 });
+                 return e1.consumed || e2.consumed;
+            }
+        });
+        view.setOnTouchListener(function(v, event){
+            event = wrapMotionEvent(event);
+            event.consumed = false;
+            scope.__exitIfError__(function(){
+               view.emit("touch", event, view);
+            });
+            return event.consumed;
+        })
+        view.setOnLongClickListener(function(v){
+            var event = {};
+            event.consumed = false;
+            scope.__exitIfError__(function(){
+               view.emit("long_click", event, view);
+            });
+            return event.consumed;
+        });
+        view.setOnClickListener(function(v){
+            view.emit("click", view);
+        });
+        if(typeof(view.setOnCheckedChangeListener) == 'function'){
+            view.setOnCheckedChangeListener(function(v, isChecked){
+                view.emit("check", isChecked, view);
+            });
+        }
         view._id = function(id){
             return ui.findByStringId(view, id);
         }
@@ -110,6 +174,12 @@ module.exports = function(__runtime__, scope){
         return function(){
             return __exitIfError__(action, defReturnValue);
         }
+    }
+
+    function wrapMotionEvent(e){
+        e = Object.create(e);
+        e.consumed = false;
+        return e;
     }
 
     var proxy = __runtime__.ui;

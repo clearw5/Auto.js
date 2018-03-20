@@ -181,7 +181,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
         @Override
         protected void observeInstructionCount(Context cx, int instructionCount) {
-            if (Thread.currentThread().isInterrupted()) {
+            if (Thread.currentThread().isInterrupted() && Looper.myLooper() != Looper.getMainLooper()) {
                 throw new ScriptInterruptedException();
             }
         }
@@ -195,14 +195,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
         @Override
         protected Object doTopCall(Callable callable, Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                try {
-                    return super.doTopCall(callable, cx, scope, thisObj, args);
-                } catch (Exception e) {
-                    getRuntime().exit(e);
-                    return null;
-                }
-            }
             return super.doTopCall(callable, cx, scope, thisObj, args);
         }
     }

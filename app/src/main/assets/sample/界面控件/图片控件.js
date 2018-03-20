@@ -27,6 +27,6 @@ ui.layout(
 </scroll>
 );
 
-ui.change_img.click(()=>{
+ui.change_img.on("click", ()=>{
     ui.rounded_img.setSource("http://www.autojs.org/assets/uploads/profile/1-profilecover.jpeg");
 });

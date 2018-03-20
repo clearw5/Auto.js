@@ -3,6 +3,8 @@ package com.stardust.autojs.runtime;
 import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.ScriptEngineService;
