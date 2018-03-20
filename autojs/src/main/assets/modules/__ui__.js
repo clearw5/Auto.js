@@ -122,6 +122,9 @@ module.exports = function(__runtime__, scope){
             }
         });
         view.setOnTouchListener(function(v, event){
+            if(gestureDetector.onTouchEvent(event)){
+                return true;
+            }
             event = wrapMotionEvent(event);
             event.consumed = false;
             scope.__exitIfError__(function(){
@@ -139,6 +142,13 @@ module.exports = function(__runtime__, scope){
         });
         view.setOnClickListener(function(v){
             view.emit("click", view);
+        });
+        view.setOnKeyListener(function(v, keyCode, event){
+            event = wrapMotionEvent(event);
+            scope.__exitIfError__(function(){
+                view.emit("key", keyCode, event, v);
+            });
+            return event.consumed;
         });
         if(typeof(view.setOnCheckedChangeListener) == 'function'){
             view.setOnCheckedChangeListener(function(v, isChecked){

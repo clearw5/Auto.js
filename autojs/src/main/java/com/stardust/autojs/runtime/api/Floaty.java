@@ -151,6 +151,14 @@ public class Floaty {
             mExitOnClose = true;
         }
 
+        public void requestFocus() {
+            mWindow.requestWindowFocus();
+        }
+
+        public void disableFocus() {
+            mWindow.disableWindowFocus();
+        }
+
         public void close() {
             close(true);
         }
