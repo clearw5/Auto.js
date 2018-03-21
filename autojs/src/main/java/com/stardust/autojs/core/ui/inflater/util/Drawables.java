@@ -95,17 +95,19 @@ public class Drawables {
     }
 
     private void loadDataInto(ImageView view, String data) {
-        Bitmap bitmap = loadData(data);
+        Bitmap bitmap = loadBase64Data(data);
         view.setImageBitmap(bitmap);
     }
 
-    public static Bitmap loadData(String data) {
+    public static Bitmap loadBase64Data(String data) {
         Matcher matcher = DATA_PATTERN.matcher(data);
+        String base64;
         if (!matcher.matches() || matcher.groupCount() != 2) {
-            return null;
+            base64 = data;
+        } else {
+            String mimeType = matcher.group(1);
+            base64 = matcher.group(2);
         }
-        String mimeType = matcher.group(1);
-        String base64 = matcher.group(2);
         byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }

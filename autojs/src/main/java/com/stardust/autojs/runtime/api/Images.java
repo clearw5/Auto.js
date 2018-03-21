@@ -4,19 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.media.Image;
-import android.media.MediaScannerConnection;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
-import android.text.TextUtils;
-import android.util.Log;
+import android.util.Base64;
 import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
-import android.webkit.MimeTypeMap;
 
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.image.ColorFinder;
@@ -31,22 +27,17 @@ import com.stardust.concurrent.VolatileDispose;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
 
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Locale;
-
-import okhttp3.MediaType;
-
-import static com.stardust.pio.PFiles.getExtension;
 
 /**
  * Created by Stardust on 2017/5/20.
@@ -131,14 +122,19 @@ public class Images {
         path = mScriptRuntime.files.path(path);
         ImageWrapper image = captureScreen();
         if (image != null) {
-            saveImage(image, path);
+            image.saveTo(path);
             return true;
         }
         return false;
     }
 
-    public void saveImage(ImageWrapper image, String path) {
-        image.saveTo(path);
+    public boolean save(ImageWrapper image, String path, String format, int quality) throws IOException {
+        Bitmap.CompressFormat compressFormat = parseImageFormat(format);
+        if (compressFormat == null)
+            throw new IllegalArgumentException("unknown format " + format);
+        Bitmap bitmap = image.getBitmap();
+        FileOutputStream outputStream = new FileOutputStream(path);
+        return bitmap.compress(compressFormat, quality, outputStream);
     }
 
     public static int pixel(ImageWrapper image, int x, int y) {
@@ -152,15 +148,45 @@ public class Images {
         return ImageWrapper.ofBitmap(Bitmap.createBitmap(img.getBitmap(), x, y, w, h));
     }
 
-
     public ImageWrapper read(String path) {
         path = mScriptRuntime.files.path(path);
         Bitmap bitmap = BitmapFactory.decodeFile(path);
         return ImageWrapper.ofBitmap(bitmap);
     }
 
-    public ImageWrapper decodeBase64(String data) {
-        return ImageWrapper.ofBitmap(Drawables.loadData(data));
+    public ImageWrapper fromBase64(String data) {
+        return ImageWrapper.ofBitmap(Drawables.loadBase64Data(data));
+    }
+
+    public String toBase64(ImageWrapper wrapper, String format, int quality) {
+        return Base64.encodeToString(toBytes(wrapper, format, quality), Base64.NO_WRAP);
+    }
+
+    public byte[] toBytes(ImageWrapper wrapper, String format, int quality) {
+        Bitmap.CompressFormat compressFormat = parseImageFormat(format);
+        if (compressFormat == null)
+            throw new IllegalArgumentException("unknown format " + format);
+        Bitmap bitmap = wrapper.getBitmap();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(compressFormat, quality, outputStream);
+        return outputStream.toByteArray();
+    }
+
+    public ImageWrapper fromBytes(byte[] bytes) {
+        return ImageWrapper.ofBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+    }
+
+    private Bitmap.CompressFormat parseImageFormat(String format) {
+        switch (format) {
+            case "png":
+                return Bitmap.CompressFormat.PNG;
+            case "jpeg":
+            case "jpg":
+                return Bitmap.CompressFormat.JPEG;
+            case "webp":
+                return Bitmap.CompressFormat.WEBP;
+        }
+        return null;
     }
 
     public ImageWrapper load(String src) {
@@ -217,9 +243,9 @@ public class Images {
     }
 
     public Point findImage(ImageWrapper image, ImageWrapper template, float weakThreshold, float threshold, Rect rect, int maxLevel) {
-        if(image == null)
+        if (image == null)
             throw new NullPointerException("image = null");
-        if(template == null)
+        if (template == null)
             throw new NullPointerException("template = null");
         Mat src = image.getMat();
         if (rect != null) {
@@ -240,7 +266,7 @@ public class Images {
     }
 
 
-    public void notityImageInserted(String path){
+    public void notityImageInserted(String path) {
 
     }
 
