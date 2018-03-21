@@ -349,7 +349,7 @@ public class TextViewAttrSetter<V extends TextView> extends BaseViewAttrSetter<V
                 view.setTextScaleX(Dimensions.parseToPixel(value, view));
                 break;
             case "textStyle":
-                mTextStyle = TEXT_STYLES.get(value);
+                mTextStyle = TEXT_STYLES.split(value);
                 break;
             case "typeface":
                 mTypeface = value;
