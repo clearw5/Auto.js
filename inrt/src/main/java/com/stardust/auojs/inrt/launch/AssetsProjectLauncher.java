@@ -1,7 +1,10 @@
 package com.stardust.auojs.inrt.launch;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.stardust.auojs.inrt.BuildConfig;
 import com.stardust.auojs.inrt.LogActivity;
@@ -24,29 +27,38 @@ public class AssetsProjectLauncher {
     private String mProjectDir;
     private File mMainScriptFile;
     private ProjectConfig mProjectConfig;
-    private Activity mActivity;
+    private Context mActivity;
+    private Handler mHandler;
 
-    public AssetsProjectLauncher(String projectDir, Activity activity) {
+    public AssetsProjectLauncher(String projectDir, Context context) {
         mAssetsProjectDir = projectDir;
-        mActivity = activity;
-        mProjectDir = new File(activity.getFilesDir(), "project/").getPath();
-        mProjectConfig = ProjectConfig.fromAssets(activity, ProjectConfig.configFileOfDir(mAssetsProjectDir));
+        mActivity = context;
+        mProjectDir = new File(context.getFilesDir(), "project/").getPath();
+        mProjectConfig = ProjectConfig.fromAssets(context, ProjectConfig.configFileOfDir(mAssetsProjectDir));
         mMainScriptFile = new File(mProjectDir, mProjectConfig.getMainScriptFile());
+        mHandler = new Handler(Looper.getMainLooper());
+        prepare();
     }
 
-    public void launch() {
-        prepare();
-        if (!(mProjectConfig.getLaunchConfig().shouldHideLogs() || Pref.shouldHideLogs())) {
-            mActivity.runOnUiThread(() -> {
-                mActivity.startActivity(new Intent(mActivity, LogActivity.class));
-                mActivity.finish();
-                mActivity = null;
-            });
+    public void launch(Activity activity) {
+        //如果需要隐藏日志界面，则直接运行脚本
+        if (mProjectConfig.getLaunchConfig().shouldHideLogs() || Pref.shouldHideLogs()) {
+            activity.finish();
+            runScript();
         } else {
-            mActivity.finish();
-            mActivity = null;
+            //如果不隐藏日志界面
+            //如果当前已经是日志界面则直接运行脚本
+            if (activity instanceof LogActivity) {
+                runScript();
+            } else {
+                //否则显示日志界面并在日志界面中运行脚本
+                mHandler.post(() -> {
+                    activity.startActivity(new Intent(mActivity, LogActivity.class)
+                            .putExtra(LogActivity.EXTRA_LAUNCH_SCRIPT, true));
+                    activity.finish();
+                });
+            }
         }
-        runScript();
     }
 
     private void runScript() {

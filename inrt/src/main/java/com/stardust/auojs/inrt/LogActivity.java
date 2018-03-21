@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.stardust.auojs.inrt.autojs.AutoJs;
 import com.stardust.auojs.inrt.launch.AssetsProjectLauncher;
+import com.stardust.auojs.inrt.launch.GlobalProjectLauncher;
 import com.stardust.autojs.core.console.ConsoleView;
 import com.stardust.autojs.core.console.StardustConsole;
 
@@ -21,16 +22,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.microedition.khronos.opengles.GL;
+
 import static android.content.pm.PackageManager.PERMISSION_DENIED;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class LogActivity extends AppCompatActivity {
 
 
+    public static final String EXTRA_LAUNCH_SCRIPT = "launch_script";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupView();
+        if (getIntent().getBooleanExtra(EXTRA_LAUNCH_SCRIPT, false)) {
+            GlobalProjectLauncher.getInstance().launch(this);
+        }
     }
 
     private void setupView() {

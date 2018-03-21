@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.stardust.auojs.inrt.launch.AssetsProjectLauncher;
+import com.stardust.auojs.inrt.launch.GlobalProjectLauncher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +49,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
     private void runScript() {
-        new Thread(() -> new AssetsProjectLauncher("project", this).launch()).start();
+        new Thread(() -> GlobalProjectLauncher.getInstance().launch(this)).start();
     }
 
     @Override
