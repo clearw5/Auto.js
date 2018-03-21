@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -14,6 +13,7 @@ import com.stardust.autojs.runtime.ScriptRuntime;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by Stardust on 2018/3/16.
@@ -28,7 +28,6 @@ public class ScriptCanvasView extends SurfaceView implements SurfaceHolder.Callb
     private final SurfaceHolder mHolder;
     private ExecutorService mDrawingThreadPool;
     private ScriptRuntime mScriptRuntime;
-
 
     public ScriptCanvasView(Context context, ScriptRuntime scriptRuntime) {
         super(context);
@@ -45,6 +44,7 @@ public class ScriptCanvasView extends SurfaceView implements SurfaceHolder.Callb
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         performDraw();
+        Log.d(LOG_TAG, "surfaceCreated: " + this);
     }
 
     @Override
@@ -52,9 +52,10 @@ public class ScriptCanvasView extends SurfaceView implements SurfaceHolder.Callb
 
     }
 
-    private void performDraw() {
-        if (mDrawingThreadPool == null)
-            mDrawingThreadPool = Executors.newCachedThreadPool();
+    private synchronized void performDraw() {
+        if (mDrawingThreadPool != null)
+            return;
+        mDrawingThreadPool = Executors.newCachedThreadPool();
         mDrawingThreadPool.execute(() -> {
             Canvas canvas = null;
             SurfaceHolder holder = getHolder();
@@ -79,11 +80,9 @@ public class ScriptCanvasView extends SurfaceView implements SurfaceHolder.Callb
 
     @Override
     protected void onWindowVisibilityChanged(int visibility) {
+        Log.d(LOG_TAG, "onWindowVisibilityChanged: " + this + ": visibility=" + visibility + ", mDrawingThreadPool=" + mDrawingThreadPool);
         if (visibility == VISIBLE) {
-            if (mDrawingThreadPool != null) {
-                mDrawing = true;
-                performDraw();
-            }
+            mDrawing = true;
         } else {
             mDrawing = false;
         }
@@ -91,12 +90,11 @@ public class ScriptCanvasView extends SurfaceView implements SurfaceHolder.Callb
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.d(LOG_TAG, "surfaceDestroyed: mRunning = true");
+    public synchronized void surfaceDestroyed(SurfaceHolder holder) {
         mDrawing = false;
-        Log.d(LOG_TAG, "surfaceDestroyed: mRunning = false");
         mDrawingThreadPool.shutdown();
         mDrawingThreadPool = null;
+        Log.d(LOG_TAG, "surfaceDestroyed: " + this);
     }
 
     public EventEmitter once(String eventName, Object listener) {
