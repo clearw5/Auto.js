@@ -84,40 +84,32 @@ module.exports = function(__runtime__, scope){
         var gestureDetector = new android.view.GestureDetector(context, {
             onDown: function(e){
                 e = wrapMotionEvent(e);
-                scope.__exitIfError__(function(){
-                    view.emit("touch_down", e, view);
-                });
+                emit("touch_down", e, view);
                 return e.consumed;
             },
             onShowPress: function(e){
                 e = wrapMotionEvent(e);
-                view.emit("show_press", e, view);
+                emit("show_press", e, view);
             },
             onSingleTapUp: function(e){
                e = wrapMotionEvent(e);
-               scope.__exitIfError__(function(){
-                    view.emit("single_tap", e, view);
-               });
+               emit("single_tap", e, view);
                return e.consumed;
             },
             onScroll: function(e1, e2, distanceX, distanceY){
                  e1 = wrapMotionEvent(e1);
                  e2 = wrapMotionEvent(e2);
-                 scope.__exitIfError__(function(){
-                    view.emit("scroll", e1, e2, distanceX, distanceY, view);
-                 });
+                 emit("scroll", e1, e2, distanceX, distanceY, view);
                  return e1.consumed || e2.consumed;
             },
             onLongPress: function(e){
                  e = wrapMotionEvent(e);
-                 view.emit("long_press", e, view);
+                 emit("long_press", e, view);
             },
             onFling: function(e1, e2, velocityX, velocityY){
                  e1 = wrapMotionEvent(e1);
                  e2 = wrapMotionEvent(e2);
-                 scope.__exitIfError__(function(){
-                    view.emit("fling", e1, e2, velocityX, velocityY, view);
-                 });
+                 emit("fling", e1, e2, velocityX, velocityY, view);
                  return e1.consumed || e2.consumed;
             }
         });
@@ -127,32 +119,26 @@ module.exports = function(__runtime__, scope){
             }
             event = wrapMotionEvent(event);
             event.consumed = false;
-            scope.__exitIfError__(function(){
-               view.emit("touch", event, view);
-            });
+            emit("touch", event, view);
             return event.consumed;
         })
         view.setOnLongClickListener(function(v){
             var event = {};
             event.consumed = false;
-            scope.__exitIfError__(function(){
-               view.emit("long_click", event, view);
-            });
+            emit("long_click", event, view);
             return event.consumed;
         });
         view.setOnClickListener(function(v){
-            view.emit("click", view);
+            emit("click", view);
         });
         view.setOnKeyListener(function(v, keyCode, event){
             event = wrapMotionEvent(event);
-            scope.__exitIfError__(function(){
-                view.emit("key", keyCode, event, v);
-            });
+            emit("key", keyCode, event, v);
             return event.consumed;
         });
         if(typeof(view.setOnCheckedChangeListener) == 'function'){
             view.setOnCheckedChangeListener(function(v, isChecked){
-                view.emit("check", isChecked, view);
+                emit("check", isChecked, view);
             });
         }
         view._id = function(id){
@@ -172,6 +158,12 @@ module.exports = function(__runtime__, scope){
                 view.performLongClick();
             }
         }
+        function emit(){
+            var args = arguments;
+            scope.__exitIfError__(function(){
+               view.emit.apply(view, args);
+            });
+        }
         return view;
     }
 
@@ -190,6 +182,24 @@ module.exports = function(__runtime__, scope){
         e = Object.create(e);
         e.consumed = false;
         return e;
+    }
+
+    function functionApply(func, args){
+        if(args.length == 0)
+            return func();
+        if(args.length == 1)
+            return func(args[0]);
+        if(args.length == 2)
+            return func(args[0], args[1]);
+        if(args.length == 3)
+            return func(args[0], args[1], args[2]);
+        if(args.length == 4)
+            return func(args[0], args[1], args[2], args[3]);
+        if(args.length == 5)
+            return func(args[0], args[1], args[2], args[3], args[4]);
+        if(args.length == 6)
+            return func(args[0], args[1], args[2], args[3], args[5]);
+        throw new Error("too many arguments: " + args.length);
     }
 
     var proxy = __runtime__.ui;
