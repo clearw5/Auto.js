@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 import com.stardust.scriptdroid.autojs.key.GlobalKeyObserver;
 
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Pref {
 
-    private static final SharedPreferences DISPOSABLE_BOOLEAN = App.getApp().getSharedPreferences("DISPOSABLE_BOOLEAN", Context.MODE_PRIVATE);
+    private static final SharedPreferences DISPOSABLE_BOOLEAN = GlobalAppContext.get().getSharedPreferences("DISPOSABLE_BOOLEAN", Context.MODE_PRIVATE);
     private static final String KEY_SERVER_ADDRESS = "Still love you...17.5.14";
     private static final String KEY_SHOULD_SHOW_ANNUNCIATION = "Sing about all the things you forgot, things you are not";
     private static final String KEY_FIRST_SHOW_AD = "En, Today is 17.7.7, but, I'm still love you so....";
@@ -40,7 +41,7 @@ public class Pref {
     }
 
     private static SharedPreferences def() {
-        return PreferenceManager.getDefaultSharedPreferences(App.getApp());
+        return PreferenceManager.getDefaultSharedPreferences(GlobalAppContext.get());
     }
 
     private static boolean getDisposableBoolean(String key, boolean defaultValue) {
@@ -68,7 +69,7 @@ public class Pref {
     }
 
     private static String getString(int id) {
-        return App.getApp().getString(id);
+        return GlobalAppContext.getString(id);
     }
 
     public static boolean isFirstUsing() {

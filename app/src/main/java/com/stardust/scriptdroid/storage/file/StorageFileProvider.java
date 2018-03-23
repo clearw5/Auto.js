@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.storage.file;
 
 import android.os.Environment;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.pio.PFile;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
@@ -27,7 +28,7 @@ public class StorageFileProvider {
     public static final int CREATE = 1;
     public static final int CHANGE = 2;
     public static final int ALL = 3;
-    public static final String DEFAULT_DIRECTORY_PATH = Environment.getExternalStorageDirectory() + App.getApp().getString(R.string.folder_name);
+    public static final String DEFAULT_DIRECTORY_PATH = Environment.getExternalStorageDirectory() + GlobalAppContext.getString(R.string.folder_name);
     public static final PFile DEFAULT_DIRECTORY = new PFile(DEFAULT_DIRECTORY_PATH);
     public static final FileFilter SCRIPT_FILTER = file ->
             file.isDirectory() || file.getName().endsWith(".js") || file.getName().endsWith(".auto");

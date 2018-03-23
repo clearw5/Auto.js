@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
@@ -48,14 +49,14 @@ public class CrashHandler implements UncaughtExceptionHandler {
             return;
         }
         if (causedByBadWindowToken(ex)) {
-            Toast.makeText(App.getApp(), R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
-            IntentUtil.goToAppDetailSettings(App.getApp());
+            Toast.makeText(GlobalAppContext.get(), R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
+            IntentUtil.goToAppDetailSettings(GlobalAppContext.get());
         } else {
             try {
                 Log.e(TAG, "Uncaught Exception", ex);
                 if (crashTooManyTimes())
                     return;
-                String msg = App.getApp().getString(R.string.sorry_for_crash) + ex.toString();
+                String msg = GlobalAppContext.getString(R.string.sorry_for_crash) + ex.toString();
                 startErrorReportActivity(msg, throwableToString(ex));
                 System.exit(1);
             } catch (Throwable throwable) {
@@ -75,11 +76,11 @@ public class CrashHandler implements UncaughtExceptionHandler {
     }
 
     private void startErrorReportActivity(String msg, String detail) {
-        Intent intent = new Intent(App.getApp(), this.mErrorReportClass);
+        Intent intent = new Intent(GlobalAppContext.get(), this.mErrorReportClass);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra("message", msg);
         intent.putExtra("error", detail);
-        App.getApp().startActivity(intent);
+        GlobalAppContext.get().startActivity(intent);
     }
 
     private boolean crashTooManyTimes() {

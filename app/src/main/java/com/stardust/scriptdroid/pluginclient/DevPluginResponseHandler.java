@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.pio.PFiles;
@@ -100,6 +101,6 @@ public class DevPluginResponseHandler implements Handler {
             name = "<remote>" + name;
         }
         PFiles.write(StorageFileProvider.DEFAULT_DIRECTORY_PATH + name, script);
-        App.getApp().getUiHandler().toast(R.string.text_script_save_successfully);
+        GlobalAppContext.toast(R.string.text_script_save_successfully);
     }
 }

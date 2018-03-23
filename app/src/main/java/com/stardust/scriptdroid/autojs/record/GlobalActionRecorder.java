@@ -6,6 +6,7 @@ import android.view.ContextThemeWrapper;
 import android.widget.Toast;
 
 import com.stardust.app.DialogUtils;
+import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.core.record.Recorder;
 import com.stardust.autojs.core.record.inputevent.InputEventRecorder;
 import com.stardust.autojs.core.record.inputevent.InputEventToAutoFileRecorder;
@@ -106,7 +107,7 @@ public class GlobalActionRecorder implements Recorder.OnStateChangedListener {
     @Override
     public void onStart() {
         if (Pref.isRecordToastEnabled())
-            App.getApp().getUiHandler().toast(R.string.text_start_record);
+            GlobalAppContext.toast(R.string.text_start_record);
         for (Recorder.OnStateChangedListener listener : mOnStateChangedListeners) {
             listener.onStart();
         }
@@ -150,13 +151,13 @@ public class GlobalActionRecorder implements Recorder.OnStateChangedListener {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             showRecordHandleDialog(script);
         } else {
-            App.getApp().getUiHandler().post(() -> showRecordHandleDialog(script));
+            GlobalAppContext.post(() -> showRecordHandleDialog(script));
         }
     }
 
     private void handleRecordedFile(final String path) {
         if (Looper.myLooper() != Looper.getMainLooper()) {
-            App.getApp().getUiHandler().post(() -> handleRecordedFile(path));
+            GlobalAppContext.post(() -> handleRecordedFile(path));
             return;
         }
         new ScriptOperations(mContext, null)

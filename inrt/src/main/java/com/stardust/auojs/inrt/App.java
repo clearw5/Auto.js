@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.stardust.app.GlobalAppContext;
 import com.stardust.auojs.inrt.autojs.AutoJs;
 import com.stardust.auojs.inrt.autojs.GlobalKeyObserver;
 import com.stardust.autojs.core.ui.inflater.ImageLoader;
@@ -21,16 +22,11 @@ import com.stardust.autojs.core.ui.inflater.util.Drawables;
 
 public class App extends Application {
 
-    private static App sApp;
-
-    public static App getApp() {
-        return sApp;
-    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        sApp = this;
+        GlobalAppContext.set(this);
         AutoJs.initInstance(this);
         GlobalKeyObserver.init();
         Drawables.setDefaultImageLoader(new ImageLoader() {

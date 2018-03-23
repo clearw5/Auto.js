@@ -3,6 +3,7 @@ package com.stardust.auojs.inrt.launch;
 import android.app.Activity;
 import android.content.Context;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.auojs.inrt.App;
 
 /**
@@ -15,7 +16,7 @@ public class GlobalProjectLauncher extends AssetsProjectLauncher {
 
     public static GlobalProjectLauncher getInstance() {
         if (sInstance == null)
-            sInstance = new GlobalProjectLauncher(App.getApp());
+            sInstance = new GlobalProjectLauncher(GlobalAppContext.get());
         return sInstance;
     }
 

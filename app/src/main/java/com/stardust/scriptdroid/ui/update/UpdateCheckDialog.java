@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.app.GlobalAppContext;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.network.VersionService;
@@ -42,7 +43,7 @@ public class UpdateCheckDialog {
                             new UpdateInfoDialogBuilder(mContext, versionInfo)
                                     .show();
                         } else {
-                            Toast.makeText(App.getApp(), R.string.text_is_latest_version, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GlobalAppContext.get(), R.string.text_is_latest_version, Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -50,7 +51,7 @@ public class UpdateCheckDialog {
                     public void onError(@NonNull Throwable e) {
                         e.printStackTrace();
                         mProgress.dismiss();
-                        Toast.makeText(App.getApp(), R.string.text_check_update_error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(GlobalAppContext.get(), R.string.text_check_update_error, Toast.LENGTH_SHORT).show();
                     }
                 });
     }

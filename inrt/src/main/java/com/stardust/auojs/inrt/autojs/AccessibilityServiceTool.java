@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.provider.Settings;
 import android.text.TextUtils;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.auojs.inrt.App;
 import com.stardust.autojs.core.util.ProcessShell;
 
@@ -45,7 +46,7 @@ public class AccessibilityServiceTool {
     }
 
     public static void goToAccessibilitySetting() {
-        App.getApp().startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        GlobalAppContext.get().startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
 }

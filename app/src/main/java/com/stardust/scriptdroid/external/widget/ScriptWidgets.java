@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.scriptdroid.App;
 
 import java.util.HashSet;
@@ -22,7 +23,7 @@ public class ScriptWidgets {
 
 
     private static final String LOG_TAG = "ScriptWidgets";
-    private static SharedPreferences widgets = App.getApp().getSharedPreferences("ScriptWidgets", Context.MODE_PRIVATE);
+    private static SharedPreferences widgets = GlobalAppContext.get().getSharedPreferences("ScriptWidgets", Context.MODE_PRIVATE);
     private static final Pattern ID_PATTERN = Pattern.compile("[a-zA-Z]+_([0-9])+");
 
     static String getPathForAppWidgetId(int id) {

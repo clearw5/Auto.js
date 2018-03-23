@@ -11,6 +11,7 @@ import com.raizlabs.android.dbflow.rx2.language.RXSQLite;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.ModelAdapter;
+import com.stardust.app.GlobalAppContext;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.storage.database.ModelChange;
 import com.stardust.scriptdroid.storage.database.TimedTaskDatabase;
@@ -37,7 +38,7 @@ public class TimedTaskManager {
 
     public static TimedTaskManager getInstance() {
         if (sInstance == null) {
-            sInstance = new TimedTaskManager(App.getApp());
+            sInstance = new TimedTaskManager(GlobalAppContext.get());
         }
         return sInstance;
     }

@@ -3,6 +3,7 @@ package com.stardust.scriptdroid.autojs;
 import android.app.Application;
 import android.content.Context;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.core.console.GlobalStardustConsole;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
@@ -33,13 +34,13 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         return instance;
     }
 
-    public static void initInstance(Context context) {
-        instance = new AutoJs(context);
+    public static void initInstance(Application application) {
+        instance = new AutoJs(application);
     }
 
 
-    private AutoJs(final Context context) {
-        super(context);
+    private AutoJs(final Application application) {
+        super(application);
         getScriptEngineService().registerGlobalScriptExecutionListener(new ScriptExecutionGlobalListener());
     }
 
@@ -60,15 +61,15 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
             return;
         }
         String errorMessage = null;
-        if (AccessibilityServiceTool.isAccessibilityServiceEnabled(App.getApp())) {
-            errorMessage = App.getApp().getString(R.string.text_auto_operate_service_enabled_but_not_running);
+        if (AccessibilityServiceTool.isAccessibilityServiceEnabled(GlobalAppContext.get())) {
+            errorMessage = GlobalAppContext.getString(R.string.text_auto_operate_service_enabled_but_not_running);
         } else {
             if (Pref.shouldEnableAccessibilityServiceByRoot()) {
                 if (!AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(2000)) {
-                    errorMessage = App.getApp().getString(R.string.text_enable_accessibility_service_by_root_timeout);
+                    errorMessage = GlobalAppContext.getString(R.string.text_enable_accessibility_service_by_root_timeout);
                 }
             } else {
-                errorMessage = App.getApp().getString(R.string.text_no_accessibility_permission);
+                errorMessage = GlobalAppContext.getString(R.string.text_no_accessibility_permission);
             }
         }
         if (errorMessage != null) {
@@ -83,15 +84,15 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
             return;
         }
         String errorMessage = null;
-        if (AccessibilityServiceTool.isAccessibilityServiceEnabled(App.getApp())) {
-            errorMessage = App.getApp().getString(R.string.text_auto_operate_service_enabled_but_not_running);
+        if (AccessibilityServiceTool.isAccessibilityServiceEnabled(GlobalAppContext.get())) {
+            errorMessage = GlobalAppContext.getString(R.string.text_auto_operate_service_enabled_but_not_running);
         } else {
             if (Pref.shouldEnableAccessibilityServiceByRoot()) {
                 if (!AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(2000)) {
-                    errorMessage = App.getApp().getString(R.string.text_enable_accessibility_service_by_root_timeout);
+                    errorMessage = GlobalAppContext.getString(R.string.text_enable_accessibility_service_by_root_timeout);
                 }
             } else {
-                errorMessage = App.getApp().getString(R.string.text_no_accessibility_permission);
+                errorMessage = GlobalAppContext.getString(R.string.text_no_accessibility_permission);
             }
         }
         if (errorMessage != null) {
@@ -109,11 +110,6 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
             config.addWhiteList("com.coolapk.market");
         }
         return config;
-    }
-
-    @Override
-    protected Application getApplication() {
-        return App.getApp();
     }
 
     @Override

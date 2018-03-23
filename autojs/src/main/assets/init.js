@@ -96,6 +96,7 @@ runtime.init();
     importClass(android.view.KeyEvent);
     importClass(com.stardust.autojs.core.util.Shell);
     importClass(android.graphics.Paint);
+    importClass(android.graphics.Canvas);
 
     //重定向require以便支持相对路径
     (function(){

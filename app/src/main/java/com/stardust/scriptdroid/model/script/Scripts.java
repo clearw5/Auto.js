@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.execution.ExecutionConfig;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
@@ -39,7 +40,7 @@ public class Scripts {
 
         @Override
         public void onSuccess(ScriptExecution execution, Object result) {
-            App.getApp().sendBroadcast(new Intent(ACTION_ON_EXECUTION_FINISHED));
+            GlobalAppContext.get().sendBroadcast(new Intent(ACTION_ON_EXECUTION_FINISHED));
         }
 
         @Override
@@ -51,11 +52,11 @@ public class Scripts {
                 col = rhinoException.columnNumber();
             }
             if (ScriptInterruptedException.causedByInterrupted(e)) {
-                App.getApp().sendBroadcast(new Intent(ACTION_ON_EXECUTION_FINISHED)
+                GlobalAppContext.get().sendBroadcast(new Intent(ACTION_ON_EXECUTION_FINISHED)
                         .putExtra(EXTRA_EXCEPTION_LINE_NUMBER, line)
                         .putExtra(EXTRA_EXCEPTION_COLUMN_NUMBER, col));
             } else {
-                App.getApp().sendBroadcast(new Intent(ACTION_ON_EXECUTION_FINISHED)
+                GlobalAppContext.get().sendBroadcast(new Intent(ACTION_ON_EXECUTION_FINISHED)
                         .putExtra(EXTRA_EXCEPTION_MESSAGE, e.getMessage())
                         .putExtra(EXTRA_EXCEPTION_LINE_NUMBER, line)
                         .putExtra(EXTRA_EXCEPTION_COLUMN_NUMBER, col));
@@ -67,7 +68,7 @@ public class Scripts {
 
     public static void openByOtherApps(String path) {
         Uri uri = Uri.parse("file://" + path);
-        App.getApp().startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(uri, "text/plain").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        GlobalAppContext.get().startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(uri, "text/plain").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     public static void openByOtherApps(File file) {
@@ -75,7 +76,7 @@ public class Scripts {
     }
 
     public static void createShortcut(ScriptFile scriptFile) {
-        new Shortcut(App.getApp()).name(scriptFile.getSimplifiedName())
+        new Shortcut(GlobalAppContext.get()).name(scriptFile.getSimplifiedName())
                 .targetClass(ShortcutActivity.class)
                 .iconRes(R.drawable.ic_node_js_black)
                 .extras(new Intent().putExtra(ScriptIntents.EXTRA_KEY_PATH, scriptFile.getPath()))
@@ -84,7 +85,7 @@ public class Scripts {
 
 
     public static void edit(ScriptFile file) {
-        EditActivity.editFile(App.getApp(), file.getSimplifiedName(), file.getPath());
+        EditActivity.editFile(GlobalAppContext.get(), file.getSimplifiedName(), file.getPath());
     }
 
     public static void edit(String path) {
@@ -128,10 +129,10 @@ public class Scripts {
     }
 
     public static void send(ScriptFile file) {
-        App.getApp().startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND)
+        GlobalAppContext.get().startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND)
                         .setType("text/plain")
                         .putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file)),
-                App.getApp().getString(R.string.text_send)
+                GlobalAppContext.getString(R.string.text_send)
         ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 
     }

@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
@@ -32,14 +33,14 @@ public class AccessibilityServiceTool {
     }
 
     public static void goToAccessibilitySetting() {
-        Context context = App.getApp();
+        Context context = GlobalAppContext.get();
         if (Pref.isFirstGoToAccessibilitySetting()) {
-            App.getApp().getUiHandler().toast(context.getString(R.string.text_please_choose) + context.getString(R.string._app_name));
+            GlobalAppContext.toast(context.getString(R.string.text_please_choose) + context.getString(R.string._app_name));
         }
         try {
             AccessibilityServiceUtils.goToAccessibilitySetting(context);
         } catch (ActivityNotFoundException e) {
-            App.getApp().getUiHandler().toast(context.getString(R.string.go_to_accessibility_settings) + context.getString(R.string._app_name));
+            GlobalAppContext.toast(context.getString(R.string.go_to_accessibility_settings) + context.getString(R.string._app_name));
         }
     }
 
@@ -55,7 +56,7 @@ public class AccessibilityServiceTool {
             "settings put secure accessibility_enabled 1";
 
     public static boolean enableAccessibilityServiceByRoot(Class<? extends android.accessibilityservice.AccessibilityService> accessibilityService) {
-        String serviceName = App.getApp().getPackageName() + "/" + accessibilityService.getName();
+        String serviceName = GlobalAppContext.get().getPackageName() + "/" + accessibilityService.getName();
         try {
             return TextUtils.isEmpty(ProcessShell.execCommand(String.format(Locale.getDefault(), cmd, serviceName), true).error);
         } catch (Exception e) {

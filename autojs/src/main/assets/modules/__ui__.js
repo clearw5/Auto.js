@@ -161,7 +161,9 @@ module.exports = function(__runtime__, scope){
         function emit(){
             var args = arguments;
             scope.__exitIfError__(function(){
-               view.emit.apply(view, args);
+                //不支持使用apply的原因是rhino会把参数中的primitive变成object
+                functionApply(view.emit, args);
+               //view.emit.apply(view, args);
             });
         }
         return view;
@@ -198,7 +200,7 @@ module.exports = function(__runtime__, scope){
         if(args.length == 5)
             return func(args[0], args[1], args[2], args[3], args[4]);
         if(args.length == 6)
-            return func(args[0], args[1], args[2], args[3], args[5]);
+            return func(args[0], args[1], args[2], args[3], args[4], args[5]);
         throw new Error("too many arguments: " + args.length);
     }
 

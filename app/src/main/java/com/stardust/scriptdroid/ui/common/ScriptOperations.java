@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.DialogUtils;
+import com.stardust.app.GlobalAppContext;
 import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
@@ -159,7 +160,7 @@ public class ScriptOperations {
             showMessageWithoutThreadSwitch(resId);
         }
         //switch to ui thread to show message
-        App.getApp().getUiHandler().post(() -> showMessageWithoutThreadSwitch(resId));
+        GlobalAppContext.post(() -> showMessageWithoutThreadSwitch(resId));
     }
 
     private void showMessageWithoutThreadSwitch(int resId) {

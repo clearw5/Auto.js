@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.util.FloatingPermission;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.FloatyWindow;
@@ -53,13 +54,13 @@ public class FloatyWindowManger {
     }
 
     public static boolean showCircularMenu() {
-        if (!SettingsCompat.canDrawOverlays(App.getApp())) {
-            Toast.makeText(App.getApp(), R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
-            manageDrawOverlays(App.getApp());
+        if (!SettingsCompat.canDrawOverlays(GlobalAppContext.get())) {
+            Toast.makeText(GlobalAppContext.get(), R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
+            manageDrawOverlays(GlobalAppContext.get());
             return false;
         } else {
-            App.getApp().startService(new Intent(App.getApp(), FloatyService.class));
-            CircularMenu menu = new CircularMenu(App.getApp());
+            GlobalAppContext.get().startService(new Intent(GlobalAppContext.get(), FloatyService.class));
+            CircularMenu menu = new CircularMenu(GlobalAppContext.get());
             sCircularMenu = new WeakReference<>(menu);
             return true;
         }

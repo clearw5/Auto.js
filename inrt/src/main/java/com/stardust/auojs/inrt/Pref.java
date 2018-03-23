@@ -3,6 +3,8 @@ package com.stardust.auojs.inrt;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.stardust.app.GlobalAppContext;
+
 /**
  * Created by Stardust on 2017/12/8.
  */
@@ -14,7 +16,7 @@ public class Pref {
 
     public static SharedPreferences getPreferences() {
         if (sPreferences == null)
-            sPreferences = PreferenceManager.getDefaultSharedPreferences(App.getApp());
+            sPreferences = PreferenceManager.getDefaultSharedPreferences(GlobalAppContext.get());
         return sPreferences;
     }
 
@@ -23,7 +25,7 @@ public class Pref {
     }
 
     private static String getString(int res) {
-        return App.getApp().getString(res);
+        return GlobalAppContext.getString(res);
     }
 
     public static boolean shouldEnableAccessibilityServiceByRoot() {

@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.R;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.annotation.ScriptVariable;
@@ -303,9 +304,9 @@ public class ScriptRuntime {
         return Thread.currentThread().isInterrupted();
     }
 
-    public void requiresApi(int i) {
+    public static void requiresApi(int i) {
         if (Build.VERSION.SDK_INT < i) {
-            throw new ScriptException(uiHandler.getContext().getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
+            throw new ScriptException(GlobalAppContext.getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
         }
     }
 

@@ -17,7 +17,7 @@ ui.layout(
     </vertical>
 );
 
-id.cb1.on("check", (checked)=>{
+ui.cb1.on("check", (checked)=>{
     if(checked){
         toast("第一个框被勾选了");
     }else{

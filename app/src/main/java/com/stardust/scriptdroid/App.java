@@ -15,6 +15,7 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.runtime.DirectModelNotifier;
 import com.squareup.leakcanary.LeakCanary;
+import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.core.ui.inflater.ImageLoader;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
 import com.stardust.scriptdroid.autojs.AutoJs;
@@ -40,7 +41,6 @@ public class App extends MultiDexApplication {
     private static final String TAG = "App";
 
     private static WeakReference<App> instance;
-    private UiHandler mUiHandler;
 
     public static App getApp() {
         return instance.get();
@@ -48,8 +48,8 @@ public class App extends MultiDexApplication {
 
     public void onCreate() {
         super.onCreate();
+        GlobalAppContext.set(this);
         instance = new WeakReference<>(this);
-        mUiHandler = new UiHandler(this);
         setUpStaticsTool();
         setUpDebugEnvironment();
         init();
@@ -142,7 +142,4 @@ public class App extends MultiDexApplication {
     }
 
 
-    public UiHandler getUiHandler() {
-        return mUiHandler;
-    }
 }

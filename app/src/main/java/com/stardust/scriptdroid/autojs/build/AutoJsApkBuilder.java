@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.autojs.build;
 
 import android.graphics.Bitmap;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.apkbuilder.ApkBuilder;
 import com.stardust.autojs.apkbuilder.ManifestEditor;
 import com.stardust.autojs.apkbuilder.util.StreamUtils;
@@ -98,7 +99,7 @@ public class AutoJsApkBuilder extends ApkBuilder {
     @Override
     public AutoJsApkBuilder prepare() throws IOException {
         if (mProgressCallback != null) {
-            App.getApp().getUiHandler().post(() -> mProgressCallback.onPrepare(AutoJsApkBuilder.this));
+            GlobalAppContext.post(() -> mProgressCallback.onPrepare(AutoJsApkBuilder.this));
         }
         return (AutoJsApkBuilder) super.prepare();
     }
@@ -179,7 +180,7 @@ public class AutoJsApkBuilder extends ApkBuilder {
     @Override
     public AutoJsApkBuilder build() throws IOException {
         if (mProgressCallback != null) {
-            App.getApp().getUiHandler().post(() -> mProgressCallback.onBuild(AutoJsApkBuilder.this));
+            GlobalAppContext.post(() -> mProgressCallback.onBuild(AutoJsApkBuilder.this));
         }
         mManifestEditor.commit();
         if (mAppConfig.icon != null) {
@@ -196,7 +197,7 @@ public class AutoJsApkBuilder extends ApkBuilder {
     @Override
     public AutoJsApkBuilder sign() throws Exception {
         if (mProgressCallback != null) {
-            App.getApp().getUiHandler().post(() -> mProgressCallback.onSign(AutoJsApkBuilder.this));
+            GlobalAppContext.post(() -> mProgressCallback.onSign(AutoJsApkBuilder.this));
         }
         return (AutoJsApkBuilder) super.sign();
     }
@@ -204,7 +205,7 @@ public class AutoJsApkBuilder extends ApkBuilder {
     @Override
     public AutoJsApkBuilder cleanWorkspace() {
         if (mProgressCallback != null) {
-            App.getApp().getUiHandler().post(() -> mProgressCallback.onClean(AutoJsApkBuilder.this));
+            GlobalAppContext.post(() -> mProgressCallback.onClean(AutoJsApkBuilder.this));
         }
         return (AutoJsApkBuilder) super.cleanWorkspace();
     }

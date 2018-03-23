@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -52,6 +56,7 @@ public abstract class AutoJs {
     private ScriptEngineManager mScriptEngineManager;
     private final LayoutInspector mLayoutInspector = new LayoutInspector();
     private final Context mContext;
+    private final Application mApplication;
     private final UiHandler mUiHandler;
     private final AppUtils mAppUtils;
     private final AccessibilityInfoProvider mAccessibilityInfoProvider;
@@ -60,13 +65,14 @@ public abstract class AutoJs {
     private final Console mGlobalConsole;
 
 
-    protected AutoJs(final Context context) {
-        mContext = context;
-        mUiHandler = new UiHandler(context);
-        mAppUtils = new AppUtils(context);
+    protected AutoJs(final Application application) {
+        mContext = application.getApplicationContext();
+        mApplication = application;
+        mUiHandler = new UiHandler(mContext);
+        mAppUtils = new AppUtils(mContext);
         mGlobalConsole = createGlobalConsole();
-        mNotificationObserver = new AccessibilityNotificationObserver(context);
-        mAccessibilityInfoProvider = new AccessibilityInfoProvider(context.getPackageManager());
+        mNotificationObserver = new AccessibilityNotificationObserver(mContext);
+        mAccessibilityInfoProvider = new AccessibilityInfoProvider(mContext.getPackageManager());
         mScriptEngineService = buildScriptEngineService();
         init();
     }
@@ -85,7 +91,9 @@ public abstract class AutoJs {
 
     public abstract void ensureAccessibilityServiceEnabled();
 
-    protected abstract Application getApplication();
+    protected Application getApplication() {
+        return mApplication;
+    }
 
     protected ScriptEngineService buildScriptEngineService() {
         initScriptEngineManager();

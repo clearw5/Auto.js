@@ -18,6 +18,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.stardust.app.GlobalAppContext;
 import com.stardust.notification.NotificationListenerService;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.Pref;
@@ -276,7 +277,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                             new UpdateInfoDialogBuilder(getActivity(), versionInfo)
                                     .show();
                         } else {
-                            Toast.makeText(App.getApp(), R.string.text_is_latest_version, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GlobalAppContext.get(), R.string.text_is_latest_version, Toast.LENGTH_SHORT).show();
                         }
                         setProgress(mCheckForUpdatesItem, false);
                     }
@@ -284,7 +285,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                     @Override
                     public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                         e.printStackTrace();
-                        Toast.makeText(App.getApp(), R.string.text_check_update_error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(GlobalAppContext.get(), R.string.text_check_update_error, Toast.LENGTH_SHORT).show();
                         setProgress(mCheckForUpdatesItem, false);
                     }
                 });

@@ -9,6 +9,7 @@ import android.view.Window;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.DialogUtils;
+import com.stardust.app.GlobalAppContext;
 import com.stardust.scriptdroid.App;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.script.ScriptFile;
@@ -60,7 +61,7 @@ public class ScriptLoopDialog {
             float loopDelay = Float.parseFloat(mLoopDelay.getText().toString());
             Scripts.runRepeatedly(mScriptFile, loopTimes, (long) (1000L * loopDelay), (long) (loopInterval * 1000L));
         } catch (NumberFormatException e) {
-            App.getApp().getUiHandler().toast(R.string.text_number_format_error);
+            GlobalAppContext.toast(R.string.text_number_format_error);
         }
     }
 
