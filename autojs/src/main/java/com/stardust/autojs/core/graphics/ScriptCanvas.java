@@ -1,6 +1,7 @@
 package com.stardust.autojs.core.graphics;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.DrawFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -17,26 +18,33 @@ import android.support.annotation.RequiresApi;
 
 import com.stardust.autojs.core.image.ImageWrapper;
 import com.stardust.autojs.runtime.ScriptRuntime;
-import com.stardust.autojs.runtime.exception.ScriptException;
 
 /**
  * Created by Stardust on 2018/3/22.
  */
 
-public class Canvas {
+public class ScriptCanvas {
 
-    private final android.graphics.Canvas mCanvas;
+    private android.graphics.Canvas mCanvas;
 
-    public Canvas(android.graphics.Canvas canvas) {
+    public ScriptCanvas(android.graphics.Canvas canvas) {
         mCanvas = canvas;
     }
 
-    public Canvas(@NonNull Bitmap bitmap) {
+    public ScriptCanvas(@NonNull Bitmap bitmap) {
         mCanvas = new android.graphics.Canvas(bitmap);
     }
 
-    public Canvas(@NonNull ImageWrapper image) {
+    public ScriptCanvas(@NonNull ImageWrapper image) {
         this(image.getBitmap());
+    }
+
+    public ScriptCanvas() {
+
+    }
+
+    void setCanvas(Canvas canvas) {
+        mCanvas = canvas;
     }
 
     public boolean isHardwareAccelerated() {

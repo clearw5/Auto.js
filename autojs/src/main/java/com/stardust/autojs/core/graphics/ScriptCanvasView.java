@@ -4,16 +4,17 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.stardust.autojs.core.eventloop.EventEmitter;
 import com.stardust.autojs.runtime.ScriptRuntime;
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by Stardust on 2018/3/16.
@@ -28,6 +29,7 @@ public class ScriptCanvasView extends SurfaceView implements SurfaceHolder.Callb
     private final SurfaceHolder mHolder;
     private ExecutorService mDrawingThreadPool;
     private ScriptRuntime mScriptRuntime;
+    private volatile long mTimePerDraw = 1000 / 30;
 
     public ScriptCanvasView(Context context, ScriptRuntime scriptRuntime) {
         super(context);
@@ -35,6 +37,15 @@ public class ScriptCanvasView extends SurfaceView implements SurfaceHolder.Callb
         mEventEmitter = new EventEmitter(mScriptRuntime.bridges);
         mHolder = getHolder();
         init();
+    }
+
+
+    public void setMaxFps(int maxFps) {
+        if (maxFps <= 0) {
+            mTimePerDraw = 0;
+        } else {
+            mTimePerDraw = 100 / maxFps;
+        }
     }
 
     private void init() {
@@ -59,13 +70,21 @@ public class ScriptCanvasView extends SurfaceView implements SurfaceHolder.Callb
         mDrawingThreadPool.execute(() -> {
             Canvas canvas = null;
             SurfaceHolder holder = getHolder();
+            long time = SystemClock.uptimeMillis();
+            ScriptCanvas scriptCanvas = new ScriptCanvas();
             try {
                 while (mDrawing) {
                     canvas = holder.lockCanvas();
-                    canvas.drawColor(Color.WHITE);
-                    emit("draw", canvas, this);
+                    scriptCanvas.setCanvas(canvas);
+                    scriptCanvas.drawColor(Color.WHITE);
+                    emit("draw", scriptCanvas, this);
                     holder.unlockCanvasAndPost(canvas);
                     canvas = null;
+                    long dt = mTimePerDraw - (SystemClock.uptimeMillis() - time);
+                    if (dt > 0) {
+                        sleep(dt);
+                    }
+                    time = SystemClock.uptimeMillis();
                 }
             } catch (Exception e) {
                 mScriptRuntime.exit(e);
@@ -76,6 +95,14 @@ public class ScriptCanvasView extends SurfaceView implements SurfaceHolder.Callb
                 }
             }
         });
+    }
+
+    private void sleep(long dt) {
+        try {
+            Thread.sleep(dt);
+        } catch (InterruptedException e) {
+            throw new ScriptInterruptedException(e);
+        }
     }
 
     @Override
