@@ -10,6 +10,7 @@ import android.graphics.Xfermode;
 import android.media.Image;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.view.KeyEvent;
 
 import com.stardust.autojs.runtime.api.Images;
 import com.stardust.pio.UncheckedIOException;
