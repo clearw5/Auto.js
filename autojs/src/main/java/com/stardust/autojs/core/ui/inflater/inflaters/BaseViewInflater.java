@@ -1,4 +1,4 @@
-package com.stardust.autojs.core.ui.inflater.attrsetter;
+package com.stardust.autojs.core.ui.inflater.inflaters;
 
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
@@ -12,8 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 
-import com.stardust.autojs.core.ui.inflater.ValueParser;
-import com.stardust.autojs.core.ui.inflater.ViewAttrSetter;
+import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
+import com.stardust.autojs.core.ui.inflater.ResourceParser;
+import com.stardust.autojs.core.ui.inflater.ViewInflater;
 import com.stardust.autojs.core.ui.inflater.ViewCreator;
 import com.stardust.autojs.core.ui.inflater.util.Colors;
 import com.stardust.autojs.core.ui.inflater.util.Dimensions;
@@ -23,6 +24,8 @@ import com.stardust.autojs.core.ui.inflater.util.Ids;
 import com.stardust.autojs.core.ui.inflater.util.Strings;
 import com.stardust.autojs.core.ui.inflater.util.ValueMapper;
 
+import org.w3c.dom.Node;
+
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -30,7 +33,7 @@ import java.util.Map;
  * Created by Stardust on 2017/11/3.
  */
 
-public class BaseViewAttrSetter<V extends View> implements ViewAttrSetter<V> {
+public class BaseViewInflater<V extends View> implements ViewInflater<V> {
 
 
     protected static final ValueMapper<PorterDuff.Mode> TINT_MODES = new ValueMapper<PorterDuff.Mode>("tintMode")
@@ -91,14 +94,14 @@ public class BaseViewAttrSetter<V extends View> implements ViewAttrSetter<V> {
             .map("viewEnd", 6)
             .map("viewStart", 5);
 
-    private final ValueParser mValueParser;
+    private final ResourceParser mResourceParser;
 
-    public BaseViewAttrSetter(ValueParser valueParser) {
-        mValueParser = valueParser;
+    public BaseViewInflater(ResourceParser resourceParser) {
+        mResourceParser = resourceParser;
     }
 
-    public Drawables getDrawables(){
-        return mValueParser.getDrawables();
+    public Drawables getDrawables() {
+        return mResourceParser.getDrawables();
     }
 
 
@@ -584,7 +587,7 @@ public class BaseViewAttrSetter<V extends View> implements ViewAttrSetter<V> {
 
     @Override
     public boolean setAttr(V view, String ns, String attrName, String value, ViewGroup parent, Map<String, String> attrs) {
-        if (ns.equals("android")) {
+        if (ns == null || ns.equals("android")) {
             return setAttr(view, attrName, value, parent, attrs);
         }
         return false;
@@ -604,6 +607,11 @@ public class BaseViewAttrSetter<V extends View> implements ViewAttrSetter<V> {
     @Override
     public void applyPendingAttributes(V view, ViewGroup parent) {
 
+    }
+
+    @Override
+    public boolean inflateChildren(DynamicLayoutInflater inflater, Node node, V parent) {
+        return false;
     }
 
     @Nullable

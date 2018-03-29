@@ -1,4 +1,4 @@
-package com.stardust.autojs.core.ui.inflater.attrsetter;
+package com.stardust.autojs.core.ui.inflater.inflaters;
 
 import android.content.Context;
 import android.os.Build;
@@ -8,10 +8,9 @@ import android.widget.ArrayAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 
-import com.stardust.autojs.core.ui.inflater.ValueParser;
+import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.ViewCreator;
 import com.stardust.autojs.core.ui.inflater.util.Dimensions;
-import com.stardust.autojs.core.ui.inflater.util.Drawables;
 import com.stardust.autojs.core.ui.inflater.util.Strings;
 import com.stardust.autojs.core.ui.inflater.util.ValueMapper;
 
@@ -22,14 +21,14 @@ import java.util.Map;
  * Created by Stardust on 2017/11/29.
  */
 
-public class SpinnerAttrSetter extends BaseViewAttrSetter<Spinner> {
+public class SpinnerInflater extends BaseViewInflater<Spinner> {
 
     protected static final ValueMapper<Integer> SPINNER_MODES = new ValueMapper<Integer>("spinnerMode")
             .map("dialog", Spinner.MODE_DIALOG)
             .map("dropdown", Spinner.MODE_DROPDOWN);
 
-    public SpinnerAttrSetter(ValueParser valueParser) {
-        super(valueParser);
+    public SpinnerInflater(ResourceParser resourceParser) {
+        super(resourceParser);
     }
 
     @Override

@@ -1,14 +1,13 @@
-package com.stardust.autojs.core.ui.inflater.attrsetter;
+package com.stardust.autojs.core.ui.inflater.inflaters;
 
 import android.os.Build;
 import android.view.InflateException;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.stardust.autojs.core.ui.inflater.ValueParser;
+import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.util.Colors;
 import com.stardust.autojs.core.ui.inflater.util.Dimensions;
-import com.stardust.autojs.core.ui.inflater.util.Drawables;
 
 import java.util.Map;
 
@@ -16,10 +15,10 @@ import java.util.Map;
  * Created by Stardust on 2017/11/3.
  */
 
-public class ImageViewAttrSetter<V extends ImageView> extends BaseViewAttrSetter<V> {
+public class ImageViewInflater<V extends ImageView> extends BaseViewInflater<V> {
 
-    public ImageViewAttrSetter(ValueParser valueParser) {
-        super(valueParser);
+    public ImageViewInflater(ResourceParser resourceParser) {
+        super(resourceParser);
     }
 
     @Override

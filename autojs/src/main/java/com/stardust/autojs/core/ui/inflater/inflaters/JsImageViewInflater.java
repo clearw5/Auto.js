@@ -1,12 +1,11 @@
-package com.stardust.autojs.core.ui.inflater.attrsetter;
+package com.stardust.autojs.core.ui.inflater.inflaters;
 
-import android.content.Context;
 import android.support.annotation.Nullable;
 import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
 
 import com.makeramen.roundedimageview.Corner;
-import com.stardust.autojs.core.ui.inflater.ValueParser;
+import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.ViewCreator;
 import com.stardust.autojs.core.ui.inflater.util.Colors;
 import com.stardust.autojs.core.ui.inflater.util.Dimensions;
@@ -20,7 +19,7 @@ import java.util.Map;
  * Created by Stardust on 2017/11/30.
  */
 
-public class JsImageViewAttrSetter extends ImageViewAttrSetter<JsImageView> {
+public class JsImageViewInflater extends ImageViewInflater<JsImageView> {
 
 
     protected static final ValueMapper<ScaleType> SCALE_TYPES = new ValueMapper<ScaleType>("scaleType")
@@ -33,8 +32,8 @@ public class JsImageViewAttrSetter extends ImageViewAttrSetter<JsImageView> {
             .map("fitXY", ScaleType.FIT_XY)
             .map("matrix", ScaleType.MATRIX);
 
-    public JsImageViewAttrSetter(ValueParser valueParser) {
-        super(valueParser);
+    public JsImageViewInflater(ResourceParser resourceParser) {
+        super(resourceParser);
     }
 
     @Override

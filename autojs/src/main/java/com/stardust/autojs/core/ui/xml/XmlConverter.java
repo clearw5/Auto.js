@@ -1,5 +1,6 @@
 package com.stardust.autojs.core.ui.xml;
 
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.webkit.WebView;
 import android.widget.CheckBox;
@@ -18,6 +19,7 @@ import com.stardust.autojs.core.ui.widget.JsEditText;
 import com.stardust.autojs.core.ui.widget.JsFrameLayout;
 import com.stardust.autojs.core.ui.widget.JsImageView;
 import com.stardust.autojs.core.ui.widget.JsLinearLayout;
+import com.stardust.autojs.core.ui.widget.JsListView;
 import com.stardust.autojs.core.ui.widget.JsRelativeLayout;
 import com.stardust.autojs.core.ui.widget.JsTextView;
 import com.stardust.autojs.core.ui.widget.JsWebView;
@@ -66,6 +68,7 @@ public class XmlConverter {
                     .map("scroll", ScrollView.class.getName())
                     .map("toolbar", Toolbar.class.getName())
                     .map("canvas", ScriptCanvasView.class.getName())
+                    .map("list", JsListView.class.getName())
             );
 
     private static final AttributeHandler ATTRIBUTE_HANDLER = new AttributeHandler.AttrNameRouter()

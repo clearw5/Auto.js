@@ -1,14 +1,13 @@
-package com.stardust.autojs.core.ui.inflater.attrsetter;
+package com.stardust.autojs.core.ui.inflater.inflaters;
 
 import android.content.res.ColorStateList;
 import android.os.Build;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.stardust.autojs.core.ui.inflater.ValueParser;
+import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.util.Colors;
 import com.stardust.autojs.core.ui.inflater.util.Dimensions;
-import com.stardust.autojs.core.ui.inflater.util.Drawables;
 
 import java.util.Map;
 
@@ -16,10 +15,10 @@ import java.util.Map;
  * Created by Stardust on 2017/11/29.
  */
 
-public class ProgressBarAttrSetter<V extends ProgressBar> extends BaseViewAttrSetter<V> {
+public class ProgressBarInflater<V extends ProgressBar> extends BaseViewInflater<V> {
 
-    public ProgressBarAttrSetter(ValueParser valueParser) {
-        super(valueParser);
+    public ProgressBarInflater(ResourceParser resourceParser) {
+        super(resourceParser);
     }
 
     @Override

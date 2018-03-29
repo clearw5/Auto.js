@@ -1,9 +1,9 @@
-package com.stardust.autojs.core.ui.inflater.attrsetter;
+package com.stardust.autojs.core.ui.inflater.inflaters;
 
 import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
 
-import com.stardust.autojs.core.ui.inflater.ValueParser;
+import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.util.Strings;
 
 import java.util.Map;
@@ -12,11 +12,11 @@ import java.util.Map;
  * Created by Stardust on 2017/11/5.
  */
 
-public class ToolbarAttrSetter<V extends Toolbar> extends BaseViewAttrSetter<V> {
+public class ToolbarInflater<V extends Toolbar> extends BaseViewInflater<V> {
 
 
-    public ToolbarAttrSetter(ValueParser valueParser) {
-        super(valueParser);
+    public ToolbarInflater(ResourceParser resourceParser) {
+        super(resourceParser);
     }
 
     @Override

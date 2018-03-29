@@ -52,6 +52,11 @@ runtime.init();
         },
         toString: function(o){
             return String(o);
+        },
+        eval: function(context, expr){
+            with(context){
+                return eval(expr);
+            }
         }
     });
 

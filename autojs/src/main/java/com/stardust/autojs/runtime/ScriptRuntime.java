@@ -212,7 +212,7 @@ public class ScriptRuntime {
         device = new Device(context);
         floaty = new Floaty(uiHandler, ui, this);
         files = new Files(this);
-        media = new Media(context);
+        media = new Media(context, this);
     }
 
     public void init() {

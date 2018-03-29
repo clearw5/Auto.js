@@ -1,4 +1,4 @@
-package com.stardust.autojs.core.ui.inflater.attrsetter;
+package com.stardust.autojs.core.ui.inflater.inflaters;
 
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -14,10 +14,9 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
-import com.stardust.autojs.core.ui.inflater.ValueParser;
+import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.util.Colors;
 import com.stardust.autojs.core.ui.inflater.util.Dimensions;
-import com.stardust.autojs.core.ui.inflater.util.Drawables;
 import com.stardust.autojs.core.ui.inflater.util.Gravities;
 import com.stardust.autojs.core.ui.inflater.util.Res;
 import com.stardust.autojs.core.ui.inflater.util.Strings;
@@ -29,7 +28,7 @@ import java.util.Map;
  * Created by Stardust on 2017/11/3.
  */
 
-public class TextViewAttrSetter<V extends TextView> extends BaseViewAttrSetter<V> {
+public class TextViewInflater<V extends TextView> extends BaseViewInflater<V> {
 
     private static final ValueMapper<Integer> AUTO_LINK_MASKS = new ValueMapper<Integer>("autoLink")
             .map("all", Linkify.ALL)
@@ -123,8 +122,8 @@ public class TextViewAttrSetter<V extends TextView> extends BaseViewAttrSetter<V
     private Integer mTextStyle;
     private String mTypeface;
 
-    public TextViewAttrSetter(ValueParser valueParser) {
-        super(valueParser);
+    public TextViewInflater(ResourceParser resourceParser) {
+        super(resourceParser);
     }
 
     @Override

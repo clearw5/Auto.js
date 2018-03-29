@@ -8,8 +8,8 @@ import android.view.View;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.floaty.FloatyWindow;
-import com.stardust.autojs.core.ui.JsLayoutInflater;
 import com.stardust.autojs.core.ui.JsViewHelper;
+import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.util.FloatingPermission;
@@ -26,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public class Floaty {
 
-    private JsLayoutInflater mJsLayoutInflater;
+    private DynamicLayoutInflater mLayoutInflater;
     private Context mContext;
     private UiHandler mUiHandler;
     private CopyOnWriteArraySet<JsFloatyWindow> mWindows = new CopyOnWriteArraySet<>();
@@ -36,7 +36,7 @@ public class Floaty {
         mUiHandler = uiHandler;
         mRuntime = runtime;
         mContext = new ContextThemeWrapper(mUiHandler.getContext(), R.style.AppTheme);
-        mJsLayoutInflater = ui.getJsLayoutInflater();
+        mLayoutInflater = ui.getLayoutInflater();
     }
 
     public JsFloatyWindow window(String xml) {
@@ -64,10 +64,10 @@ public class Floaty {
 
     private View inflate(String xml) {
         if (Looper.getMainLooper() == Looper.myLooper()) {
-            return mJsLayoutInflater.inflate(mContext, xml);
+            return mLayoutInflater.inflate(xml);
         } else {
             VolatileDispose<View> dispose = new VolatileDispose<>();
-            mUiHandler.post(() -> dispose.setAndNotify(mJsLayoutInflater.inflate(mContext, xml)));
+            mUiHandler.post(() -> dispose.setAndNotify(mLayoutInflater.inflate(xml)));
             return dispose.blockedGetOrThrow(ScriptInterruptedException.class);
         }
     }

@@ -1,10 +1,9 @@
-package com.stardust.autojs.core.ui.inflater.attrsetter;
+package com.stardust.autojs.core.ui.inflater.inflaters;
 
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.stardust.autojs.core.ui.inflater.ValueParser;
-import com.stardust.autojs.core.ui.inflater.util.Drawables;
+import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.util.Gravities;
 import com.stardust.autojs.core.ui.inflater.util.ValueMapper;
 
@@ -14,14 +13,14 @@ import java.util.Map;
  * Created by Stardust on 2017/11/4.
  */
 
-public class LinearLayoutAttrSetter<V extends LinearLayout> extends ViewGroupAttrSetter<V> {
+public class LinearLayoutInflater<V extends LinearLayout> extends ViewGroupInflater<V> {
 
     private static final ValueMapper<Integer> ORIENTATIONS = new ValueMapper<Integer>("orientation")
             .map("vertical", LinearLayout.VERTICAL)
             .map("horizontal", LinearLayout.HORIZONTAL);
 
-    public LinearLayoutAttrSetter(ValueParser valueParser) {
-        super(valueParser);
+    public LinearLayoutInflater(ResourceParser resourceParser) {
+        super(resourceParser);
     }
 
     @Override

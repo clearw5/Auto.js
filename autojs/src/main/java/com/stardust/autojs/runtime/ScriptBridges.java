@@ -18,6 +18,8 @@ public class ScriptBridges {
         Object toArray(Object o);
 
         Object toString(Object obj);
+
+        Object eval(Object context, String expr);
     }
 
     private Bridges mBridges;
@@ -46,5 +48,11 @@ public class ScriptBridges {
     public Object toString(Object obj) {
         checkBridges();
         return mBridges.toString(obj);
+    }
+
+    public Object eval(Object context, String expr) {
+        checkBridges();
+        return mBridges.eval(context, expr);
+
     }
 }

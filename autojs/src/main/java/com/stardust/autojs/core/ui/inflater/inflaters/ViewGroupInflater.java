@@ -1,10 +1,10 @@
-package com.stardust.autojs.core.ui.inflater.attrsetter;
+package com.stardust.autojs.core.ui.inflater.inflaters;
 
 import android.animation.LayoutTransition;
 import android.os.Build;
 import android.view.ViewGroup;
 
-import com.stardust.autojs.core.ui.inflater.ValueParser;
+import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.util.ValueMapper;
 
 import java.util.Map;
@@ -13,7 +13,7 @@ import java.util.Map;
  * Created by Stardust on 2017/11/4.
  */
 
-public class ViewGroupAttrSetter<V extends ViewGroup> extends BaseViewAttrSetter<V> {
+public class ViewGroupInflater<V extends ViewGroup> extends BaseViewInflater<V> {
 
     private static final ValueMapper<Integer> PERSISTENT_DRAWING_CACHE = new ValueMapper<Integer>("persistentDrawingCache")
             .map("all", ViewGroup.PERSISTENT_ALL_CACHES)
@@ -30,8 +30,8 @@ public class ViewGroupAttrSetter<V extends ViewGroup> extends BaseViewAttrSetter
             .map("beforeDescendants", ViewGroup.FOCUS_BEFORE_DESCENDANTS)
             .map("blocksDescendants", ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 
-    public ViewGroupAttrSetter(ValueParser valueParser) {
-        super(valueParser);
+    public ViewGroupInflater(ResourceParser resourceParser) {
+        super(resourceParser);
     }
 
 
@@ -79,7 +79,7 @@ public class ViewGroupAttrSetter<V extends ViewGroup> extends BaseViewAttrSetter
         return true;
     }
 
-    public void applyPendingAttributesAboutChildren(V view) {
+    public void applyPendingAttributesOfChildren(V view) {
 
     }
 }

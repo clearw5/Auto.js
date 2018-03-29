@@ -1,4 +1,4 @@
-package com.stardust.autojs.core.ui.inflater.attrsetter;
+package com.stardust.autojs.core.ui.inflater.inflaters;
 
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -9,7 +9,7 @@ import android.widget.DatePicker;
 
 
 import com.stardust.autojs.R;
-import com.stardust.autojs.core.ui.inflater.ValueParser;
+import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.ViewCreator;
 
 import java.text.ParseException;
@@ -21,12 +21,12 @@ import java.util.Map;
  * Created by Stardust on 2017/11/29.
  */
 
-public class DatePickerAttrSetter extends BaseViewAttrSetter<DatePicker> {
+public class DatePickerInflater extends BaseViewInflater<DatePicker> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("mm/dd/yyyy", Locale.getDefault());
 
-    public DatePickerAttrSetter(ValueParser valueParser) {
-        super(valueParser);
+    public DatePickerInflater(ResourceParser resourceParser) {
+        super(resourceParser);
     }
 
     @Override

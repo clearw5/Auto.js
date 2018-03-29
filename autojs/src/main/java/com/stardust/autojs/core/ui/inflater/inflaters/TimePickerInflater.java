@@ -1,21 +1,21 @@
-package com.stardust.autojs.core.ui.inflater.attrsetter;
+package com.stardust.autojs.core.ui.inflater.inflaters;
 
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TimePicker;
 
 import com.stardust.autojs.R;
-import com.stardust.autojs.core.ui.inflater.ValueParser;
+import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.ViewCreator;
 
 /**
  * Created by Stardust on 2017/11/29.
  */
 
-public class TimePickerAttrSetter extends BaseViewAttrSetter<TimePicker> {
+public class TimePickerInflater extends BaseViewInflater<TimePicker> {
 
-    public TimePickerAttrSetter(ValueParser valueParser) {
-        super(valueParser);
+    public TimePickerInflater(ResourceParser resourceParser) {
+        super(resourceParser);
     }
 
     @Nullable

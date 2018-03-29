@@ -1,9 +1,9 @@
-package com.stardust.autojs.core.ui.inflater.attrsetter;
+package com.stardust.autojs.core.ui.inflater.inflaters;
 
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
 
-import com.stardust.autojs.core.ui.inflater.ValueParser;
+import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.util.Ids;
 
 import java.util.Map;
@@ -12,12 +12,12 @@ import java.util.Map;
  * Created by Stardust on 2017/11/29.
  */
 
-public class RadioGroupAttrSetter<V extends RadioGroup> extends LinearLayoutAttrSetter<V> {
+public class RadioGroupInflater<V extends RadioGroup> extends LinearLayoutInflater<V> {
 
     private Integer mCheckedButton;
 
-    public RadioGroupAttrSetter(ValueParser valueParser) {
-        super(valueParser);
+    public RadioGroupInflater(ResourceParser resourceParser) {
+        super(resourceParser);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class RadioGroupAttrSetter<V extends RadioGroup> extends LinearLayoutAttr
     }
 
     @Override
-    public void applyPendingAttributesAboutChildren(V view) {
+    public void applyPendingAttributesOfChildren(V view) {
         if (mCheckedButton != null) {
             view.check(mCheckedButton);
             mCheckedButton = null;

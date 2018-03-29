@@ -1,10 +1,10 @@
-package com.stardust.autojs.core.ui.inflater.attrsetter;
+package com.stardust.autojs.core.ui.inflater.inflaters;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.stardust.autojs.core.ui.inflater.ValueParser;
+import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.util.Gravities;
 
 import java.util.Map;
@@ -13,12 +13,12 @@ import java.util.Map;
  * Created by Stardust on 2017/11/29.
  */
 
-public class FrameLayoutAttrSetter<V extends FrameLayout> extends ViewGroupAttrSetter<V> {
+public class FrameLayoutInflater<V extends FrameLayout> extends ViewGroupInflater<V> {
 
     private Integer mGravity;
 
-    public FrameLayoutAttrSetter(ValueParser valueParser) {
-        super(valueParser);
+    public FrameLayoutInflater(ResourceParser resourceParser) {
+        super(resourceParser);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class FrameLayoutAttrSetter<V extends FrameLayout> extends ViewGroupAttrS
     }
 
     @Override
-    public void applyPendingAttributesAboutChildren(V view) {
+    public void applyPendingAttributesOfChildren(V view) {
         if (mGravity == null)
             return;
         for (int i = 0; i < view.getChildCount(); i++) {

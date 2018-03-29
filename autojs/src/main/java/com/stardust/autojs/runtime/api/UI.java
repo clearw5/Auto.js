@@ -4,13 +4,13 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 
 import com.stardust.autojs.core.graphics.ScriptCanvasView;
-import com.stardust.autojs.core.ui.ConvertLayoutInflater;
-import com.stardust.autojs.core.ui.JsLayoutInflater;
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
-import com.stardust.autojs.core.ui.inflater.ValueParser;
-import com.stardust.autojs.core.ui.inflater.attrsetter.CanvasViewAttrSetter;
-import com.stardust.autojs.core.ui.inflater.attrsetter.JsImageViewAttrSetter;
+import com.stardust.autojs.core.ui.inflater.ResourceParser;
+import com.stardust.autojs.core.ui.inflater.inflaters.CanvasViewInflater;
+import com.stardust.autojs.core.ui.inflater.inflaters.JsImageViewInflater;
+import com.stardust.autojs.core.ui.inflater.inflaters.JsListViewInflater;
 import com.stardust.autojs.core.ui.widget.JsImageView;
+import com.stardust.autojs.core.ui.widget.JsListView;
 import com.stardust.autojs.rhino.ProxyObject;
 import com.stardust.autojs.runtime.ScriptRuntime;
 
@@ -29,26 +29,36 @@ public class UI extends ProxyObject {
 
     private Context mContext;
     private Map<String, Object> mProperties = new ConcurrentHashMap<>();
-    private JsLayoutInflater mJsLayoutInflater;
+    private DynamicLayoutInflater mDynamicLayoutInflater;
     private ScriptRuntime mRuntime;
-    private ValueParser mValueParser;
+    private ResourceParser mResourceParser;
 
     public UI(Context context, ScriptRuntime runtime) {
         mContext = context;
         mRuntime = runtime;
-        mValueParser = new ValueParser(new Drawables());
-        DynamicLayoutInflater inflater = new DynamicLayoutInflater(mValueParser);
-        inflater.registerViewAttrSetter(JsImageView.class.getName(),
-                new JsImageViewAttrSetter(mValueParser));
-        inflater.registerViewAttrSetter(ScriptCanvasView.class.getName(),
-                new CanvasViewAttrSetter(mValueParser, runtime));
-        mJsLayoutInflater = new ConvertLayoutInflater(inflater);
-        mProperties.put("layoutInflater", mJsLayoutInflater);
+        mResourceParser = new ResourceParser(new Drawables());
+        mDynamicLayoutInflater = new DynamicLayoutInflater(mResourceParser);
+        mDynamicLayoutInflater.setContext(context);
+        mDynamicLayoutInflater.registerViewAttrSetter(JsImageView.class.getName(),
+                new JsImageViewInflater(mResourceParser));
+        mDynamicLayoutInflater.registerViewAttrSetter(JsListView.class.getName(),
+                new JsListViewInflater(mResourceParser, runtime));
+        mDynamicLayoutInflater.registerViewAttrSetter(ScriptCanvasView.class.getName(),
+                new CanvasViewInflater(mResourceParser, runtime));
+        mProperties.put("layoutInflater", this.mDynamicLayoutInflater);
+    }
+
+    public Object getBindingContext() {
+        return mProperties.get("bindingContext");
+    }
+
+    public void setBindingContext(Object context) {
+        mProperties.put("bindingContext", context);
     }
 
 
-    public JsLayoutInflater getJsLayoutInflater() {
-        return mJsLayoutInflater;
+    public DynamicLayoutInflater getLayoutInflater() {
+        return mDynamicLayoutInflater;
     }
 
     @Override
@@ -59,16 +69,24 @@ public class UI extends ProxyObject {
 
     @Override
     public Object get(String name, Scriptable start) {
-        Object value = super.get(name, start);
-        if (value != null && value != UniqueTag.NOT_FOUND && !value.equals(org.mozilla.javascript.Context.getUndefinedValue())) {
-            return value;
-        }
-        value = mProperties.get(name);
+        Object value = mProperties.get(name);
         if (value != null)
             return value;
-        return UniqueTag.NOT_FOUND;
+        return super.get(name, start);
     }
 
+    @Override
+    public void put(String name, Scriptable start, Object value) {
+        if (mProperties.containsKey(name)) {
+            if (value == null) {
+                mProperties.remove(name);
+            } else {
+                mProperties.put(name, value);
+            }
+        } else {
+            super.put(name, start, value);
+        }
+    }
 
     private class Drawables extends com.stardust.autojs.core.ui.inflater.util.Drawables {
 
