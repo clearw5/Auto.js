@@ -52,7 +52,7 @@ public class TemplateMatching {
         }
         //保存每一轮匹配到模板图片在原图片的位置
         Point p = null;
-        Mat matchResult;
+        Mat matchResult = null;
         double similarity = 0;
         boolean isFirstMatching = true;
         for (int level = maxLevel; level >= 0; level--) {
@@ -65,6 +65,8 @@ public class TemplateMatching {
                 if (!isFirstMatching && !shouldContinueMatching(level, maxLevel)) {
                     break;
                 }
+                if (matchResult != null)
+                    matchResult.release();
                 matchResult = matchTemplate(src, currentTemplate, matchMethod);
                 Pair<Point, Double> bestMatched = getBestMatched(matchResult, matchMethod, weakThreshold);
                 p = bestMatched.first;
@@ -72,7 +74,11 @@ public class TemplateMatching {
             } else {
                 //根据上一轮的匹配点，计算本次匹配的区域
                 Rect r = getROI(p, src, currentTemplate);
-                matchResult = matchTemplate(new Mat(src, r), currentTemplate, matchMethod);
+                if (matchResult != null)
+                    matchResult.release();
+                Mat m = new Mat(src, r);
+                matchResult = matchTemplate(m, currentTemplate, matchMethod);
+                m.release();
                 Pair<Point, Double> bestMatched = getBestMatched(matchResult, matchMethod, weakThreshold);
                 //不满足弱阈值，返回null
                 if (bestMatched.second < weakThreshold) {
@@ -84,6 +90,8 @@ public class TemplateMatching {
                 p.x += r.x;
                 p.y += r.y;
             }
+            src.release();
+            currentTemplate.release();
             //满足强阈值，返回当前结果
             if (similarity >= strictThreshold) {
                 pyrUp(p, level);
@@ -159,18 +167,6 @@ public class TemplateMatching {
         return Math.min(6, maxLevel);
     }
 
-
-    public static List<Mat> buildPyramid(Mat mat, int maxLevel) {
-        List<Mat> pyramid = new ArrayList<>();
-        pyramid.add(mat);
-        for (int i = 0; i < maxLevel; i++) {
-            Mat m = new Mat((mat.rows() + 1) / 2, (mat.cols() + 1) / 2, mat.type());
-            Imgproc.pyrDown(mat, m);
-            pyramid.add(m);
-            mat = m;
-        }
-        return pyramid;
-    }
 
     public static Mat matchTemplate(Mat img, Mat temp, int match_method) {
         int result_cols = img.cols() - temp.cols() + 1;

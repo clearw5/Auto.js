@@ -261,13 +261,11 @@ public class Images {
             point.x = mScreenMetrics.scaleX((int) point.x);
             point.y = mScreenMetrics.scaleX((int) point.y);
         }
-
+        if (src != image.getMat()) {
+            src.release();
+        }
         return point;
     }
 
-
-    public void notityImageInserted(String path) {
-
-    }
 
 }

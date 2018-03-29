@@ -73,16 +73,23 @@ public class ColorFinder {
         Scalar upperBound = new Scalar(Color.red(color) + threshold, Color.green(color) + threshold,
                 Color.blue(color) + threshold, 255);
         if (rect != null) {
-            Core.inRange(new Mat(image.getMat(), rect), lowerBound, upperBound, bi);
+            Mat m = new Mat(image.getMat(), rect);
+            Core.inRange(m, lowerBound, upperBound, bi);
+            m.release();
         } else {
             Core.inRange(image.getMat(), lowerBound, upperBound, bi);
         }
         Mat nonZeroPos = new Mat();
         Core.findNonZero(bi, nonZeroPos);
+        MatOfPoint result;
         if (nonZeroPos.rows() == 0 || nonZeroPos.cols() == 0) {
-            return null;
+            result = null;
+        } else {
+            result = new MatOfPoint(nonZeroPos);
         }
-        return new MatOfPoint(nonZeroPos);
+        bi.release();
+        nonZeroPos.release();
+        return result;
     }
 
     public Point findMultiColors(ImageWrapper image, int firstColor, int threshold, Rect rect, int[] points) {
