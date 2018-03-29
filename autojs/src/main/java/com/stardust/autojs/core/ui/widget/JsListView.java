@@ -1,20 +1,17 @@
 package com.stardust.autojs.core.ui.widget;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
-import com.stardust.autojs.core.ui.inflater.ViewInflater;
 import com.stardust.autojs.runtime.ScriptRuntime;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.Map;
+import com.stardust.autojs.workground.WrapContentLinearLayoutManager;
 
 /**
  * Created by Stardust on 2018/3/28.
@@ -31,11 +28,18 @@ public class JsListView extends RecyclerView {
         void setDataSource(Object dataSource);
     }
 
+    public interface OnItemTouchListener {
+        void onItemClick(JsListView listView, View itemView, Object item, int pos);
+
+        boolean onItemLongClick(JsListView listView, View itemView, Object item, int pos);
+    }
+
     private Node mItemTemplate;
     private DynamicLayoutInflater mDynamicLayoutInflater;
     private ScriptRuntime mScriptRuntime;
     private Object mDataSource;
     private DataSourceAdapter mDataSourceAdapter;
+    private OnItemTouchListener mOnItemTouchListener;
 
     public JsListView(Context context, ScriptRuntime scriptRuntime) {
         super(context);
@@ -45,7 +49,11 @@ public class JsListView extends RecyclerView {
 
     private void init() {
         setAdapter(new Adapter());
-        setLayoutManager(new LinearLayoutManager(getContext()));
+        setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
+    }
+
+    public void setOnItemTouchListener(OnItemTouchListener onItemTouchListener) {
+        mOnItemTouchListener = onItemTouchListener;
     }
 
     public void setDataSourceAdapter(DataSourceAdapter dataSourceAdapter) {
@@ -73,6 +81,18 @@ public class JsListView extends RecyclerView {
 
         public ViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(v -> {
+                if (mOnItemTouchListener != null) {
+                    int pos = getAdapterPosition();
+                    mOnItemTouchListener.onItemClick(JsListView.this, itemView, mDataSourceAdapter.getItem(mDataSource, pos), pos);
+                }
+            });
+            itemView.setOnLongClickListener(v -> {
+                if (mOnItemTouchListener == null)
+                    return false;
+                int pos = getAdapterPosition();
+                return mOnItemTouchListener.onItemLongClick(JsListView.this, itemView, mDataSourceAdapter.getItem(mDataSource, pos), pos);
+            });
         }
     }
 
@@ -80,15 +100,24 @@ public class JsListView extends RecyclerView {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(mDynamicLayoutInflater.inflate(mItemTemplate, parent, false));
+            try {
+                return new ViewHolder(mDynamicLayoutInflater.inflate(mItemTemplate, parent, false));
+            } catch (Exception e) {
+                mScriptRuntime.exit(e);
+                return new ViewHolder(new View(parent.getContext()));
+            }
         }
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            Object oldCtx = mScriptRuntime.ui.getBindingContext();
-            mScriptRuntime.ui.setBindingContext(mDataSourceAdapter.getItem(mDataSource, position));
-            applyDynamicAttrs(mItemTemplate, holder.itemView, (ViewGroup) holder.itemView.getParent());
-            mScriptRuntime.ui.setBindingContext(oldCtx);
+            try {
+                Object oldCtx = mScriptRuntime.ui.getBindingContext();
+                mScriptRuntime.ui.setBindingContext(mDataSourceAdapter.getItem(mDataSource, position));
+                applyDynamicAttrs(mItemTemplate, holder.itemView, (ViewGroup) holder.itemView.getParent());
+                mScriptRuntime.ui.setBindingContext(oldCtx);
+            } catch (Exception e) {
+                mScriptRuntime.exit(e);
+            }
         }
 
         private void applyDynamicAttrs(Node node, View itemView, ViewGroup parent) {

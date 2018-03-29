@@ -53,7 +53,10 @@ public class UI extends ProxyObject {
     }
 
     public void setBindingContext(Object context) {
-        mProperties.put("bindingContext", context);
+        if (context == null)
+            mProperties.remove("bindingContext");
+        else
+            mProperties.put("bindingContext", context);
     }
 
 

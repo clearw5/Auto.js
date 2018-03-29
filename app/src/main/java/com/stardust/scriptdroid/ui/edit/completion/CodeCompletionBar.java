@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.workground.WrapContentLinearLayoutManager;
+import com.stardust.autojs.workground.WrapContentLinearLayoutManager;
 
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.model.autocomplete.CodeCompletions;

@@ -24,7 +24,7 @@ module.exports = function (runtime, global) {
     ui.findById = function (id) {
         if (!ui.view)
             return null;
-        var v = ui.findByStringId(ui.view.getChildAt(0), id);
+        var v = ui.findByStringId(ui.view, id);
         if (v) {
             v = decorate(v);
         }
@@ -159,13 +159,14 @@ module.exports = function (runtime, global) {
     }
 
     function evalInContext(expr, ctx) {
-        return global.__exitIfError__(function () {
-            log(ctx.toString());
-            with(ctx){
-                return eval(expr);
+        return global.__exitIfError__(function() {
+            with(ctx) {
+                return (function(){
+                   return eval(expr);
+                }).call(ctx);
             }
         });
-       
+
     }
 
     function decorate(view) {
@@ -283,7 +284,9 @@ module.exports = function (runtime, global) {
                                 adapter.notifyItemRangeInserted(change.index, change.addedCount);
                             }
                         } else if (change.type == 'update') {
-                            adapter.notifyItemChanged(parseInt(change.name));
+                            try{
+                                adapter.notifyItemChanged(parseInt(change.name));
+                            }catch(e){}
                         }
                     });
                 });
@@ -292,7 +295,25 @@ module.exports = function (runtime, global) {
     }
 
     function decorateList(list) {
-
+        list.setOnItemTouchListener({
+            onItemClick: function(listView, itemView, item, pos){
+                emit("item_click", item, pos, itemView, listView);
+            },
+            onItemLongClick: function(listView, itemView, item, pos){
+                var event = {};
+                event.consumed = false;
+                emit("item_long_click", event, item, pos, itemView, listView);
+                return event.consumed;
+            }
+        });
+        function emit() {
+            var args = arguments;
+            global.__exitIfError__(function () {
+                //不支持使用apply的原因是rhino会把参数中的primitive变成object
+                functionApply(list.emit, args);
+                //view.emit.apply(view, args);
+            });
+        }
         return list;
     }
 
@@ -345,7 +366,7 @@ module.exports = function (runtime, global) {
                 cache = ui.findById(name);
                 if (cache) {
                     ui.__view_cache__[name] = cache;
-                    return cache;
+                     return cache;
                 }
             }
             return ui[name];

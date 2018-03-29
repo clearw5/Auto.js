@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class LinearLayoutInflater<V extends LinearLayout> extends ViewGroupInflater<V> {
 
-    private static final ValueMapper<Integer> ORIENTATIONS = new ValueMapper<Integer>("orientation")
+    static final ValueMapper<Integer> ORIENTATIONS = new ValueMapper<Integer>("orientation")
             .map("vertical", LinearLayout.VERTICAL)
             .map("horizontal", LinearLayout.HORIZONTAL);
 

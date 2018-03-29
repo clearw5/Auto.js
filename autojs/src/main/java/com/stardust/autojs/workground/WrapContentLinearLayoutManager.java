@@ -1,4 +1,4 @@
-package android.workground;
+package com.stardust.autojs.workground;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
