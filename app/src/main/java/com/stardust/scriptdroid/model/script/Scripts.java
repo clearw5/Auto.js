@@ -100,7 +100,8 @@ public class Scripts {
 
     public static ScriptExecution run(ScriptSource source) {
         return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
-                .executePath(StorageFileProvider.DEFAULT_DIRECTORY_PATH));
+                .executePath(StorageFileProvider.DEFAULT_DIRECTORY_PATH)
+                .requirePath(StorageFileProvider.DEFAULT_DIRECTORY_PATH));
     }
 
     public static ScriptExecution runWithBroadcastSender(File file) {

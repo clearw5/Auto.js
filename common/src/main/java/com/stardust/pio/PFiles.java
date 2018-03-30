@@ -349,6 +349,7 @@ public class PFiles {
     }
 
     public static String getName(String filePath) {
+        filePath = filePath.replace('\\', '/');
         return new File(filePath).getName();
     }
 

@@ -71,7 +71,7 @@ public class DevPluginResponseHandler implements Handler {
         } else {
             name = PFiles.getNameWithoutExtension(name);
         }
-        mScriptExecutions.put(viewId, Scripts.run(new StringScriptSource("<remote>:" + name, script)));
+        mScriptExecutions.put(viewId, Scripts.run(new StringScriptSource("[remote]" + name, script)));
     }
 
     private void stopScript(String viewId) {
@@ -96,9 +96,7 @@ public class DevPluginResponseHandler implements Handler {
         }
         name = PFiles.getNameWithoutExtension(name);
         if (!name.endsWith(".js")) {
-            name = "<remote>" + name + ".js";
-        } else {
-            name = "<remote>" + name;
+            name = name + ".js";
         }
         PFiles.write(StorageFileProvider.DEFAULT_DIRECTORY_PATH + name, script);
         GlobalAppContext.toast(R.string.text_script_save_successfully);
