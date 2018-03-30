@@ -8,9 +8,21 @@ module.exports = function (runtime, global) {
     ui.__view_cache__ = {};
 
     ui.layout = function (xml) {
+        if(!activity){
+            throw new Error("需要在ui模式下运行才能使用该函数");
+        }
         runtime.ui.layoutInflater.setContext(activity);
         var view = runtime.ui.layoutInflater.inflate(xml.toString());
         ui.setContentView(view);
+    }
+
+    ui.inflate = function(xml, parent){
+        if(!activity){
+            throw new Error("需要在ui模式下运行才能使用该函数");
+        }
+        parent = parent || null;
+        runtime.ui.layoutInflater.setContext(activity);
+        return decorate(runtime.ui.layoutInflater.inflate(xml.toString(), parent));
     }
 
     ui.setContentView = function (view) {
@@ -86,7 +98,8 @@ module.exports = function (runtime, global) {
     }
 
     runtime.ui.bindingContext = global;
-    runtime.ui.layoutInflater.setLayoutInflaterDelegate({
+    var layoutInflater = runtime.ui.layoutInflater;
+    layoutInflater.setLayoutInflaterDelegate({
         beforeConvertXml: function (xml) {
             return null;
         },
@@ -109,7 +122,8 @@ module.exports = function (runtime, global) {
             return null;
         },
         afterCreateView: function (view, node, viewName, attrs) {
-            if (view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsListView") {
+            if (view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsListView" ||
+                view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsGridView") {
                 initListView(view);
             }
             return view;
@@ -133,6 +147,11 @@ module.exports = function (runtime, global) {
             return false;
         },
         beforeApplyAttribute: function (inflater, view, ns, attrName, value, parent, attrs) {
+            var isDynamic = layoutInflater.isDynamicValue(value);
+            if ((isDynamic && layoutInflater.getInflateFlags() == layoutInflater.FLAG_IGNORES_DYNAMIC_ATTRS)
+                    || (!isDynamic && layoutInflater.getInflateFlags() == layoutInflater.FLAG_JUST_DYNAMIC_ATTRS)) {
+                return true;
+            }
             value = bind(value);
             inflater.setAttr(view, ns, attrName, value, parent, attrs);
             this.afterApplyAttribute(inflater, view, ns, attrName, value, parent, attrs);
@@ -171,7 +190,8 @@ module.exports = function (runtime, global) {
 
     function decorate(view) {
         var view = global.events.__asEmitter__(Object.create(view));
-        if (view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsListView") {
+        if (view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsListView"
+            || view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsGridView") {
             view = decorateList(view);
         }
         var gestureDetector = new android.view.GestureDetector(context, {

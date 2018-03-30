@@ -7,8 +7,10 @@ import com.stardust.autojs.core.graphics.ScriptCanvasView;
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
 import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.inflaters.CanvasViewInflater;
+import com.stardust.autojs.core.ui.inflater.inflaters.JsGridViewInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.JsImageViewInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.JsListViewInflater;
+import com.stardust.autojs.core.ui.widget.JsGridView;
 import com.stardust.autojs.core.ui.widget.JsImageView;
 import com.stardust.autojs.core.ui.widget.JsListView;
 import com.stardust.autojs.rhino.ProxyObject;
@@ -43,6 +45,8 @@ public class UI extends ProxyObject {
                 new JsImageViewInflater(mResourceParser));
         mDynamicLayoutInflater.registerViewAttrSetter(JsListView.class.getName(),
                 new JsListViewInflater(mResourceParser, runtime));
+        mDynamicLayoutInflater.registerViewAttrSetter(JsGridView.class.getName(),
+                new JsGridViewInflater(mResourceParser, runtime));
         mDynamicLayoutInflater.registerViewAttrSetter(ScriptCanvasView.class.getName(),
                 new CanvasViewInflater(mResourceParser, runtime));
         mProperties.put("layoutInflater", this.mDynamicLayoutInflater);

@@ -616,7 +616,7 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
 
     @Nullable
     @Override
-    public ViewCreator<V> getCreator() {
+    public ViewCreator<? super V> getCreator() {
         return null;
     }
 }

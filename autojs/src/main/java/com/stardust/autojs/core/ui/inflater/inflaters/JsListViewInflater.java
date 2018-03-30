@@ -21,17 +21,21 @@ import java.util.Map;
  * Created by Stardust on 2018/3/28.
  */
 
-public class JsListViewInflater extends BaseViewInflater<JsListView> {
+public class JsListViewInflater<V extends JsListView> extends BaseViewInflater<V> {
 
-    private ScriptRuntime mRuntime;
+    private final ScriptRuntime mRuntime;
 
     public JsListViewInflater(ResourceParser resourceParser, ScriptRuntime runtime) {
         super(resourceParser);
         mRuntime = runtime;
     }
 
+    public ScriptRuntime getRuntime() {
+        return mRuntime;
+    }
+
     @Override
-    public boolean setAttr(JsListView view, String attr, String value, ViewGroup parent, Map<String, String> attrs) {
+    public boolean setAttr(V view, String attr, String value, ViewGroup parent, Map<String, String> attrs) {
         switch (attr) {
             case "orientation":
                 view.setLayoutManager(new WrapContentLinearLayoutManager(view.getContext(), LinearLayoutInflater.ORIENTATIONS.get(value), false));
@@ -42,7 +46,7 @@ public class JsListViewInflater extends BaseViewInflater<JsListView> {
     }
 
     @Override
-    public boolean setAttr(JsListView view, String ns, String attrName, String value, ViewGroup parent, Map<String, String> attrs) {
+    public boolean setAttr(V view, String ns, String attrName, String value, ViewGroup parent, Map<String, String> attrs) {
         return super.setAttr(view, ns, attrName, value, parent, attrs);
     }
 
@@ -60,7 +64,7 @@ public class JsListViewInflater extends BaseViewInflater<JsListView> {
 
     @Nullable
     @Override
-    public ViewCreator<JsListView> getCreator() {
+    public ViewCreator<? super JsListView> getCreator() {
         return (context, attrs) -> new JsListView(context, mRuntime);
     }
 }

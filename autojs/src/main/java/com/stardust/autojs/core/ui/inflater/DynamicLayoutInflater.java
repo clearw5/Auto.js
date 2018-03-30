@@ -50,6 +50,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 
 public class DynamicLayoutInflater {
+
+    public static final int FLAG_DEFAULT = 0;
+    public static final int FLAG_IGNORES_DYNAMIC_ATTRS = 1;
+    public static final int FLAG_JUST_DYNAMIC_ATTRS = 2;
+
     private static final String LOG_TAG = "DynamicLayoutInflater";
 
     private Map<String, ViewInflater<?>> mViewAttrSetters = new HashMap<>();
@@ -58,6 +63,7 @@ public class DynamicLayoutInflater {
     private ResourceParser mResourceParser;
     @NonNull
     private LayoutInflaterDelegate mLayoutInflaterDelegate = LayoutInflaterDelegate.NO_OP;
+    private int mInflateFlags;
 
     public DynamicLayoutInflater(ResourceParser resourceParser) {
         mResourceParser = resourceParser;
@@ -70,6 +76,14 @@ public class DynamicLayoutInflater {
         this.mContext = inflater.mContext;
         this.mViewAttrSetters = new HashMap<>(inflater.mViewAttrSetters);
         this.mViewCreators = new HashMap<>(inflater.mViewCreators);
+    }
+
+    public int getInflateFlags() {
+        return mInflateFlags;
+    }
+
+    public void setInflateFlags(int inflateFlags) {
+        mInflateFlags = inflateFlags;
     }
 
     public ResourceParser getResourceParser() {
@@ -160,8 +174,11 @@ public class DynamicLayoutInflater {
             return view;
         HashMap<String, String> attrs = getAttributesMap(node);
         view = doCreateView(node, node.getNodeName(), attrs);
-        if (parent != null && attachToParent) {
-            parent.addView(view); // have to add to parent to enable certain layout attrs
+        if (parent != null) {
+            parent.addView(view); // have to add to parent to generate layout params
+            if (!attachToParent) {
+                parent.removeView(view);
+            }
         }
         ViewInflater<View> inflater = applyAttributes(view, attrs, parent);
         if (!(view instanceof ViewGroup) || !node.hasChildNodes()) {
@@ -297,9 +314,21 @@ public class DynamicLayoutInflater {
         if (mLayoutInflaterDelegate.beforeApplyAttribute(inflater, view, ns, attrName, value, parent, attrs)) {
             return;
         }
+        boolean isDynamic = isDynamicValue(value);
+        if ((isDynamic && mInflateFlags == FLAG_IGNORES_DYNAMIC_ATTRS)
+                || (!isDynamic && mInflateFlags == FLAG_JUST_DYNAMIC_ATTRS)) {
+            return;
+        }
         inflater.setAttr(view, ns, attrName, value, parent, attrs);
         mLayoutInflaterDelegate.afterApplyAttribute(inflater, view, ns, attrName, value, parent, attrs);
 
+    }
+
+    public boolean isDynamicValue(String value) {
+        int i = value.indexOf("{{");
+        if (i < 0)
+            return false;
+        return value.indexOf("}}", i + 1) >= 0;
     }
 
 

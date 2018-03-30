@@ -17,6 +17,7 @@ import com.stardust.autojs.core.graphics.ScriptCanvasView;
 import com.stardust.autojs.core.ui.widget.JsButton;
 import com.stardust.autojs.core.ui.widget.JsEditText;
 import com.stardust.autojs.core.ui.widget.JsFrameLayout;
+import com.stardust.autojs.core.ui.widget.JsGridView;
 import com.stardust.autojs.core.ui.widget.JsImageView;
 import com.stardust.autojs.core.ui.widget.JsLinearLayout;
 import com.stardust.autojs.core.ui.widget.JsListView;
@@ -69,6 +70,7 @@ public class XmlConverter {
                     .map("toolbar", Toolbar.class.getName())
                     .map("canvas", ScriptCanvasView.class.getName())
                     .map("list", JsListView.class.getName())
+                    .map("grid", JsGridView.class.getName())
             );
 
     private static final AttributeHandler ATTRIBUTE_HANDLER = new AttributeHandler.AttrNameRouter()

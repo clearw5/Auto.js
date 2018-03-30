@@ -65,8 +65,9 @@ public class LoopBasedJavaScriptEngine extends RhinoJavaScriptEngine {
     public void forceStop() {
         LooperHelper.quitForThread(getThread());
         Activity activity = (Activity) getTag("activity");
-        if (activity != null)
+        if (activity != null) {
             activity.finish();
+        }
         super.forceStop();
     }
 

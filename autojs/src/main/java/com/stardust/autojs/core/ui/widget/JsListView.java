@@ -1,6 +1,7 @@
 package com.stardust.autojs.core.ui.widget;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,10 +48,11 @@ public class JsListView extends RecyclerView {
         init();
     }
 
-    private void init() {
+    protected void init() {
         setAdapter(new Adapter());
         setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
     }
+
 
     public void setOnItemTouchListener(OnItemTouchListener onItemTouchListener) {
         mOnItemTouchListener = onItemTouchListener;
@@ -101,10 +103,13 @@ public class JsListView extends RecyclerView {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             try {
+                mDynamicLayoutInflater.setInflateFlags(DynamicLayoutInflater.FLAG_IGNORES_DYNAMIC_ATTRS);
                 return new ViewHolder(mDynamicLayoutInflater.inflate(mItemTemplate, parent, false));
             } catch (Exception e) {
                 mScriptRuntime.exit(e);
                 return new ViewHolder(new View(parent.getContext()));
+            } finally {
+                mDynamicLayoutInflater.setInflateFlags(DynamicLayoutInflater.FLAG_DEFAULT);
             }
         }
 
@@ -113,10 +118,13 @@ public class JsListView extends RecyclerView {
             try {
                 Object oldCtx = mScriptRuntime.ui.getBindingContext();
                 mScriptRuntime.ui.setBindingContext(mDataSourceAdapter.getItem(mDataSource, position));
-                applyDynamicAttrs(mItemTemplate, holder.itemView, (ViewGroup) holder.itemView.getParent());
+                mDynamicLayoutInflater.setInflateFlags(DynamicLayoutInflater.FLAG_JUST_DYNAMIC_ATTRS);
+                applyDynamicAttrs(mItemTemplate, holder.itemView, JsListView.this);
                 mScriptRuntime.ui.setBindingContext(oldCtx);
             } catch (Exception e) {
                 mScriptRuntime.exit(e);
+            } finally {
+                mDynamicLayoutInflater.setInflateFlags(DynamicLayoutInflater.FLAG_DEFAULT);
             }
         }
 

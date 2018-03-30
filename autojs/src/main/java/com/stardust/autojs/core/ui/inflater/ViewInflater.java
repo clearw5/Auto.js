@@ -25,5 +25,5 @@ public interface ViewInflater<V extends View> {
     boolean inflateChildren(DynamicLayoutInflater inflater, Node node, V parent);
 
     @Nullable
-    ViewCreator<V> getCreator();
+    ViewCreator<? super V> getCreator();
 }

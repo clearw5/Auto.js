@@ -55,8 +55,11 @@ public class Drawables {
     }
 
     public Drawable loadDrawableResources(Context context, String value) {
-        return context.getResources().getDrawable(context.getResources().getIdentifier(value, "drawable",
-                context.getPackageName()));
+        int resId = context.getResources().getIdentifier(value, "drawable",
+                context.getPackageName());
+        if (resId == 0)
+            throw new Resources.NotFoundException("drawable not found: " + value);
+        return context.getResources().getDrawable(resId);
     }
 
     public Drawable loadAttrResources(Context context, String value) {
