@@ -66,6 +66,7 @@ public class TemplateMatching {
                 if (!isFirstMatching && !shouldContinueMatching(level, maxLevel)) {
                     break;
                 }
+                // FIXME: 2018/3/31 此处的matchResult.release()某些情况下会导致currentTemplate被释放？
                 //   if (matchResult != null)
                 //       matchResult.release();
                 matchResult = matchTemplate(src, currentTemplate, matchMethod);
@@ -172,8 +173,6 @@ public class TemplateMatching {
     public static Mat matchTemplate(Mat img, Mat temp, int match_method) {
         int result_cols = img.cols() - temp.cols() + 1;
         int result_rows = img.rows() - temp.rows() + 1;
-        Log.d(LOG_TAG, "matchTemplate: cols = " + result_cols + ", rows = " + result_rows);
-        Log.d(LOG_TAG, "matchTemplate: img = " + img + ", temp = " + temp);
         Mat result = new Mat(result_rows, result_cols, CvType.CV_32FC1);
         Imgproc.matchTemplate(img, temp, result, match_method);
         return result;
