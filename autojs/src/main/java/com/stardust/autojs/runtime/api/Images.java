@@ -68,7 +68,7 @@ public class Images {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean requestScreenCapture(final int width, final int height) {
-        mScriptRuntime.requiresApi(21);
+        ScriptRuntime.requiresApi(21);
         final VolatileDispose<Boolean> requestResult = new VolatileDispose<>();
         mScreenCaptureRequester.setOnActivityResultCallback((result, data) -> {
             if (result == Activity.RESULT_OK) {
@@ -101,7 +101,7 @@ public class Images {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public ImageWrapper captureScreen() {
-        mScriptRuntime.requiresApi(21);
+        ScriptRuntime.requiresApi(21);
         if (mScreenCapturer == null) {
             throw new SecurityException("No screen capture permission");
         }
