@@ -28,11 +28,11 @@ const MOVE_INTERVAL = 500;
 //方块宽度
 const BLOCK_WIDTH = 40;
 //游戏区域宽高
-const GAME_BORAD_HEIGHT = 20;
-const GAME_BORAD_WIDTH = 15;
+const GAME_BOARD_HEIGHT = 20;
+const GAME_BOARD_WIDTH = 15;
 
 //蛇的四个移动方向
-const DIRECTION_LFET = {x: -1, y: 0};
+const DIRECTION_LEFT = {x: -1, y: 0};
 const DIRECTION_RIGHT = {x: 1, y: 0};
 const DIRECTION_UP = {x: 0, y: -1};
 const DIRECTION_DOWN = {x: 0, y: 1};
@@ -62,24 +62,24 @@ ui.board.on("draw", function(canvas){
     }
     //计算坐标偏移，是的游戏区域绘制在画面的水平居中位置
     var offset = {
-        x: (canvas.getWidth() - (GAME_BORAD_WIDTH + 2) * BLOCK_WIDTH) / 2,
+        x: (canvas.getWidth() - (GAME_BOARD_WIDTH + 2) * BLOCK_WIDTH) / 2,
         y: 100
     };
     //偏移坐标
     canvas.translate(offset.x, offset.y);
     //绘制围墙
     paint.setColor(WALL_COLOR);
-    for(var i = 0; i <= GAME_BORAD_WIDTH + 1; i++){
+    for(var i = 0; i <= GAME_BOARD_WIDTH + 1; i++){
         //上围墙
         drawBlock(canvas, paint, i, 0);
         //下围墙
-        drawBlock(canvas, paint, i, GAME_BORAD_HEIGHT + 1);
+        drawBlock(canvas, paint, i, GAME_BOARD_HEIGHT + 1);
     }
-    for(var i = 0; i <= GAME_BORAD_HEIGHT + 1; i++){
+    for(var i = 0; i <= GAME_BOARD_HEIGHT + 1; i++){
         //左围墙
         drawBlock(canvas, paint, 0, i);
         //右围墙
-        drawBlock(canvas, paint, GAME_BORAD_WIDTH + 1, i);
+        drawBlock(canvas, paint, GAME_BOARD_WIDTH + 1, i);
     }
     //绘制蛇身
     paint.setColor(SNAKE_COLOR);
@@ -95,7 +95,7 @@ ui.board.on("draw", function(canvas){
 var gameThread = threads.start(game);
 
 //按键点击时改变蛇的移动方向
-ui.left.on("click", ()=> direction = DIRECTION_LFET);
+ui.left.on("click", ()=> direction = DIRECTION_LEFT);
 ui.right.on("click", ()=> direction = DIRECTION_RIGHT);
 ui.up.on("click", ()=> direction = DIRECTION_UP);
 ui.down.on("click", ()=> direction = DIRECTION_DOWN);
@@ -139,10 +139,9 @@ function generateApple(){
     //循环生成苹果直至苹果不会生成在蛇身上
     var x, y;
     do{
-        x = random(1, GAME_BORAD_WIDTH);
-        y = random(1, GAME_BORAD_HEIGHT);
+        x = random(1, GAME_BOARD_WIDTH);
+        y = random(1, GAME_BOARD_HEIGHT);
     }while(!isAppleValid(x, y));
-    log("generateApple: ", {x: x, y: y});
     return {x: x, y: y};
 }
 
@@ -158,8 +157,8 @@ function isAppleValid(x, y){
 function collisionTest(){
     //检测蛇有没有撞到墙上
     var head = snake[0];
-    if(head.x < 1 || head.x > GAME_BORAD_WIDTH
-        || head.y < 1 || head.y > GAME_BORAD_HEIGHT){
+    if(head.x < 1 || head.x > GAME_BOARD_WIDTH
+        || head.y < 1 || head.y > GAME_BOARD_HEIGHT){
             gameOver();
             return;
     }

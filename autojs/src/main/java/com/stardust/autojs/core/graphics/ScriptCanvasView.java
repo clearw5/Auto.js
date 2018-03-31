@@ -77,7 +77,7 @@ public class ScriptCanvasView extends SurfaceView implements SurfaceHolder.Callb
                     canvas = holder.lockCanvas();
                     scriptCanvas.setCanvas(canvas);
                     scriptCanvas.drawColor(Color.WHITE);
-                    emit("draw", scriptCanvas, this);
+                    emit("draw", scriptCanvas, ScriptCanvasView.this);
                     holder.unlockCanvasAndPost(canvas);
                     canvas = null;
                     long dt = mTimePerDraw - (SystemClock.uptimeMillis() - time);

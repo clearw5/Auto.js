@@ -275,7 +275,7 @@ module.exports = function (runtime, global) {
             var args = arguments;
             global.__exitIfError__(function () {
                 //不支持使用apply的原因是rhino会把参数中的primitive变成object
-                functionApply(view.emit, args);
+                functionApply(view, view.emit, args);
                 //view.emit.apply(view, args);
             });
         }
@@ -330,7 +330,7 @@ module.exports = function (runtime, global) {
             var args = arguments;
             global.__exitIfError__(function () {
                 //不支持使用apply的原因是rhino会把参数中的primitive变成object
-                functionApply(list.emit, args);
+                functionApply(list, list.emit, args);
                 //view.emit.apply(view, args);
             });
         }
@@ -354,21 +354,21 @@ module.exports = function (runtime, global) {
         return e;
     }
 
-    function functionApply(func, args) {
+    function functionApply(obj, func, args) {
         if (args.length == 0)
-            return func();
+            return func.call(obj);
         if (args.length == 1)
-            return func(args[0]);
+            return func.call(obj, args[0]);
         if (args.length == 2)
-            return func(args[0], args[1]);
+            return func.call(obj, args[0], args[1]);
         if (args.length == 3)
-            return func(args[0], args[1], args[2]);
+            return func.call(obj, args[0], args[1], args[2]);
         if (args.length == 4)
-            return func(args[0], args[1], args[2], args[3]);
+            return func.call(obj, args[0], args[1], args[2], args[3]);
         if (args.length == 5)
-            return func(args[0], args[1], args[2], args[3], args[4]);
+            return func.call(obj, args[0], args[1], args[2], args[3], args[4]);
         if (args.length == 6)
-            return func(args[0], args[1], args[2], args[3], args[4], args[5]);
+            return func.call(obj, args[0], args[1], args[2], args[3], args[4], args[5]);
         throw new Error("too many arguments: " + args.length);
     }
 
