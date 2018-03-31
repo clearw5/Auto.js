@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
@@ -251,6 +252,7 @@ public class Images {
         if (rect != null) {
             src = new Mat(src, rect);
         }
+        Log.d("Images", "matchTemplate: img = " + src + ", temp = " + template.getMat());
         org.opencv.core.Point point = TemplateMatching.fastTemplateMatching(src, template.getMat(), TemplateMatching.MATCHING_METHOD_DEFAULT,
                 weakThreshold, threshold, maxLevel);
         if (point != null) {

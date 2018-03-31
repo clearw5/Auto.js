@@ -1,5 +1,6 @@
 package com.stardust.autojs.core.image;
 
+import android.util.Log;
 import android.util.Pair;
 import android.util.TimingLogger;
 
@@ -65,8 +66,8 @@ public class TemplateMatching {
                 if (!isFirstMatching && !shouldContinueMatching(level, maxLevel)) {
                     break;
                 }
-                if (matchResult != null)
-                    matchResult.release();
+                //   if (matchResult != null)
+                //       matchResult.release();
                 matchResult = matchTemplate(src, currentTemplate, matchMethod);
                 Pair<Point, Double> bestMatched = getBestMatched(matchResult, matchMethod, weakThreshold);
                 p = bestMatched.first;
@@ -74,8 +75,8 @@ public class TemplateMatching {
             } else {
                 //根据上一轮的匹配点，计算本次匹配的区域
                 Rect r = getROI(p, src, currentTemplate);
-                if (matchResult != null)
-                    matchResult.release();
+                //   if (matchResult != null)
+                //       matchResult.release();
                 Mat m = new Mat(src, r);
                 matchResult = matchTemplate(m, currentTemplate, matchMethod);
                 m.release();
@@ -171,6 +172,8 @@ public class TemplateMatching {
     public static Mat matchTemplate(Mat img, Mat temp, int match_method) {
         int result_cols = img.cols() - temp.cols() + 1;
         int result_rows = img.rows() - temp.rows() + 1;
+        Log.d(LOG_TAG, "matchTemplate: cols = " + result_cols + ", rows = " + result_rows);
+        Log.d(LOG_TAG, "matchTemplate: img = " + img + ", temp = " + temp);
         Mat result = new Mat(result_rows, result_cols, CvType.CV_32FC1);
         Imgproc.matchTemplate(img, temp, result, match_method);
         return result;

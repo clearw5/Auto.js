@@ -73,6 +73,7 @@ public class UiSelector extends UiGlobalSelector {
     public UiObjectCollection find() {
         ensureAccessibilityServiceEnabled();
         AccessibilityNodeInfo root = mAccessibilityBridge.getRootInActiveWindow();
+        Log.d(TAG, "find: root = " + root);
         if (root == null) {
             return UiObjectCollection.EMPTY;
         }
