@@ -1,9 +1,9 @@
 package com.stardust.autojs.core.floaty;
 
+import android.content.Context;
 import android.graphics.PixelFormat;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -23,6 +23,12 @@ import com.stardust.enhancedfloaty.gesture.ResizeGesture;
 
 public class FloatyWindow extends ResizableFloatyWindow {
 
+    public interface ViewSupplier {
+
+        View inflate(Context context, ViewGroup parent);
+
+    }
+
     private final Object mLock = new Object();
     private boolean mCreated = false;
     private View mCloseButton;
@@ -37,8 +43,8 @@ public class FloatyWindow extends ResizableFloatyWindow {
     private MyFloaty mFloaty;
 
 
-    public FloatyWindow(View view) {
-        this(new MyFloaty(view));
+    public FloatyWindow(Context context, ViewSupplier viewSupplier) {
+        this(new MyFloaty(context, viewSupplier));
     }
 
     private FloatyWindow(MyFloaty floaty) {
@@ -162,18 +168,20 @@ public class FloatyWindow extends ResizableFloatyWindow {
     private static class MyFloaty implements ResizableFloaty {
 
 
-        private View mContentView;
+        private ViewSupplier mContentViewSupplier;
         private View mRootView;
+        private Context mContext;
 
-
-        public MyFloaty(View view) {
-            mContentView = view;
+        public MyFloaty(Context context, ViewSupplier supplier) {
+            mContentViewSupplier = supplier;
+            mContext = context;
         }
 
         @Override
         public View inflateView(FloatyService floatyService, ResizableFloatyWindow resizableFloatyWindow) {
-            mRootView = View.inflate(mContentView.getContext(), R.layout.floaty_window, null);
-            ((FrameLayout) mRootView.findViewById(R.id.container)).addView(mContentView);
+            mRootView = View.inflate(mContext, R.layout.floaty_window, null);
+            FrameLayout container = (FrameLayout) mRootView.findViewById(R.id.container);
+            View contentView = mContentViewSupplier.inflate(mContext, container);
             return mRootView;
         }
 

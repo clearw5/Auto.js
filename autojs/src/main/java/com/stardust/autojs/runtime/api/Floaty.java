@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Looper;
 import android.view.ContextThemeWrapper;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.floaty.FloatyWindow;
@@ -40,7 +41,14 @@ public class Floaty {
     }
 
     public JsFloatyWindow window(String xml) {
-        return window(inflate(xml));
+        try {
+            FloatingPermission.waitForPermissionGranted(mContext);
+        } catch (InterruptedException e) {
+            throw new ScriptInterruptedException();
+        }
+        JsFloatyWindow window = new JsFloatyWindow((context, parent) -> mLayoutInflater.inflate(xml, parent));
+        addWindow(window);
+        return window;
     }
 
     public JsFloatyWindow window(View view) {
@@ -49,7 +57,7 @@ public class Floaty {
         } catch (InterruptedException e) {
             throw new ScriptInterruptedException();
         }
-        JsFloatyWindow window = new JsFloatyWindow(view);
+        JsFloatyWindow window = new JsFloatyWindow((context, parent) -> view);
         addWindow(window);
         return window;
     }
@@ -60,16 +68,6 @@ public class Floaty {
 
     private synchronized boolean removeWindow(JsFloatyWindow window) {
         return mWindows.remove(window);
-    }
-
-    private View inflate(String xml) {
-        if (Looper.getMainLooper() == Looper.myLooper()) {
-            return mLayoutInflater.inflate(xml);
-        } else {
-            VolatileDispose<View> dispose = new VolatileDispose<>();
-            mUiHandler.post(() -> dispose.setAndNotify(mLayoutInflater.inflate(xml)));
-            return dispose.blockedGetOrThrow(ScriptInterruptedException.class);
-        }
     }
 
     public synchronized void closeAll() {
@@ -85,8 +83,11 @@ public class Floaty {
         private volatile FloatyWindow mWindow;
         private boolean mExitOnClose = false;
 
-        public JsFloatyWindow(View view) {
-            mWindow = new FloatyWindow(view);
+        public JsFloatyWindow(FloatyWindow.ViewSupplier supplier) {
+            mWindow = new FloatyWindow(mContext, (context, parent) -> {
+                mView = supplier.inflate(context, parent);
+                return mView;
+            });
             mUiHandler.post(() -> {
                 mUiHandler.getContext().startService(new Intent(mUiHandler.getContext(), FloatyService.class));
                 FloatyService.addWindow(mWindow);
@@ -94,10 +95,9 @@ public class Floaty {
             mWindow.waitFor();
             mWindow.setOnCloseButtonClickListener(v -> close());
             //setSize(mWindow.getWindowBridge().getScreenWidth() / 2, mWindow.getWindowBridge().getScreenHeight() / 2);
-            mView = view;
         }
 
-        public View getView(String id) {
+        public View findView(String id) {
             return JsViewHelper.findViewByStringId(mView, id);
         }
 

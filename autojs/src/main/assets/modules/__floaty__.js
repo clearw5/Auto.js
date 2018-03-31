@@ -22,7 +22,7 @@ module.exports = function(runtime, global){
                if(typeof(value) == 'undefined'){
                    value = floaty.__view_cache__[name];
                    if(!value){
-                        value = window.getView(name);
+                        value = window.findView(name);
                         if(value){
                             value = ui.__decorate__(value);
                             floaty.__view_cache__[name] = value;
