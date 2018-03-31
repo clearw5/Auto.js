@@ -14,7 +14,6 @@ import com.raizlabs.android.dbflow.config.DatabaseConfig;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.runtime.DirectModelNotifier;
-import com.squareup.leakcanary.LeakCanary;
 import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.core.ui.inflater.ImageLoader;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
@@ -65,10 +64,6 @@ public class App extends MultiDexApplication {
 
 
     private void setUpDebugEnvironment() {
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            return;
-        }
-        LeakCanary.install(this);
         Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
     }
 
