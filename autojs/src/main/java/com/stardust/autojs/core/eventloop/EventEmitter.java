@@ -117,7 +117,6 @@ public class EventEmitter {
         getListeners(eventName).add(listener, true);
         return this;
     }
-
     @NonNull
     private Listeners getListeners(String eventName) {
         Listeners listeners = mListenersMap.get(eventName);

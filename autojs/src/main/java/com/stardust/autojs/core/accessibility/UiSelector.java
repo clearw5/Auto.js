@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.stardust.autojs.BuildConfig;
 import com.stardust.autojs.annotation.ScriptInterface;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.automator.ActionArgument;
@@ -73,7 +74,8 @@ public class UiSelector extends UiGlobalSelector {
     public UiObjectCollection find() {
         ensureAccessibilityServiceEnabled();
         AccessibilityNodeInfo root = mAccessibilityBridge.getRootInActiveWindow();
-        Log.d(TAG, "find: root = " + root);
+        if (BuildConfig.DEBUG)
+            Log.d(TAG, "find: root = " + root);
         if (root == null) {
             return UiObjectCollection.EMPTY;
         }
@@ -160,7 +162,6 @@ public class UiSelector extends UiGlobalSelector {
             }
             uiObjectCollection = find();
         }
-
         return uiObjectCollection.get(0);
     }
 

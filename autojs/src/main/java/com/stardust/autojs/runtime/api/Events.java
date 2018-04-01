@@ -12,6 +12,8 @@ import android.view.KeyEvent;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
+import com.stardust.autojs.core.boardcast.Broadcast;
+import com.stardust.autojs.core.boardcast.BroadcastEmitter;
 import com.stardust.autojs.core.eventloop.EventEmitter;
 import com.stardust.autojs.core.looper.Loopers;
 import com.stardust.autojs.core.looper.MainThreadProxy;
@@ -55,12 +57,15 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     private KeyInterceptor mKeyInterceptor;
     private Set<String> mInterceptedKeys = new HashSet<>();
 
+    public final BroadcastEmitter broadcast;
+
     public Events(Context context, AccessibilityBridge accessibilityBridge, ScriptRuntime runtime) {
         super(runtime.bridges);
         mAccessibilityBridge = accessibilityBridge;
         mContext = context;
         mLoopers = runtime.loopers;
         mScriptRuntime = runtime;
+        broadcast = new BroadcastEmitter(runtime.bridges, runtime.timers.getMainTimer());
     }
 
     public EventEmitter emitter() {
@@ -230,6 +235,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
 
 
     public void recycle() {
+        broadcast.unregister();
         if (mListeningKey) {
             AccessibilityService service = mAccessibilityBridge.getService();
             if (service != null) {

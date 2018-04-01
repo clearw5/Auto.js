@@ -17,7 +17,9 @@ public class ScriptBridges {
 
         Object call(Object func, Object target, Object arg);
 
-        Object toArray(Object o);
+        Object toArray(Iterable o);
+
+        Object asArray(Object o);
 
         Object toString(Object obj);
 
@@ -40,9 +42,14 @@ public class ScriptBridges {
     }
 
 
-    public Object toArray(Object c) {
+    public Object toArray(Iterable c) {
         checkBridges();
         return mBridges.toArray(c);
+    }
+
+    public Object asArray(Object o) {
+        checkBridges();
+        return mBridges.asArray(o);
     }
 
 

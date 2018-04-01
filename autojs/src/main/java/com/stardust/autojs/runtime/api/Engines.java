@@ -12,6 +12,9 @@ import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Stardust on 2017/8/4.
  */
@@ -37,6 +40,10 @@ public class Engines {
 
     public ScriptExecution execAutoFile(String path, ExecutionConfig config) {
         return mEngineService.execute(new AutoFileSource(mScriptRuntime.files.path(path)), config);
+    }
+
+    public Object all() {
+        return mScriptRuntime.bridges.toArray(mEngineService.getEngines());
     }
 
     public int stopAll() {

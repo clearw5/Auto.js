@@ -36,5 +36,15 @@ public abstract class JavaScriptEngine extends ScriptEngine.AbstractScriptEngine
         put("runtime", runtime);
     }
 
+    public void emit(String eventName, Object... args) {
+        mRuntime.timers.getMainTimer().postDelayed(() -> mRuntime.events.emit(eventName, args), 0);
+    }
 
+    @Override
+    public String toString() {
+        return "ScriptEngine@" + Integer.toHexString(hashCode()) + "{" +
+                "source='" + getTag(TAG_SOURCE) + "'," +
+                "cwd='" + cwd() + "'" +
+                "}";
+    }
 }

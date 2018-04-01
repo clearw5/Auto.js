@@ -69,7 +69,7 @@ public class Timer {
         return id;
     }
 
-    private void postDelayed(Runnable r, long interval) {
+    public void postDelayed(Runnable r, long interval) {
         long uptime = SystemClock.uptimeMillis() + interval;
         mHandler.postAtTime(r, uptime);
         mMaxCallbackUptimeMillis = Math.max(mMaxCallbackUptimeMillis, uptime);

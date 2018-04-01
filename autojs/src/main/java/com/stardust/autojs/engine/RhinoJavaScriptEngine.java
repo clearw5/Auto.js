@@ -164,7 +164,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
                 return getRuntime().bridges.toString(obj.toString());
             }
             if (staticType == UiObjectCollection.class) {
-                return getRuntime().bridges.toArray(obj);
+                return getRuntime().bridges.asArray(obj);
 
             }
             return super.wrap(cx, scope, obj, staticType);

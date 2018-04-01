@@ -33,7 +33,7 @@ runtime.init();
            }
            return func.apply(target, arr);
         },
-        toArray: function(list){
+        asArray: function(list){
             var arr = [];
             for(var i = 0; i < list.size(); i++){
                 arr.push(list.get(i));
@@ -47,6 +47,14 @@ runtime.init();
                 }else{
                     arr[key] = v;
                 }
+            }
+            return arr;
+        },
+        toArray: function(iterable){
+            var iterator = iterable.iterator();
+            var arr = [];
+            while(iterator.hasNext()){
+                arr.push(iterator.next());
             }
             return arr;
         },

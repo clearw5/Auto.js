@@ -173,6 +173,8 @@ public class TemplateMatching {
     public static Mat matchTemplate(Mat img, Mat temp, int match_method) {
         int result_cols = img.cols() - temp.cols() + 1;
         int result_rows = img.rows() - temp.rows() + 1;
+        Log.d(LOG_TAG, String.format("matchTemplate: rows = %d, cols = %d", result_rows, result_cols));
+        Log.d(LOG_TAG, String.format("matchTemplate: img = %s, temp = %s", img.toString(), temp.toString()));
         Mat result = new Mat(result_rows, result_cols, CvType.CV_32FC1);
         Imgproc.matchTemplate(img, temp, result, match_method);
         return result;
