@@ -2,21 +2,29 @@ package com.stardust.scriptdroid.ui.edit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toolbar;
 
 import com.stardust.app.OnActivityResultDelegate;
+import com.stardust.pio.PFiles;
 import com.stardust.scriptdroid.R;
-import com.stardust.scriptdroid.model.script.ScriptFile;
+import com.stardust.scriptdroid.storage.file.TmpScriptFiles;
 import com.stardust.scriptdroid.ui.BaseActivity;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+
+import java.io.File;
+import java.io.IOException;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_CONTENT;
 import static com.stardust.scriptdroid.ui.edit.EditorView.EXTRA_NAME;
@@ -32,7 +40,7 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
     private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
 
     @ViewById(R.id.editor_view)
-    EditorView mEditor;
+    EditorView mEditorView;
 
 
     private EditorMenu mEditorMenu;
@@ -58,13 +66,13 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
 
     @AfterViews
     void setUpViews() {
-        mEditor.handleIntent(getIntent());
-        mEditorMenu = new EditorMenu(mEditor);
+        mEditorView.handleIntent(getIntent());
+        mEditorMenu = new EditorMenu(mEditorView);
         setUpToolbar();
     }
 
     private void setUpToolbar() {
-        BaseActivity.setToolbarAsBack(this, R.id.toolbar, mEditor.getName());
+        BaseActivity.setToolbarAsBack(this, R.id.toolbar, mEditorView.getName());
     }
 
     @Override
@@ -90,14 +98,14 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
 
     @Override
     public void onBackPressed() {
-        if (!mEditor.onBackPressed()) {
+        if (!mEditorView.onBackPressed()) {
             super.onBackPressed();
         }
     }
 
     @Override
     public void finish() {
-        if (mEditor.isTextChanged()) {
+        if (mEditorView.isTextChanged()) {
             showExitConfirmDialog();
             return;
         }
@@ -112,7 +120,7 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
                 .negativeText(R.string.text_save_and_exit)
                 .neutralText(R.string.text_exit_directly)
                 .onNegative((dialog, which) -> {
-                    mEditor.saveFile();
+                    mEditorView.saveFile();
                     EditActivity.super.finish();
                 })
                 .onNeutral((dialog, which) -> EditActivity.super.finish())
@@ -134,4 +142,54 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mMediator.onActivityResult(requestCode, resultCode, data);
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (!mEditorView.isTextChanged()) {
+            return;
+        }
+        String text = mEditorView.getEditor().getText();
+        if (text.length() < 256 * 1024) {
+            outState.putString("text", text);
+        } else {
+            File tmp = saveToTmpFile(text);
+            if (tmp != null) {
+                outState.putString("path", tmp.getPath());
+            }
+
+        }
+    }
+
+    private File saveToTmpFile(String text) {
+        try {
+            File tmp = TmpScriptFiles.create(this);
+            Observable.just(text)
+                    .observeOn(Schedulers.io())
+                    .subscribe(t -> PFiles.write(tmp, t));
+            return tmp;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        String text = savedInstanceState.getString("text");
+        if (text != null) {
+            mEditorView.setRestoredText(text);
+            return;
+        }
+        String path = savedInstanceState.getString("path");
+        if (path != null) {
+            Observable.just(path)
+                    .observeOn(Schedulers.io())
+                    .map(PFiles::read)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(t -> mEditorView.getEditor().setText(t), Throwable::printStackTrace);
+        }
+    }
+
 }

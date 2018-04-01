@@ -126,6 +126,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
             }
         }
     };
+    private String mRestoredText;
 
     public EditorView(Context context) {
         super(context);
@@ -178,6 +179,11 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     }
 
+    public void setRestoredText(String text) {
+        mRestoredText = text;
+        mEditor.setText(text);
+    }
+
     private void handleText(Intent intent) {
         String path = intent.getStringExtra(EXTRA_PATH);
         String content = intent.getStringExtra(EXTRA_CONTENT);
@@ -209,6 +215,11 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     private void setInitialText(String text) {
+        if (mRestoredText != null) {
+            mEditor.setText(mRestoredText);
+            mRestoredText = null;
+            return;
+        }
         mEditor.setInitialText(text);
     }
 
@@ -313,7 +324,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     public Observable<String> save() {
-        return mEditor.getText()
+        return Observable.just(mEditor.getText())
                 .observeOn(Schedulers.io())
                 .doOnNext(s -> PFiles.write(mFile, s))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -499,4 +510,6 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
             showManual(property.getUrl(), property.getKey());
         }
     }
+
+
 }

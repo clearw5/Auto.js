@@ -311,8 +311,8 @@ public class CodeEditor extends HVScrollView {
         mCodeEditText.setSelection(mCodeEditText.getSelectionStart() + dCh);
     }
 
-    public Observable<String> getText() {
-        return Observable.just(mCodeEditText.getText().toString());
+    public String getText() {
+        return mCodeEditText.getText().toString();
     }
 
     public Observable<String> getSelection() {

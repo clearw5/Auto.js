@@ -48,13 +48,8 @@ public class TaskerScriptEditActivity extends BaseActivity {
 
     @Override
     public void finish() {
-        mEditorView.getEditor().getText().subscribe(new Consumer<String>() {
-            @Override
-            public void accept(@NonNull String s) throws Exception {
-                setResult(RESULT_OK, new Intent().putExtra(EXTRA_CONTENT, s));
-                TaskerScriptEditActivity.super.finish();
-            }
-        });
+        setResult(RESULT_OK, new Intent().putExtra(EXTRA_CONTENT, mEditorView.getEditor().getText()));
+        TaskerScriptEditActivity.super.finish();
     }
 
 }

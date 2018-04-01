@@ -156,7 +156,7 @@ public class EditorMenu {
     }
 
     private void showInfo() {
-        Observable.zip(mEditor.getText(), mEditor.getLineCount(), (text, lineCount) -> {
+        Observable.zip(Observable.just(mEditor.getText()), mEditor.getLineCount(), (text, lineCount) -> {
             String size = PFiles.getHumanReadableSize(text.length());
             return String.format(Locale.getDefault(), mContext.getString(R.string.format_editor_info),
                     text.length(), lineCount, size);
@@ -198,13 +198,8 @@ public class EditorMenu {
     }
 
     private void copyAll() {
-        mEditor.getText().observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<String>() {
-            @Override
-            public void accept(@NonNull String s) throws Exception {
-                ClipboardUtil.setClip(mContext, s);
-                Snackbar.make(mEditorView, R.string.text_already_copy_to_clip, Snackbar.LENGTH_SHORT).show();
-            }
-        });
+        ClipboardUtil.setClip(mContext, mEditor.getText());
+        Snackbar.make(mEditorView, R.string.text_already_copy_to_clip, Snackbar.LENGTH_SHORT).show();
     }
 
 
