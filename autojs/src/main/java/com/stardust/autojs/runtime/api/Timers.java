@@ -87,4 +87,8 @@ public class Timers {
         return getTimerForCurrentThread().hasPendingCallbacks();
     }
 
+    public void recycle(){
+        mMainTimer.removeAllCallbacks();
+    }
+
 }

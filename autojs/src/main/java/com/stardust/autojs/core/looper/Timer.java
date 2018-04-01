@@ -112,4 +112,8 @@ public class Timer {
         return mMaxCallbackUptimeMillis > SystemClock.uptimeMillis();
     }
 
+    public void removeAllCallbacks() {
+        mHandler.removeCallbacksAndMessages(null);
+    }
+
 }

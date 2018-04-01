@@ -373,6 +373,7 @@ public class ScriptRuntime {
             ignoresException(images::releaseScreenCapturer);
         }
         ignoresException(sensors::unregisterAll);
+        ignoresException(timers::recycle);
     }
 
     private void ignoresException(Runnable r) {
