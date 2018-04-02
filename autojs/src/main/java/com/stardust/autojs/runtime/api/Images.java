@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
@@ -18,6 +17,7 @@ import android.view.WindowManager;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.image.ColorFinder;
 import com.stardust.autojs.core.image.ImageWrapper;
+import com.stardust.autojs.core.image.OpenCVHelper;
 import com.stardust.autojs.core.image.ScreenCaptureRequester;
 import com.stardust.autojs.core.image.ScreenCapturer;
 import com.stardust.autojs.core.image.TemplateMatching;
@@ -263,7 +263,7 @@ public class Images {
             point.y = mScreenMetrics.scaleX((int) point.y);
         }
         if (src != image.getMat()) {
-            src.release();
+            OpenCVHelper.release(src);
         }
         return point;
     }

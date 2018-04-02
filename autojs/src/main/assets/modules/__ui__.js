@@ -251,7 +251,7 @@ module.exports = function (runtime, global) {
         });
         if (typeof (view.setOnCheckedChangeListener) == 'function') {
             view.setOnCheckedChangeListener(function (v, isChecked) {
-                emit("check", isChecked, view);
+                emit("check", isChecked == true ? true : false, view);
             });
         }
         view._id = function (id) {

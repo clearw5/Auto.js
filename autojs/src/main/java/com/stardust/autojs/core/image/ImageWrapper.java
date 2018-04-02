@@ -1,32 +1,20 @@
 package com.stardust.autojs.core.image;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.ImageFormat;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.Xfermode;
 import android.media.Image;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.view.KeyEvent;
 
-import com.stardust.autojs.runtime.api.Images;
 import com.stardust.pio.UncheckedIOException;
 
 import org.opencv.android.Utils;
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfInt;
 import org.opencv.highgui.Highgui;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
-import java.util.Collections;
 
 /**
  * Created by Stardust on 2017/11/25.
@@ -128,18 +116,9 @@ public class ImageWrapper {
             mBitmap = null;
         }
         if (mMat != null) {
-            mMat.release();
+            OpenCVHelper.release(mMat);
             mMat = null;
         }
 
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            recycle();
-        } finally {
-            super.finalize();
-        }
     }
 }

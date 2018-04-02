@@ -75,7 +75,7 @@ public class ColorFinder {
         if (rect != null) {
             Mat m = new Mat(image.getMat(), rect);
             Core.inRange(m, lowerBound, upperBound, bi);
-            m.release();
+            OpenCVHelper.release(m);
         } else {
             Core.inRange(image.getMat(), lowerBound, upperBound, bi);
         }
@@ -87,8 +87,8 @@ public class ColorFinder {
         } else {
             result = new MatOfPoint(nonZeroPos);
         }
-        bi.release();
-        nonZeroPos.release();
+        OpenCVHelper.release(bi);
+        OpenCVHelper.release(nonZeroPos);
         return result;
     }
 

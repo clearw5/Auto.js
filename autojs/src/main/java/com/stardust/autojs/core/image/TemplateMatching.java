@@ -14,9 +14,6 @@ import org.opencv.core.Rect;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 /**
  * Created by Stardust on 2017/11/25.
@@ -67,8 +64,7 @@ public class TemplateMatching {
                     break;
                 }
                 // FIXME: 2018/3/31 此处的matchResult.release()某些情况下会导致currentTemplate被释放？
-                //   if (matchResult != null)
-                //       matchResult.release();
+                OpenCVHelper.release(matchResult);
                 matchResult = matchTemplate(src, currentTemplate, matchMethod);
                 Pair<Point, Double> bestMatched = getBestMatched(matchResult, matchMethod, weakThreshold);
                 p = bestMatched.first;
@@ -76,11 +72,10 @@ public class TemplateMatching {
             } else {
                 //根据上一轮的匹配点，计算本次匹配的区域
                 Rect r = getROI(p, src, currentTemplate);
-                //   if (matchResult != null)
-                //       matchResult.release();
+                OpenCVHelper.release(matchResult);
                 Mat m = new Mat(src, r);
                 matchResult = matchTemplate(m, currentTemplate, matchMethod);
-                m.release();
+                OpenCVHelper.release(m);
                 Pair<Point, Double> bestMatched = getBestMatched(matchResult, matchMethod, weakThreshold);
                 //不满足弱阈值，返回null
                 if (bestMatched.second < weakThreshold) {
@@ -92,8 +87,10 @@ public class TemplateMatching {
                 p.x += r.x;
                 p.y += r.y;
             }
-            src.release();
-            currentTemplate.release();
+            if (src != img)
+                OpenCVHelper.release(src);
+            if (currentTemplate != template)
+                OpenCVHelper.release(currentTemplate);
             //满足强阈值，返回当前结果
             if (similarity >= strictThreshold) {
                 pyrUp(p, level);
@@ -109,6 +106,7 @@ public class TemplateMatching {
         }
         return p;
     }
+
 
     private static Mat getPyramidDownAtLevel(Mat m, int level) {
         if (level == 0) {
@@ -174,8 +172,8 @@ public class TemplateMatching {
         int result_cols = img.cols() - temp.cols() + 1;
         int result_rows = img.rows() - temp.rows() + 1;
         Log.d(LOG_TAG, String.format("matchTemplate: rows = %d, cols = %d", result_rows, result_cols));
-        Log.d(LOG_TAG, String.format("matchTemplate: img = %s, temp = %s", img.toString(), temp.toString()));
         Mat result = new Mat(result_rows, result_cols, CvType.CV_32FC1);
+        Log.d(LOG_TAG, String.format("matchTemplate: img = %s, temp = %s, result = %s", img.toString(), temp.toString(), result.toString()));
         Imgproc.matchTemplate(img, temp, result, match_method);
         return result;
     }
