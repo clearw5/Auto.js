@@ -81,6 +81,7 @@
 <li><span class="stability_undefined"><a href="#engines_engines_stopall">engines.stopAll()</a></span></li>
 <li><span class="stability_undefined"><a href="#engines_engines_stopallandtoast">engines.stopAllAndToast()</a></span></li>
 <li><span class="stability_undefined"><a href="#engines_engines_myengine">engines.myEngine()</a></span></li>
+<li><span class="stability_undefined"><a href="#engines_engines_all">engines.all()</a></span></li>
 </ul>
 </li>
 <li><span class="stability_undefined"><a href="#engines_scriptexecution">ScriptExecution</a></span><ul>
@@ -91,6 +92,8 @@
 <li><span class="stability_undefined"><a href="#engines_scriptengine">ScriptEngine</a></span><ul>
 <li><span class="stability_undefined"><a href="#engines_scriptengine_forcestop">ScriptEngine.forceStop()</a></span></li>
 <li><span class="stability_undefined"><a href="#engines_scriptengine_cwd">ScriptEngine.cwd()</a></span></li>
+<li><span class="stability_undefined"><a href="#engines_scriptengine_getsource">ScriptEngine.getSource()</a></span></li>
+<li><span class="stability_undefined"><a href="#engines_scriptengine_emit_eventname_args">ScriptEngine.emit(eventName[, ...args])</a></span></li>
 </ul>
 </li>
 <li><span class="stability_undefined"><a href="#engines_scriptconfig">ScriptConfig</a></span><ul>
@@ -182,7 +185,13 @@ exec(add, {a: 1, b:2});
 <p>停止所有正在运行的脚本并显示停止的脚本数量。包括当前脚本自身。</p>
 <h2>engines.myEngine()<span><a class="mark" href="#engines_engines_myengine" id="engines_engines_myengine">#</a></span></h2>
 <p>返回当前脚本的脚本引擎对象(<a href="#engines_scriptengine">ScriptEngine</a>)</p>
-<h1>ScriptExecution<span><a class="mark" href="#engines_scriptexecution" id="engines_scriptexecution">#</a></span></h1>
+<h2>engines.all()<span><a class="mark" href="#engines_engines_all" id="engines_engines_all">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a></li>
+</ul>
+</div><p>返回当前所有正在运行的脚本的脚本引擎<a href="#engines_scriptengine">ScriptEngine</a>的数组。</p>
+<pre><code>log(engines.all());
+</code></pre><h1>ScriptExecution<span><a class="mark" href="#engines_scriptexecution" id="engines_scriptexecution">#</a></span></h1>
 <p>执行脚本时返回的对象，可以通过他获取执行的引擎、配置等，也可以停止这个执行。</p>
 <p>要停止这个脚本的执行，使用<code>exectuion.getEngine().forceStop()</code>.</p>
 <h2>ScriptExecution.getEngine()<span><a class="mark" href="#engines_scriptexecution_getengine" id="engines_scriptexecution_getengine">#</a></span></h2>
@@ -198,7 +207,33 @@ exec(add, {a: 1, b:2});
 <li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
 </ul>
 </div><p>返回脚本执行的路径。对于一个脚本文件而言为这个脚本所在的文件夹；对于其他脚本，例如字符串脚本，则为<code>null</code>或者执行时的设置值。</p>
-<h1>ScriptConfig<span><a class="mark" href="#engines_scriptconfig" id="engines_scriptconfig">#</a></span></h1>
+<h2>ScriptEngine.getSource()<span><a class="mark" href="#engines_scriptengine_getsource" id="engines_scriptengine_getsource">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="#engines_scriptsource">ScriptSource</a></li>
+</ul>
+</div><p>返回当前脚本引擎正在执行的脚本对象。</p>
+<pre><code>log(engines.myEngine().getSource());
+</code></pre><h2>ScriptEngine.emit(eventName[, ...args])<span><a class="mark" href="#engines_scriptengine_emit_eventname_args" id="engines_scriptengine_emit_eventname_args">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 事件名称</li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span> 事件参数</li>
+</ul>
+</div><p>向该脚本引擎发送一个事件，该事件可以在该脚本引擎对应的脚本的events模块监听到并在脚本主线程执行事件处理。</p>
+<p>例如脚本receiver.js的内容如下：</p>
+<pre><code>//监听say事件
+events.on(&quot;say&quot;, function(words){
+    toastLog(words);
+});
+//保持脚本运行
+setInterval(()=&gt;{}, 1000);
+</code></pre><p>同一目录另一脚本可以启动他并发送该事件：</p>
+<pre><code>//运行脚本
+var e = engines.execScriptFile(&quot;./receiver.js&quot;);
+//等待脚本启动
+sleep(2000);
+//向该脚本发送事件
+e.getEngine().emit(&quot;say&quot;, &quot;你好&quot;);
+</code></pre><h1>ScriptConfig<span><a class="mark" href="#engines_scriptconfig" id="engines_scriptconfig">#</a></span></h1>
 <p>脚本执行时的配置。</p>
 <h2>delay<span><a class="mark" href="#engines_delay" id="engines_delay">#</a></span></h2>
 <div class="signature"><ul>

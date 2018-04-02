@@ -135,6 +135,7 @@
 <li><span class="stability_undefined"><a href="#events_eventemitter_setmaxlisteners_n">EventEmitter.setMaxListeners(n)</a></span></li>
 </ul>
 </li>
+<li><span class="stability_undefined"><a href="#events_events_broadcast">events.broadcast: 脚本间广播</a></span></li>
 </ul>
 
       </div>
@@ -589,7 +590,18 @@ myEmitter.emit(&#39;event&#39;);
 </ul>
 </div><p>默认情况下，如果为特定事件添加了超过 10 个监听器，则 EventEmitter 会打印一个警告。 此限制有助于寻找内存泄露。 但是，并不是所有的事件都要被限为 10 个。 emitter.setMaxListeners() 方法允许修改指定的 EventEmitter 实例的限制。 值设为 Infinity（或 0）表明不限制监听器的数量。</p>
 <p>返回一个 EventEmitter 引用，可以链式调用。</p>
-
+<h1>events.broadcast: 脚本间广播<span><a class="mark" href="#events_events_broadcast" id="events_events_broadcast">#</a></span></h1>
+<p>脚本间通信除了使用engines模块提供的<code>ScriptEngine.emit()</code>方法以外，也可以使用events模块提供的broadcast广播。</p>
+<p>events.broadcast本身是一个EventEmitter，但它的事件是在脚本间共享的，所有脚本都能发送和监听这些事件；事件处理会在脚本主线程执行（后续可能加入函数<code>onThisThread(eventName, ...args)</code>来提供在其他线程执行的能力）。</p>
+<p>例如在一个脚本发送一个广播hello:</p>
+<pre><code>events.broadcast.emit(&quot;hello&quot;, &quot;小明&quot;);
+</code></pre><p>在其他脚本中监听并处理：</p>
+<pre><code>events.broadcast.on(&quot;hello&quot;, function(name){
+    toast(&quot;你好, &quot; + name);
+});
+//保持脚本运行
+setInterval(()=&gt;{}, 1000);
+</code></pre>
       </div>
     </div>
   </div>

@@ -1811,5 +1811,47 @@
     ],
     "url": "sensors.html",
     "summary": "传感器"
+  },
+  {
+    "name": "engines",
+    "properties": [
+      {
+        "key": "execScript",
+        "summary": "执行脚本",
+        "url": "engines.html#engines_engines_execscript_name_script_config"
+      },
+      {
+        "key": "execScriptFile",
+        "summary": "执行脚本文件",
+        "url": "engines.html#engines_engines_execscriptfile_path_config"
+      },
+      {
+        "key": "execAutoFile",
+        "summary": "执行录制文件",
+        "url": "engines.html#engines_engines_execautofile_path_config"
+      },
+      {
+        "key": "stopAll",
+        "summary": "停止全部",
+        "url": "engines.html#engines_engines_stopall"
+      },
+      {
+        "key": "stopAllAndToast",
+        "summary": "停止并提示",
+        "url": "engines.html#engines_engines_stopallandtoast"
+      },
+      {
+        "key": "myEngine",
+        "summary": "当前引擎",
+        "url": "engines.html#engines_engines_myengine"
+      },
+      {
+        "key": "all",
+        "summary": "所有引擎",
+        "url": "engines.html#engines_engines_all"
+      }
+    ],
+    "url": "engines.html",
+    "summary": "脚本引擎"
   }
 ]
