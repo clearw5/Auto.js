@@ -11,6 +11,7 @@ import com.stardust.auojs.inrt.LogActivity;
 import com.stardust.auojs.inrt.Pref;
 import com.stardust.auojs.inrt.autojs.AutoJs;
 import com.stardust.autojs.execution.ExecutionConfig;
+import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.pio.PFiles;
@@ -29,6 +30,7 @@ public class AssetsProjectLauncher {
     private ProjectConfig mProjectConfig;
     private Context mActivity;
     private Handler mHandler;
+    private ScriptExecution mScriptExecution;
 
     public AssetsProjectLauncher(String projectDir, Context context) {
         mAssetsProjectDir = projectDir;
@@ -62,9 +64,13 @@ public class AssetsProjectLauncher {
     }
 
     private void runScript() {
+        if (mScriptExecution != null && mScriptExecution.getEngine() != null &&
+                !mScriptExecution.getEngine().isDestroyed()) {
+            return;
+        }
         try {
             JavaScriptFileSource source = new JavaScriptFileSource("main", mMainScriptFile);
-            AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
+            mScriptExecution = AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
                     .executePath(mProjectDir));
         } catch (Exception e) {
             AutoJs.getInstance().getGlobalConsole().error(e);

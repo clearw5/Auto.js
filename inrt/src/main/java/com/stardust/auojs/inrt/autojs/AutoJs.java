@@ -34,6 +34,7 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
 
     private AutoJs(Application application) {
         super(application);
+        getScriptEngineService().registerGlobalScriptExecutionListener(new ScriptExecutionGlobalListener());
     }
 
 
