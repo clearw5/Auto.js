@@ -1,12 +1,14 @@
 package com.stardust.autojs.runtime;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.stardust.app.GlobalAppContext;
+import com.stardust.autojs.BuildConfig;
 import com.stardust.autojs.R;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.annotation.ScriptVariable;
@@ -56,6 +58,8 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.microedition.khronos.opengles.GL;
 
 
 /**

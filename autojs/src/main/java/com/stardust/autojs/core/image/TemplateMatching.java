@@ -63,7 +63,6 @@ public class TemplateMatching {
                 if (!isFirstMatching && !shouldContinueMatching(level, maxLevel)) {
                     break;
                 }
-                // FIXME: 2018/3/31 此处的matchResult.release()某些情况下会导致currentTemplate被释放？
                 OpenCVHelper.release(matchResult);
                 matchResult = matchTemplate(src, currentTemplate, matchMethod);
                 Pair<Point, Double> bestMatched = getBestMatched(matchResult, matchMethod, weakThreshold);
@@ -171,9 +170,7 @@ public class TemplateMatching {
     public static Mat matchTemplate(Mat img, Mat temp, int match_method) {
         int result_cols = img.cols() - temp.cols() + 1;
         int result_rows = img.rows() - temp.rows() + 1;
-        Log.d(LOG_TAG, String.format("matchTemplate: rows = %d, cols = %d", result_rows, result_cols));
         Mat result = new Mat(result_rows, result_cols, CvType.CV_32FC1);
-        Log.d(LOG_TAG, String.format("matchTemplate: img = %s, temp = %s, result = %s", img.toString(), temp.toString(), result.toString()));
         Imgproc.matchTemplate(img, temp, result, match_method);
         return result;
     }

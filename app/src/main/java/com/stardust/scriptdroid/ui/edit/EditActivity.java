@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.pio.PFiles;
+import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.storage.file.TmpScriptFiles;
 import com.stardust.scriptdroid.ui.BaseActivity;

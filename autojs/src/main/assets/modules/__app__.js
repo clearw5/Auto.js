@@ -1,8 +1,8 @@
 
-module.exports = function(__runtime__, scope){
+module.exports = function(runtime, global){
     importClass(android.content.Intent);
-    var app = Object.create(__runtime__.app);
-    var context = scope.context;
+    var app = Object.create(runtime.app);
+    var context = global.context;
 
     app.intent = function(i) {
       var intent = new android.content.Intent();
@@ -43,8 +43,8 @@ module.exports = function(__runtime__, scope){
 
     app.startActivity = function(i){
         if(typeof(i) == "string"){
-            if(__runtime__.getProperty("class." + i)){
-                context.startActivity(new Intent(context, __runtime__.getProperty("class." + i))
+            if(runtime.getProperty("class." + i)){
+                context.startActivity(new Intent(context, runtime.getProperty("class." + i))
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 return;
             }else{
@@ -91,7 +91,15 @@ module.exports = function(__runtime__, scope){
 
     app.launch = app.launchPackage;
 
-    scope.__asGlobal__(app, ['launchPackage', 'launch', 'launchApp', 'getPackageName', 'getAppName', 'openAppSetting']);
+    app.versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+    app.versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+
+    app.autojs = {
+        versionCode: com.stardust.scriptdroid.BuildConfig.VERSION_CODE,
+        versionName: com.stardust.scriptdroid.BuildConfig.VERSION_NAME
+    };
+
+    global.__asGlobal__(app, ['launchPackage', 'launch', 'launchApp', 'getPackageName', 'getAppName', 'openAppSetting']);
 
     return app;
 }
