@@ -1,5 +1,6 @@
 package com.stardust.scriptdroid.network.api;
 
+import com.stardust.scriptdroid.network.entity.notification.NotificationResponse;
 import com.stardust.scriptdroid.network.entity.user.User;
 
 import java.util.Map;
@@ -33,4 +34,7 @@ public interface UserApi {
 
     @POST("/logout")
     Observable<ResponseBody> logout(@HeaderMap Map<String, String> csrfToken);
+
+    @GET("/api/notifications")
+    Observable<NotificationResponse> getNotifitions();
 }

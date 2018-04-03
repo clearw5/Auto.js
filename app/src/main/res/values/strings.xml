@@ -349,4 +349,5 @@
     <string name="text_preview">预览</string>
     <string name="text_size_current_value" formatted="true">字体大小: %d</string>
     <string name="error_regex_find_prev">正则表达式不能向前查找</string>
+    <string name="text_notification">通知</string>
 </resources>

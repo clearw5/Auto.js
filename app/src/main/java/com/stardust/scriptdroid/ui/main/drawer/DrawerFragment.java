@@ -35,6 +35,7 @@ import com.stardust.scriptdroid.network.api.UserApi;
 import com.stardust.scriptdroid.network.entity.user.User;
 import com.stardust.scriptdroid.network.entity.VersionInfo;
 import com.stardust.scriptdroid.tool.SimpleObserver;
+import com.stardust.scriptdroid.ui.main.MainActivity;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment;
 import com.stardust.scriptdroid.ui.user.LoginActivity_;
 import com.stardust.scriptdroid.ui.settings.SettingsActivity;
@@ -402,6 +403,13 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         }
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDrawerOpen(MainActivity.DrawerOpenEvent event) {
+        if (mCommunityDrawerMenu.isShown()) {
+            mCommunityDrawerMenu.refreshNotificationCount(mDrawerMenuAdapter);
+        }
+    }
 
     private void showStableModePromptIfNeeded() {
         new NotAskAgainDialog.Builder(getContext(), "DrawerFragment.stable_mode")

@@ -18,6 +18,7 @@ public class DrawerMenuItem {
     private Action mAction;
     private boolean mSwitchChecked;
     private boolean mOnProgress;
+    private int mNotificationCount;
 
     public DrawerMenuItem(int icon, int title, Action action) {
         mIcon = icon;
@@ -34,6 +35,14 @@ public class DrawerMenuItem {
         }
         mPrefKey = prefKey;
         mSwitchEnabled = true;
+    }
+
+    public int getNotificationCount() {
+        return mNotificationCount;
+    }
+
+    public void setNotificationCount(int notificationCount) {
+        mNotificationCount = notificationCount;
     }
 
     public int getIcon() {

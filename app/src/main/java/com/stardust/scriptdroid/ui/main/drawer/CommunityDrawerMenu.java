@@ -2,6 +2,7 @@ package com.stardust.scriptdroid.ui.main.drawer;
 
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.network.UserService;
+import com.stardust.scriptdroid.network.entity.notification.Notification;
 import com.stardust.scriptdroid.ui.main.community.CommunityFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -10,7 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -21,10 +25,11 @@ public class CommunityDrawerMenu {
 
     private DrawerMenuItem mUnreadItem = new DrawerMenuItem(R.drawable.community_inbox, R.string.text_community_unread, this::showUnread);
     private DrawerMenuItem mLogoutItem = new DrawerMenuItem(R.drawable.ic_exit_to_app_black_24dp, R.string.text_logout, this::logout);
-
+    private DrawerMenuItem mNotificationItem = new DrawerMenuItem(R.drawable.ic_ali_notification, R.string.text_notification, this::showNotifications);
 
     private List<DrawerMenuItem> mDrawerMenuItems = new ArrayList<>(Arrays.asList(
             new DrawerMenuGroup(R.string.text_community),
+            mNotificationItem,
             new DrawerMenuItem(R.drawable.community_list, R.string.text_community_category, this::showCategories),
             mUnreadItem,
             new DrawerMenuItem(R.drawable.community_time, R.string.text_community_recent, this::showRecent),
@@ -34,9 +39,11 @@ public class CommunityDrawerMenu {
     ));
 
     private boolean mShown = false;
+    private DrawerMenuAdapter mMenuAdapter;
 
 
     public void showCommunityMenu(DrawerMenuAdapter adapter) {
+        mMenuAdapter = adapter;
         mShown = true;
         List<DrawerMenuItem> items = adapter.getDrawerMenuItems();
         if (items.get(0) == mDrawerMenuItems.get(0)) {
@@ -49,21 +56,44 @@ public class CommunityDrawerMenu {
         refreshUserStatus(adapter);
     }
 
+
     private void refreshUserStatus(DrawerMenuAdapter adapter) {
         UserService.getInstance().refreshOnlineStatus()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(online -> setUserOnlineStatus(adapter, online));
+                .subscribe(online -> {
+                    setUserOnlineStatus(adapter, online);
+                    if (online) {
+                        refreshNotificationCount(adapter);
+                    }
+                });
+
+    }
+
+    public void refreshNotificationCount(DrawerMenuAdapter adapter) {
+        UserService.getInstance().getNotifications()
+                .flatMap(Observable::fromIterable)
+                .filter(n -> !n.isRead())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .count()
+                .subscribe(count -> setNotificationCount(adapter, count));
+    }
+
+    private void setNotificationCount(DrawerMenuAdapter adapter, long count) {
+        mNotificationItem.setNotificationCount((int) count);
+        adapter.notifyItemChanged(mNotificationItem);
     }
 
     public void setUserOnlineStatus(DrawerMenuAdapter adapter, boolean online) {
         if (online) {
+            addItem(adapter, R.string.text_community, mNotificationItem);
             addItem(adapter, R.string.text_community_category, mUnreadItem);
             addItem(adapter, R.string.text_community_tags, mLogoutItem);
-
         } else {
             removeItem(adapter, R.string.text_community_unread);
             removeItem(adapter, R.string.text_logout);
+            removeItem(adapter, R.string.text_notification);
         }
 
     }
@@ -80,6 +110,7 @@ public class CommunityDrawerMenu {
                 break;
             }
         }
+
     }
 
     private void removeItem(DrawerMenuAdapter adapter, int title) {
@@ -93,6 +124,7 @@ public class CommunityDrawerMenu {
             }
         }
     }
+
 
     public void hideCommunityMenu(DrawerMenuAdapter adapter) {
         List<DrawerMenuItem> items = adapter.getDrawerMenuItems();
@@ -109,6 +141,11 @@ public class CommunityDrawerMenu {
                 break;
             }
         }
+    }
+
+    private void showNotifications(DrawerMenuItemViewHolder holder) {
+        EventBus.getDefault().post(new CommunityFragment.LoadUrl("/notifications"));
+        setNotificationCount(mMenuAdapter, 0);
     }
 
     private void showCategories(DrawerMenuItemViewHolder holder) {

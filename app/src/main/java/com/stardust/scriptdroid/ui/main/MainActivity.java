@@ -62,6 +62,10 @@ import java.util.Arrays;
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, BackPressedHandler.HostActivity {
 
+    public static class DrawerOpenEvent {
+        static DrawerOpenEvent SINGLETON = new DrawerOpenEvent();
+    }
+
     private static final String LOG_TAG = "MainActivity";
 
     @ViewById(R.id.drawer_layout)
@@ -100,6 +104,12 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         registerBackPressHandlers();
         ThemeColorManager.addViewBackground(findViewById(R.id.app_bar));
+        mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                EventBus.getDefault().post(DrawerOpenEvent.SINGLETON);
+            }
+        });
     }
 
     private void showAnnunciationIfNeeded() {

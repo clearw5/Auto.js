@@ -2,12 +2,14 @@ package com.stardust.scriptdroid.network;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
 import com.stardust.scriptdroid.network.api.UserApi;
+import com.stardust.scriptdroid.network.entity.notification.Notification;
+import com.stardust.scriptdroid.network.entity.notification.NotificationResponse;
 import com.stardust.scriptdroid.network.entity.user.User;
 import com.stardust.util.Objects;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.Collections;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -20,7 +22,6 @@ import retrofit2.Retrofit;
  */
 
 public class UserService {
-
 
     public static class LoginStateChange {
         private final boolean mOnline;
@@ -116,4 +117,13 @@ public class UserService {
                 .doOnNext(this::setUser)
                 .doOnError(error -> setUser(null));
     }
+
+
+    public Observable<List<Notification>> getNotifications() {
+        return NodeBB.getInstance().getRetrofit()
+                .create(UserApi.class)
+                .getNotifitions()
+                .map(NotificationResponse::getNotifications);
+    }
+
 }

@@ -37,6 +37,10 @@ public class DrawerMenuItemViewHolder extends BindableViewHolder<DrawerMenuItem>
 
     @BindView(R.id.title)
     TextView mTitle;
+
+    @BindView(R.id.notifications)
+    TextView mNotifications;
+
     private boolean mAntiShake;
     private long mLastClickMillis;
     private DrawerMenuItem mDrawerMenuItem;
@@ -62,6 +66,16 @@ public class DrawerMenuItemViewHolder extends BindableViewHolder<DrawerMenuItem>
         mAntiShake = item.antiShake();
         setSwitch(item);
         setProgress(item.isProgress());
+        setNotifications(item.getNotificationCount());
+    }
+
+    private void setNotifications(int notificationCount) {
+        if (notificationCount == 0) {
+            mNotifications.setVisibility(View.GONE);
+        } else {
+            mNotifications.setVisibility(View.VISIBLE);
+            mNotifications.setText(String.valueOf(notificationCount));
+        }
     }
 
     private void setSwitch(DrawerMenuItem item) {
