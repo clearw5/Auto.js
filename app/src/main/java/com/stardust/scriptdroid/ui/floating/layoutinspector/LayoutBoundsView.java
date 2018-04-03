@@ -32,11 +32,13 @@ public class LayoutBoundsView extends View {
     private NodeInfo mTouchedNode;
     private Paint mBoundsPaint;
     private Paint mFillingPaint;
-    private int mStatusBarHeight;
     private OnNodeInfoSelectListener mOnNodeInfoSelectListener;
     private int mTouchedNodeBoundsColor = Color.RED;
     private int mNormalNodeBoundsColor = Color.GREEN;
     private Rect mTouchedNodeBounds;
+
+    private int[] mBoundsInScreen;
+    protected int mStatusBarHeight;
 
     public LayoutBoundsView(Context context) {
         super(context);
@@ -76,14 +78,19 @@ public class LayoutBoundsView extends View {
         mFillingPaint = new Paint();
         mFillingPaint.setStyle(Paint.Style.FILL);
         mFillingPaint.setColor(COLOR_SHADOW);
-        mStatusBarHeight = ViewUtil.getStatusBarHeight(getContext());
         setWillNotDraw(false);
+        mStatusBarHeight = ViewUtil.getStatusBarHeight(getContext());
     }
 
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (mBoundsInScreen == null) {
+            mBoundsInScreen = new int[4];
+            getLocationOnScreen(mBoundsInScreen);
+            mStatusBarHeight = mBoundsInScreen[1];
+        }
         if (mTouchedNode != null) {
             canvas.save();
             if (mTouchedNodeBounds == null) {
@@ -110,10 +117,6 @@ public class LayoutBoundsView extends View {
 
     public Paint getFillingPaint() {
         return mFillingPaint;
-    }
-
-    public int getStatusBarHeight() {
-        return mStatusBarHeight;
     }
 
     public void setTouchedNodeBoundsColor(int touchedNodeBoundsColor) {
@@ -164,13 +167,9 @@ public class LayoutBoundsView extends View {
         if (list.isEmpty()) {
             return null;
         }
-        return Collections.min(list, new Comparator<NodeInfo>() {
-            @Override
-            public int compare(NodeInfo o1, NodeInfo o2) {
-                return o1.getBoundsInScreen().width() * o1.getBoundsInScreen().height() -
-                        o2.getBoundsInScreen().width() * o2.getBoundsInScreen().height();
-            }
-        });
+        return Collections.min(list, (o1, o2) ->
+                o1.getBoundsInScreen().width() * o1.getBoundsInScreen().height() -
+                        o2.getBoundsInScreen().width() * o2.getBoundsInScreen().height());
     }
 
 
@@ -187,5 +186,9 @@ public class LayoutBoundsView extends View {
         mTouchedNode = selectedNode;
         mTouchedNodeBounds = null;
         invalidate();
+    }
+
+    public int getStatusBarHeight() {
+        return mStatusBarHeight;
     }
 }

@@ -3,6 +3,7 @@ package com.stardust.scriptdroid.autojs.key;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.core.inputevent.InputEventObserver;
 import com.stardust.autojs.core.inputevent.ShellKeyObserver;
 import com.stardust.event.EventDispatcher;
@@ -10,6 +11,8 @@ import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.autojs.AutoJs;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.OnKeyListener;
+
+import javax.microedition.khronos.opengles.GL;
 
 /**
  * Created by Stardust on 2017/8/14.
@@ -35,7 +38,7 @@ public class GlobalKeyObserver implements OnKeyListener, ShellKeyObserver.KeyLis
                 .addListener(this);
         ShellKeyObserver observer = new ShellKeyObserver();
         observer.setKeyListener(this);
-        InputEventObserver.getGlobal().addListener(observer);
+        InputEventObserver.getGlobal(GlobalAppContext.get()).addListener(observer);
     }
 
     public static GlobalKeyObserver getSingleton() {

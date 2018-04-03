@@ -56,6 +56,7 @@ public class LayoutHierarchyView extends MultiLevelListView {
     };
 
     private Paint mPaint;
+    private int[] mBoundsInScreen;
     private int mStatusBarHeight;
     private NodeInfo mClickedNodeInfo;
     private View mClickedView;
@@ -87,10 +88,6 @@ public class LayoutHierarchyView extends MultiLevelListView {
 
     public void setClickedColor(int clickedColor) {
         mClickedColor = clickedColor;
-    }
-
-    public int getStatusBarHeight() {
-        return mStatusBarHeight;
     }
 
     private void init() {
@@ -152,6 +149,11 @@ public class LayoutHierarchyView extends MultiLevelListView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (mBoundsInScreen == null) {
+            mBoundsInScreen = new int[4];
+            getLocationOnScreen(mBoundsInScreen);
+            mStatusBarHeight = mBoundsInScreen[1];
+        }
         if (mShowClickedNodeBounds && mClickedNodeInfo != null) {
             LayoutBoundsView.drawRect(canvas, mClickedNodeInfo.getBoundsInScreen(), mStatusBarHeight, mPaint);
         }

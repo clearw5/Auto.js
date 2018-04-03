@@ -55,15 +55,12 @@ public class LayoutBoundsFloatyWindow extends FullScreenFloatyWindow {
     }
 
     private void setupView() {
-        mLayoutBoundsView.setOnNodeInfoSelectListener(new OnNodeInfoSelectListener() {
-            @Override
-            public void onNodeSelect(NodeInfo info) {
-                mSelectedNode = info;
-                ensureOperationPopMenu();
-                if (mBubblePopMenu.getContentView().getMeasuredWidth() <= 0)
-                    mBubblePopMenu.preMeasure();
-                mBubblePopMenu.showAsDropDownAtLocation(mLayoutBoundsView, info.getBoundsInScreen().height(), info.getBoundsInScreen().centerX() - mBubblePopMenu.getContentView().getMeasuredWidth() / 2, info.getBoundsInScreen().bottom - mLayoutBoundsView.getStatusBarHeight());
-            }
+        mLayoutBoundsView.setOnNodeInfoSelectListener(info -> {
+            mSelectedNode = info;
+            ensureOperationPopMenu();
+            if (mBubblePopMenu.getContentView().getMeasuredWidth() <= 0)
+                mBubblePopMenu.preMeasure();
+            mBubblePopMenu.showAsDropDownAtLocation(mLayoutBoundsView, info.getBoundsInScreen().height(), info.getBoundsInScreen().centerX() - mBubblePopMenu.getContentView().getMeasuredWidth() / 2, info.getBoundsInScreen().bottom - mLayoutBoundsView.getStatusBarHeight());
         });
         mLayoutBoundsView.getBoundsPaint().setStrokeWidth(2f);
         mLayoutBoundsView.setRootNode(mRootNode);

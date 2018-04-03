@@ -3,6 +3,7 @@ package com.stardust.auojs.inrt.autojs;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.auojs.inrt.Pref;
 import com.stardust.autojs.core.inputevent.InputEventObserver;
 import com.stardust.autojs.core.inputevent.ShellKeyObserver;
@@ -26,7 +27,7 @@ public class GlobalKeyObserver implements OnKeyListener, ShellKeyObserver.KeyLis
                 .addListener(this);
         ShellKeyObserver observer = new ShellKeyObserver();
         observer.setKeyListener(this);
-        InputEventObserver.getGlobal().addListener(observer);
+        InputEventObserver.getGlobal(GlobalAppContext.get()).addListener(observer);
     }
 
     public static void init() {

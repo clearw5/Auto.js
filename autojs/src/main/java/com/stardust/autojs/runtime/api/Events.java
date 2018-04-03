@@ -106,7 +106,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
             return;
         ensureHandler();
         mLoopers.waitWhenIdle(true);
-        mTouchObserver = new TouchObserver(InputEventObserver.getGlobal());
+        mTouchObserver = new TouchObserver(InputEventObserver.getGlobal(mContext));
         mTouchObserver.setOnTouchEventListener(this);
         mTouchObserver.observe();
     }
