@@ -5,7 +5,7 @@ module.exports = function(__runtime__, scope){
     var __obj__ = new java.lang.Object();
 
     for(var method in __selector__){
-        if(!__obj__[method] && !scope[method]){
+        if(!(method in __obj__) && !(method in scope)){
             scope[method] = (function(method) {
                 return function(){
                     var s = selector();

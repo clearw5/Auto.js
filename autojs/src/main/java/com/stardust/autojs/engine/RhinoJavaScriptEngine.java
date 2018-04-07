@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.stardust.autojs.BuildConfig;
 import com.stardust.autojs.rhino.AndroidContextFactory;
+import com.stardust.autojs.rhino.NativeJavaClassWithPrototype;
+import com.stardust.autojs.rhino.NativeJavaObjectWithPrototype;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
@@ -15,6 +17,9 @@ import com.stardust.pio.UncheckedIOException;
 import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ImporterTopLevel;
+import org.mozilla.javascript.NativeJavaClass;
+import org.mozilla.javascript.NativeJavaObject;
+import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.RequireBuilder;
@@ -28,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -158,6 +164,9 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private class WrapFactory extends org.mozilla.javascript.WrapFactory {
 
+
+        private ConcurrentHashMap<Class, NativeJavaClassWithPrototype> mJavaClasses = new ConcurrentHashMap<>();
+
         @Override
         public Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType) {
             if (obj instanceof String) {
@@ -165,11 +174,28 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
             }
             if (staticType == UiObjectCollection.class) {
                 return getRuntime().bridges.asArray(obj);
-
             }
             return super.wrap(cx, scope, obj, staticType);
         }
 
+        @Override
+        public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, Class<?> staticType) {
+            NativeJavaObjectWithPrototype obj = new NativeJavaObjectWithPrototype(scope, javaObject, staticType);
+            NativeJavaClassWithPrototype clazz = mJavaClasses.get(obj.getClass());
+            if (clazz == null) {
+                clazz = (NativeJavaClassWithPrototype) wrapJavaClass(cx, scope, obj.getClass());
+            }
+            obj.setPrototype(clazz);
+            return obj;
+        }
+
+
+        @Override
+        public Scriptable wrapJavaClass(Context cx, Scriptable scope, Class<?> javaClass) {
+            NativeJavaClassWithPrototype clazz = new NativeJavaClassWithPrototype(scope, javaClass);
+            mJavaClasses.put(javaClass, clazz);
+            return clazz;
+        }
     }
 
     private class InterruptibleAndroidContextFactory extends AndroidContextFactory {
@@ -193,10 +219,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
             return cx;
         }
 
-        @Override
-        protected Object doTopCall(Callable callable, Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-            return super.doTopCall(callable, cx, scope, thisObj, args);
-        }
     }
 
 

@@ -54,6 +54,7 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
 
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
+        instance = this;
         Log.v(TAG, "onAccessibilityEvent: " + event);
         if (!containsAllEventTypes && !eventTypes.contains(event.getEventType()))
             return;
