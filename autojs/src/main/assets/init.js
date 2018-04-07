@@ -39,7 +39,7 @@ runtime.init();
                 arr.push(list.get(i));
             }
             for(var key in list){
-                if(arr[key])
+                if(typeof(key) == 'number')
                     continue;
                 var v = list[key];
                 if(typeof(v) == 'function'){
@@ -104,7 +104,7 @@ runtime.init();
     importClass(android.view.KeyEvent);
     importClass(com.stardust.autojs.core.util.Shell);
     importClass(android.graphics.Paint);
-    importClass(android.graphics.Canvas);
+    Canvas = com.stardust.autojs.core.graphics.ScriptCanvas;
 
     //重定向require以便支持相对路径
     (function(){

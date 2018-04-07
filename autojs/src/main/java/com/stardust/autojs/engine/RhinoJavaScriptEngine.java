@@ -165,8 +165,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     private class WrapFactory extends org.mozilla.javascript.WrapFactory {
 
 
-        private ConcurrentHashMap<Class, NativeJavaClassWithPrototype> mJavaClasses = new ConcurrentHashMap<>();
-
         @Override
         public Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType) {
             if (obj instanceof String) {
@@ -176,25 +174,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
                 return getRuntime().bridges.asArray(obj);
             }
             return super.wrap(cx, scope, obj, staticType);
-        }
-
-        @Override
-        public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, Class<?> staticType) {
-            NativeJavaObjectWithPrototype obj = new NativeJavaObjectWithPrototype(scope, javaObject, staticType);
-            NativeJavaClassWithPrototype clazz = mJavaClasses.get(obj.getClass());
-            if (clazz == null) {
-                clazz = (NativeJavaClassWithPrototype) wrapJavaClass(cx, scope, obj.getClass());
-            }
-            obj.setPrototype(clazz);
-            return obj;
-        }
-
-
-        @Override
-        public Scriptable wrapJavaClass(Context cx, Scriptable scope, Class<?> javaClass) {
-            NativeJavaClassWithPrototype clazz = new NativeJavaClassWithPrototype(scope, javaClass);
-            mJavaClasses.put(javaClass, clazz);
-            return clazz;
         }
     }
 
