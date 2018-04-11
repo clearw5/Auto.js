@@ -3,6 +3,8 @@ module.exports = function (runtime, global) {
     require("object-observe-lite.min")();
     require("array-observe.min")();
 
+    var J = require("__java_util__");
+
 
     var ui = {};
     ui.__view_cache__ = {};
@@ -234,16 +236,19 @@ module.exports = function (runtime, global) {
             event.consumed = false;
             emit("touch", event, view);
             return event.consumed;
-        })
-        view.setOnLongClickListener(function (v) {
-            var event = {};
-            event.consumed = false;
-            emit("long_click", event, view);
-            return event.consumed;
         });
-        view.setOnClickListener(function (v) {
-            emit("click", view);
-        });
+        if(!J.instanceOf(view, "android.widget.AdapterView")){
+            view.setOnLongClickListener(function (v) {
+                var event = {};
+                event.consumed = false;
+                emit("long_click", event, view);
+                return event.consumed;
+            });
+            view.setOnClickListener(function (v) {
+                emit("click", view);
+            });
+        }
+
         view.setOnKeyListener(function (v, keyCode, event) {
             event = wrapMotionEvent(event);
             emit("key", keyCode, event, v);

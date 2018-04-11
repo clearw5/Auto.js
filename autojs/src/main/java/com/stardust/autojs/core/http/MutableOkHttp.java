@@ -1,5 +1,7 @@
 package com.stardust.autojs.core.http;
 
+import android.widget.AdapterView;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
