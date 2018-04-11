@@ -1,6 +1,10 @@
 module.exports = function(runtime, scope){
     importPackage(Packages["okhttp3"]);
+    importClass(com.stardust.autojs.core.http.MutableOkHttp);
     var http = {};
+
+    http.__okhttp__ = new MutableOkHttp();
+
     http.get = function(url, options, callback){
         options = options || {};
         options.method = "GET";
@@ -8,10 +12,7 @@ module.exports = function(runtime, scope){
     }
 
     http.client = function(){
-        if(!http._client_){
-            http._client_ = new OkHttpClient();
-        }
-        return http._client_;
+        return http.__okhttp__.client();
     }
 
     http.post = function(url, data, options, callback){
