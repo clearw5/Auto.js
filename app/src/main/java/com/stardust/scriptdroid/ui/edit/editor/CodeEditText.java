@@ -34,6 +34,7 @@ import android.view.Gravity;
 import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.ui.edit.theme.Theme;
 import com.stardust.scriptdroid.ui.edit.theme.TokenMapping;
+import com.stardust.util.ClipboardUtil;
 import com.stardust.util.TextUtils;
 
 import org.mozilla.javascript.Token;
@@ -133,6 +134,14 @@ public class CodeEditText extends AppCompatEditText {
         if (getPaddingLeft() != gutterWidth) {
             setPadding((int) gutterWidth, 0, 0, 0);
         }
+    }
+
+    @Override
+    public boolean onTextContextMenuItem(int id) {
+        if (id == android.R.id.paste) {
+            ClipboardUtil.setClip(getContext(), ClipboardUtil.getClip(getContext()).toString());
+        }
+        return super.onTextContextMenuItem(id);
     }
 
     //该方法中内联了很多函数来提高效率 但是 这是必要的吗？？？
