@@ -103,7 +103,7 @@ storages无法像Web开发中LocalStorage一样提供根据域名独立的存储
 </ul>
 </div><p>创建一个本地存储并返回一个<code>Storage</code>对象。不同名称的本地存储的数据是隔开的，而相同名称的本地存储的数据是共享的。</p>
 <p>例如在一个脚本中，创建名称为ABC的存储并存入a=123:</p>
-<pre><code>var storage = stroages.create(&quot;ABC&quot;);
+<pre><code>var storage = storages.create(&quot;ABC&quot;);
 storage.put(&quot;a&quot;, 123);
 </code></pre><p>而在另一个脚本中是可以获取到ABC以及a的值的：</p>
 <pre><code>var storage = storages.create(&quot;ABC&quot;);

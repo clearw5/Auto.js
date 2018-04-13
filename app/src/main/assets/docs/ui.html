@@ -143,8 +143,14 @@
 <li><span class="stability_undefined"><a href="#ui_circle">circle</a></span></li>
 </ul>
 </li>
-<li><span class="stability_undefined"><a href="#ui_vertical">垂直布局: vertical</a></span></li>
-<li><span class="stability_undefined"><a href="#ui_horizontal">水平布局: horizontal</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_vertical">垂直布局: vertical</a></span><ul>
+<li><span class="stability_undefined"><a href="#ui_layout_weight">layout_weight</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#ui_horizontal">水平布局: horizontal</a></span><ul>
+<li><span class="stability_undefined"><a href="#ui_layout_weight_1">layout_weight</a></span></li>
+</ul>
+</li>
 <li><span class="stability_undefined"><a href="#ui_linear">线性布局: linear</a></span></li>
 <li><span class="stability_undefined"><a href="#ui_frame">帧布局: frame</a></span></li>
 <li><span class="stability_undefined"><a href="#ui_relative">相对布局: relative</a></span></li>
@@ -621,12 +627,80 @@ ui.layout(
 <p>指定该图片控件的图片是否剪切为圆形显示。如果为<code>true</code>，则图片控件会使其宽高保持一致(如果宽高不一致，则保持高度等于宽度)并使圆形的半径为宽度的一半。</p>
 <p>例如，圆形的Auto.js图标：<code>&lt;img w=&quot;100&quot; h=&quot;100&quot; circle=&quot;true&quot; bg=&quot;white&quot; src=&quot;http://www.autojs.org/assets/uploads/profile/3-profileavatar.png&quot; /&gt;</code></p>
 <h1>垂直布局: vertical<span><a class="mark" href="#ui_vertical" id="ui_vertical">#</a></span></h1>
+<p>垂直布局是一种比较简单的布局，会把在它里面的控件按照垂直方向依次摆放，如下图所示：</p>
+<p>垂直布局:</p>
+<p> —————</p>
+<p>| 控件1 |</p>
+<p>| 控件2 |</p>
+<p>| 控件3 |</p>
+<p>| ............ |</p>
+<p> ——————</p>
+<h2>layout_weight<span><a class="mark" href="#ui_layout_weight" id="ui_layout_weight">#</a></span></h2>
+<p>垂直布局中的控件可以通过<code>layout_weight</code>属性来控制控件高度占垂直布局高度的比例。如果为一个控件指定<code>layout_weight</code>, 则这个控件的高度=垂直布局剩余高度 * layout_weight / weightSum；如果不指定weightSum, 则weightSum为所有子控件的layout_weight之和。所谓&quot;剩余高度&quot;，指的是垂直布局中减去没有指定layout_weight的控件的剩余高度。
+例如:</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;vertical h=&quot;100dp&quot;&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件1&quot; bg=&quot;#ff0000&quot;/&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件2&quot; bg=&quot;#00ff00&quot;/&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件3&quot; bg=&quot;#0000ff&quot;/&gt;
+    &lt;/vertical&gt;
+);
+</code></pre><p>在这个布局中，三个控件的layout_weight都是1，也就是他们的高度都会占垂直布局高度的1/3，都是33.3dp.
+再例如：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;vertical h=&quot;100dp&quot;&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件1&quot; bg=&quot;#ff0000&quot;/&gt;
+        &lt;text layout_weight=&quot;2&quot; text=&quot;控件2&quot; bg=&quot;#00ff00&quot;/&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件3&quot; bg=&quot;#0000ff&quot;/&gt;
+    &lt;/vertical&gt;
+);
+</code></pre><p>在这个布局中，第一个控件高度为1/4, 第二个控件为2/4, 第三个控件为1/4.
+再例如：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;vertical h=&quot;100dp&quot; weightSum=&quot;5&quot;&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件1&quot; bg=&quot;#ff0000&quot;/&gt;
+        &lt;text layout_weight=&quot;2&quot; text=&quot;控件2&quot; bg=&quot;#00ff00&quot;/&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件3&quot; bg=&quot;#0000ff&quot;/&gt;
+    &lt;/vertical&gt;
+);
+</code></pre><p>在这个布局中，因为指定了weightSum为5, 因此第一个控件高度为1/5, 第二个控件为2/5, 第三个控件为1/5.
+再例如：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;vertical h=&quot;100dp&quot;&gt;
+        &lt;text h=&quot;40dp&quot; text=&quot;控件1&quot; bg=&quot;#ff0000&quot;/&gt;
+        &lt;text layout_weight=&quot;2&quot; text=&quot;控件2&quot; bg=&quot;#00ff00&quot;/&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件3&quot; bg=&quot;#0000ff&quot;/&gt;
+    &lt;/vertical&gt;
+);
+</code></pre><p>在这个布局中，第一个控件并没有指定layout_weight, 而是指定高度为40dp, 因此不加入比例计算，此时布局剩余高度为60dp。第二个控件高度为剩余高度的2/3，也就是40dp，第三个控件高度为剩余高度的1/3，也就是20dp。</p>
+<p>垂直布局的layout_weight属性还可以用于控制他的子控件高度占满剩余空间，例如：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;vertical h=&quot;100dp&quot;&gt;
+        &lt;text h=&quot;40dp&quot; text=&quot;控件1&quot; bg=&quot;#ff0000&quot;/&gt;
+        &lt;text h=&quot;40dp&quot; text=&quot;控件2&quot; bg=&quot;#00ff00&quot;/&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件3&quot; bg=&quot;#0000ff&quot;/&gt;
+    &lt;/vertical&gt;
+);
+</code></pre><p>在这个布局中，第三个控件的高度会占满除去控件1和控件2的剩余空间。</p>
 <h1>水平布局: horizontal<span><a class="mark" href="#ui_horizontal" id="ui_horizontal">#</a></span></h1>
+<p>水平布局是一种比较简单的布局，会把在它里面的控件按照水平方向依次摆放，如下图所示：
+水平布局:
+ ————————————————————————————</p>
+<p>| 控件1 | 控件2 | 控件3 | ... |</p>
+<p> ————————————————————————————</p>
+<h2>layout_weight<span><a class="mark" href="#ui_layout_weight_1" id="ui_layout_weight_1">#</a></span></h2>
+<p>水平布局中也可以使用layout_weight属性来控制子控件的<strong>宽度</strong>占父布局的比例。和垂直布局中类似，不再赘述。</p>
 <h1>线性布局: linear<span><a class="mark" href="#ui_linear" id="ui_linear">#</a></span></h1>
 <p>实际上，垂直布局和水平布局都属于线性布局。线性布局有一个orientation的属性，用于指定布局的方向，可选的值为<code>vertical</code>和<code>horizontal</code>。</p>
 <p>例如<code>&lt;linear orientation=&quot;vertical&quot;&gt;&lt;/linear&gt;</code>相当于<code>&lt;vertical&gt;&lt;/vertical&gt;</code>。</p>
 <p>线性布局的默认方向是横向的，因此，一个没有指定orientation属性的线性布局就是横向布局。</p>
 <h1>帧布局: frame<span><a class="mark" href="#ui_frame" id="ui_frame">#</a></span></h1>
+<p>帧布局</p>
 <h1>相对布局: relative<span><a class="mark" href="#ui_relative" id="ui_relative">#</a></span></h1>
 <h1>勾选框控件: checkbox<span><a class="mark" href="#ui_checkbox" id="ui_checkbox">#</a></span></h1>
 <h1>选择框控件: radio<span><a class="mark" href="#ui_radio" id="ui_radio">#</a></span></h1>

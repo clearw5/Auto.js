@@ -125,10 +125,8 @@ http.get(&quot;www.baidu.com&quot;, {}, function(res, err){
 <pre><code>console.show();
 var r = http.get(&quot;www.baidu.com&quot;, {
     headers: {
-        &quot;Accept-Language&quot;: &quot;zh-cn,zh;q=0.5&quot;,
-        &quot;User-Agent: &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X
-10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56
-Safari/535.11&quot;
+        &#39;Accept-Language&#39;: &#39;zh-cn,zh;q=0.5&#39;,
+        &#39;User-Agent&#39;: &#39;Mozilla/5.0(Macintosh;IntelMacOSX10_7_0)AppleWebKit/535.11(KHTML,likeGecko)Chrome/17.0.963.56Safari/535.11&#39;
     }
 });
 log(&quot;code = &quot; + r.statusCode);

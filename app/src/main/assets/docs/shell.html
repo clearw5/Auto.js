@@ -75,11 +75,11 @@
         <h2>目录</h2>
         <ul>
 <li><span class="stability_2"><a href="#shell_shell">shell函数</a></span><ul>
-<li><span class="stability_undefined"><a href="#shell_shell_cmd_root_false">shell(cmd[, root = false])</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_shell_cmd_root">shell(cmd[, root])</a></span></li>
 </ul>
 </li>
 <li><span class="stability_2"><a href="#shell_shell_1">Shell</a></span><ul>
-<li><span class="stability_undefined"><a href="#shell_shell_root_false">Shell(root = false)</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_new_shell_root">new Shell(root)</a></span></li>
 <li><span class="stability_undefined"><a href="#shell_shell_exec_cmd">Shell.exec(cmd)</a></span></li>
 <li><span class="stability_undefined"><a href="#shell_shell_exit">Shell.exit()</a></span></li>
 <li><span class="stability_undefined"><a href="#shell_shell_exitandwaitfor">Shell.exitAndWaitFor()</a></span></li>
@@ -155,7 +155,7 @@
 <li>通过内嵌终端模拟器执行(RootAutomator, Shell等对象)</li>
 </ul>
 <h1>shell函数<span><a class="mark" href="#shell_shell" id="shell_shell">#</a></span></h1>
-<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><h2>shell(cmd[, root = false])<span><a class="mark" href="#shell_shell_cmd_root_false" id="shell_shell_cmd_root_false">#</a></span></h2>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><h2>shell(cmd[, root])<span><a class="mark" href="#shell_shell_cmd_root" id="shell_shell_cmd_root">#</a></span></h2>
 <div class="signature"><ul>
 <li>cmd <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要执行的命令</li>
 <li>root <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 是否以root权限运行，默认为false。</li>
@@ -177,9 +177,9 @@ if(result.code == 0){
 }
 </code></pre><h1>Shell<span><a class="mark" href="#shell_shell_1" id="shell_shell_1">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>shell函数通过用来一次性执行单条命令并获取结果。如果有多条命令需要执行，用Shell对象的效率更高。这是因为，每次运行shell函数都会打开一个单独的shell进程并在运行结束后关闭他，这个过程需要一定的时间；而Shell对象自始至终使用同一个shell进程。</p>
-<h2>Shell(root = false)<span><a class="mark" href="#shell_shell_root_false" id="shell_shell_root_false">#</a></span></h2>
+<h2>new Shell(root)<span><a class="mark" href="#shell_new_shell_root" id="shell_new_shell_root">#</a></span></h2>
 <div class="signature"><ul>
-<li>root <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 是否以root权限运行一个shell进程。这将会影响其后使用该Shell对象执行的命令的权限</li>
+<li>root <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 是否以root权限运行一个shell进程，默认为false。这将会影响其后使用该Shell对象执行的命令的权限</li>
 </ul>
 </div><p>Shell对象的&quot;构造函数&quot;。</p>
 <pre><code>var sh = new Shell(true);
