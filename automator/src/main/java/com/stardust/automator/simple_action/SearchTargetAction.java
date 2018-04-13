@@ -25,16 +25,15 @@ public abstract class SearchTargetAction extends FilterAction {
         boolean performed = false;
         for (UiObject node : nodes) {
             node = searchTarget(node);
-            if (node != null) {
-                performAction(node);
+            if (node != null && performAction(node)) {
                 performed = true;
             }
         }
         return performed;
     }
 
-    protected void performAction(UiObject node) {
-        node.performAction(mAction);
+    protected boolean performAction(UiObject node) {
+        return node.performAction(mAction);
     }
 
     public int getAction() {

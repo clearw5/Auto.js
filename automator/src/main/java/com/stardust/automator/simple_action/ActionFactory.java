@@ -46,14 +46,14 @@ public class ActionFactory {
         return new SearchTargetAction(action, new FilterAction.EditableFilter(index)) {
 
             @Override
-            protected void performAction(UiObject node) {
+            protected boolean performAction(UiObject node) {
                 Bundle args = new Bundle();
                 if (action == AccessibilityNodeInfo.ACTION_SET_TEXT) {
                     args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
                 } else {
                     args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, node.text() + text);
                 }
-                node.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args);
+                return node.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args);
             }
         };
     }
