@@ -25,14 +25,14 @@ import com.stardust.autojs.runtime.ScriptRuntime;
 
 public class ScriptCanvas {
 
-    private android.graphics.Canvas mCanvas;
+    private Canvas mCanvas;
 
-    public ScriptCanvas(android.graphics.Canvas canvas) {
+    public ScriptCanvas(Canvas canvas) {
         mCanvas = canvas;
     }
 
     public ScriptCanvas(@NonNull Bitmap bitmap) {
-        mCanvas = new android.graphics.Canvas(bitmap);
+        mCanvas = new Canvas(bitmap);
     }
 
     public ScriptCanvas(@NonNull ImageWrapper image) {
@@ -239,15 +239,15 @@ public class ScriptCanvas {
         mCanvas.setDrawFilter(filter);
     }
 
-    public boolean quickReject(@NonNull RectF rect, @NonNull android.graphics.Canvas.EdgeType type) {
+    public boolean quickReject(@NonNull RectF rect, @NonNull Canvas.EdgeType type) {
         return mCanvas.quickReject(rect, type);
     }
 
-    public boolean quickReject(@NonNull Path path, @NonNull android.graphics.Canvas.EdgeType type) {
+    public boolean quickReject(@NonNull Path path, @NonNull Canvas.EdgeType type) {
         return mCanvas.quickReject(path, type);
     }
 
-    public boolean quickReject(float left, float top, float right, float bottom, @NonNull android.graphics.Canvas.EdgeType type) {
+    public boolean quickReject(float left, float top, float right, float bottom, @NonNull Canvas.EdgeType type) {
         return mCanvas.quickReject(left, top, right, bottom, type);
     }
 
@@ -382,7 +382,7 @@ public class ScriptCanvas {
         mCanvas.drawBitmapMesh(bitmap, meshWidth, meshHeight, verts, vertOffset, colors, colorOffset, paint);
     }
 
-    public void drawVertices(@NonNull android.graphics.Canvas.VertexMode mode, int vertexCount, @NonNull float[] verts, int vertOffset, @Nullable float[] texs, int texOffset, @Nullable int[] colors, int colorOffset, @Nullable short[] indices, int indexOffset, int indexCount, @NonNull Paint paint) {
+    public void drawVertices(@NonNull Canvas.VertexMode mode, int vertexCount, @NonNull float[] verts, int vertOffset, @Nullable float[] texs, int texOffset, @Nullable int[] colors, int colorOffset, @Nullable short[] indices, int indexOffset, int indexCount, @NonNull Paint paint) {
         mCanvas.drawVertices(mode, vertexCount, verts, vertOffset, texs, texOffset, colors, colorOffset, indices, indexOffset, indexCount, paint);
     }
 

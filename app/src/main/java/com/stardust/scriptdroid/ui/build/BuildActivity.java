@@ -9,12 +9,12 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.project.ProjectConfig;
+import com.stardust.scriptdroid.BuildConfig;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.build.AutoJsApkBuilder;
 import com.stardust.scriptdroid.build.ApkBuilderPluginHelper;
@@ -35,6 +35,7 @@ import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
@@ -82,25 +83,41 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         if (sourcePath != null) {
             setupWithSourceFile(new ScriptFile(sourcePath));
         }
-        showPluginDownloadDialogIfNeeded();
+        checkApkBuilderPlugin();
     }
 
-    private void showPluginDownloadDialogIfNeeded() {
-        if (ApkBuilderPluginHelper.checkPlugin(this)) {
+    private void checkApkBuilderPlugin() {
+        if (!ApkBuilderPluginHelper.isPluginAvailable(this)) {
+            showPluginDownloadDialog(R.string.no_apk_builder_plugin, true);
             return;
         }
+        int version = ApkBuilderPluginHelper.getPluginVersion(this);
+        if (version < 0) {
+            showPluginDownloadDialog(R.string.no_apk_builder_plugin, true);
+            return;
+        }
+        if (version < ApkBuilderPluginHelper.getSuitablePluginVersion()) {
+            showPluginDownloadDialog(R.string.apk_builder_plugin_version_too_low, false);
+        }
+
+    }
+
+    private void showPluginDownloadDialog(int msgRes, boolean finishIfCanceled) {
         new ThemeColorMaterialDialogBuilder(this)
-                .content(R.string.no_apk_builder_plugin)
+                .content(msgRes)
                 .positiveText(R.string.ok)
                 .negativeText(R.string.text_exit)
                 .onPositive((dialog, which) -> downloadPlugin())
-                .onNegative((dialog, which) -> finish())
+                .onNegative((dialog, which) -> {
+                    if (finishIfCanceled) finish();
+                })
                 .show();
 
     }
 
     private void downloadPlugin() {
-        IntentUtil.browse(this, "https://www.autojs.org/assets/autojs/plugin.apk");
+        IntentUtil.browse(this, String.format(Locale.getDefault(),
+                "https://i.autojs.org/autojs/plugin/%d.apk", ApkBuilderPluginHelper.getSuitablePluginVersion()));
     }
 
     private void setupWithSourceFile(ScriptFile file) {
@@ -165,7 +182,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
 
     @Click(R.id.fab)
     void buildApk() {
-        if (!ApkBuilderPluginHelper.checkPlugin(this)) {
+        if (!ApkBuilderPluginHelper.isPluginAvailable(this)) {
             Toast.makeText(this, R.string.text_apk_builder_plugin_unavailable, Toast.LENGTH_SHORT).show();
             return;
         }

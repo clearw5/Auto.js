@@ -350,4 +350,5 @@
     <string name="text_size_current_value" formatted="true">字体大小: %d</string>
     <string name="error_regex_find_prev">正则表达式不能向前查找</string>
     <string name="text_notification">通知</string>
+    <string name="apk_builder_plugin_version_too_low">打包插件版本过低，打包的应用可能无法正常运行。是否立即下载对应版本的打包插件？</string>
 </resources>

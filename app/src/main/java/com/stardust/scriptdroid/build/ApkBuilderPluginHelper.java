@@ -1,11 +1,13 @@
 package com.stardust.scriptdroid.build;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
-import com.stardust.BuildConfig;
 import com.stardust.pio.UncheckedIOException;
+import com.stardust.scriptdroid.BuildConfig;
+import com.stardust.scriptdroid.ui.build.BuildActivity;
 import com.stardust.util.DeveloperUtils;
 
 import java.io.IOException;
@@ -20,7 +22,7 @@ public class ApkBuilderPluginHelper {
     private static final String PLUGIN_PACKAGE_NAME = "org.autojs.apkbuilderplugin";
     private static final String TEMPLATE_APK_PATH = "template.apk";
 
-    public static boolean checkPlugin(Context context) {
+    public static boolean isPluginAvailable(Context context) {
         return DeveloperUtils.checkSignature(context, PLUGIN_PACKAGE_NAME);
     }
 
@@ -36,5 +38,18 @@ public class ApkBuilderPluginHelper {
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static int getPluginVersion(Context context) {
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(PLUGIN_PACKAGE_NAME, 0);
+            return info.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            return -1;
+        }
+    }
+
+    public static int getSuitablePluginVersion() {
+        return BuildConfig.VERSION_CODE - 200;
     }
 }
