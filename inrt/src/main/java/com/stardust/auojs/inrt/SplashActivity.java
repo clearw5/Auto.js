@@ -44,7 +44,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void main() {
-        checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.READ_PHONE_STATE);
     }
 
 
