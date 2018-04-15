@@ -79,6 +79,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     private Context mContext;
     private GlobalActionRecorder mRecorder;
     private MaterialDialog mSettingsDialog;
+    private MaterialDialog mLayoutInspectDialog;
     private String mRunningPackage, mRunningActivity;
     private Deferred<NodeInfo, Void, Void> mCaptureDeferred;
 
@@ -183,9 +184,24 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     }
 
     @Optional
+    @OnClick(R.id.layout_inspect)
+    void inspectLayout() {
+        mWindow.collapse();
+        mLayoutInspectDialog = new OperationDialogBuilder(mContext)
+                .item(R.id.layout_bounds, R.drawable.ic_circular_menu_bounds, R.string.text_inspect_layout_bounds)
+                .item(R.id.layout_hierarchy, R.drawable.ic_circular_menu_hierarchy,
+                        R.string.text_inspect_layout_hierarchy)
+                .bindItemClick(this)
+                .title(R.string.text_inspect_layout)
+                .build();
+        DialogUtils.showDialog(mLayoutInspectDialog);
+    }
+
+    @Optional
     @OnClick(R.id.layout_bounds)
     void showLayoutBounds() {
-        mWindow.collapse();
+        mLayoutInspectDialog.dismiss();
+        mLayoutInspectDialog = null;
         if (!ensureCapture()) {
             return;
         }
@@ -200,7 +216,8 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     @Optional
     @OnClick(R.id.layout_hierarchy)
     void showLayoutHierarchy() {
-        mWindow.collapse();
+        mLayoutInspectDialog.dismiss();
+        mLayoutInspectDialog = null;
         if (!ensureCapture()) {
             return;
         }
@@ -211,6 +228,15 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
                 });
 
     }
+
+
+    @Optional
+    @OnClick(R.id.stop_all_scripts)
+    void stopAllScripts() {
+        mWindow.collapse();
+        AutoJs.getInstance().getScriptEngineService().stopAllAndToast();
+    }
+
 
     @Override
     public void onCaptureAvailable(NodeInfo capture) {
@@ -250,6 +276,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
                 .item(R.id.class_name, R.drawable.ic_ali_android,
                         mContext.getString(R.string.text_current_activity) + mRunningActivity)
                 .item(R.id.open_launcher, R.drawable.ic_android_eat_js, R.string.text_open_main_activity)
+                .item(R.id.pointer_location, R.drawable.ic_zoom_out_map_white_24dp, R.string.text_pointer_location)
                 .item(R.id.exit, R.drawable.ic_close_white_48dp, R.string.text_exit_floating_window)
                 .bindItemClick(this)
                 .title(R.string.text_more)
@@ -264,6 +291,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
         dismissSettingsDialog();
         AccessibilityServiceTool.enableAccessibilityService();
     }
+
 
     private void dismissSettingsDialog() {
         if (mSettingsDialog == null)
@@ -300,6 +328,12 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
+    @Optional
+    @OnClick(R.id.pointer_location)
+    void togglePointerLocation() {
+        dismissSettingsDialog();
+        RootTool.togglePointerLocation();
+    }
 
     @Optional
     @OnClick(R.id.exit)

@@ -29,26 +29,24 @@
         android:src="@drawable/ic_ali_record"/>
 
     <ImageView
-        android:id="@+id/layout_bounds"
+        android:id="@+id/layout_inspect"
         android:layout_width="42dp"
         android:layout_height="42dp"
         android:layout_gravity="center"
         android:background="@drawable/circle_blue"
         android:foreground="?selectableItemBackgroundBorderless"
         android:padding="8dp"
-        android:src="@drawable/ic_circular_menu_bounds"
-        android:tint="@android:color/white"/>
+        android:src="@drawable/ic_circular_menu_bounds"/>
 
     <ImageView
-        android:id="@+id/layout_hierarchy"
+        android:id="@+id/stop_all_scripts"
         android:layout_width="42dp"
         android:layout_height="42dp"
         android:layout_gravity="center"
         android:background="@drawable/circle_yellow"
         android:foreground="?selectableItemBackgroundBorderless"
-        android:padding="10dp"
-        android:src="@drawable/ic_circular_menu_hierarchy"
-        android:tint="@android:color/white"/>
+        android:padding="8dp"
+        android:src="@drawable/ic_close_white_48dp"/>
 
 
     <ImageView
@@ -59,8 +57,7 @@
         android:background="@drawable/circle_gray"
         android:foreground="?selectableItemBackgroundBorderless"
         android:padding="8dp"
-        android:src="@drawable/ic_circular_menu_settings"
-        android:tint="@android:color/white"/>
+        android:src="@drawable/ic_circular_menu_settings"/>
 
 
 </com.stardust.floatingcircularactionmenu.CircularActionMenu>

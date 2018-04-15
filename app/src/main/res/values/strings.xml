@@ -351,4 +351,8 @@
     <string name="error_regex_find_prev">正则表达式不能向前查找</string>
     <string name="text_notification">通知</string>
     <string name="apk_builder_plugin_version_too_low">打包插件版本过低，打包的应用可能无法正常运行。是否立即下载对应版本的打包插件？</string>
+    <string name="text_inspect_layout_bounds">布局范围分析</string>
+    <string name="text_inspect_layout_hierarchy">布局层次分析</string>
+    <string name="text_inspect_layout">布局分析</string>
+    <string name="text_pointer_location">指针位置[Root]</string>
 </resources>
