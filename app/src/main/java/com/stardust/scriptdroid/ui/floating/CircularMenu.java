@@ -13,6 +13,7 @@ import com.stardust.app.DialogUtils;
 import com.stardust.app.OperationDialogBuilder;
 import com.stardust.autojs.core.record.Recorder;
 import com.stardust.enhancedfloaty.FloatyService;
+import com.stardust.enhancedfloaty.FloatyWindow;
 import com.stardust.floatingcircularactionmenu.CircularActionMenu;
 import com.stardust.floatingcircularactionmenu.CircularActionMenuFloatingWindow;
 import com.stardust.floatingcircularactionmenu.CircularActionMenuFloaty;
@@ -31,6 +32,8 @@ import com.stardust.scriptdroid.ui.main.MainActivity_;
 import com.stardust.scriptdroid.ui.main.scripts.ScriptListView;
 import com.stardust.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
+import com.stardust.util.Func1;
+import com.stardust.util.Supplier;
 import com.stardust.view.accessibility.LayoutInspector;
 import com.stardust.view.accessibility.NodeInfo;
 
@@ -200,33 +203,39 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     @Optional
     @OnClick(R.id.layout_bounds)
     void showLayoutBounds() {
-        mLayoutInspectDialog.dismiss();
-        mLayoutInspectDialog = null;
-        if (!ensureCapture()) {
-            return;
-        }
-        mCaptureDeferred.promise()
-                .done(capture -> {
-                    LayoutBoundsFloatyWindow window = new LayoutBoundsFloatyWindow(capture);
-                    mActionViewIcon.post(() -> FloatyService.addWindow(window));
-                });
+        inspectLayout(LayoutBoundsFloatyWindow::new);
     }
 
 
     @Optional
     @OnClick(R.id.layout_hierarchy)
     void showLayoutHierarchy() {
+        inspectLayout(LayoutHierarchyFloatyWindow::new);
+    }
+
+    private void inspectLayout(Func1<NodeInfo, FloatyWindow> windowCreator) {
         mLayoutInspectDialog.dismiss();
         mLayoutInspectDialog = null;
-        if (!ensureCapture()) {
+        if (AccessibilityService.getInstance() == null) {
+            Toast.makeText(mContext, R.string.text_no_accessibility_permission_to_capture, Toast.LENGTH_SHORT).show();
+            AccessibilityServiceTool.goToAccessibilitySetting();
             return;
         }
+        MaterialDialog progress = DialogUtils.showDialog(new ThemeColorMaterialDialogBuilder(mContext)
+                .content(R.string.text_layout_inspector_is_dumping)
+                .canceledOnTouchOutside(false)
+                .progress(true, 0)
+                .build());
         mCaptureDeferred.promise()
-                .done(capture -> {
-                    LayoutHierarchyFloatyWindow window = new LayoutHierarchyFloatyWindow(capture);
-                    mActionViewIcon.post(() -> FloatyService.addWindow(window));
-                });
-
+                .then(capture -> {
+                    mActionViewIcon.post(() -> {
+                                if (!progress.isCancelled()) {
+                                    progress.dismiss();
+                                    FloatyService.addWindow(windowCreator.call(capture));
+                                }
+                            }
+                    );
+                }, err -> mActionViewIcon.post(progress::dismiss));
     }
 
 
@@ -242,24 +251,6 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     public void onCaptureAvailable(NodeInfo capture) {
         if (mCaptureDeferred != null && mCaptureDeferred.isPending())
             mCaptureDeferred.resolve(capture);
-    }
-
-    private boolean ensureCapture() {
-        LayoutInspector inspector = AutoJs.getInstance().getLayoutInspector();
-        if (inspector.isDumping()) {
-            Toast.makeText(mContext, R.string.text_layout_inspector_is_dumping, Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        if (AccessibilityService.getInstance() == null) {
-            Toast.makeText(mContext, R.string.text_no_accessibility_permission_to_capture, Toast.LENGTH_SHORT).show();
-            AccessibilityServiceTool.goToAccessibilitySetting();
-            return false;
-        }
-        if (inspector.getCapture() == null) {
-            Toast.makeText(mContext, R.string.text_inspect_failed, Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
     }
 
 

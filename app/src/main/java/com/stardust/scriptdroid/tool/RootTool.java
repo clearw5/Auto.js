@@ -31,7 +31,6 @@ public class RootTool {
         try {
             ProcessShell.execCommand(cmd, true);
         } catch (Exception ignored) {
-            ignored.printStackTrace();
         }
     }
 
