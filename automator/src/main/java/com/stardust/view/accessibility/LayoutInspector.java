@@ -50,6 +50,7 @@ public class LayoutInspector {
                 l.onCaptureAvailable(mCapture);
             }
         });
+
     }
 
     public void addCaptureAvailableListener(CaptureAvailableListener l){

@@ -89,24 +89,125 @@ module.exports = function(__runtime__, scope){
         if(isUiThread() && !callback){
             return new Promise(function(resolve, reject){
                 rtDialogs().singleChoice(title, index, items, function(r){
-                    resolve.apply(null, toJsArray(r));
+                    resolve.apply(null, javaArrayToJsArray(r));
                 });
             });
         }
         if(callback){
             return rtDialogs().multiChoice(title, index, items, function(r){
-                callback(toJsArray(r));
+                callback(javaArrayToJsArray(r));
             });
         }
-        return toJsArray(rtDialogs().multiChoice(title, index, items, null));
+        return javaArrayToJsArray(rtDialogs().multiChoice(title, index, items, null));
 
     }
 
-    function toJsArray(javaArray){
+    var propertySetters = {
+        "title": null,
+        "titleColor": {adapter: parseColor},
+        "buttonRippleColor": {adapter: parseColor},
+        "icon": null,
+        "content": null,
+        "contentColor": {adapter: parseColor},
+        "contentLineSpacing": null,
+        "items": null,
+        "itemsColor": {adapter: parseColor},
+        "positive": {method: "positiveText"},
+        "positiveColor": {adapter: parseColor},
+        "neutral": {method: "neutralText"},
+        "neutralColor": {adapter: parseColor},
+        "negative": {method: "negativeText"},
+        "negativeColor": {adapter: parseColor},
+        "cancelable": null,
+        "canceledOnTouchOutside": null,
+        "checkBoxPrompt": null,
+        "checkBoxChecked": null
+    };
+
+    dialogs.build = function(properties){
+        var builder = __runtime__.dialogs.newBuilder();
+        for(var name in properties){
+            if(!properties.hasOwnProperty(name)){
+                continue;
+            }
+            applyDialogProperty(builder, name, properties[name]);
+        }
+        applyOtherDialogProperties(builder, properties);
+        return ui.run(()=> builder.build());
+    }
+
+    function applyDialogProperty(builder, name, value){
+        if(!propertySetters.hasOwnProperty(name)){
+            return;
+        }
+        var propertySetter = propertySetters[name];
+        if(propertySetter == null){
+            propertySetter = {method: name};
+        }
+        if(propertySetter.adapter){
+            value = propertySetter.adapter(value);
+        }
+        builder[propertySetter.method].call(builder, value);
+    }
+
+    function applyOtherDialogProperties(builder, properties){
+        if(properties.inputHint != undefined || properties.inputPrefill != undefined){
+            builder.input(wrapNonNullString(properties.inputHint), wrapNonNullString(properties.inputPrefill), 
+                function(dialog, input){
+                    input = input.toString();
+                    dialog.emit("input_change", dialog, input);
+                }, true);
+        }
+        if(properties.items != undefined){
+            var itemsSelectMode = properties.itemSelectMode;
+            if(itemsSelectMode == undefined || itemsSelectMode == 'select'){
+                builder.itemsCallback(function(dialog, view, position, text){
+                    dialog.emit("item_select", position, text.toString(), dialog);
+                });
+            }else if(itemsSelectMode == 'singleChoice'){
+                builder.itemsCallbackSingleChoice(properties.itemsSelectedIndex == undefined ? -1 : properties.itemsSelectedIndex, 
+                    function(dialog, view, which, text){
+                        dialog.emit("single_choice", which, text.toString(), dialog)
+                    });
+            }else if(itemsSelectMode == 'multiChoice'){
+                builder.itemsCallbackMultiChoice(properties.itemsSelectedIndex == undefined ? -1 : properties.itemsSelectedIndex, 
+                    function(dialog, view, indices, texts){
+                        dialog.emit("multi_choice", toJsArray(indices, (l, i)=> parseInt(l.get(i)), 
+                            toJsArray(texts, (l, i)=> l.get(i).toString())), dialog);
+                    });
+            }else{
+                throw new Error("unknown itemsSelecteMode " + itemsSelectMode);
+            }
+        }
+        if(properties.progress != undefined){
+            var progress = properties.progress;
+            var indeterminate = (progress.max == -1);
+            builder.progress(indeterminate, progress.max, progress.showMinMax);
+            builder.progressIndeterminateStyle(progress.horizontal);
+        }
+    }
+
+    function wrapNonNullString(str){
+        if(str == null || str == undefined){
+            return "";
+        }
+        return str;
+    }
+
+    function javaArrayToJsArray(javaArray){
         var jsArray = [];
         var len = javaArray.length;
         for (var i = 0;i < len;i++){
             jsArray.push(javaArray[i]);
+        }
+        return jsArray;
+    }
+
+    function toJsArray(object, adapter){
+        var jsArray = [];
+        var len = javaArray.length;
+        for (var i = 0;i < len;i++){
+            jsArray.push(adapter(object, i));
         }
         return jsArray;
     }
@@ -122,6 +223,13 @@ module.exports = function(__runtime__, scope){
 
     function isUiThread(){
         return android.os.Looper.myLooper() == android.os.Looper.getMainLooper();
+    }
+
+    function parseColor(c){
+        if(typeof(c) == 'string'){
+            return colors.parseColor(c);
+        }
+        return c;
     }
 
     scope.rawInput = dialogs.rawInput.bind(dialogs);

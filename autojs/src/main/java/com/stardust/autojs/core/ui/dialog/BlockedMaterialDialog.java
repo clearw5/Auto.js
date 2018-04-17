@@ -1,12 +1,10 @@
-package com.stardust.autojs.core.ui;
+package com.stardust.autojs.core.ui.dialog;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.DialogInterface;
 import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.view.View;
 import android.view.WindowManager;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -17,8 +15,6 @@ import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.concurrent.VolatileDispose;
 import com.stardust.util.ArrayUtils;
 import com.stardust.util.UiHandler;
-
-import org.jdeferred.impl.DeferredObject;
 
 /**
  * Created by Stardust on 2017/5/8.
