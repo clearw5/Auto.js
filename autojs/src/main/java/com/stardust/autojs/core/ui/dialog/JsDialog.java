@@ -7,11 +7,13 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.annotation.UiThread;
 import android.support.v7.widget.RecyclerView;
 import android.view.ActionMode;
@@ -81,6 +83,36 @@ public class JsDialog {
                 window.setType(WindowManager.LayoutParams.TYPE_PHONE);
         }
     }
+
+    private DialogAction getDialogAction(String action) {
+        switch (action) {
+            case "positive":
+                return DialogAction.POSITIVE;
+            case "negative":
+                return DialogAction.NEGATIVE;
+            case "neutral":
+                return DialogAction.NEUTRAL;
+            default:
+                throw new IllegalArgumentException("unknown action " + action);
+        }
+    }
+
+    public int getProgress() {
+        return getCurrentProgress();
+    }
+
+    public String getActionButton(String action) {
+        return getActionButton(getDialogAction(action)).getText().toString();
+    }
+
+    public void setActionButton(String action, String text) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            setActionButton(getDialogAction(action), text);
+        } else {
+            mUiHandler.post(() -> setActionButton(getDialogAction(action), text));
+        }
+    }
+
 
     public MaterialDialog.Builder getBuilder() {
         return mDialog.getBuilder();
@@ -165,47 +197,83 @@ public class JsDialog {
 
     @UiThread
     public void setTitle(@NonNull CharSequence newTitle) {
-        mDialog.setTitle(newTitle);
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            mDialog.setTitle(newTitle);
+        } else {
+            mUiHandler.post(() -> mDialog.setTitle(newTitle));
+        }
     }
 
     @UiThread
     public void setTitle(int newTitleRes) {
-        mDialog.setTitle(newTitleRes);
+        if(Looper.myLooper()==Looper.getMainLooper()){
+mDialog.setTitle(newTitleRes);
+}else{
+mUiHandler.post(()->mDialog.setTitle(newTitleRes));
+}
     }
 
     @UiThread
     public void setTitle(int newTitleRes, @Nullable Object... formatArgs) {
-        mDialog.setTitle(newTitleRes, formatArgs);
+        if(Looper.myLooper()==Looper.getMainLooper()){
+mDialog.setTitle(newTitleRes, formatArgs);
+}else{
+mUiHandler.post(()->mDialog.setTitle(newTitleRes, formatArgs));
+}
     }
 
     @UiThread
     public void setIcon(int resId) {
-        mDialog.setIcon(resId);
+        if(Looper.myLooper()==Looper.getMainLooper()){
+mDialog.setIcon(resId);
+}else{
+mUiHandler.post(()->mDialog.setIcon(resId));
+}
     }
 
     @UiThread
     public void setIcon(Drawable d) {
-        mDialog.setIcon(d);
+       if(Looper.myLooper()==Looper.getMainLooper()){
+ mDialog.setIcon(d);
+}else{
+mUiHandler.post(()-> mDialog.setIcon(d));
+}
     }
 
     @UiThread
     public void setIconAttribute(int attrId) {
-        mDialog.setIconAttribute(attrId);
+        if(Looper.myLooper()==Looper.getMainLooper()){
+mDialog.setIconAttribute(attrId);
+}else{
+mUiHandler.post(()->mDialog.setIconAttribute(attrId));
+}
     }
 
     @UiThread
     public void setContent(CharSequence newContent) {
-        mDialog.setContent(newContent);
+       if(Looper.myLooper()==Looper.getMainLooper()){
+ mDialog.setContent(newContent);
+}else{
+mUiHandler.post(()-> mDialog.setContent(newContent));
+}
     }
 
     @UiThread
     public void setContent(int newContentRes) {
-        mDialog.setContent(newContentRes);
+        if(Looper.myLooper()==Looper.getMainLooper()){
+mDialog.setContent(newContentRes);
+}else{
+mUiHandler.post(()->mDialog.setContent(newContentRes));
+}
     }
 
     @UiThread
     public void setContent(int newContentRes, @Nullable Object... formatArgs) {
-        mDialog.setContent(newContentRes, formatArgs);
+       if(Looper.myLooper()==Looper.getMainLooper()){
+ mDialog.setContent(newContentRes, formatArgs);
+}else{
+mUiHandler.post(()-> mDialog.setContent(newContentRes, formatArgs));
+}
     }
 
     @Deprecated
@@ -220,7 +288,11 @@ public class JsDialog {
 
     @UiThread
     public void setItems(CharSequence... items) {
-        mDialog.setItems(items);
+        if(Looper.myLooper()==Looper.getMainLooper()){
+mDialog.setItems(items);
+}else{
+mUiHandler.post(()->mDialog.setItems(items));
+}
     }
 
     @UiThread
@@ -247,11 +319,19 @@ public class JsDialog {
     }
 
     public void incrementProgress(int by) {
-        mDialog.incrementProgress(by);
+        if(Looper.myLooper()==Looper.getMainLooper()){
+mDialog.incrementProgress(by);
+}else{
+mUiHandler.post(()->mDialog.incrementProgress(by));
+}
     }
 
     public void setProgress(int progress) {
-        mDialog.setProgress(progress);
+        if(Looper.myLooper()==Looper.getMainLooper()){
+mDialog.setProgress(progress);
+}else{
+mUiHandler.post(()->mDialog.setProgress(progress));
+}
     }
 
     public void setMaxProgress(int max) {
@@ -364,6 +444,7 @@ public class JsDialog {
         return mDialog.isShowing();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void create() {
         mDialog.create();
     }
