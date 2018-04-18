@@ -19,6 +19,7 @@ import com.afollestad.materialdialogs.StackingBehavior;
 import com.afollestad.materialdialogs.Theme;
 import com.stardust.autojs.core.eventloop.EventEmitter;
 import com.stardust.autojs.runtime.ScriptBridges;
+import com.stardust.util.ArrayUtils;
 import com.stardust.util.UiHandler;
 
 import java.text.NumberFormat;
@@ -32,6 +33,7 @@ public class JsDialogBuilder extends MaterialDialog.Builder {
 
     private final EventEmitter mEmitter;
     private final UiHandler mUiHandler;
+    private JsDialog mDialog;
 
     public JsDialogBuilder(@NonNull Context context, ScriptBridges bridges, UiHandler uiHandler) {
         super(context);
@@ -66,21 +68,28 @@ public class JsDialogBuilder extends MaterialDialog.Builder {
         cancelListener(dialog -> emit("cancel", dialog));
     }
 
-    @Override
-    public MaterialDialog build() {
-        return new JsDialog(this, mEmitter, mUiHandler);
+    public JsDialog getDialog() {
+        return mDialog;
     }
 
-    public EventEmitter once(String eventName, Object listener) {
-        return mEmitter.once(eventName, listener);
+    public JsDialog buildDialog() {
+        mDialog = new JsDialog(super.build(), mEmitter, mUiHandler);
+        return mDialog;
     }
 
-    public EventEmitter on(String eventName, Object listener) {
-        return mEmitter.on(eventName, listener);
+    public JsDialogBuilder once(String eventName, Object listener) {
+        mEmitter.once(eventName, listener);
+        return this;
     }
 
-    public EventEmitter addListener(String eventName, Object listener) {
-        return mEmitter.addListener(eventName, listener);
+    public JsDialogBuilder on(String eventName, Object listener) {
+        mEmitter.on(eventName, listener);
+        return this;
+    }
+
+    public JsDialogBuilder addListener(String eventName, Object listener) {
+        mEmitter.addListener(eventName, listener);
+        return this;
     }
 
     public boolean emit(String eventName, Object... args) {
@@ -99,28 +108,34 @@ public class JsDialogBuilder extends MaterialDialog.Builder {
         return mEmitter.listeners(eventName);
     }
 
-    public EventEmitter prependListener(String eventName, Object listener) {
-        return mEmitter.prependListener(eventName, listener);
+    public JsDialogBuilder prependListener(String eventName, Object listener) {
+        mEmitter.prependListener(eventName, listener);
+        return this;
     }
 
-    public EventEmitter prependOnceListener(String eventName, Object listener) {
-        return mEmitter.prependOnceListener(eventName, listener);
+    public JsDialogBuilder prependOnceListener(String eventName, Object listener) {
+        mEmitter.prependOnceListener(eventName, listener);
+        return this;
     }
 
-    public EventEmitter removeAllListeners() {
-        return mEmitter.removeAllListeners();
+    public JsDialogBuilder removeAllListeners() {
+        mEmitter.removeAllListeners();
+        return this;
     }
 
-    public EventEmitter removeAllListeners(String eventName) {
-        return mEmitter.removeAllListeners(eventName);
+    public JsDialogBuilder removeAllListeners(String eventName) {
+        mEmitter.removeAllListeners(eventName);
+        return this;
     }
 
-    public EventEmitter removeListener(String eventName, Object listener) {
-        return mEmitter.removeListener(eventName, listener);
+    public JsDialogBuilder removeListener(String eventName, Object listener) {
+        mEmitter.removeListener(eventName, listener);
+        return this;
     }
 
-    public EventEmitter setMaxListeners(int n) {
-        return mEmitter.setMaxListeners(n);
+    public JsDialogBuilder setMaxListeners(int n) {
+        mEmitter.setMaxListeners(n);
+        return this;
     }
 
     public int getMaxListeners() {

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
+import android.widget.CompoundButton;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
@@ -82,6 +83,12 @@ public class Dialogs {
         return ((BlockedMaterialDialog.Builder) dialogBuilder(callback)
                 .itemsCallback()
                 .title(title)
+                .checkBoxPrompt("", true, new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    }
+                })
                 .items((CharSequence[]) items))
                 .showAndGet();
     }

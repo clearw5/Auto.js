@@ -24,44 +24,7 @@ runtime.init();
     global.device = runtime.device;
 
     //设置JavaScriptBridges用于与Java层的交互和数据转换
-    runtime.bridges.setBridges({
-        call: function(func, target, args){
-           var arr = [];
-           var len = args.length;
-           for(var i = 0; i < len; i++){
-              arr.push(args[i]);
-           }
-           return func.apply(target, arr);
-        },
-        asArray: function(list){
-            var arr = [];
-            for(var i = 0; i < list.size(); i++){
-                arr.push(list.get(i));
-            }
-            for(var key in list){
-                if(typeof(key) == 'number')
-                    continue;
-                var v = list[key];
-                if(typeof(v) == 'function'){
-                    arr[key] = v.bind(list);
-                }else{
-                    arr[key] = v;
-                }
-            }
-            return arr;
-        },
-        toArray: function(iterable){
-            var iterator = iterable.iterator();
-            var arr = [];
-            while(iterator.hasNext()){
-                arr.push(iterator.next());
-            }
-            return arr;
-        },
-        toString: function(o){
-            return String(o);
-        }
-    });
+    runtime.bridges.setBridges(require('__bridges__.js'));
 
     //一些内部函数
     global.__asGlobal__ = function(obj, functions){
@@ -88,8 +51,9 @@ runtime.init();
         }
     };
 
-    //初始化一般模块
+    //初始化全局函数
     require("__globals__")(runtime, global);
+    //初始化一般模块
     (function(scope){
         var modules = ['app', 'automator', 'console', 'dialogs', 'io', 'selector', 'shell', 'web', 'ui',
             "images", "timers", "threads", "events", "engines", "RootAutomator", "http", "storages", "floaty",
