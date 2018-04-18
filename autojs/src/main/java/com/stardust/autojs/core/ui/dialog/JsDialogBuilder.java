@@ -18,7 +18,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.StackingBehavior;
 import com.afollestad.materialdialogs.Theme;
 import com.stardust.autojs.core.eventloop.EventEmitter;
+import com.stardust.autojs.core.looper.Loopers;
+import com.stardust.autojs.core.looper.Timer;
+import com.stardust.autojs.core.looper.TimerThread;
 import com.stardust.autojs.runtime.ScriptBridges;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.util.ArrayUtils;
 import com.stardust.util.UiHandler;
 
@@ -33,12 +37,18 @@ public class JsDialogBuilder extends MaterialDialog.Builder {
 
     private final EventEmitter mEmitter;
     private final UiHandler mUiHandler;
+    private final Timer mTimer;
+    private final Loopers mLoopers;
     private JsDialog mDialog;
+    private volatile int mWaitId = -1;
 
-    public JsDialogBuilder(@NonNull Context context, ScriptBridges bridges, UiHandler uiHandler) {
+
+    public JsDialogBuilder(Context context, ScriptRuntime runtime) {
         super(context);
-        mEmitter = new EventEmitter(bridges);
-        this.mUiHandler = uiHandler;
+        mTimer = runtime.timers.getTimerForCurrentThread();
+        mLoopers = runtime.loopers;
+        mEmitter = new EventEmitter(runtime.bridges, mTimer);
+        mUiHandler = runtime.uiHandler;
         setUpEvents();
     }
 
@@ -64,8 +74,16 @@ public class JsDialogBuilder extends MaterialDialog.Builder {
                     break;
             }
         });
-        dismissListener(dialog -> emit("dismiss", dialog));
+        dismissListener(dialog -> {
+            mTimer.postDelayed(() -> mLoopers.doNotWaitWhenIdle(mWaitId), 0);
+            emit("dismiss", dialog);
+        });
         cancelListener(dialog -> emit("cancel", dialog));
+    }
+
+    public void onShowCalled() {
+        mTimer.postDelayed(() -> mWaitId = mLoopers.waitWhenIdle(), 0);
+
     }
 
     public JsDialog getDialog() {
@@ -73,7 +91,7 @@ public class JsDialogBuilder extends MaterialDialog.Builder {
     }
 
     public JsDialog buildDialog() {
-        mDialog = new JsDialog(super.build(), mEmitter, mUiHandler);
+        mDialog = new JsDialog(this, mEmitter, mUiHandler);
         return mDialog;
     }
 

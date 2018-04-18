@@ -212,7 +212,7 @@ public class ScriptRuntime {
             images = new Images(context, this, builder.mScreenCaptureRequester);
         }
         engines = new Engines(builder.mEngineService, this);
-        dialogs = new Dialogs(app, uiHandler, bridges);
+        dialogs = new Dialogs(this);
         device = new Device(context);
         floaty = new Floaty(uiHandler, ui, this);
         files = new Files(this);

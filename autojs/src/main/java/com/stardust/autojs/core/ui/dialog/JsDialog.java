@@ -53,11 +53,33 @@ public class JsDialog {
     private final EventEmitter mEmitter;
     private final UiHandler mUiHandler;
     private final MaterialDialog mDialog;
+    private final JsDialogBuilder mBuilder;
 
-    public JsDialog(MaterialDialog dialog, EventEmitter emitter, UiHandler uiHandler) {
-        mDialog = dialog;
+    public JsDialog(JsDialogBuilder builder, EventEmitter emitter, UiHandler uiHandler) {
+        mBuilder = builder;
+        mDialog = builder.build();
         mEmitter = emitter;
         mUiHandler = uiHandler;
+    }
+
+    public JsDialog show() {
+        checkWindowType();
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            mDialog.show();
+        } else {
+            mUiHandler.post(mDialog::show);
+        }
+        mBuilder.onShowCalled();
+        return this;
+    }
+
+    private void checkWindowType() {
+        Context context = mDialog.getContext();
+        if (!DialogUtils.isActivityContext(context)) {
+            Window window = mDialog.getWindow();
+            if (window != null)
+                window.setType(WindowManager.LayoutParams.TYPE_PHONE);
+        }
     }
 
     public MaterialDialog.Builder getBuilder() {
@@ -695,22 +717,5 @@ public class JsDialog {
         return EventEmitter.defaultMaxListeners();
     }
 
-    public JsDialog show() {
-        checkWindowType();
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            mDialog.show();
-        } else {
-            mUiHandler.post(mDialog::show);
-        }
-        return this;
-    }
 
-    private void checkWindowType() {
-        Context context = mDialog.getContext();
-        if (!DialogUtils.isActivityContext(context)) {
-            Window window = mDialog.getWindow();
-            if (window != null)
-                window.setType(WindowManager.LayoutParams.TYPE_PHONE);
-        }
-    }
 }

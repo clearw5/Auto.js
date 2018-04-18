@@ -5,12 +5,14 @@ import android.os.Looper;
 import android.os.MessageQueue;
 import android.util.Log;
 
+import com.android.dx.util.IntSet;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.Threads;
 import com.stardust.autojs.runtime.api.Timers;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.lang.ThreadCompat;
 
+import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -29,6 +31,8 @@ public class Loopers implements MessageQueue.IdleHandler {
     };
 
     private volatile ThreadLocal<Boolean> waitWhenIdle = new ThreadLocal<>();
+    private volatile ThreadLocal<HashSet<Integer>> waitIds = new ThreadLocal<>();
+    private volatile ThreadLocal<Integer> maxWaitId = new ThreadLocal<>();
     private volatile ThreadLocal<CopyOnWriteArrayList<LooperQuitHandler>> looperQuitHanders = new ThreadLocal<>();
     private volatile Looper mServantLooper;
     private Timers mTimers;
@@ -75,7 +79,7 @@ public class Loopers implements MessageQueue.IdleHandler {
         if (mTimers.hasPendingCallbacks()) {
             return false;
         }
-        if (waitWhenIdle.get()) {
+        if (waitWhenIdle.get() || !waitIds.get().isEmpty()) {
             return false;
         }
         CopyOnWriteArrayList<LooperQuitHandler> handlers = looperQuitHanders.get();
@@ -123,6 +127,17 @@ public class Loopers implements MessageQueue.IdleHandler {
         mServantLooper.quit();
     }
 
+    public int waitWhenIdle() {
+        int id = maxWaitId.get();
+        maxWaitId.set(id + 1);
+        waitIds.get().add(id);
+        return id;
+    }
+
+    public void doNotWaitWhenIdle(int waitId) {
+        waitIds.get().remove(waitId);
+    }
+
     public void waitWhenIdle(boolean b) {
         waitWhenIdle.set(b);
     }
@@ -162,6 +177,8 @@ public class Loopers implements MessageQueue.IdleHandler {
             LooperHelper.prepare();
         Looper.myQueue().addIdleHandler(this);
         waitWhenIdle.set(Looper.myLooper() == Looper.getMainLooper());
+        waitIds.set(new HashSet<>());
+        maxWaitId.set(0);
     }
 
     public void notifyThreadExit(TimerThread thread) {

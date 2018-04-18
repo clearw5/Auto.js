@@ -119,11 +119,13 @@ module.exports = function(__runtime__, scope){
         "negative": {method: "negativeText"},
         "negativeColor": {adapter: parseColor},
         "cancelable": null,
-        "canceledOnTouchOutside": null
+        "canceledOnTouchOutside": null,
+        autoDismiss: null
     };
 
     dialogs.build = function(properties){
-        var builder = __runtime__.dialogs.newBuilder();
+        var builder = Object.create(__runtime__.dialogs.newBuilder());
+        builder.thread = threads.currentThread();
         for(var name in properties){
             if(!properties.hasOwnProperty(name)){
                 continue;

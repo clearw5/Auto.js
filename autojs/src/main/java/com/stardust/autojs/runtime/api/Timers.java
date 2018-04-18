@@ -39,7 +39,7 @@ public class Timers {
         return mMaxCallbackUptimeMillisForAllThreads;
     }
 
-    private Timer getTimerForCurrentThread() {
+    public Timer getTimerForCurrentThread() {
         return getTimerForThread(Thread.currentThread());
     }
 
