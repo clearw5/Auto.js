@@ -76,7 +76,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
 
     private static final int IC_ACTION_VIEW = R.drawable.ic_android_eat_js;
 
-    CircularActionMenuFloatingWindow mWindow;
+    CircularMenuWindow mWindow;
     private int mState;
     private RoundedImageView mActionViewIcon;
     private Context mContext;
@@ -110,17 +110,17 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     }
 
     private void initFloaty() {
-        mWindow = new CircularActionMenuFloatingWindow(new CircularActionMenuFloaty() {
+        mWindow = new CircularMenuWindow(mContext, new CircularMenuFloaty() {
 
             @Override
-            public View inflateActionView(FloatyService service, CircularActionMenuFloatingWindow window) {
+            public View inflateActionView(FloatyService service, CircularMenuWindow window) {
                 View actionView = View.inflate(service, R.layout.circular_action_view, null);
                 mActionViewIcon = (RoundedImageView) actionView.findViewById(R.id.icon);
                 return actionView;
             }
 
             @Override
-            public CircularActionMenu inflateMenuItems(FloatyService service, CircularActionMenuFloatingWindow window) {
+            public CircularActionMenu inflateMenuItems(FloatyService service, CircularMenuWindow window) {
                 CircularActionMenu menu = (CircularActionMenu) View.inflate(new ContextThemeWrapper(service, R.style.AppTheme), R.layout.circular_action_menu, null);
                 ButterKnife.bind(CircularMenu.this, menu);
                 return menu;
