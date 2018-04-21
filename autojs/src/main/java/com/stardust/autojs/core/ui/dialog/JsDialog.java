@@ -206,74 +206,74 @@ public class JsDialog {
 
     @UiThread
     public void setTitle(int newTitleRes) {
-        if(Looper.myLooper()==Looper.getMainLooper()){
-mDialog.setTitle(newTitleRes);
-}else{
-mUiHandler.post(()->mDialog.setTitle(newTitleRes));
-}
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            mDialog.setTitle(newTitleRes);
+        } else {
+            mUiHandler.post(() -> mDialog.setTitle(newTitleRes));
+        }
     }
 
     @UiThread
     public void setTitle(int newTitleRes, @Nullable Object... formatArgs) {
-        if(Looper.myLooper()==Looper.getMainLooper()){
-mDialog.setTitle(newTitleRes, formatArgs);
-}else{
-mUiHandler.post(()->mDialog.setTitle(newTitleRes, formatArgs));
-}
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            mDialog.setTitle(newTitleRes, formatArgs);
+        } else {
+            mUiHandler.post(() -> mDialog.setTitle(newTitleRes, formatArgs));
+        }
     }
 
     @UiThread
     public void setIcon(int resId) {
-        if(Looper.myLooper()==Looper.getMainLooper()){
-mDialog.setIcon(resId);
-}else{
-mUiHandler.post(()->mDialog.setIcon(resId));
-}
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            mDialog.setIcon(resId);
+        } else {
+            mUiHandler.post(() -> mDialog.setIcon(resId));
+        }
     }
 
     @UiThread
     public void setIcon(Drawable d) {
-       if(Looper.myLooper()==Looper.getMainLooper()){
- mDialog.setIcon(d);
-}else{
-mUiHandler.post(()-> mDialog.setIcon(d));
-}
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            mDialog.setIcon(d);
+        } else {
+            mUiHandler.post(() -> mDialog.setIcon(d));
+        }
     }
 
     @UiThread
     public void setIconAttribute(int attrId) {
-        if(Looper.myLooper()==Looper.getMainLooper()){
-mDialog.setIconAttribute(attrId);
-}else{
-mUiHandler.post(()->mDialog.setIconAttribute(attrId));
-}
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            mDialog.setIconAttribute(attrId);
+        } else {
+            mUiHandler.post(() -> mDialog.setIconAttribute(attrId));
+        }
     }
 
     @UiThread
     public void setContent(CharSequence newContent) {
-       if(Looper.myLooper()==Looper.getMainLooper()){
- mDialog.setContent(newContent);
-}else{
-mUiHandler.post(()-> mDialog.setContent(newContent));
-}
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            mDialog.setContent(newContent);
+        } else {
+            mUiHandler.post(() -> mDialog.setContent(newContent));
+        }
     }
 
     @UiThread
     public void setContent(int newContentRes) {
-        if(Looper.myLooper()==Looper.getMainLooper()){
-mDialog.setContent(newContentRes);
-}else{
-mUiHandler.post(()->mDialog.setContent(newContentRes));
-}
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            mDialog.setContent(newContentRes);
+        } else {
+            mUiHandler.post(() -> mDialog.setContent(newContentRes));
+        }
     }
 
     @UiThread
     public void setContent(int newContentRes, @Nullable Object... formatArgs) {
-       if(Looper.myLooper()==Looper.getMainLooper()){
- mDialog.setContent(newContentRes, formatArgs);
-}else{
-mUiHandler.post(()-> mDialog.setContent(newContentRes, formatArgs));
-}
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            mDialog.setContent(newContentRes, formatArgs);
+        } else {
+            mUiHandler.post(() -> mDialog.setContent(newContentRes, formatArgs));
+        }
     }
 
     @Deprecated
@@ -288,11 +288,11 @@ mUiHandler.post(()-> mDialog.setContent(newContentRes, formatArgs));
 
     @UiThread
     public void setItems(CharSequence... items) {
-        if(Looper.myLooper()==Looper.getMainLooper()){
-mDialog.setItems(items);
-}else{
-mUiHandler.post(()->mDialog.setItems(items));
-}
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            mDialog.setItems(items);
+        } else {
+            mUiHandler.post(() -> mDialog.setItems(items));
+        }
     }
 
     @UiThread
@@ -319,19 +319,19 @@ mUiHandler.post(()->mDialog.setItems(items));
     }
 
     public void incrementProgress(int by) {
-        if(Looper.myLooper()==Looper.getMainLooper()){
-mDialog.incrementProgress(by);
-}else{
-mUiHandler.post(()->mDialog.incrementProgress(by));
-}
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            mDialog.incrementProgress(by);
+        } else {
+            mUiHandler.post(() -> mDialog.incrementProgress(by));
+        }
     }
 
     public void setProgress(int progress) {
-        if(Looper.myLooper()==Looper.getMainLooper()){
-mDialog.setProgress(progress);
-}else{
-mUiHandler.post(()->mDialog.setProgress(progress));
-}
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            mDialog.setProgress(progress);
+        } else {
+            mUiHandler.post(() -> mDialog.setProgress(progress));
+        }
     }
 
     public void setMaxProgress(int max) {

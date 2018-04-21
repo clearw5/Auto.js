@@ -80,12 +80,6 @@ public class Dialogs {
         return ((BlockedMaterialDialog.Builder) dialogBuilder(callback)
                 .itemsCallback()
                 .title(title)
-                .checkBoxPrompt("", true, new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                    }
-                })
                 .items((CharSequence[]) items))
                 .showAndGet();
     }
@@ -104,13 +98,6 @@ public class Dialogs {
             items[i] = args[i] == null ? null : args[i].toString();
         }
         return items;
-    }
-
-    private Object getCallback(Object[] args) {
-        if (args.length > 1 && !(args[args.length - 1] instanceof CharSequence)) {
-            return args[args.length - 1];
-        }
-        return null;
     }
 
     @ScriptInterface
