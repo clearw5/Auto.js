@@ -11,7 +11,7 @@ bridges.call = function (func, target, args) {
 };
 
 function wrap(value){
-    if(!(typeof(value) == 'object' && 'getClass' in value && util.isFunction(value.getClass))){
+    if(!(value instanceof Object && 'getClass' in value && util.isFunction(value.getClass))){
         return value;
     }
     var c = value.getClass();
