@@ -7,10 +7,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
-import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
-import com.stardust.autojs.engine.ScriptEngineProxy;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.util.IntentExtras;
 
@@ -57,13 +55,13 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     }
 
     private IntentExtras readIntentExtras(Bundle savedInstanceState) {
-        IntentExtras extras = IntentExtras.fromIntent(getIntent());
+        IntentExtras extras = IntentExtras.fromIntentAndRelease(getIntent());
         if (extras == null && savedInstanceState != null) {
             int id = savedInstanceState.getInt(IntentExtras.EXTRA_ID, -1);
             if (id == -1) {
                 return null;
             }
-            extras = IntentExtras.fromId(id);
+            extras = IntentExtras.fromIdAndRelease(id);
         }
         return extras;
     }

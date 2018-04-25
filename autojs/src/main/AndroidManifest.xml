@@ -18,7 +18,7 @@
 
 
         <activity
-            android:name="com.stardust.autojs.core.image.ScreenCaptureRequestActivity"
+            android:name="com.stardust.autojs.core.image.capture.ScreenCaptureRequestActivity"
             android:excludeFromRecents="true"
             android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
             android:theme="@style/AppTheme.Transparent"/>

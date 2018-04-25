@@ -8,7 +8,11 @@ import java.util.List;
  * Created by Stardust on 2017/3/9.
  */
 
-public class IdFilter extends ListFilter.Default {
+public class IdFilter {
+
+    public interface FullIdGetter {
+        String getFullId(String id);
+    }
 
     private static final KeyGetter ID_GETTER = new KeyGetter() {
 
@@ -26,7 +30,6 @@ public class IdFilter extends ListFilter.Default {
     public static StringEqualsFilter equals(String id) {
         return new StringEqualsFilter(id, ID_GETTER);
     }
-
     public static StringStartsWithFilter startsWith(String prefix) {
         return new StringStartsWithFilter(prefix, ID_GETTER);
     }
@@ -42,17 +45,5 @@ public class IdFilter extends ListFilter.Default {
     public static StringMatchesFilter matches(String regex) {
         return new StringMatchesFilter(regex, ID_GETTER);
     }
-
-    private String mId;
-
-    private IdFilter(String id) {
-        mId = id;
-    }
-
-    @Override
-    public List<UiObject> filter(UiObject node) {
-        return node.findByViewId(mId);
-    }
-
 
 }

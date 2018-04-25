@@ -1,22 +1,15 @@
 package com.stardust.autojs.runtime;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Looper;
-import android.view.MotionEvent;
-import android.view.View;
 
 import com.stardust.app.GlobalAppContext;
-import com.stardust.autojs.BuildConfig;
 import com.stardust.autojs.R;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.image.Colors;
-import com.stardust.autojs.engine.JavaScriptEngine;
-import com.stardust.autojs.engine.RhinoJavaScriptEngine;
-import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.rhino.AndroidClassLoader;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
@@ -33,7 +26,7 @@ import com.stardust.autojs.runtime.api.Threads;
 import com.stardust.autojs.runtime.api.Timers;
 import com.stardust.autojs.core.accessibility.UiSelector;
 import com.stardust.autojs.runtime.api.Images;
-import com.stardust.autojs.core.image.ScreenCaptureRequester;
+import com.stardust.autojs.core.image.capture.ScreenCaptureRequester;
 import com.stardust.autojs.runtime.api.Dialogs;
 import com.stardust.autojs.runtime.exception.ScriptEnvironmentException;
 import com.stardust.autojs.runtime.exception.ScriptException;
@@ -58,8 +51,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.microedition.khronos.opengles.GL;
 
 
 /**

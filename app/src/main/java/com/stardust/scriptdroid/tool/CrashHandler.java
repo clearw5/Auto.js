@@ -42,7 +42,11 @@ public class CrashHandler implements UncaughtExceptionHandler {
         }
         AccessibilityService service = AccessibilityService.getInstance();
         if (service != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Log.d(TAG, "disable service: " + service);
             service.disableSelf();
+        } else {
+            Log.d(TAG, "cannot disable service: " + service);
+
         }
         if (BuildConfig.DEBUG) {
             mDefaultHandler.uncaughtException(thread, ex);

@@ -33,7 +33,6 @@ public class LayoutHierarchyFloatyWindow extends FullScreenFloatyWindow {
     private MaterialDialog mNodeInfoDialog;
     private BubblePopupMenu mBubblePopMenu;
     private NodeInfoView mNodeInfoView;
-    private NodeInfo mSelectedNodeInfo;
     private Context mContext;
     private NodeInfo mRootNode;
     private NodeInfo mSelectedNode;
@@ -65,15 +64,12 @@ public class LayoutHierarchyFloatyWindow extends FullScreenFloatyWindow {
         mLayoutHierarchyView.setShowClickedNodeBounds(true);
         mLayoutHierarchyView.getBoundsPaint().setStrokeWidth(3);
         mLayoutHierarchyView.getBoundsPaint().setColor(0xFFD32F2F);
-        mLayoutHierarchyView.setOnItemLongClickListener(new LayoutHierarchyView.OnItemLongClickListener() {
-            @Override
-            public void onItemLongClick(View view, NodeInfo nodeInfo) {
-                mSelectedNodeInfo = nodeInfo;
-                ensureOperationPopMenu();
-                if (mBubblePopMenu.getContentView().getMeasuredWidth() <= 0)
-                    mBubblePopMenu.preMeasure();
-                mBubblePopMenu.showAsDropDown(view, view.getWidth() / 2 - mBubblePopMenu.getContentView().getMeasuredWidth() / 2, 0);
-            }
+        mLayoutHierarchyView.setOnItemLongClickListener((view, nodeInfo) -> {
+            mSelectedNode = nodeInfo;
+            ensureOperationPopMenu();
+            if (mBubblePopMenu.getContentView().getMeasuredWidth() <= 0)
+                mBubblePopMenu.preMeasure();
+            mBubblePopMenu.showAsDropDown(view, view.getWidth() / 2 - mBubblePopMenu.getContentView().getMeasuredWidth() / 2, 0);
         });
         mLayoutHierarchyView.setRootNode(mRootNode);
         if (mSelectedNode != null)
@@ -116,7 +112,7 @@ public class LayoutHierarchyFloatyWindow extends FullScreenFloatyWindow {
 
     void showNodeInfo() {
         ensureNodeInfoDialog();
-        mNodeInfoView.setNodeInfo(mSelectedNodeInfo);
+        mNodeInfoView.setNodeInfo(mSelectedNode);
         mNodeInfoDialog.show();
     }
 

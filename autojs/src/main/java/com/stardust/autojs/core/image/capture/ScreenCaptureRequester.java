@@ -1,4 +1,4 @@
-package com.stardust.autojs.core.image;
+package com.stardust.autojs.core.image.capture;
 
 import android.app.Activity;
 import android.content.Context;

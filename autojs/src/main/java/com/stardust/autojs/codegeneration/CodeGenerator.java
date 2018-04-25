@@ -17,8 +17,8 @@ public class CodeGenerator {
     public static final int WAIT_FOR = 2;
     public static final int EXISTS = 3;
 
-    private ReadOnlyUiObject mRoot;
-    private ReadOnlyUiObject mTarget;
+    private final ReadOnlyUiObject mRoot;
+    private final ReadOnlyUiObject mTarget;
     private boolean mUsingId = true;
     private boolean mUsingDesc = true;
     private boolean mUsingText = true;
