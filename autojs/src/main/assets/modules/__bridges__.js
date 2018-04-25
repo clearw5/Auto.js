@@ -10,17 +10,26 @@ bridges.call = function (func, target, args) {
     return func.apply(target, arr);
 };
 
+/*
+   Java Object: 拥有getClass, notify, toString, hashCode, equals等函数
+               没有prototype, __proto__, constructor等属性
+               使用obj.xxx时如果没有xxx属性可能会直接抛出异常而不是undefined？？？
+               只能使用in关键字来判断某个属性是否存在(但in关键字不能用于JavaScript基本类型)
+               typeof()返回'object'
+               instanceof Object为false
+
+*/
 function wrap(value){
-    if(!(value instanceof Object && 'getClass' in value && util.isFunction(value.getClass))){
+    if(!(typeof(value) == 'object' && value.getClass && util.isFunction(value.getClass))){
         return value;
     }
     var c = value.getClass();
-    if(!('getName' in c && util.isFunction(c.getName))){
+    if(!(c.getName && util.isFunction(c.getName))){
         return value;
     }
     var name = c.getName();
     if(name == 'java.lang.Boolean'){
-        return Boolean(value);
+        return value == true;
     }
     //TODO: is is necessary?
     if(name == 'java.lang.Integer' || name == 'java.lang.Long' || name == 'java.lang.Double'
