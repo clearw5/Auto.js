@@ -1,19 +1,13 @@
 package com.stardust.scriptdroid.ui.splash;
 
-import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.qq.e.ads.splash.SplashAD;
-import com.qq.e.ads.splash.SplashADListener;
-import com.stardust.scriptdroid.Constants;
 import com.stardust.scriptdroid.Pref;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.ui.BaseActivity;
@@ -22,8 +16,6 @@ import com.stardust.scriptdroid.ui.main.MainActivity_;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
-
-import java.util.Locale;
 
 /**
  * Created by Stardust on 2017/7/7.
@@ -48,7 +40,6 @@ public class SplashActivity extends BaseActivity {
     @ViewById(R.id.ad)
     FrameLayout mAd;
 
-    private SplashAD mSplashAD;
     private boolean mCanEnterNextActivity = false;
     private boolean mNotStartMainActivity;
 
@@ -99,34 +90,6 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void fetchSplashAD() {
-        mSplashAD = new SplashAD(this, mAd, mSkipView, Constants.APP_ID, Constants.SPLASH_POS_ID, new SplashADListener() {
-            @Override
-            public void onADDismissed() {
-                Log.v(LOG_TAG, "onADDismissed");
-                enterNextActivityIfNeeded();
-            }
 
-            @Override
-            public void onNoAD(int errno) {
-                Log.e(LOG_TAG, "onNoAD: " + errno);
-                enterNextActivity();
-            }
-
-            @Override
-            public void onADPresent() {
-                Log.v(LOG_TAG, "onADPresent");
-                mSkipView.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onADClicked() {
-                Log.v(LOG_TAG, "onADClicked");
-            }
-
-            @Override
-            public void onADTick(long l) {
-                mSkipView.setText(String.format(Locale.getDefault(), getString(R.string.format_skip), Math.round(l / 1000f)));
-            }
-        }, 0);
     }
 }

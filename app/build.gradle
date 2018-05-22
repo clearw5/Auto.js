@@ -147,5 +147,4 @@ dependencies {
     compile project(':automator')
     compile project(':common')
     compile project(':autojs')
-    compile files('libs/GDTUnionSDK.4.9.545.min.jar')
 }
