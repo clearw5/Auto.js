@@ -7,6 +7,7 @@ import com.stardust.autojs.BuildConfig;
 import com.stardust.autojs.rhino.AndroidContextFactory;
 import com.stardust.autojs.rhino.NativeJavaClassWithPrototype;
 import com.stardust.autojs.rhino.NativeJavaObjectWithPrototype;
+import com.stardust.autojs.rhino.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
@@ -16,6 +17,7 @@ import com.stardust.pio.UncheckedIOException;
 
 import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.NativeJavaClass;
 import org.mozilla.javascript.NativeJavaObject;
@@ -146,10 +148,10 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     }
 
     public Context createContext() {
-        //  if (!ContextFactory.hasExplicitGlobal()) {
-        //    ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mAndroidContext.getCacheDir(), "classes")));
-        //}
-        Context context = new InterruptibleAndroidContextFactory(new File(mAndroidContext.getCacheDir(), "classes")).enterContext();//new RhinoAndroidHelper(mAndroidContext).enterContext();
+        if (!ContextFactory.hasExplicitGlobal()) {
+            ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mAndroidContext.getCacheDir(), "classes")));
+        }
+        Context context = new RhinoAndroidHelper(mAndroidContext).enterContext();
         contextCount++;
         setupContext(context);
         return context;
@@ -177,7 +179,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         }
     }
 
-    private class InterruptibleAndroidContextFactory extends AndroidContextFactory {
+    private static class InterruptibleAndroidContextFactory extends AndroidContextFactory {
 
         public InterruptibleAndroidContextFactory(File cacheDirectory) {
             super(cacheDirectory);
