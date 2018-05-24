@@ -355,4 +355,5 @@
     <string name="text_inspect_layout_hierarchy">布局层次分析</string>
     <string name="text_inspect_layout">布局分析</string>
     <string name="text_pointer_location">指针位置[Root]</string>
+    <string name="text_skip">跳过</string>
 </resources>

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.flurry.android.FlurryAgent;
+import com.google.android.gms.ads.MobileAds;
 import com.raizlabs.android.dbflow.config.DatabaseConfig;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -81,6 +82,7 @@ public class App extends MultiDexApplication {
         }
         setupDrawableImageLoader();
         TimedTaskScheduler.setupRepeating(this);
+        MobileAds.initialize(this, Constants.ADMOB_APP_ID);
     }
 
     private void setupDrawableImageLoader() {

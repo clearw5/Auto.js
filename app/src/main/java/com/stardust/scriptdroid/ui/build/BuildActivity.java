@@ -1,10 +1,13 @@
 package com.stardust.scriptdroid.ui.build;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
@@ -13,8 +16,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.scriptdroid.BuildConfig;
+import com.stardust.scriptdroid.Constants;
 import com.stardust.scriptdroid.R;
 import com.stardust.scriptdroid.autojs.build.AutoJsApkBuilder;
 import com.stardust.scriptdroid.build.ApkBuilderPluginHelper;
@@ -46,7 +56,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Stardust on 2017/10/22.
  */
 @EActivity(R.layout.activity_build)
-public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.ProgressCallback {
+public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.ProgressCallback, RewardedVideoAdListener {
 
     public static final String EXTRA_SOURCE_FILE = BuildActivity.class.getName() + ".extra_source_file";
 
@@ -75,6 +85,14 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
 
     private MaterialDialog mProgressDialog;
     private boolean mIsDefaultIcon = true;
+    private RewardedVideoAd mRewardedVideoAd;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        mRewardedVideoAd.setRewardedVideoAdListener(this);
+    }
 
     @AfterViews
     void setupViews() {
@@ -83,7 +101,15 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         if (sourcePath != null) {
             setupWithSourceFile(new ScriptFile(sourcePath));
         }
+
+        loadRewardedVideoAd();
         checkApkBuilderPlugin();
+    }
+
+    private void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd(BuildConfig.DEBUG ? Constants.ADMOB_REWARD_VIDEO_TEST_ID :
+                        Constants.ADMOB_APK_BUILDER_REWARD_ID,
+                new AdRequest.Builder().build());
     }
 
     private void checkApkBuilderPlugin() {
@@ -213,6 +239,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         return false;
     }
 
+    @SuppressLint("CheckResult")
     private void doBuildingApk() {
         String jsPath = mSourcePath.getText().toString();
         String versionName = mVersionName.getText().toString();
@@ -301,6 +328,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         mProgressDialog.setContent(R.string.apk_builder_clean);
     }
 
+    @SuppressLint("CheckResult")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != RESULT_OK) {
@@ -327,6 +355,64 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
                 }), error -> {
                     Log.e(LOG_TAG, "decode stream", error);
                 });
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mRewardedVideoAd.pause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mRewardedVideoAd.resume(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRewardedVideoAd.destroy(this);
+    }
+
+    @Override
+    public void onRewardedVideoAdLoaded() {
+        mRewardedVideoAd.show();
+        Log.d(Constants.LOG_TAG_ADMOB, "onRewardedVideoAdLoaded");
+    }
+
+    @Override
+    public void onRewardedVideoAdOpened() {
+        Log.d(Constants.LOG_TAG_ADMOB, "onRewardedVideoAdLoaded");
+
+    }
+
+    @Override
+    public void onRewardedVideoStarted() {
+        Log.d(Constants.LOG_TAG_ADMOB, "onRewardedVideoAdLoaded");
+
+    }
+
+    @Override
+    public void onRewardedVideoAdClosed() {
+        Log.d(Constants.LOG_TAG_ADMOB, "onRewardedVideoAdLoaded");
+    }
+
+    @Override
+    public void onRewarded(RewardItem rewardItem) {
+        Log.d(Constants.LOG_TAG_ADMOB, "onRewarded: type=" + rewardItem.getType() + ", amount=" + rewardItem.getAmount());
+
+    }
+
+    @Override
+    public void onRewardedVideoAdLeftApplication() {
+        Log.d(Constants.LOG_TAG_ADMOB, "onRewardedVideoAdLeftApplication");
+    }
+
+    @Override
+    public void onRewardedVideoAdFailedToLoad(int i) {
+        Log.d(Constants.LOG_TAG_ADMOB, "onRewardedVideoAdFailedToLoad: " + i);
 
     }
 }
