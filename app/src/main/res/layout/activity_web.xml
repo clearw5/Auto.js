@@ -22,7 +22,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.stardust.scriptdroid.ui.main.community.CommunityWebView
+    <org.autojs.autojs.ui.main.community.CommunityWebView
         android:id="@+id/eweb_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

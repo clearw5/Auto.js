@@ -34,7 +34,7 @@
     <string name="text_already_copy_to_clip">Copied</string>
     <string name="donate_developer">Donate</string>
     <string name="my_github">https://github.com/hyb1996/NoRootScriptDroid</string>
-    <string name="share_app">[UiAutomator]Download：http://www.coolapk.com/apk/com.stardust.scriptdroid </string>
+    <string name="share_app">[UiAutomator]Download：http://www.coolapk.com/apk/org.autojs.autojs </string>
     <string name="text_floating_window">Floating Window</string>
     <string name="text_error_report">Bug Report</string>
     <string name="text_press_again_to_exit">Press again to exit</string>

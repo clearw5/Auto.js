@@ -27,7 +27,7 @@
             android:textColor="@android:color/primary_text_light"
             android:textSize="18sp"/>
 
-        <com.stardust.scriptdroid.ui.widget.CommonMarkdownView
+        <org.autojs.autojs.ui.widget.CommonMarkdownView
             android:id="@+id/release_notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

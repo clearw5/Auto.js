@@ -95,8 +95,8 @@ module.exports = function(runtime, global){
     app.versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
 
     app.autojs = {
-        versionCode: com.stardust.scriptdroid.BuildConfig.VERSION_CODE,
-        versionName: com.stardust.scriptdroid.BuildConfig.VERSION_NAME
+        versionCode: org.autojs.autojs.BuildConfig.VERSION_CODE,
+        versionName: org.autojs.autojs.BuildConfig.VERSION_NAME
     };
 
     global.__asGlobal__(app, ['launchPackage', 'launch', 'launchApp', 'getPackageName', 'getAppName', 'openAppSetting']);

@@ -31,7 +31,7 @@
                     android:layout_gravity="right"
                     android:orientation="horizontal">
 
-                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
+                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
                         android:id="@+id/run"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
@@ -39,21 +39,21 @@
                         app:icon_color="@android:color/white"
                         app:text="@string/text_run"/>
 
-                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
+                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
                         android:id="@+id/undo"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
                         app:icon="@drawable/ic_undo_white_48dp"
                         app:text="@string/text_undo"/>
 
-                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
+                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
                         android:id="@+id/redo"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
                         app:icon="@drawable/ic_redo_white_48dp"
                         app:text="@string/text_redo"/>
 
-                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
+                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
                         android:id="@+id/save"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
@@ -70,21 +70,21 @@
                     android:layout_gravity="right"
                     android:orientation="horizontal">
 
-                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
+                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
                         android:id="@+id/replace"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
                         app:icon="@drawable/ic_ali_replace"
                         app:text="@string/text_replace"/>
 
-                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
+                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
                         android:id="@+id/find_prev"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
                         app:icon="@drawable/ic_ali_up"
                         app:text="@string/text_find_prev"/>
 
-                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
+                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
                         android:id="@+id/find_next"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
@@ -92,7 +92,7 @@
                         app:text="@string/text_find_next"/>
 
 
-                    <com.stardust.scriptdroid.ui.widget.ToolbarMenuItem
+                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
                         android:id="@+id/cancel"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
@@ -119,7 +119,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.stardust.scriptdroid.ui.edit.editor.CodeEditor
+            <org.autojs.autojs.ui.edit.editor.CodeEditor
                 android:id="@+id/editor"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -132,7 +132,7 @@
                 android:layout_height="70dp"
                 android:background="#77f2f3f7">
 
-                <com.stardust.scriptdroid.ui.edit.completion.CodeCompletionBar
+                <org.autojs.autojs.ui.edit.completion.CodeCompletionBar
                     android:id="@+id/symbol_bar"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
@@ -149,7 +149,7 @@
                     android:src="@drawable/ic_ali_fx"
                     android:tint="#222329"/>
 
-                <com.stardust.scriptdroid.ui.edit.completion.CodeCompletionBar
+                <org.autojs.autojs.ui.edit.completion.CodeCompletionBar
                     android:id="@+id/code_completion_bar"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
@@ -160,7 +160,7 @@
 
             </RelativeLayout>
 
-            <com.stardust.scriptdroid.ui.edit.keyboard.FunctionsKeyboardView
+            <org.autojs.autojs.ui.edit.keyboard.FunctionsKeyboardView
                 android:id="@+id/functions_keyboard"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -168,7 +168,7 @@
 
         </LinearLayout>
 
-        <com.stardust.scriptdroid.ui.widget.EWebView
+        <org.autojs.autojs.ui.widget.EWebView
             android:id="@+id/docs"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

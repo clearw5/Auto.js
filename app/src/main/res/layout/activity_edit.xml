@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.stardust.scriptdroid.ui.edit.EditorView_
+<org.autojs.autojs.ui.edit.EditorView_
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/editor_view"
     android:layout_width="match_parent"

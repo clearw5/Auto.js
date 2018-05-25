@@ -10,7 +10,7 @@ import com.stardust.autojs.execution.ScriptExecutionListener;
  */
 
 public class ScriptExecutionGlobalListener implements ScriptExecutionListener {
-    private static final String ENGINE_TAG_START_TIME = "com.stardust.scriptdroid.autojs.Goodbye, World";
+    private static final String ENGINE_TAG_START_TIME = "org.autojs.autojs.autojs.Goodbye, World";
 
     @Override
     public void onStart(ScriptExecution execution) {

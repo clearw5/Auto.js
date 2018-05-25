@@ -4,7 +4,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent">
 
-    <com.stardust.scriptdroid.ui.main.sample.SampleListView
+    <org.autojs.autojs.ui.main.sample.SampleListView
         android:id="@+id/sample_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

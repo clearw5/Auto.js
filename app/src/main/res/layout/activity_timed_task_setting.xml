@@ -111,7 +111,7 @@
                                 android:paddingBottom="6dp"
                                 android:paddingTop="6dp">
 
-                                <com.stardust.theme.widget.ThemeColorImageViewCompat
+                                <org.autojs.autojs.theme.widget.ThemeColorImageViewCompat
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:layout_gravity="center_vertical"
@@ -139,7 +139,7 @@
                                 android:orientation="horizontal"
                                 android:paddingTop="6dp">
 
-                                <com.stardust.theme.widget.ThemeColorImageViewCompat
+                                <org.autojs.autojs.theme.widget.ThemeColorImageViewCompat
                                     android:id="@+id/disposable_task_date_icon"
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"

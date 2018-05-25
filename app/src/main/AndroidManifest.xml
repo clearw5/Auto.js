@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="com.stardust.scriptdroid">
+          package="org.autojs.autojs">
 
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -47,7 +47,7 @@
         </activity>
         <activity
             android:name=".external.shortcut.ShortcutActivity"
-            android:taskAffinity="com.stardust.scriptdroid.external.shortcut.ShortcutActivity"
+            android:taskAffinity="org.autojs.autojs.external.shortcut.ShortcutActivity"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -58,7 +58,7 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.stardust.scriptdroid.fileprovider"
+            android:authorities="org.autojs.autojs.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -153,7 +153,7 @@
             android:name=".external.open.RunIntentActivity"
             android:icon="@drawable/autojs_material"
             android:label="@string/text_run_script"
-            android:taskAffinity="com.stardust.scriptdroid.external.open.RunIntentActivity"
+            android:taskAffinity="org.autojs.autojs.external.open.RunIntentActivity"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

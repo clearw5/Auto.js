@@ -5,7 +5,7 @@
                                         android:id="@+id/drawer_layout"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        tools:context="com.stardust.scriptdroid.ui.main.MainActivity">
+                                        tools:context="org.autojs.autojs.ui.main.MainActivity">
 
 
     <android.support.design.widget.CoordinatorLayout
@@ -54,9 +54,9 @@
             app:backgroundTint="@color/colorPrimary"
             app:layout_anchor="@id/viewpager"
             app:layout_anchorGravity="bottom|right|end"
-            app:layout_behavior="com.stardust.scriptdroid.ui.widget.ScrollAwareFABBehavior"/>
+            app:layout_behavior="org.autojs.autojs.ui.widget.ScrollAwareFABBehavior"/>
 
-        <com.stardust.scriptdroid.ui.main.FloatingActionMenu
+        <org.autojs.autojs.ui.main.FloatingActionMenu
             android:id="@+id/floating_action_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
     </android.support.design.widget.CoordinatorLayout>
 
     <fragment
-        android:name="com.stardust.scriptdroid.ui.main.drawer.DrawerFragment_"
+        android:name="org.autojs.autojs.ui.main.drawer.DrawerFragment_"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"

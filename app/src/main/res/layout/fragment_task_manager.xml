@@ -5,17 +5,17 @@
              android:background="@android:color/white">
 
 
-    <com.stardust.theme.widget.ThemeColorSwipeRefreshLayout
+    <org.autojs.autojs.theme.widget.ThemeColorSwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.stardust.scriptdroid.ui.main.task.TaskListRecyclerView
+        <org.autojs.autojs.ui.main.task.TaskListRecyclerView
             android:id="@+id/task_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-    </com.stardust.theme.widget.ThemeColorSwipeRefreshLayout>
+    </org.autojs.autojs.theme.widget.ThemeColorSwipeRefreshLayout>
 
     <TextView
         android:id="@+id/notice_no_running_script"

@@ -20,7 +20,7 @@
         android:orientation="horizontal"
         android:padding="8dp">
 
-        <com.stardust.scriptdroid.ui.widget.CheckBoxCompat
+        <org.autojs.autojs.ui.widget.CheckBoxCompat
             android:id="@+id/checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

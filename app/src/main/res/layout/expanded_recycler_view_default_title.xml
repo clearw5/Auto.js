@@ -6,7 +6,7 @@
               android:gravity="center_vertical"
               android:orientation="horizontal">
 
-    <com.stardust.theme.widget.ThemeColorImageViewCompat
+    <org.autojs.autojs.theme.widget.ThemeColorImageViewCompat
         android:id="@+id/icon"
         android:layout_width="20dp"
         android:layout_height="20dp"
@@ -20,7 +20,7 @@
         android:textColor="@android:color/primary_text_light"/>
 
 
-    <com.stardust.theme.widget.ThemeColorImageViewCompat
+    <org.autojs.autojs.theme.widget.ThemeColorImageViewCompat
         android:id="@+id/expand_hint"
         android:layout_width="match_parent"
         android:layout_height="20dp"

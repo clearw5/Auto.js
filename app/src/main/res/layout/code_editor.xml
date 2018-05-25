@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.stardust.scriptdroid.ui.edit.editor.CodeEditText
+<org.autojs.autojs.ui.edit.editor.CodeEditText
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/code_edit_text"
     android:layout_width="match_parent"
