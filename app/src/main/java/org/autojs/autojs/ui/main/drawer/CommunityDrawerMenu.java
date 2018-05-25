@@ -1,5 +1,7 @@
 package org.autojs.autojs.ui.main.drawer;
 
+import android.annotation.SuppressLint;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.network.UserService;
 import org.autojs.autojs.network.entity.notification.Notification;
@@ -20,7 +22,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by Stardust on 2017/12/10.
  */
-
+@SuppressLint("CheckResult")
 public class CommunityDrawerMenu {
 
     private DrawerMenuItem mUnreadItem = new DrawerMenuItem(R.drawable.community_inbox, R.string.text_community_unread, this::showUnread);
@@ -77,7 +79,8 @@ public class CommunityDrawerMenu {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .count()
-                .subscribe(count -> setNotificationCount(adapter, count));
+                .subscribe(count -> setNotificationCount(adapter, count),
+                        Throwable::printStackTrace);
     }
 
     private void setNotificationCount(DrawerMenuAdapter adapter, long count) {
