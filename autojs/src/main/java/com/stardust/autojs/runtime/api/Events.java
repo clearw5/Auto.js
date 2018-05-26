@@ -198,7 +198,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public void observeNotification() {
-        mScriptRuntime.requiresApi(18);
+        ScriptRuntime.requiresApi(18);
         if (mListeningNotification)
             return;
         mListeningNotification = true;
