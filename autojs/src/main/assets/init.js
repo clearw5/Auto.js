@@ -69,6 +69,7 @@ runtime.init();
     importClass(com.stardust.autojs.core.util.Shell);
     importClass(android.graphics.Paint);
     Canvas = com.stardust.autojs.core.graphics.ScriptCanvas;
+    Image = com.stardust.autojs.core.image.ImageWrapper;
 
     //重定向require以便支持相对路径
     (function(){

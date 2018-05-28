@@ -39,6 +39,15 @@ public class ImageWrapper {
         mHeight = bitmap.getHeight();
     }
 
+    public ImageWrapper(Bitmap bitmap, Mat mat) {
+        mBitmap = bitmap;
+        mMat = mat;
+    }
+
+    public ImageWrapper(int width, int height) {
+        this(Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888));
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static ImageWrapper ofImage(Image image) {
@@ -124,7 +133,7 @@ public class ImageWrapper {
 
     }
 
-    private void ensureNotRecycled() {
+    public void ensureNotRecycled() {
         if (mBitmap == null && mMat == null)
             throw new IllegalStateException("image has been recycled");
     }
