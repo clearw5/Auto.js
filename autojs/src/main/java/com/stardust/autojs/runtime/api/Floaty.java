@@ -57,6 +57,7 @@ public class Floaty {
         } catch (InterruptedException e) {
             throw new ScriptInterruptedException();
         }
+
         JsResizableWindow window = new JsResizableWindow((context, parent) -> view);
         addWindow(window);
         return window;

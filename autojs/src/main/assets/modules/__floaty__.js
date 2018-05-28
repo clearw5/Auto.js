@@ -4,14 +4,14 @@ module.exports = function(runtime, global){
 
     floaty.window = function(layout){
         if(typeof(layout) == 'xml'){
-            layout = layout.toString();
+            layout = layout.toXMLString();
         }
         return wrap(runtime.floaty.window(layout));
     }
 
     floaty.rawWindow = function(layout){
         if(typeof(layout) == 'xml'){
-            layout = layout.toString();
+            layout = layout.toXMLString();
         }
         return wrap(runtime.floaty.rawWindow(layout));
     }

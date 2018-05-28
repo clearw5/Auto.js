@@ -13,8 +13,11 @@ module.exports = function (runtime, global) {
         if(!activity){
             throw new Error("需要在ui模式下运行才能使用该函数");
         }
+        if(typeof(xml) == 'xml'){
+            xml = xml.toXMLString();
+        }
         runtime.ui.layoutInflater.setContext(activity);
-        var view = runtime.ui.layoutInflater.inflate(xml.toString());
+        var view = runtime.ui.layoutInflater.inflate(xml);
         ui.setContentView(view);
     }
 
