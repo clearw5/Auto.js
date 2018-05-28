@@ -19,7 +19,6 @@ import java.nio.ByteBuffer;
 /**
  * Created by Stardust on 2017/11/25.
  */
-
 public class ImageWrapper {
 
     private Mat mMat;

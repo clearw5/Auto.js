@@ -26,17 +26,19 @@ import com.stardust.autojs.runtime.ScriptRuntime;
 public class ScriptCanvas {
 
     private Canvas mCanvas;
+    private Bitmap mBitmap;
 
-    public ScriptCanvas(Canvas canvas) {
-        mCanvas = canvas;
+    public ScriptCanvas(int width, int height) {
+        this(Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888));
     }
 
     public ScriptCanvas(@NonNull Bitmap bitmap) {
         mCanvas = new Canvas(bitmap);
+        mBitmap = bitmap;
     }
 
     public ScriptCanvas(@NonNull ImageWrapper image) {
-        this(image.getBitmap());
+        this(image.getBitmap().copy(image.getBitmap().getConfig(), true));
     }
 
     public ScriptCanvas() {
@@ -45,6 +47,10 @@ public class ScriptCanvas {
 
     void setCanvas(Canvas canvas) {
         mCanvas = canvas;
+    }
+
+    public ImageWrapper toImage() {
+        return ImageWrapper.ofBitmap(mBitmap.copy(mBitmap.getConfig(), true));
     }
 
     public boolean isHardwareAccelerated() {
