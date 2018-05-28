@@ -99,7 +99,7 @@ public class SplashActivity extends BaseActivity {
         mHandler.postDelayed(() -> {
             if (mAdLoading)
                 enterNextActivity();
-        }, 4000);
+        }, 3000);
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(BuildConfig.DEBUG ? Constants.ADMOB_INTERSTITIAL_TEST_ID : Constants.ADMOB_INTERSTITIAL_ID);
         mInterstitialAd.setAdListener(new AdListener() {

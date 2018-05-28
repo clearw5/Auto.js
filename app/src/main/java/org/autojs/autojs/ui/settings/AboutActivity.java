@@ -71,8 +71,8 @@ public class AboutActivity extends BaseActivity {
         mLolClickCount++;
         //Toast.makeText(this, R.string.text_lll, Toast.LENGTH_LONG).show();
         if (mLolClickCount >= 5) {
-            //crashTest();
-            showEasterEgg();
+            crashTest();
+            //showEasterEgg();
         }
     }
 

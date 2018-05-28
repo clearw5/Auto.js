@@ -89,6 +89,7 @@
 <li><span class="stability_undefined"><a href="#globals_random">random()</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_requiresapi_api">requiresApi(api)</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_requiresautojsversion_version">requiresAutojsVersion(version)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_runtime_requestpermissions_permissions">runtime.requestPermissions(permissions)</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_context">context</a></span></li>
 </ul>
 </li>
@@ -217,6 +218,20 @@ for(var i = 0; i &lt; 100; i++){
 <p>调用该函数时会判断运行脚本的Auto.js的版本号，如果没有达到要求则抛出异常。</p>
 <p>version参数可以是整数表示版本号，例如<code>requiresAutojsVersion(250)</code>；也可以是字符串格式表示的版本，例如&quot;3.0.0 Beta&quot;, &quot;3.1.0 Alpha4&quot;, &quot;3.2.0&quot;等。</p>
 <p>可以通过<code>app.autojs.versionCode</code>和<code>app.autojs.versionName</code>获取当前的Auto.js版本号和版本。</p>
+<h2>runtime.requestPermissions(permissions)<span><a class="mark" href="#globals_runtime_requestpermissions_permissions" id="globals_runtime_requestpermissions_permissions">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>permissions</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 权限的字符串数组</li>
+</ul>
+</div><p>动态申请安卓的权限。例如：</p>
+<pre><code>//请求GPS权限
+runtime.requestPermission([&quot;access_fine_location&quot;]);
+</code></pre><p>尽管安卓有很多权限，但必须写入Manifest才能动态申请，为了防止权限的滥用，目前Auto.js只能额外申请两个权限：</p>
+<ul>
+<li><code>access_fine_location</code> GPS权限</li>
+<li><code>record_audio</code> 录音权限</li>
+</ul>
+<p>您可以通过APK编辑器来增加Auto.js以及Auto.js打包的应用的权限。</p>
+<p>安卓所有的权限列表参见<a href="https://developer.android.com/guide/topics/permissions/overview">Permissions Overview</a>。（并没有用）</p>
 <h2>context<span><a class="mark" href="#globals_context" id="globals_context">#</a></span></h2>
 <p>全局变量。一个android.content.Context对象。</p>
 <p>注意该对象为ApplicationContext，因此不能用于界面、对话框等的创建。</p>
