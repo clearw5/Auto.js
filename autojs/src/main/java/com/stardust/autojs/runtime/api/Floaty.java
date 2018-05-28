@@ -5,16 +5,16 @@ import android.content.Intent;
 import android.os.Looper;
 import android.view.ContextThemeWrapper;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.stardust.autojs.R;
-import com.stardust.autojs.core.floaty.FloatyWindow;
+import com.stardust.autojs.core.floaty.BaseResizableFloatyWindow;
+import com.stardust.autojs.core.floaty.RawWindow;
 import com.stardust.autojs.core.ui.JsViewHelper;
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
+import com.stardust.autojs.core.ui.inflater.inflaters.Exceptions;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.util.FloatingPermission;
-import com.stardust.concurrent.VolatileDispose;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.util.UiHandler;
 import com.stardust.util.ViewUtil;
@@ -30,7 +30,7 @@ public class Floaty {
     private DynamicLayoutInflater mLayoutInflater;
     private Context mContext;
     private UiHandler mUiHandler;
-    private CopyOnWriteArraySet<JsFloatyWindow> mWindows = new CopyOnWriteArraySet<>();
+    private CopyOnWriteArraySet<JsWindow> mWindows = new CopyOnWriteArraySet<>();
     private ScriptRuntime mRuntime;
 
     public Floaty(UiHandler uiHandler, UI ui, ScriptRuntime runtime) {
@@ -40,51 +40,175 @@ public class Floaty {
         mLayoutInflater = ui.getLayoutInflater();
     }
 
-    public JsFloatyWindow window(String xml) {
+    public JsResizableWindow window(String xml) {
         try {
             FloatingPermission.waitForPermissionGranted(mContext);
         } catch (InterruptedException e) {
             throw new ScriptInterruptedException();
         }
-        JsFloatyWindow window = new JsFloatyWindow((context, parent) -> mLayoutInflater.inflate(xml, parent));
+        JsResizableWindow window = new JsResizableWindow((context, parent) -> mLayoutInflater.inflate(xml, parent));
         addWindow(window);
         return window;
     }
 
-    public JsFloatyWindow window(View view) {
+    public JsResizableWindow window(View view) {
         try {
             FloatingPermission.waitForPermissionGranted(view.getContext());
         } catch (InterruptedException e) {
             throw new ScriptInterruptedException();
         }
-        JsFloatyWindow window = new JsFloatyWindow((context, parent) -> view);
+        JsResizableWindow window = new JsResizableWindow((context, parent) -> view);
         addWindow(window);
         return window;
     }
 
-    private synchronized void addWindow(JsFloatyWindow window) {
+    public JsRawWindow rawWindow(String xml) {
+        try {
+            FloatingPermission.waitForPermissionGranted(mContext);
+        } catch (InterruptedException e) {
+            throw new ScriptInterruptedException();
+        }
+        JsRawWindow window = new JsRawWindow((context, parent) -> mLayoutInflater.inflate(xml, parent));
+        addWindow(window);
+        return window;
+    }
+
+    public JsRawWindow rawWindow(View view) {
+        try {
+            FloatingPermission.waitForPermissionGranted(mContext);
+        } catch (InterruptedException e) {
+            throw new ScriptInterruptedException();
+        }
+        JsRawWindow window = new JsRawWindow((context, parent) -> view);
+        addWindow(window);
+        return window;
+    }
+
+    private synchronized void addWindow(JsWindow window) {
         mWindows.add(window);
     }
 
-    private synchronized boolean removeWindow(JsFloatyWindow window) {
+    private synchronized boolean removeWindow(JsWindow window) {
         return mWindows.remove(window);
     }
 
     public synchronized void closeAll() {
-        for (JsFloatyWindow window : mWindows) {
+        for (JsWindow window : mWindows) {
             window.close(false);
         }
         mWindows.clear();
     }
 
-    public class JsFloatyWindow {
+    public interface JsWindow {
+        void close(boolean removeFromWindows);
+    }
+
+    public class JsRawWindow implements JsWindow {
+
+        private RawWindow mWindow;
+        private boolean mExitOnClose;
+
+        public JsRawWindow(RawWindow.RawFloaty floaty) {
+            mWindow = new RawWindow(floaty);
+            mUiHandler.post(() -> {
+                mUiHandler.getContext().startService(new Intent(mUiHandler.getContext(), FloatyService.class));
+                FloatyService.addWindow(mWindow);
+            });
+            RuntimeException exception = mWindow.waitForCreation();
+            if (exception != Exceptions.NO_EXCEPTION && exception != null) {
+                throw exception;
+            }
+        }
+
+        public View findView(String id) {
+            return JsViewHelper.findViewByStringId(mWindow.getWindowContent(), id);
+        }
+
+        public int getX() {
+            return mWindow.getWindowBridge().getX();
+        }
+
+        public int getY() {
+            return mWindow.getWindowBridge().getY();
+        }
+
+        public int getWidth() {
+            return mWindow.getWindowView().getWidth();
+        }
+
+        public int getHeight() {
+            return mWindow.getWindowView().getHeight();
+        }
+
+        public void setSize(int w, int h) {
+            runWithWindow(() -> {
+                        mWindow.getWindowBridge().updateMeasure(w, h);
+                        ViewUtil.setViewMeasure(mWindow.getWindowView(), w, h);
+                    }
+            );
+        }
+
+        public void setTouchable(boolean touchable) {
+            runWithWindow(() -> mWindow.setTouchable(touchable));
+        }
+
+        private void runWithWindow(Runnable r) {
+            if (mWindow == null)
+                return;
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                r.run();
+                return;
+            }
+            mUiHandler.post(() -> {
+                if (mWindow == null)
+                    return;
+                r.run();
+            });
+        }
+
+        public void setPosition(int x, int y) {
+            runWithWindow(() -> mWindow.getWindowBridge().updatePosition(x, y));
+        }
+
+        public void exitOnClose() {
+            mExitOnClose = true;
+        }
+
+        public void requestFocus() {
+            mWindow.requestWindowFocus();
+        }
+
+        public void disableFocus() {
+            mWindow.disableWindowFocus();
+        }
+
+        public void close() {
+            close(true);
+        }
+
+        public void close(boolean removeFromWindows) {
+            if (removeFromWindows && !removeWindow(this)) {
+                return;
+            }
+            runWithWindow(() -> {
+                mWindow.close();
+                mWindow = null;
+                if (mExitOnClose) {
+                    mRuntime.exit();
+                }
+            });
+        }
+
+    }
+
+    public class JsResizableWindow implements JsWindow {
 
         private View mView;
-        private volatile FloatyWindow mWindow;
+        private volatile BaseResizableFloatyWindow mWindow;
         private boolean mExitOnClose = false;
 
-        public JsFloatyWindow(FloatyWindow.ViewSupplier supplier) {
-            mWindow = new FloatyWindow(mContext, (context, parent) -> {
+        public JsResizableWindow(BaseResizableFloatyWindow.ViewSupplier supplier) {
+            mWindow = new BaseResizableFloatyWindow(mContext, (context, parent) -> {
                 mView = supplier.inflate(context, parent);
                 return mView;
             });
@@ -92,7 +216,10 @@ public class Floaty {
                 mUiHandler.getContext().startService(new Intent(mUiHandler.getContext(), FloatyService.class));
                 FloatyService.addWindow(mWindow);
             });
-            mWindow.waitFor();
+            RuntimeException exception = mWindow.waitForCreation();
+            if (exception != Exceptions.NO_EXCEPTION && exception != null) {
+                throw exception;
+            }
             mWindow.setOnCloseButtonClickListener(v -> close());
             //setSize(mWindow.getWindowBridge().getScreenWidth() / 2, mWindow.getWindowBridge().getScreenHeight() / 2);
         }
@@ -118,8 +245,13 @@ public class Floaty {
         }
 
         public void setSize(int w, int h) {
-            runWithWindow(() -> ViewUtil.setViewMeasure(mWindow.getRootView(), w, h));
+            runWithWindow(() -> {
+                        mWindow.getWindowBridge().updateMeasure(w, h);
+                        ViewUtil.setViewMeasure(mWindow.getRootView(), w, h);
+                    }
+            );
         }
+
 
         private void runWithWindow(Runnable r) {
             if (mWindow == null)
@@ -163,7 +295,7 @@ public class Floaty {
             close(true);
         }
 
-        void close(boolean removeFromWindows) {
+        public void close(boolean removeFromWindows) {
             if (removeFromWindows && !removeWindow(this)) {
                 return;
             }

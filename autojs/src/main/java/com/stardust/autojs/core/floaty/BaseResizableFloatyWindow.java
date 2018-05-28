@@ -10,6 +10,10 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.stardust.autojs.R;
+import com.stardust.autojs.core.ui.inflater.inflaters.Exceptions;
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
+import com.stardust.concurrent.VolatileBox;
+import com.stardust.concurrent.VolatileDispose;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableFloaty;
 import com.stardust.enhancedfloaty.ResizableFloatyWindow;
@@ -21,7 +25,7 @@ import com.stardust.enhancedfloaty.gesture.ResizeGesture;
  * Created by Stardust on 2017/12/5.
  */
 
-public class FloatyWindow extends ResizableFloatyWindow {
+public class BaseResizableFloatyWindow extends ResizableFloatyWindow {
 
     public interface ViewSupplier {
 
@@ -29,8 +33,7 @@ public class FloatyWindow extends ResizableFloatyWindow {
 
     }
 
-    private final Object mLock = new Object();
-    private boolean mCreated = false;
+    private VolatileDispose<RuntimeException> mInflateException = new VolatileDispose<>();
     private View mCloseButton;
     private static final String TAG = "ResizableFloatyWindow";
     private WindowManager mWindowManager;
@@ -43,26 +46,17 @@ public class FloatyWindow extends ResizableFloatyWindow {
     private MyFloaty mFloaty;
 
 
-    public FloatyWindow(Context context, ViewSupplier viewSupplier) {
+    public BaseResizableFloatyWindow(Context context, ViewSupplier viewSupplier) {
         this(new MyFloaty(context, viewSupplier));
     }
 
-    private FloatyWindow(MyFloaty floaty) {
+    private BaseResizableFloatyWindow(MyFloaty floaty) {
         super(floaty);
         mFloaty = floaty;
     }
 
-    public void waitFor() {
-        synchronized (mLock) {
-            if (mCreated) {
-                return;
-            }
-            try {
-                mLock.wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    public RuntimeException waitForCreation() {
+        return mInflateException.blockedGetOrThrow(ScriptInterruptedException.class);
     }
 
     @Override
@@ -72,14 +66,16 @@ public class FloatyWindow extends ResizableFloatyWindow {
         if (this.mFloaty == null) {
             throw new IllegalStateException("Must start this service by static method ResizableExpandableFloatyWindow.startService");
         } else {
-            this.initWindowView(service);
+            try {
+                this.initWindowView(service);
+            } catch (RuntimeException e) {
+                mInflateException.setAndNotify(e);
+                return;
+            }
             this.mWindowBridge = new WindowBridge.DefaultImpl(this.mWindowLayoutParams, this.mWindowManager, this.mWindowView);
             this.initGesture();
         }
-        synchronized (mLock) {
-            mCreated = true;
-            mLock.notify();
-        }
+        mInflateException.setAndNotify(Exceptions.NO_EXCEPTION);
     }
 
     public void setOnCloseButtonClickListener(View.OnClickListener listener) {
@@ -161,7 +157,8 @@ public class FloatyWindow extends ResizableFloatyWindow {
     }
 
     public void close() {
-        this.mWindowManager.removeView(this.mWindowView);
+        if (mWindowView != null)
+            this.mWindowManager.removeView(this.mWindowView);
         FloatyService.removeWindow(this);
     }
 
