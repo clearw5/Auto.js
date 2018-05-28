@@ -1,5 +1,7 @@
 package com.stardust.autojs.runtime;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
@@ -10,6 +12,8 @@ import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.image.Colors;
+import com.stardust.autojs.core.permission.PermissionRequestProxyActivity;
+import com.stardust.autojs.core.permission.Permissions;
 import com.stardust.autojs.rhino.AndroidClassLoader;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
@@ -49,8 +53,12 @@ import org.mozilla.javascript.ContextFactory;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static android.content.pm.PackageManager.PERMISSION_DENIED;
 
 
 /**
@@ -303,6 +311,17 @@ public class ScriptRuntime {
         if (Build.VERSION.SDK_INT < i) {
             throw new ScriptException(GlobalAppContext.getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
         }
+    }
+
+    public void requestPermissions(String[] permissions) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+        Context context = uiHandler.getContext();
+        permissions = Permissions.getPermissionsNeedToRequest(context, permissions);
+        if (permissions.length == 0)
+            return;
+        Permissions.requestPermissions(context, permissions);
     }
 
     public void loadJar(String path) {

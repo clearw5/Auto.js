@@ -18,6 +18,12 @@
 
 
         <activity
+            android:name="com.stardust.autojs.core.permission.PermissionRequestActivity"
+            android:excludeFromRecents="true"
+            android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
+            android:theme="@style/AppTheme.Transparent"/>
+
+        <activity
             android:name="com.stardust.autojs.core.image.capture.ScreenCaptureRequestActivity"
             android:excludeFromRecents="true"
             android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"

@@ -9,7 +9,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.stardust.app.OnActivityResultDelegate;
+import com.stardust.autojs.core.permission.OnRequestPermissionsResultCallback;
+import com.stardust.autojs.core.permission.PermissionRequestProxyActivity;
+import com.stardust.autojs.core.permission.RequestPermissionCallbacks;
 import com.stardust.pio.PFiles;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.storage.file.TmpScriptFiles;
 import org.autojs.autojs.ui.BaseActivity;
@@ -35,7 +39,7 @@ import static org.autojs.autojs.ui.edit.EditorView.EXTRA_READ_ONLY;
  * Created by Stardust on 2017/1/29.
  */
 @EActivity(R.layout.activity_edit)
-public class EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost {
+public class EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, PermissionRequestProxyActivity {
 
     private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
 
@@ -44,6 +48,7 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
 
 
     private EditorMenu mEditorMenu;
+    private RequestPermissionCallbacks mRequestPermissionCallbacks = new RequestPermissionCallbacks();
 
     public static void editFile(Context context, String path) {
         editFile(context, null, path);
@@ -192,4 +197,19 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
         }
     }
 
+    @Override
+    public void addRequestPermissionsCallback(OnRequestPermissionsResultCallback callback) {
+        mRequestPermissionCallbacks.addCallback(callback);
+    }
+
+    @Override
+    public boolean removeRequestPermissionsCallback(OnRequestPermissionsResultCallback callback) {
+        return mRequestPermissionCallbacks.removeCallback(callback);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        mRequestPermissionCallbacks.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }

@@ -20,8 +20,12 @@ import android.view.View;
 
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.OnActivityResultDelegate;
+import com.stardust.autojs.core.permission.OnRequestPermissionsResultCallback;
+import com.stardust.autojs.core.permission.PermissionRequestProxyActivity;
+import com.stardust.autojs.core.permission.RequestPermissionCallbacks;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.pio.PFiles;
+
 import org.autojs.autojs.BuildConfig;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
@@ -42,8 +46,11 @@ import org.autojs.autojs.ui.settings.SettingsActivity_;
 import org.autojs.autojs.ui.update.VersionGuard;
 import org.autojs.autojs.ui.widget.CommonMarkdownView;
 import org.autojs.autojs.ui.widget.SearchViewItem;
+
 import com.stardust.theme.ThemeColorManager;
+
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
+
 import com.stardust.util.BackPressedHandler;
 import com.stardust.util.DeveloperUtils;
 import com.stardust.util.DrawerAutoClose;
@@ -58,7 +65,8 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.Arrays;
 
 @EActivity(R.layout.activity_main)
-public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, BackPressedHandler.HostActivity {
+public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, BackPressedHandler.HostActivity, PermissionRequestProxyActivity {
+
 
     public static class DrawerOpenEvent {
         static DrawerOpenEvent SINGLETON = new DrawerOpenEvent();
@@ -77,6 +85,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     private FragmentPagerAdapterBuilder.StoredFragmentPagerAdapter mPagerAdapter;
     private OnActivityResultDelegate.Mediator mActivityResultMediator = new OnActivityResultDelegate.Mediator();
+    private RequestPermissionCallbacks mRequestPermissionCallbacks = new RequestPermissionCallbacks();
     private VersionGuard mVersionGuard;
     private BackPressedHandler.Observer mBackPressObserver = new BackPressedHandler.Observer();
     private SearchViewItem mSearchViewItem;
@@ -228,6 +237,9 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (mRequestPermissionCallbacks.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+            return;
+        }
         if (getGrantResult(Manifest.permission.READ_EXTERNAL_STORAGE, permissions, grantResults) == PackageManager.PERMISSION_GRANTED) {
             StorageFileProvider.getDefault().notifyStoragePermissionGranted();
         }
@@ -276,6 +288,17 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     @Override
+    public void addRequestPermissionsCallback(OnRequestPermissionsResultCallback callback) {
+        mRequestPermissionCallbacks.addCallback(callback);
+    }
+
+    @Override
+    public boolean removeRequestPermissionsCallback(OnRequestPermissionsResultCallback callback) {
+        return mRequestPermissionCallbacks.removeCallback(callback);
+    }
+
+
+    @Override
     public BackPressedHandler.Observer getBackPressedObserver() {
         return mBackPressObserver;
     }
@@ -288,6 +311,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         setUpSearchMenuItem(searchMenuItem);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
