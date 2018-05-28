@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.stardust.autojs.execution.ExecutionConfig;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.external.ScriptIntents;
 import org.autojs.autojs.model.script.ScriptFile;
@@ -149,6 +150,8 @@ public class TimedTaskSettingActivity extends BaseActivity {
         LocalTime time = LocalTime.fromMillisOfDay(mTimedTask.getMillis());
         mDailyTaskTimePicker.setCurrentHour(time.getHourOfDay());
         mDailyTaskTimePicker.setCurrentMinute(time.getMinuteOfHour());
+        mWeeklyTaskTimePicker.setCurrentHour(time.getHourOfDay());
+        mWeeklyTaskTimePicker.setCurrentMinute(time.getMinuteOfHour());
         if (mTimedTask.isDaily()) {
             mDailyTaskRadio.setChecked(true);
         } else {
@@ -221,7 +224,7 @@ public class TimedTaskSettingActivity extends BaseActivity {
             Toast.makeText(this, R.string.text_weekly_task_should_check_day_of_week, Toast.LENGTH_SHORT).show();
             return null;
         }
-        LocalTime time = new LocalTime(mDailyTaskTimePicker.getCurrentHour(), mDailyTaskTimePicker.getCurrentMinute());
+        LocalTime time = new LocalTime(mWeeklyTaskTimePicker.getCurrentHour(), mWeeklyTaskTimePicker.getCurrentMinute());
         return TimedTask.weeklyTask(time, timeFlag, mScriptFile.getPath(), ExecutionConfig.getDefault());
     }
 
