@@ -96,6 +96,18 @@ public class IntFilter extends DfsFilter {
         }
     };
 
+    public static final IntProperty INDEX_IN_PARENT = new IntProperty() {
+        @Override
+        public int get(UiObject object) {
+            return object.indexInParent();
+        }
+
+        @Override
+        public String toString() {
+            return "indexInParent";
+        }
+    };
+
     private IntProperty mIntProperty;
     private int mValue;
 

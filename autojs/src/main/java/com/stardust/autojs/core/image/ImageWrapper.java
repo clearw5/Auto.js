@@ -79,7 +79,7 @@ public class ImageWrapper {
     }
 
     public Mat getMat() {
-        if (mMat == null) {
+        if (mMat == null && mBitmap != null) {
             mMat = new Mat();
             Utils.bitmapToMat(mBitmap, mMat);
         }
@@ -87,6 +87,7 @@ public class ImageWrapper {
     }
 
     public void saveTo(String path) {
+        ensureNotRecycled();
         if (mBitmap != null) {
             try {
                 mBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(path));
@@ -99,6 +100,7 @@ public class ImageWrapper {
     }
 
     public int pixel(int x, int y) {
+        ensureNotRecycled();
         if (mBitmap != null) {
             return mBitmap.getPixel(x, y);
         }
@@ -120,5 +122,10 @@ public class ImageWrapper {
             mMat = null;
         }
 
+    }
+
+    private void ensureNotRecycled() {
+        if (mBitmap == null && mMat == null)
+            throw new IllegalStateException("image has been recycled");
     }
 }
