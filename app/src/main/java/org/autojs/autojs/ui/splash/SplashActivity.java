@@ -1,8 +1,10 @@
 package org.autojs.autojs.ui.splash;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -14,6 +16,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+
 import org.autojs.autojs.BuildConfig;
 import org.autojs.autojs.Constants;
 import org.autojs.autojs.Pref;
@@ -40,49 +43,35 @@ public class SplashActivity extends BaseActivity {
     @ViewById(R.id.logo)
     ImageView mLogo;
 
-    @ViewById(R.id.skip_view)
-    TextView mSkipView;
-
-    @ViewById(R.id.ad_container)
-    View mAdContainer;
-
-    @ViewById(R.id.ad)
-    AdView mAd;
-
     private boolean mCanEnterNextActivity = false;
     private boolean mNotStartMainActivity;
+    private boolean mAlreadyEnterNextActivity = false;
+    private boolean mAdLoading = false;
+
+    private Handler mHandler;
 
     private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mHandler = new Handler();
         mNotStartMainActivity = getIntent().getBooleanExtra(NOT_START_MAIN_ACTIVITY, false);
         boolean forceShowAd = getIntent().getBooleanExtra(FORCE_SHOW_AD, false);
         if (!forceShowAd && !Pref.shouldShowAd()) {
             enterNextActivity();
+            return;
         }
-    }
-
-    @AfterViews
-    void setUpViews() {
         fetchSplashAD();
     }
 
-    @Click(R.id.skip_view)
-    void skip() {
-        enterNextActivity();
-    }
-
     void enterNextActivity() {
+        if (mAlreadyEnterNextActivity)
+            return;
+        mAlreadyEnterNextActivity = true;
         if (!mNotStartMainActivity)
             MainActivity_.intent(this).start();
         finish();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -106,48 +95,46 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void fetchSplashAD() {
+        mAdLoading = true;
+        mHandler.postDelayed(() -> {
+            if (mAdLoading)
+                enterNextActivity();
+        }, 4000);
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(BuildConfig.DEBUG ? Constants.ADMOB_INTERSTITIAL_TEST_ID : Constants.ADMOB_INTERSTITIAL_ID);
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
+                mAdLoading = false;
                 mInterstitialAd.show();
-            }
-
-            @Override
-            public void onAdFailedToLoad(int i) {
-                Log.d(Constants.LOG_TAG_ADMOB, "Fail to load interstitial ad: " + i);
-            }
-
-        });
-        mInterstitialAd.loadAd(new AdRequest.Builder()
-                .build());
-        mAd.setAdListener(new AdListener() {
-
-            @Override
-            public void onAdClicked() {
-                enterNextActivity();
-                Log.d(Constants.LOG_TAG_ADMOB, "Ad clicked");
-            }
-
-            @Override
-            public void onAdFailedToLoad(int i) {
-                Log.d(Constants.LOG_TAG_ADMOB, "Fail to load banner ad: " + i);
             }
 
             @Override
             public void onAdClosed() {
                 enterNextActivity();
             }
-        });
-        if (BuildConfig.DEBUG) {
-            mAd.loadAd(new AdRequest.Builder()
-                    .addTestDevice("774E105820188FA387B617ECD279B167")
-                    .build());
-        } else {
-            mAd.loadAd(new AdRequest.Builder()
-                    .build());
-        }
 
+            @Override
+            public void onAdClicked() {
+                enterNextActivity();
+            }
+
+            @Override
+            public void onAdFailedToLoad(int i) {
+                mAdLoading = false;
+                enterNextActivity();
+                Log.d(Constants.LOG_TAG_ADMOB, "Fail to load interstitial ad: " + i);
+            }
+
+        });
+        mInterstitialAd.loadAd(buildAdRequest());
+    }
+
+    private AdRequest buildAdRequest() {
+        AdRequest.Builder builder = new AdRequest.Builder();
+        if (BuildConfig.DEBUG) {
+            builder.addTestDevice("774E105820188FA387B617ECD279B167");
+        }
+        return builder.build();
     }
 }

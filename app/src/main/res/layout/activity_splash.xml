@@ -14,33 +14,6 @@
         android:layout_weight="1">
 
 
-        <com.google.android.gms.ads.AdView
-            xmlns:ads="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/ad"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            ads:adSize="FLUID"
-            ads:adUnitId="ca-app-pub-5495978608535144/3281269730">
-        </com.google.android.gms.ads.AdView>
-
-
-        <TextView
-            android:id="@+id/skip_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/skip_circle_bg"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="@string/text_skip"
-            android:textColor="#ddffffff"
-            android:textSize="14sp"/>
-
     </RelativeLayout>
 
     <LinearLayout
