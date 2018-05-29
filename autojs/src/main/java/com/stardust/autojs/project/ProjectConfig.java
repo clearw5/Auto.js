@@ -55,7 +55,7 @@ public class ProjectConfig {
     public static ProjectConfig fromAssets(Context context, String path) {
         try {
             return fromJson(PFiles.read(context.getAssets().open(path)));
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -64,7 +64,7 @@ public class ProjectConfig {
     public static ProjectConfig fromFile(String path) {
         try {
             return fromJson(PFiles.read(path));
-        } catch (UncheckedIOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
