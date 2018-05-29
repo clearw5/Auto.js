@@ -9,6 +9,8 @@ module.exports = function (runtime, global) {
     var ui = {};
     ui.__view_cache__ = {};
 
+    ui.__defineGetter__("emitter", ()=>  activity ? activity.getEventEmitter() : null);
+
     ui.layout = function (xml) {
         if(!activity){
             throw new Error("需要在ui模式下运行才能使用该函数");
@@ -152,6 +154,7 @@ module.exports = function (runtime, global) {
             return false;
         },
         beforeApplyAttribute: function (inflater, view, ns, attrName, value, parent, attrs) {
+            log("beforeApplyAttribute:", view, attrName, value);
             var isDynamic = layoutInflater.isDynamicValue(value);
             if ((isDynamic && layoutInflater.getInflateFlags() == layoutInflater.FLAG_IGNORES_DYNAMIC_ATTRS)
                     || (!isDynamic && layoutInflater.getInflateFlags() == layoutInflater.FLAG_JUST_DYNAMIC_ATTRS)) {
@@ -194,7 +197,9 @@ module.exports = function (runtime, global) {
     }
 
     function decorate(view) {
+        var androidView = view;
         var view = global.events.__asEmitter__(Object.create(view));
+        view.__androidView__ = androidView;
         if (view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsListView"
             || view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsGridView") {
             view = decorateList(view);

@@ -24,10 +24,10 @@ function showLoginUI(){
       </frame>
     );
 
-    ui.login.click(() => {
+    ui.login.on("click", () => {
        toast("您输入的用户名为" + ui.name.text() + " 密码为" + ui.password.text());
     });
-    ui.register.click(() => showRegisterUI());
+    ui.register.on("click", () => showRegisterUI());
 }
 
 //显示注册界面
@@ -41,7 +41,7 @@ function showRegisterUI(){
           </linear>
           <linear>
              <text w="56" gravity="center" color="#111111" size="16">密码</text>
-             <input w="*" h="40" inputType="password"/>
+             <input w="*" h="40" password="true"/>
           </linear>
           <linear>
              <text w="56" gravity="center" color="#111111" size="16">邮箱</text>
@@ -54,5 +54,5 @@ function showRegisterUI(){
         </vertical>
       </frame>
     );
-    ui.cancel.click(() => showLoginUI());
+    ui.cancel.on("click", () => showLoginUI());
 }

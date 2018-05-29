@@ -4,6 +4,7 @@ import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -26,6 +27,7 @@ import com.stardust.autojs.core.ui.inflater.util.ValueMapper;
 
 import org.w3c.dom.Node;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -151,6 +153,8 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
                     ((LinearLayout.LayoutParams) layoutParams).gravity = Gravities.parse(value);
                 } else if (parent != null && parent instanceof FrameLayout) {
                     ((FrameLayout.LayoutParams) layoutParams).gravity = Gravities.parse(value);
+                } else {
+                    return setLayoutGravity(parent, view, Gravities.parse(value));
                 }
                 break;
             case "layout_weight":
@@ -583,6 +587,18 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
             }
         }
         return true;
+    }
+
+    public boolean setLayoutGravity(ViewGroup parent, V view, int gravity) {
+        try {
+            ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+            Field field = layoutParams.getClass().getField("gravity");
+            field.set(layoutParams, gravity);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

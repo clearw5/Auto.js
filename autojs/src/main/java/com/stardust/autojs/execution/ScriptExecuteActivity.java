@@ -4,8 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 
+import com.stardust.autojs.core.eventloop.EventEmitter;
+import com.stardust.autojs.core.eventloop.SimpleEvent;
+import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
@@ -26,6 +31,9 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     private ScriptSource mScriptSource;
     private ActivityScriptExecution mScriptExecution;
     private IntentExtras mIntentExtras;
+
+
+    private EventEmitter mEventEmitter;
 
     public static ActivityScriptExecution execute(Context context, ScriptEngineManager manager, ScriptExecutionTask task) {
         ActivityScriptExecution execution = new ActivityScriptExecution(manager, task);
@@ -51,6 +59,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         mScriptSource = mScriptExecution.getSource();
         mScriptEngine = mScriptExecution.createEngine(this);
         mExecutionListener = mScriptExecution.getListener();
+        mEventEmitter = new EventEmitter(((JavaScriptEngine) mScriptEngine).getRuntime().bridges);
         runScript();
     }
 
@@ -133,6 +142,59 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         IntentExtras extras = IntentExtras.newExtras().putAll(mIntentExtras);
         outState.putInt(IntentExtras.EXTRA_ID, extras.getId());
     }
+
+    @Override
+    public void onBackPressed() {
+        SimpleEvent event = new SimpleEvent();
+        mEventEmitter.emit("back_pressed", event);
+        if (!event.consumed) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        mEventEmitter.emit("pause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mEventEmitter.emit("resume");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mEventEmitter.emit("restore_instance_state", savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        mEventEmitter.emit("save_instance_state", outState, outPersistentState);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        SimpleEvent e = new SimpleEvent();
+        mEventEmitter.emit("key_down", keyCode, event, e);
+        return e.consumed || super.onKeyDown(keyCode, event);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mEventEmitter.emit("activity_result", requestCode, resultCode, data);
+    }
+
 
     private static class ActivityScriptExecution extends ScriptExecution.AbstractScriptExecution {
 

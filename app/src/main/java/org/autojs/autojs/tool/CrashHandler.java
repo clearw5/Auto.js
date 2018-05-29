@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.stardust.app.GlobalAppContext;
