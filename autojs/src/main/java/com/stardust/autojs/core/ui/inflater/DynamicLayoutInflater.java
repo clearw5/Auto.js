@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -21,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.stardust.autojs.core.ui.inflater.inflaters.AppBarInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.BaseViewInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.DatePickerInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.FrameLayoutInflater;
@@ -29,11 +32,13 @@ import com.stardust.autojs.core.ui.inflater.inflaters.LinearLayoutInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.ProgressBarInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.RadioGroupInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.SpinnerInflater;
+import com.stardust.autojs.core.ui.inflater.inflaters.TabLayoutInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.TextViewInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.TimePickerInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.ToolbarInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.ViewGroupInflater;
 import com.stardust.autojs.core.ui.inflater.util.Res;
+import com.stardust.autojs.core.ui.widget.JsToolbar;
 import com.stardust.autojs.core.ui.xml.XmlConverter;
 
 import org.w3c.dom.Document;
@@ -116,12 +121,14 @@ public class DynamicLayoutInflater {
         registerViewAttrSetter(LinearLayout.class.getName(), new LinearLayoutInflater<>(mResourceParser));
         registerViewAttrSetter(FrameLayout.class.getName(), new FrameLayoutInflater<>(mResourceParser));
         registerViewAttrSetter(View.class.getName(), new BaseViewInflater<>(mResourceParser));
-        registerViewAttrSetter(Toolbar.class.getName(), new ToolbarInflater<>(mResourceParser));
+        registerViewAttrSetter(JsToolbar.class.getName(), new ToolbarInflater<>(mResourceParser));
         registerViewAttrSetter(DatePicker.class.getName(), new DatePickerInflater(mResourceParser));
         registerViewAttrSetter(RadioGroup.class.getName(), new RadioGroupInflater<>(mResourceParser));
         registerViewAttrSetter(ProgressBar.class.getName(), new ProgressBarInflater<>(mResourceParser));
         registerViewAttrSetter(Spinner.class.getName(), new SpinnerInflater(mResourceParser));
         registerViewAttrSetter(TimePicker.class.getName(), new TimePickerInflater(mResourceParser));
+        registerViewAttrSetter(AppBarLayout.class.getName(), new AppBarInflater<>(mResourceParser));
+        registerViewAttrSetter(TabLayout.class.getName(), new TabLayoutInflater<>(mResourceParser));
     }
 
     public void registerViewAttrSetter(String fullName, ViewInflater<?> inflater) {
@@ -169,6 +176,14 @@ public class DynamicLayoutInflater {
 
     @SuppressWarnings("unchecked")
     public View inflate(Node node, @Nullable ViewGroup parent, boolean attachToParent) {
+        View view = doInflation(node, parent, attachToParent);
+        if (view != null && view instanceof ShouldCallOnFinishInflate) {
+            ((ShouldCallOnFinishInflate) view).onFinishDynamicInflate();
+        }
+        return view;
+    }
+
+    protected View doInflation(Node node, @Nullable ViewGroup parent, boolean attachToParent) {
         View view = mLayoutInflaterDelegate.beforeInflateView(node, parent, attachToParent);
         if (view != null)
             return view;

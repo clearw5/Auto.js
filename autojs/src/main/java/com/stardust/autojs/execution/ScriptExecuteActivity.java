@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 
 import com.stardust.autojs.core.eventloop.EventEmitter;
 import com.stardust.autojs.core.eventloop.SimpleEvent;
@@ -61,6 +64,10 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         mExecutionListener = mScriptExecution.getListener();
         mEventEmitter = new EventEmitter(((JavaScriptEngine) mScriptEngine).getRuntime().bridges);
         runScript();
+    }
+
+    public EventEmitter getEventEmitter() {
+        return mEventEmitter;
     }
 
     private IntentExtras readIntentExtras(Bundle savedInstanceState) {
@@ -190,11 +197,30 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        SimpleEvent e = new SimpleEvent();
+        mEventEmitter.emit("generic_motion_event", event, e);
+        return super.onGenericMotionEvent(event);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mEventEmitter.emit("activity_result", requestCode, resultCode, data);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        mEventEmitter.emit("create_options_menu", menu);
+        return menu.size() > 0;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        SimpleEvent e = new SimpleEvent();
+        mEventEmitter.emit("options_item_selected", e, item);
+        return e.consumed || super.onOptionsItemSelected(item);
+    }
 
     private static class ActivityScriptExecution extends ScriptExecution.AbstractScriptExecution {
 

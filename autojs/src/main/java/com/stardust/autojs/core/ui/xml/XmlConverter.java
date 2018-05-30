@@ -25,8 +25,10 @@ import com.stardust.autojs.core.ui.widget.JsImageView;
 import com.stardust.autojs.core.ui.widget.JsLinearLayout;
 import com.stardust.autojs.core.ui.widget.JsListView;
 import com.stardust.autojs.core.ui.widget.JsRelativeLayout;
+import com.stardust.autojs.core.ui.widget.JsTabLayout;
 import com.stardust.autojs.core.ui.widget.JsTextView;
 import com.stardust.autojs.core.ui.widget.JsToolbar;
+import com.stardust.autojs.core.ui.widget.JsViewPager;
 import com.stardust.autojs.core.ui.widget.JsWebView;
 
 import org.w3c.dom.Document;
@@ -77,7 +79,8 @@ public class XmlConverter {
                     .map("grid", JsGridView.class.getName())
                     .map("drawer", DrawerLayout.class.getName())
                     .map("appbar", AppBarLayout.class.getName())
-                    .map("tabs", TabLayout.class.getName())
+                    .map("tabs", JsTabLayout.class.getName())
+                    .map("viewpager", JsViewPager.class.getName())
             );
 
     private static final AttributeHandler ATTRIBUTE_HANDLER = new AttributeHandler.AttrNameRouter()

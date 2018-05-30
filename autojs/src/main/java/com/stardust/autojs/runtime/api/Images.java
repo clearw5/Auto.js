@@ -146,7 +146,7 @@ public class Images {
         if (compressFormat == null)
             throw new IllegalArgumentException("unknown format " + format);
         Bitmap bitmap = image.getBitmap();
-        FileOutputStream outputStream = new FileOutputStream(path);
+        FileOutputStream outputStream = new FileOutputStream(mScriptRuntime.files.path(path));
         return bitmap.compress(compressFormat, quality, outputStream);
     }
 

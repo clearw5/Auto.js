@@ -41,6 +41,8 @@ public class ImageWrapper {
     public ImageWrapper(Bitmap bitmap, Mat mat) {
         mBitmap = bitmap;
         mMat = mat;
+        mWidth = bitmap.getWidth();
+        mHeight = bitmap.getHeight();
     }
 
     public ImageWrapper(int width, int height) {

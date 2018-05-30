@@ -2,6 +2,7 @@ package com.stardust.autojs.runtime.api;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.view.View;
 
 import com.stardust.autojs.core.graphics.ScriptCanvasView;
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
@@ -16,6 +17,7 @@ import com.stardust.autojs.core.ui.widget.JsListView;
 import com.stardust.autojs.rhino.ProxyObject;
 import com.stardust.autojs.runtime.ScriptRuntime;
 
+import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.UniqueTag;
 
@@ -50,6 +52,19 @@ public class UI extends ProxyObject {
         mDynamicLayoutInflater.registerViewAttrSetter(ScriptCanvasView.class.getName(),
                 new CanvasViewInflater(mResourceParser, runtime));
         mProperties.put("layoutInflater", this.mDynamicLayoutInflater);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <V extends View> V unwrapJsViewObject(NativeObject object, Class<V> c) {
+        if (!object.containsKey("__javaObject__")) {
+            throw new ClassCastException("object " + object + " cannot be cast to " + c.getName());
+        }
+        Object view = object.get("__javaObject__");
+        if (!c.isInstance(view)) {
+            throw new ClassCastException("object " + object + " cannot be cast to " + c.getName());
+        }
+        return (V) view;
+
     }
 
     public Object getBindingContext() {

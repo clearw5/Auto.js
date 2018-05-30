@@ -20,6 +20,7 @@ import android.view.View;
 
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.OnActivityResultDelegate;
+import com.stardust.autojs.core.image.OpenCVHelper;
 import com.stardust.autojs.core.permission.OnRequestPermissionsResultCallback;
 import com.stardust.autojs.core.permission.PermissionRequestProxyActivity;
 import com.stardust.autojs.core.permission.RequestPermissionCallbacks;
@@ -61,6 +62,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.opencv.core.Core;
 
 import java.util.Arrays;
 

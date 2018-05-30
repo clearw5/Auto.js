@@ -44,6 +44,8 @@ module.exports = function(__runtime__, scope){
 
    images.read = rtImages.read.bind(rtImages);
 
+   images.copy = rtImages.copy.bind(rtImages);
+
    images.load = rtImages.load.bind(rtImages);
 
    images.clip = rtImages.clip.bind(rtImages);

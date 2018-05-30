@@ -154,7 +154,6 @@ module.exports = function (runtime, global) {
             return false;
         },
         beforeApplyAttribute: function (inflater, view, ns, attrName, value, parent, attrs) {
-            log("beforeApplyAttribute:", view, attrName, value);
             var isDynamic = layoutInflater.isDynamicValue(value);
             if ((isDynamic && layoutInflater.getInflateFlags() == layoutInflater.FLAG_IGNORES_DYNAMIC_ATTRS)
                     || (!isDynamic && layoutInflater.getInflateFlags() == layoutInflater.FLAG_JUST_DYNAMIC_ATTRS)) {
@@ -197,9 +196,9 @@ module.exports = function (runtime, global) {
     }
 
     function decorate(view) {
-        var androidView = view;
+        var javaObject = view;
         var view = global.events.__asEmitter__(Object.create(view));
-        view.__androidView__ = androidView;
+        view.__javaObject__ = javaObject;
         if (view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsListView"
             || view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsGridView") {
             view = decorateList(view);

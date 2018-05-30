@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Auto.js.iml" filepath="$PROJECT_DIR$/Auto.js.iml" />
       <module fileurl="file://$PROJECT_DIR$/NoRootScriptDroid.iml" filepath="$PROJECT_DIR$/NoRootScriptDroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/autojs/autojs.iml" filepath="$PROJECT_DIR$/autojs/autojs.iml" />
