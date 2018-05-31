@@ -5,8 +5,10 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.view.View;
 import android.view.ViewGroup;
 
+import com.stardust.autojs.R;
 import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.ViewCreator;
 import com.stardust.autojs.core.ui.inflater.util.Colors;
@@ -59,5 +61,10 @@ public class TabLayoutInflater<V extends TabLayout> extends BaseViewInflater<V> 
         return true;
     }
 
-
+    @Nullable
+    @Override
+    @SuppressWarnings("unchecked")
+    public ViewCreator<? super V> getCreator() {
+        return (ViewCreator<V>) (context, attrs) -> (V) View.inflate(context, R.layout.js_tablayout, null);
+    }
 }
