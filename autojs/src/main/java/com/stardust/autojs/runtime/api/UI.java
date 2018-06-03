@@ -2,6 +2,7 @@ package com.stardust.autojs.runtime.api;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.stardust.autojs.core.graphics.ScriptCanvasView;
@@ -55,7 +56,9 @@ public class UI extends ProxyObject {
     }
 
     @SuppressWarnings("unchecked")
-    public static <V extends View> V unwrapJsViewObject(NativeObject object, Class<V> c) {
+    public static <V extends View> V unwrapJsViewObject(@Nullable NativeObject object, Class<V> c) {
+        if (object == null)
+            return null;
         if (!object.containsKey("__javaObject__")) {
             throw new ClassCastException("object " + object + " cannot be cast to " + c.getName());
         }

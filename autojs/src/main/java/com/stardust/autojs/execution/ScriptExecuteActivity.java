@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,12 +15,17 @@ import android.view.MotionEvent;
 
 import com.stardust.autojs.core.eventloop.EventEmitter;
 import com.stardust.autojs.core.eventloop.SimpleEvent;
+import com.stardust.autojs.core.ui.inflater.inflaters.Exceptions;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
+import com.stardust.autojs.runtime.ScriptRuntime;
+import com.stardust.autojs.runtime.api.UI;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.util.IntentExtras;
+
+import org.mozilla.javascript.NativeObject;
 
 /**
  * Created by Stardust on 2017/2/5.
@@ -34,6 +41,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     private ScriptSource mScriptSource;
     private ActivityScriptExecution mScriptExecution;
     private IntentExtras mIntentExtras;
+    private ScriptRuntime mRuntime;
 
 
     private EventEmitter mEventEmitter;
@@ -62,7 +70,8 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         mScriptSource = mScriptExecution.getSource();
         mScriptEngine = mScriptExecution.createEngine(this);
         mExecutionListener = mScriptExecution.getListener();
-        mEventEmitter = new EventEmitter(((JavaScriptEngine) mScriptEngine).getRuntime().bridges);
+        mRuntime = ((JavaScriptEngine) mScriptEngine).getRuntime();
+        mEventEmitter = new EventEmitter(mRuntime.bridges);
         runScript();
     }
 
@@ -153,7 +162,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         SimpleEvent event = new SimpleEvent();
-        mEventEmitter.emit("back_pressed", event);
+        emit("back_pressed", event);
         if (!event.consumed) {
             super.onBackPressed();
         }
@@ -161,14 +170,14 @@ public class ScriptExecuteActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        mEventEmitter.emit("pause");
+        emit("pause");
         super.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mEventEmitter.emit("resume");
+        emit("resume");
     }
 
     @Override
@@ -179,19 +188,19 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mEventEmitter.emit("restore_instance_state", savedInstanceState);
+        emit("restore_instance_state", savedInstanceState);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
-        mEventEmitter.emit("save_instance_state", outState, outPersistentState);
+        emit("save_instance_state", outState, outPersistentState);
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         SimpleEvent e = new SimpleEvent();
-        mEventEmitter.emit("key_down", keyCode, event, e);
+        emit("key_down", keyCode, event, e);
         return e.consumed || super.onKeyDown(keyCode, event);
 
     }
@@ -199,27 +208,39 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
         SimpleEvent e = new SimpleEvent();
-        mEventEmitter.emit("generic_motion_event", event, e);
+        emit("generic_motion_event", event, e);
         return super.onGenericMotionEvent(event);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mEventEmitter.emit("activity_result", requestCode, resultCode, data);
+        emit("activity_result", requestCode, resultCode, data);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        mEventEmitter.emit("create_options_menu", menu);
+        emit("create_options_menu", menu);
         return menu.size() > 0;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         SimpleEvent e = new SimpleEvent();
-        mEventEmitter.emit("options_item_selected", e, item);
+        emit("options_item_selected", e, item);
         return e.consumed || super.onOptionsItemSelected(item);
+    }
+
+    public void emit(String event, Object... args) {
+        try {
+            mEventEmitter.emit(event, (Object[]) args);
+        } catch (Exception e) {
+            mRuntime.exit(e);
+        }
+    }
+
+    public void setSupportActionBar(@Nullable NativeObject toolbar) {
+        super.setSupportActionBar(UI.unwrapJsViewObject(toolbar, Toolbar.class));
     }
 
     private static class ActivityScriptExecution extends ScriptExecution.AbstractScriptExecution {

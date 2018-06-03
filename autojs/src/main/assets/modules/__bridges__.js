@@ -20,6 +20,9 @@ bridges.call = function (func, target, args) {
 
 */
 function wrap(value){
+    if(value == null || value == undefined){
+        return value;
+    }
     if(!(typeof(value) == 'object' && value.getClass && util.isFunction(value.getClass))){
         return value;
     }
