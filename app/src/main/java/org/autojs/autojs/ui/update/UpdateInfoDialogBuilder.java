@@ -117,7 +117,7 @@ public class UpdateInfoDialogBuilder extends MaterialDialog.Builder {
                 .title(R.string.text_downloading)
                 .progress(false, 100)
                 .show();
-        final String path = StorageFileProvider.DEFAULT_DIRECTORY_PATH + "AutoJs.apk";
+        final String path = StorageFileProvider.getDefaultDirectoryPath() + "AutoJs.apk";
         final DownloadTask task = new DownloadTask() {
             @Override
             protected void onProgressUpdate(Integer... values) {

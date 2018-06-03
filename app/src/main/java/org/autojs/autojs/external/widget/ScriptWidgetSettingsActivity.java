@@ -44,7 +44,7 @@ public class ScriptWidgetSettingsActivity extends BaseActivity {
         mStorageFileProvider = StorageFileProvider.getExternalStorageProvider();
         ScriptListView scriptList = (ScriptListView) findViewById(R.id.script_list);
         scriptList.setStorageFileProvider(mStorageFileProvider);
-        scriptList.setCurrentDirectory(new ScriptFile(StorageFileProvider.DEFAULT_DIRECTORY));
+        scriptList.setCurrentDirectory(new ScriptFile(StorageFileProvider.getDefaultDirectory()));
         scriptList.setOnScriptFileClickListener((view, file) -> {
             mSelectedScriptFilePath = file.getPath();
             finish();

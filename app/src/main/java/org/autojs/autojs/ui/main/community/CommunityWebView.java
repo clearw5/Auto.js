@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
-import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 
@@ -126,7 +125,7 @@ public class CommunityWebView extends EWebView {
             }
             new FileChooserDialogBuilder(getContext())
                     .title(R.string.text_select_file_to_upload)
-                    .dir(StorageFileProvider.DEFAULT_DIRECTORY_PATH)
+                    .dir(StorageFileProvider.getDefaultDirectoryPath())
                     .singleChoice(file -> callback.onReceiveValue(Uri.fromFile(file)))
                     .cancelListener(dialog -> callback.onReceiveValue(null))
                     .show();

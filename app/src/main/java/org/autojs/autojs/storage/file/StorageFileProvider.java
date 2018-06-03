@@ -4,8 +4,10 @@ import android.os.Environment;
 
 import com.stardust.app.GlobalAppContext;
 import com.stardust.pio.PFile;
-import org.autojs.autojs.App;
+
+import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
+
 import com.stardust.util.LimitedHashMap;
 
 import org.greenrobot.eventbus.EventBus;
@@ -28,8 +30,7 @@ public class StorageFileProvider {
     public static final int CREATE = 1;
     public static final int CHANGE = 2;
     public static final int ALL = 3;
-    public static final String DEFAULT_DIRECTORY_PATH = Environment.getExternalStorageDirectory() + GlobalAppContext.getString(R.string.folder_name);
-    public static final PFile DEFAULT_DIRECTORY = new PFile(DEFAULT_DIRECTORY_PATH);
+
     public static final FileFilter SCRIPT_FILTER = file ->
             file.isDirectory() || file.getName().endsWith(".js") || file.getName().endsWith(".auto");
 
@@ -74,8 +75,10 @@ public class StorageFileProvider {
     }
 
 
+    private static final PFile INITIAL_DIRECTORY_DEFAULT = new PFile("");
+
     private static StorageFileProvider externalStorageProvider;
-    private static final StorageFileProvider DEFAULT_PROVIDER = new StorageFileProvider(DEFAULT_DIRECTORY, 10, SCRIPT_FILTER);
+    private static final StorageFileProvider DEFAULT_PROVIDER = new StorageFileProvider(INITIAL_DIRECTORY_DEFAULT, 10, SCRIPT_FILTER);
 
     private EventBus mDirectoryEventBus = new EventBus();
     private LimitedHashMap<String, List<PFile>> mPFileCache;
@@ -99,7 +102,15 @@ public class StorageFileProvider {
     }
 
     public StorageFileProvider() {
-        this(DEFAULT_DIRECTORY, 10);
+        this(getDefaultDirectory(), 10);
+    }
+
+    public static String getDefaultDirectoryPath() {
+        return getDefaultDirectory().getPath();
+    }
+
+    public static PFile getDefaultDirectory() {
+        return new PFile(Environment.getExternalStorageDirectory(), Pref.getScriptDirPath());
     }
 
     public static StorageFileProvider getDefault() {
@@ -149,25 +160,28 @@ public class StorageFileProvider {
 
     public void notifyStoragePermissionGranted() {
         mPFileCache.clear();
-        mDirectoryEventBus.post(new DirectoryChangeEvent(mInitialDirectory));
+        mDirectoryEventBus.post(new DirectoryChangeEvent(getInitialDirectory()));
     }
 
     @SuppressWarnings("unchecked")
     public void refreshAll() {
         Map<String, PFile> files = (Map<String, PFile>) mPFileCache.clone();
         mPFileCache.clear();
-        mDirectoryEventBus.post(new DirectoryChangeEvent(mInitialDirectory));
+        mDirectoryEventBus.post(new DirectoryChangeEvent(getInitialDirectory()));
         for (Map.Entry<String, PFile> file : files.entrySet()) {
             mDirectoryEventBus.post(new DirectoryChangeEvent(new PFile(file.getKey())));
         }
     }
 
     public PFile getInitialDirectory() {
+        if (mInitialDirectory == INITIAL_DIRECTORY_DEFAULT) {
+            return getDefaultDirectory();
+        }
         return mInitialDirectory;
     }
 
     public Observable<PFile> getInitialDirectoryFiles() {
-        return getDirectoryFiles(mInitialDirectory);
+        return getDirectoryFiles(getInitialDirectory());
     }
 
     public Observable<PFile> getDirectoryFiles(PFile directory) {

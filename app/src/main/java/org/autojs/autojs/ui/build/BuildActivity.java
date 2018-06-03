@@ -148,7 +148,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     private void setupWithSourceFile(ScriptFile file) {
         String dir = file.getParent();
         if (dir.startsWith(getFilesDir().getPath())) {
-            dir = StorageFileProvider.DEFAULT_DIRECTORY_PATH;
+            dir = StorageFileProvider.getDefaultDirectoryPath();
         }
         mOutputPath.setText(dir);
         mAppName.setText(file.getSimplifiedName());
@@ -168,7 +168,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         new FileChooserDialogBuilder(this)
                 .title(R.string.text_source_file_path)
                 .dir(Environment.getExternalStorageDirectory().getPath(),
-                        initialDir == null ? StorageFileProvider.DEFAULT_DIRECTORY_PATH : initialDir)
+                        initialDir == null ? StorageFileProvider.getDefaultDirectoryPath() : initialDir)
                 .singleChoice(this::setSource)
                 .show();
     }
@@ -190,7 +190,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     @Click(R.id.select_output)
     void selectOutputDirPath() {
         String initialDir = new File(mOutputPath.getText().toString()).exists() ?
-                mOutputPath.getText().toString() : StorageFileProvider.DEFAULT_DIRECTORY_PATH;
+                mOutputPath.getText().toString() : StorageFileProvider.getDefaultDirectoryPath();
         new FileChooserDialogBuilder(this)
                 .title(R.string.text_output_apk_path)
                 .dir(initialDir)

@@ -51,7 +51,7 @@ public class ScriptIntents {
             }
             config.executePath(new File(path).getParent());
         } else {
-            config.executePath(StorageFileProvider.DEFAULT_DIRECTORY_PATH);
+            config.executePath(StorageFileProvider.getDefaultDirectoryPath());
         }
         if (source == null) {
             return false;

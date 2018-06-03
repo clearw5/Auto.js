@@ -118,6 +118,16 @@
             android:layout="@layout/preference_custom"
             android:title="@string/text_documentation_source"
             />
+
+        <org.autojs.autojs.ui.settings.ScriptDirPathPreference
+            android:entries="@array/keys_documentation_source"
+            android:entryValues="@array/values_documentation_source"
+            android:key="@string/key_script_dir_path"
+            android:defaultValue="@string/default_value_script_dir_path"
+            android:layout="@layout/preference_custom"
+            android:title="@string/text_change_script_dir"
+            />
+            android:
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
     <com.stardust.theme.preference.ThemeColorPreferenceCategory

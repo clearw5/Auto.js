@@ -43,7 +43,7 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
     private void initScriptListRecyclerView() {
         mStorageFileProvider = StorageFileProvider.getExternalStorageProvider();
         ScriptListView scriptList = (ScriptListView) findViewById(R.id.script_list);
-        scriptList.setStorageFileProvider(mStorageFileProvider, new ScriptFile(StorageFileProvider.DEFAULT_DIRECTORY));
+        scriptList.setStorageFileProvider(mStorageFileProvider, new ScriptFile(StorageFileProvider.getDefaultDirectory()));
         scriptList.setOnScriptFileClickListener((view, file) -> {
             mSelectedScriptFilePath = file.getPath();
             finish();

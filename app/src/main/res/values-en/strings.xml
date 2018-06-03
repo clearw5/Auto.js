@@ -47,7 +47,6 @@
     <string name="text_already_create">Created</string>
     <string name="text_delete">Delete</string>
     <string name="text_already_delete">Deleted</string>
-    <string name="folder_name">/Scripts/</string>
     <string name="text_error">Error</string>
     <string name="text_copy_debug_info">Copy debugging log</string>
     <string name="text_it_is_the_developer_of_app">This is a software developer(。・・)ノ</string>
@@ -165,5 +164,6 @@
     <string name="text_value">Value</string>
     <string name="text_show_widget_infomation">View info</string>
     <string name="text_show_layout_hierarchy">View in layout bounds\' view</string>
+    <string name="default_value_script_dir_path">/Scripts/</string>
 
 </resources>

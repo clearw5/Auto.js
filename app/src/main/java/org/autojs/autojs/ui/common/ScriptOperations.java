@@ -67,7 +67,7 @@ public class ScriptOperations {
     }
 
     public ScriptOperations(Context context, View view) {
-        this(context, view, new ScriptFile(StorageFileProvider.DEFAULT_DIRECTORY));
+        this(context, view, new ScriptFile(StorageFileProvider.getDefaultDirectory()));
     }
 
     public void newScriptFileForScript(final String script) {

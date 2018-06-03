@@ -32,7 +32,7 @@ public class FileChooserDialogBuilder extends ThemeColorMaterialDialogBuilder {
     }
 
     private FileChooseListView mFileChooseListView;
-    private PFile mRootDir = StorageFileProvider.DEFAULT_DIRECTORY;
+    private PFile mRootDir = StorageFileProvider.getDefaultDirectory();
     private MultiChoiceCallback mCallback;
 
     public FileChooserDialogBuilder(@NonNull Context context) {
@@ -59,7 +59,7 @@ public class FileChooserDialogBuilder extends ThemeColorMaterialDialogBuilder {
 
     public FileChooserDialogBuilder dir(String rootDir, String initialDir) {
         mRootDir = new PFile(rootDir);
-        if (mRootDir.equals(StorageFileProvider.DEFAULT_DIRECTORY)) {
+        if (mRootDir.equals(StorageFileProvider.getDefaultDirectory())) {
             mFileChooseListView.setStorageFileProvider(StorageFileProvider.getDefault());
         } else {
             mFileChooseListView.setStorageFileProvider(new StorageFileProvider(mRootDir, 10), new ScriptFile(initialDir));

@@ -10,9 +10,8 @@ import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
-import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.autojs.script.ScriptSource;
-import org.autojs.autojs.App;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.external.ScriptIntents;
@@ -100,8 +99,8 @@ public class Scripts {
 
     public static ScriptExecution run(ScriptSource source) {
         return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
-                .executePath(StorageFileProvider.DEFAULT_DIRECTORY_PATH)
-                .requirePath(StorageFileProvider.DEFAULT_DIRECTORY_PATH));
+                .executePath(StorageFileProvider.getDefaultDirectoryPath())
+                .requirePath(StorageFileProvider.getDefaultDirectoryPath()));
     }
 
     public static ScriptExecution runWithBroadcastSender(File file) {

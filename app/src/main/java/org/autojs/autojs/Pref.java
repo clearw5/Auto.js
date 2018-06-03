@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 
 import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
+
 import org.autojs.autojs.autojs.key.GlobalKeyObserver;
 
 import java.util.concurrent.TimeUnit;
@@ -168,7 +169,12 @@ public class Pref {
         def().edit().putInt(KEY_EDITOR_TEXT_SIZE, value).apply();
     }
 
-    public static int getEditorTextSize(int defVlaue) {
-        return def().getInt(KEY_EDITOR_TEXT_SIZE, defVlaue);
+    public static int getEditorTextSize(int defValue) {
+        return def().getInt(KEY_EDITOR_TEXT_SIZE, defValue);
+    }
+
+    public static String getScriptDirPath() {
+        return def().getString(getString(R.string.key_script_dir_path),
+                getString(R.string.default_value_script_dir_path));
     }
 }

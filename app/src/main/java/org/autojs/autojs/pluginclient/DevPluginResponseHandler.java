@@ -9,7 +9,7 @@ import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.pio.PFiles;
-import org.autojs.autojs.App;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.model.script.Scripts;
@@ -98,7 +98,7 @@ public class DevPluginResponseHandler implements Handler {
         if (!name.endsWith(".js")) {
             name = name + ".js";
         }
-        PFiles.write(StorageFileProvider.DEFAULT_DIRECTORY_PATH + name, script);
+        PFiles.write(StorageFileProvider.getDefaultDirectoryPath() + name, script);
         GlobalAppContext.toast(R.string.text_script_save_successfully);
     }
 }

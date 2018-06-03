@@ -1,5 +1,5 @@
 auto();
-events.observeNotification();
+events.observeToast();
 events.onToast(function(toast){
     var pkg = toast.getPackageName();
     log("Toast内容: " + toast.getText() +

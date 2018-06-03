@@ -49,7 +49,6 @@
     <string name="text_already_create">已创建</string>
     <string name="text_delete">删除</string>
     <string name="text_already_delete">已删除</string>
-    <string name="folder_name">/脚本/</string>
     <string name="text_error">错误</string>
     <string name="text_copy_debug_info">复制调试信息</string>
     <string name="text_it_is_the_developer_of_app">这是软件开发者(。・・)ノ</string>
@@ -356,4 +355,8 @@
     <string name="text_inspect_layout">布局分析</string>
     <string name="text_pointer_location">指针位置[Root]</string>
     <string name="text_skip">跳过</string>
+    <string name="text_change_script_dir">更改脚本文件夹路径</string>
+    <string name="key_script_dir_path">key_script_dir_path</string>
+    <string name="default_value_script_dir_path">/脚本/</string>
+    <string name="text_error_copy_file" formatted="true">发生错误: %s</string>
 </resources>
