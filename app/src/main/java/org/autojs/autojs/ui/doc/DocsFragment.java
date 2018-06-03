@@ -4,13 +4,17 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.webkit.WebView;
 
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.ui.main.QueryEvent;
 import org.autojs.autojs.ui.main.ViewPagerFragment;
+
 import com.stardust.util.BackPressedHandler;
+
 import org.autojs.autojs.ui.widget.EWebView;
 
 import org.androidannotations.annotations.AfterViews;
@@ -48,13 +52,27 @@ public class DocsFragment extends ViewPagerFragment implements BackPressedHandle
     @AfterViews
     void setUpViews() {
         mWebView = mEWebView.getWebView();
-        String url = Pref.getDocumentationUrl() + "index.html";
+        mEWebView.getSwipeRefreshLayout().setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (TextUtils.equals(mWebView.getUrl(), mWebView.getOriginalUrl())) {
+                    loadUrl();
+                } else {
+                    mEWebView.onRefresh();
+                }
+            }
+        });
         Bundle savedWebViewState = getArguments().getBundle("savedWebViewState");
         if (savedWebViewState != null) {
             mWebView.restoreState(savedWebViewState);
         } else {
-            mWebView.loadUrl(getArguments().getString(ARGUMENT_URL, url));
+            loadUrl();
         }
+    }
+
+    private void loadUrl() {
+        String url = Pref.getDocumentationUrl() + "index.html";
+        mWebView.loadUrl(getArguments().getString(ARGUMENT_URL, url));
     }
 
 

@@ -2,7 +2,6 @@ package org.autojs.autojs.ui.settings;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -13,22 +12,17 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.prefs.MaterialEditTextPreference;
-import com.stardust.pio.PFiles;
 
-import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.storage.file.FileObservable;
 import org.autojs.autojs.storage.file.StorageFileProvider;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 import org.autojs.autojs.tool.SimpleObserver;
-import org.autojs.autojs.ui.widget.SimpleTextWatcher;
 
 import java.io.File;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class ScriptDirPathPreference extends MaterialEditTextPreference {
@@ -55,13 +49,9 @@ public class ScriptDirPathPreference extends MaterialEditTextPreference {
     protected void onAddEditTextToDialogView(@NonNull View dialogView, @NonNull EditText editText) {
         super.onAddEditTextToDialogView(dialogView, editText);
         mRadioGroup = (RadioGroup) View.inflate(getContext(), R.layout.script_dir_pref_radio_group, null);
-        editText.addTextChangedListener(new SimpleTextWatcher(this::verifyInput));
         ((ViewGroup) dialogView).addView(mRadioGroup);
     }
 
-    private void verifyInput(Editable text) {
-
-    }
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {

@@ -60,6 +60,9 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
         init();
     }
 
+    public SwipeRefreshLayout getSwipeRefreshLayout() {
+        return mSwipeRefreshLayout;
+    }
 
     private void init() {
         inflate(getContext(), R.layout.ewebview, this);
@@ -95,6 +98,7 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
         }
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void onRefresh() {
         mWebView.reload();

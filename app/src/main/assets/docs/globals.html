@@ -224,7 +224,7 @@ for(var i = 0; i &lt; 100; i++){
 </ul>
 </div><p>动态申请安卓的权限。例如：</p>
 <pre><code>//请求GPS权限
-runtime.requestPermission([&quot;access_fine_location&quot;]);
+runtime.requestPermissions([&quot;access_fine_location&quot;]);
 </code></pre><p>尽管安卓有很多权限，但必须写入Manifest才能动态申请，为了防止权限的滥用，目前Auto.js只能额外申请两个权限：</p>
 <ul>
 <li><code>access_fine_location</code> GPS权限</li>
