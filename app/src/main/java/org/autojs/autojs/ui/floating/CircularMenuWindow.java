@@ -1,9 +1,11 @@
 package org.autojs.autojs.ui.floating;
 
+import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.WindowManager;
@@ -14,7 +16,7 @@ import com.stardust.enhancedfloaty.WindowBridge;
 import com.stardust.floatingcircularactionmenu.CircularActionMenu;
 import com.stardust.floatingcircularactionmenu.gesture.BounceDragGesture;
 
-public class CircularMenuWindow implements FloatyWindow, SensorEventListener {
+public class CircularMenuWindow implements FloatyWindow {
 
     protected CircularMenuFloaty mFloaty;
     protected WindowManager mWindowManager;
@@ -49,8 +51,8 @@ public class CircularMenuWindow implements FloatyWindow, SensorEventListener {
         mOrientationEventListener = new OrientationEventListener(mContext) {
             @Override
             public void onOrientationChanged(int orientation) {
-                if (mActionViewWindowBridge.isOrientationChanged(orientation)) {
-                    mDragGesture.keepToEdge();
+                if (mActionViewWindowBridge.isOrientationChanged(mContext.getResources().getConfiguration().orientation)) {
+                    keepToSide();
                 }
             }
         };
@@ -59,8 +61,12 @@ public class CircularMenuWindow implements FloatyWindow, SensorEventListener {
         }
     }
 
+    private void keepToSide() {
+        mDragGesture.keepToEdge();
+    }
+
     private void setInitialState() {
-        this.mDragGesture.keepToEdge();
+        keepToSide();
     }
 
     private void initGestures() {
@@ -190,13 +196,4 @@ public class CircularMenuWindow implements FloatyWindow, SensorEventListener {
         FloatyService.removeWindow(this);
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        mDragGesture.keepToEdge();
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
 }

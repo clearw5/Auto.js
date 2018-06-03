@@ -2,6 +2,7 @@ package org.autojs.autojs.ui.floating;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
