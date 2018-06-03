@@ -2,6 +2,7 @@ package com.stardust.autojs.runtime.api;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -28,7 +29,6 @@ import com.stardust.concurrent.VolatileDispose;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
 
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
@@ -69,12 +69,16 @@ public class Images {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public boolean requestScreenCapture(final int width, final int height) {
+    public boolean requestScreenCapture(int orientation) {
         ScriptRuntime.requiresApi(21);
+        if (mScreenCapturer != null) {
+            mScreenCapturer.setOrientation(orientation);
+            return true;
+        }
         final VolatileDispose<Boolean> requestResult = new VolatileDispose<>();
         mScreenCaptureRequester.setOnActivityResultCallback((result, data) -> {
             if (result == Activity.RESULT_OK) {
-                mScreenCapturer = new ScreenCapturer(mContext, data, width, height, ScreenMetrics.getDeviceScreenDensity(),
+                mScreenCapturer = new ScreenCapturer(mContext, data, orientation, ScreenMetrics.getDeviceScreenDensity(),
                         new Handler(mScriptRuntime.loopers.getServantLooper()));
                 requestResult.setAndNotify(true);
             } else {
@@ -87,18 +91,12 @@ public class Images {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean requestScreenCapture(boolean landscape) {
-        if (!landscape)
-            return requestScreenCapture(ScreenMetrics.getDeviceScreenWidth(), ScreenMetrics.getDeviceScreenHeight());
-        else
-            return requestScreenCapture(ScreenMetrics.getDeviceScreenHeight(), ScreenMetrics.getDeviceScreenWidth());
+        return requestScreenCapture(landscape ? Configuration.ORIENTATION_LANDSCAPE : Configuration.ORIENTATION_PORTRAIT);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean requestScreenCapture() {
-        if (mDisplay.getRotation() == Surface.ROTATION_0 || mDisplay.getRotation() == Surface.ROTATION_180)
-            return requestScreenCapture(ScreenMetrics.getDeviceScreenWidth(), ScreenMetrics.getDeviceScreenHeight());
-        else
-            return requestScreenCapture(ScreenMetrics.getDeviceScreenHeight(), ScreenMetrics.getDeviceScreenWidth());
+        return requestScreenCapture(ScreenCapturer.ORIENTATION_AUTO);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

@@ -3,6 +3,7 @@ package com.stardust.autojs.core.image.capture;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
@@ -15,7 +16,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
+import android.view.OrientationEventListener;
 
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
@@ -27,45 +28,83 @@ import com.stardust.util.ScreenMetrics;
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 public class ScreenCapturer {
 
+    public static final int ORIENTATION_AUTO = -1;
+
     private static final String LOG_TAG = "ScreenCapturer";
     private final Object mCachedImageLock = new Object();
+    private final MediaProjectionManager mProjectionManager;
     private ImageReader mImageReader;
-    private MediaProjection mMediaProjection;
+    private final MediaProjection mMediaProjection;
     private VirtualDisplay mVirtualDisplay;
     private volatile Looper mImageAcquireLooper;
     private volatile Image mUnderUsingImage;
     private volatile Image mCachedImage;
     private volatile boolean mImageAvailable = false;
     private volatile Exception mException;
-    private final int mScreenWidth;
-    private final int mScreenHeight;
     private final int mScreenDensity;
     private Handler mHandler;
+    private Intent mData;
+    private Context mContext;
+    private int mOrientation = Configuration.ORIENTATION_UNDEFINED;
+    private int mDetectedOrientation;
+    private OrientationEventListener mOrientationEventListener;
 
-    public ScreenCapturer(Context context, Intent data, int screenWidth, int screenHeight, int screenDensity, Handler handler) {
-        mScreenWidth = screenWidth;
-        mScreenHeight = screenHeight;
+    public ScreenCapturer(Context context, Intent data, int orientation, int screenDensity, Handler handler) {
+        mContext = context;
+        mData = data;
         mScreenDensity = screenDensity;
         mHandler = handler;
-        MediaProjectionManager manager = (MediaProjectionManager) context.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-        initVirtualDisplay(manager, data, screenWidth, screenHeight, screenDensity);
+        mProjectionManager = (MediaProjectionManager) context.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        mMediaProjection = mProjectionManager.getMediaProjection(Activity.RESULT_OK, mData);
         mHandler = handler;
+        setOrientation(orientation);
+        observeOrientation();
+    }
+
+    private void observeOrientation() {
+        mOrientationEventListener = new OrientationEventListener(mContext) {
+            @Override
+            public void onOrientationChanged(int o) {
+                int orientation = mContext.getResources().getConfiguration().orientation;
+                if (mOrientation == ORIENTATION_AUTO && mDetectedOrientation != orientation) {
+                    mDetectedOrientation = orientation;
+                    refreshVirtualDisplay(orientation);
+                }
+            }
+
+        };
+        if (mOrientationEventListener.canDetectOrientation()) {
+            mOrientationEventListener.enable();
+        }
+    }
+
+    public void setOrientation(int orientation) {
+        if (mOrientation == orientation)
+            return;
+        mOrientation = orientation;
+        mDetectedOrientation = mContext.getResources().getConfiguration().orientation;
+        refreshVirtualDisplay(mOrientation == ORIENTATION_AUTO ? mDetectedOrientation : mOrientation);
+    }
+
+
+    private void refreshVirtualDisplay(int orientation) {
+        if (mImageReader != null) {
+            mImageReader.close();
+        }
+        if (mVirtualDisplay != null) {
+            mVirtualDisplay.release();
+        }
+        mImageAvailable = false;
+        int screenHeight = ScreenMetrics.getOrientationAwareScreenHeight(orientation);
+        int screenWidth = ScreenMetrics.getOrientationAwareScreenWidth(orientation);
+        initVirtualDisplay(screenWidth, screenHeight, mScreenDensity);
         startAcquireImageLoop();
     }
 
-    public ScreenCapturer(Context context, Intent data, int screenWidth, int screenHeight) {
-        this(context, data, screenWidth, screenHeight, ScreenMetrics.getDeviceScreenDensity(), null);
-    }
-
-    public ScreenCapturer(Context context, Intent data) {
-        this(context, data, ScreenMetrics.getDeviceScreenWidth(), ScreenMetrics.getDeviceScreenHeight());
-    }
-
-    private void initVirtualDisplay(MediaProjectionManager manager, Intent data, int screenWidth, int screenHeight, int screenDensity) {
-        mImageReader = ImageReader.newInstance(screenWidth, screenHeight, PixelFormat.RGBA_8888, 2);
-        mMediaProjection = manager.getMediaProjection(Activity.RESULT_OK, data);
+    private void initVirtualDisplay(int width, int height, int screenDensity) {
+        mImageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 2);
         mVirtualDisplay = mMediaProjection.createVirtualDisplay(LOG_TAG,
-                screenWidth, screenHeight, screenDensity, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+                width, height, screenDensity, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
                 mImageReader.getSurface(), null, null);
     }
 
@@ -138,14 +177,6 @@ public class ScreenCapturer {
         }
     }
 
-    public int getScreenWidth() {
-        return mScreenWidth;
-    }
-
-    public int getScreenHeight() {
-        return mScreenHeight;
-    }
-
     public int getScreenDensity() {
         return mScreenDensity;
     }
@@ -170,6 +201,9 @@ public class ScreenCapturer {
         if (mCachedImage != null) {
             mCachedImage.close();
         }
+        if (mOrientationEventListener != null) {
+            mOrientationEventListener.disable();
+        }
     }
 
     @Override
@@ -180,4 +214,5 @@ public class ScreenCapturer {
             super.finalize();
         }
     }
+
 }
