@@ -39,8 +39,10 @@
 <li><a class="nav-http" href="http.html">Http - HTTP</a></li>
 <li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
 <li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
 <li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
 <li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
 <li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
 <li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
 <li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
@@ -116,17 +118,15 @@ http.get(&quot;www.baidu.com&quot;, {}, function(res, err){
         console.error(err);
         return;
     }
-    log(&quot;code = &quot; + r.statusCode);
-    log(&quot;html = &quot; + r.body.string());
+    log(&quot;code = &quot; + res.statusCode);
+    log(&quot;html = &quot; + res.body.string());
 });
 </code></pre><p>如果要增加HTTP头部信息，则在options参数中添加，例如：</p>
 <pre><code>console.show();
 var r = http.get(&quot;www.baidu.com&quot;, {
     headers: {
-        &quot;Accept-Language&quot;: &quot;zh-cn,zh;q=0.5&quot;,
-        &quot;User-Agent: &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X
-10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56
-Safari/535.11&quot;
+        &#39;Accept-Language&#39;: &#39;zh-cn,zh;q=0.5&#39;,
+        &#39;User-Agent&#39;: &#39;Mozilla/5.0(Macintosh;IntelMacOSX10_7_0)AppleWebKit/535.11(KHTML,likeGecko)Chrome/17.0.963.56Safari/535.11&#39;
     }
 });
 log(&quot;code = &quot; + r.statusCode);

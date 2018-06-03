@@ -20,7 +20,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.stardust.scriptdroid.ui.widget.EWebView
+    <org.autojs.autojs.ui.widget.EWebView
         android:id="@+id/eweb_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.MimeTypes;
 
@@ -18,14 +19,17 @@ public class Media implements MediaScannerConnection.MediaScannerConnectionClien
 
     private MediaScannerConnection mScannerConnection;
     private MediaPlayerWrapper mMediaPlayer;
+    private ScriptRuntime mRuntime;
 
-    public Media(Context context) {
+    public Media(Context context, ScriptRuntime runtime) {
         mScannerConnection = new MediaScannerConnection(context, this);
+        mRuntime = runtime;
+        mScannerConnection.connect();
     }
 
-    public void scan(String path) {
+    public void scanFile(String path) {
         String mimeType = MimeTypes.fromFileOr(path, null);
-        mScannerConnection.scanFile(path, mimeType);
+        mScannerConnection.scanFile(mRuntime.files.path(path), mimeType);
     }
 
     @Override
@@ -33,19 +37,39 @@ public class Media implements MediaScannerConnection.MediaScannerConnectionClien
 
     }
 
+    public void playMusic(String path, float volume) {
+        playMusic(path, volume, false);
+    }
+
+    public void playMusic(String path) {
+        playMusic(path, 1.0f);
+    }
+
     public void playMusic(String path, float volume, boolean looping) {
+        path = mRuntime.files.path(path);
         if (mMediaPlayer == null) {
             mMediaPlayer = new MediaPlayerWrapper();
         }
         mMediaPlayer.stopAndReset();
         try {
             mMediaPlayer.setDataSource(path);
+            mMediaPlayer.setVolume(volume, volume);
+            mMediaPlayer.setLooping(looping);
+            mMediaPlayer.prepare();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-        mMediaPlayer.setVolume(volume, volume);
-        mMediaPlayer.setLooping(looping);
         mMediaPlayer.start();
+    }
+
+    public void musicSeekTo(int m) {
+        if (mMediaPlayer == null)
+            return;
+        mMediaPlayer.seekTo(m);
+    }
+
+    public boolean isMuiscPlaying() {
+        return mMediaPlayer != null && mMediaPlayer.isPlaying();
     }
 
     public void pauseMusic() {
@@ -58,6 +82,19 @@ public class Media implements MediaScannerConnection.MediaScannerConnectionClien
         if (mMediaPlayer == null)
             return;
         mMediaPlayer.start();
+    }
+
+    public int getMusicDuration() {
+        if (mMediaPlayer == null) {
+            return 0;
+        }
+        return mMediaPlayer.getDuration();
+    }
+
+    public int getMusicCurrentPosition() {
+        if (mMediaPlayer == null)
+            return -1;
+        return mMediaPlayer.getCurrentPosition();
     }
 
     public void stopMusic() {

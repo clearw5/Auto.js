@@ -39,8 +39,10 @@
 <li><a class="nav-http" href="http.html">Http - HTTP</a></li>
 <li><a class="nav-images active" href="images.html">Images - 图片与图色处理</a></li>
 <li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
 <li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
 <li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
 <li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
 <li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
 <li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
@@ -85,14 +87,31 @@
 <li><span class="stability_undefined"><a href="#images_colors_equals_color1_color2">colors.equals(color1, color2)</a></span></li>
 </ul>
 </li>
+<li><span class="stability_undefined"><a href="#images_colors_black">colors.BLACK</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_dkgray">colors.DKGRAY</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_gray">colors.GRAY</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_ltgray">colors.LTGRAY</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_white">colors.WHITE</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_red">colors.RED</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_green">colors.GREEN</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_blue">colors.BLUE</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_yellow">colors.YELLOW</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_cyan">colors.CYAN</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_magenta">colors.MAGENTA</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_transparent">colors.TRANSPARENT</a></span></li>
 <li><span class="stability_2"><a href="#images_images">Images</a></span><ul>
 <li><span class="stability_undefined"><a href="#images_images_requestscreencapture_landscape">images.requestScreenCapture([landscape])</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_capturescreen">images.captureScreen()</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_capturescreen_path">images.captureScreen(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_pixel_image_x_y">images.pixel(image, x, y)</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_save_image_path">images.save(image, path)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_copy_img">images.copy(img)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_save_image_path_format_png_quality_100">images.save(image, path[, format = &quot;png&quot;, quality = 100])</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_read_path">images.read(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_load_url">images.load(url)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_frombase64_base64">images.fromBase64(base64)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_tobase64_img_format_png_quality_100">images.toBase64(img[, format = &quot;png&quot;, quality = 100])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_frombytes_bytes">images.fromBytes(bytes)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_tobytes_img_format_png_quality_100">images.toBytes(img[, format = &quot;png&quot;, quality = 100])</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_clip_img_x_y_w_h">images.clip(img, x, y, w, h)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findcolor_image_color_options">images.findColor(image, color, options)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findcolorinregion_img_color_x_y_width_height_threshold">images.findColorInRegion(img, color, x, y[, width, height, threshold])</a></span></li>
@@ -202,7 +221,31 @@
 </div><p>返回两个颜色是否相等。<em>*注意该函数会忽略Alpha通道的值进行比较</em>。</p>
 <pre><code>log(colors.equals(&quot;#112233&quot;, &quot;#112234&quot;));
 log(colors.equals(0xFF112233, 0xFF223344));
-</code></pre><h1>Images<span><a class="mark" href="#images_images" id="images_images">#</a></span></h1>
+</code></pre><h1>colors.BLACK<span><a class="mark" href="#images_colors_black" id="images_colors_black">#</a></span></h1>
+<p>黑色，颜色值 #FF000000</p>
+<h1>colors.DKGRAY<span><a class="mark" href="#images_colors_dkgray" id="images_colors_dkgray">#</a></span></h1>
+<p>深灰色，颜色值 #FF444444</p>
+<h1>colors.GRAY<span><a class="mark" href="#images_colors_gray" id="images_colors_gray">#</a></span></h1>
+<p>灰色，颜色值 #FF888888</p>
+<h1>colors.LTGRAY<span><a class="mark" href="#images_colors_ltgray" id="images_colors_ltgray">#</a></span></h1>
+<p>亮灰色，颜色值 #FFCCCCCC</p>
+<h1>colors.WHITE<span><a class="mark" href="#images_colors_white" id="images_colors_white">#</a></span></h1>
+<p>白色，颜色值 #FFFFFFFF</p>
+<h1>colors.RED<span><a class="mark" href="#images_colors_red" id="images_colors_red">#</a></span></h1>
+<p>红色，颜色值 #FFFF0000</p>
+<h1>colors.GREEN<span><a class="mark" href="#images_colors_green" id="images_colors_green">#</a></span></h1>
+<p>绿色，颜色值 #FF00FF00</p>
+<h1>colors.BLUE<span><a class="mark" href="#images_colors_blue" id="images_colors_blue">#</a></span></h1>
+<p>蓝色，颜色值 #FF0000FF</p>
+<h1>colors.YELLOW<span><a class="mark" href="#images_colors_yellow" id="images_colors_yellow">#</a></span></h1>
+<p>黄色，颜色值 #FFFFFF00</p>
+<h1>colors.CYAN<span><a class="mark" href="#images_colors_cyan" id="images_colors_cyan">#</a></span></h1>
+<p>青色，颜色值 #FF00FFFF</p>
+<h1>colors.MAGENTA<span><a class="mark" href="#images_colors_magenta" id="images_colors_magenta">#</a></span></h1>
+<p>品红色，颜色值 #FFFF00FF</p>
+<h1>colors.TRANSPARENT<span><a class="mark" href="#images_colors_transparent" id="images_colors_transparent">#</a></span></h1>
+<p>透明，颜色值 #00000000</p>
+<h1>Images<span><a class="mark" href="#images_images" id="images_images">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>images模块提供了一些手机设备中常见的图片处理函数，包括截图、读写图片、图片剪裁、找色、找图等。</p>
 <h2>images.requestScreenCapture([landscape])<span><a class="mark" href="#images_images_requestscreencapture_landscape" id="images_images_requestscreencapture_landscape">#</a></span></h2>
 <div class="signature"><ul>
@@ -257,13 +300,30 @@ toast(colors.toString(color));
 </div><p>返回图片image在点(x, y)处的像素的ARGB值。  </p>
 <p>该值的格式为0xAARRGGBB，是一个&quot;32位整数&quot;(虽然JavaScript中并不区分整数类型和其他数值类型)。</p>
 <p>坐标系以图片左上角为原点。以图片左侧边为y轴，上侧边为x轴。</p>
-<h2>images.save(image, path)<span><a class="mark" href="#images_images_save_image_path" id="images_images_save_image_path">#</a></span></h2>
+<h2>images.copy(img)<span><a class="mark" href="#images_images_copy_img" id="images_images_copy_img">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>image</code> <span class="type">&lt;image&gt;</span> 图片</li>
-<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路劲</li>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+</div><p>复制一张图片并返回新的副本。该函数会完全复制img对象的数据。</p>
+<h2>images.save(image, path[, format = &quot;png&quot;, quality = 100])<span><a class="mark" href="#images_images_save_image_path_format_png_quality_100" id="images_images_save_image_path_format_png_quality_100">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li><code>format</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片格式，可选的值为:<ul>
+<li><code>png</code></li>
+<li><code>jpeg</code>/<code>jpg</code></li>
+<li><code>webp</code></li>
+</ul>
+</li>
+<li><code>quality</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片质量，为0~100的整数值</li>
 </ul>
 </div><p>把图片image以PNG格式保存到path中。如果文件不存在会被创建；文件存在会被覆盖。</p>
-<h2>images.read(path)<span><a class="mark" href="#images_images_read_path" id="images_images_read_path">#</a></span></h2>
+<pre><code>//把图片压缩为原来的一半质量并保存
+var img = images.read(&quot;/sdcard/1.png&quot;);
+images.save(img, &quot;/sdcard/1.jpg&quot;, &quot;jpg&quot;, 50);
+app.viewFile(&quot;/sdcard/1.jpg&quot;);
+</code></pre><h2>images.read(path)<span><a class="mark" href="#images_images_read_path" id="images_images_read_path">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片路径</li>
 </ul>
@@ -273,6 +333,43 @@ toast(colors.toString(color));
 <li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片URL地址</li>
 </ul>
 </div><p>加载在地址URL的网络图片并返回一个Image对象。如果地址不存在或者图片无法解码则返回null。</p>
+<h2>images.fromBase64(base64)<span><a class="mark" href="#images_images_frombase64_base64" id="images_images_frombase64_base64">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>base64</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片的Base64数据</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+</div><p>解码Base64数据并返回解码后的图片Image对象。如果base64无法解码则返回<code>null</code>。</p>
+<h2>images.toBase64(img[, format = &quot;png&quot;, quality = 100])<span><a class="mark" href="#images_images_tobase64_img_format_png_quality_100" id="images_images_tobase64_img_format_png_quality_100">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>image</code> <span class="type">&lt;image&gt;</span> 图片</li>
+<li><code>format</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片格式，可选的值为:<ul>
+<li><code>png</code></li>
+<li><code>jpeg</code>/<code>jpg</code></li>
+<li><code>webp</code></li>
+</ul>
+</li>
+<li><code>quality</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片质量，为0~100的整数值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>把图片编码为base64数据并返回。</p>
+<h2>images.fromBytes(bytes)<span><a class="mark" href="#images_images_frombytes_bytes" id="images_images_frombytes_bytes">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>bytes</code> <span class="type">&lt;byte[]&gt;</span> 字节数组</li>
+</ul>
+</div><p>解码字节数组bytes并返回解码后的图片Image对象。如果bytes无法解码则返回<code>null</code>。</p>
+<h2>images.toBytes(img[, format = &quot;png&quot;, quality = 100])<span><a class="mark" href="#images_images_tobytes_img_format_png_quality_100" id="images_images_tobytes_img_format_png_quality_100">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>image</code> <span class="type">&lt;image&gt;</span> 图片</li>
+<li><code>format</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片格式，可选的值为:<ul>
+<li><code>png</code></li>
+<li><code>jpeg</code>/<code>jpg</code></li>
+<li><code>webp</code></li>
+</ul>
+</li>
+<li><code>quality</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片质量，为0~100的整数值</li>
+<li>返回 <span class="type">&lt;byte[]&gt;</span></li>
+</ul>
+</div><p>把图片编码为字节数组并返回。</p>
 <h2>images.clip(img, x, y, w, h)<span><a class="mark" href="#images_images_clip_img_x_y_w_h" id="images_images_clip_img_x_y_w_h">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>

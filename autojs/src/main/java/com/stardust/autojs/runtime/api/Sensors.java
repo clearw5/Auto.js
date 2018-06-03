@@ -96,7 +96,7 @@ public class Sensors extends EventEmitter implements Loopers.LooperQuitHandler {
     }
 
     public SensorEventEmitter register(String sensorName) {
-        return register(sensorName, delay.normal);
+        return register(sensorName, Delay.normal);
     }
 
     public SensorEventEmitter register(String sensorName, int delay) {

@@ -4,7 +4,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent">
 
-    <com.stardust.scriptdroid.ui.main.scripts.ScriptListView
+    <org.autojs.autojs.ui.main.scripts.ScriptListView
         android:id="@+id/script_file_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

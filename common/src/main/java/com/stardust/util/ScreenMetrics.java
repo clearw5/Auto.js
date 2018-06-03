@@ -1,6 +1,7 @@
 package com.stardust.util;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -42,6 +43,22 @@ public class ScreenMetrics {
 
     public static int getDeviceScreenDensity() {
         return deviceScreenDensity;
+    }
+
+    public static int getOrientationAwareScreenWidth(int orientation) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            return getDeviceScreenHeight();
+        } else {
+            return getDeviceScreenWidth();
+        }
+    }
+
+    public static int getOrientationAwareScreenHeight(int orientation) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            return getDeviceScreenWidth();
+        } else {
+            return getDeviceScreenHeight();
+        }
     }
 
     public static int scaleX(int x, int width) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.stardust.scriptdroid.ui.main.community.CommunityWebView xmlns:android="http://schemas.android.com/apk/res/android"
+<org.autojs.autojs.ui.main.community.CommunityWebView xmlns:android="http://schemas.android.com/apk/res/android"
                               xmlns:app="http://schemas.android.com/apk/res-auto"
                               android:id="@+id/eweb_view"
                               android:layout_width="match_parent"

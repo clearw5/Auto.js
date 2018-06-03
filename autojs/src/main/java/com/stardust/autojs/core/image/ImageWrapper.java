@@ -1,36 +1,24 @@
 package com.stardust.autojs.core.image;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.ImageFormat;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.Xfermode;
 import android.media.Image;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
-import com.stardust.autojs.runtime.api.Images;
 import com.stardust.pio.UncheckedIOException;
 
 import org.opencv.android.Utils;
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfInt;
 import org.opencv.highgui.Highgui;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
-import java.util.Collections;
 
 /**
  * Created by Stardust on 2017/11/25.
  */
-
 public class ImageWrapper {
 
     private Mat mMat;
@@ -48,6 +36,17 @@ public class ImageWrapper {
         mBitmap = bitmap;
         mWidth = bitmap.getWidth();
         mHeight = bitmap.getHeight();
+    }
+
+    public ImageWrapper(Bitmap bitmap, Mat mat) {
+        mBitmap = bitmap;
+        mMat = mat;
+        mWidth = bitmap.getWidth();
+        mHeight = bitmap.getHeight();
+    }
+
+    public ImageWrapper(int width, int height) {
+        this(Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888));
     }
 
 
@@ -75,7 +74,7 @@ public class ImageWrapper {
         int rowPadding = plane.getRowStride() - pixelStride * image.getWidth();
         Bitmap bitmap = Bitmap.createBitmap(image.getWidth() + rowPadding / pixelStride, image.getHeight(), Bitmap.Config.ARGB_8888);
         bitmap.copyPixelsFromBuffer(buffer);
-        if(rowPadding == 0){
+        if (rowPadding == 0) {
             return bitmap;
         }
         return Bitmap.createBitmap(bitmap, 0, 0, image.getWidth(), image.getHeight());
@@ -90,7 +89,7 @@ public class ImageWrapper {
     }
 
     public Mat getMat() {
-        if (mMat == null) {
+        if (mMat == null && mBitmap != null) {
             mMat = new Mat();
             Utils.bitmapToMat(mBitmap, mMat);
         }
@@ -98,6 +97,7 @@ public class ImageWrapper {
     }
 
     public void saveTo(String path) {
+        ensureNotRecycled();
         if (mBitmap != null) {
             try {
                 mBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(path));
@@ -110,6 +110,7 @@ public class ImageWrapper {
     }
 
     public int pixel(int x, int y) {
+        ensureNotRecycled();
         if (mBitmap != null) {
             return mBitmap.getPixel(x, y);
         }
@@ -127,9 +128,14 @@ public class ImageWrapper {
             mBitmap = null;
         }
         if (mMat != null) {
-            mMat.release();
+            OpenCVHelper.release(mMat);
             mMat = null;
         }
 
+    }
+
+    public void ensureNotRecycled() {
+        if (mBitmap == null && mMat == null)
+            throw new IllegalStateException("image has been recycled");
     }
 }

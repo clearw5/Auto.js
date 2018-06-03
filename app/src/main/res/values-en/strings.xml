@@ -34,7 +34,7 @@
     <string name="text_already_copy_to_clip">Copied</string>
     <string name="donate_developer">Donate</string>
     <string name="my_github">https://github.com/hyb1996/NoRootScriptDroid</string>
-    <string name="share_app">[UiAutomator]Download：http://www.coolapk.com/apk/com.stardust.scriptdroid </string>
+    <string name="share_app">[UiAutomator]Download：http://www.coolapk.com/apk/org.autojs.autojs </string>
     <string name="text_floating_window">Floating Window</string>
     <string name="text_error_report">Bug Report</string>
     <string name="text_press_again_to_exit">Press again to exit</string>
@@ -47,7 +47,6 @@
     <string name="text_already_create">Created</string>
     <string name="text_delete">Delete</string>
     <string name="text_already_delete">Deleted</string>
-    <string name="folder_name">/Scripts/</string>
     <string name="text_error">Error</string>
     <string name="text_copy_debug_info">Copy debugging log</string>
     <string name="text_it_is_the_developer_of_app">This is a software developer(。・・)ノ</string>
@@ -165,5 +164,6 @@
     <string name="text_value">Value</string>
     <string name="text_show_widget_infomation">View info</string>
     <string name="text_show_layout_hierarchy">View in layout bounds\' view</string>
+    <string name="default_value_script_dir_path">/Scripts/</string>
 
 </resources>

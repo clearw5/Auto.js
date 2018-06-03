@@ -1,49 +1,49 @@
 
-module.exports = function(__runtime__, scope){
+module.exports = function(runtime, global){
     var automator = {};
 
     function performAction(action, args){
         if(args.length == 4){
-            return action(__runtime__.automator.bounds(args[0], args[1], args[2], args[3]));
+            return action(runtime.automator.bounds(args[0], args[1], args[2], args[3]));
         }else if(args.length == 2){
-            return action(__runtime__.automator.text(args[0], args[1]));
+            return action(runtime.automator.text(args[0], args[1]));
         }else {
-            return action(__runtime__.automator.text(args[0], -1));
+            return action(runtime.automator.text(args[0], -1));
         }
     }
 
     automator.click = function(){
         if(arguments.length == 2 && typeof(arguments[0]) == 'number' && typeof(arguments[1]) == 'number'){
-            return __runtime__.automator.click(arguments[0], arguments[1]);
+            return runtime.automator.click(arguments[0], arguments[1]);
         }
         return performAction(function(target){
-            return __runtime__.automator.click(target);
+            return runtime.automator.click(target);
         }, arguments);
     }
 
     automator.longClick = function(a, b, c, d){
         if(arguments.length == 2 && typeof(arguments[0]) == 'number' && typeof(arguments[1]) == 'number'){
-            return  __runtime__.automator.longClick(arguments[0], arguments[1]);
+            return  runtime.automator.longClick(arguments[0], arguments[1]);
         }
         return performAction(function(target){
-            return __runtime__.automator.longClick(target);
+            return runtime.automator.longClick(target);
         }, arguments);
     }
 
-     automator.press = __runtime__.automator.press.bind(__runtime__.automator);
-     automator.gesture = __runtime__.automator.gesture.bind(__runtime__.automator, 0);
-     automator.gestureAsync = __runtime__.automator.gestureAsync.bind(__runtime__.automator, 0);
-     automator.swipe = __runtime__.automator.swipe.bind(__runtime__.automator);
+     automator.press = runtime.automator.press.bind(runtime.automator);
+     automator.gesture = runtime.automator.gesture.bind(runtime.automator, 0);
+     automator.gestureAsync = runtime.automator.gestureAsync.bind(runtime.automator, 0);
+     automator.swipe = runtime.automator.swipe.bind(runtime.automator);
      automator.gestures  = function(){
-        return __runtime__.automator.gestures(toStrokes(arguments));
+        return runtime.automator.gestures(toStrokes(arguments));
      }
 
      automator.gesturesAsync = function(){
-         __runtime__.automator.gesturesAsync(toStrokes(arguments));
+         runtime.automator.gesturesAsync(toStrokes(arguments));
      }
 
      function toStrokes(args){
-        var screenMetrics = __runtime__.getScreenMetrics();
+        var screenMetrics = runtime.getScreenMetrics();
         var len = args.length;
         var strokes = java.lang.reflect.Array.newInstance(android.accessibilityservice.GestureDescription.StrokeDescription, len);
         for(var i = 0; i < len; i++){
@@ -70,37 +70,37 @@ module.exports = function(__runtime__, scope){
 
     automator.scrollDown = function(a, b, c, d){
         if(arguments.length == 0)
-            return __runtime__.automator.scrollMaxForward();
+            return runtime.automator.scrollMaxForward();
         if(arguments.length == 1 && typeof a === 'number')
-            return __runtime__.automator.scrollForward(a);
+            return runtime.automator.scrollForward(a);
         return performAction(function(target){
-            return __runtime__.automator.scrollForward(target);
+            return runtime.automator.scrollForward(target);
         }, arguments);
     }
 
     automator.scrollUp = function(a, b, c, d){
          if(arguments.length == 0)
-            return __runtime__.automator.scrollMaxBackward();
+            return runtime.automator.scrollMaxBackward();
          if(arguments.length == 1 && typeof a === 'number')
-            return __runtime__.automator.scrollBackward(a);
+            return runtime.automator.scrollBackward(a);
           return performAction(function(target){
-            return __runtime__.automator.scrollBackward(target);
+            return runtime.automator.scrollBackward(target);
         }, arguments);
     }
 
     automator.setText = function(a, b){
         if(arguments.length == 1){
-            return __runtime__.automator.setText(__runtime__.automator.editable(-1), a);
+            return runtime.automator.setText(runtime.automator.editable(-1), a);
         }else{
-            return __runtime__.automator.setText(__runtime__.automator.editable(a), b);
+            return runtime.automator.setText(runtime.automator.editable(a), b);
         }
     }
 
     automator.input = function(a, b){
         if(arguments.length == 1){
-            return __runtime__.automator.appendText(__runtime__.automator.editable(-1), a);
+            return runtime.automator.appendText(runtime.automator.editable(-1), a);
         }else{
-            return __runtime__.automator.appendText(__runtime__.automator.editable(a), b);
+            return runtime.automator.appendText(runtime.automator.editable(a), b);
         }
     }
 
@@ -109,20 +109,28 @@ module.exports = function(__runtime__, scope){
         "fast": 1
     }
 
-    scope.auto = function(mode){
+    global.auto = function(mode){
         if(mode){
-            if(typeof(mode) !== "string"){
-                throw new TypeError("mode should be a string");
-            }
-            mode = modes[mode.toLowerCase()];
+            global.auto.setMode(mode);
         }
-        mode = mode || 0;
-        __runtime__.accessibilityBridge.setMode(mode);
-        __runtime__.accessibilityBridge.ensureServiceEnabled();
+        runtime.accessibilityBridge.ensureServiceEnabled();
     }
 
-    scope.__asGlobal__(__runtime__.automator, ['back', 'home', 'powerDialog', 'notifications', 'quickSettings', 'recents', 'splitScreen']);
-    scope.__asGlobal__(automator, ['click', 'longClick', 'press', 'swipe', 'gesture', 'gestures', 'gestureAsync', 'gesturesAsync', 'scrollDown', 'scrollUp', 'input', 'setText']);
+    global.auto.waitFor = function(){
+        runtime.accessibilityBridge.waitForServiceEnabled();
+    }
+
+    global.auto.setMode = function(mode){
+        if(typeof(mode) !== "string"){
+            throw new TypeError("mode should be a string");
+        }
+        mode = modes[mode.toLowerCase()] || 0;
+        runtime.accessibilityBridge.setMode(mode);
+    }
+
+
+    global.__asGlobal__(runtime.automator, ['back', 'home', 'powerDialog', 'notifications', 'quickSettings', 'recents', 'splitScreen']);
+    global.__asGlobal__(automator, ['click', 'longClick', 'press', 'swipe', 'gesture', 'gestures', 'gestureAsync', 'gesturesAsync', 'scrollDown', 'scrollUp', 'input', 'setText']);
 
     return automator;
 }

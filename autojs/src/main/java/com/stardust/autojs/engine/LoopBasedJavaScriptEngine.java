@@ -1,5 +1,6 @@
 package com.stardust.autojs.engine;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -63,6 +64,10 @@ public class LoopBasedJavaScriptEngine extends RhinoJavaScriptEngine {
     @Override
     public void forceStop() {
         LooperHelper.quitForThread(getThread());
+        Activity activity = (Activity) getTag("activity");
+        if (activity != null) {
+            activity.finish();
+        }
         super.forceStop();
     }
 

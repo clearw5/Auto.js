@@ -1,18 +1,24 @@
 
-module.exports = function(__runtime__, scope){
+module.exports = function(runtime, global){
     var floaty = {};
 
     floaty.window = function(layout){
         if(typeof(layout) == 'xml'){
-            layout = layout.toString();
+            layout = layout.toXMLString();
         }
-        return wrap(__runtime__.floaty.window(layout));
+        return wrap(runtime.floaty.window(layout));
     }
 
-    floaty.__view_cache__ = {};
+    floaty.rawWindow = function(layout){
+        if(typeof(layout) == 'xml'){
+            layout = layout.toXMLString();
+        }
+        return wrap(runtime.floaty.rawWindow(layout));
+    }
 
     function wrap(window){
-        var proxyObject = new com.stardust.autojs.rhino.ProxyJavaObject(scope, window, window.getClass());
+        var proxyObject = new com.stardust.autojs.rhino.ProxyJavaObject(global, window, window.getClass());
+        var viewCache = {};
         proxyObject.__proxy__ = {
             set: function(name, value){
                 window[name] = value;
@@ -20,12 +26,12 @@ module.exports = function(__runtime__, scope){
             get: function(name) {
                var value = window[name];
                if(typeof(value) == 'undefined'){
-                   value = floaty.__view_cache__[name];
+                   value = viewCache[name];
                    if(!value){
-                        value = window.getView(name);
+                        value = window.findView(name);
                         if(value){
                             value = ui.__decorate__(value);
-                            floaty.__view_cache__[name] = value;
+                            viewCache[name] = value;
                         }
                    }
                    if(!value){
@@ -37,6 +43,8 @@ module.exports = function(__runtime__, scope){
         };
         return proxyObject;
     }
+    
+    floaty.closeAll = runtime.floaty.closeAll.bind(runtime.floaty);
 
     return floaty;
 }

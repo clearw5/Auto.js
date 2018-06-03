@@ -73,16 +73,23 @@ public class ColorFinder {
         Scalar upperBound = new Scalar(Color.red(color) + threshold, Color.green(color) + threshold,
                 Color.blue(color) + threshold, 255);
         if (rect != null) {
-            Core.inRange(new Mat(image.getMat(), rect), lowerBound, upperBound, bi);
+            Mat m = new Mat(image.getMat(), rect);
+            Core.inRange(m, lowerBound, upperBound, bi);
+            OpenCVHelper.release(m);
         } else {
             Core.inRange(image.getMat(), lowerBound, upperBound, bi);
         }
         Mat nonZeroPos = new Mat();
         Core.findNonZero(bi, nonZeroPos);
+        MatOfPoint result;
         if (nonZeroPos.rows() == 0 || nonZeroPos.cols() == 0) {
-            return null;
+            result = null;
+        } else {
+            result = new MatOfPoint(nonZeroPos);
         }
-        return new MatOfPoint(nonZeroPos);
+        OpenCVHelper.release(bi);
+        OpenCVHelper.release(nonZeroPos);
+        return result;
     }
 
     public Point findMultiColors(ImageWrapper image, int firstColor, int threshold, Rect rect, int[] points) {
@@ -103,7 +110,12 @@ public class ColorFinder {
             int y = points[i + 1];
             int color = points[i + 2];
             ColorDetector colorDetector = new ColorDetector.DifferenceDetector(color, threshold);
-            int c = image.pixel((int) (x + startingPoint.x), (int) (y + startingPoint.y));
+            x += startingPoint.x;
+            y += startingPoint.y;
+            if (x >= image.getWidth() || y >= image.getHeight()) {
+                return false;
+            }
+            int c = image.pixel(x, y);
             if (!colorDetector.detectsColor(Color.red(c), Color.green(c), Color.blue(c))) {
                 return false;
             }

@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 
+import com.stardust.autojs.core.image.ImageWrapper;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
 
 /**
@@ -41,6 +42,10 @@ public class JsImageView extends RoundedImageView {
 
     public void setSource(String uri) {
         getDrawables().setupWithImage(this, uri);
+    }
+
+    public void setSource(ImageWrapper image) {
+        setImageBitmap(image.getBitmap());
     }
 
     @Override

@@ -5,11 +5,11 @@ android {
     compileSdkVersion 25
     buildToolsVersion '26.0.2'
     defaultConfig {
-        applicationId "com.stardust.scriptdroid"
+        applicationId "org.autojs.autojs"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 255
-        versionName "3.1.0 Alpha5"
+        versionCode 403
+        versionName "4.0.0 Beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -74,10 +74,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile 'junit:junit:4.12'
-    // LeakCanary (a memory leak tracer)
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     // Android Annotations
     annotationProcessor "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
@@ -151,5 +147,5 @@ dependencies {
     compile project(':automator')
     compile project(':common')
     compile project(':autojs')
-    compile files('libs/GDTUnionSDK.4.9.545.min.jar')
+    implementation 'com.google.android.gms:play-services-ads:11.8.0'
 }

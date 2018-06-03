@@ -4,7 +4,7 @@
 
 同时有[Sublime Text 插件](https://github.com/hyb1996/AutoJs-Sublime-Plugin)可提供基础的在桌面开发的功能。
 
-下载地址：[酷安](http://www.coolapk.com/apk/com.stardust.scriptdroid)
+下载地址：[酷安](http://www.coolapk.com/apk/org.autojs.autojs)
 
 Alpha版本：[Releases](https://github.com/hyb1996/NoRootScriptDroid/releases)
 

@@ -10,7 +10,7 @@
     <string name="text_path_is_empty">路径为空</string>
     <string name="text_file_not_exists">文件不存在</string>
     <string name="text_no_file_rw_permission">无文件读写权限</string>
-    <string name="text_no_accessibility_permission">无障碍服务未启动，脚本已停止运行</string>
+    <string name="text_no_accessibility_permission">无障碍服务未启动</string>
     <string name="text_drawer_close">关闭侧拉菜单</string>
     <string name="text_drawer_open">打开侧拉菜单</string>
     <string name="text_undo">撤销</string>
@@ -35,7 +35,7 @@
     <string name="text_already_copy_to_clip">已复制到剪贴板</string>
     <string name="donate_developer">打赏作者</string>
     <string name="my_github">https://github.com/hyb1996/NoRootScriptDroid</string>
-    <string name="share_app">[AutoJs]下载地址：http://www.coolapk.com/apk/com.stardust.scriptdroid </string>
+    <string name="share_app">[AutoJs]下载地址：http://www.coolapk.com/apk/org.autojs.autojs </string>
     <string name="text_floating_window">悬浮窗</string>
     <string name="text_error_report">错误报告</string>
     <string name="text_press_again_to_exit">再按一次退出程序</string>
@@ -49,7 +49,6 @@
     <string name="text_already_create">已创建</string>
     <string name="text_delete">删除</string>
     <string name="text_already_delete">已删除</string>
-    <string name="folder_name">/脚本/</string>
     <string name="text_error">错误</string>
     <string name="text_copy_debug_info">复制调试信息</string>
     <string name="text_it_is_the_developer_of_app">这是软件开发者(。・・)ノ</string>
@@ -81,7 +80,7 @@
     <string name="text_file_exists">文件已存在</string>
     <string name="text_accessibility_service">无障碍服务</string>
     <string name="text_enable_accessibility_service_by_root">通过Root权限自动启用服务</string>
-    <string name="text_auto_operate_service_enabled_but_not_running">无障碍服务已启用但并未运行，这可能是安卓的BUG，您可能需要重启手机</string>
+    <string name="text_auto_operate_service_enabled_but_not_running">无障碍服务已启用但并未运行，这可能是安卓的BUG，您可能需要重启手机或重启无障碍服务</string>
     <string name="key_enable_accessibility_service_by_root">key_enable_accessibility_service_by_root</string>
     <string name="text_enable_accessibility_service_by_root_timeout">使用Root权限启动无障碍服务超时</string>
     <string name="summary_enable_accessibility_service_by_root">开启后运行脚本会使用Root权限自动开启无障碍服务</string>
@@ -342,11 +341,22 @@
     <string name="text_no_phone_state_permission">获取权限失败 :-(</string>
     <string name="text_request_permission">重新授予</string>
     <string name="info_no_phone_state_permission">软件需要显示启动页广告来维持服务器和软件的开发和维护，因此需要\"读取手机状态\"的权限。\n如果您不喜欢广告，可以在设置中设定广告每天只显示一次。</string>
-    <string name="dex_crcs">1805165984\n1603032210\no7Za8UoEvAoTVZPxJAqmQA==V8tiED7XGmzTkAGKbFPjLw==</string>
+    <string name="dex_crcs">2184044085\n3566596539\npJTCkHuhypD9i3UBQ55XQw==RtXsgCTVFA7VYhLeF1TSkg==</string>
     <string name="text_size_min_value">8</string>
     <string name="text_size_max_value">56</string>
     <string name="text_text_size">字体大小</string>
     <string name="text_preview">预览</string>
     <string name="text_size_current_value" formatted="true">字体大小: %d</string>
     <string name="error_regex_find_prev">正则表达式不能向前查找</string>
+    <string name="text_notification">通知</string>
+    <string name="apk_builder_plugin_version_too_low">打包插件版本过低，打包的应用可能无法正常运行。是否立即下载对应版本的打包插件？</string>
+    <string name="text_inspect_layout_bounds">布局范围分析</string>
+    <string name="text_inspect_layout_hierarchy">布局层次分析</string>
+    <string name="text_inspect_layout">布局分析</string>
+    <string name="text_pointer_location">指针位置[Root]</string>
+    <string name="text_skip">跳过</string>
+    <string name="text_change_script_dir">更改脚本文件夹路径</string>
+    <string name="key_script_dir_path">key_script_dir_path</string>
+    <string name="default_value_script_dir_path">/脚本/</string>
+    <string name="text_error_copy_file" formatted="true">发生错误: %s</string>
 </resources>

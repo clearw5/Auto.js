@@ -1,5 +1,9 @@
 package com.stardust.autojs.core.ui.xml;
 
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.TabLayout;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.webkit.WebView;
 import android.widget.CheckBox;
@@ -12,13 +16,19 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
+import com.stardust.autojs.core.graphics.ScriptCanvasView;
 import com.stardust.autojs.core.ui.widget.JsButton;
 import com.stardust.autojs.core.ui.widget.JsEditText;
 import com.stardust.autojs.core.ui.widget.JsFrameLayout;
+import com.stardust.autojs.core.ui.widget.JsGridView;
 import com.stardust.autojs.core.ui.widget.JsImageView;
 import com.stardust.autojs.core.ui.widget.JsLinearLayout;
+import com.stardust.autojs.core.ui.widget.JsListView;
 import com.stardust.autojs.core.ui.widget.JsRelativeLayout;
+import com.stardust.autojs.core.ui.widget.JsTabLayout;
 import com.stardust.autojs.core.ui.widget.JsTextView;
+import com.stardust.autojs.core.ui.widget.JsToolbar;
+import com.stardust.autojs.core.ui.widget.JsViewPager;
 import com.stardust.autojs.core.ui.widget.JsWebView;
 
 import org.w3c.dom.Document;
@@ -63,7 +73,14 @@ public class XmlConverter {
                     .map("radiogroup", RadioGroup.class.getName())
                     .map("checkbox", CheckBox.class.getName())
                     .map("scroll", ScrollView.class.getName())
-                    .map("toolbar", Toolbar.class.getName())
+                    .map("toolbar", JsToolbar.class.getName())
+                    .map("canvas", ScriptCanvasView.class.getName())
+                    .map("list", JsListView.class.getName())
+                    .map("grid", JsGridView.class.getName())
+                    .map("drawer", DrawerLayout.class.getName())
+                    .map("appbar", AppBarLayout.class.getName())
+                    .map("tabs", JsTabLayout.class.getName())
+                    .map("viewpager", JsViewPager.class.getName())
             );
 
     private static final AttributeHandler ATTRIBUTE_HANDLER = new AttributeHandler.AttrNameRouter()

@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="48dp"
-              android:background="?selectableItemBackground"
-              android:orientation="horizontal">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="?selectableItemBackground"
+                android:orientation="horizontal">
 
     <FrameLayout
+        android:id="@+id/icon_container"
         android:layout_width="16dp"
         android:layout_height="16dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:layout_margin="16dp">
 
         <ImageView
@@ -28,23 +31,40 @@
 
     </FrameLayout>
 
-
     <TextView
         android:id="@+id/title"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/icon_container"
         android:gravity="center_vertical"
         android:textColor="#484C4F"
         android:textSize="14sp"
         tools:text="@string/text_auto_operate_service"/>
 
-    <com.stardust.scriptdroid.ui.widget.PrefSwitch
+    <TextView
+        android:id="@+id/notifications"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/circle_red"
+        android:padding="4dp"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:visibility="gone"
+        tools:text="2"
+        tools:visibility="visible"/>
+
+    <org.autojs.autojs.ui.widget.PrefSwitch
         android:id="@+id/sw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_marginRight="16dp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
-</LinearLayout>
+</RelativeLayout>

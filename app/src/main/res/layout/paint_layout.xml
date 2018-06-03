@@ -3,14 +3,7 @@
              android:layout_width="600dp"
              android:layout_height="600dp">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:padding="200dp"
-        android:src="@drawable/ic_android_eat_js"/>
-
-    <com.stardust.scriptdroid.ui.settings.PaintView
+    <org.autojs.autojs.ui.settings.TestSurfaceView
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

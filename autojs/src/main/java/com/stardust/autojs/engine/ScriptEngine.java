@@ -17,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * When the execution finish successfully, the engine should be destroy in the thread that created it.
  * <p>
  * If you want to stop the engine in other threads, you should call {@link ScriptEngine#forceStop()}.
- * It will throw a {@link ScriptException}.
  */
 
 public interface ScriptEngine<S extends ScriptSource> {
@@ -41,6 +40,13 @@ public interface ScriptEngine<S extends ScriptSource> {
 
     Object getTag(String key);
 
+    String cwd();
+
+    void uncaughtException(Exception throwable);
+
+    Exception getUncaughtException();
+
+
     /**
      * @hide
      */
@@ -61,11 +67,12 @@ public interface ScriptEngine<S extends ScriptSource> {
         private Map<String, Object> mTags = new ConcurrentHashMap<>();
         private OnDestroyListener mOnDestroyListener;
         private boolean mDestroyed = false;
+        private Exception mUncaughtException;
 
 
         @Override
         public synchronized void setTag(String key, Object value) {
-            if(value == null)
+            if (value == null)
                 return;
             mTags.put(key, value);
         }
@@ -97,6 +104,17 @@ public interface ScriptEngine<S extends ScriptSource> {
             if (mOnDestroyListener != null)
                 throw new SecurityException("setOnDestroyListener can be called only once");
             mOnDestroyListener = onDestroyListener;
+        }
+
+        @Override
+        public void uncaughtException(Exception throwable) {
+            mUncaughtException = throwable;
+            forceStop();
+        }
+
+        @Override
+        public Exception getUncaughtException() {
+            return mUncaughtException;
         }
     }
 }

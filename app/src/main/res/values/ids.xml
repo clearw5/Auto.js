@@ -8,4 +8,8 @@
     <item name="class_name" type="id"/>
     <item name="open_launcher" type="id"/>
     <item name="accessibility_service" type="id"/>
+    <item name="layout_bounds" type="id"/>
+    <item name="layout_hierarchy" type="id"/>
+    <item name="pointer_location" type="id"/>
+    <item name="disable_pointer_location" type="id"/>
 </resources>

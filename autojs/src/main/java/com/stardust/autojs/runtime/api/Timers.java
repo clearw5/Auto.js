@@ -39,7 +39,7 @@ public class Timers {
         return mMaxCallbackUptimeMillisForAllThreads;
     }
 
-    private Timer getTimerForCurrentThread() {
+    public Timer getTimerForCurrentThread() {
         return getTimerForThread(Thread.currentThread());
     }
 
@@ -80,11 +80,15 @@ public class Timers {
 
     public boolean hasPendingCallbacks() {
         //如果是脚本主线程，则检查所有子线程中的定时回调。mFutureCallbackUptimeMillis用来记录所有子线程中定时最久的一个。
-        if (mThreads.getMainThread() == Thread.currentThread()) {
-            return mMaxCallbackUptimeMillisForAllThreads.get() > SystemClock.uptimeMillis();
-        }
+        // if (mThreads.getMainThread() == Thread.currentThread()) {
+        //   return mMaxCallbackUptimeMillisForAllThreads.get() > SystemClock.uptimeMillis();
+        //}
         //否则检查当前线程的定时回调
         return getTimerForCurrentThread().hasPendingCallbacks();
+    }
+
+    public void recycle(){
+        mMainTimer.removeAllCallbacks();
     }
 
 }

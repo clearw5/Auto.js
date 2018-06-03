@@ -39,8 +39,10 @@
 <li><a class="nav-http" href="http.html">Http - HTTP</a></li>
 <li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
 <li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
 <li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
 <li><a class="nav-widgets-based-automation active" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
 <li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
 <li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
 <li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
@@ -74,6 +76,8 @@
         <ul>
 <li><span class="stability_undefined"><a href="#widgets_based_automation">基于控件的操作</a></span><ul>
 <li><span class="stability_undefined"><a href="#widgets_based_automation_auto_mode">auto([mode])</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_waitfor">auto.waitFor()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_setmode_mode">auto.setMode(mode)</a></span></li>
 </ul>
 </li>
 <li><span class="stability_2"><a href="#widgets_based_automation_simpleactionautomator">SimpleActionAutomator</a></span><ul>
@@ -211,11 +215,23 @@
 <li><code>normal</code> 正常模式，默认。</li>
 </ul>
 <p>如果不加mode参数，则为正常模式。</p>
+<p>建议使用<code>auto.waitFor()</code>和<code>auto.setMode()</code>代替该函数，因为<code>auto()</code>函数如果无障碍服务未启动会停止脚本；而<code>auto.waitFor()</code>则会在在无障碍服务启动后继续运行。</p>
 <p>示例：</p>
 <pre><code>auto(&quot;fast&quot;);
 </code></pre><p>示例2：</p>
 <pre><code>auto();
-</code></pre><h1>SimpleActionAutomator<span><a class="mark" href="#widgets_based_automation_simpleactionautomator" id="widgets_based_automation_simpleactionautomator">#</a></span></h1>
+</code></pre><h2>auto.waitFor()<span><a class="mark" href="#widgets_based_automation_auto_waitfor" id="widgets_based_automation_auto_waitfor">#</a></span></h2>
+<p>检查无障碍服务是否已经启用，如果没有启用则跳转到无障碍服务启用界面，并等待无障碍服务启动；当无障碍服务启动后脚本会继续运行。</p>
+<h2>auto.setMode(mode)<span><a class="mark" href="#widgets_based_automation_auto_setmode_mode" id="widgets_based_automation_auto_setmode_mode">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>mode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 模式</li>
+</ul>
+</div><p>设置无障碍模式为mode。mode的可选值为：</p>
+<ul>
+<li><code>fast</code> 快速模式。该模式下会启用控件缓存，从而选择器获取屏幕控件更快。对于需要快速的控件查看和操作的脚本可以使用该模式，一般脚本则没有必要使用该函数。</li>
+<li><code>normal</code> 正常模式，默认。</li>
+</ul>
+<h1>SimpleActionAutomator<span><a class="mark" href="#widgets_based_automation_simpleactionautomator" id="widgets_based_automation_simpleactionautomator">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>SimpleActionAutomator提供了一些模拟简单操作的函数，例如点击文字、模拟按键等。这些函数可以直接作为全局函数使用。</p>
 <h2>click(text[, i])<span><a class="mark" href="#widgets_based_automation_click_text_i" id="widgets_based_automation_click_text_i">#</a></span></h2>
 <div class="signature"><ul>

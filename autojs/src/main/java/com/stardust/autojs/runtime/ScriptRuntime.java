@@ -1,16 +1,19 @@
 package com.stardust.autojs.runtime;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.R;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.image.Colors;
-import com.stardust.autojs.engine.RhinoJavaScriptEngine;
-import com.stardust.autojs.engine.ScriptEngine;
+import com.stardust.autojs.core.permission.PermissionRequestProxyActivity;
+import com.stardust.autojs.core.permission.Permissions;
 import com.stardust.autojs.rhino.AndroidClassLoader;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
@@ -21,12 +24,13 @@ import com.stardust.autojs.runtime.api.Events;
 import com.stardust.autojs.runtime.api.Files;
 import com.stardust.autojs.runtime.api.Floaty;
 import com.stardust.autojs.core.looper.Loopers;
+import com.stardust.autojs.runtime.api.Media;
 import com.stardust.autojs.runtime.api.Sensors;
 import com.stardust.autojs.runtime.api.Threads;
 import com.stardust.autojs.runtime.api.Timers;
 import com.stardust.autojs.core.accessibility.UiSelector;
 import com.stardust.autojs.runtime.api.Images;
-import com.stardust.autojs.core.image.ScreenCaptureRequester;
+import com.stardust.autojs.core.image.capture.ScreenCaptureRequester;
 import com.stardust.autojs.runtime.api.Dialogs;
 import com.stardust.autojs.runtime.exception.ScriptEnvironmentException;
 import com.stardust.autojs.runtime.exception.ScriptException;
@@ -49,8 +53,12 @@ import org.mozilla.javascript.ContextFactory;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static android.content.pm.PackageManager.PERMISSION_DENIED;
 
 
 /**
@@ -175,6 +183,8 @@ public class ScriptRuntime {
     @ScriptVariable
     public Sensors sensors;
 
+    @ScriptVariable
+    public final Media media;
 
     private Images images;
 
@@ -201,10 +211,11 @@ public class ScriptRuntime {
             images = new Images(context, this, builder.mScreenCaptureRequester);
         }
         engines = new Engines(builder.mEngineService, this);
-        dialogs = new Dialogs(app, uiHandler, bridges);
+        dialogs = new Dialogs(this);
         device = new Device(context);
         floaty = new Floaty(uiHandler, ui, this);
         files = new Files(this);
+        media = new Media(context, this);
     }
 
     public void init() {
@@ -296,10 +307,21 @@ public class ScriptRuntime {
         return Thread.currentThread().isInterrupted();
     }
 
-    public void requiresApi(int i) {
+    public static void requiresApi(int i) {
         if (Build.VERSION.SDK_INT < i) {
-            throw new ScriptException(uiHandler.getContext().getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
+            throw new ScriptException(GlobalAppContext.getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
         }
+    }
+
+    public void requestPermissions(String[] permissions) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+        Context context = uiHandler.getContext();
+        permissions = Permissions.getPermissionsNeedToRequest(context, permissions);
+        if (permissions.length == 0)
+            return;
+        Permissions.requestPermissions(context, permissions);
     }
 
     public void loadJar(String path) {
@@ -317,22 +339,10 @@ public class ScriptRuntime {
         }
     }
 
-    public void exit(Object obj) throws Throwable {
-        mThread.interrupt();
-        if (!(obj instanceof Throwable)) {
-            console.error(obj);
-            return;
-        }
-        Throwable e = (Exception) obj;
+    public void exit(Exception e) {
+        engines.myEngine().uncaughtException(e);
         if (Looper.myLooper() != Looper.getMainLooper()) {
-            throw e;
-        } else {
-            Thread.UncaughtExceptionHandler handler = ((RhinoJavaScriptEngine) engines.myEngine()).getUncaughtExceptionHandler();
-            if (handler != null) {
-                handler.uncaughtException(Thread.currentThread(), e);
-            } else {
-                console.error(e);
-            }
+            throw new ScriptException(e);
         }
     }
 
@@ -366,6 +376,7 @@ public class ScriptRuntime {
         }
         ignoresException(threads::shutDownAll);
         ignoresException(events::recycle);
+        ignoresException(media::recycle);
         ignoresException(loopers::recycle);
         ignoresException(() -> {
             if (mRootShell != null) mRootShell.exitAndWaitFor();
@@ -376,6 +387,7 @@ public class ScriptRuntime {
             ignoresException(images::releaseScreenCapturer);
         }
         ignoresException(sensors::unregisterAll);
+        ignoresException(timers::recycle);
     }
 
     private void ignoresException(Runnable r) {

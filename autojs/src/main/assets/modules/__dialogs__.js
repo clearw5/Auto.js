@@ -89,24 +89,134 @@ module.exports = function(__runtime__, scope){
         if(isUiThread() && !callback){
             return new Promise(function(resolve, reject){
                 rtDialogs().singleChoice(title, index, items, function(r){
-                    resolve.apply(null, toJsArray(r));
+                    resolve.apply(null, javaArrayToJsArray(r));
                 });
             });
         }
         if(callback){
             return rtDialogs().multiChoice(title, index, items, function(r){
-                callback(toJsArray(r));
+                callback(javaArrayToJsArray(r));
             });
         }
-        return toJsArray(rtDialogs().multiChoice(title, index, items, null));
+        return javaArrayToJsArray(rtDialogs().multiChoice(title, index, items, null));
 
     }
 
-    function toJsArray(javaArray){
+    var propertySetters = {
+        "title": null,
+        "titleColor": {adapter: parseColor},
+        "buttonRippleColor": {adapter: parseColor},
+        "icon": null,
+        "content": null,
+        "contentColor": {adapter: parseColor},
+        "contentLineSpacing": null,
+        "items": null,
+        "itemsColor": {adapter: parseColor},
+        "positive": {method: "positiveText"},
+        "positiveColor": {adapter: parseColor},
+        "neutral": {method: "neutralText"},
+        "neutralColor": {adapter: parseColor},
+        "negative": {method: "negativeText"},
+        "negativeColor": {adapter: parseColor},
+        "cancelable": null,
+        "canceledOnTouchOutside": null,
+        autoDismiss: null
+    };
+
+    dialogs.build = function(properties){
+        var builder = Object.create(__runtime__.dialogs.newBuilder());
+        builder.thread = threads.currentThread();
+        for(var name in properties){
+            if(!properties.hasOwnProperty(name)){
+                continue;
+            }
+            applyDialogProperty(builder, name, properties[name]);
+        }
+        applyOtherDialogProperties(builder, properties);
+        return ui.run(()=> builder.buildDialog());
+    }
+
+    function applyDialogProperty(builder, name, value){
+        if(!propertySetters.hasOwnProperty(name)){
+            return;
+        }
+        var propertySetter = propertySetters[name] || {};
+        if(propertySetter.method == undefined){
+            propertySetter.method = name;
+        }
+        if(propertySetter.adapter){
+            value = propertySetter.adapter(value);
+        }
+        builder[propertySetter.method].call(builder, value);
+    }
+
+    function applyOtherDialogProperties(builder, properties){
+        if(properties.inputHint != undefined || properties.inputPrefill != undefined){
+            builder.input(wrapNonNullString(properties.inputHint), wrapNonNullString(properties.inputPrefill), 
+                function(dialog, input){
+                    input = input.toString();
+                    builder.emit("input_change", dialog, input);
+                })
+                   .alwaysCallInputCallback();
+        }
+        if(properties.items != undefined){
+            var itemsSelectMode = properties.itemsSelectMode;
+            if(itemsSelectMode == undefined || itemsSelectMode == 'select'){
+                builder.itemsCallback(function(dialog, view, position, text){
+                    dialog.emit("item_select", position, text.toString(), dialog);
+                });
+            }else if(itemsSelectMode == 'single'){
+                builder.itemsCallbackSingleChoice(properties.itemsSelectedIndex == undefined ? -1 : properties.itemsSelectedIndex, 
+                    function(dialog, view, which, text){
+                        dialog.emit("single_choice", which, text.toString(), dialog);
+                        return true;
+                    });
+            }else if(itemsSelectMode == 'multi'){
+                builder.itemsCallbackMultiChoice(properties.itemsSelectedIndex == undefined ? null : properties.itemsSelectedIndex, 
+                    function(dialog, view, indices, texts){
+                        dialog.emit("multi_choice", toJsArray(indices, (l, i)=> parseInt(l.get(i)), 
+                            toJsArray(texts, (l, i)=> l.get(i).toString())), dialog);
+                            return true;                        
+                    });
+            }else{
+                throw new Error("unknown itemsSelecteMode " + itemsSelectMode);
+            }
+        }
+        if(properties.progress != undefined){
+            var progress = properties.progress;
+            var indeterminate = (progress.max == -1);
+            builder.progress(indeterminate, progress.max, !!progress.showMinMax);
+            builder.progressIndeterminateStyle(!!progress.horizontal);
+        }
+        if(properties.checkBoxPrompt != undefined || properties.checkBoxChecked != undefined){
+            builder.checkBoxPrompt(wrapNonNullString(properties.checkBoxPrompt),  !!properties.checkBoxChecked, 
+                function(view, checked){
+                    builder.emit("check", checked, builder.getDialog());
+                });
+        }
+    }
+
+    function wrapNonNullString(str){
+        if(str == null || str == undefined){
+            return "";
+        }
+        return str;
+    }
+
+    function javaArrayToJsArray(javaArray){
         var jsArray = [];
         var len = javaArray.length;
         for (var i = 0;i < len;i++){
             jsArray.push(javaArray[i]);
+        }
+        return jsArray;
+    }
+
+    function toJsArray(object, adapter){
+        var jsArray = [];
+        var len = javaArray.length;
+        for (var i = 0;i < len;i++){
+            jsArray.push(adapter(object, i));
         }
         return jsArray;
     }
@@ -122,6 +232,13 @@ module.exports = function(__runtime__, scope){
 
     function isUiThread(){
         return android.os.Looper.myLooper() == android.os.Looper.getMainLooper();
+    }
+
+    function parseColor(c){
+        if(typeof(c) == 'string'){
+            return colors.parseColor(c);
+        }
+        return c;
     }
 
     scope.rawInput = dialogs.rawInput.bind(dialogs);

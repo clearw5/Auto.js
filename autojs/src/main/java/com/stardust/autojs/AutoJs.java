@@ -13,24 +13,20 @@ import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.console.GlobalStardustConsole;
 import com.stardust.autojs.core.console.StardustConsole;
-import com.stardust.autojs.core.image.ScreenCaptureRequestActivity;
-import com.stardust.autojs.core.image.ScreenCaptureRequester;
-import com.stardust.autojs.core.inputevent.InputEventObserver;
+import com.stardust.autojs.core.image.capture.ScreenCaptureRequestActivity;
+import com.stardust.autojs.core.image.capture.ScreenCaptureRequester;
 import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;
 import com.stardust.autojs.core.util.Shell;
 import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
 import com.stardust.autojs.engine.RootAutomatorEngine;
-import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
-import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.util.ScreenMetrics;
-import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 import com.stardust.view.accessibility.AccessibilityNotificationObserver;
@@ -51,6 +47,7 @@ public abstract class AutoJs {
     private ScriptEngineManager mScriptEngineManager;
     private final LayoutInspector mLayoutInspector = new LayoutInspector();
     private final Context mContext;
+    private final Application mApplication;
     private final UiHandler mUiHandler;
     private final AppUtils mAppUtils;
     private final AccessibilityInfoProvider mAccessibilityInfoProvider;
@@ -59,13 +56,14 @@ public abstract class AutoJs {
     private final Console mGlobalConsole;
 
 
-    protected AutoJs(final Context context) {
-        mContext = context;
-        mUiHandler = new UiHandler(context);
-        mAppUtils = new AppUtils(context);
+    protected AutoJs(final Application application) {
+        mContext = application.getApplicationContext();
+        mApplication = application;
+        mUiHandler = new UiHandler(mContext);
+        mAppUtils = new AppUtils(mContext);
         mGlobalConsole = createGlobalConsole();
-        mNotificationObserver = new AccessibilityNotificationObserver(context);
-        mAccessibilityInfoProvider = new AccessibilityInfoProvider(context.getPackageManager());
+        mNotificationObserver = new AccessibilityNotificationObserver(mContext);
+        mAccessibilityInfoProvider = new AccessibilityInfoProvider(mContext.getPackageManager());
         mScriptEngineService = buildScriptEngineService();
         init();
     }
@@ -77,14 +75,15 @@ public abstract class AutoJs {
     protected void init() {
         addAccessibilityServiceDelegates();
         registerActivityLifecycleCallbacks();
-        InputEventObserver.initGlobal(mContext);
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_13, mContext, new BaseLoaderCallback(mContext) {
         });
     }
 
     public abstract void ensureAccessibilityServiceEnabled();
 
-    protected abstract Application getApplication();
+    protected Application getApplication() {
+        return mApplication;
+    }
 
     protected ScriptEngineService buildScriptEngineService() {
         initScriptEngineManager();
@@ -99,18 +98,22 @@ public abstract class AutoJs {
         mScriptEngineManager = new ScriptEngineManager(mContext);
         mScriptEngineManager.registerEngine(JavaScriptSource.ENGINE, () -> {
             LoopBasedJavaScriptEngine engine = new LoopBasedJavaScriptEngine(mContext);
-            engine.setRuntime(new ScriptRuntime.Builder()
-                    .setConsole(new StardustConsole(mUiHandler, mGlobalConsole))
-                    .setScreenCaptureRequester(mScreenCaptureRequester)
-                    .setAccessibilityBridge(new AccessibilityBridgeImpl())
-                    .setUiHandler(mUiHandler)
-                    .setAppUtils(mAppUtils)
-                    .setEngineService(mScriptEngineService)
-                    .setShellSupplier(() -> new Shell(mContext, true)).build());
+            engine.setRuntime(createRuntime());
             return engine;
         });
         mScriptEngineManager.registerEngine(AutoFileSource.ENGINE, () -> new RootAutomatorEngine(mContext));
 
+    }
+
+    protected ScriptRuntime createRuntime() {
+        return new ScriptRuntime.Builder()
+                .setConsole(new StardustConsole(mUiHandler, mGlobalConsole))
+                .setScreenCaptureRequester(mScreenCaptureRequester)
+                .setAccessibilityBridge(new AccessibilityBridgeImpl())
+                .setUiHandler(mUiHandler)
+                .setAppUtils(mAppUtils)
+                .setEngineService(mScriptEngineService)
+                .setShellSupplier(() -> new Shell(mContext, true)).build();
     }
 
     protected void registerActivityLifecycleCallbacks() {
@@ -170,6 +173,8 @@ public abstract class AutoJs {
     }
 
 
+    public abstract void waitForAccessibilityServiceEnabled();
+
     protected AccessibilityConfig createAccessibilityConfig() {
         return new AccessibilityConfig();
     }
@@ -183,6 +188,11 @@ public abstract class AutoJs {
         @Override
         public void ensureServiceEnabled() {
             AutoJs.this.ensureAccessibilityServiceEnabled();
+        }
+
+        @Override
+        public void waitForServiceEnabled() {
+            AutoJs.this.waitForAccessibilityServiceEnabled();
         }
 
         @Nullable
@@ -204,6 +214,15 @@ public abstract class AutoJs {
     }
 
     private class ScreenCaptureRequesterImpl extends ScreenCaptureRequester.AbstractScreenCaptureRequester {
+
+        @Override
+        public void setOnActivityResultCallback(Callback callback) {
+            super.setOnActivityResultCallback((result, data) -> {
+                mResult = data;
+                callback.onRequestResult(result, data);
+            });
+        }
+
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void request() {

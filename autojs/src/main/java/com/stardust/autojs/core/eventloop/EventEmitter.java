@@ -1,6 +1,9 @@
 package com.stardust.autojs.core.eventloop;
 
 import android.support.annotation.NonNull;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 
 import com.stardust.autojs.core.looper.Timer;
@@ -114,7 +117,6 @@ public class EventEmitter {
         getListeners(eventName).add(listener, true);
         return this;
     }
-
     @NonNull
     private Listeners getListeners(String eventName) {
         Listeners listeners = mListenersMap.get(eventName);

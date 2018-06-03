@@ -14,28 +14,6 @@
         android:layout_weight="1">
 
 
-        <FrameLayout
-            android:id="@+id/ad"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:animateLayoutChanges="true"/>
-
-        <TextView
-            android:id="@+id/skip_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/skip_circle_bg"
-            android:gravity="center"
-            android:textColor="#ddffffff"
-            android:textSize="14sp"
-            android:visibility="invisible"
-            tools:text="跳过 4"
-            tools:visibility="visible"/>
-
     </RelativeLayout>
 
     <LinearLayout

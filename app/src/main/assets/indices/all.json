@@ -514,6 +514,11 @@
         "summary": "监听按键"
       },
       {
+        "key": "setKeyInterceptionEnabled",
+        "url": "events.html#events_events_setkeyinterceptionenabled_key_enabled",
+        "summary": "屏蔽按键"
+      },
+      {
         "key": "observeTouch",
         "url": "events.html#events_events_observetouch",
         "summary": "监听触摸"
@@ -1726,5 +1731,127 @@
     ],
     "url": "threads.html",
     "summary": "多线程"
+  },
+  {
+    "name": "media",
+    "properties": [
+      {
+        "key": "scanFile",
+        "summary": "扫描文件",
+        "url": "media.html#media_media_scanfile_path"
+      },
+      {
+        "key": "playMusic",
+        "summary": "播放音乐",
+        "url": "media.html#media_media_playmusic_path_volume_looping"
+      },
+      {
+        "key": "musicSeekTo",
+        "summary": "调整进度",
+        "url": "media.html#media_media_musicseekto_msec"
+      },
+      {
+        "key": "pauseMusic",
+        "summary": "暂停音乐",
+        "url": "media.html#media_media_pausemusic"
+      },
+      {
+        "key": "resumeMusic",
+        "summary": "继续播放",
+        "url": "media.html#media_media_resumemusic"
+      },
+      {
+        "key": "stopMusic",
+        "summary": "停止音乐",
+        "url": "media.html#media_media_stopmusic"
+      },
+      {
+        "key": "isMusicPlaying",
+        "summary": "是否在播放",
+        "url": "media.html#media_media_ismusicplaying"
+      },
+      {
+        "key": "getMusicDuration",
+        "summary": "音乐时长",
+        "url": "media.html#media_media_getmusicduration"
+      },
+      {
+        "key": "getMusicCurrentPosition",
+        "summary": "当前位置",
+        "url": "media.html#media_media_getmusiccurrentposition"
+      }
+    ],
+    "url": "media.html",
+    "summary": "多媒体"
+  },
+  {
+    "name": "sensors",
+    "properties": [
+      {
+        "key": "register",
+        "summary": "注册监听",
+        "url": "sensors.html#sensors_sensors_register_sensorname_delay"
+      },
+      {
+        "key": "unregister",
+        "summary": "注销监听",
+        "url": "sensors.html#sensors_sensors_unregister_emitter"
+      },
+      {
+        "key": "unregisterAll",
+        "summary": "注销所有",
+        "url": "sensors.html#sensors_sensors_unregisterall"
+      },
+      {
+        "key": "ignoresUnsupportedSensor",
+        "summary": "忽略不支持传感器",
+        "url": "sensors.html#sensors_sensors_ignoresunsupportedsensor",
+        "variable": true
+      }
+    ],
+    "url": "sensors.html",
+    "summary": "传感器"
+  },
+  {
+    "name": "engines",
+    "properties": [
+      {
+        "key": "execScript",
+        "summary": "执行脚本",
+        "url": "engines.html#engines_engines_execscript_name_script_config"
+      },
+      {
+        "key": "execScriptFile",
+        "summary": "执行脚本文件",
+        "url": "engines.html#engines_engines_execscriptfile_path_config"
+      },
+      {
+        "key": "execAutoFile",
+        "summary": "执行录制文件",
+        "url": "engines.html#engines_engines_execautofile_path_config"
+      },
+      {
+        "key": "stopAll",
+        "summary": "停止全部",
+        "url": "engines.html#engines_engines_stopall"
+      },
+      {
+        "key": "stopAllAndToast",
+        "summary": "停止并提示",
+        "url": "engines.html#engines_engines_stopallandtoast"
+      },
+      {
+        "key": "myEngine",
+        "summary": "当前引擎",
+        "url": "engines.html#engines_engines_myengine"
+      },
+      {
+        "key": "all",
+        "summary": "所有引擎",
+        "url": "engines.html#engines_engines_all"
+      }
+    ],
+    "url": "engines.html",
+    "summary": "脚本引擎"
   }
 ]

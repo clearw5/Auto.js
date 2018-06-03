@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="com.stardust.scriptdroid">
+          package="org.autojs.autojs">
+
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -11,6 +12,11 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+
+    <!-- 非Auto.js运行必需，不会主动申请，某些脚本可以自行申请-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <!-- Ad SDK Permissions -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
@@ -25,6 +31,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label, android:icon, android:allowBackup">
+
         <activity
             android:name=".ui.splash.SplashActivity_"
             android:hardwareAccelerated="true"
@@ -45,7 +52,7 @@
         </activity>
         <activity
             android:name=".external.shortcut.ShortcutActivity"
-            android:taskAffinity="com.stardust.scriptdroid.external.shortcut.ShortcutActivity"
+            android:taskAffinity="org.autojs.autojs.external.shortcut.ShortcutActivity"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -56,7 +63,7 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.stardust.scriptdroid.fileprovider"
+            android:authorities="org.autojs.autojs.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -151,7 +158,7 @@
             android:name=".external.open.RunIntentActivity"
             android:icon="@drawable/autojs_material"
             android:label="@string/text_run_script"
-            android:taskAffinity="com.stardust.scriptdroid.external.open.RunIntentActivity"
+            android:taskAffinity="org.autojs.autojs.external.open.RunIntentActivity"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

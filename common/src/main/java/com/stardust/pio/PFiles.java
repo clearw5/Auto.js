@@ -349,6 +349,7 @@ public class PFiles {
     }
 
     public static String getName(String filePath) {
+        filePath = filePath.replace('\\', '/');
         return new File(filePath).getName();
     }
 
@@ -411,17 +412,23 @@ public class PFiles {
 
     public static String[] listDir(String path) {
         File file = new File(path);
-        return file.list();
+        return wrapNonNull(file.list());
+    }
+
+    private static String[] wrapNonNull(String[] list) {
+        if (list == null)
+            return new String[0];
+        return list;
     }
 
     public static String[] listDir(String path, final Func1<String, Boolean> filter) {
         final File file = new File(path);
-        return file.list(new FilenameFilter() {
+        return wrapNonNull(file.list(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 return filter.call(name);
             }
-        });
+        }));
     }
 
     public static boolean isFile(String path) {

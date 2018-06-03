@@ -1,72 +1,133 @@
 
-module.exports = function(__runtime__, scope){
-    scope.toast = function(text){
-        __runtime__.toast(text);
+module.exports = function(runtime, global){
+    global.toast = function(text){
+        runtime.toast(text);
     }
 
-    scope.toastLog = function(text){
-        __runtime__.toast(text);
-        scope.log(text);
+    global.toastLog = function(text){
+        runtime.toast(text);
+        global.log(text);
     }
 
-    scope.sleep = __runtime__.sleep.bind(__runtime__);
+    global.sleep = runtime.sleep.bind(runtime);
 
-    scope.isStopped = function(){
-        return __runtime__.isStopped();
+    global.isStopped = function(){
+        return runtime.isStopped();
     }
 
-    scope.isShuttingDown = scope.isShopped;
+    global.isShuttingDown = global.isShopped;
 
-    scope.notStopped = function(){
+    global.notStopped = function(){
         return !isStopped();
     }
 
-    scope.isRunning = scope.notStopped;
+    global.isRunning = global.notStopped;
 
-    scope.exit = __runtime__.exit.bind(__runtime__);
+    global.exit = runtime.exit.bind(runtime);
 
 
-    scope.stop = scope.exit;
+    global.stop = global.exit;
 
-    scope.setClip = function(text){
-        __runtime__.setClip(text);
+    global.setClip = function(text){
+        runtime.setClip(text);
     }
 
-    scope.getClip = function(text){
-       return __runtime__.getClip();
+    global.getClip = function(text){
+       return runtime.getClip();
     }
 
-    scope.currentPackage = function(){
-        scope.auto();
-        return __runtime__.info.getLatestPackage();
+    global.currentPackage = function(){
+        global.auto();
+        return runtime.info.getLatestPackage();
     }
 
-    scope.currentActivity = function(){
-        scope.auto();
-        return __runtime__.info.getLatestActivity();
+    global.currentActivity = function(){
+        global.auto();
+        return runtime.info.getLatestActivity();
     }
 
-    scope.waitForActivity = function(activity, period){
+    global.waitForActivity = function(activity, period){
         period = period || 200;
-        while(scope.currentActivity() != activity){
+        while(global.currentActivity() != activity){
             sleep(period);
         }
     }
 
-    scope.waitForPackage = function(packageName, period){
+    global.waitForPackage = function(packageName, period){
         period = period || 200;
-        while(scope.currentPackage() != packageName){
+        while(global.currentPackage() != packageName){
             sleep(period);
         }
     }
 
-    scope.random = function(min, max){
+    global.random = function(min, max){
         if(arguments.length == 0){
             return Math.random();
         }
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    scope.setScreenMetrics = __runtime__.setScreenMetrics.bind(__runtime__);
+    global.setScreenMetrics = runtime.setScreenMetrics.bind(runtime);
+
+    global.requiresApi = runtime.requiresApi.bind(runtime);
+    global.requiresAutojsVersion = function(version){
+        if(typeof(version) == 'number'){
+            if(compare(version, app.autojs.versionCode) > 0){
+                throw new Error("需要Auto.js版本号" + version + "以上才能运行");
+            }
+        }else{
+            if(compareVersion(version, app.autojs.versionName) > 0){
+                throw new Error("需要Auto.js版本" + version + "以上才能运行");
+            }
+        }
+    }
+
+    var buildTypes = {
+        release: 100,
+        beta: 50,
+        alpha: 0
+    }
+
+    function compareVersion(v1, v2){
+        v1 = parseVersion(v1);
+        v2 = parseVersion(v2);
+        log(v1, v2);
+        return v1.major != v2.major ? compare(v1.major, v2.major) :
+               v1.minor != v2.minor ? compare(v1.minor, v2.minor) :
+               v1.revision != v2.revision ? compare(v1.revision, v2.revision) :
+               v1.buildType != v2.buildType ? compare(v1.buildType, v2.buildType) :
+               compare(v1.build, v2.build);
+    }
+
+    function compare(a, b){
+        return a > b ? 1 :
+               a < b ? -1:
+               0;
+    }
+
+    function parseVersion(v){
+        var m = /(\d+)\.(\d+)\.(\d+)[ ]?(Alpha|Beta)?(\d*)/.exec(v);
+        if(!m){
+            throw new Error("版本格式不合法: " + v);
+        }
+        return {
+            major: parseInt(m[1]),
+            minor: parseInt(m[2]),
+            revision: parseInt(m[3]),
+            buildType: buildType(m[4]),
+            build: m[5] ? parseInt(m[5]) : 1
+        };
+    }
+
+    function buildType(str){
+        if(str == 'Alpha'){
+            return buildTypes.alpha;
+        }
+        if(str == 'Beta'){
+            return buildTypes.beta;
+        }
+        return buildTypes.release;
+    }
+
 
 }

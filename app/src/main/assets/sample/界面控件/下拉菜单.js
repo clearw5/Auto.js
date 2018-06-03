@@ -15,12 +15,12 @@ ui.layout(
     </vertical>
 );
 
-ui.ok.click(()=>{
+ui.ok.on("click", ()=>{
     var i = ui.sp1.getSelectedItemPosition();
     var j = ui.sp2.getSelectedItemPosition();
     toast("您的选择是选项" + (i + 1) + "和选项" + (j + 4));
 });
 
-ui.select3.click(()=>{
+ui.select3.on("click", ()=>{
     ui.sp1.setSelection(2);
 });

@@ -44,13 +44,19 @@ module.exports = function(__runtime__, scope){
 
    images.read = rtImages.read.bind(rtImages);
 
-   images.load = rtImages.load.bind(rtImages);
+   images.copy = rtImages.copy.bind(rtImages);
 
-   images.saveImage = rtImages.saveImage.bind(rtImages);
+   images.load = rtImages.load.bind(rtImages);
 
    images.clip = rtImages.clip.bind(rtImages);
 
-   images.save = images.saveImage;
+   images.save = function(img, path, format, quality){
+      format = format || "png";
+      quality = quality == undefined ? 100 : quality;
+      return rtImages.save(img, path, format, quality);
+   }
+
+   images.saveImage = images.save;
 
    images.pixel = rtImages.pixel;
 
@@ -144,6 +150,26 @@ module.exports = function(__runtime__, scope){
             threshold: threshold
         });
   }
+
+  images.fromBase64 = function(base64){
+        return rtImages.fromBase64(base64);
+  }
+
+  images.toBase64 = function(img, format, quality){
+        format = format || "png";
+        quality = quality == undefined ? 100 : quality;
+        return rtImages.toBase64(img, format, quality);
+  }
+
+  images.fromBytes = function(bytes){
+        return rtImages.fromBytes(bytes);
+  }
+
+  images.toBytes = function(img, format, quality){
+       format = format || "png";
+       quality = quality == undefined ? 100 : quality;
+       return rtImages.toBytes(img, format, quality);
+ }
 
    function getColorDetector(color, algorithm, threshold){
           switch(algorithm){

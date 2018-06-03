@@ -39,8 +39,10 @@
 <li><a class="nav-http" href="http.html">Http - HTTP</a></li>
 <li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
 <li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
 <li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
 <li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
 <li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
 <li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
 <li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
@@ -73,6 +75,10 @@
         <h2>目录</h2>
         <ul>
 <li><span class="stability_undefined"><a href="#app_app">App</a></span><ul>
+<li><span class="stability_undefined"><a href="#app_app_versioncode">app.versionCode</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_versionname">app.versionName</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_autojs_versioncode">app.autojs.versionCode</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_autojs_versionname">app.autojs.versionName</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_launchapp_appname">app.launchApp(appName)</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_launch_packagename">app.launch(packageName)</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_launchpackage_packagename">app.launchPackage(packageName)</a></span></li>
@@ -84,6 +90,7 @@
 <li><span class="stability_undefined"><a href="#app_app_uninstall_packagename">app.uninstall(packageName)</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_openurl_url">app.openUrl(url)</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_sendemail_options">app.sendEmail(options)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_startactivity_name">app.startActivity(name)</a></span></li>
 </ul>
 </li>
 <li><span class="stability_undefined"><a href="#app_intent">进阶: 意图Intent</a></span><ul>
@@ -100,6 +107,30 @@
         <h1>App<span><a class="mark" href="#app_app" id="app_app">#</a></span></h1>
 <p>app模块提供一系列函数，用于使用其他应用、与其他应用交互。例如发送意图、打开文件、发送邮件等。</p>
 <p>同时提供了方便的进阶函数startActivity和sendBroadcast，用他们可完成app模块没有内置的和其他应用的交互。</p>
+<h2>app.versionCode<span><a class="mark" href="#app_app_versioncode" id="app_app_versioncode">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>当前软件版本号，整数值。例如160, 256等。</p>
+<p>如果在Auto.js中运行则为Auto.js的版本号；在打包的软件中则为打包软件的版本号。</p>
+<pre><code>toastLog(app.versionCode);
+</code></pre><h2>app.versionName<span><a class="mark" href="#app_app_versionname" id="app_app_versionname">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>当前软件的版本名称，例如&quot;3.0.0 Beta&quot;。</p>
+<p>如果在Auto.js中运行则为Auto.js的版本名称；在打包的软件中则为打包软件的版本名称。</p>
+<pre><code>toastLog(app.verionName);
+</code></pre><h2>app.autojs.versionCode<span><a class="mark" href="#app_app_autojs_versioncode" id="app_app_autojs_versioncode">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>Auto.js版本号，整数值。例如160, 256等。</p>
+<h2>app.autojs.versionName<span><a class="mark" href="#app_app_autojs_versionname" id="app_app_autojs_versionname">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>Auto.js版本名称，例如&quot;3.0.0 Beta&quot;。</p>
 <h2>app.launchApp(appName)<span><a class="mark" href="#app_app_launchapp_appname" id="app_app_launchapp_appname">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>appName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 应用名称</li>
@@ -189,6 +220,16 @@ app.sendEmail({
     subject: &quot;这是一个邮件标题&quot;,
     text: &quot;这是邮件正文&quot;
 });
+</code></pre><h2>app.startActivity(name)<span><a class="mark" href="#app_app_startactivity_name" id="app_app_startactivity_name">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 活动名称，可选的值为:<ul>
+<li><code>console</code> 日志界面</li>
+<li><code>settings</code> 设置界面</li>
+</ul>
+</li>
+</ul>
+</div><p>启动Auto.js的特定界面。该函数在Auto.js内运行则会打开Auto.js内的界面，在打包应用中运行则会打开打包应用的相应界面。</p>
+<pre><code>app.startActivity(&quot;console&quot;);
 </code></pre><h1>进阶: 意图Intent<span><a class="mark" href="#app_intent" id="app_intent">#</a></span></h1>
 <p>Intent(意图) 是一个消息传递对象，您可以使用它从其他应用组件请求操作。尽管 Intent 可以通过多种方式促进组件之间的通信，但其基本用例主要包括以下三个：</p>
 <ul>

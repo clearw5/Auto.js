@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.stardust.autojs.BuildConfig;
 import com.stardust.autojs.annotation.ScriptInterface;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.automator.ActionArgument;
@@ -12,7 +13,6 @@ import com.stardust.automator.UiGlobalSelector;
 import com.stardust.automator.UiObject;
 import com.stardust.automator.UiObjectCollection;
 import com.stardust.automator.filter.DfsFilter;
-import com.stardust.util.DeveloperUtils;
 import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
@@ -73,6 +73,8 @@ public class UiSelector extends UiGlobalSelector {
     public UiObjectCollection find() {
         ensureAccessibilityServiceEnabled();
         AccessibilityNodeInfo root = mAccessibilityBridge.getRootInActiveWindow();
+        if (BuildConfig.DEBUG)
+            Log.d(TAG, "find: root = " + root);
         if (root == null) {
             return UiObjectCollection.EMPTY;
         }
@@ -159,7 +161,6 @@ public class UiSelector extends UiGlobalSelector {
             }
             uiObjectCollection = find();
         }
-
         return uiObjectCollection.get(0);
     }
 
@@ -169,17 +170,6 @@ public class UiSelector extends UiGlobalSelector {
 
     public UiObject findOnce(int index) {
         UiObjectCollection uiObjectCollection = find();
-        while (uiObjectCollection.empty()) {
-            if (Thread.currentThread().isInterrupted()) {
-                throw new ScriptInterruptedException();
-            }
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                throw new ScriptInterruptedException();
-            }
-            uiObjectCollection = find();
-        }
         if (index >= uiObjectCollection.size()) {
             return null;
         }
@@ -217,6 +207,11 @@ public class UiSelector extends UiGlobalSelector {
                     String fullId = mAccessibilityBridge.getInfoProvider().getLatestPackage() + ":id/" + id;
                     return fullId.equals(nodeInfo.getViewIdResourceName());
                 }
+
+                @Override
+                public String toString() {
+                    return "id(\"" + id + "\")";
+                }
             });
         } else {
             super.id(id);
@@ -224,6 +219,27 @@ public class UiSelector extends UiGlobalSelector {
         return this;
     }
 
+    @Override
+    public UiGlobalSelector idStartsWith(String prefix) {
+        if (!prefix.contains(":")) {
+            addFilter(new DfsFilter() {
+                @Override
+                protected boolean isIncluded(UiObject nodeInfo) {
+                    String fullIdPrefix = mAccessibilityBridge.getInfoProvider().getLatestPackage() + ":id/" + prefix;
+                    String id = nodeInfo.getViewIdResourceName();
+                    return id != null && id.startsWith(fullIdPrefix);
+                }
+
+                @Override
+                public String toString() {
+                    return "idStartsWith(\"" + prefix + "\")";
+                }
+            });
+        } else {
+            super.idStartsWith(prefix);
+        }
+        return this;
+    }
 
     private boolean performAction(int action, ActionArgument... arguments) {
         return untilFind().performAction(action, arguments);
@@ -360,5 +376,4 @@ public class UiSelector extends UiGlobalSelector {
                 new ActionArgument.IntActionArgument(ACTION_ARGUMENT_ROW_INT, row),
                 new ActionArgument.IntActionArgument(ACTION_ARGUMENT_COLUMN_INT, column));
     }
-
 }

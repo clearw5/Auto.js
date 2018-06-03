@@ -20,4 +20,6 @@
     <string name="summary_dont_show_main_activity">打开应用后直接运行脚本</string>
     <string name="text_others">其他</string>
     <string name="powered_by_autojs">Powered by Auto.js</string>
+    <string name="text_execution_finished" formatted="false">\n------------\n[%s]运行结束，用时%f秒</string>
+
 </resources>

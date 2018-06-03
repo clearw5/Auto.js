@@ -24,7 +24,7 @@ public class LooperHelper {
 
     public static void quitForThread(Thread thread) {
         Looper looper = sLoopers.remove(thread);
-        if (looper != null)
+        if (looper != null && looper != Looper.getMainLooper())
             looper.quit();
     }
 }

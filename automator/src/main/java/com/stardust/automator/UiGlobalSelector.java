@@ -396,6 +396,11 @@ public class UiGlobalSelector {
         return this;
     }
 
+    public UiGlobalSelector indexInParent(int index) {
+        mFilters.add(new IntFilter(IntFilter.INDEX_IN_PARENT, index));
+        return this;
+    }
+
 
     public UiGlobalSelector filter(final BooleanFilter.BooleanSupplier filter) {
         mFilters.add(new DfsFilter() {

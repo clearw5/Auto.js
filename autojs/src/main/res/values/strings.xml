@@ -17,6 +17,9 @@
     <string name="text_should_enable_key_observing">按键监听未启用，请在软件设置中开启</string>
     <string name="no_write_settings_permissin">沒有修改系統设置权限</string>
     <string name="exception_notification_service_disabled">通知服务未运行，请重新启用通知权限</string>
+    <string name="text_requires_app_version_to_run_the_script" formatted="true">本脚本需要Auto.js版本号%d以上才能运行</string>
+    <string name="text_drawer_open">打开侧拉菜单</string>
+    <string name="text_drawer_close">关闭侧拉菜单</string>
 
 
 </resources>

@@ -5,6 +5,9 @@ import android.util.Log;
 
 import com.stardust.autojs.BuildConfig;
 import com.stardust.autojs.rhino.AndroidContextFactory;
+import com.stardust.autojs.rhino.NativeJavaClassWithPrototype;
+import com.stardust.autojs.rhino.NativeJavaObjectWithPrototype;
+import com.stardust.autojs.rhino.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
@@ -14,7 +17,11 @@ import com.stardust.pio.UncheckedIOException;
 
 import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ImporterTopLevel;
+import org.mozilla.javascript.NativeJavaClass;
+import org.mozilla.javascript.NativeJavaObject;
+import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.RequireBuilder;
@@ -28,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -44,7 +52,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     private Scriptable mScriptable;
     private Thread mThread;
     private android.content.Context mAndroidContext;
-    private Thread.UncaughtExceptionHandler mUncaughtExceptionHandler;
 
     public RhinoJavaScriptEngine(android.content.Context context) {
         mAndroidContext = context;
@@ -141,10 +148,10 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     }
 
     public Context createContext() {
-        //  if (!ContextFactory.hasExplicitGlobal()) {
-        //    ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mAndroidContext.getCacheDir(), "classes")));
-        //}
-        Context context = new InterruptibleAndroidContextFactory(new File(mAndroidContext.getCacheDir(), "classes")).enterContext();//new RhinoAndroidHelper(mAndroidContext).enterContext();
+        if (!ContextFactory.hasExplicitGlobal()) {
+            ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mAndroidContext.getCacheDir(), "classes")));
+        }
+        Context context = new RhinoAndroidHelper(mAndroidContext).enterContext();
         contextCount++;
         setupContext(context);
         return context;
@@ -157,15 +164,8 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         context.setWrapFactory(new WrapFactory());
     }
 
-    public void setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler uiThreadExceptionHandler) {
-        mUncaughtExceptionHandler = uiThreadExceptionHandler;
-    }
-
-    public Thread.UncaughtExceptionHandler getUncaughtExceptionHandler() {
-        return mUncaughtExceptionHandler;
-    }
-
     private class WrapFactory extends org.mozilla.javascript.WrapFactory {
+
 
         @Override
         public Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType) {
@@ -173,15 +173,13 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
                 return getRuntime().bridges.toString(obj.toString());
             }
             if (staticType == UiObjectCollection.class) {
-                return getRuntime().bridges.toArray(obj);
-
+                return getRuntime().bridges.asArray(obj);
             }
             return super.wrap(cx, scope, obj, staticType);
         }
-
     }
 
-    private class InterruptibleAndroidContextFactory extends AndroidContextFactory {
+    private static class InterruptibleAndroidContextFactory extends AndroidContextFactory {
 
         public InterruptibleAndroidContextFactory(File cacheDirectory) {
             super(cacheDirectory);
@@ -190,7 +188,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
         @Override
         protected void observeInstructionCount(Context cx, int instructionCount) {
-            if (Thread.currentThread().isInterrupted()) {
+            if (Thread.currentThread().isInterrupted() && Looper.myLooper() != Looper.getMainLooper()) {
                 throw new ScriptInterruptedException();
             }
         }
@@ -202,18 +200,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
             return cx;
         }
 
-        @Override
-        protected Object doTopCall(Callable callable, Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                try {
-                    return super.doTopCall(callable, cx, scope, thisObj, args);
-                } catch (Exception e) {
-                    mUncaughtExceptionHandler.uncaughtException(Thread.currentThread(), e);
-                    return null;
-                }
-            }
-            return super.doTopCall(callable, cx, scope, thisObj, args);
-        }
     }
 
 

@@ -23,7 +23,7 @@
             android:background="@drawable/drawer_header_shadow"
             android:visibility="gone"/>
 
-        <com.stardust.scriptdroid.ui.widget.AvatarView
+        <org.autojs.autojs.ui.widget.AvatarView
             android:id="@+id/avatar"
             android:layout_width="64dp"
             android:layout_height="64dp"

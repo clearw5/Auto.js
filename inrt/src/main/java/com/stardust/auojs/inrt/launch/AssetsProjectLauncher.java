@@ -1,10 +1,17 @@
 package com.stardust.auojs.inrt.launch;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 
+import com.stardust.auojs.inrt.BuildConfig;
+import com.stardust.auojs.inrt.LogActivity;
 import com.stardust.auojs.inrt.Pref;
 import com.stardust.auojs.inrt.autojs.AutoJs;
 import com.stardust.autojs.execution.ExecutionConfig;
+import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.pio.PFiles;
@@ -21,30 +28,49 @@ public class AssetsProjectLauncher {
     private String mProjectDir;
     private File mMainScriptFile;
     private ProjectConfig mProjectConfig;
-    private Activity mActivity;
+    private Context mActivity;
+    private Handler mHandler;
+    private ScriptExecution mScriptExecution;
 
-    public AssetsProjectLauncher(String projectDir, Activity activity) {
+    public AssetsProjectLauncher(String projectDir, Context context) {
         mAssetsProjectDir = projectDir;
-        mActivity = activity;
-        mProjectDir = new File(activity.getFilesDir(), "project/").getPath();
-        mProjectConfig = ProjectConfig.fromAssets(activity, ProjectConfig.configFileOfDir(mAssetsProjectDir));
+        mActivity = context;
+        mProjectDir = new File(context.getFilesDir(), "project/").getPath();
+        mProjectConfig = ProjectConfig.fromAssets(context, ProjectConfig.configFileOfDir(mAssetsProjectDir));
         mMainScriptFile = new File(mProjectDir, mProjectConfig.getMainScriptFile());
+        mHandler = new Handler(Looper.getMainLooper());
+        prepare();
     }
 
-    public void launch() {
-        prepare();
+    public void launch(Activity activity) {
+        //如果需要隐藏日志界面，则直接运行脚本
         if (mProjectConfig.getLaunchConfig().shouldHideLogs() || Pref.shouldHideLogs()) {
-            mActivity.runOnUiThread(mActivity::finish);
+            activity.finish();
+            runScript();
+        } else {
+            //如果不隐藏日志界面
+            //如果当前已经是日志界面则直接运行脚本
+            if (activity instanceof LogActivity) {
+                runScript();
+            } else {
+                //否则显示日志界面并在日志界面中运行脚本
+                mHandler.post(() -> {
+                    activity.startActivity(new Intent(mActivity, LogActivity.class)
+                            .putExtra(LogActivity.EXTRA_LAUNCH_SCRIPT, true));
+                    activity.finish();
+                });
+            }
         }
-        mActivity = null;
-        runScript();
-
     }
 
     private void runScript() {
+        if (mScriptExecution != null && mScriptExecution.getEngine() != null &&
+                !mScriptExecution.getEngine().isDestroyed()) {
+            return;
+        }
         try {
             JavaScriptFileSource source = new JavaScriptFileSource("main", mMainScriptFile);
-            AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
+            mScriptExecution = AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
                     .executePath(mProjectDir));
         } catch (Exception e) {
             AutoJs.getInstance().getGlobalConsole().error(e);
@@ -54,7 +80,7 @@ public class AssetsProjectLauncher {
     private void prepare() {
         String projectConfigPath = PFiles.join(mProjectDir, ProjectConfig.CONFIG_FILE_NAME);
         ProjectConfig projectConfig = ProjectConfig.fromFile(projectConfigPath);
-        if (projectConfig != null && projectConfig.getVersionCode() == mProjectConfig.getVersionCode()) {
+        if (!BuildConfig.DEBUG && projectConfig != null && projectConfig.getVersionCode() == mProjectConfig.getVersionCode()) {
             return;
         }
         PFiles.copyAsset(mActivity, PFiles.join(mAssetsProjectDir, ProjectConfig.CONFIG_FILE_NAME), projectConfigPath);

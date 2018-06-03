@@ -39,7 +39,7 @@ public class Files {
     }
 
     public String cwd() {
-        return ((ScriptEngine.AbstractScriptEngine) mRuntime.engines.myEngine()).cwd();
+        return mRuntime.engines.myEngine().cwd();
     }
 
     public PFileInterface open(String path, String mode, String encoding, int bufferSize) {

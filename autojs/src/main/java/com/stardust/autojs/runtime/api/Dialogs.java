@@ -4,14 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
+import android.widget.CompoundButton;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.stardust.autojs.R;
 import com.stardust.autojs.annotation.ScriptInterface;
 import com.stardust.autojs.annotation.ScriptVariable;
-import com.stardust.autojs.core.ui.BlockedMaterialDialog;
+import com.stardust.autojs.core.ui.dialog.BlockedMaterialDialog;
+import com.stardust.autojs.core.ui.dialog.JsDialogBuilder;
 import com.stardust.autojs.runtime.ScriptBridges;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.util.ArrayUtils;
 import com.stardust.util.UiHandler;
 
@@ -21,18 +24,14 @@ import com.stardust.util.UiHandler;
 
 public class Dialogs {
 
-    private AppUtils mAppUtils;
-    private UiHandler mUiHandler;
     private ContextThemeWrapper mThemeWrapper;
-    private ScriptBridges mScriptBridges;
+    private final ScriptRuntime mRuntime;
 
     @ScriptVariable
     public final NonUiDialogs nonUiDialogs = new NonUiDialogs();
 
-    public Dialogs(AppUtils appUtils, UiHandler uiHandler, ScriptBridges scriptBridges) {
-        mAppUtils = appUtils;
-        mUiHandler = uiHandler;
-        mScriptBridges = scriptBridges;
+    public Dialogs(ScriptRuntime runtime) {
+        mRuntime = runtime;
     }
 
     @ScriptInterface
@@ -72,7 +71,7 @@ public class Dialogs {
     private Context getContext() {
         if (mThemeWrapper != null)
             return mThemeWrapper;
-        mThemeWrapper = new ContextThemeWrapper(mUiHandler.getContext().getApplicationContext(), R.style.Theme_AppCompat_Light);
+        mThemeWrapper = new ContextThemeWrapper(mRuntime.uiHandler.getContext().getApplicationContext(), R.style.Theme_AppCompat_Light);
         return mThemeWrapper;
     }
 
@@ -101,13 +100,6 @@ public class Dialogs {
         return items;
     }
 
-    private Object getCallback(Object[] args) {
-        if (args.length > 1 && !(args[args.length - 1] instanceof CharSequence)) {
-            return args[args.length - 1];
-        }
-        return null;
-    }
-
     @ScriptInterface
     public Object singleChoice(String title, int selectedIndex, String[] items, Object callback) {
         return ((BlockedMaterialDialog.Builder) dialogBuilder(callback)
@@ -130,12 +122,23 @@ public class Dialogs {
 
 
     private BlockedMaterialDialog.Builder dialogBuilder(Object callback) {
-        Context context = mAppUtils.getCurrentActivity();
+        Context context = mRuntime.app.getCurrentActivity();
         if (context == null || ((Activity) context).isFinishing()) {
             context = getContext();
         }
-        return (BlockedMaterialDialog.Builder) new BlockedMaterialDialog.Builder(context, mUiHandler, mScriptBridges, callback)
+        return (BlockedMaterialDialog.Builder) new BlockedMaterialDialog.Builder(context, mRuntime.uiHandler, mRuntime.bridges, callback)
                 .theme(Theme.LIGHT);
+    }
+
+    @ScriptInterface
+    public MaterialDialog.Builder newBuilder() {
+        Context context = mRuntime.app.getCurrentActivity();
+        if (context == null || ((Activity) context).isFinishing()) {
+            context = getContext();
+        }
+        return new JsDialogBuilder(context, mRuntime)
+                .theme(Theme.LIGHT);
+
     }
 
     public class NonUiDialogs {

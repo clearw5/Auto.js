@@ -39,8 +39,10 @@
 <li><a class="nav-http" href="http.html">Http - HTTP</a></li>
 <li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
 <li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
 <li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
 <li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
 <li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
 <li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
 <li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
@@ -85,6 +87,9 @@
 <li><span class="stability_undefined"><a href="#globals_exit">exit()</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_random_min_max">random(min, max)</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_random">random()</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_requiresapi_api">requiresApi(api)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_requiresautojsversion_version">requiresAutojsVersion(version)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_runtime_requestpermissions_permissions">runtime.requestPermissions(permissions)</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_context">context</a></span></li>
 </ul>
 </li>
@@ -190,6 +195,43 @@ for(var i = 0; i &lt; 100; i++){
 <li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
 </ul>
 </div><p>返回在[0, 1)的随机浮点数。</p>
+<h2>requiresApi(api)<span><a class="mark" href="#globals_requiresapi_api" id="globals_requiresapi_api">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>api</code> Android版本号</li>
+</ul>
+</div><p>表示此脚本需要Android API版本达到指定版本才能运行。例如<code>requiresApi(19)</code>表示脚本需要在Android 4.4以及以上运行。</p>
+<p>调用该函数时会判断运行脚本的设备系统的版本号，如果没有达到要求则抛出异常。</p>
+<p>可以参考以下Android API和版本的对照表:</p>
+<p> 平台版本：     API级别</p>
+<p> Android 7.0：  24</p>
+<p> Android 6.0：  23</p>
+<p> Android 5.1：  22</p>
+<p> Android 5.0：  21</p>
+<p> Android 4.4W：  20</p>
+<p> Android 4.4：  19</p>
+<p> Android 4.3：  18</p>
+<h2>requiresAutojsVersion(version)<span><a class="mark" href="#globals_requiresautojsversion_version" id="globals_requiresautojsversion_version">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>version</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> Auto.js的版本或版本号</li>
+</ul>
+</div><p>表示此脚本需要Auto.js版本达到指定版本才能运行。例如<code>requiresAutojsVersion(&quot;3.0.0 Beta&quot;)</code>表示脚本需要在Auto.js 3.0.0 Beta以及以上运行。</p>
+<p>调用该函数时会判断运行脚本的Auto.js的版本号，如果没有达到要求则抛出异常。</p>
+<p>version参数可以是整数表示版本号，例如<code>requiresAutojsVersion(250)</code>；也可以是字符串格式表示的版本，例如&quot;3.0.0 Beta&quot;, &quot;3.1.0 Alpha4&quot;, &quot;3.2.0&quot;等。</p>
+<p>可以通过<code>app.autojs.versionCode</code>和<code>app.autojs.versionName</code>获取当前的Auto.js版本号和版本。</p>
+<h2>runtime.requestPermissions(permissions)<span><a class="mark" href="#globals_runtime_requestpermissions_permissions" id="globals_runtime_requestpermissions_permissions">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>permissions</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 权限的字符串数组</li>
+</ul>
+</div><p>动态申请安卓的权限。例如：</p>
+<pre><code>//请求GPS权限
+runtime.requestPermissions([&quot;access_fine_location&quot;]);
+</code></pre><p>尽管安卓有很多权限，但必须写入Manifest才能动态申请，为了防止权限的滥用，目前Auto.js只能额外申请两个权限：</p>
+<ul>
+<li><code>access_fine_location</code> GPS权限</li>
+<li><code>record_audio</code> 录音权限</li>
+</ul>
+<p>您可以通过APK编辑器来增加Auto.js以及Auto.js打包的应用的权限。</p>
+<p>安卓所有的权限列表参见<a href="https://developer.android.com/guide/topics/permissions/overview">Permissions Overview</a>。（并没有用）</p>
 <h2>context<span><a class="mark" href="#globals_context" id="globals_context">#</a></span></h2>
 <p>全局变量。一个android.content.Context对象。</p>
 <p>注意该对象为ApplicationContext，因此不能用于界面、对话框等的创建。</p>

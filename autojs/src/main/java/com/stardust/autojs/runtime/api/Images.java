@@ -2,27 +2,25 @@ package com.stardust.autojs.runtime.api;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.media.Image;
-import android.media.MediaScannerConnection;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
-import android.text.TextUtils;
-import android.util.Log;
+import android.util.Base64;
 import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
-import android.webkit.MimeTypeMap;
 
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.image.ColorFinder;
 import com.stardust.autojs.core.image.ImageWrapper;
-import com.stardust.autojs.core.image.ScreenCaptureRequester;
-import com.stardust.autojs.core.image.ScreenCapturer;
+import com.stardust.autojs.core.image.OpenCVHelper;
+import com.stardust.autojs.core.image.capture.ScreenCaptureRequester;
+import com.stardust.autojs.core.image.capture.ScreenCapturer;
 import com.stardust.autojs.core.image.TemplateMatching;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
 import com.stardust.autojs.runtime.ScriptRuntime;
@@ -31,22 +29,17 @@ import com.stardust.concurrent.VolatileDispose;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
 
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Locale;
-
-import okhttp3.MediaType;
-
-import static com.stardust.pio.PFiles.getExtension;
 
 /**
  * Created by Stardust on 2017/5/20.
@@ -76,12 +69,16 @@ public class Images {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public boolean requestScreenCapture(final int width, final int height) {
-        mScriptRuntime.requiresApi(21);
+    public boolean requestScreenCapture(int orientation) {
+        ScriptRuntime.requiresApi(21);
+        if (mScreenCapturer != null) {
+            mScreenCapturer.setOrientation(orientation);
+            return true;
+        }
         final VolatileDispose<Boolean> requestResult = new VolatileDispose<>();
         mScreenCaptureRequester.setOnActivityResultCallback((result, data) -> {
             if (result == Activity.RESULT_OK) {
-                mScreenCapturer = new ScreenCapturer(mContext, data, width, height, ScreenMetrics.getDeviceScreenDensity(),
+                mScreenCapturer = new ScreenCapturer(mContext, data, orientation, ScreenMetrics.getDeviceScreenDensity(),
                         new Handler(mScriptRuntime.loopers.getServantLooper()));
                 requestResult.setAndNotify(true);
             } else {
@@ -94,23 +91,17 @@ public class Images {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean requestScreenCapture(boolean landscape) {
-        if (!landscape)
-            return requestScreenCapture(ScreenMetrics.getDeviceScreenWidth(), ScreenMetrics.getDeviceScreenHeight());
-        else
-            return requestScreenCapture(ScreenMetrics.getDeviceScreenHeight(), ScreenMetrics.getDeviceScreenWidth());
+        return requestScreenCapture(landscape ? Configuration.ORIENTATION_LANDSCAPE : Configuration.ORIENTATION_PORTRAIT);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean requestScreenCapture() {
-        if (mDisplay.getRotation() == Surface.ROTATION_0 || mDisplay.getRotation() == Surface.ROTATION_180)
-            return requestScreenCapture(ScreenMetrics.getDeviceScreenWidth(), ScreenMetrics.getDeviceScreenHeight());
-        else
-            return requestScreenCapture(ScreenMetrics.getDeviceScreenHeight(), ScreenMetrics.getDeviceScreenWidth());
+        return requestScreenCapture(ScreenCapturer.ORIENTATION_AUTO);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public ImageWrapper captureScreen() {
-        mScriptRuntime.requiresApi(21);
+        ScriptRuntime.requiresApi(21);
         if (mScreenCapturer == null) {
             throw new SecurityException("No screen capture permission");
         }
@@ -131,14 +122,30 @@ public class Images {
         path = mScriptRuntime.files.path(path);
         ImageWrapper image = captureScreen();
         if (image != null) {
-            saveImage(image, path);
+            image.saveTo(path);
             return true;
         }
         return false;
     }
 
-    public void saveImage(ImageWrapper image, String path) {
-        image.saveTo(path);
+    public ImageWrapper copy(ImageWrapper image) {
+        image.ensureNotRecycled();
+        if (image.getBitmap() == null) {
+            return new ImageWrapper(image.getMat().clone());
+        }
+        if (image.getMat() == null) {
+            return new ImageWrapper(image.getBitmap().copy(image.getBitmap().getConfig(), true));
+        }
+        return new ImageWrapper(image.getBitmap().copy(image.getBitmap().getConfig(), true), image.getMat().clone());
+    }
+
+    public boolean save(ImageWrapper image, String path, String format, int quality) throws IOException {
+        Bitmap.CompressFormat compressFormat = parseImageFormat(format);
+        if (compressFormat == null)
+            throw new IllegalArgumentException("unknown format " + format);
+        Bitmap bitmap = image.getBitmap();
+        FileOutputStream outputStream = new FileOutputStream(mScriptRuntime.files.path(path));
+        return bitmap.compress(compressFormat, quality, outputStream);
     }
 
     public static int pixel(ImageWrapper image, int x, int y) {
@@ -152,15 +159,45 @@ public class Images {
         return ImageWrapper.ofBitmap(Bitmap.createBitmap(img.getBitmap(), x, y, w, h));
     }
 
-
     public ImageWrapper read(String path) {
         path = mScriptRuntime.files.path(path);
         Bitmap bitmap = BitmapFactory.decodeFile(path);
         return ImageWrapper.ofBitmap(bitmap);
     }
 
-    public ImageWrapper decodeBase64(String data) {
-        return ImageWrapper.ofBitmap(Drawables.loadData(data));
+    public ImageWrapper fromBase64(String data) {
+        return ImageWrapper.ofBitmap(Drawables.loadBase64Data(data));
+    }
+
+    public String toBase64(ImageWrapper wrapper, String format, int quality) {
+        return Base64.encodeToString(toBytes(wrapper, format, quality), Base64.NO_WRAP);
+    }
+
+    public byte[] toBytes(ImageWrapper wrapper, String format, int quality) {
+        Bitmap.CompressFormat compressFormat = parseImageFormat(format);
+        if (compressFormat == null)
+            throw new IllegalArgumentException("unknown format " + format);
+        Bitmap bitmap = wrapper.getBitmap();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(compressFormat, quality, outputStream);
+        return outputStream.toByteArray();
+    }
+
+    public ImageWrapper fromBytes(byte[] bytes) {
+        return ImageWrapper.ofBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+    }
+
+    private Bitmap.CompressFormat parseImageFormat(String format) {
+        switch (format) {
+            case "png":
+                return Bitmap.CompressFormat.PNG;
+            case "jpeg":
+            case "jpg":
+                return Bitmap.CompressFormat.JPEG;
+            case "webp":
+                return Bitmap.CompressFormat.WEBP;
+        }
+        return null;
     }
 
     public ImageWrapper load(String src) {
@@ -217,9 +254,9 @@ public class Images {
     }
 
     public Point findImage(ImageWrapper image, ImageWrapper template, float weakThreshold, float threshold, Rect rect, int maxLevel) {
-        if(image == null)
+        if (image == null)
             throw new NullPointerException("image = null");
-        if(template == null)
+        if (template == null)
             throw new NullPointerException("template = null");
         Mat src = image.getMat();
         if (rect != null) {
@@ -235,13 +272,11 @@ public class Images {
             point.x = mScreenMetrics.scaleX((int) point.x);
             point.y = mScreenMetrics.scaleX((int) point.y);
         }
-
+        if (src != image.getMat()) {
+            OpenCVHelper.release(src);
+        }
         return point;
     }
 
-
-    public void notityImageInserted(String path){
-
-    }
 
 }

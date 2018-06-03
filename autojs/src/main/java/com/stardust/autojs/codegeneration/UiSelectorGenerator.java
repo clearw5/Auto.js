@@ -6,6 +6,7 @@ import com.stardust.util.Consumer;
 
 import static com.stardust.autojs.codegeneration.CodeGenerator.FIND_ONE;
 import static com.stardust.autojs.codegeneration.CodeGenerator.UNTIL_FIND;
+import static com.stardust.autojs.codegeneration.CodeGenerator.WAIT_FOR;
 
 /**
  * Created by Stardust on 2017/12/7.
@@ -72,7 +73,13 @@ public class UiSelectorGenerator {
         if (selector == null) {
             return null;
         }
-        return selector + (mSearchMode == FIND_ONE ? ".findOne()" : ".untilFind()");
+        if (mSearchMode == FIND_ONE) {
+            return selector + ".findOne()";
+        } else if (mSearchMode == UNTIL_FIND) {
+            return selector + ".untilFind()";
+        } else {
+            return selector.toString();
+        }
     }
 
 

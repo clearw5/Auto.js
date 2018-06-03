@@ -57,6 +57,12 @@ public class TimerThread extends ThreadCompat {
         }
     }
 
+    @Override
+    public void interrupt() {
+        LooperHelper.quitForThread(this);
+        super.interrupt();
+    }
+
     private void notifyRunning() {
         synchronized (mRunningLock) {
             mRunning = true;
@@ -81,7 +87,7 @@ public class TimerThread extends ThreadCompat {
         return getTimer().setTimeout(callback, delay, args);
     }
 
-    private Timer getTimer() {
+    public Timer getTimer() {
         if (mTimer == null) {
             throw new IllegalStateException("thread is not alive");
         }

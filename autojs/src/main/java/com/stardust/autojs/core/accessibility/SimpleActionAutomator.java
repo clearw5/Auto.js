@@ -51,7 +51,7 @@ public class SimpleActionAutomator {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @ScriptInterface
     public ActionTarget editable(int i) {
-        mScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
+        ScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
         return new ActionTarget.EditableActionTarget(i);
     }
 
@@ -113,14 +113,14 @@ public class SimpleActionAutomator {
     @ScriptInterface
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean setText(ActionTarget target, String text) {
-        mScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
+        ScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_SET_TEXT, text));
     }
 
     @ScriptInterface
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean appendText(ActionTarget target, String text) {
-        mScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
+        ScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
         return performAction(target.createAction(UiObject.ACTION_APPEND_TEXT, text));
     }
 
@@ -137,7 +137,7 @@ public class SimpleActionAutomator {
     @ScriptInterface
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean powerDialog() {
-        mScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
+        ScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
         return performGlobalAction(AccessibilityService.GLOBAL_ACTION_POWER_DIALOG);
     }
 
@@ -189,8 +189,8 @@ public class SimpleActionAutomator {
     }
 
     private void prepareForGesture() {
+        ScriptRuntime.requiresApi(24);
         ensureAccessibilityServiceEnabled();
-        mScriptRuntime.requiresApi(24);
         if (mGlobalActionAutomator != null)
             return;
         mGlobalActionAutomator = new GlobalActionAutomator(new Handler(mScriptRuntime.loopers.getServantLooper()));
@@ -237,7 +237,7 @@ public class SimpleActionAutomator {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @ScriptInterface
     public boolean paste(ActionTarget target) {
-        mScriptRuntime.requiresApi(18);
+        ScriptRuntime.requiresApi(18);
         return performAction(target.createAction(AccessibilityNodeInfo.ACTION_PASTE));
     }
 

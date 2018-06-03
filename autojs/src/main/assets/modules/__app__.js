@@ -1,8 +1,8 @@
 
-module.exports = function(__runtime__, scope){
+module.exports = function(runtime, global){
     importClass(android.content.Intent);
-    var app = Object.create(__runtime__.app);
-    var context = scope.context;
+    var app = Object.create(runtime.app);
+    var context = global.context;
 
     app.intent = function(i) {
       var intent = new android.content.Intent();
@@ -11,7 +11,7 @@ module.exports = function(__runtime__, scope){
       }
       if (i.extras) {
           for (var key in i.extras) {
-              intent.putExtra(key, i.extras[key].toString());
+              intent.putExtra(key, i.extras[key]);
           }
       }
       if (i.category) {
@@ -42,7 +42,16 @@ module.exports = function(__runtime__, scope){
     }
 
     app.startActivity = function(i){
-        context.startActivity(app.intent(i).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK));
+        if(typeof(i) == "string"){
+            if(runtime.getProperty("class." + i)){
+                context.startActivity(new Intent(context, runtime.getProperty("class." + i))
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                return;
+            }else{
+                throw new Error("class " + i + " not found");
+            }
+        }
+        context.startActivity(app.intent(i).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     app.sendBroadcast = function(i){
@@ -82,7 +91,15 @@ module.exports = function(__runtime__, scope){
 
     app.launch = app.launchPackage;
 
-    scope.__asGlobal__(app, ['launchPackage', 'launch', 'launchApp', 'getPackageName', 'getAppName', 'openAppSetting']);
+    app.versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+    app.versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+
+    app.autojs = {
+        versionCode: org.autojs.autojs.BuildConfig.VERSION_CODE,
+        versionName: org.autojs.autojs.BuildConfig.VERSION_NAME
+    };
+
+    global.__asGlobal__(app, ['launchPackage', 'launch', 'launchApp', 'getPackageName', 'getAppName', 'openAppSetting']);
 
     return app;
 }

@@ -14,7 +14,7 @@ if(content != null){
     ui.content.setText(content);
 }
 ui.save.click(()=>{
-    storage.put("content", ui.content.getText());
+    storage.put("content", ui.content.text());
 });
 
 
