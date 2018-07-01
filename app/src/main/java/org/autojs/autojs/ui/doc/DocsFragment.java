@@ -35,6 +35,7 @@ public class DocsFragment extends ViewPagerFragment implements BackPressedHandle
     EWebView mEWebView;
     WebView mWebView;
 
+    private String mIndexUrl;
     private String mPreviousQuery;
 
 
@@ -52,14 +53,11 @@ public class DocsFragment extends ViewPagerFragment implements BackPressedHandle
     @AfterViews
     void setUpViews() {
         mWebView = mEWebView.getWebView();
-        mEWebView.getSwipeRefreshLayout().setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (TextUtils.equals(mWebView.getUrl(), mWebView.getOriginalUrl())) {
-                    loadUrl();
-                } else {
-                    mEWebView.onRefresh();
-                }
+        mEWebView.getSwipeRefreshLayout().setOnRefreshListener(() -> {
+            if (TextUtils.equals(mWebView.getUrl(), mIndexUrl)) {
+                loadUrl();
+            } else {
+                mEWebView.onRefresh();
             }
         });
         Bundle savedWebViewState = getArguments().getBundle("savedWebViewState");
@@ -71,8 +69,8 @@ public class DocsFragment extends ViewPagerFragment implements BackPressedHandle
     }
 
     private void loadUrl() {
-        String url = Pref.getDocumentationUrl() + "index.html";
-        mWebView.loadUrl(getArguments().getString(ARGUMENT_URL, url));
+        mIndexUrl = getArguments().getString(ARGUMENT_URL, Pref.getDocumentationUrl() + "index.html");
+        mWebView.loadUrl(mIndexUrl);
     }
 
 

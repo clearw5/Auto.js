@@ -15,6 +15,7 @@ import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.model.script.Scripts;
 import org.autojs.autojs.storage.file.StorageFileProvider;
 
+import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -98,7 +99,7 @@ public class DevPluginResponseHandler implements Handler {
         if (!name.endsWith(".js")) {
             name = name + ".js";
         }
-        PFiles.write(StorageFileProvider.getDefaultDirectoryPath() + name, script);
+        PFiles.write(new File(StorageFileProvider.getDefaultDirectoryPath(), name), script);
         GlobalAppContext.toast(R.string.text_script_save_successfully);
     }
 }

@@ -14,6 +14,7 @@ import java.util.List;
  * Created by Stardust on 2017/10/25.
  */
 
+@RequiresApi(api = Build.VERSION_CODES.N_MR1)
 public class ShortcutManager {
 
     private static ShortcutManager sInstance;
