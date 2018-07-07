@@ -2,8 +2,8 @@ apply plugin: 'com.android.application'
 def AAVersion = '4.3.1'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "org.autojs.autojs"
         minSdkVersion 17

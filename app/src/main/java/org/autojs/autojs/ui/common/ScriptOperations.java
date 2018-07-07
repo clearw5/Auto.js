@@ -1,5 +1,6 @@
 package org.autojs.autojs.ui.common;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
@@ -222,6 +223,7 @@ public class ScriptOperations {
                 .putExtra(ShortcutCreateActivity.EXTRA_FILE, file));
     }
 
+    @SuppressLint("CheckResult")
     public void delete(final ScriptFile scriptFile) {
         Observable.fromPublisher(new Publisher<Boolean>() {
             @Override
