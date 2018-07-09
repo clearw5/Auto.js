@@ -1,5 +1,6 @@
 package org.autojs.autojs.ui.shortcut;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -86,9 +87,11 @@ public class ShortcutCreateActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("NewApi") //for fool android studio
     private void createShortcut() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && mUseAndroidNShortcut.isChecked()) {
-            createShortcutForAndroidN();
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && mUseAndroidNShortcut.isChecked())
+                || Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createShortcutByShortcutManager();
             return;
         }
         Shortcut shortcut = new Shortcut(this);
@@ -105,21 +108,28 @@ public class ShortcutCreateActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N_MR1)
-    private void createShortcutForAndroidN() {
+    private void createShortcutByShortcutManager() {
         Icon icon;
         if (mIsDefaultIcon) {
-            icon = Icon.createWithResource(this, R.drawable.ic_node_js_black);
+            icon = Icon.createWithResource(this, R.drawable.ic_file_type_js);
         } else {
             Bitmap bitmap = BitmapTool.drawableToBitmap(mIcon.getDrawable());
             icon = Icon.createWithBitmap(bitmap);
         }
         PersistableBundle extras = new PersistableBundle(1);
         extras.putString(ScriptIntents.EXTRA_KEY_PATH, mScriptFile.getPath());
-        ShortcutManager.getInstance(this).addDynamicShortcut(mName.getText(), mScriptFile.getPath(), icon,
-                new Intent(this, ShortcutActivity.class)
-                        .putExtra(ScriptIntents.EXTRA_KEY_PATH, mScriptFile.getPath())
-                        .setAction(Intent.ACTION_MAIN));
+        Intent intent = new Intent(this, ShortcutActivity.class)
+                .putExtra(ScriptIntents.EXTRA_KEY_PATH, mScriptFile.getPath())
+                .setAction(Intent.ACTION_MAIN);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ShortcutManager.getInstance(this).addPinnedShortcut(mName.getText(), mScriptFile.getPath(), icon, intent);
+        } else {
+            ShortcutManager.getInstance(this).addDynamicShortcut(mName.getText(), mScriptFile.getPath(), icon, intent);
+        }
+
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

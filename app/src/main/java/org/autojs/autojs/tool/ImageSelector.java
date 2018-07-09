@@ -22,7 +22,7 @@ public class ImageSelector implements OnActivityResultDelegate {
 
     private static final String TAG = ImageSelector.class.getSimpleName();
 
-    private static final int REQUEST_CODE = "LOVE EATING".hashCode() >> 16;
+    private static final int REQUEST_CODE = "LOVE HONMUA".hashCode() >> 16;
     private Activity mActivity;
     private ImageSelectorCallback mCallback;
     private boolean mDisposable;

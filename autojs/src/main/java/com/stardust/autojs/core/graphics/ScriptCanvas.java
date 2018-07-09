@@ -227,16 +227,6 @@ public class ScriptCanvas {
         return mCanvas.clipPath(path);
     }
 
-    @Deprecated
-    public boolean clipRegion(Region region, Region.Op op) {
-        return mCanvas.clipRegion(region, op);
-    }
-
-    @Deprecated
-    public boolean clipRegion(Region region) {
-        return mCanvas.clipRegion(region);
-    }
-
     public DrawFilter getDrawFilter() {
         return mCanvas.getDrawFilter();
     }

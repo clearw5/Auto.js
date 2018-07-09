@@ -224,9 +224,9 @@ public class ScriptEngineService {
 
     private static class ScriptExecutionEvent {
 
-        static final int ON_START = "Eating...".hashCode();
-        static final int ON_SUCCESS = "I...lov...".hashCode();
-        static final int ON_EXCEPTION = "...Sorry...I should not have said it...".hashCode();
+        static final int ON_START = 1001;
+        static final int ON_SUCCESS = 1002;
+        static final int ON_EXCEPTION = 1003;
 
         private final int mCode;
         private final String mMessage;

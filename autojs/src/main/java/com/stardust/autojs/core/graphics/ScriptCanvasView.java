@@ -50,6 +50,7 @@ public class ScriptCanvasView extends SurfaceView implements SurfaceHolder.Callb
 
     private void init() {
         mHolder.addCallback(this);
+        setZOrderOnTop(false);
     }
 
     @Override

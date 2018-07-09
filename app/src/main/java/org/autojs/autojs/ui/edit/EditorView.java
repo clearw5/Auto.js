@@ -64,12 +64,12 @@ import static org.autojs.autojs.model.script.Scripts.ACTION_ON_EXECUTION_FINISHE
 @EViewGroup(R.layout.editor_view)
 public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintClickListener, FunctionsKeyboardView.ClickCallback {
 
-    public static final String EXTRA_PATH = "Still Love Eating 17.4.5";
-    public static final String EXTRA_NAME = "Still love you 17.6.29 But....(ಥ_ಥ)";
-    public static final String EXTRA_CONTENT = "It's hard...............";
-    public static final String EXTRA_READ_ONLY = "Miss you more every day、、、";
-    public static final String EXTRA_SAVE_ENABLED = "But you won't...but you won't...";
-    public static final String EXTRA_RUN_ENABLED = "Love you with my life...really...17.9.28";
+    public static final String EXTRA_PATH = "path";
+    public static final String EXTRA_NAME = "name";
+    public static final String EXTRA_CONTENT = "content";
+    public static final String EXTRA_READ_ONLY = "readOnly";
+    public static final String EXTRA_SAVE_ENABLED = "saveEnabled";
+    public static final String EXTRA_RUN_ENABLED = "runEnabled";
 
     @ViewById(R.id.editor)
     CodeEditor mEditor;
