@@ -32,7 +32,7 @@ public class ErrorReportActivity extends BaseActivity {
 
     private static final String TAG = "ErrorReportActivity";
     private static final SparseIntArray CRASH_COUNT = new SparseIntArray();
-    private static final String KEY_CRASH_COUNT = "Eating... you are my halo...";
+    private static final String KEY_CRASH_COUNT = "crashCount";
 
     static {
         CRASH_COUNT.put(2, R.string.text_again);

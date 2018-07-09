@@ -55,7 +55,7 @@ public interface ScreenCaptureRequester {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     class ActivityScreenCaptureRequester extends AbstractScreenCaptureRequester implements ScreenCaptureRequester, OnActivityResultDelegate {
 
-        private static final int REQUEST_CODE_MEDIA_PROJECTION = "Eating...Today is 17.5.20 yet...The 90 days、、、".hashCode() >> 16;
+        private static final int REQUEST_CODE_MEDIA_PROJECTION = 17777;
         private OnActivityResultDelegate.Mediator mMediator;
         private Activity mActivity;
 

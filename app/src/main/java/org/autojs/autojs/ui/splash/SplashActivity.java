@@ -35,8 +35,8 @@ import org.androidannotations.annotations.ViewById;
 @EActivity(R.layout.activity_splash)
 public class SplashActivity extends BaseActivity {
 
-    public static final String NOT_START_MAIN_ACTIVITY = "Eating...I...really...love...you...";
-    public static final String FORCE_SHOW_AD = "I will be better but can you take just a glance at me...";
+    public static final String NOT_START_MAIN_ACTIVITY = "notStartMainActivity";
+    public static final String FORCE_SHOW_AD = "forceShowAd";
 
     private static final String LOG_TAG = SplashActivity.class.getSimpleName();
 

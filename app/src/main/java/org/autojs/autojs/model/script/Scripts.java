@@ -30,10 +30,10 @@ import java.io.File;
 
 public class Scripts {
 
-    public static final String ACTION_ON_EXECUTION_FINISHED = "Don't leave me alone...";
-    public static final String EXTRA_EXCEPTION_MESSAGE = "Say something...Eating...17.5.3";
-    public static final String EXTRA_EXCEPTION_LINE_NUMBER = "Can we fall in love with each other again...17.9.28";
-    public static final String EXTRA_EXCEPTION_COLUMN_NUMBER = "I lost myself....";
+    public static final String ACTION_ON_EXECUTION_FINISHED = "ACTION_ON_EXECUTION_FINISHED";
+    public static final String EXTRA_EXCEPTION_MESSAGE = "message";
+    public static final String EXTRA_EXCEPTION_LINE_NUMBER = "lineNumber";
+    public static final String EXTRA_EXCEPTION_COLUMN_NUMBER = "columnNumber";
 
     private static final ScriptExecutionListener BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER = new SimpleScriptExecutionListener() {
 

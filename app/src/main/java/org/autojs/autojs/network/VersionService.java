@@ -29,8 +29,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class VersionService {
 
-    private static final String KEY_DEPRECATED = "Still loving you...Can we go back...";
-    private static final String KEY_DEPRECATED_VERSION_CODE = "I miss you so much tonight...Baby don't let me cry...";
+    private static final String KEY_DEPRECATED = "KEY_DEPRECATED";
+    private static final String KEY_DEPRECATED_VERSION_CODE = "KEY_DEPRECATED_VERSION_CODE";
 
     private static VersionService sInstance = new VersionService();
     private boolean mDeprecated = false;
