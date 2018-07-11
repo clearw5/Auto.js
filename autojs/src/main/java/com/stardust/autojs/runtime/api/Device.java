@@ -1,10 +1,12 @@
 package com.stardust.autojs.runtime.api;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -98,12 +100,14 @@ public class Device {
     @SuppressLint("HardwareIds")
     @Nullable
     public String getIMEI() {
+        checkReadPhoneStatePermission();
         try {
             return ((TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
         } catch (SecurityException e) {
             return null;
         }
     }
+
 
     @SuppressLint("HardwareIds")
     public String getAndroidId() {
@@ -284,6 +288,16 @@ public class Device {
         }
         SettingsCompat.manageWriteSettings(mContext);
         throw new SecurityException(mContext.getString(R.string.no_write_settings_permissin));
+    }
+
+
+    private void checkReadPhoneStatePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (mContext.checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                throw new SecurityException(mContext.getString(R.string.no_read_phone_state_permissin));
+            }
+        }
     }
 
 

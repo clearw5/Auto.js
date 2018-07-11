@@ -20,6 +20,7 @@
     <string name="text_requires_app_version_to_run_the_script" formatted="true">本脚本需要Auto.js版本号%d以上才能运行</string>
     <string name="text_drawer_open">打开侧拉菜单</string>
     <string name="text_drawer_close">关闭侧拉菜单</string>
+    <string name="no_read_phone_state_permissin">没有读取设备信息权限</string>
 
 
 </resources>
