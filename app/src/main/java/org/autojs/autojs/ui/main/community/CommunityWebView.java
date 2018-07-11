@@ -1,5 +1,6 @@
 package org.autojs.autojs.ui.main.community;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.support.design.widget.BottomSheetDialog;
@@ -7,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import org.autojs.autojs.R;
 import org.autojs.autojs.network.NodeBB;
@@ -62,6 +64,7 @@ public class CommunityWebView extends EWebView {
         mBottomSheetDialog.show();
     }
 
+    @SuppressLint("CheckResult")
     @Optional
     @OnClick(R.id.save)
     void save() {
@@ -69,14 +72,18 @@ public class CommunityWebView extends EWebView {
         new ScriptOperations(getContext(), CommunityWebView.this)
                 .download(mUrl)
                 .observeOn(AndroidSchedulers.mainThread())
-                .onErrorResumeNext(Observable.empty())
                 .subscribe(file ->
-                        Snackbar.make(CommunityWebView.this, getResources().getString(R.string.format_file_downloaded, file.getPath())
-                                , Snackbar.LENGTH_LONG)
-                                .setAction(R.string.text_open, v -> Scripts.edit(file))
-                                .show());
+                                Snackbar.make(CommunityWebView.this, getResources().getString(R.string.format_file_downloaded, file.getPath())
+                                        , Snackbar.LENGTH_LONG)
+                                        .setAction(R.string.text_open, v -> Scripts.edit(file))
+                                        .show(),
+                        error -> {
+                            error.printStackTrace();
+                            Snackbar.make(CommunityWebView.this, R.string.text_download_failed, Toast.LENGTH_SHORT).show();
+                        });
     }
 
+    @SuppressLint("CheckResult")
     @Optional
     @OnClick(R.id.run)
     void run() {
@@ -84,10 +91,12 @@ public class CommunityWebView extends EWebView {
         new ScriptOperations(getContext(), CommunityWebView.this)
                 .temporarilyDownload(mUrl)
                 .observeOn(AndroidSchedulers.mainThread())
-                .onErrorResumeNext(Observable.empty())
                 .subscribe(file -> {
                     Snackbar.make(CommunityWebView.this, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
                     Scripts.run(file);
+                }, error -> {
+                    error.printStackTrace();
+                    Snackbar.make(CommunityWebView.this, R.string.text_download_failed, Toast.LENGTH_SHORT).show();
                 });
     }
 
