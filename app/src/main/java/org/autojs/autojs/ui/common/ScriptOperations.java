@@ -21,6 +21,7 @@ import com.stardust.app.GlobalAppContext;
 import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.external.ScriptIntents;
 import org.autojs.autojs.storage.file.TmpScriptFiles;
@@ -260,48 +261,15 @@ public class ScriptOperations {
                                 }
                             });
                 })
-                .flatMap(savePath -> download(url, savePath, createDownloadProgressDialog(url, fileName)));
-    }
-
-    private MaterialDialog createDownloadProgressDialog(String url, String fileName) {
-        return new MaterialDialog.Builder(mContext)
-                .progress(false, 100)
-                .title(fileName)
-                .cancelable(false)
-                .positiveText(R.string.text_cancel_download)
-                .onPositive((dialog, which) -> DownloadManager.getInstance().cancelDownload(url))
-                .show();
-    }
-
-    public Observable<ScriptFile> download(String url, String path, MaterialDialog progressDialog) {
-        PublishSubject<ScriptFile> subject = PublishSubject.create();
-        DownloadManager.getInstance().download(url, path)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(progressDialog::setProgress)
-                .subscribe(new SimpleObserver<Integer>() {
-                    @Override
-                    public void onComplete() {
-                        progressDialog.dismiss();
-                        subject.onNext(new ScriptFile(path));
-                        subject.onComplete();
-                    }
-
-                    @Override
-                    public void onError(Throwable error) {
-                        Log.e(LOG_TAG, "Download failed", error);
-                        progressDialog.dismiss();
-                        showMessage(R.string.text_download_failed);
-                        subject.onError(error);
-                    }
-                });
-        return subject;
+                .flatMap(savePath -> DownloadManager.getInstance().downloadWithProgress(mContext, url, savePath))
+                .map(ScriptFile::new);
     }
 
     public Observable<ScriptFile> temporarilyDownload(String url) {
-        String fileName = DownloadManager.parseFileNameLocally(url);
         return Observable.fromCallable(() -> TmpScriptFiles.create(mContext))
                 .flatMap(tmpFile ->
-                        download(url, tmpFile.getPath(), createDownloadProgressDialog(url, fileName)));
+                        DownloadManager.getInstance().downloadWithProgress(mContext, url, tmpFile.getPath()))
+                .map(ScriptFile::new);
     }
 
     public void importFile() {

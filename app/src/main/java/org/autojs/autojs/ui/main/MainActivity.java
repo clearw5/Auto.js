@@ -141,7 +141,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     private void checkPermissions() {
-        checkPermission(Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_EXTERNAL_STORAGE);
+        checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     private void showAccessibilitySettingPromptIfDisabled() {
@@ -244,18 +244,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         }
         if (getGrantResult(Manifest.permission.READ_EXTERNAL_STORAGE, permissions, grantResults) == PackageManager.PERMISSION_GRANTED) {
             StorageFileProvider.getDefault().notifyStoragePermissionGranted();
-        }
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED) {
-            new ThemeColorMaterialDialogBuilder(this)
-                    .title(R.string.text_no_phone_state_permission)
-                    .content(R.string.info_no_phone_state_permission)
-                    .positiveText(R.string.text_request_permission)
-                    .negativeText(R.string.text_exit)
-                    .cancelable(false)
-                    .onPositive(((dialog, which) -> checkPermissions()))
-                    .onNegative((dialog, which) -> finish())
-                    .show();
         }
     }
 

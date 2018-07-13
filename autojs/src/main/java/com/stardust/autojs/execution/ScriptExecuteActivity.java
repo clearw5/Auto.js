@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,7 +14,6 @@ import android.view.MotionEvent;
 
 import com.stardust.autojs.core.eventloop.EventEmitter;
 import com.stardust.autojs.core.eventloop.SimpleEvent;
-import com.stardust.autojs.core.ui.inflater.inflaters.Exceptions;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
@@ -157,6 +155,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
             return;
         IntentExtras extras = IntentExtras.newExtras().putAll(mIntentExtras);
         outState.putInt(IntentExtras.EXTRA_ID, extras.getId());
+        emit("save_instance_state", outState);
     }
 
     @Override
@@ -189,12 +188,6 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         emit("restore_instance_state", savedInstanceState);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        emit("save_instance_state", outState, outPersistentState);
     }
 
     @Override

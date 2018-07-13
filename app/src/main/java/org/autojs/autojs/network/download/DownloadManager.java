@@ -1,11 +1,20 @@
 package org.autojs.autojs.network.download;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.stardust.concurrent.VolatileBox;
 import com.stardust.pio.PFiles;
+
+import org.autojs.autojs.R;
+import org.autojs.autojs.model.script.ScriptFile;
 import org.autojs.autojs.network.NodeBB;
 import org.autojs.autojs.network.api.DownloadApi;
+import org.autojs.autojs.tool.SimpleObserver;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +23,7 @@ import java.net.URLDecoder;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import okhttp3.OkHttpClient;
@@ -28,6 +38,7 @@ import retrofit2.Retrofit;
 
 public class DownloadManager {
 
+    private static final String LOG_TAG = "DownloadManager";
     private static DownloadManager sInstance;
 
     private static final int RETRY_COUNT = 3;
@@ -79,6 +90,44 @@ public class DownloadManager {
                 .subscribeOn(Schedulers.io())
                 .subscribe(task::start, error -> task.progress().onError(error));
         return task.progress();
+    }
+
+    public Observable<File> downloadWithProgress(Context context, String url, String path) {
+        String fileName = DownloadManager.parseFileNameLocally(url);
+        return download(url, path, createDownloadProgressDialog(context, url, fileName));
+    }
+
+    private MaterialDialog createDownloadProgressDialog(Context context, String url, String fileName) {
+        return new MaterialDialog.Builder(context)
+                .progress(false, 100)
+                .title(fileName)
+                .cancelable(false)
+                .positiveText(R.string.text_cancel_download)
+                .onPositive((dialog, which) -> DownloadManager.getInstance().cancelDownload(url))
+                .show();
+    }
+
+    private Observable<File> download(String url, String path, MaterialDialog progressDialog) {
+        PublishSubject<File> subject = PublishSubject.create();
+        DownloadManager.getInstance().download(url, path)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(progressDialog::setProgress)
+                .subscribe(new SimpleObserver<Integer>() {
+                    @Override
+                    public void onComplete() {
+                        progressDialog.dismiss();
+                        subject.onNext(new File(path));
+                        subject.onComplete();
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        Log.e(LOG_TAG, "Download failed", error);
+                        progressDialog.dismiss();
+                        subject.onError(error);
+                    }
+                });
+        return subject;
     }
 
     public void cancelDownload(String url) {

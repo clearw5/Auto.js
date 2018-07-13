@@ -12,6 +12,7 @@ import org.autojs.autojs.network.VersionService;
 import org.autojs.autojs.network.entity.VersionInfo;
 import org.autojs.autojs.tool.SimpleObserver;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -39,6 +40,7 @@ public class VersionGuard {
 
     private void checkForUpdatesIfNeeded() {
         mVersionService.checkForUpdatesIfNeededAndUsingWifi(mActivity)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SimpleObserver<VersionInfo>() {
 
                     @Override
@@ -76,23 +78,15 @@ public class VersionGuard {
                 .negativeText(R.string.text_exit)
                 .cancelable(false)
                 .autoDismiss(false)
-                .onAny(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        if (which == DialogAction.POSITIVE) {
-                            new UpdateCheckDialog(mActivity)
-                                    .show();
-                        } else {
-                            mActivity.finish();
-                        }
+                .onAny((dialog, which) -> {
+                    if (which == DialogAction.POSITIVE) {
+                        new UpdateCheckDialog(mActivity)
+                                .show();
+                    } else {
+                        mActivity.finish();
                     }
                 })
-                .dismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        mDeprecatedDialog = null;
-                    }
-                })
+                .dismissListener(dialog -> mDeprecatedDialog = null)
                 .show();
     }
 }
