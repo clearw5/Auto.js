@@ -38,6 +38,7 @@ import com.stardust.autojs.core.ui.inflater.inflaters.TimePickerInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.ToolbarInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.ViewGroupInflater;
 import com.stardust.autojs.core.ui.inflater.util.Res;
+import com.stardust.autojs.core.ui.widget.JsSpinner;
 import com.stardust.autojs.core.ui.widget.JsTabLayout;
 import com.stardust.autojs.core.ui.widget.JsToolbar;
 import com.stardust.autojs.core.ui.xml.XmlConverter;
@@ -126,7 +127,7 @@ public class DynamicLayoutInflater {
         registerViewAttrSetter(DatePicker.class.getName(), new DatePickerInflater(mResourceParser));
         registerViewAttrSetter(RadioGroup.class.getName(), new RadioGroupInflater<>(mResourceParser));
         registerViewAttrSetter(ProgressBar.class.getName(), new ProgressBarInflater<>(mResourceParser));
-        registerViewAttrSetter(Spinner.class.getName(), new SpinnerInflater(mResourceParser));
+        registerViewAttrSetter(JsSpinner.class.getName(), new SpinnerInflater(mResourceParser));
         registerViewAttrSetter(TimePicker.class.getName(), new TimePickerInflater(mResourceParser));
         registerViewAttrSetter(AppBarLayout.class.getName(), new AppBarInflater<>(mResourceParser));
         registerViewAttrSetter(JsTabLayout.class.getName(), new TabLayoutInflater<>(mResourceParser));

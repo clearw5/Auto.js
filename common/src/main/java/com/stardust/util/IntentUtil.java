@@ -84,6 +84,7 @@ public class IntentUtil {
         return goToAppDetailSettings(context, context.getPackageName());
     }
 
+    // FIXME: 2018/7/11 Permission denial
     public static void installApk(Context context, String path) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
 

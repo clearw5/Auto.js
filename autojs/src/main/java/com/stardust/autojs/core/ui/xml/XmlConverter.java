@@ -25,6 +25,7 @@ import com.stardust.autojs.core.ui.widget.JsImageView;
 import com.stardust.autojs.core.ui.widget.JsLinearLayout;
 import com.stardust.autojs.core.ui.widget.JsListView;
 import com.stardust.autojs.core.ui.widget.JsRelativeLayout;
+import com.stardust.autojs.core.ui.widget.JsSpinner;
 import com.stardust.autojs.core.ui.widget.JsTabLayout;
 import com.stardust.autojs.core.ui.widget.JsTextView;
 import com.stardust.autojs.core.ui.widget.JsToolbar;
@@ -68,7 +69,7 @@ public class XmlConverter {
                     .map("webview", JsWebView.class.getName())
                     .map("progressbar", ProgressBar.class.getName())
                     .map("seekbar", SeekBar.class.getName())
-                    .map("spinner", Spinner.class.getName())
+                    .map("spinner", JsSpinner.class.getName())
                     .map("radio", RadioButton.class.getName())
                     .map("radiogroup", RadioGroup.class.getName())
                     .map("checkbox", CheckBox.class.getName())
