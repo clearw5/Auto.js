@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,7 +81,6 @@ public class ProjectConfig {
     }
 
 
-
     public String getName() {
         return mName;
     }
@@ -128,9 +128,22 @@ public class ProjectConfig {
 
     public List<String> getAssets() {
         if (mAssets == null) {
-            mAssets = new ArrayList<>();
+            mAssets = Collections.emptyList();
         }
         return mAssets;
+    }
+
+    public boolean addAsset(String assetRelativePath) {
+        if (mAssets == null) {
+            mAssets = new ArrayList<>();
+        }
+        for (String asset : mAssets) {
+            if (new File(asset).equals(new File(assetRelativePath))) {
+                return false;
+            }
+        }
+        mAssets.add(assetRelativePath);
+        return true;
     }
 
     public void setAssets(List<String> assets) {

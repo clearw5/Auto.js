@@ -1,6 +1,7 @@
 package org.autojs.autojs.autojs.build;
 
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 
 import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.apkbuilder.ApkBuilder;
@@ -8,6 +9,7 @@ import com.stardust.autojs.apkbuilder.ManifestEditor;
 import com.stardust.autojs.apkbuilder.util.StreamUtils;
 import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.pio.PFiles;
+
 import org.autojs.autojs.App;
 
 import java.io.File;
@@ -156,8 +158,10 @@ public class AutoJsApkBuilder extends ApkBuilder {
         projectConfig.setName(config.appName)
                 .setPackageName(config.packageName)
                 .setVersionCode(config.versionCode)
-                .setVersionName(config.versionName)
-                .setMainScriptFile("main.js");
+                .setVersionName(config.versionName);
+        if (TextUtils.isEmpty(projectConfig.getMainScriptFile())) {
+            projectConfig.setMainScriptFile("main.js");
+        }
         updateProjectConfigAssets(projectConfig, config.jsPath, config.jsPath);
         PFiles.write(ProjectConfig.configFileOfDir(config.jsPath), projectConfig.toJson());
     }
@@ -173,7 +177,7 @@ public class AutoJsApkBuilder extends ApkBuilder {
                 continue;
             }
             String relative = new File(projectDir).toURI().relativize(file.toURI()).getPath();
-            config.getAssets().add(relative);
+            config.addAsset(relative);
         }
     }
 
