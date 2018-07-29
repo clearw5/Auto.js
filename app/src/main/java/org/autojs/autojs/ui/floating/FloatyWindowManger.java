@@ -54,7 +54,7 @@ public class FloatyWindowManger {
     }
 
     public static boolean showCircularMenu() {
-        if (!SettingsCompat.canDrawOverlays(GlobalAppContext.get())) {
+        if (!FloatingPermission.canDrawOverlays(GlobalAppContext.get())) {
             Toast.makeText(GlobalAppContext.get(), R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
             manageDrawOverlays(GlobalAppContext.get());
             return false;
