@@ -4,9 +4,11 @@ import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.pio.PFileInterface;
 import com.stardust.pio.PFiles;
+import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.Func1;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Stardust on 2018/1/23.
@@ -82,8 +84,21 @@ public class Files {
         return PFiles.read(path(path), encoding);
     }
 
+
     public String read(String path) {
         return PFiles.read(path(path));
+    }
+
+    public String readAssets(String path, String encoding){
+        try {
+            return PFiles.read(mRuntime.getUiHandler().getContext().getAssets().open(path), encoding);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public String readAssets(String path){
+        return readAssets(path, "UTF-8");
     }
 
     public byte[] readBytes(String path){
@@ -185,4 +200,5 @@ public class Files {
     public String getSimplifiedPath(String path) {
         return PFiles.getSimplifiedPath(path);
     }
+
 }
