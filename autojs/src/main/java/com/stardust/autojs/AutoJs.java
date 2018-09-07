@@ -101,6 +101,7 @@ public abstract class AutoJs {
             engine.setRuntime(createRuntime());
             return engine;
         });
+        LoopBasedJavaScriptEngine.initEngine();
         mScriptEngineManager.registerEngine(AutoFileSource.ENGINE, () -> new RootAutomatorEngine(mContext));
 
     }

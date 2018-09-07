@@ -1,10 +1,13 @@
 package org.autojs.autojs.ui.edit.toolbar;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.SparseBooleanArray;
 import android.view.View;
+
+import org.autojs.autojs.ui.edit.EditorView;
 
 import java.util.List;
 
@@ -16,7 +19,6 @@ public abstract class ToolbarFragment extends Fragment implements View.OnClickLi
 
     private OnMenuItemClickListener mOnMenuItemClickListener;
     private List<Integer> mMenuItemIds;
-    private SparseBooleanArray mMenuItemStatus = new SparseBooleanArray();
 
     public void setOnMenuItemClickListener(OnMenuItemClickListener listener) {
         mOnMenuItemClickListener = listener;
@@ -27,21 +29,32 @@ public abstract class ToolbarFragment extends Fragment implements View.OnClickLi
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        updateMenuItemStatus();
+        updateMenuItemStatus(view);
     }
 
-    private void updateMenuItemStatus() {
-        View rootView = getView();
+    protected EditorView findEditorView(View view) {
+        while (!(view instanceof EditorView) && view.getParent() != null) {
+            view = (View) view.getParent();
+        }
+        if (!(view instanceof EditorView)) {
+            throw new IllegalStateException("cannot find EditorView from child: " + view);
+        }
+        return (EditorView) view;
+    }
+
+
+    private void updateMenuItemStatus(View rootView) {
         if (rootView == null) {
             return;
         }
+        EditorView editorView = findEditorView(rootView);
         if (mMenuItemIds == null) {
             mMenuItemIds = getMenuItemIds();
         }
         for (int id : mMenuItemIds) {
             View view = rootView.findViewById(id);
             view.setOnClickListener(this);
-            view.setEnabled(mMenuItemStatus.get(id, view.isEnabled()));
+            view.setEnabled(editorView.getMenuItemStatus(id, view.isEnabled()));
         }
     }
 
@@ -60,7 +73,6 @@ public abstract class ToolbarFragment extends Fragment implements View.OnClickLi
         if (!mMenuItemIds.contains(id)) {
             return;
         }
-        mMenuItemStatus.put(id, enabled);
         View rootView = getView();
         if (rootView == null) {
             return;

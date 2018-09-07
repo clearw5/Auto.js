@@ -3,7 +3,6 @@ package com.stardust.autojs.engine;
 import android.support.annotation.CallSuper;
 
 import com.stardust.autojs.execution.ScriptExecution;
-import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.script.ScriptSource;
 
 import java.util.Map;
@@ -14,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by Stardust on 2017/4/2.
  * <p>
  * <p>
- * A ScriptEngine is created by {@link ScriptEngineManager#createEngine(String)} ()}, and then can be
+ * A ScriptEngine is created by {@link ScriptEngineManager#createEngine(String, int)} ()}, and then can be
  * used to execute script with {@link ScriptEngine#execute(ScriptSource)} in the **same** thread.
  * When the execution finish successfully, the engine should be destroy in the thread that created it.
  * <p>

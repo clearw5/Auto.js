@@ -79,6 +79,24 @@
 
     </item>
 
+    <item
+        android:title="@string/text_debug"
+        app:showAsAction="never">
+
+        <menu>
+
+            <item
+                android:id="@+id/action_breakpoint"
+                android:title="@string/text_set_breakpoint"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_launch_debugger"
+                android:title="@string/text_launch_debugger"
+                app:showAsAction="never"/>
+        </menu>
+
+    </item>
 
     <item
         android:id="@+id/action_build_apk"

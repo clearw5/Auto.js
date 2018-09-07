@@ -11,10 +11,13 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -50,6 +53,8 @@ import org.autojs.autojs.ui.edit.keyboard.FunctionsKeyboardHelper;
 import org.autojs.autojs.ui.edit.keyboard.FunctionsKeyboardView;
 import org.autojs.autojs.ui.edit.theme.Theme;
 import org.autojs.autojs.ui.edit.theme.Themes;
+import org.autojs.autojs.ui.edit.toolbar.DebugToolbarFragment;
+import org.autojs.autojs.ui.edit.toolbar.DebugToolbarFragment_;
 import org.autojs.autojs.ui.edit.toolbar.NormalToolbarFragment;
 import org.autojs.autojs.ui.edit.toolbar.NormalToolbarFragment_;
 import org.autojs.autojs.ui.edit.toolbar.SearchToolbarFragment;
@@ -117,6 +122,9 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         public void onReceive(Context context, Intent intent) {
             if (ACTION_ON_EXECUTION_FINISHED.equals(intent.getAction())) {
                 mScriptExecutionId = ScriptExecution.NO_ID;
+                if (mDebugging) {
+                    exitDebugging();
+                }
                 setMenuItemStatus(R.id.run, true);
                 String msg = intent.getStringExtra(Scripts.EXTRA_EXCEPTION_MESSAGE);
                 int line = intent.getIntExtra(Scripts.EXTRA_EXCEPTION_LINE_NUMBER, -1);
@@ -130,8 +138,11 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
             }
         }
     };
+
+    private SparseBooleanArray mMenuItemStatus = new SparseBooleanArray();
     private String mRestoredText;
     private NormalToolbarFragment mNormalToolbar = new NormalToolbarFragment_();
+    private boolean mDebugging = false;
 
     public EditorView(Context context) {
         super(context);
@@ -231,6 +242,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
 
     private void setMenuItemStatus(int id, boolean enabled) {
+        mMenuItemStatus.put(id, enabled);
         ToolbarFragment fragment = (ToolbarFragment) getActivity().getSupportFragmentManager()
                 .findFragmentById(R.id.toolbar_menu);
         if (fragment == null) {
@@ -240,6 +252,9 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         }
     }
 
+    public boolean getMenuItemStatus(int id, boolean defValue) {
+        return mMenuItemStatus.get(id, defValue);
+    }
 
     @AfterViews
     void init() {
@@ -347,6 +362,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         }
     }
 
+    @SuppressLint("CheckResult")
     public void runAndSaveFileIfNeeded() {
         save().observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s -> run());
@@ -514,6 +530,26 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         mEditor.replaceAll(keywords, replacement, usingRegex);
     }
 
+
+    public void launchDebugger() {
+        DebugToolbarFragment debugToolbarFragment = DebugToolbarFragment_.builder()
+                .build();
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.toolbar_menu, debugToolbarFragment)
+                .commit();
+        mDebugging = true;
+    }
+
+    public void exitDebugging() {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.toolbar_menu);
+        if (fragment instanceof DebugToolbarFragment) {
+            ((DebugToolbarFragment) fragment).detachDebugger();
+        }
+        showNormalToolbar();
+        mEditor.setDebuggingLine(-1);
+        mDebugging = false;
+    }
 
     private void showErrorMessage(String msg) {
         Snackbar.make(EditorView.this, getResources().getString(R.string.text_error) + ": " + msg, Snackbar.LENGTH_LONG)

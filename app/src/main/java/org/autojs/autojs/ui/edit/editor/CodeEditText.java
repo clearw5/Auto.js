@@ -22,7 +22,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.os.Parcelable;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.Layout;
@@ -31,13 +30,15 @@ import android.util.Log;
 import android.util.TimingLogger;
 import android.view.Gravity;
 
-import org.autojs.autojs.BuildConfig;
 import org.autojs.autojs.ui.edit.theme.Theme;
 import org.autojs.autojs.ui.edit.theme.TokenMapping;
+
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.TextUtils;
 
 import org.mozilla.javascript.Token;
+
+import java.util.LinkedHashMap;
 
 import static org.autojs.autojs.ui.edit.editor.BracketMatching.UNMATCHED_BRACKET;
 
@@ -62,6 +63,8 @@ public class CodeEditText extends AppCompatEditText {
     private int mFirstLineForDraw = -1, mLastLineForDraw;
     private int[] mMatchingBrackets = {-1, -1};
     private int mUnmatchedBracket = -1;
+    private LinkedHashMap<Integer, CodeEditor.Breakpoint> mBreakpoints = new LinkedHashMap<>();
+    private int mDebuggingLine = -1;
 
 
     public CodeEditText(Context context) {
@@ -87,6 +90,10 @@ public class CodeEditText extends AppCompatEditText {
         mLineHighlightPaint.setStyle(Paint.Style.FILL);
     }
 
+    public LinkedHashMap<Integer, CodeEditor.Breakpoint> getBreakpoints() {
+        return mBreakpoints;
+    }
+
     public void setTheme(Theme theme) {
         mTheme = theme;
         invalidate();
@@ -101,8 +108,8 @@ public class CodeEditText extends AppCompatEditText {
         updatePaddingForGutter();
         updateLineRangeForDraw(canvas);
 
-        //绘制当前行高亮需要在绘制光标之前
-        drawLineHighlight(canvas, mLineHighlightPaint, getCurrentLine());
+        //绘制行高亮需要在绘制光标之前
+        drawLineHighlights(canvas);
 
         //调用super.onDraw绘制光标和选择高亮。因为字体颜色被设置为透明因此super.onDraw()绘制的字体不显示
         // TODO: 2018/2/24 优化效率。不绘制透明字体。
@@ -116,6 +123,30 @@ public class CodeEditText extends AppCompatEditText {
         canvas.restore();
 
         mLogger.dumpToLog();
+    }
+
+    public int getDebuggingLine() {
+        return mDebuggingLine;
+    }
+
+    public void setDebuggingLine(int debuggingLine) {
+        mDebuggingLine = debuggingLine;
+        invalidate();
+    }
+
+    private void drawLineHighlights(Canvas canvas) {
+        int currentLine = getCurrentLine();
+        int debugHighlightLine = mDebuggingLine;
+        if(debugHighlightLine != currentLine){
+            //绘制当前行高亮
+            mLineHighlightPaint.setColor(mTheme.getLineHighlightBackgroundColor());
+            drawLineHighlight(canvas, mLineHighlightPaint, getCurrentLine());
+        }
+        if(debugHighlightLine != -1){
+            mLineHighlightPaint.setColor(mTheme.getDebuggingLineBackgroundColor());
+            drawLineHighlight(canvas, mLineHighlightPaint, debugHighlightLine);
+        }
+
     }
 
     private void updateLineRangeForDraw(Canvas canvas) {
@@ -159,15 +190,22 @@ public class CodeEditText extends AppCompatEditText {
         int scrollX = Math.max(getRealScrollX() - paddingLeft, 0);
         Paint paint = getPaint();
         int lineNumberColor = mTheme.getLineNumberColor();
+        int breakPointColor = mTheme.getBreakpointColor();
         if (DEBUG)
             Log.d(LOG_TAG, "draw line: " + (mLastLineForDraw - mFirstLineForDraw + 1));
         mLogger.addSplit("before draw line");
         for (int line = mFirstLineForDraw; line <= mLastLineForDraw && line < lineCount; line++) {
             int lineBottom = layout.getLineTop(line + 1);
+            int lineTop = layout.getLineTop(line);
             int lineBaseline = lineBottom - layout.getLineDescent(line);
 
             //drawLineNumber
             String lineNumberText = Integer.toString(line + 1);
+            // if there is a breakpoint at this line, draw highlight background for line number
+            if (mBreakpoints.containsKey(line)) {
+                paint.setColor(breakPointColor);
+                canvas.drawRect(0, lineTop, paddingLeft - 10, lineBottom, paint);
+            }
             paint.setColor(lineNumberColor);
             canvas.drawText(lineNumberText, 0, lineNumberText.length(), 10,
                     lineBaseline, paint);
@@ -225,7 +263,6 @@ public class CodeEditText extends AppCompatEditText {
         }
         int lineTop = getLayout().getLineTop(line);
         int lineBottom = getLayout().getLineTop(line + 1);
-        paint.setColor(mTheme.getLineHighlightBackgroundColor());
         canvas.drawRect(0, lineTop, canvas.getWidth(), lineBottom, paint);
     }
 

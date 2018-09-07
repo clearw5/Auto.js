@@ -359,4 +359,12 @@
     <string name="key_script_dir_path">key_script_dir_path</string>
     <string name="default_value_script_dir_path">/脚本/</string>
     <string name="text_error_copy_file" formatted="true">发生错误: %s</string>
+    <string name="text_debug">调试</string>
+    <string name="text_set_breakpoint">断点</string>
+    <string name="text_launch_debugger">启动调试</string>
+    <string name="text_debug_step_out">跳出</string>
+    <string name="text_debug_step_into">进入</string>
+    <string name="text_debug_step_over">单步</string>
+    <string name="text_debug_resume_script">继续</string>
+    <string name="text_stop">停止</string>
 </resources>

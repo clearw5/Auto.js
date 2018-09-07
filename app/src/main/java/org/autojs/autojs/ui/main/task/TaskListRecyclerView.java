@@ -64,7 +64,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
     private ScriptExecutionListener mScriptExecutionListener = new SimpleScriptExecutionListener() {
         @Override
         public void onStart(final ScriptExecution execution) {
-            mAdapter.notifyChildInserted(0, mRunningTaskGroup.addTask(execution));
+            post(()-> mAdapter.notifyChildInserted(0, mRunningTaskGroup.addTask(execution)));
         }
 
         @Override
@@ -78,12 +78,14 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
         }
 
         private void onFinish(ScriptExecution execution){
-            final int i = mRunningTaskGroup.removeTask(execution);
-            if (i >= 0) {
-                mAdapter.notifyChildRemoved(0, i);
-            } else {
-                refresh();
-            }
+            post(()->{
+                final int i = mRunningTaskGroup.removeTask(execution);
+                if (i >= 0) {
+                    mAdapter.notifyChildRemoved(0, i);
+                } else {
+                    refresh();
+                }
+            });
         }
     };
 
