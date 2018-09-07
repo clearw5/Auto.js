@@ -98,7 +98,7 @@ public class TextViewInflater<V extends TextView> extends BaseViewInflater<V> {
             .map("number", InputType.TYPE_CLASS_NUMBER)
             .map("signed", InputType.TYPE_NUMBER_FLAG_SIGNED);
 
-    private static final ValueMapper<Integer> TEXT_STYLES = new ValueMapper<Integer>("textStyle")
+    static final ValueMapper<Integer> TEXT_STYLES = new ValueMapper<Integer>("textStyle")
             .map("bold", Typeface.BOLD)
             .map("italic", Typeface.ITALIC)
             .map("normal", Typeface.NORMAL);

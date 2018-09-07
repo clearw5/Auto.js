@@ -10,6 +10,7 @@ import com.stardust.autojs.annotation.ScriptInterface;
 import com.stardust.autojs.runtime.api.AbstractConsole;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
+import com.stardust.autojs.util.FloatingPermission;
 import com.stardust.concurrent.ConcurrentArrayList;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
@@ -151,8 +152,8 @@ public class StardustConsole extends AbstractConsole {
         if (mShown) {
             return;
         }
-        if (!SettingsCompat.canDrawOverlays(mUiHandler.getContext())) {
-            SettingsCompat.manageDrawOverlays(mUiHandler.getContext());
+        if (!FloatingPermission.canDrawOverlays(mUiHandler.getContext())) {
+            FloatingPermission.manageDrawOverlays(mUiHandler.getContext());
             mUiHandler.toast(R.string.text_no_floating_window_permission);
             return;
         }
