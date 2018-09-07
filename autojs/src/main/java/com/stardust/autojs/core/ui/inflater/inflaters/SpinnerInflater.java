@@ -73,15 +73,12 @@ public class SpinnerInflater extends BaseViewInflater<Spinner> {
     @Nullable
     @Override
     public ViewCreator<Spinner> getCreator() {
-        return new ViewCreator<Spinner>() {
-            @Override
-            public Spinner create(Context context, Map<String, String> attrs) {
-                String mode = attrs.remove("android:spinnerMode");
-                if (mode == null) {
-                    return new Spinner(context);
-                }
-                return new Spinner(context, SPINNER_MODES.get(mode));
+        return (context, attrs) -> {
+            String mode = attrs.remove("android:spinnerMode");
+            if (mode == null) {
+                return new Spinner(context);
             }
+            return new Spinner(context, SPINNER_MODES.get(mode));
         };
     }
 

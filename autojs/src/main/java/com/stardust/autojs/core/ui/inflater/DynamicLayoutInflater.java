@@ -175,7 +175,6 @@ public class DynamicLayoutInflater {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public View inflate(Node node, @Nullable ViewGroup parent, boolean attachToParent) {
         View view = doInflation(node, parent, attachToParent);
         if (view != null && view instanceof ShouldCallOnFinishInflate) {
