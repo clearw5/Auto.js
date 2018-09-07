@@ -32,6 +32,7 @@ public class Dim {
     public static final int GO = 3;
     public static final int BREAK = 4;
     public static final int EXIT = 5;
+    public static final String TAG = Dim.class.getName();
 
     // Constants for the DimIProxy interface implementation class.
     private static final int IPROXY_DEBUG = 0;
@@ -1027,6 +1028,7 @@ public class Dim {
             cx.setDebugger(debugger, contextData);
             cx.setGeneratingDebug(true);
             cx.setOptimizationLevel(-1);
+            engine.setTag(TAG, Dim.this);
         }
 
         @Override

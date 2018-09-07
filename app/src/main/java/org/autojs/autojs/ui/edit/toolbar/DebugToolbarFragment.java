@@ -1,6 +1,5 @@
 package org.autojs.autojs.ui.edit.toolbar;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -29,14 +28,11 @@ import java.util.List;
 public class DebugToolbarFragment extends ToolbarFragment implements DebugCallback {
 
     private static final String LOG_TAG = "DebugToolbarFragment";
-    private Dim mDim = new Dim();
+    private Dim mDim;
     private EditorView mEditorView;
     private Handler mHandler;
 
     public DebugToolbarFragment() {
-        mDim.setGuiCallback(this);
-        mDim.setBreak();
-        mDim.attachTo(AutoJs.getInstance().getScriptEngineService(), ContextFactory.getGlobal());
         Log.d(LOG_TAG, "DebugToolbarFragment()");
     }
 
@@ -50,29 +46,54 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mEditorView = findEditorView(view);
-        mEditorView.run();
+        ScriptExecution scriptExecution = mEditorView.getScriptExecution();
+        if (scriptExecution != null) {
+            mDim = (Dim) scriptExecution.getEngine().getTag(Dim.TAG);
+        }
+        if (mDim == null) {
+            mDim = new Dim();
+            mDim.setBreak();
+            mDim.setBreakOnExceptions(true);
+            mDim.attachTo(AutoJs.getInstance().getScriptEngineService(), ContextFactory.getGlobal());
+            mDim.setGuiCallback(this);
+            setInterrupted(false);
+            mEditorView.run();
+        } else {
+            mDim.setGuiCallback(this);
+        }
         Log.d(LOG_TAG, "onViewCreated");
+    }
+
+    private void setInterrupted(boolean interrupted) {
+        setMenuItemStatus(R.id.step_into, interrupted);
+        setMenuItemStatus(R.id.step_over, interrupted);
+        setMenuItemStatus(R.id.step_out, interrupted);
+        setMenuItemStatus(R.id.resume_script, interrupted);
+        if (!interrupted) {
+            mEditorView.getEditor().setDebuggingLine(-1);
+        }
     }
 
     public void detachDebugger() {
         mDim.detach();
+        mDim.setGuiCallback(null);
     }
 
     @Click(R.id.step_over)
     void stepOver() {
-        mEditorView.getEditor().setDebuggingLine(-1);
+        setInterrupted(false);
         mDim.setReturnValue(Dim.STEP_OVER);
     }
 
     @Click(R.id.step_into)
     void stepInto() {
-        mEditorView.getEditor().setDebuggingLine(-1);
+        setInterrupted(false);
         mDim.setReturnValue(Dim.STEP_INTO);
     }
 
-    @Click(R.id.stop_out)
+    @Click(R.id.step_out)
     void stepOut() {
-        mEditorView.getEditor().setDebuggingLine(-1);
+        setInterrupted(false);
         mDim.setReturnValue(Dim.STEP_OUT);
     }
 
@@ -83,13 +104,13 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
 
     @Click(R.id.resume_script)
     void resumeScript() {
-        mEditorView.getEditor().setDebuggingLine(-1);
+        setInterrupted(false);
         mDim.setReturnValue(Dim.GO);
     }
 
     @Override
     public void updateSourceText(Dim.SourceInfo sourceInfo) {
-        Log.d(LOG_TAG, "updateSourceText: url = " + sourceInfo.url() + ", source = " + sourceInfo.source());
+        Log.d(LOG_TAG, "updateSourceText: url = " + sourceInfo.url());
         if (!sourceInfo.url().equals(mEditorView.getFile().toString())) {
             return;
         }
@@ -107,7 +128,12 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
     public void enterInterrupt(Dim.StackFrame stackFrame, String threadName, String s1) {
         Log.d(LOG_TAG, "enterInterrupt: threadName = " + threadName + ", url = " + stackFrame.getUrl() + ", line = " + stackFrame.getLineNumber());
         if (stackFrame.getUrl().equals(mEditorView.getFile().toString())) {
-            mEditorView.getEditor().setDebuggingLine(stackFrame.getLineNumber() - 1);
+            final int line = stackFrame.getLineNumber() - 1;
+            mHandler.post(() -> {
+                mEditorView.getEditor().setDebuggingLine(line);
+                setInterrupted(true);
+            });
+
         } else {
             mHandler.post(this::resumeScript);
         }
@@ -120,25 +146,18 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
 
     @Override
     public void dispatchNextGuiEvent() {
-        Log.d(LOG_TAG, "dispatchNextGuiEvent");
-
     }
 
     @Override
     public boolean shouldAttachDebugger(RhinoJavaScriptEngine engine) {
-        ScriptExecution execution = AutoJs.getInstance().getScriptEngineService().getScriptExecution(mEditorView.getScriptExecutionId());
+        ScriptExecution execution = mEditorView.getScriptExecution();
         return execution != null && execution.getId() == engine.getId();
 
     }
 
     @Override
     public List<Integer> getMenuItemIds() {
-        return Arrays.asList(R.id.step_over, R.id.step_into, R.id.stop_out, R.id.resume_script, R.id.stop_script);
+        return Arrays.asList(R.id.step_over, R.id.step_into, R.id.step_out, R.id.resume_script, R.id.stop_script);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mDim.detach();
-    }
 }

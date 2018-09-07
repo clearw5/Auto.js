@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.CallSuper;
 
+import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.runtime.ScriptBridges;
 import com.stardust.autojs.runtime.ScriptRuntime;
@@ -48,7 +49,7 @@ public class TimerThread extends ThreadCompat {
             Looper.loop();
         } catch (Exception e) {
             if (!ScriptInterruptedException.causedByInterrupted(e)) {
-                mRuntime.console.error(Thread.currentThread().toString() + ": " + e);
+                mRuntime.console.error(Thread.currentThread().toString() + ": " + ScriptEngineService.getScriptTrace(e));
             }
         } finally {
             onExit();

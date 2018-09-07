@@ -21,7 +21,7 @@
         app:text="@string/text_debug_step_into"/>
 
     <org.autojs.autojs.ui.widget.ToolbarMenuItem
-        android:id="@+id/stop_out"
+        android:id="@+id/step_out"
         android:layout_width="40dp"
         android:layout_height="match_parent"
         app:icon="@drawable/ic_debug_step_out"

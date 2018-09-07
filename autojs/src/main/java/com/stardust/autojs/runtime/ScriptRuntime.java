@@ -372,7 +372,7 @@ public class ScriptRuntime {
         try {
             events.emit("exit");
         } catch (Exception ignored) {
-            console.error("exception on exit: " + ignored);
+            console.error("exception on exit: " + ScriptEngineService.getScriptTrace(ignored));
         }
         ignoresException(threads::shutDownAll);
         ignoresException(events::recycle);

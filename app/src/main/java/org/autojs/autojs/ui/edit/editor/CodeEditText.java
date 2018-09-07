@@ -22,6 +22,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.Layout;
@@ -30,14 +32,17 @@ import android.util.Log;
 import android.util.TimingLogger;
 import android.view.Gravity;
 
+import org.autojs.autojs.R;
 import org.autojs.autojs.ui.edit.theme.Theme;
 import org.autojs.autojs.ui.edit.theme.TokenMapping;
 
+import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.TextUtils;
 
 import org.mozilla.javascript.Token;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import static org.autojs.autojs.ui.edit.editor.BracketMatching.UNMATCHED_BRACKET;
@@ -137,12 +142,12 @@ public class CodeEditText extends AppCompatEditText {
     private void drawLineHighlights(Canvas canvas) {
         int currentLine = getCurrentLine();
         int debugHighlightLine = mDebuggingLine;
-        if(debugHighlightLine != currentLine){
+        if (debugHighlightLine != currentLine) {
             //绘制当前行高亮
             mLineHighlightPaint.setColor(mTheme.getLineHighlightBackgroundColor());
             drawLineHighlight(canvas, mLineHighlightPaint, getCurrentLine());
         }
-        if(debugHighlightLine != -1){
+        if (debugHighlightLine != -1) {
             mLineHighlightPaint.setColor(mTheme.getDebuggingLineBackgroundColor());
             drawLineHighlight(canvas, mLineHighlightPaint, debugHighlightLine);
         }
@@ -398,6 +403,36 @@ public class CodeEditText extends AppCompatEditText {
             index = getText().length();
         }
         super.setSelection(index);
+    }
+
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        Parcelable superData = super.onSaveInstanceState();
+        bundle.putParcelable("super_data", superData);
+        bundle.putInt("debugging_line", mDebuggingLine);
+        int[] breakpoints = new int[mBreakpoints.size()];
+        int i = 0;
+        for (CodeEditor.Breakpoint breakpoint : mBreakpoints.values()) {
+            breakpoints[i++] = breakpoint.line;
+        }
+        bundle.putIntArray("breakpoints", breakpoints);
+        return bundle;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        Bundle bundle = (Bundle) state;
+        Parcelable superData = bundle.getParcelable("super_data");
+        mDebuggingLine = bundle.getInt("debugging_line", -1);
+        int[] breakpoints = bundle.getIntArray("breakpoints");
+        if(breakpoints != null){
+            for (int breakpoint : breakpoints) {
+                mBreakpoints.put(breakpoint, new CodeEditor.Breakpoint(breakpoint));
+            }
+        }
+        super.onRestoreInstanceState(superData);
     }
 
 }

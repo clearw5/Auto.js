@@ -73,6 +73,7 @@
 
         <activity
             android:name=".ui.edit.EditActivity_"
+            android:configChanges="orientation|screenSize"
             android:multiprocess="true"
             android:theme="@style/EditorTheme">
         </activity>
@@ -81,7 +82,10 @@
             android:name=".ui.settings.SettingsActivity_"
             android:theme="@style/AppTheme.Settings"/>
         <activity android:name=".ui.error.ErrorReportActivity"/>
-        <activity android:name=".external.tasker.TaskerScriptEditActivity_"/>
+        <activity
+            android:name=".external.tasker.TaskerScriptEditActivity_"
+            android:configChanges="orientation|screenSize"
+            />
         <activity android:name=".ui.edit.ViewSampleActivity"/>
         <activity
             android:name=".ui.user.LoginActivity_"

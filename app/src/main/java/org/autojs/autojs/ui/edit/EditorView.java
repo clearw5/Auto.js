@@ -273,7 +273,10 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     private void initNormalToolbar() {
         mNormalToolbar.setOnMenuItemClickListener(this);
-        showNormalToolbar();
+        Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.toolbar_menu);
+        if(fragment == null){
+            showNormalToolbar();
+        }
     }
 
     private void setUpFunctionsKeyboard() {
@@ -427,7 +430,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     private void showNormalToolbar() {
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.toolbar_menu, mNormalToolbar)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     FragmentActivity getActivity() {
@@ -616,6 +619,11 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     public int getScriptExecutionId() {
         return mScriptExecutionId;
+    }
+
+    @Nullable
+    public ScriptExecution getScriptExecution(){
+        return AutoJs.getInstance().getScriptEngineService().getScriptExecution(mScriptExecutionId);
     }
 
     @Nullable

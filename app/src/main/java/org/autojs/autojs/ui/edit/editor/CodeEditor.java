@@ -3,6 +3,7 @@ package org.autojs.autojs.ui.edit.editor;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.support.design.widget.Snackbar;
+import android.text.Layout;
 import android.util.AttributeSet;
 import android.widget.Toast;
 
@@ -167,7 +168,8 @@ public class CodeEditor extends HVScrollView {
     }
 
     public void jumpTo(int line, int col) {
-        if (line >= mCodeEditText.getLayout().getLineCount() || line < 0) {
+        Layout layout = mCodeEditText.getLayout();
+        if (line < 0 || (layout != null && line >= layout.getLineCount())) {
             return;
         }
         mCodeEditText.setSelection(mCodeEditText.getLayout().getLineStart(line) + col);
@@ -334,13 +336,14 @@ public class CodeEditor extends HVScrollView {
         return mCodeEditText.getBreakpoints();
     }
 
-    public void setDebuggingLine(int line){
+    public void setDebuggingLine(int line) {
+        jumpTo(line, 0);
         mCodeEditText.setDebuggingLine(line);
     }
 
     public void addOrRemoveBreakpoint(int line) {
         LinkedHashMap<Integer, Breakpoint> breakpoints = mCodeEditText.getBreakpoints();
-        if(breakpoints.remove(line) == null){
+        if (breakpoints.remove(line) == null) {
             breakpoints.put(line, new Breakpoint(line));
         }
         mCodeEditText.invalidate();
