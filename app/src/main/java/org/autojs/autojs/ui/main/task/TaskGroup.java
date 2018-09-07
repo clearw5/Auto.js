@@ -4,12 +4,15 @@ import android.content.Context;
 
 import com.bignerdranch.expandablerecyclerview.model.Parent;
 import com.stardust.autojs.engine.ScriptEngine;
+import com.stardust.autojs.execution.ScriptExecution;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.timing.TimedTask;
 import org.autojs.autojs.timing.TimedTaskManager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -98,20 +101,20 @@ public abstract class TaskGroup implements Parent<Task> {
 
         @Override
         public void refresh() {
-            Set<ScriptEngine> scriptEngines = AutoJs.getInstance().getScriptEngineService().getEngines();
+            Collection<ScriptExecution> executions = AutoJs.getInstance().getScriptEngineService().getScriptExecutions();
             mTasks.clear();
-            for (ScriptEngine engine : scriptEngines) {
-                mTasks.add(new Task.RunningTask(engine));
+            for (ScriptExecution execution : executions) {
+                mTasks.add(new Task.RunningTask(execution));
             }
         }
 
-        public int addTask(ScriptEngine engine) {
+        public int addTask(ScriptExecution engine) {
             int pos = mTasks.size();
             mTasks.add(new Task.RunningTask(engine));
             return pos;
         }
 
-        public int removeTask(ScriptEngine engine) {
+        public int removeTask(ScriptExecution engine) {
             int i = indexOf(engine);
             if (i >= 0) {
                 mTasks.remove(i);
@@ -119,9 +122,9 @@ public abstract class TaskGroup implements Parent<Task> {
             return i;
         }
 
-        public int indexOf(ScriptEngine engine) {
+        public int indexOf(ScriptExecution engine) {
             for (int i = 0; i < mTasks.size(); i++) {
-                if (((Task.RunningTask) mTasks.get(i)).getScriptEngine().equals(engine)) {
+                if (((Task.RunningTask) mTasks.get(i)).getScriptExecution().equals(engine)) {
                     return i;
                 }
             }

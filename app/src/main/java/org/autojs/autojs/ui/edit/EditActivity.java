@@ -12,6 +12,7 @@ import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.autojs.core.permission.OnRequestPermissionsResultCallback;
 import com.stardust.autojs.core.permission.PermissionRequestProxyActivity;
 import com.stardust.autojs.core.permission.RequestPermissionCallbacks;
+import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.pio.PFiles;
 
 import org.autojs.autojs.R;
@@ -91,6 +92,13 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
         return mEditorMenu.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean isScriptRunning = mEditorView.getScriptExecutionId() != ScriptExecution.NO_ID;
+        MenuItem forceStopItem = menu.findItem(R.id.action_force_stop);
+        forceStopItem.setEnabled(isScriptRunning);
+        return super.onPrepareOptionsMenu(menu);
+    }
 
     @Override
     public void onActionModeStarted(ActionMode mode) {

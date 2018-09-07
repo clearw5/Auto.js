@@ -77,4 +77,14 @@ public class ScriptEngineProxy<S extends ScriptSource> implements ScriptEngine<S
     public void init() {
         mScriptEngine.init();
     }
+
+    @Override
+    public int getId() {
+        return mScriptEngine.getId();
+    }
+
+    @Override
+    public void setId(int id) {
+        mScriptEngine.setId(id);
+    }
 }

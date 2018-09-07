@@ -1,6 +1,7 @@
 package com.stardust.autojs;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
@@ -30,6 +31,9 @@ import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -83,8 +87,16 @@ public class ScriptEngineService {
     private UiHandler mUiHandler;
     private final Console mGlobalConsole;
     private final ScriptEngineManager mScriptEngineManager;
-    private final EngineLifecycleObserver mEngineLifecycleObserver = new EngineLifecycleObserver();
+    private final EngineLifecycleObserver mEngineLifecycleObserver = new EngineLifecycleObserver() {
+
+        @Override
+        public void onEngineRemove(ScriptEngine engine) {
+            mScriptExecutions.remove(engine.getId());
+            super.onEngineRemove(engine);
+        }
+    };
     private ScriptExecutionObserver mScriptExecutionObserver = new ScriptExecutionObserver();
+    private LinkedHashMap<Integer, ScriptExecution> mScriptExecutions = new LinkedHashMap<>();
 
     ScriptEngineService(ScriptEngineServiceBuilder builder) {
         mUiHandler = builder.mUiHandler;
@@ -119,6 +131,12 @@ public class ScriptEngineService {
     }
 
     public ScriptExecution execute(ScriptExecutionTask task) {
+        ScriptExecution execution = executeInternal(task);
+        mScriptExecutions.put(execution.getId(), execution);
+        return execution;
+    }
+
+    private ScriptExecution executeInternal(ScriptExecutionTask task) {
         if (task.getListener() != null) {
             task.setExecutionListener(new ScriptExecutionObserver.Wrapper(mScriptExecutionObserver, task.getListener()));
         } else {
@@ -183,6 +201,18 @@ public class ScriptEngineService {
 
     public Set<ScriptEngine> getEngines() {
         return mScriptEngineManager.getEngines();
+    }
+
+    public Collection<ScriptExecution> getScriptExecutions() {
+        return mScriptExecutions.values();
+    }
+
+    @Nullable
+    public ScriptExecution getScriptExecution(int id) {
+        if(id == ScriptExecution.NO_ID){
+            return null;
+        }
+        return mScriptExecutions.get(id);
     }
 
     private static class EngineLifecycleObserver implements ScriptEngineManager.EngineLifecycleCallback {

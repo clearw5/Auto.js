@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.stardust.autojs.workground.WrapContentLinearLayoutManager;
 
 import com.bignerdranch.expandablerecyclerview.ChildViewHolder;
@@ -25,6 +26,7 @@ import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.script.AutoFileSource;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.storage.database.ModelChange;
@@ -32,6 +34,7 @@ import org.autojs.autojs.timing.TaskReceiver;
 import org.autojs.autojs.timing.TimedTask;
 import org.autojs.autojs.timing.TimedTaskManager;
 import org.autojs.autojs.ui.timing.TimedTaskSettingActivity_;
+
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
@@ -47,7 +50,7 @@ import io.reactivex.disposables.Disposable;
  * Created by Stardust on 2017/3/24.
  */
 
-public class TaskListRecyclerView extends ThemeColorRecyclerView implements ScriptEngineManager.EngineLifecycleCallback {
+public class TaskListRecyclerView extends ThemeColorRecyclerView {
 
 
     private static final String LOG_TAG = "TaskListRecyclerView";
@@ -61,15 +64,26 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
     private ScriptExecutionListener mScriptExecutionListener = new SimpleScriptExecutionListener() {
         @Override
         public void onStart(final ScriptExecution execution) {
-            post(() -> {
-                int position = mRunningTaskGroup.indexOf(execution.getEngine());
-                if (position >= 0) {
-                    mAdapter.notifyChildChanged(0, position);
-                } else {
-                    refresh();
-                }
-            });
+            mAdapter.notifyChildInserted(0, mRunningTaskGroup.addTask(execution));
+        }
 
+        @Override
+        public void onSuccess(ScriptExecution execution, Object result) {
+            onFinish(execution);
+        }
+
+        @Override
+        public void onException(ScriptExecution execution, Exception e) {
+            onFinish(execution);
+        }
+
+        private void onFinish(ScriptExecution execution){
+            final int i = mRunningTaskGroup.removeTask(execution);
+            if (i >= 0) {
+                mAdapter.notifyChildRemoved(0, i);
+            } else {
+                refresh();
+            }
         }
     };
 
@@ -116,7 +130,6 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mScriptEngineService.registerEngineLifecycleCallback(this);
         AutoJs.getInstance().getScriptEngineService().registerGlobalScriptExecutionListener(mScriptExecutionListener);
         mTimedTaskChangeDisposable = TimedTaskManager.getInstance().getTimeTaskChanges()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -134,7 +147,6 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mScriptEngineService.unregisterEngineLifecycleCallback(this);
         AutoJs.getInstance().getScriptEngineService().unregisterGlobalScriptExecutionListener(mScriptExecutionListener);
         mTimedTaskChangeDisposable.dispose();
     }
@@ -160,26 +172,6 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView implements Scri
                 refresh();
             }
         }
-    }
-
-    @Override
-    public void onEngineCreate(final ScriptEngine engine) {
-        post(() ->
-                mAdapter.notifyChildInserted(0, mRunningTaskGroup.addTask(engine))
-        );
-    }
-
-    @Override
-    public void onEngineRemove(final ScriptEngine engine) {
-        post(() -> {
-            final int i = mRunningTaskGroup.removeTask(engine);
-            if (i >= 0) {
-                mAdapter.notifyChildRemoved(0, i);
-            } else {
-                refresh();
-            }
-
-        });
     }
 
     private class Adapter extends ExpandableRecyclerAdapter<TaskGroup, Task, TaskGroupViewHolder, TaskViewHolder> {

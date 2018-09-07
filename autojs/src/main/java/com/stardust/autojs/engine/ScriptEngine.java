@@ -2,11 +2,13 @@ package com.stardust.autojs.engine;
 
 import android.support.annotation.CallSuper;
 
+import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.script.ScriptSource;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -46,6 +48,9 @@ public interface ScriptEngine<S extends ScriptSource> {
 
     Exception getUncaughtException();
 
+    void setId(int id);
+
+    int getId();
 
     /**
      * @hide
@@ -68,7 +73,7 @@ public interface ScriptEngine<S extends ScriptSource> {
         private OnDestroyListener mOnDestroyListener;
         private boolean mDestroyed = false;
         private Exception mUncaughtException;
-
+        private volatile AtomicInteger mId = new AtomicInteger(ScriptExecution.NO_ID);
 
         @Override
         public synchronized void setTag(String key, Object value) {
@@ -115,6 +120,16 @@ public interface ScriptEngine<S extends ScriptSource> {
         @Override
         public Exception getUncaughtException() {
             return mUncaughtException;
+        }
+
+        @Override
+        public void setId(int id) {
+            mId.compareAndSet(ScriptExecution.NO_ID, id);
+        }
+
+        @Override
+        public int getId() {
+            return mId.get();
         }
     }
 }

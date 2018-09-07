@@ -1,18 +1,13 @@
 package org.autojs.autojs.ui.main.task;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.stardust.app.GlobalAppContext;
-import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
-import com.stardust.autojs.engine.ScriptEngineFactory;
+import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
-import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
-import org.autojs.autojs.App;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.timing.TimedTask;
 import org.autojs.autojs.timing.TimedTaskManager;
@@ -23,7 +18,7 @@ import org.joda.time.format.DateTimeFormat;
  * Created by Stardust on 2017/11/28.
  */
 
-public abstract class Task  {
+public abstract class Task {
 
     public abstract String getName();
 
@@ -78,46 +73,37 @@ public abstract class Task  {
     }
 
     public static class RunningTask extends Task {
-        private final ScriptEngine mScriptEngine;
+        private final ScriptExecution mScriptExecution;
 
-        public RunningTask(ScriptEngine scriptEngine) {
-            mScriptEngine = scriptEngine;
+        public RunningTask(ScriptExecution scriptExecution) {
+            mScriptExecution = scriptExecution;
         }
 
-        public ScriptEngine getScriptEngine() {
-            return mScriptEngine;
+        public ScriptExecution getScriptExecution() {
+            return mScriptExecution;
         }
 
         @Override
         public String getName() {
-            ScriptSource source = (ScriptSource) mScriptEngine.getTag(ScriptEngine.TAG_SOURCE);
-            if (source == null) {
-                return null;
-            }
-            return source.getName();
+            return mScriptExecution.getSource().getName();
         }
 
         @Override
         public String getDesc() {
-            ScriptSource source = (ScriptSource) mScriptEngine.getTag(ScriptEngine.TAG_SOURCE);
-            if (source == null) {
-                return null;
-            }
-            return source.toString();
+            return mScriptExecution.getSource().toString();
         }
 
         @Override
         public void cancel() {
-            mScriptEngine.forceStop();
+            ScriptEngine engine = mScriptExecution.getEngine();
+            if (engine != null) {
+                engine.forceStop();
+            }
         }
 
         @Override
         public String getEngineName() {
-            ScriptSource source = (ScriptSource) mScriptEngine.getTag(ScriptEngine.TAG_SOURCE);
-            if (source == null) {
-                return null;
-            }
-            return source.getEngineName();
+            return mScriptExecution.getSource().getEngineName();
         }
     }
 }
