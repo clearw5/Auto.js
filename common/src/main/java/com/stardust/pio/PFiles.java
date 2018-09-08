@@ -56,10 +56,15 @@ public class PFiles {
     }
 
     public static boolean create(String path) {
-        try {
-            return new File(path).createNewFile();
-        } catch (IOException e) {
-            return false;
+        File f = new File(path);
+        if (path.endsWith(File.separator)) {
+            return f.mkdir();
+        } else {
+            try {
+                return f.createNewFile();
+            } catch (IOException e) {
+                return false;
+            }
         }
     }
 
