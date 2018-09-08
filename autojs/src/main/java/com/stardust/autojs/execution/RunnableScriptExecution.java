@@ -28,7 +28,7 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
     }
 
     public Object execute() {
-        mScriptEngine = mScriptEngineManager.createEngineOfSourceOrThrow(getSource());
+        mScriptEngine = mScriptEngineManager.createEngineOfSourceOrThrow(getSource(), getId());
         return execute(mScriptEngine);
     }
 

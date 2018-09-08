@@ -10,6 +10,7 @@ import com.stardust.auojs.inrt.BuildConfig;
 import com.stardust.auojs.inrt.LogActivity;
 import com.stardust.auojs.inrt.Pref;
 import com.stardust.auojs.inrt.autojs.AutoJs;
+import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.execution.ExecutionConfig;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.project.ProjectConfig;
@@ -73,7 +74,7 @@ public class AssetsProjectLauncher {
             mScriptExecution = AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
                     .executePath(mProjectDir));
         } catch (Exception e) {
-            AutoJs.getInstance().getGlobalConsole().error(e);
+            AutoJs.getInstance().getGlobalConsole().error(ScriptEngineService.getScriptTrace(e));
         }
     }
 

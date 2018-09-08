@@ -499,6 +499,8 @@
     "editor.background": "#F5F5F5",
     "editor.foreground": "#000000",
     "editor.lineHighlightBackground": "#E4F6D4",
+    "editor.debuggingLineBackground": "#40c4ff",
+    "editorBreakpoint.foreground": "#03A9F4",
     "focusBorder": "#A6B39B",
     "pickerGroup.foreground": "#A6B39B",
     "pickerGroup.border": "#749351",

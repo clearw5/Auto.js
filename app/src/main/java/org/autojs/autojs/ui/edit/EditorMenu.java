@@ -6,12 +6,14 @@ import android.text.InputType;
 import android.view.MenuItem;
 
 import com.stardust.pio.PFiles;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.ui.build.BuildActivity;
 import org.autojs.autojs.ui.build.BuildActivity_;
 import org.autojs.autojs.ui.edit.editor.CodeEditor;
 import org.autojs.autojs.ui.log.LogActivity_;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
+
 import com.stardust.util.ClipboardUtil;
 
 import java.util.Locale;
@@ -53,6 +55,21 @@ public class EditorMenu {
                 if (onMoreOptionsSelected(item)) {
                     return true;
                 }
+                if(onDebugOptionsSelected(item)){
+                    return true;
+                }
+        }
+        return false;
+    }
+
+    private boolean onDebugOptionsSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_breakpoint:
+                mEditor.addOrRemoveBreakpointAtCurrentLine();
+                return true;
+            case R.id.action_launch_debugger:
+                mEditorView.launchDebugger();
+                return true;
         }
         return false;
     }

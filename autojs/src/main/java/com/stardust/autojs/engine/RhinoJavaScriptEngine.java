@@ -3,6 +3,7 @@ package com.stardust.autojs.engine;
 import android.os.Looper;
 import android.util.Log;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.BuildConfig;
 import com.stardust.autojs.rhino.AndroidContextFactory;
 import com.stardust.autojs.rhino.NativeJavaClassWithPrototype;
@@ -33,6 +34,7 @@ import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,10 +45,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
+    public static final String SOURCE_NAME_INIT = "<init>";
+
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
 
     private static int contextCount = 0;
     private static StringScriptSource sInitScript;
+    private static final ConcurrentHashMap<Context, RhinoJavaScriptEngine> sContextEngineMap = new ConcurrentHashMap<>();
 
     private Context mContext;
     private Scriptable mScriptable;
@@ -69,7 +74,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         Reader reader = source.getNonNullScriptReader();
         try {
             reader = preprocess(reader);
-            return mContext.evaluateReader(mScriptable, reader, "<" + source.getName() + ">", 1, null);
+            return mContext.evaluateReader(mScriptable, reader, source.toString(), 1, null);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -90,6 +95,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     public synchronized void destroy() {
         super.destroy();
         Log.d(LOG_TAG, "on destroy");
+        sContextEngineMap.remove(getContext());
         Context.exit();
         contextCount--;
         Log.d(LOG_TAG, "contextCount = " + contextCount);
@@ -105,7 +111,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         mThread = Thread.currentThread();
         ScriptableObject.putProperty(mScriptable, "__engine__", this);
         initRequireBuilder(mContext, mScriptable);
-        mContext.evaluateString(mScriptable, getInitScript().getScript(), "<init>", 1, null);
+        mContext.evaluateString(mScriptable, getInitScript().getScript(), SOURCE_NAME_INIT, 1, null);
     }
 
     private JavaScriptSource getInitScript() {
@@ -148,12 +154,10 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     }
 
     public Context createContext() {
-        if (!ContextFactory.hasExplicitGlobal()) {
-            ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mAndroidContext.getCacheDir(), "classes")));
-        }
         Context context = new RhinoAndroidHelper(mAndroidContext).enterContext();
         contextCount++;
         setupContext(context);
+        sContextEngineMap.put(context, this);
         return context;
     }
 
@@ -162,6 +166,17 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         context.setLanguageVersion(Context.VERSION_ES6);
         context.setLocale(Locale.getDefault());
         context.setWrapFactory(new WrapFactory());
+    }
+
+    public static void initEngine() {
+        if (!ContextFactory.hasExplicitGlobal()) {
+            android.content.Context context = GlobalAppContext.get();
+            ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(context.getCacheDir(), "classes")));
+        }
+    }
+
+    public static RhinoJavaScriptEngine getEngineOfContext(Context context) {
+        return sContextEngineMap.get(context);
     }
 
     private class WrapFactory extends org.mozilla.javascript.WrapFactory {

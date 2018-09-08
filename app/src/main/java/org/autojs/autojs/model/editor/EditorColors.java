@@ -22,6 +22,10 @@ public class EditorColors {
     private String mImeForegroundColor;
     @SerializedName("editor.lineHighlightBackground")
     private String mLineHighlightBackground;
+    @SerializedName("editorBreakpoint.foreground")
+    private String mBreakpointForeground;
+    @SerializedName("editor.debuggingLineBackground")
+    private String mDebuggingLineBackground;
 
     public String getLineHighlightBackground() {
         return mLineHighlightBackground;
@@ -85,5 +89,21 @@ public class EditorColors {
 
     public void setImeForegroundColor(String imeForegroundColor) {
         mImeForegroundColor = imeForegroundColor;
+    }
+
+    public String getBreakpointForeground() {
+        return mBreakpointForeground;
+    }
+
+    public void setBreakpointForeground(String breakpointForeground) {
+        mBreakpointForeground = breakpointForeground;
+    }
+
+    public String getDebuggingLineBackground() {
+        return mDebuggingLineBackground;
+    }
+
+    public void setDebuggingLineBackground(String debuggingLineBackground) {
+        mDebuggingLineBackground = debuggingLineBackground;
     }
 }

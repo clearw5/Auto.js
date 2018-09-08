@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:layout_gravity="right"
+              android:orientation="horizontal">
+
+    <org.autojs.autojs.ui.widget.ToolbarMenuItem
+        android:id="@+id/step_over"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        app:icon="@drawable/ic_debug_step_over"
+        app:text="@string/text_debug_step_over"/>
+
+    <org.autojs.autojs.ui.widget.ToolbarMenuItem
+        android:id="@+id/step_into"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        app:icon="@drawable/ic_debug_step_into"
+        app:text="@string/text_debug_step_into"/>
+
+    <org.autojs.autojs.ui.widget.ToolbarMenuItem
+        android:id="@+id/step_out"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        app:icon="@drawable/ic_debug_step_out"
+        app:text="@string/text_debug_step_out"/>
+
+    <org.autojs.autojs.ui.widget.ToolbarMenuItem
+        android:id="@+id/resume_script"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        app:icon="@drawable/ic_play_arrow_white_48dp"
+        app:text="@string/text_debug_resume_script"/>
+
+
+    <org.autojs.autojs.ui.widget.ToolbarMenuItem
+        android:id="@+id/stop_script"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        app:icon="@drawable/ic_close_white_48dp"
+        app:text="@string/text_stop"/>
+
+
+</LinearLayout>

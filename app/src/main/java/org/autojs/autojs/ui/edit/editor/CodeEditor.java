@@ -3,17 +3,20 @@ package org.autojs.autojs.ui.edit.editor;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.support.design.widget.Snackbar;
+import android.text.Layout;
 import android.util.AttributeSet;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.android.dx.util.IntList;
 import com.stardust.autojs.script.JsBeautifier;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.ui.edit.theme.Theme;
+
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.TextUtils;
 
+import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,7 +56,6 @@ public class CodeEditor extends HVScrollView {
     private JsBeautifier mJsBeautifier;
     private MaterialDialog mProcessDialog;
 
-
     private CharSequence mReplacement = "";
     private String mKeywords;
     private Matcher mMatcher;
@@ -73,7 +75,7 @@ public class CodeEditor extends HVScrollView {
     private void init() {
         //setFillViewport(true);
         inflate(getContext(), R.layout.code_editor, this);
-        mCodeEditText = (CodeEditText) findViewById(R.id.code_edit_text);
+        mCodeEditText = findViewById(R.id.code_edit_text);
         mCodeEditText.addTextChangedListener(new AutoIndent(mCodeEditText));
         mTextViewRedoUndo = new TextViewRedoUndo(mCodeEditText);
         mJavaScriptHighlighter = new JavaScriptHighlighter(mTheme, mCodeEditText);
@@ -166,7 +168,8 @@ public class CodeEditor extends HVScrollView {
     }
 
     public void jumpTo(int line, int col) {
-        if (line >= mCodeEditText.getLayout().getLineCount() || line < 0) {
+        Layout layout = mCodeEditText.getLayout();
+        if (line < 0 || (layout != null && line >= layout.getLineCount())) {
             return;
         }
         mCodeEditText.setSelection(mCodeEditText.getLayout().getLineStart(line) + col);
@@ -260,7 +263,7 @@ public class CodeEditor extends HVScrollView {
     }
 
     public void findPrev() {
-        if (mMatcher != null){
+        if (mMatcher != null) {
             Toast.makeText(getContext(), R.string.error_regex_find_prev, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -329,6 +332,31 @@ public class CodeEditor extends HVScrollView {
         mTextViewRedoUndo.markTextAsUnchanged();
     }
 
+    public LinkedHashMap<Integer, Breakpoint> getBreakpoints() {
+        return mCodeEditText.getBreakpoints();
+    }
+
+    public void setDebuggingLine(int line) {
+        jumpTo(line, 0);
+        mCodeEditText.setDebuggingLine(line);
+    }
+
+    public void addOrRemoveBreakpoint(int line) {
+        LinkedHashMap<Integer, Breakpoint> breakpoints = mCodeEditText.getBreakpoints();
+        if (breakpoints.remove(line) == null) {
+            breakpoints.put(line, new Breakpoint(line));
+        }
+        mCodeEditText.invalidate();
+    }
+
+    public void addOrRemoveBreakpointAtCurrentLine() {
+        int line = LayoutHelper.getLineOfChar(mCodeEditText.getLayout(), mCodeEditText.getSelectionStart());
+        if (line < 0 || line >= mCodeEditText.getLayout().getLineCount())
+            return;
+        addOrRemoveBreakpoint(line);
+    }
+
+
     @Override
     protected void onDraw(Canvas canvas) {
         int codeWidth = getWidth() - getPaddingLeft() - getPaddingRight();
@@ -339,5 +367,15 @@ public class CodeEditor extends HVScrollView {
             invalidate();
         }
         super.onDraw(canvas);
+    }
+
+    public static class Breakpoint {
+
+        public int line;
+        public boolean enabled = true;
+
+        public Breakpoint(int line) {
+            this.line = line;
+        }
     }
 }
