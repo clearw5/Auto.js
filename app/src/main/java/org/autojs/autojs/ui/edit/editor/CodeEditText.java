@@ -69,6 +69,7 @@ public class CodeEditText extends AppCompatEditText {
     private int mUnmatchedBracket = -1;
     private LinkedHashMap<Integer, CodeEditor.Breakpoint> mBreakpoints = new LinkedHashMap<>();
     private int mDebuggingLine = -1;
+    private CodeEditor.BreakpointChangeListener mBreakpointChangeListener;
 
 
     public CodeEditText(Context context) {
@@ -474,8 +475,8 @@ public class CodeEditText extends AppCompatEditText {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 //当触摸有效时，对那一行设置断点或取消断点
                 if (mTouchValid) {
-                    if (mBreakpoints.remove(mTouchedLine) == null) {
-                        mBreakpoints.put(mTouchedLine, new CodeEditor.Breakpoint(mTouchedLine));
+                    if (!removeBreakpoint(mTouchedLine)) {
+                        addBreakpoint(mTouchedLine);
                     }
                     invalidate();
                 }
@@ -485,5 +486,36 @@ public class CodeEditText extends AppCompatEditText {
         }
 
         return super.onTouchEvent(event);
+    }
+
+    public boolean removeBreakpoint(int line) {
+        boolean success = mBreakpoints.remove(line) != null;
+        if (success && mBreakpointChangeListener != null) {
+            mBreakpointChangeListener.onBreakpointChange(line, false);
+            invalidate();
+        }
+        return success;
+    }
+
+    public void addBreakpoint(int line) {
+        mBreakpoints.put(line, new CodeEditor.Breakpoint(line));
+        if (mBreakpointChangeListener != null) {
+            mBreakpointChangeListener.onBreakpointChange(line, true);
+        }
+        invalidate();
+    }
+
+    public void setBreakpointChangeListener(CodeEditor.BreakpointChangeListener listener) {
+        mBreakpointChangeListener = listener;
+    }
+
+    public void removeAllBreakpoints() {
+        int size = mBreakpoints.size();
+        mBreakpoints.clear();
+        if (mBreakpointChangeListener != null) {
+            mBreakpointChangeListener.onAllBreakpointRemoved(size);
+        }
+        invalidate();
+
     }
 }

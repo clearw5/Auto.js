@@ -139,7 +139,6 @@ public class CodeEditor extends HVScrollView {
         invalidate();
     }
 
-
     public boolean isTextChanged() {
         return mTextViewRedoUndo.isTextChanged();
     }
@@ -182,7 +181,6 @@ public class CodeEditor extends HVScrollView {
     public void setRedoUndoEnabled(boolean enabled) {
         mTextViewRedoUndo.setEnabled(enabled);
     }
-
 
     public void setProgress(boolean progress) {
         if (progress) {
@@ -349,12 +347,14 @@ public class CodeEditor extends HVScrollView {
         mCodeEditText.setDebuggingLine(line);
     }
 
+    public void setBreakpointChangeListener(BreakpointChangeListener listener) {
+        mCodeEditText.setBreakpointChangeListener(listener);
+    }
+
     public void addOrRemoveBreakpoint(int line) {
-        LinkedHashMap<Integer, Breakpoint> breakpoints = mCodeEditText.getBreakpoints();
-        if (breakpoints.remove(line) == null) {
-            breakpoints.put(line, new Breakpoint(line));
+        if (!mCodeEditText.removeBreakpoint(line)) {
+            mCodeEditText.addBreakpoint(line);
         }
-        mCodeEditText.invalidate();
     }
 
     public void addOrRemoveBreakpointAtCurrentLine() {
@@ -364,11 +364,9 @@ public class CodeEditor extends HVScrollView {
         addOrRemoveBreakpoint(line);
     }
 
-    public void removeAllBreakpoints(){
-        mCodeEditText.getBreakpoints().clear();
-        mCodeEditText.invalidate();
+    public void removeAllBreakpoints() {
+        mCodeEditText.removeAllBreakpoints();
     }
-
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -390,5 +388,11 @@ public class CodeEditor extends HVScrollView {
         public Breakpoint(int line) {
             this.line = line;
         }
+    }
+
+    public interface BreakpointChangeListener {
+        void onBreakpointChange(int line, boolean enabled);
+
+        void onAllBreakpointRemoved(int count);
     }
 }

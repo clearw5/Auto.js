@@ -44,10 +44,24 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
     private String mInitialEditorSourceUrl;
     private String mInitialEditorSource;
     private boolean mCursorChangeFromUser = true;
+    private Dim.SourceInfo mSourceInfo;
     private final RecyclerView.AdapterDataObserver mVariableChangeObserver = new RecyclerView.AdapterDataObserver() {
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
             updateWatchingVariables(positionStart, positionStart + itemCount);
+        }
+    };
+    private CodeEditor.BreakpointChangeListener mBreakpointChangeListener = new CodeEditor.BreakpointChangeListener() {
+        @Override
+        public void onBreakpointChange(int line, boolean enabled) {
+            if (mSourceInfo != null) {
+                mSourceInfo.breakpoint(line + 1, enabled);
+            }
+        }
+
+        @Override
+        public void onAllBreakpointRemoved(int count) {
+            mDim.clearAllBreakpoints();
         }
     };
 
@@ -79,6 +93,7 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
         CodeEditor editor = mEditorView.getEditor();
         editor.setRedoUndoEnabled(false);
         editor.addCursorChangeCallback(this);
+        editor.setBreakpointChangeListener(mBreakpointChangeListener);
         DebugBar debugBar = mEditorView.getDebugBar();
         debugBar.registerVariableChangeObserver(mVariableChangeObserver);
         debugBar.setCodeEvaluator(this);
@@ -108,6 +123,7 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
         if (!mDim.isAttached()) {
             return;
         }
+        Log.d(LOG_TAG, "detachDebugger");
         mDim.detach();
         mDim.setGuiCallback(null);
         if (mEditorView == null) {
@@ -115,6 +131,8 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
         }
         CodeEditor editor = mEditorView.getEditor();
         editor.removeCursorChangeCallback(this);
+        editor.setBreakpointChangeListener(null);
+        mSourceInfo = null;
         editor.setRedoUndoEnabled(true);
         if (!TextUtils.equals(mInitialEditorSourceUrl, mCurrentEditorSourceUrl)) {
             editor.setText(mInitialEditorSource);
@@ -168,6 +186,7 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
                 Log.d(LOG_TAG, "not breakable: " + line);
             }
         }
+        mSourceInfo = sourceInfo;
     }
 
     @Override

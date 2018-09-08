@@ -37,7 +37,8 @@ public class Files {
             }
             f = new File(f, path);
         }
-        return f.getPath();
+        String path = f.getPath();
+        return relativePath.endsWith(File.separator) ? path + "/" : path;
     }
 
     public String cwd() {
@@ -89,7 +90,7 @@ public class Files {
         return PFiles.read(path(path));
     }
 
-    public String readAssets(String path, String encoding){
+    public String readAssets(String path, String encoding) {
         try {
             return PFiles.read(mRuntime.getUiHandler().getContext().getAssets().open(path), encoding);
         } catch (IOException e) {
@@ -97,11 +98,11 @@ public class Files {
         }
     }
 
-    public String readAssets(String path){
+    public String readAssets(String path) {
         return readAssets(path, "UTF-8");
     }
 
-    public byte[] readBytes(String path){
+    public byte[] readBytes(String path) {
         return PFiles.readBytes(path(path));
     }
 
