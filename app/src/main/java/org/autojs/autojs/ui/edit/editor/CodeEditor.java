@@ -176,8 +176,13 @@ public class CodeEditor extends HVScrollView {
     }
 
     public void setReadOnly(boolean readOnly) {
-        setEnabled(!readOnly);
+        mCodeEditText.setEnabled(!readOnly);
     }
+
+    public void setRedoUndoEnabled(boolean enabled) {
+        mTextViewRedoUndo.setEnabled(enabled);
+    }
+
 
     public void setProgress(boolean progress) {
         if (progress) {
@@ -202,8 +207,12 @@ public class CodeEditor extends HVScrollView {
         mCodeEditText.setText(text);
     }
 
-    public void setCursorChangeCallback(CursorChangeCallback callback) {
-        mCodeEditText.setCursorChangeCallback(callback);
+    public void addCursorChangeCallback(CursorChangeCallback callback) {
+        mCodeEditText.addCursorChangeCallback(callback);
+    }
+
+    public boolean removeCursorChangeCallback(CursorChangeCallback callback) {
+        return mCodeEditText.removeCursorChangeCallback(callback);
     }
 
 
@@ -337,7 +346,6 @@ public class CodeEditor extends HVScrollView {
     }
 
     public void setDebuggingLine(int line) {
-        jumpTo(line, 0);
         mCodeEditText.setDebuggingLine(line);
     }
 
@@ -354,6 +362,11 @@ public class CodeEditor extends HVScrollView {
         if (line < 0 || line >= mCodeEditText.getLayout().getLineCount())
             return;
         addOrRemoveBreakpoint(line);
+    }
+
+    public void removeAllBreakpoints(){
+        mCodeEditText.getBreakpoints().clear();
+        mCodeEditText.invalidate();
     }
 
 

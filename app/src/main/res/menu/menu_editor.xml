@@ -94,6 +94,11 @@
                 android:id="@+id/action_launch_debugger"
                 android:title="@string/text_launch_debugger"
                 app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_remove_all_breakpoints"
+                android:title="@string/text_remove_all_breakpoints"
+                app:showAsAction="never"/>
         </menu>
 
     </item>

@@ -11,17 +11,27 @@ import org.autojs.autojs.ui.edit.EditorView;
 
 import java.util.List;
 
-public abstract class ToolbarFragment extends Fragment implements View.OnClickListener {
+public abstract class ToolbarFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
+
 
     public interface OnMenuItemClickListener {
         void onToolbarMenuItemClick(int id);
     }
 
+    public interface OnMenuItemLongClickListener {
+        boolean onToolbarMenuItemLongClick(int id);
+    }
+
     private OnMenuItemClickListener mOnMenuItemClickListener;
+    private OnMenuItemLongClickListener mOnMenuItemLongClickListener;
     private List<Integer> mMenuItemIds;
 
     public void setOnMenuItemClickListener(OnMenuItemClickListener listener) {
         mOnMenuItemClickListener = listener;
+    }
+
+    public void setOnMenuItemLongClickListener(OnMenuItemLongClickListener onMenuItemLongClickListener) {
+        mOnMenuItemLongClickListener = onMenuItemLongClickListener;
     }
 
     public abstract List<Integer> getMenuItemIds();
@@ -54,6 +64,7 @@ public abstract class ToolbarFragment extends Fragment implements View.OnClickLi
         for (int id : mMenuItemIds) {
             View view = rootView.findViewById(id);
             view.setOnClickListener(this);
+            view.setOnLongClickListener(this);
             view.setEnabled(editorView.getMenuItemStatus(id, view.isEnabled()));
         }
     }
@@ -64,6 +75,13 @@ public abstract class ToolbarFragment extends Fragment implements View.OnClickLi
         if (mOnMenuItemClickListener != null) {
             mOnMenuItemClickListener.onToolbarMenuItemClick(view.getId());
         }
+    }
+
+
+    @Override
+    public boolean onLongClick(View v) {
+        return mOnMenuItemLongClickListener != null &&
+                mOnMenuItemLongClickListener.onToolbarMenuItemLongClick(v.getId());
     }
 
     public void setMenuItemStatus(int id, boolean enabled) {

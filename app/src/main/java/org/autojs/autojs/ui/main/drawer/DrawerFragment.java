@@ -89,7 +89,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     RecyclerView mDrawerMenu;
 
 
-    private DrawerMenuItem mConnectionItem = new DrawerMenuItem(R.drawable.ic_debug, R.string.debug, 0, this::connectOrDisconnectToRemote);
+    private DrawerMenuItem mConnectionItem = new DrawerMenuItem(R.drawable.ic_connect_to_pc, R.string.debug, 0, this::connectOrDisconnectToRemote);
     private DrawerMenuItem mAccessibilityServiceItem = new DrawerMenuItem(R.drawable.ic_service_green, R.string.text_accessibility_service, 0, this::enableOrDisableAccessibilityService);
     private DrawerMenuItem mStableModeItem = new DrawerMenuItem(R.drawable.ic_stable, R.string.text_stable_mode, R.string.key_stable_mode, null) {
         @Override

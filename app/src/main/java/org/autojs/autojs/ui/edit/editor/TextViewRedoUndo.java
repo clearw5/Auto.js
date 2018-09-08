@@ -42,6 +42,7 @@ public class TextViewRedoUndo {
     private boolean flag = false;
 
     private int mInitialHistoryStackSize;
+    private boolean mEnabled = true;
 
     public TextViewRedoUndo(@NonNull EditText editText) {
         this.editable = editText.getText();
@@ -156,6 +157,14 @@ public class TextViewRedoUndo {
         mInitialHistoryStackSize = history.size();
     }
 
+    public void setEnabled(boolean enabled) {
+        mEnabled = enabled;
+    }
+
+    public boolean isEnabled() {
+        return mEnabled;
+    }
+
     private class Watcher implements TextWatcher {
 
         /**
@@ -168,6 +177,9 @@ public class TextViewRedoUndo {
          */
         @Override
         public final void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            if (!editText.isEnabled() || !mEnabled) {
+                return;
+            }
             if (flag) return;
             int end = start + count;
             if (end > start && end <= s.length()) {
@@ -201,6 +213,9 @@ public class TextViewRedoUndo {
          */
         @Override
         public final void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (!editText.isEnabled() || !mEnabled) {
+                return;
+            }
             if (flag) return;
             int end = start + count;
             if (end > start) {
@@ -223,6 +238,9 @@ public class TextViewRedoUndo {
 
         @Override
         public final void afterTextChanged(Editable s) {
+            if (!editText.isEnabled() || !mEnabled) {
+                return;
+            }
             if (flag) return;
             if (s != editable) {
                 editable = s;

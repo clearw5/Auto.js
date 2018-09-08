@@ -48,6 +48,7 @@ import org.autojs.autojs.model.indices.Property;
 import org.autojs.autojs.model.script.Scripts;
 import org.autojs.autojs.ui.doc.ManualDialog;
 import org.autojs.autojs.ui.edit.completion.CodeCompletionBar;
+import org.autojs.autojs.ui.edit.debug.DebugBar;
 import org.autojs.autojs.ui.edit.editor.CodeEditor;
 import org.autojs.autojs.ui.edit.keyboard.FunctionsKeyboardHelper;
 import org.autojs.autojs.ui.edit.keyboard.FunctionsKeyboardView;
@@ -103,6 +104,9 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     @ViewById(R.id.functions_keyboard)
     FunctionsKeyboardView mFunctionsKeyboard;
+
+    @ViewById(R.id.debug_bar)
+    DebugBar mDebugBar;
 
     @ViewById(R.id.docs)
     EWebView mDocsWebView;
@@ -273,8 +277,15 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     private void initNormalToolbar() {
         mNormalToolbar.setOnMenuItemClickListener(this);
+        mNormalToolbar.setOnMenuItemLongClickListener(id -> {
+           if(id == R.id.run){
+               debug();
+               return true;
+           }
+           return false;
+        });
         Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.toolbar_menu);
-        if(fragment == null){
+        if (fragment == null) {
             showNormalToolbar();
         }
     }
@@ -304,12 +315,16 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
             setMenuItemStatus(R.id.undo, mEditor.canUndo());
             setMenuItemStatus(R.id.redo, mEditor.canRedo());
         }));
-        mEditor.setCursorChangeCallback(this::autoComplete);
+        mEditor.addCursorChangeCallback(this::autoComplete);
         mEditor.getCodeEditText().setTextSize(Pref.getEditorTextSize((int) ViewUtils.pxToSp(getContext(), mEditor.getCodeEditText().getTextSize())));
     }
 
     private void autoComplete(String line, int cursor) {
         mAutoCompletion.onCursorChange(line, cursor);
+    }
+
+    public DebugBar getDebugBar() {
+        return mDebugBar;
     }
 
     public void setTheme(Theme theme) {
@@ -368,11 +383,13 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     @SuppressLint("CheckResult")
     public void runAndSaveFileIfNeeded() {
         save().observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> run());
+                .subscribe(s -> run(true));
     }
 
-    public void run() {
-        Snackbar.make(this, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
+    public void run(boolean showMessage) {
+        if(showMessage){
+            Snackbar.make(this, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
+        }
         mScriptExecutionId = Scripts.runWithBroadcastSender(mFile).getId();
         setMenuItemStatus(R.id.run, false);
     }
@@ -534,12 +551,14 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
 
-    public void launchDebugger() {
+    public void debug() {
         DebugToolbarFragment debugToolbarFragment = DebugToolbarFragment_.builder()
                 .build();
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.toolbar_menu, debugToolbarFragment)
                 .commit();
+        mDebugBar.setVisibility(VISIBLE);
+        mInputMethodEnhanceBar.setVisibility(GONE);
         mDebugging = true;
     }
 
@@ -551,6 +570,8 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         }
         showNormalToolbar();
         mEditor.setDebuggingLine(-1);
+        mDebugBar.setVisibility(GONE);
+        mInputMethodEnhanceBar.setVisibility(VISIBLE);
         mDebugging = false;
     }
 
@@ -622,7 +643,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     @Nullable
-    public ScriptExecution getScriptExecution(){
+    public ScriptExecution getScriptExecution() {
         return AutoJs.getInstance().getScriptEngineService().getScriptExecution(mScriptExecutionId);
     }
 

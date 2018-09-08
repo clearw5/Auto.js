@@ -10,6 +10,7 @@ import com.stardust.pio.PFiles;
 import org.autojs.autojs.R;
 import org.autojs.autojs.ui.build.BuildActivity;
 import org.autojs.autojs.ui.build.BuildActivity_;
+import org.autojs.autojs.ui.common.NotAskAgainDialog;
 import org.autojs.autojs.ui.edit.editor.CodeEditor;
 import org.autojs.autojs.ui.log.LogActivity_;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
@@ -68,7 +69,15 @@ public class EditorMenu {
                 mEditor.addOrRemoveBreakpointAtCurrentLine();
                 return true;
             case R.id.action_launch_debugger:
-                mEditorView.launchDebugger();
+                new NotAskAgainDialog.Builder(mEditorView.getContext(), "editor.debug.long_click_hint")
+                        .title(R.string.text_alert)
+                        .content(R.string.hint_long_click_run_to_debug)
+                        .positiveText(R.string.ok)
+                        .show();
+                mEditorView.debug();
+                return true;
+            case R.id.action_remove_all_breakpoints:
+                mEditor.removeAllBreakpoints();
                 return true;
         }
         return false;

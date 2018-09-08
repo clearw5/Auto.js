@@ -88,6 +88,13 @@
                 android:layout_height="match_parent"
                 android:visibility="gone"/>
 
+
+            <org.autojs.autojs.ui.edit.debug.DebugBar
+                android:id="@+id/debug_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
         </LinearLayout>
 
         <org.autojs.autojs.ui.widget.EWebView

@@ -32,18 +32,16 @@ import android.util.Log;
 import android.util.TimingLogger;
 import android.view.Gravity;
 
-import org.autojs.autojs.R;
 import org.autojs.autojs.ui.edit.theme.Theme;
 import org.autojs.autojs.ui.edit.theme.TokenMapping;
 
-import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.TextUtils;
 
 import org.mozilla.javascript.Token;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.autojs.autojs.ui.edit.editor.BracketMatching.UNMATCHED_BRACKET;
 
@@ -60,7 +58,7 @@ public class CodeEditText extends AppCompatEditText {
     // 文字范围
     protected HVScrollView mParentScrollView;
 
-    private CodeEditor.CursorChangeCallback mCallback;
+    private final CopyOnWriteArrayList<CodeEditor.CursorChangeCallback> mCursorChangeCallbacks = new CopyOnWriteArrayList<>();
     private volatile JavaScriptHighlighter.HighlightTokens mHighlightTokens;
     private Theme mTheme;
     private TimingLogger mLogger = new TimingLogger(LOG_TAG, "draw");
@@ -109,6 +107,11 @@ public class CodeEditText extends AppCompatEditText {
         mLogger.reset();
         if (mParentScrollView == null) {
             mParentScrollView = (HVScrollView) getParent();
+        }
+        if (getLayout() == null) {
+            super.onDraw(canvas);
+            invalidate();
+            return;
         }
         updatePaddingForGutter();
         updateLineRangeForDraw(canvas);
@@ -266,8 +269,12 @@ public class CodeEditText extends AppCompatEditText {
         if (line < mFirstLineForDraw || line > mLastLineForDraw || mFirstLineForDraw < 0 || line < 0) {
             return;
         }
-        int lineTop = getLayout().getLineTop(line);
-        int lineBottom = getLayout().getLineTop(line + 1);
+        Layout layout = getLayout();
+        if(layout == null){
+            return;
+        }
+        int lineTop = layout.getLineTop(line);
+        int lineBottom = layout.getLineTop(line + 1);
         canvas.drawRect(0, lineTop, canvas.getWidth(), lineBottom, paint);
     }
 
@@ -322,7 +329,8 @@ public class CodeEditText extends AppCompatEditText {
     protected void onSelectionChanged(int selStart, int selEnd) {
         //调用父类的onSelectionChanged时会发送一个AccessibilityEvent，当文本过大时造成异常
         //super.onSelectionChanged(selStart, selEnd);
-        if (mCallback == null || selStart != selEnd) {
+        //父类构造函数会调用onSelectionChanged, 此时mCursorChangeCallbacks还没有初始化
+        if (mCursorChangeCallbacks == null || mCursorChangeCallbacks.isEmpty() || selStart != selEnd) {
             return;
         }
         callCursorChangeCallback(getText(), selStart);
@@ -365,7 +373,7 @@ public class CodeEditText extends AppCompatEditText {
         if (text.length() == 0) {
             return;
         }
-        if (mCallback == null)
+        if (mCursorChangeCallbacks.isEmpty())
             return;
         int lineStart = TextUtils.lastIndexOf(text, '\n', sel - 1) + 1;
         if (lineStart < 0) {
@@ -382,12 +390,20 @@ public class CodeEditText extends AppCompatEditText {
             return;
         String line = text.subSequence(lineStart, lineEnd).toString();
         int cursor = sel - lineStart;
-        mCallback.onCursorChange(line, cursor);
+        for(CodeEditor.CursorChangeCallback callback : mCursorChangeCallbacks){
+            callback.onCursorChange(line, cursor);
+        }
     }
 
-    public void setCursorChangeCallback(CodeEditor.CursorChangeCallback callback) {
-        mCallback = callback;
+    public void addCursorChangeCallback(CodeEditor.CursorChangeCallback callback) {
+        mCursorChangeCallbacks.add(callback);
     }
+
+    public boolean removeCursorChangeCallback(CodeEditor.CursorChangeCallback callback) {
+        return mCursorChangeCallbacks.remove(callback);
+    }
+
+
 
     public void updateHighlightTokens(JavaScriptHighlighter.HighlightTokens highlightTokens) {
         mHighlightTokens = highlightTokens;
@@ -427,7 +443,7 @@ public class CodeEditText extends AppCompatEditText {
         Parcelable superData = bundle.getParcelable("super_data");
         mDebuggingLine = bundle.getInt("debugging_line", -1);
         int[] breakpoints = bundle.getIntArray("breakpoints");
-        if(breakpoints != null){
+        if (breakpoints != null) {
             for (int breakpoint : breakpoints) {
                 mBreakpoints.put(breakpoint, new CodeEditor.Breakpoint(breakpoint));
             }

@@ -1,8 +1,5 @@
 package org.autojs.autojs.ui.edit.toolbar;
 
-import android.support.v4.app.Fragment;
-
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.autojs.autojs.R;
 
@@ -11,7 +8,6 @@ import java.util.List;
 
 @EFragment(R.layout.fragment_normal_toolbar)
 public class NormalToolbarFragment extends ToolbarFragment {
-
 
     @Override
     public List<Integer> getMenuItemIds() {

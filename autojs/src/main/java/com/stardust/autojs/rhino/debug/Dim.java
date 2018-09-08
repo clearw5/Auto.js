@@ -78,7 +78,7 @@ public class Dim {
     /**
      * The ContextFactory to listen to for debugging information.
      */
-    private ContextFactory contextFactory;
+    private volatile ContextFactory contextFactory;
 
     private ScriptEngineService scriptEngineService;
 
@@ -222,7 +222,7 @@ public class Dim {
         detach();
         this.contextFactory = factory;
         this.scriptEngineService = scriptEngineService;
-        this.listener = new DimIProxy(this, IPROXY_LISTEN);
+        this.listener = new DimIProxy(IPROXY_LISTEN);
         scriptEngineService.registerEngineLifecycleCallback(this.listener);
     }
 
@@ -517,6 +517,10 @@ public class Dim {
         }
     }
 
+    public boolean isAttached() {
+        return contextFactory != null && scriptEngineService != null;
+    }
+
     /**
      * Returns the current ContextData object.
      */
@@ -585,7 +589,7 @@ public class Dim {
      * Compiles the given script.
      */
     public void compileScript(String url, String text) {
-        DimIProxy action = new DimIProxy(this, IPROXY_COMPILE_SCRIPT);
+        DimIProxy action = new DimIProxy(IPROXY_COMPILE_SCRIPT);
         action.url = url;
         action.text = text;
         action.withContext();
@@ -595,7 +599,7 @@ public class Dim {
      * Evaluates the given script.
      */
     public void evalScript(final String url, final String text) {
-        DimIProxy action = new DimIProxy(this, IPROXY_EVAL_SCRIPT);
+        DimIProxy action = new DimIProxy(IPROXY_EVAL_SCRIPT);
         action.url = url;
         action.text = text;
         action.withContext();
@@ -605,7 +609,7 @@ public class Dim {
      * Converts the given script object to a string.
      */
     public String objectToString(Object object) {
-        DimIProxy action = new DimIProxy(this, IPROXY_OBJECT_TO_STRING);
+        DimIProxy action = new DimIProxy(IPROXY_OBJECT_TO_STRING);
         action.object = object;
         action.withContext();
         return action.stringResult;
@@ -615,7 +619,7 @@ public class Dim {
      * Returns whether the given string is syntactically valid script.
      */
     public boolean stringIsCompilableUnit(String str) {
-        DimIProxy action = new DimIProxy(this, IPROXY_STRING_IS_COMPILABLE);
+        DimIProxy action = new DimIProxy(IPROXY_STRING_IS_COMPILABLE);
         action.text = str;
         action.withContext();
         return action.booleanResult;
@@ -625,7 +629,7 @@ public class Dim {
      * Returns the value of a property on the given script object.
      */
     public Object getObjectProperty(Object object, Object id) {
-        DimIProxy action = new DimIProxy(this, IPROXY_OBJECT_PROPERTY);
+        DimIProxy action = new DimIProxy(IPROXY_OBJECT_PROPERTY);
         action.object = object;
         action.id = id;
         action.withContext();
@@ -636,7 +640,7 @@ public class Dim {
      * Returns an array of the property names on the given script object.
      */
     public Object[] getObjectIds(Object object) {
-        DimIProxy action = new DimIProxy(this, IPROXY_OBJECT_IDS);
+        DimIProxy action = new DimIProxy(IPROXY_OBJECT_IDS);
         action.object = object;
         action.withContext();
         return action.objectArrayResult;
@@ -895,11 +899,6 @@ public class Dim {
             implements ContextAction, ScriptEngineManager.EngineLifecycleCallback, Debugger {
 
         /**
-         * The debugger.
-         */
-        private Dim dim;
-
-        /**
          * The interface implementation type.  One of the IPROXY_* constants
          * defined in {@link Dim}.
          */
@@ -948,8 +947,7 @@ public class Dim {
         /**
          * Creates a new DimIProxy.
          */
-        private DimIProxy(Dim dim, int type) {
-            this.dim = dim;
+        private DimIProxy(int type) {
             this.type = type;
         }
 
@@ -966,8 +964,8 @@ public class Dim {
 
                 case IPROXY_EVAL_SCRIPT: {
                     Scriptable scope = null;
-                    if (dim.scopeProvider != null) {
-                        scope = dim.scopeProvider.getScope();
+                    if (scopeProvider != null) {
+                        scope = scopeProvider.getScope();
                     }
                     if (scope == null) {
                         scope = new ImporterTopLevel(cx);
@@ -993,11 +991,11 @@ public class Dim {
                     break;
 
                 case IPROXY_OBJECT_PROPERTY:
-                    objectResult = dim.getObjectPropertyImpl(cx, object, id);
+                    objectResult = getObjectPropertyImpl(cx, object, id);
                     break;
 
                 case IPROXY_OBJECT_IDS:
-                    objectArrayResult = dim.getObjectIdsImpl(cx, object);
+                    objectArrayResult = getObjectIdsImpl(cx, object);
                     break;
 
                 default:
@@ -1011,7 +1009,7 @@ public class Dim {
          * {@link ContextFactory}.
          */
         private void withContext() {
-            dim.contextFactory.call(this);
+            contextFactory.call(this);
         }
 
         @Override
@@ -1024,7 +1022,7 @@ public class Dim {
 
             Context cx = ((RhinoJavaScriptEngine) engine).getContext();
             ContextData contextData = new ContextData();
-            Debugger debugger = new DimIProxy(dim, IPROXY_DEBUG);
+            Debugger debugger = new DimIProxy(IPROXY_DEBUG);
             cx.setDebugger(debugger, contextData);
             cx.setGeneratingDebug(true);
             cx.setOptimizationLevel(-1);
@@ -1044,12 +1042,12 @@ public class Dim {
         public DebugFrame getFrame(Context cx, DebuggableScript fnOrScript) {
             if (type != IPROXY_DEBUG) Kit.codeBug();
 
-            FunctionSource item = dim.getFunctionSource(fnOrScript);
+            FunctionSource item = getFunctionSource(fnOrScript);
             if (item == null) {
                 // Can not debug if source is not available
                 return null;
             }
-            return new StackFrame(cx, dim, item);
+            return new StackFrame(cx, Dim.this, item);
         }
 
         /**
@@ -1063,7 +1061,7 @@ public class Dim {
             if (!fnOrScript.isTopLevel()) {
                 return;
             }
-            dim.registerTopScript(fnOrScript, source);
+            registerTopScript(fnOrScript, source);
         }
     }
 
