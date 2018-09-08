@@ -33,7 +33,7 @@ public class CodeEvaluateDialogBuilder extends ThemeColorMaterialDialogBuilder {
         customView(view, true);
         mResult = view.findViewById(R.id.result);
         mCode = view.findViewById(R.id.code);
-        positiveText(R.string.text_run);
+        positiveText(R.string.text_execute);
         negativeText(R.string.text_close);
         autoDismiss(false);
         onNegative((dialog, which) -> dialog.dismiss());

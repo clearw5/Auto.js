@@ -31,6 +31,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TimingLogger;
 import android.view.Gravity;
+import android.view.MotionEvent;
 
 import org.autojs.autojs.ui.edit.theme.Theme;
 import org.autojs.autojs.ui.edit.theme.TokenMapping;
@@ -270,7 +271,7 @@ public class CodeEditText extends AppCompatEditText {
             return;
         }
         Layout layout = getLayout();
-        if(layout == null){
+        if (layout == null) {
             return;
         }
         int lineTop = layout.getLineTop(line);
@@ -390,7 +391,7 @@ public class CodeEditText extends AppCompatEditText {
             return;
         String line = text.subSequence(lineStart, lineEnd).toString();
         int cursor = sel - lineStart;
-        for(CodeEditor.CursorChangeCallback callback : mCursorChangeCallbacks){
+        for (CodeEditor.CursorChangeCallback callback : mCursorChangeCallbacks) {
             callback.onCursorChange(line, cursor);
         }
     }
@@ -402,7 +403,6 @@ public class CodeEditText extends AppCompatEditText {
     public boolean removeCursorChangeCallback(CodeEditor.CursorChangeCallback callback) {
         return mCursorChangeCallbacks.remove(callback);
     }
-
 
 
     public void updateHighlightTokens(JavaScriptHighlighter.HighlightTokens highlightTokens) {
@@ -451,4 +451,39 @@ public class CodeEditText extends AppCompatEditText {
         super.onRestoreInstanceState(superData);
     }
 
+    private int mTouchedLine = -1;
+    private boolean mTouchValid = true;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        //如果行号区域被按下
+        if (event.getAction() == MotionEvent.ACTION_DOWN && event.getX() < getPaddingLeft()) {
+            //则计算当前行，如果行号有效，记录起来
+            int line = getLayout().getLineForVertical((int) event.getY());
+            if (line >= 0) {
+                mTouchedLine = line;
+                mTouchValid = true;
+                return true;
+            }
+        } else if (mTouchedLine >= 0) {
+            //如果之前已经是行号区域被按下了，则之后的事件也要处理
+            //如果之后的触摸区域超出行号区域，或者触摸的行号与第一次触摸事件时的不同，则这一系列的触摸无效
+            if (event.getX() >= getPaddingLeft() || (getLayout().getLineForVertical((int) event.getY()) != mTouchedLine)) {
+                mTouchValid = false;
+            }
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                //当触摸有效时，对那一行设置断点或取消断点
+                if (mTouchValid) {
+                    if (mBreakpoints.remove(mTouchedLine) == null) {
+                        mBreakpoints.put(mTouchedLine, new CodeEditor.Breakpoint(mTouchedLine));
+                    }
+                    invalidate();
+                }
+                mTouchedLine = -1;
+            }
+            return true;
+        }
+
+        return super.onTouchEvent(event);
+    }
 }
