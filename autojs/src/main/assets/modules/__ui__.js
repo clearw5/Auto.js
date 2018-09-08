@@ -3,7 +3,7 @@ module.exports = function (runtime, global) {
     require("object-observe-lite.min")();
     require("array-observe.min")();
 
-    var J = require("__java_util__");
+    var J = util.java;
 
 
     var ui = {};

@@ -78,6 +78,9 @@ module = (typeof module === 'undefined') ? {} : module;
     if(builtInModules.indexOf(normalizePath) >= 0 && !files.exists(normalizePath)){
         return NativeRequire.require(normalizePath);
     }
+    if(id === "events"){
+        return events;
+    }
     if(id.startsWith("http://") || id.startsWith("https://")){
         return NativeRequire.require(id);
     }
@@ -252,6 +255,9 @@ module = (typeof module === 'undefined') ? {} : module;
   }
 
   function normalizeName (fileName, ext) {
+    if(fileName.endsWith('.json')){
+        return fileName;
+    }
     var extension = ext || '.js';
     if (fileName.endsWith(extension)) {
       return fileName;

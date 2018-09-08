@@ -169,7 +169,23 @@ module.exports = function(__runtime__, scope){
        format = format || "png";
        quality = quality == undefined ? 100 : quality;
        return rtImages.toBytes(img, format, quality);
- }
+  }
+
+  images.readPixels = function(path){
+     var img = images.read(path);
+     var bitmap = img.getBitmap();
+     var w = bitmap.getWidth();
+     var h = bitmap.getHeight();
+     var pixels = util.java.array("int", w * h);
+     bitmap.getPixels(pixels, 0, w, 0, 0, w, h);
+     img.recycle();
+     return {
+        data: pixels,
+        width: w,
+        height: h
+     };
+  }
+
 
    function getColorDetector(color, algorithm, threshold){
           switch(algorithm){

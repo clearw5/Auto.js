@@ -20,6 +20,7 @@
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 var formatRegExp = /%[sdj%]/g;
+exports.java = require("__java_util__");
 exports.format = function(f) {
   if (!isString(f)) {
     var objects = [];

@@ -332,6 +332,14 @@ public class ScriptRuntime {
         }
     }
 
+    public void loadDex(String path){
+        try {
+            ((AndroidClassLoader) ContextFactory.getGlobal().getApplicationClassLoader()).loadDex(new File(path));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
     public void exit() {
         mThread.interrupt();
         if (Looper.myLooper() != Looper.getMainLooper()) {

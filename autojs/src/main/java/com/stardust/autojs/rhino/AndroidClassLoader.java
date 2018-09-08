@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dalvik.system.DexClassLoader;
 import dalvik.system.DexFile;
 
 /**
@@ -25,10 +26,11 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
 
 
     private final ClassLoader parent;
-    private List<DexFile> dx;
+    private List<DexClassLoader> dx;
     private final File dexFile;
     private final File odexOatFile;
     private final File classFile;
+    private final File mCacheDir;
 
     /**
      * Create a new instance with the given parent classloader and cache dierctory
@@ -38,6 +40,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
      */
     public AndroidClassLoader(ClassLoader parent, File dir) {
         this.parent = parent;
+        mCacheDir = dir;
         dx = new ArrayList<>();
         dexFile = new File(dir, "dex-" + hashCode() + ".jar");
         odexOatFile = new File(dir, "odex_oat-" + hashCode() + ".tmp");
@@ -56,8 +59,8 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
             parameters.setFileNameInZip(name.replace('.', '/') + ".class");
             parameters.setSourceExternalStream(true);
             zipFile.addStream(new ByteArrayInputStream(data), parameters);
-            return dexJar().loadClass(name, parent);
-        } catch (IOException | ZipException e) {
+            return dexJar().loadClass(name);
+        } catch (IOException | ZipException | ClassNotFoundException e) {
             throw new FatalLoadingException(e);
         } finally {
             dexFile.delete();
@@ -87,7 +90,13 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
         }
     }
 
-    private DexFile dexJar() throws IOException {
+    public DexClassLoader loadDex(File file) throws IOException {
+        DexClassLoader loader = new DexClassLoader(file.getPath(), mCacheDir.getPath(), null, parent);
+        dx.add(loader);
+        return loader;
+    }
+
+    private DexClassLoader dexJar() throws IOException {
         if (!classFile.exists()) {
             classFile.createNewFile();
         }
@@ -96,9 +105,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
         arguments.outName = dexFile.getPath();
         arguments.jarOutput = true;
         Main.run(arguments);
-        DexFile dex = DexFile.loadDex(dexFile.getPath(), odexOatFile.getPath(), 0);
-        dx.add(dex);
-        return dex;
+        return loadDex(dexFile);
     }
 
     /**
@@ -124,8 +131,8 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
             throws ClassNotFoundException {
         Class<?> loadedClass = findLoadedClass(name);
         if (loadedClass == null) {
-            for (DexFile dex : dx) {
-                loadedClass = dex.loadClass(name, parent);
+            for (DexClassLoader dex : dx) {
+                loadedClass = dex.loadClass(name);
                 if (loadedClass != null) {
                     break;
                 }
