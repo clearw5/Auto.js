@@ -22,4 +22,6 @@ public class AccessibilityService extends com.stardust.view.accessibility.Access
         setServiceInfo(serviceInfo);
         super.onServiceConnected();
     }
+
+
 }

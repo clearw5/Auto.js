@@ -3,6 +3,7 @@ package org.autojs.autojs.ui.edit;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.stardust.pio.PFiles;
@@ -56,7 +57,7 @@ public class EditorMenu {
                 if (onMoreOptionsSelected(item)) {
                     return true;
                 }
-                if(onDebugOptionsSelected(item)){
+                if (onDebugOptionsSelected(item)) {
                     return true;
                 }
         }
@@ -172,8 +173,14 @@ public class EditorMenu {
         new ThemeColorMaterialDialogBuilder(mContext)
                 .title(R.string.text_jump_to_line)
                 .input(hint, "", (dialog, input) -> {
-                    int line = Integer.parseInt(input.toString());
-                    mEditor.jumpTo(line - 1, 0);
+                    if (TextUtils.isEmpty(input)) {
+                        return;
+                    }
+                    try {
+                        int line = Integer.parseInt(input.toString());
+                        mEditor.jumpTo(line - 1, 0);
+                    } catch (NumberFormatException ignored) {
+                    }
                 })
                 .inputType(InputType.TYPE_CLASS_NUMBER)
                 .show();
