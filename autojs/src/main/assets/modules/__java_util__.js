@@ -32,4 +32,18 @@ function array(type) {
 
 J.array = array;
 
+J.toJsArray = function(list, nullListToEmptyArray){
+    if(list == null || list == undefined){
+        if(nullListToEmptyArray){
+            return [];
+        }
+        return null;
+    }
+    let arr = Array(list.size());
+    for(let i = 0; i < list.size(); i++){
+        arr[i] = list.get(i);
+    }
+    return arr;
+}
+
 module.exports = J;

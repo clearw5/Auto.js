@@ -1,6 +1,5 @@
 package org.autojs.autojs.ui.timing;
 
-import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -9,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -30,6 +28,11 @@ import android.widget.Toast;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.stardust.autojs.execution.ExecutionConfig;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.CheckedChange;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.R;
 import org.autojs.autojs.external.ScriptIntents;
 import org.autojs.autojs.model.script.ScriptFile;
@@ -37,12 +40,6 @@ import org.autojs.autojs.timing.TaskReceiver;
 import org.autojs.autojs.timing.TimedTask;
 import org.autojs.autojs.timing.TimedTaskManager;
 import org.autojs.autojs.ui.BaseActivity;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.CheckedChange;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -269,6 +266,8 @@ public class TimedTaskSettingActivity extends BaseActivity {
             } else {
                 createOrUpdateTimedTask();
             }
+
+
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -267,7 +267,7 @@ module.exports = function (runtime, global) {
             });
         }
         view._id = function (id) {
-            return ui.findById(view, id);
+            return ui.findByStringId(view, id);
         }
         view.click = function (listener) {
             if (listener) {

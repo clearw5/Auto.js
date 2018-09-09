@@ -379,4 +379,5 @@
     <string name="text_result">结果</string>
     <string name="text_close">关闭</string>
     <string name="text_execute">执行</string>
+    <string name="text_use_alarm_clock">使用系统闹钟唤醒Auto.js</string>
 </resources>

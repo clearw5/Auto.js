@@ -253,7 +253,7 @@ public class SimpleActionAutomator {
             Log.d(TAG, "performAction: running package is self. return false");
             return false;
         }
-        AccessibilityNodeInfo root = mAccessibilityBridge.getRootInActiveWindow();
+        AccessibilityNodeInfo root = mAccessibilityBridge.getRootInCurrentWindow();
         if (root == null)
             return false;
         Log.v(TAG, "performAction: " + simpleAction + " root = " + root);

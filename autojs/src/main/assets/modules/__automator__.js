@@ -109,18 +109,18 @@ module.exports = function(runtime, global){
         "fast": 1
     }
 
-    global.auto = function(mode){
+    var auto = function(mode){
         if(mode){
             global.auto.setMode(mode);
         }
         runtime.accessibilityBridge.ensureServiceEnabled();
     }
 
-    global.auto.waitFor = function(){
+    auto.waitFor = function(){
         runtime.accessibilityBridge.waitForServiceEnabled();
     }
 
-    global.auto.setMode = function(mode){
+    auto.setMode = function(mode){
         if(typeof(mode) !== "string"){
             throw new TypeError("mode should be a string");
         }
@@ -128,6 +128,25 @@ module.exports = function(runtime, global){
         runtime.accessibilityBridge.setMode(mode);
     }
 
+    auto.getService = function(){
+        return runtime.accessibilityBridge.getService();
+    }
+
+    auto.getWindows = function(){
+        var service = auto.getService();
+        return service == null ? [] : util.java.toJsArray(service.getWindows(), true);
+    }
+
+    auto.getRoot = function(){
+        var root = runtime.accessibilityBridge.getRootInCurrentWindow();
+        return com.stardust.automator.UiObject.createRoot(root);
+    }
+
+    auto.setWindowFilter = function(filter){
+        runtime.accessibilityBridge.setWindowFilter(new com.stardust.autojs.core.accessibility.AccessibilityBridge.WindowFilter(filter));
+    }
+
+    global.auto = auto;
 
     global.__asGlobal__(runtime.automator, ['back', 'home', 'powerDialog', 'notifications', 'quickSettings', 'recents', 'splitScreen']);
     global.__asGlobal__(automator, ['click', 'longClick', 'press', 'swipe', 'gesture', 'gestures', 'gestureAsync', 'gesturesAsync', 'scrollDown', 'scrollUp', 'input', 'setText']);

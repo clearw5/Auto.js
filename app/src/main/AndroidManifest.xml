@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <uses-permission android:name="android.permission.SET_ALARM"/>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
 
     <!-- 非Auto.js运行必需，不会主动申请，某些脚本可以自行申请-->
@@ -238,6 +240,7 @@
         <receiver android:name=".timing.TimedTaskScheduler">
             <intent-filter>
                 <action android:name="com.stardust.autojs.action.check_task"/>
+                <action android:name="com.android.deskclock.ALARM_ALERT"/>
             </intent-filter>
         </receiver>
 

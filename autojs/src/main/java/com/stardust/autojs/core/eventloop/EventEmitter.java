@@ -23,7 +23,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EventEmitter {
 
-
     private static class ListenerWrapper {
         Object listener;
         boolean isOnce;
@@ -63,7 +62,7 @@ public class EventEmitter {
                     mBridges.callFunction(listenerWrapper.listener, EventEmitter.this, args);
                 }
                 if (listenerWrapper.isOnce) {
-                    listenerIterator.remove();
+                    mListenerWrappers.remove(listenerWrapper);
                 }
             }
         }
