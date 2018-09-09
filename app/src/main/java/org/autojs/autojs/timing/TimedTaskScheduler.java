@@ -6,7 +6,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Parcelable;
 import android.util.Log;
+
+import com.twofortyfouram.spackle.AlarmManagerCompat;
 
 import java.util.concurrent.TimeUnit;
 
@@ -57,9 +60,12 @@ public class TimedTaskScheduler extends BroadcastReceiver {
             context.sendBroadcast(timedTask.createIntent());
             return;
         }
+        assert alarmManager != null;
         // FIXME: 2017/11/28 requestCode may > 65535
         PendingIntent op = timedTask.createPendingIntent(context);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(millis, null), op);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, millis, op);
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, millis, op);

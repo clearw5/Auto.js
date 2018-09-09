@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dalvik.system.DexClassLoader;
-import dalvik.system.DexFile;
 
 /**
  * Created by Stardust on 2017/4/5.
@@ -26,7 +25,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
 
 
     private final ClassLoader parent;
-    private List<DexClassLoader> dx;
+    private List<DexClassLoader> mDexClassLoaders;
     private final File dexFile;
     private final File odexOatFile;
     private final File classFile;
@@ -41,7 +40,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
     public AndroidClassLoader(ClassLoader parent, File dir) {
         this.parent = parent;
         mCacheDir = dir;
-        dx = new ArrayList<>();
+        mDexClassLoaders = new ArrayList<>();
         dexFile = new File(dir, "dex-" + hashCode() + ".jar");
         odexOatFile = new File(dir, "odex_oat-" + hashCode() + ".tmp");
         classFile = new File(dir, "class-" + hashCode() + ".jar");
@@ -92,7 +91,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
 
     public DexClassLoader loadDex(File file) throws IOException {
         DexClassLoader loader = new DexClassLoader(file.getPath(), mCacheDir.getPath(), null, parent);
-        dx.add(loader);
+        mDexClassLoaders.add(loader);
         return loader;
     }
 
@@ -131,7 +130,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
             throws ClassNotFoundException {
         Class<?> loadedClass = findLoadedClass(name);
         if (loadedClass == null) {
-            for (DexClassLoader dex : dx) {
+            for (DexClassLoader dex : mDexClassLoaders) {
                 loadedClass = dex.loadClass(name);
                 if (loadedClass != null) {
                     break;
