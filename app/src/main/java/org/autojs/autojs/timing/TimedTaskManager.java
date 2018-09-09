@@ -12,13 +12,11 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.ModelAdapter;
 import com.stardust.app.GlobalAppContext;
-import org.autojs.autojs.App;
+
 import org.autojs.autojs.storage.database.ModelChange;
-import org.autojs.autojs.storage.database.TimedTaskDatabase;
 
 import java.util.List;
 
-import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -53,7 +51,7 @@ public class TimedTaskManager {
                 if (action == BaseModel.Action.DELETE && countTasks() == 0) {
                     TimedTaskScheduler.stopRtcRepeating(mContext);
                 } else if (action == BaseModel.Action.INSERT) {
-                    TimedTaskScheduler.startRtcRepeatingIfNeeded(mContext);
+                    TimedTaskScheduler.checkTasksRepeatedlyIfNeeded(mContext);
                 }
             }
 

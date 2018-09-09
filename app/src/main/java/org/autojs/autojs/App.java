@@ -27,7 +27,6 @@ import org.autojs.autojs.tool.CrashHandler;
 import org.autojs.autojs.ui.error.ErrorReportActivity;
 import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
-import com.stardust.util.UiHandler;
 
 
 import java.lang.ref.WeakReference;
@@ -81,7 +80,7 @@ public class App extends MultiDexApplication {
             GlobalKeyObserver.init();
         }
         setupDrawableImageLoader();
-        TimedTaskScheduler.setupRepeating(this);
+        TimedTaskScheduler.checkTasksRepeatedlyIfNeeded(this);
         MobileAds.initialize(this, Constants.ADMOB_APP_ID);
     }
 

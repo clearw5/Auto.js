@@ -1,12 +1,19 @@
 package org.autojs.autojs.ui.timing;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,6 +61,8 @@ public class TimedTaskSettingActivity extends BaseActivity {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormat.forPattern("HH:mm");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern("yy-MM-dd");
+    private static final int REQUEST_CODE_IGNORE_BATTERY = 27101;
+    private static final String LOG_TAG = "TimedTaskSettings";
 
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
@@ -199,7 +208,7 @@ public class TimedTaskSettingActivity extends BaseActivity {
         LocalDate date = DATE_FORMATTER.parseLocalDate(mDisposableTaskDate.getText().toString());
         new DatePickerDialog(this, (view, year, month, dayOfMonth) ->
                 mDisposableTaskDate.setText(DATE_FORMATTER.print(new LocalDate(year, month, dayOfMonth)))
-                , date.getYear(), date.getMonthOfYear(), date.getDayOfMonth())
+                , date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth())
                 .show();
     }
 
@@ -254,10 +263,24 @@ public class TimedTaskSettingActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_done) {
-            createOrUpdateTimedTask();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !((PowerManager) getSystemService(POWER_SERVICE)).isIgnoringBatteryOptimizations(getPackageName())) {
+                startActivityForResult(new Intent().setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+                        .setData(Uri.parse("package:" + getPackageName())), REQUEST_CODE_IGNORE_BATTERY);
+            } else {
+                createOrUpdateTimedTask();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_IGNORE_BATTERY) {
+            Log.d(LOG_TAG, "result code = " + requestCode);
+            createOrUpdateTimedTask();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void createOrUpdateTimedTask() {
