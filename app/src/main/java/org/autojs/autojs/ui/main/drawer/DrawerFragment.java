@@ -270,7 +270,6 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     }
 
     private void onConnectException(Throwable e) {
-        e.printStackTrace();
         setChecked(mConnectionItem, false);
         Toast.makeText(GlobalAppContext.get(), getString(R.string.error_connect_to_remote, e.getMessage()),
                 Toast.LENGTH_LONG).show();

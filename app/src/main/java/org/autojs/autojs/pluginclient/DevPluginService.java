@@ -90,9 +90,17 @@ public class DevPluginService {
             port = Integer.parseInt(host.substring(i + 1));
             ip = host.substring(0, i);
         }
+        mConnectionState.onNext(new State(State.CONNECTING));
         return createSocket(ip, port)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(socket -> mSocket = socket);
+                .doOnNext(socket -> {
+                    mSocket = socket;
+                    mConnectionState.onNext(new State(State.CONNECTED));
+                })
+                .doOnError(e -> {
+                    mConnectionState.onNext(new State(State.DISCONNECTED));
+                    e.printStackTrace();
+                });
     }
 
     private Observable<JsonSocket> createSocket(String ip, int port) {
@@ -131,10 +139,8 @@ public class DevPluginService {
     public void log(String log) {
         if (!isConnected())
             return;
-        JsonObject object = new JsonObject();
-        object.addProperty("type", "log");
-        object.addProperty("log", log);
-        Observable.fromCallable(() -> mSocket.write(object))
+        Observable.fromCallable(() ->
+                writePair(mSocket, "log", new Pair<>("log", log)))
                 .subscribeOn(Schedulers.io())
                 .subscribe(EmptyObservers.consumer(), Throwable::printStackTrace);
     }

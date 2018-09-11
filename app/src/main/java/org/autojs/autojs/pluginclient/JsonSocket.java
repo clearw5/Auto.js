@@ -13,12 +13,12 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 public class JsonSocket {
 
     private static final byte DELIMITER = '#';
+    private static final String DELIMITER_STRING = "#";
     private static final String LOG_TAG = "JsonSocket";
 
     private final Socket mSocket;
@@ -39,7 +39,7 @@ public class JsonSocket {
 
     public int write(JsonElement element) throws IOException {
         byte[] bytes = element.toString().getBytes();
-        String length = String.valueOf(bytes.length) + DELIMITER;
+        String length = bytes.length + DELIMITER_STRING;
         mOutputStream.write(length.getBytes());
         mOutputStream.write(bytes);
         Log.d(LOG_TAG, "write: length = " + bytes.length + ", json = " + element);
@@ -85,41 +85,42 @@ public class JsonSocket {
     private static class ByteQueue {
         byte[] data;
         int offset = 0;
-        int length = 0;
+        int size = 0;
 
         public ByteQueue(int initialCapacity) {
             data = new byte[initialCapacity];
         }
 
         int read(InputStream stream) throws IOException {
-            if (length >= data.length) {
+            if (size >= data.length) {
                 resize();
             }
-            int end = offset + length;
+            int end = offset + size;
             int n;
             if (end >= data.length) {
                 n = stream.read(data, 0, offset);
             } else {
                 n = stream.read(data, end, data.length - end);
             }
-            length += n;
+            size += n;
             return n;
         }
 
 
         void pop(int len) {
-            if (len > length) {
-                throw new IllegalArgumentException("pop " + len + " but current length is " + length);
+            if (len > size) {
+                throw new IllegalArgumentException("pop " + len + " but current length is " + size);
             }
             offset += len;
             if (offset >= data.length) {
                 offset -= data.length;
             }
+            size -= len;
         }
 
         String popAsString(int len) {
-            if (len > length) {
-                throw new IllegalArgumentException("popAsString " + len + " but current length is " + length);
+            if (len > size) {
+                throw new IllegalArgumentException("popAsString " + len + " but current length is " + size);
             }
             int end = offset + len;
             String str;
@@ -127,8 +128,10 @@ public class JsonSocket {
                 str = new String(data, offset, len);
             } else {
                 byte[] bytes = new byte[len];
-                System.arraycopy(data, offset, bytes, 0, data.length - offset);
-                System.arraycopy(data, 0, bytes, data.length - offset, len - (data.length - offset));
+                int firstPartLength = data.length - offset;
+                int secondPartLength = len - firstPartLength;
+                System.arraycopy(data, offset, bytes, 0, firstPartLength);
+                System.arraycopy(data, 0, bytes, firstPartLength, secondPartLength);
                 str = new String(bytes);
             }
             pop(len);
@@ -137,7 +140,16 @@ public class JsonSocket {
 
         private void resize() {
             byte[] newData = new byte[data.length * 2];
-            System.arraycopy(data, 0, newData, 0, data.length);
+            int end = offset + size;
+            if (end < data.length) {
+                System.arraycopy(data, offset, newData, 0, size);
+            } else {
+                int firstPartLength = data.length - offset;
+                int secondPartLength = offset + size - data.length;
+                System.arraycopy(data, offset, newData, 0, firstPartLength);
+                System.arraycopy(data, 0, newData, firstPartLength, secondPartLength);
+            }
+            offset = 0;
             data = newData;
         }
 
@@ -179,9 +191,11 @@ public class JsonSocket {
         private void onChunk(ByteQueue byteQueue, int chunkSize) {
             if (mJsonDataLength <= 0) {
                 tryReadingJsonDataLength(byteQueue, chunkSize);
+            }
+            if (mJsonDataLength <= 0) {
                 return;
             }
-            if (byteQueue.length < mJsonDataLength) {
+            if (byteQueue.size < mJsonDataLength) {
                 return;
             }
             String json = byteQueue.popAsString(mJsonDataLength);
@@ -193,13 +207,15 @@ public class JsonSocket {
 
 
         private void tryReadingJsonDataLength(ByteQueue byteQueue, int chunkSize) {
-            int end = byteQueue.offset + byteQueue.length;
-            for (int i = 1; i <= chunkSize; i++) {
-                if (byteQueue.data[end - i] == DELIMITER) {
-                    String jsonDataLength = new String(byteQueue.data, byteQueue.offset, end - i);
+            int end = byteQueue.offset + byteQueue.size;
+            int start = end - chunkSize;
+            for (int i = start; i < end; i++) {
+                if (byteQueue.data[i] == DELIMITER) {
+                    String jsonDataLength = new String(byteQueue.data, byteQueue.offset, i - byteQueue.offset);
                     Log.d(LOG_TAG, "json data length = " + jsonDataLength);
-                    byteQueue.pop(end - i + 1);
+                    byteQueue.pop(i - byteQueue.offset + 1);
                     receiveJsonDataLength(jsonDataLength);
+                    break;
                 }
             }
         }
