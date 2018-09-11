@@ -21,14 +21,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
-import java.util.Objects;
 import java.util.Stack;
 
 /**
  * 撤销和恢复撤销
  * Created by 沈钦赐 on 16/6/23.
  */
-public class TextViewRedoUndo {
+public class TextViewRedoUndoer {
     //操作序号(一次编辑可能对应多个操作，如替换文字，就是删除+插入)
     int index;
     //撤销栈
@@ -44,7 +43,7 @@ public class TextViewRedoUndo {
     private int mInitialHistoryStackSize;
     private boolean mEnabled = true;
 
-    public TextViewRedoUndo(@NonNull EditText editText) {
+    public TextViewRedoUndoer(@NonNull EditText editText) {
         this.editable = editText.getText();
         this.editText = editText;
         editText.addTextChangedListener(new Watcher());
@@ -246,7 +245,7 @@ public class TextViewRedoUndo {
                 editable = s;
                 onEditableChanged(s);
             }
-            TextViewRedoUndo.this.onTextChanged(s);
+            TextViewRedoUndoer.this.onTextChanged(s);
         }
 
     }

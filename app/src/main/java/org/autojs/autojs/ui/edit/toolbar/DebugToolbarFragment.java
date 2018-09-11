@@ -2,7 +2,6 @@ package org.autojs.autojs.ui.edit.toolbar;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -10,25 +9,23 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-
-import com.stardust.autojs.engine.RhinoJavaScriptEngine;
-import com.stardust.autojs.execution.ScriptExecution;
-import com.stardust.autojs.rhino.debug.Dim;
 import com.stardust.autojs.rhino.debug.DebugCallback;
+import com.stardust.autojs.rhino.debug.Debugger;
+import com.stardust.autojs.rhino.debug.Dim;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.pio.PFiles;
 
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.autojs.autojs.R;
-import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.ui.edit.EditorView;
 import org.autojs.autojs.ui.edit.debug.CodeEvaluator;
 import org.autojs.autojs.ui.edit.debug.DebugBar;
+import org.autojs.autojs.ui.edit.debug.DebuggerSingleton;
 import org.autojs.autojs.ui.edit.debug.WatchingVariable;
 import org.autojs.autojs.ui.edit.editor.CodeEditor;
-import org.mozilla.javascript.ContextFactory;
 
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,15 +33,14 @@ import java.util.List;
 public class DebugToolbarFragment extends ToolbarFragment implements DebugCallback, CodeEditor.CursorChangeCallback, CodeEvaluator {
 
     private static final String LOG_TAG = "DebugToolbarFragment";
-    private Dim mDim;
     private EditorView mEditorView;
+    private boolean mCursorChangeFromUser = true;
+    private Debugger mDebugger;
     private Handler mHandler;
-    private boolean mSkipOtherFileBreakpoint = false;
     private String mCurrentEditorSourceUrl;
     private String mInitialEditorSourceUrl;
     private String mInitialEditorSource;
-    private boolean mCursorChangeFromUser = true;
-    private Dim.SourceInfo mSourceInfo;
+
     private final RecyclerView.AdapterDataObserver mVariableChangeObserver = new RecyclerView.AdapterDataObserver() {
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
@@ -54,20 +50,16 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
     private CodeEditor.BreakpointChangeListener mBreakpointChangeListener = new CodeEditor.BreakpointChangeListener() {
         @Override
         public void onBreakpointChange(int line, boolean enabled) {
-            if (mSourceInfo != null) {
-                mSourceInfo.breakpoint(line + 1, enabled);
+            if (mDebugger != null) {
+                mDebugger.breakpoint(line + 1, enabled);
             }
         }
 
         @Override
         public void onAllBreakpointRemoved(int count) {
-            mDim.clearAllBreakpoints();
+            mDebugger.clearAllBreakpoints();
         }
     };
-
-    public DebugToolbarFragment() {
-        Log.d(LOG_TAG, "DebugToolbarFragment()");
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,13 +71,13 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mEditorView = findEditorView(view);
-        mDim = createDim();
+        mDebugger = DebuggerSingleton.get();
+        mDebugger.setWeakDebugCallback(new WeakReference<>(this));
         setInterrupted(false);
-        mSkipOtherFileBreakpoint = true;
         mCurrentEditorSourceUrl = mInitialEditorSourceUrl = mEditorView.getFile().toString();
         mInitialEditorSource = mEditorView.getEditor().getText();
         setupEditor();
-        mEditorView.run(false);
+        mDebugger.attach(mEditorView.run(false));
         Log.d(LOG_TAG, "onViewCreated");
     }
 
@@ -97,16 +89,6 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
         DebugBar debugBar = mEditorView.getDebugBar();
         debugBar.registerVariableChangeObserver(mVariableChangeObserver);
         debugBar.setCodeEvaluator(this);
-
-    }
-
-    private Dim createDim() {
-        Dim dim = new Dim();
-        dim.setBreak();
-        dim.setBreakOnExceptions(true);
-        dim.attachTo(AutoJs.getInstance().getScriptEngineService(), ContextFactory.getGlobal());
-        dim.setGuiCallback(this);
-        return dim;
     }
 
     private void setInterrupted(boolean interrupted) {
@@ -120,19 +102,15 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
     }
 
     public void detachDebugger() {
-        if (!mDim.isAttached()) {
+        if (!mDebugger.isAttached()) {
             return;
         }
         Log.d(LOG_TAG, "detachDebugger");
-        mDim.detach();
-        mDim.setGuiCallback(null);
+        mDebugger.detach();
         if (mEditorView == null) {
             return;
         }
         CodeEditor editor = mEditorView.getEditor();
-        editor.removeCursorChangeCallback(this);
-        editor.setBreakpointChangeListener(null);
-        mSourceInfo = null;
         editor.setRedoUndoEnabled(true);
         if (!TextUtils.equals(mInitialEditorSourceUrl, mCurrentEditorSourceUrl)) {
             editor.setText(mInitialEditorSource);
@@ -140,25 +118,24 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
         DebugBar debugBar = mEditorView.getDebugBar();
         debugBar.setTitle(null);
         debugBar.setCodeEvaluator(null);
-        debugBar.unregisterVariableChangeObserver(mVariableChangeObserver);
     }
 
     @Click(R.id.step_over)
     void stepOver() {
         setInterrupted(false);
-        mDim.setReturnValue(Dim.STEP_OVER);
+        mDebugger.stepOver();
     }
 
     @Click(R.id.step_into)
     void stepInto() {
         setInterrupted(false);
-        mDim.setReturnValue(Dim.STEP_INTO);
+        mDebugger.stepInto();
     }
 
     @Click(R.id.step_out)
     void stepOut() {
         setInterrupted(false);
-        mDim.setReturnValue(Dim.STEP_OUT);
+        mDebugger.stepOut();
     }
 
     @Click(R.id.stop_script)
@@ -169,15 +146,12 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
     @Click(R.id.resume_script)
     void resumeScript() {
         setInterrupted(false);
-        mDim.setReturnValue(Dim.GO);
+        mDebugger.resume();
     }
 
     @Override
     public void updateSourceText(Dim.SourceInfo sourceInfo) {
         Log.d(LOG_TAG, "updateSourceText: url = " + sourceInfo.url());
-        if (!sourceInfo.url().equals(mEditorView.getFile().toString())) {
-            return;
-        }
         sourceInfo.removeAllBreakpoints();
         for (CodeEditor.Breakpoint breakpoint : mEditorView.getEditor().getBreakpoints().values()) {
             int line = breakpoint.line + 1;
@@ -186,18 +160,10 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
                 Log.d(LOG_TAG, "not breakable: " + line);
             }
         }
-        mSourceInfo = sourceInfo;
     }
 
     @Override
     public void enterInterrupt(Dim.StackFrame stackFrame, String threadName, String message) {
-        Log.d(LOG_TAG, "enterInterrupt: threadName = " + threadName + ", url = " + stackFrame.getUrl() + ", line = " + stackFrame.getLineNumber());
-        //刚启动调试时会在init脚本的第一行自动停下，此时应该让脚本继续运行
-        if (mSkipOtherFileBreakpoint && !stackFrame.getUrl().equals(mInitialEditorSourceUrl) && message == null) {
-            mHandler.post(this::resumeScript);
-            return;
-        }
-        mSkipOtherFileBreakpoint = false;
         showDebuggingLineOnEditor(stackFrame, message);
         mHandler.post(this::updateWatchingVariables);
     }
@@ -207,7 +173,7 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
     }
 
     private void updateWatchingVariables(int start, int end) {
-        if (!mDim.isAttached()) {
+        if (!mDebugger.isAttached()) {
             return;
         }
         DebugBar debugBar = mEditorView.getDebugBar();
@@ -221,11 +187,7 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
     }
 
     public String eval(String expr) {
-        if (expr == null || !mDim.isAttached() || !mDim.stringIsCompilableUnit(expr)) {
-            return null;
-        }
-        mDim.contextSwitch(0);
-        return mDim.eval(expr);
+        return mDebugger.eval(expr);
     }
 
     private void showDebuggingLineOnEditor(Dim.StackFrame stackFrame, String message) {
@@ -258,21 +220,6 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
         });
     }
 
-    @Override
-    public boolean isGuiEventThread() {
-        return Looper.getMainLooper() == Looper.myLooper();
-    }
-
-    @Override
-    public void dispatchNextGuiEvent() {
-    }
-
-    @Override
-    public boolean shouldAttachDebugger(RhinoJavaScriptEngine engine) {
-        ScriptExecution execution = mEditorView.getScriptExecution();
-        return execution != null && execution.getId() == engine.getId();
-
-    }
 
     @Override
     public void onCursorChange(String line, int ch) {
@@ -281,7 +228,7 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
             return;
         }
         mCursorChangeFromUser = true;
-        if (!mDim.isAttached()) {
+        if (!mDebugger.isAttached()) {
             return;
         }
         String variable = findVariableOnCursor(line, ch);
@@ -322,6 +269,13 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
     @Override
     public void onDestroy() {
         super.onDestroy();
-        detachDebugger();
+        if (mEditorView == null) {
+            return;
+        }
+        CodeEditor editor = mEditorView.getEditor();
+        editor.removeCursorChangeCallback(this);
+        editor.setBreakpointChangeListener(null);
+        DebugBar debugBar = mEditorView.getDebugBar();
+        debugBar.unregisterVariableChangeObserver(mVariableChangeObserver);
     }
 }

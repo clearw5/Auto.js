@@ -14,6 +14,7 @@ import com.stardust.autojs.engine.ScriptEngineManager;
 import org.mozilla.javascript.*;
 import org.mozilla.javascript.debug.*;
 import org.mozilla.javascript.tools.debugger.*;
+import org.mozilla.javascript.debug.Debugger;
 
 import java.util.*;
 import java.io.*;
@@ -47,7 +48,7 @@ public class Dim {
     /**
      * Interface to the debugger GUI.
      */
-    private DebugCallback callback;
+    private DebugCallbackInternal callback;
 
     /**
      * Whether the debugger should break.
@@ -162,7 +163,7 @@ public class Dim {
     /**
      * Sets the GuiCallback object to use.
      */
-    public void setGuiCallback(DebugCallback callback) {
+    public void setGuiCallback(DebugCallbackInternal callback) {
         this.callback = callback;
     }
 

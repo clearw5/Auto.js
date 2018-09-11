@@ -5,6 +5,7 @@ import android.support.design.widget.Snackbar;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.stardust.pio.PFiles;
 

@@ -28,6 +28,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
+import com.stardust.autojs.rhino.debug.Debugger;
 import com.stardust.pio.PFiles;
 import com.stardust.util.BackPressedHandler;
 import com.stardust.util.Callback;
@@ -386,12 +387,14 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
                 .subscribe(s -> run(true));
     }
 
-    public void run(boolean showMessage) {
+    public ScriptExecution run(boolean showMessage) {
         if(showMessage){
             Snackbar.make(this, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         }
-        mScriptExecutionId = Scripts.runWithBroadcastSender(mFile).getId();
+        ScriptExecution execution = Scripts.runWithBroadcastSender(mFile);
+        mScriptExecutionId = execution.getId();
         setMenuItemStatus(R.id.run, false);
+        return execution;
     }
 
 

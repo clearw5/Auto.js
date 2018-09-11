@@ -50,7 +50,7 @@ public class CodeEditor extends HVScrollView {
 
 
     private CodeEditText mCodeEditText;
-    private TextViewRedoUndo mTextViewRedoUndo;
+    private TextViewUndoRedo mTextViewRedoUndo;
     private JavaScriptHighlighter mJavaScriptHighlighter;
     private Theme mTheme;
     private JsBeautifier mJsBeautifier;
@@ -77,7 +77,7 @@ public class CodeEditor extends HVScrollView {
         inflate(getContext(), R.layout.code_editor, this);
         mCodeEditText = findViewById(R.id.code_edit_text);
         mCodeEditText.addTextChangedListener(new AutoIndent(mCodeEditText));
-        mTextViewRedoUndo = new TextViewRedoUndo(mCodeEditText);
+        mTextViewRedoUndo = new TextViewUndoRedo(mCodeEditText);
         mJavaScriptHighlighter = new JavaScriptHighlighter(mTheme, mCodeEditText);
         setTheme(Theme.getDefault(getContext()));
         mJsBeautifier = new JsBeautifier(this, "js/beautify.js");
@@ -144,7 +144,7 @@ public class CodeEditor extends HVScrollView {
     }
 
     public boolean canUndo() {
-        return mTextViewRedoUndo.canUndo();
+        return mTextViewRedoUndo.canRedo();
     }
 
     public boolean canRedo() {
