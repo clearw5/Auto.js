@@ -19,11 +19,12 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.stardust.app.GlobalAppContext;
 import com.stardust.notification.NotificationListenerService;
+
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.network.GlideApp;
 import org.autojs.autojs.network.UserService;
-import org.autojs.autojs.pluginclient.DevPluginClient;
+import org.autojs.autojs.tool.EmptyObservers;
 import org.autojs.autojs.ui.common.NotAskAgainDialog;
 import org.autojs.autojs.ui.floating.CircularMenu;
 import org.autojs.autojs.ui.floating.FloatyWindowManger;
@@ -41,12 +42,17 @@ import org.autojs.autojs.ui.update.UpdateInfoDialogBuilder;
 import org.autojs.autojs.ui.user.WebActivity;
 import org.autojs.autojs.ui.user.WebActivity_;
 import org.autojs.autojs.ui.widget.AvatarView;
+
 import com.stardust.theme.ThemeColorManager;
+
 import org.autojs.autojs.theme.ThemeColorManagerCompat;
+
 import com.stardust.view.accessibility.AccessibilityService;
+
 import org.autojs.autojs.pluginclient.DevPluginService;
 import org.autojs.autojs.tool.AccessibilityServiceTool;
 import org.autojs.autojs.tool.WifiTool;
+
 import com.stardust.util.IntentUtil;
 
 import org.androidannotations.annotations.AfterViews;
@@ -112,12 +118,12 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mConnectionStateDisposable = DevPluginService.getInstance().getConnection()
+        mConnectionStateDisposable = DevPluginService.getInstance().connectionState()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(state -> {
                     if (mConnectionItem != null) {
-                        setChecked(mConnectionItem, state.getState() == DevPluginClient.State.CONNECTED);
-                        setProgress(mConnectionItem, state.getState() == DevPluginClient.State.CONNECTING);
+                        setChecked(mConnectionItem, state.getState() == DevPluginService.State.CONNECTED);
+                        setProgress(mConnectionItem, state.getState() == DevPluginService.State.CONNECTING);
                     }
                     if (state.getException() != null) {
                         showMessage(state.getException().getMessage());
@@ -251,7 +257,8 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 .title(R.string.text_server_address)
                 .input("", host, (dialog, input) -> {
                     Pref.saveServerAddress(input.toString());
-                    DevPluginService.getInstance().connectToServer(input.toString());
+                    DevPluginService.getInstance().connectToServer(input.toString())
+                            .subscribe(EmptyObservers.consumer(), this::onConnectException);
                 })
                 .neutralText(R.string.text_help)
                 .onNeutral((dialog, which) -> {
@@ -260,6 +267,13 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 })
                 .cancelListener(dialog -> setChecked(mConnectionItem, false))
                 .show();
+    }
+
+    private void onConnectException(Throwable e) {
+        e.printStackTrace();
+        setChecked(mConnectionItem, false);
+        Toast.makeText(GlobalAppContext.get(), getString(R.string.error_connect_to_remote, e.getMessage()),
+                Toast.LENGTH_LONG).show();
     }
 
     void checkForUpdates(DrawerMenuItemViewHolder holder) {

@@ -380,4 +380,5 @@
     <string name="text_close">关闭</string>
     <string name="text_execute">执行</string>
     <string name="text_use_alarm_clock">使用系统闹钟唤醒Auto.js</string>
+    <string name="error_connect_to_remote">连接失败: %s</string>
 </resources>

@@ -25,18 +25,18 @@ import java.util.HashMap;
 public class DevPluginResponseHandler implements Handler {
 
 
-    private Router mRouter = new Router("type")
+    private Router mRouter = new Router.RootRouter("type")
             .handler("command", new Router("command")
                     .handler("run", data -> {
                         String script = data.get("script").getAsString();
                         String name = getName(data);
-                        String viewId = data.get("view_id").getAsString();
-                        runScript(viewId, name, script);
+                        String id = data.get("id").getAsString();
+                        runScript(id, name, script);
                         return false;
                     })
                     .handler("stop", data -> {
-                        String viewId = data.get("view_id").getAsString();
-                        stopScript(viewId);
+                        String id = data.get("id").getAsString();
+                        stopScript(id);
                         return true;
                     })
                     .handler("save", data -> {
@@ -46,11 +46,11 @@ public class DevPluginResponseHandler implements Handler {
                         return false;
                     })
                     .handler("rerun", data -> {
-                        String viewId = data.get("view_id").getAsString();
+                        String id = data.get("id").getAsString();
                         String script = data.get("script").getAsString();
                         String name = getName(data);
-                        stopScript(viewId);
-                        runScript(viewId, name, script);
+                        stopScript(id);
+                        runScript(id, name, script);
                         return false;
                     })
                     .handler("stopAll", data -> {
