@@ -4,22 +4,25 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Stardust on 2017/2/1.
  */
 public class ExecutionConfig implements Serializable {
 
+    public static final String TAG = "execution.config";
     private List<String> mRequirePath = Collections.emptyList();
     private String mExecutePath;
-    private static final ExecutionConfig DEFAULT = new ExecutionConfig();
     public long delay = 0;
     public long interval = 0;
     public int loopTimes = 1;
+    private Map<String, Object> mArguments = new HashMap<>();
 
     public static ExecutionConfig getDefault() {
-        return DEFAULT;
+        return new ExecutionConfig();
     }
 
     public boolean runInNewThread = true;
@@ -48,6 +51,18 @@ public class ExecutionConfig implements Serializable {
 
     public String getExecutePath() {
         return mExecutePath;
+    }
+
+    public void setArgument(String key, Object object){
+        mArguments.put(key, object);
+    }
+
+    public Object getArgument(String key){
+        return mArguments.get(key);
+    }
+
+    public Map<String, Object> getArguments() {
+        return mArguments;
     }
 
     public ExecutionConfig loop(long delay, int loopTimes, long interval) {

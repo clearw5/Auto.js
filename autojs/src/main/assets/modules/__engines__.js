@@ -1,6 +1,7 @@
 
 module.exports = function(__runtime__, scope){
     var rtEngines = __runtime__.engines;
+    var execArgv = null;
 
     var engines = {};
 
@@ -17,7 +18,17 @@ module.exports = function(__runtime__, scope){
     }
 
     engines.myEngine = function(){
-        return rtEngines.myEngine();
+        var engine = Object.create(rtEngines.myEngine());
+        if(!execArgv){
+            execArgv = {};
+            var iter = engine.getTag("execution.config").getArguments().entrySet().iterator();
+            while(iter.hasNext()){
+                var entry = iter.next();
+                execArgv[entry.getKey()] = entry.getValue();
+            }
+        }
+        engine.execArgv = execArgv;
+        return engine;
     }
 
     engines.all = function(){
@@ -44,6 +55,14 @@ module.exports = function(__runtime__, scope){
         c.interval = c.interval || 0;
         c.loopTimes = c.loopTimes || 1;
         config.loop(c.delay, c.loopTimes, c.interval);
+        if(c.arguments){
+            var arguments = c.arguments;
+            for(var key in arguments){
+                if(arguments.hasOwnProperty(key)){
+                    config.setArgument(key, arguments[key]);
+                }
+            }
+        }
         return config;
     }
 

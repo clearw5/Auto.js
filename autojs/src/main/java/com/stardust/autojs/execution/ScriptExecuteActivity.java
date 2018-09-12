@@ -252,6 +252,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
                 mScriptEngine.forceStop();
             }
             mScriptEngine = mScriptEngineManager.createEngineOfSourceOrThrow(getSource());
+            mScriptEngine.setTag(ExecutionConfig.TAG, getConfig());
             return mScriptEngine;
         }
 
