@@ -15,13 +15,13 @@ public class IssueReporterActivity extends AbstractIssueReporterActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //绕过GitHub安全检查
-        String token = decode("ZGRjYWM4NTI5ZmJjZjFkMjk3NTU1NWYyODEwNmQzYjJhYWU0MjFmMA==");
+        String token = decode("ZDgyZTM2ZWE4NjAzYjFlOTk5NDczZWNiNTIyOWIxOWVkOWI4ZTViMQ==");
         setGuestToken(token);
     }
 
     @Override
     protected GithubTarget getTarget() {
-        return new GithubTarget("hyb1996-guest", "auto.js3-issues");
+        return new GithubTarget("hyb1996-guest", "auto.js-feedbacks");
     }
 
 
