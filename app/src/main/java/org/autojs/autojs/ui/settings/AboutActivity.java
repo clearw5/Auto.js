@@ -9,6 +9,8 @@ import org.autojs.autojs.tool.IntentTool;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.IntentUtil;
+import com.tencent.bugly.crashreport.CrashReport;
+
 import org.autojs.autojs.BuildConfig;
 import org.autojs.autojs.R;
 
@@ -87,7 +89,7 @@ public class AboutActivity extends BaseActivity {
                 .title("Crash Test")
                 .positiveText("Crash")
                 .onPositive((dialog, which) -> {
-                    throw new RuntimeException("Crash Test");
+                    CrashReport.testJavaCrash();
                 }).show();
     }
 

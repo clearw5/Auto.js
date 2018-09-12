@@ -55,7 +55,7 @@
     <string name="text_lll">略略略</string>
     <string name="text_please_choose">请选择</string>
     <string name="text_crash">崩溃了o(≧口≦)o</string>
-    <string name="crash_feedback">点击\"退出\"退出程序(ಥ _ ಥ)或者提交错误报告或者复制调试信息反馈给开发者(≧∇≦)ﾉ</string>
+    <string name="crash_feedback">将会自动提交错误信息。您也可以手动复制调试信息提交给开发者(*^▽^*)或者点击\"退出\"退出程序o(╥﹏╥)o</string>
     <string name="text_clear">清空</string>
     <string name="text_console">控制台</string>
     <string name="text_log">日志</string>

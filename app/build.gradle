@@ -8,8 +8,8 @@ android {
         applicationId "org.autojs.autojs"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 411
-        versionName "4.0.2 Alpha6"
+        versionCode 412
+        versionName "4.0.2 Alpha7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -140,6 +140,8 @@ dependencies {
     compile 'com.twofortyfouram:android-plugin-client-sdk-for-locale:4.0.3'
     // Flurry
     compile 'com.flurry.android:analytics:7.0.0@aar'
+    // Bugly
+    compile 'com.tencent.bugly:crashreport:2.6.6'
     // MaterialDialogCommon
     compile('com.afollestad.material-dialogs:commons:0.9.2.3', {
         exclude group: 'com.android.support'

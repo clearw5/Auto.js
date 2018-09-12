@@ -27,6 +27,8 @@ import org.autojs.autojs.tool.CrashHandler;
 import org.autojs.autojs.ui.error.ErrorReportActivity;
 import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
+import com.tencent.bugly.Bugly;
+import com.tencent.bugly.crashreport.CrashReport;
 
 
 import java.lang.ref.WeakReference;
@@ -38,6 +40,7 @@ import java.lang.ref.WeakReference;
 public class App extends MultiDexApplication {
 
     private static final String TAG = "App";
+    private static final String BUGLY_APP_ID = "19b3607b53";
 
     private static WeakReference<App> instance;
 
@@ -64,7 +67,15 @@ public class App extends MultiDexApplication {
 
 
     private void setUpDebugEnvironment() {
-        Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(ErrorReportActivity.class));
+        CrashHandler crashHandler = new CrashHandler(ErrorReportActivity.class);
+
+        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());
+        strategy.setCrashHandleCallback(crashHandler);
+
+        CrashReport.initCrashReport(getApplicationContext(), BUGLY_APP_ID, false, strategy);
+
+        crashHandler.setDefaultHandler(Thread.getDefaultUncaughtExceptionHandler());
+        Thread.setDefaultUncaughtExceptionHandler(crashHandler);
     }
 
     private void init() {
