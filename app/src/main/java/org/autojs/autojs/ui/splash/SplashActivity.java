@@ -97,16 +97,19 @@ public class SplashActivity extends BaseActivity {
     private void fetchSplashAD() {
         mAdLoading = true;
         mHandler.postDelayed(() -> {
-            if (mAdLoading)
+            if (mAdLoading){
                 enterNextActivity();
-        }, 3000);
+            }
+        }, 1500);
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(BuildConfig.DEBUG ? Constants.ADMOB_INTERSTITIAL_TEST_ID : Constants.ADMOB_INTERSTITIAL_ID);
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
                 mAdLoading = false;
-                mInterstitialAd.show();
+                if(!mAlreadyEnterNextActivity){
+                    mInterstitialAd.show();
+                }
             }
 
             @Override
