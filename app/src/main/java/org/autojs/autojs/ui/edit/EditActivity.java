@@ -8,7 +8,7 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.stardust.app.OnActivityResultListener;
+import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.autojs.core.permission.OnRequestPermissionsResultCallback;
 import com.stardust.autojs.core.permission.PermissionRequestProxyActivity;
 import com.stardust.autojs.core.permission.RequestPermissionCallbacks;
@@ -40,9 +40,9 @@ import static org.autojs.autojs.ui.edit.EditorView.EXTRA_READ_ONLY;
  * Created by Stardust on 2017/1/29.
  */
 @EActivity(R.layout.activity_edit)
-public class EditActivity extends BaseActivity implements OnActivityResultListener.ObservableActivity, PermissionRequestProxyActivity {
+public class EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, PermissionRequestProxyActivity {
 
-    private OnActivityResultListener.ActivityResultObserver mActivityResultObserver = new OnActivityResultListener.ActivityResultObserver();
+    private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
 
     @ViewById(R.id.editor_view)
     EditorView mEditorView;
@@ -147,13 +147,13 @@ public class EditActivity extends BaseActivity implements OnActivityResultListen
 
     @NonNull
     @Override
-    public OnActivityResultListener.ActivityResultObserver getActivityResultObserver() {
-        return mActivityResultObserver;
+    public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
+        return mMediator;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mActivityResultObserver.onActivityResult(requestCode, resultCode, data);
+        mMediator.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

@@ -12,7 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.stardust.app.OnActivityResultListener;
+import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
 import org.autojs.autojs.R;
@@ -21,6 +21,7 @@ import org.autojs.autojs.model.sample.SampleFile;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.common.ScriptOperations;
 import com.stardust.theme.ThemeColorManager;
+import com.stardust.util.AssetsCache;
 import com.stardust.util.SparseArrayEntries;
 import org.autojs.autojs.ui.widget.ToolbarMenuItem;
 
@@ -37,7 +38,7 @@ import static org.autojs.autojs.model.script.Scripts.EXTRA_EXCEPTION_MESSAGE;
 /**
  * Created by Stardust on 2017/4/29.
  */
-public class ViewSampleActivity extends AppCompatActivity implements OnActivityResultListener.ObservableActivity {
+public class ViewSampleActivity extends AppCompatActivity implements OnActivityResultDelegate.DelegateHost {
 
 
     public static void view(Context context, SampleFile sample) {
@@ -50,7 +51,7 @@ public class ViewSampleActivity extends AppCompatActivity implements OnActivityR
     private SampleFile mSample;
     private ScriptExecution mScriptExecution;
     private SparseArray<ToolbarMenuItem> mMenuMap;
-    private OnActivityResultListener.ActivityResultObserver mActivityResultObserver = new OnActivityResultListener.ActivityResultObserver();
+    private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
     private BroadcastReceiver mOnRunFinishedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -181,12 +182,12 @@ public class ViewSampleActivity extends AppCompatActivity implements OnActivityR
     }
 
     @Override
-    public OnActivityResultListener.ActivityResultObserver getActivityResultObserver() {
-        return mActivityResultObserver;
+    public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
+        return mMediator;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mActivityResultObserver.onActivityResult(requestCode, resultCode, data);
+        mMediator.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -4,14 +4,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.stardust.app.OnActivityResultListener;
+import com.stardust.app.OnActivityResultDelegate;
 import org.autojs.autojs.R;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * Created by Stardust on 2017/3/5.
  */
 
-public class ImageSelector implements OnActivityResultListener {
+public class ImageSelector implements OnActivityResultDelegate {
 
     public interface ImageSelectorCallback {
         void onImageSelected(ImageSelector selector, Uri uri);
@@ -23,13 +26,13 @@ public class ImageSelector implements OnActivityResultListener {
     private Activity mActivity;
     private ImageSelectorCallback mCallback;
     private boolean mDisposable;
-    private ActivityResultObserver mActivityResultObserver;
+    private Mediator mMediator;
 
-    public ImageSelector(Activity activity, ActivityResultObserver activityResultObserver, ImageSelectorCallback callback) {
-        activityResultObserver.addListener(REQUEST_CODE, this);
+    public ImageSelector(Activity activity, OnActivityResultDelegate.Mediator mediator, ImageSelectorCallback callback) {
+        mediator.addDelegate(REQUEST_CODE, this);
         mActivity = activity;
         mCallback = callback;
-        mActivityResultObserver = activityResultObserver;
+        mMediator = mediator;
     }
 
     public void select() {
@@ -46,7 +49,7 @@ public class ImageSelector implements OnActivityResultListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (mDisposable) {
-            mActivityResultObserver.removeListener(this);
+            mMediator.removeDelegate(this);
         }
         if (data == null) {
             mCallback.onImageSelected(this, null);

@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 
-import com.stardust.app.OnActivityResultListener;
+import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.console.GlobalStardustConsole;
@@ -228,9 +228,9 @@ public abstract class AutoJs {
         @Override
         public void request() {
             Activity activity = mAppUtils.getCurrentActivity();
-            if (activity instanceof OnActivityResultListener.ObservableActivity) {
+            if (activity instanceof OnActivityResultDelegate.DelegateHost) {
                 ScreenCaptureRequester requester = new ActivityScreenCaptureRequester(
-                        ((OnActivityResultListener.ObservableActivity) activity).getActivityResultObserver(), activity);
+                        ((OnActivityResultDelegate.DelegateHost) activity).getOnActivityResultDelegateMediator(), activity);
                 requester.setOnActivityResultCallback(mCallback);
                 requester.request();
             } else {

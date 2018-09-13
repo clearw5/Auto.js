@@ -20,10 +20,16 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
-import com.stardust.app.OnActivityResultListener;
+import com.stardust.app.OnActivityResultDelegate;
 import org.autojs.autojs.R;
 import org.autojs.autojs.tool.ImageSelector;
+import com.stardust.util.IntentUtil;
 
+import org.androidannotations.annotations.OnActivityResult;
+import org.androidannotations.annotations.ViewById;
+
+import java.io.File;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +41,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  * Created by Stardust on 2017/8/22.
  */
 
-public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefreshListener, OnActivityResultListener {
+public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefreshListener, OnActivityResultDelegate {
 
     private static final List<String> IMAGE_TYPES = Arrays.asList("png", "jpg", "bmp");
     private static final int CHOOSE_IMAGE = 42222;
@@ -127,7 +133,7 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
 
         public boolean openFileChooser(ValueCallback<Uri> valueCallback,
                                        String[] acceptType) {
-            if (getContext() instanceof ObservableActivity &&
+            if (getContext() instanceof OnActivityResultDelegate.DelegateHost &&
                     getContext() instanceof Activity && isImageType(acceptType)) {
                 chooseImage(valueCallback);
                 return true;
@@ -155,10 +161,10 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
     }
 
     private void chooseImage(ValueCallback<Uri> valueCallback) {
-        ObservableActivity observableActivity = ((ObservableActivity) getContext());
-        ActivityResultObserver activityResultObserver = observableActivity.getActivityResultObserver();
+        DelegateHost delegateHost = ((OnActivityResultDelegate.DelegateHost) getContext());
+        Mediator mediator = delegateHost.getOnActivityResultDelegateMediator();
         Activity activity = (Activity) getContext();
-        new ImageSelector(activity, activityResultObserver, (selector, uri) -> valueCallback.onReceiveValue(uri))
+        new ImageSelector(activity, mediator, (selector, uri) -> valueCallback.onReceiveValue(uri))
                 .disposable()
                 .select();
     }
