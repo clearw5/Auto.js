@@ -1,5 +1,6 @@
 package org.autojs.autojs.ui.main.scripts;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.Nullable;
@@ -278,6 +279,7 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
         }
     }
 
+    @SuppressLint("CheckResult")
     private void sort(final int sortType, final boolean isDir) {
         setRefreshing(true);
         Observable.fromCallable(() -> {

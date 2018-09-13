@@ -381,4 +381,5 @@
     <string name="text_execute">执行</string>
     <string name="text_use_alarm_clock">使用系统闹钟唤醒Auto.js</string>
     <string name="error_connect_to_remote">连接失败: %s</string>
+    <string name="text_are_you_sure_to_delete">确定要删除%s吗</string>
 </resources>

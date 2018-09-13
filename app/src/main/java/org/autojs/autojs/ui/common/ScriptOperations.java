@@ -224,9 +224,22 @@ public class ScriptOperations {
                 .putExtra(ShortcutCreateActivity.EXTRA_FILE, file));
     }
 
-    @SuppressLint("CheckResult")
     public void delete(final ScriptFile scriptFile) {
-        Observable.fromPublisher((Publisher<Boolean>) s -> s.onNext(PFiles.deleteRecursively(scriptFile))).subscribeOn(Schedulers.io())
+        new ThemeColorMaterialDialogBuilder(mContext)
+                .title(mContext.getString(R.string.text_are_you_sure_to_delete, scriptFile.getName()))
+                .positiveText(R.string.cancel)
+                .negativeText(R.string.ok)
+                .onNegative((dialog, which) -> {
+                    deleteWithoutConfirm(scriptFile);
+                })
+                .show();
+
+    }
+
+    @SuppressLint("CheckResult")
+    public void deleteWithoutConfirm(final ScriptFile scriptFile) {
+        Observable.fromPublisher((Publisher<Boolean>) s -> s.onNext(PFiles.deleteRecursively(scriptFile)))
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deleted -> {
                     showMessage(deleted ? R.string.text_already_delete : R.string.text_delete_failed);
@@ -234,6 +247,7 @@ public class ScriptOperations {
                         mStorageFileProvider.notifyFileRemoved(mCurrentDirectory, scriptFile);
                 });
     }
+
 
     public Observable<ScriptFile> download(String url) {
         String fileName = DownloadManager.parseFileNameLocally(url);
