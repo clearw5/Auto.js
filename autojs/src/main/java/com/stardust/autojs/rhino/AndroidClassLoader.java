@@ -52,7 +52,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
         Log.d(LOG_TAG, "defineClass: name = " + name + " data.length = " + data.length);
         File classFile = null;
         try {
-            classFile = createTempClassFile(name);
+            classFile = generateTempClassFile(name, false);
             final ZipFile zipFile = new ZipFile(classFile);
             final ZipParameters parameters = new ZipParameters();
             parameters.setFileNameInZip(name.replace('.', '/') + ".class");
@@ -68,10 +68,14 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
         }
     }
 
-    private File createTempClassFile(String name) throws IOException {
+    private File generateTempClassFile(String name, boolean create) throws IOException {
         File file = new File(mCacheDir, name.hashCode() + System.currentTimeMillis() + ".jar");
-        if (!file.exists()) {
-            file.createNewFile();
+        if (create) {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+        } else {
+            file.delete();
         }
         return file;
     }
@@ -79,7 +83,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
     public void loadJar(File jar) throws IOException {
         Log.d(LOG_TAG, "loadJar: jar = " + jar);
         try {
-            final File classFile = new File(mCacheDir, jar.getPath().hashCode() + System.currentTimeMillis() + ".jar");
+            final File classFile = generateTempClassFile(jar.getPath(), false);
             final ZipFile zipFile = new ZipFile(classFile);
             final ZipFile jarFile = new ZipFile(jar);
             //noinspection unchecked
@@ -110,7 +114,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
     private DexClassLoader dexJar(File classFile) throws IOException {
         final Main.Arguments arguments = new Main.Arguments();
         arguments.fileNames = new String[]{classFile.getPath()};
-        File dexFile = createTempClassFile("dex-" + classFile.getPath());
+        File dexFile = generateTempClassFile("dex-" + classFile.getPath(), true);
         arguments.outName = dexFile.getPath();
         arguments.jarOutput = true;
         Main.run(arguments);
