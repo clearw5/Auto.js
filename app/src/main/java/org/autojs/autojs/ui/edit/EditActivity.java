@@ -1,5 +1,6 @@
 package org.autojs.autojs.ui.edit;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.autojs.core.permission.OnRequestPermissionsResultCallback;
@@ -17,6 +19,7 @@ import com.stardust.pio.PFiles;
 
 import org.autojs.autojs.R;
 import org.autojs.autojs.storage.file.TmpScriptFiles;
+import org.autojs.autojs.tool.EmptyObservers;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 
@@ -70,11 +73,25 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
                 .putExtra(EXTRA_READ_ONLY, true));
     }
 
+    @SuppressLint("CheckResult")
     @AfterViews
     void setUpViews() {
-        mEditorView.handleIntent(getIntent());
+        mEditorView.handleIntent(getIntent())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(EmptyObservers.consumer(),
+                        ex -> onLoadFileError(ex.getMessage()));
         mEditorMenu = new EditorMenu(mEditorView);
         setUpToolbar();
+    }
+
+    private void onLoadFileError(String message) {
+        new ThemeColorMaterialDialogBuilder(this)
+                .title(getString(R.string.text_cannot_read_file))
+                .content(message)
+                .positiveText(R.string.text_exit)
+                .cancelable(false)
+                .onPositive((dialog, which) -> finish())
+                .show();
     }
 
     private void setUpToolbar() {

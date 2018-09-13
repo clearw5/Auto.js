@@ -22,13 +22,11 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
-import com.stardust.autojs.rhino.debug.Debugger;
 import com.stardust.pio.PFiles;
 import com.stardust.util.BackPressedHandler;
 import com.stardust.util.Callback;
@@ -183,21 +181,23 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         return mFile;
     }
 
-    public void handleIntent(Intent intent) {
+    public Observable<String> handleIntent(Intent intent) {
         mName = intent.getStringExtra(EXTRA_NAME);
-        handleText(intent);
-        mReadOnly = intent.getBooleanExtra(EXTRA_READ_ONLY, false);
-        boolean saveEnabled = intent.getBooleanExtra(EXTRA_SAVE_ENABLED, true);
-        if (mReadOnly || !saveEnabled) {
-            findViewById(R.id.save).setVisibility(View.GONE);
-        }
-        if (!intent.getBooleanExtra(EXTRA_RUN_ENABLED, true)) {
-            findViewById(R.id.run).setVisibility(GONE);
-        }
-        if (mReadOnly) {
-            mEditor.setReadOnly(true);
-        }
-
+        return handleText(intent)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(str -> {
+                    mReadOnly = intent.getBooleanExtra(EXTRA_READ_ONLY, false);
+                    boolean saveEnabled = intent.getBooleanExtra(EXTRA_SAVE_ENABLED, true);
+                    if (mReadOnly || !saveEnabled) {
+                        findViewById(R.id.save).setVisibility(View.GONE);
+                    }
+                    if (!intent.getBooleanExtra(EXTRA_RUN_ENABLED, true)) {
+                        findViewById(R.id.run).setVisibility(GONE);
+                    }
+                    if (mReadOnly) {
+                        mEditor.setReadOnly(true);
+                    }
+                });
     }
 
     public void setRestoredText(String text) {
@@ -205,37 +205,34 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         mEditor.setText(text);
     }
 
-    private void handleText(Intent intent) {
+    private Observable<String> handleText(Intent intent) {
         String path = intent.getStringExtra(EXTRA_PATH);
         String content = intent.getStringExtra(EXTRA_CONTENT);
         if (content != null) {
             setInitialText(content);
+            return Observable.just(content);
         } else {
             if (path == null) {
-                return;
+                return Observable.error(new IllegalArgumentException("path and content is empty"));
             }
             mFile = new File(path);
             if (mName == null) {
                 mName = mFile.getName();
             }
-            loadFile(mFile);
+            return loadFile(mFile);
         }
     }
 
 
     @SuppressLint("CheckResult")
-    private void loadFile(final File file) {
+    private Observable<String> loadFile(final File file) {
         mEditor.setProgress(true);
-        Observable.fromCallable(() -> PFiles.read(file))
+        return Observable.fromCallable(() -> PFiles.read(file))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> {
+                .doOnNext(s -> {
                     setInitialText(s);
                     mEditor.setProgress(false);
-                }, err -> {
-                    err.printStackTrace();
-                    Toast.makeText(getContext(), getContext().getString(R.string.text_cannot_read_file, file.getPath()),
-                            Toast.LENGTH_SHORT).show();
                 });
     }
 

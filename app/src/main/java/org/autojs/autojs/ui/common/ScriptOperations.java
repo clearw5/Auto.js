@@ -226,12 +226,7 @@ public class ScriptOperations {
 
     @SuppressLint("CheckResult")
     public void delete(final ScriptFile scriptFile) {
-        Observable.fromPublisher(new Publisher<Boolean>() {
-            @Override
-            public void subscribe(Subscriber<? super Boolean> s) {
-                s.onNext(PFiles.deleteRecursively(scriptFile));
-            }
-        }).subscribeOn(Schedulers.io())
+        Observable.fromPublisher((Publisher<Boolean>) s -> s.onNext(PFiles.deleteRecursively(scriptFile))).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deleted -> {
                     showMessage(deleted ? R.string.text_already_delete : R.string.text_delete_failed);

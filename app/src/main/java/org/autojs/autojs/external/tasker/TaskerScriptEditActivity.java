@@ -1,9 +1,12 @@
 package org.autojs.autojs.external.tasker;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.widget.Toast;
 
 import org.autojs.autojs.R;
+import org.autojs.autojs.tool.EmptyObservers;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.edit.EditorView;
 
@@ -11,6 +14,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 
@@ -37,11 +41,18 @@ public class TaskerScriptEditActivity extends BaseActivity {
     @ViewById(R.id.editor_view)
     EditorView mEditorView;
 
+    @SuppressLint("CheckResult")
     @AfterViews
     void setUpViews() {
         mEditorView.handleIntent(getIntent()
                 .putExtra(EXTRA_RUN_ENABLED, false)
-                .putExtra(EXTRA_SAVE_ENABLED, false));
+                .putExtra(EXTRA_SAVE_ENABLED, false))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(EmptyObservers.consumer(),
+                        ex -> {
+                            Toast.makeText(TaskerScriptEditActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+                            finish();
+                        });
         BaseActivity.setToolbarAsBack(this, R.id.toolbar, mEditorView.getName());
     }
 

@@ -218,12 +218,12 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.rename:
-                new ScriptOperations(getContext(), this)
+                new ScriptOperations(getContext(), this, getCurrentDirectory())
                         .rename(mSelectedScriptFile)
                         .subscribe();
                 break;
             case R.id.delete:
-                new ScriptOperations(getContext(), this)
+                new ScriptOperations(getContext(), this, getCurrentDirectory())
                         .delete(mSelectedScriptFile);
                 break;
             case R.id.run_repeatedly:
@@ -232,7 +232,7 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
                 notifyOperated();
                 break;
             case R.id.create_shortcut:
-                new ScriptOperations(getContext(), this)
+                new ScriptOperations(getContext(), this, getCurrentDirectory())
                         .createShortcut(mSelectedScriptFile);
                 break;
             case R.id.open_by_other_apps:
@@ -244,7 +244,7 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
                 notifyOperated();
                 break;
             case R.id.timed_task:
-                new ScriptOperations(getContext(), this)
+                new ScriptOperations(getContext(), this, getCurrentDirectory())
                         .timedTask(mSelectedScriptFile);
                 notifyOperated();
                 break;

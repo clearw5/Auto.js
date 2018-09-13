@@ -271,7 +271,7 @@
     <string name="text_reset_to_initial_content">重置为初始内容</string>
     <string name="text_reset_fail">重置失败</string>
     <string name="text_reset_succeed">重置成功</string>
-    <string name="text_cannot_read_file" formatted="true">无法读取文件: %s</string>
+    <string name="text_cannot_read_file">无法读取文件</string>
     <string name="text_service">服务</string>
     <string name="text_notification_permission">通知权限</string>
 
