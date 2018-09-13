@@ -1,5 +1,6 @@
 package com.stardust.autojs.engine;
 
+import android.content.res.AssetManager;
 import android.net.Uri;
 
 import org.mozilla.javascript.Scriptable;
@@ -7,6 +8,7 @@ import org.mozilla.javascript.commonjs.module.provider.ModuleSource;
 import org.mozilla.javascript.commonjs.module.provider.UrlModuleSourceProvider;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -21,19 +23,17 @@ import java.util.List;
 
 public class AssetAndUrlModuleSourceProvider extends UrlModuleSourceProvider {
 
-    private static final String MODULES_PATH = "modules";
     private android.content.Context mContext;
-    private List<String> mModules;
-    private final URI mBaseURI = URI.create("file:///android_asset/modules");
+    private final URI mBaseURI;
+    private final String mAssetDirPath;
+    private final AssetManager mAssetManager;
 
-    public AssetAndUrlModuleSourceProvider(android.content.Context context, List<URI> list) {
+    public AssetAndUrlModuleSourceProvider(android.content.Context context, String assetDirPath, List<URI> list) {
         super(list, null);
         mContext = context;
-        try {
-            mModules = Arrays.asList(mContext.getAssets().list(MODULES_PATH));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        mAssetDirPath = assetDirPath;
+        mBaseURI = URI.create("file:///android_asset/" + assetDirPath);
+        mAssetManager = mContext.getAssets();
     }
 
     @Override
@@ -42,10 +42,11 @@ public class AssetAndUrlModuleSourceProvider extends UrlModuleSourceProvider {
         if (!moduleIdWithExtension.endsWith(".js")) {
             moduleIdWithExtension += ".js";
         }
-        if (mModules.contains(moduleIdWithExtension)) {
-            return new ModuleSource(new InputStreamReader(mContext.getAssets().open(MODULES_PATH + "/" + moduleIdWithExtension)), null,
-                    URI.create(moduleIdWithExtension), mBaseURI, validator);
+        try {
+            return new ModuleSource(new InputStreamReader(mAssetManager.open(mAssetDirPath + "/" + moduleIdWithExtension)), null,
+                    new URI(mBaseURI.toString() + "/" + moduleIdWithExtension), mBaseURI, validator);
+        } catch (FileNotFoundException e) {
+            return super.loadFromPrivilegedLocations(moduleId, validator);
         }
-        return super.loadFromPrivilegedLocations(moduleId, validator);
     }
 }

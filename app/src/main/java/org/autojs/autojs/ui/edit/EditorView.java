@@ -211,6 +211,9 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         if (content != null) {
             setInitialText(content);
         } else {
+            if (path == null) {
+                return;
+            }
             mFile = new File(path);
             if (mName == null) {
                 mName = mFile.getName();
@@ -279,11 +282,11 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     private void initNormalToolbar() {
         mNormalToolbar.setOnMenuItemClickListener(this);
         mNormalToolbar.setOnMenuItemLongClickListener(id -> {
-           if(id == R.id.run){
-               debug();
-               return true;
-           }
-           return false;
+            if (id == R.id.run) {
+                debug();
+                return true;
+            }
+            return false;
         });
         Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.toolbar_menu);
         if (fragment == null) {
@@ -388,7 +391,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     public ScriptExecution run(boolean showMessage) {
-        if(showMessage){
+        if (showMessage) {
             Snackbar.make(this, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         }
         ScriptExecution execution = Scripts.runWithBroadcastSender(mFile);

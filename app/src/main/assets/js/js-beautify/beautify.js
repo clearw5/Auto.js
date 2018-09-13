@@ -88,6 +88,14 @@
 */
 
 (function() {
+var formatXml = require("xml_formatter");
+function println(str){
+    java.lang.System.out.println(str);
+}
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
 var legacy_beautify_js =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -363,6 +371,7 @@ function Beautifier(js_source_text, options) {
         'TK_WORD': handle_word,
         'TK_RESERVED': handle_word,
         'TK_SEMICOLON': handle_semicolon,
+        'TK_XML': handle_string,
         'TK_STRING': handle_string,
         'TK_EQUALS': handle_equals,
         'TK_OPERATOR': handle_operator,
@@ -696,6 +705,13 @@ function Beautifier(js_source_text, options) {
 
         printable_token = printable_token || current_token.text;
         print_token_line_indentation();
+        if(current_token.type == "TK_XML" && printable_token){
+            var indent_count = output.current_line._indent_count;
+            println("indent_count: " + indent_count);
+            var indent = output.indent_cache[Math.max(0, indent_count - 1)];
+            printable_token = formatXml(printable_token, {margin: indent});
+            current_token.text = printable_token;
+        }
         output.add_token(printable_token);
     }
 
@@ -1877,14 +1893,14 @@ module.exports.mergeOpts = mergeOpts;
 function OutputLine(parent) {
     var _character_count = 0;
     // use indent_count as a marker for lines that have preserved indentation
-    var _indent_count = -1;
+    this._indent_count = -1;
 
     var _items = [];
     var _empty = true;
 
     this.set_indent = function(level) {
         _character_count = parent.baseIndentLength + level * parent.indent_length;
-        _indent_count = level;
+        this._indent_count = level;
     };
 
     this.get_character_count = function() {
@@ -1920,8 +1936,8 @@ function OutputLine(parent) {
     };
 
     this.remove_indent = function() {
-        if (_indent_count > 0) {
-            _indent_count -= 1;
+        if (this._indent_count > 0) {
+            this._indent_count -= 1;
             _character_count -= parent.indent_length;
         }
     };
@@ -1937,8 +1953,8 @@ function OutputLine(parent) {
     this.toString = function() {
         var result = '';
         if (!this._empty) {
-            if (_indent_count >= 0) {
-                result = parent.indent_cache[_indent_count];
+            if (this._indent_count >= 0) {
+                result = parent.indent_cache[this._indent_count];
             }
             result += _items.join('');
         }
@@ -2567,7 +2583,8 @@ function Tokenizer(input_string, opts) {
                         xmlStr += input.match(/[\s\S]*/g)[0];
                     }
                     xmlStr = xmlStr.replace(acorn.allLineBreaks, '\n');
-                    return [xmlStr, "TK_STRING"];
+                    n_newlines = 1;
+                    return [xmlStr, "TK_XML"];
                 }
             } else {
                 //

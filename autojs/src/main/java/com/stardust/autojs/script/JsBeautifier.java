@@ -4,14 +4,20 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
+import com.stardust.autojs.engine.AssetAndUrlModuleSourceProvider;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 
 import org.mozilla.javascript.Function;
+import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.commonjs.module.RequireBuilder;
+import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -20,6 +26,7 @@ import java.util.concurrent.Executors;
  */
 
 public class JsBeautifier {
+
 
     public interface Callback {
 
@@ -34,12 +41,14 @@ public class JsBeautifier {
     private org.mozilla.javascript.Context mScriptContext;
     private Scriptable mScriptable;
     private final String mBeautifyJsPath;
+    private final String mBeautifyJsDir;
     private View mView;
 
-    public JsBeautifier(View view, String beautifyJsPath) {
+    public JsBeautifier(View view, String beautifyJsDirPath) {
         mContext = view.getContext();
         mView = view;
-        mBeautifyJsPath = beautifyJsPath;
+        mBeautifyJsDir = beautifyJsDirPath;
+        mBeautifyJsPath = PFiles.join(beautifyJsDirPath, "beautify.js");
     }
 
     public void beautify(final String code, final Callback callback) {
@@ -65,11 +74,24 @@ public class JsBeautifier {
     }
 
     private void enterContext() {
-        if (mScriptContext == null) {
-            mScriptContext = org.mozilla.javascript.Context.enter();
-            mScriptContext.setLanguageVersion(org.mozilla.javascript.Context.VERSION_1_8);
-            mScriptContext.setOptimizationLevel(-1);
+        if (mScriptContext != null) {
+            return;
         }
+        mScriptContext = org.mozilla.javascript.Context.enter();
+        mScriptContext.setLanguageVersion(org.mozilla.javascript.Context.VERSION_1_8);
+        mScriptContext.setOptimizationLevel(-1);
+        if (mScriptable == null) {
+            ImporterTopLevel importerTopLevel = new ImporterTopLevel();
+            importerTopLevel.initStandardObjects(mScriptContext, false);
+            mScriptable = importerTopLevel;
+        }
+        AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(mContext, mBeautifyJsDir,
+                Collections.singletonList(new File("/").toURI()));
+        new RequireBuilder()
+                .setModuleScriptProvider(new SoftCachingModuleScriptProvider(provider))
+                .setSandboxed(false)
+                .createRequire(mScriptContext, mScriptable)
+                .install(mScriptable);
     }
 
     public void prepare() {
@@ -93,8 +115,6 @@ public class JsBeautifier {
         try {
             enterContext();
             InputStream is = mContext.getAssets().open(mBeautifyJsPath);
-            if (mScriptable == null)
-                mScriptable = mScriptContext.initSafeStandardObjects();
             mJsBeautifyFunction = (Function) mScriptContext.evaluateString(mScriptable, PFiles.read(is), "<js_beautify>", 1, null);
         } catch (IOException e) {
             exitContext();

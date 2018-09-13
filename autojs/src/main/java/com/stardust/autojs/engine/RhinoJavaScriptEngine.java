@@ -49,6 +49,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
 
+    private static final String MODULES_PATH = "modules";
     private static int contextCount = 0;
     private static StringScriptSource sInitScript;
     private static final ConcurrentHashMap<Context, RhinoJavaScriptEngine> sContextEngineMap = new ConcurrentHashMap<>();
@@ -129,7 +130,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     }
 
     void initRequireBuilder(Context context, Scriptable scope) {
-        AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(mAndroidContext,
+        AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(mAndroidContext, MODULES_PATH,
                 Collections.singletonList(new File("/").toURI()));
         new RequireBuilder()
                 .setModuleScriptProvider(new SoftCachingModuleScriptProvider(provider))
