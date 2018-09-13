@@ -325,6 +325,7 @@ public class ScriptRuntime {
     }
 
     public void loadJar(String path) {
+        path = files.path(path);
         try {
             ((AndroidClassLoader) ContextFactory.getGlobal().getApplicationClassLoader()).loadJar(new File(path));
         } catch (IOException e) {
@@ -333,6 +334,7 @@ public class ScriptRuntime {
     }
 
     public void loadDex(String path){
+        path = files.path(path);
         try {
             ((AndroidClassLoader) ContextFactory.getGlobal().getApplicationClassLoader()).loadDex(new File(path));
         } catch (IOException e) {
