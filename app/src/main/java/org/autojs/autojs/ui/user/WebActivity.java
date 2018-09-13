@@ -3,7 +3,7 @@ package org.autojs.autojs.ui.user;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import com.stardust.app.OnActivityResultDelegate;
+import com.stardust.app.OnActivityResultListener;
 import org.autojs.autojs.R;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.widget.EWebView;
@@ -16,11 +16,11 @@ import org.androidannotations.annotations.ViewById;
  * Created by Stardust on 2017/10/26.
  */
 @EActivity(R.layout.activity_web)
-public class WebActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost {
+public class WebActivity extends BaseActivity implements OnActivityResultListener.ObservableActivity {
 
     public static final String EXTRA_URL = "url";
 
-    private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
+    private OnActivityResultListener.ActivityResultObserver mActivityResultObserver = new OnActivityResultListener.ActivityResultObserver();
 
     @ViewById(R.id.eweb_view)
     EWebView mEWebView;
@@ -33,12 +33,12 @@ public class WebActivity extends BaseActivity implements OnActivityResultDelegat
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mMediator.onActivityResult(requestCode, resultCode, data);
+        mActivityResultObserver.onActivityResult(requestCode, resultCode, data);
     }
 
     @NonNull
     @Override
-    public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
-        return mMediator;
+    public OnActivityResultListener.ActivityResultObserver getActivityResultObserver() {
+        return mActivityResultObserver;
     }
 }

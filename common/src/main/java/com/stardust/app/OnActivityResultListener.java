@@ -11,39 +11,39 @@ import java.util.List;
  * Created by Stardust on 2017/3/5.
  */
 
-public interface OnActivityResultDelegate {
+public interface OnActivityResultListener {
 
     void onActivityResult(int requestCode, int resultCode, Intent data);
 
-    interface DelegateHost {
+    interface ObservableActivity {
         @NonNull
-        Mediator getOnActivityResultDelegateMediator();
+        ActivityResultObserver getActivityResultObserver();
     }
 
-    class Mediator implements OnActivityResultDelegate {
+    class ActivityResultObserver implements OnActivityResultListener {
 
-        private SparseArray<OnActivityResultDelegate> mSpecialDelegate = new SparseArray<>();
-        private List<OnActivityResultDelegate> mDelegates = new ArrayList<>();
+        private SparseArray<OnActivityResultListener> mSpecialDelegate = new SparseArray<>();
+        private List<OnActivityResultListener> mDelegates = new ArrayList<>();
 
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            OnActivityResultDelegate delegate = mSpecialDelegate.get(requestCode);
+            OnActivityResultListener delegate = mSpecialDelegate.get(requestCode);
             if (delegate != null) {
                 delegate.onActivityResult(requestCode, resultCode, data);
             }
-            for (OnActivityResultDelegate d : mDelegates) {
+            for (OnActivityResultListener d : mDelegates) {
                 d.onActivityResult(requestCode, resultCode, data);
             }
         }
 
-        public void addDelegate(OnActivityResultDelegate delegate) {
+        public void addListener(OnActivityResultListener delegate) {
             mDelegates.add(delegate);
         }
 
-        public void addDelegate(int requestCode, OnActivityResultDelegate delegate) {
+        public void addListener(int requestCode, OnActivityResultListener delegate) {
             mSpecialDelegate.put(requestCode, delegate);
         }
 
-        public void removeDelegate(OnActivityResultDelegate delegate) {
+        public void removeListener(OnActivityResultListener delegate) {
             if (mDelegates.remove(delegate)) {
                 mSpecialDelegate.removeAt(mSpecialDelegate.indexOfValue(delegate));
             }

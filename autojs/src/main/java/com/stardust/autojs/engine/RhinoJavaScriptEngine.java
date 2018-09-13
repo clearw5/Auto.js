@@ -47,6 +47,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     public static final String SOURCE_NAME_INIT = "<init>";
 
+    private static final String MODULES_PATH = "modules";
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
 
     private static int contextCount = 0;
@@ -129,7 +130,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     }
 
     void initRequireBuilder(Context context, Scriptable scope) {
-        AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(mAndroidContext,
+        AssetAndUrlModuleSourceProvider provider = new AssetAndUrlModuleSourceProvider(mAndroidContext, MODULES_PATH,
                 Collections.singletonList(new File("/").toURI()));
         new RequireBuilder()
                 .setModuleScriptProvider(new SoftCachingModuleScriptProvider(provider))

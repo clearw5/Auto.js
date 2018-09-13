@@ -44,7 +44,7 @@ public class RootAutomator {
     @Nullable
     private ScreenMetrics mScreenMetrics;
     private AbstractShell mShell;
-    private int mDefaultId = 1;
+    private int mDefaultId = 10000;
 
     public RootAutomator(Context context) {
         mShell = new ProcessShell(true);
@@ -151,11 +151,11 @@ public class RootAutomator {
 
     public void touchDown(int x, int y, int id) throws IOException {
         sendEvent(EV_ABS, ABS_MT_TRACKING_ID, id);
-        sendEvent(EV_KEY, BTN_TOUCH, 0x00000001);
-        sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000001);
+        //sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000001);
         sendEvent(EV_ABS, ABS_MT_POSITION_X, scaleX(x));
         sendEvent(EV_ABS, ABS_MT_POSITION_Y, scaleY(y));
-        sendEvent(EV_ABS, ABS_MT_TOUCH_MAJOR, 5);
+        sendEvent(EV_KEY, BTN_TOUCH, 0x00000001);
+       // sendEvent(EV_ABS, ABS_MT_TOUCH_MAJOR, 5);
         sendEvent(EV_SYN, SYN_REPORT, 0x00000000);
     }
 
@@ -164,9 +164,9 @@ public class RootAutomator {
     }
 
     public void touchUp(int id) throws IOException {
-        sendEvent(EV_ABS, ABS_MT_TRACKING_ID, id);
+        sendEvent(EV_ABS, ABS_MT_TRACKING_ID, 0xffffffff);
         sendEvent(EV_KEY, BTN_TOUCH, 0x00000000);
-        sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000000);
+        //sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000000);
         sendEvent(EV_SYN, SYN_REPORT, 0x00000000);
     }
 

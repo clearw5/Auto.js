@@ -3,12 +3,10 @@ package org.autojs.autojs.ui.main;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -20,8 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.stardust.app.FragmentPagerAdapterBuilder;
-import com.stardust.app.OnActivityResultDelegate;
-import com.stardust.autojs.core.image.OpenCVHelper;
+import com.stardust.app.OnActivityResultListener;
 import com.stardust.autojs.core.permission.OnRequestPermissionsResultCallback;
 import com.stardust.autojs.core.permission.PermissionRequestProxyActivity;
 import com.stardust.autojs.core.permission.RequestPermissionCallbacks;
@@ -33,7 +30,6 @@ import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.storage.file.StorageFileProvider;
-import org.autojs.autojs.timing.TimedTaskManager;
 import org.autojs.autojs.tool.AccessibilityServiceTool;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.common.NotAskAgainDialog;
@@ -52,8 +48,6 @@ import org.autojs.autojs.ui.widget.SearchViewItem;
 
 import com.stardust.theme.ThemeColorManager;
 
-import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
-
 import com.stardust.util.BackPressedHandler;
 import com.stardust.util.DeveloperUtils;
 import com.stardust.util.DrawerAutoClose;
@@ -64,12 +58,11 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.opencv.core.Core;
 
 import java.util.Arrays;
 
 @EActivity(R.layout.activity_main)
-public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, BackPressedHandler.HostActivity, PermissionRequestProxyActivity {
+public class MainActivity extends BaseActivity implements OnActivityResultListener.ObservableActivity, BackPressedHandler.HostActivity, PermissionRequestProxyActivity {
 
 
     public static class DrawerOpenEvent {
@@ -88,7 +81,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     FloatingActionButton mFab;
 
     private FragmentPagerAdapterBuilder.StoredFragmentPagerAdapter mPagerAdapter;
-    private OnActivityResultDelegate.Mediator mActivityResultMediator = new OnActivityResultDelegate.Mediator();
+    private OnActivityResultListener.ActivityResultObserver mActivityResultActivityResultObserver = new OnActivityResultListener.ActivityResultObserver();
     private RequestPermissionCallbacks mRequestPermissionCallbacks = new RequestPermissionCallbacks();
     private VersionGuard mVersionGuard;
     private BackPressedHandler.Observer mBackPressObserver = new BackPressedHandler.Observer();
@@ -235,7 +228,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mActivityResultMediator.onActivityResult(requestCode, resultCode, data);
+        mActivityResultActivityResultObserver.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -268,8 +261,8 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @NonNull
     @Override
-    public OnActivityResultDelegate.Mediator getOnActivityResultDelegateMediator() {
-        return mActivityResultMediator;
+    public OnActivityResultListener.ActivityResultObserver getActivityResultObserver() {
+        return mActivityResultActivityResultObserver;
     }
 
     @Override

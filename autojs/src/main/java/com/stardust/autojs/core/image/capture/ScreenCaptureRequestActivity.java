@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 
-import com.stardust.app.OnActivityResultDelegate;
+import com.stardust.app.OnActivityResultListener;
 import com.stardust.util.IntentExtras;
 
 /**
@@ -18,7 +18,7 @@ import com.stardust.util.IntentExtras;
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class ScreenCaptureRequestActivity extends Activity {
 
-    private OnActivityResultDelegate.Mediator mOnActivityResultDelegateMediator = new OnActivityResultDelegate.Mediator();
+    private OnActivityResultListener.ActivityResultObserver mOnActivityResultDelegateActivityResultObserver = new OnActivityResultListener.ActivityResultObserver();
     private ScreenCaptureRequester mScreenCaptureRequester;
     private ScreenCaptureRequester.Callback mCallback;
 
@@ -44,7 +44,7 @@ public class ScreenCaptureRequestActivity extends Activity {
             finish();
             return;
         }
-        mScreenCaptureRequester = new ScreenCaptureRequester.ActivityScreenCaptureRequester(mOnActivityResultDelegateMediator, this);
+        mScreenCaptureRequester = new ScreenCaptureRequester.ActivityScreenCaptureRequester(mOnActivityResultDelegateActivityResultObserver, this);
         mScreenCaptureRequester.setOnActivityResultCallback(mCallback);
         mScreenCaptureRequester.request();
     }
@@ -61,7 +61,7 @@ public class ScreenCaptureRequestActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mOnActivityResultDelegateMediator.onActivityResult(requestCode, resultCode, data);
+        mOnActivityResultDelegateActivityResultObserver.onActivityResult(requestCode, resultCode, data);
         finish();
     }
 

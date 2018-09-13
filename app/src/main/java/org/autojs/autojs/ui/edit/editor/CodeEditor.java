@@ -80,7 +80,7 @@ public class CodeEditor extends HVScrollView {
         mTextViewRedoUndo = new TextViewUndoRedo(mCodeEditText);
         mJavaScriptHighlighter = new JavaScriptHighlighter(mTheme, mCodeEditText);
         setTheme(Theme.getDefault(getContext()));
-        mJsBeautifier = new JsBeautifier(this, "js/beautify.js");
+        mJsBeautifier = new JsBeautifier(this, "js/js-beautify");
 
     }
 

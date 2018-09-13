@@ -7,7 +7,7 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
-import com.stardust.app.OnActivityResultDelegate;
+import com.stardust.app.OnActivityResultListener;
 
 /**
  * Created by Stardust on 2017/5/17.
@@ -53,16 +53,16 @@ public interface ScreenCaptureRequester {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    class ActivityScreenCaptureRequester extends AbstractScreenCaptureRequester implements ScreenCaptureRequester, OnActivityResultDelegate {
+    class ActivityScreenCaptureRequester extends AbstractScreenCaptureRequester implements ScreenCaptureRequester, OnActivityResultListener {
 
         private static final int REQUEST_CODE_MEDIA_PROJECTION = 17777;
-        private OnActivityResultDelegate.Mediator mMediator;
+        private ActivityResultObserver mActivityResultObserver;
         private Activity mActivity;
 
-        public ActivityScreenCaptureRequester(Mediator mediator, Activity activity) {
-            mMediator = mediator;
+        public ActivityScreenCaptureRequester(ActivityResultObserver activityResultObserver, Activity activity) {
+            mActivityResultObserver = activityResultObserver;
             mActivity = activity;
-            mMediator.addDelegate(REQUEST_CODE_MEDIA_PROJECTION, this);
+            mActivityResultObserver.addListener(REQUEST_CODE_MEDIA_PROJECTION, this);
         }
 
 
@@ -74,7 +74,7 @@ public interface ScreenCaptureRequester {
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             mResult = data;
-            mMediator.removeDelegate(this);
+            mActivityResultObserver.removeListener(this);
             onResult(resultCode, data);
         }
     }
