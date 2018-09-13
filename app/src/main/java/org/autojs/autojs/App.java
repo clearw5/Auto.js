@@ -18,13 +18,16 @@ import com.raizlabs.android.dbflow.runtime.DirectModelNotifier;
 import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.core.ui.inflater.ImageLoader;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
+
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.autojs.key.GlobalKeyObserver;
 import org.autojs.autojs.network.GlideApp;
+import org.autojs.autojs.storage.database.IntentTaskDatabase;
 import org.autojs.autojs.storage.database.TimedTaskDatabase;
 import org.autojs.autojs.timing.TimedTaskScheduler;
 import org.autojs.autojs.tool.CrashHandler;
 import org.autojs.autojs.ui.error.ErrorReportActivity;
+
 import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
 import com.tencent.bugly.Bugly;
@@ -81,6 +84,9 @@ public class App extends MultiDexApplication {
     private void init() {
         FlowManager.init(FlowConfig.builder(this)
                 .addDatabaseConfig(DatabaseConfig.builder(TimedTaskDatabase.class)
+                        .modelNotifier(DirectModelNotifier.get())
+                        .build())
+                .addDatabaseConfig(DatabaseConfig.builder(IntentTaskDatabase.class)
                         .modelNotifier(DirectModelNotifier.get())
                         .build())
                 .build());

@@ -2,6 +2,7 @@ package org.autojs.autojs.timing;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -14,7 +15,9 @@ import com.raizlabs.android.dbflow.structure.ModelAdapter;
 import com.stardust.app.GlobalAppContext;
 
 import org.autojs.autojs.storage.database.ModelChange;
+import org.autojs.autojs.storage.file.StorageFileProvider;
 
+import java.io.File;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -31,6 +34,7 @@ public class TimedTaskManager {
 
     private static TimedTaskManager sInstance;
     private ModelAdapter<TimedTask> mTimedTaskModelAdapter;
+    private ModelAdapter<IntentTask> mIntentTaskModelAdapter;
     private Context mContext;
     private PublishSubject<ModelChange<TimedTask>> mTimedTaskChanges = PublishSubject.create();
 
@@ -44,6 +48,7 @@ public class TimedTaskManager {
     public TimedTaskManager(Context context) {
         mContext = context;
         mTimedTaskModelAdapter = FlowManager.getModelAdapter(TimedTask.class);
+        mIntentTaskModelAdapter = FlowManager.getModelAdapter(IntentTask.class);
         DirectModelNotifier.get().registerForModelChanges(TimedTask.class, new DirectModelNotifier.ModelChangedListener<TimedTask>() {
             @Override
             public void onModelChanged(@NonNull TimedTask model, @NonNull BaseModel.Action action) {
@@ -74,7 +79,7 @@ public class TimedTaskManager {
         }
     }
 
-    public void cancelTask(TimedTask timedTask) {
+    public void removeTask(TimedTask timedTask) {
         TimedTaskScheduler.cancel(mContext, timedTask);
         mTimedTaskModelAdapter.delete(timedTask);
     }
@@ -84,13 +89,30 @@ public class TimedTaskManager {
         TimedTaskScheduler.scheduleTaskIfNeeded(mContext, timedTask);
     }
 
+    public void addTask(IntentTask intentTask) {
+        mIntentTaskModelAdapter.insert(intentTask);
+    }
+
+    public void removeTask(IntentTask intentTask) {
+        mIntentTaskModelAdapter.delete(intentTask);
+    }
 
     public Flowable<TimedTask> getAllTasks() {
         return RXSQLite.rx(SQLite.select().from(TimedTask.class))
                 .queryStreamResults()
                 .subscribeOn(Schedulers.io());
-
     }
+
+    public Flowable<IntentTask> getIntentTaskOfAction(String action) {
+        IntentTask intentTask = new IntentTask();
+        intentTask.setAction(Intent.ACTION_BOOT_COMPLETED);
+        intentTask.setScriptPath(new File(StorageFileProvider.getDefaultDirectory(), "boot.js").getPath());
+        return Flowable.just(intentTask);
+//        return RXSQLite.rx(SQLite.select().from(IntentTask.class))
+//                .queryStreamResults()
+//                .subscribeOn(Schedulers.io());
+    }
+
 
     public Observable<ModelChange<TimedTask>> getTimeTaskChanges() {
         return mTimedTaskChanges;

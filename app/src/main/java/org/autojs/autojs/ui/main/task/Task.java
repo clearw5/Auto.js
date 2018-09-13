@@ -5,7 +5,6 @@ import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptSource;
-import com.stardust.autojs.script.ScriptSource;
 import com.stardust.pio.PFiles;
 
 import org.autojs.autojs.R;
@@ -55,7 +54,7 @@ public abstract class Task {
 
         @Override
         public void cancel() {
-            TimedTaskManager.getInstance().cancelTask(mTimedTask);
+            TimedTaskManager.getInstance().removeTask(mTimedTask);
         }
 
         @Override

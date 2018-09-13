@@ -36,6 +36,7 @@ import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.R;
 import org.autojs.autojs.external.ScriptIntents;
 import org.autojs.autojs.model.script.ScriptFile;
+import org.autojs.autojs.timing.IntentTask;
 import org.autojs.autojs.timing.TaskReceiver;
 import org.autojs.autojs.timing.TimedTask;
 import org.autojs.autojs.timing.TimedTaskManager;
@@ -75,6 +76,10 @@ public class TimedTaskSettingActivity extends BaseActivity {
 
     @ViewById(R.id.weekly_task_radio)
     RadioButton mWeeklyTaskRadio;
+
+    @ViewById(R.id.run_on_boot_radio)
+    RadioButton mRunOnBootRadio;
+
 
     @ViewById(R.id.disposable_task_time)
     TextView mDisposableTaskTime;
@@ -283,6 +288,14 @@ public class TimedTaskSettingActivity extends BaseActivity {
     }
 
     private void createOrUpdateTimedTask() {
+        if (mRunOnBootRadio.isChecked()) {
+            IntentTask task = new IntentTask();
+            task.setAction(Intent.ACTION_BOOT_COMPLETED);
+            task.setScriptPath(mScriptFile.getPath());
+            TimedTaskManager.getInstance().addTask(task);
+            finish();
+            return;
+        }
         TimedTask task = createTimedTask();
         if (task == null)
             return;

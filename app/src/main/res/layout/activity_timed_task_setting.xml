@@ -252,6 +252,13 @@
 
                         </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
+                        <RadioButton
+                            android:id="@+id/run_on_boot_radio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:paddingLeft="16dp"
+                            android:text="@string/text_run_on_boot"/>
                     </RadioGroup>
                 </LinearLayout>
 
