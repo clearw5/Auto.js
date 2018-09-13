@@ -419,6 +419,9 @@ public class TextViewUndoRedo {
         }
 
         public void afterTextChanged(Editable s) {
+            if (mIsUndoOrRedo || !mEnabled) {
+                return;
+            }
             if (mEditHistory.size() < mInitialHistoryStackSize) {
                 mInitialHistoryStackSize = 0;
             }

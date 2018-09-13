@@ -111,10 +111,10 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
             return;
         }
         CodeEditor editor = mEditorView.getEditor();
-        editor.setRedoUndoEnabled(true);
         if (!TextUtils.equals(mInitialEditorSourceUrl, mCurrentEditorSourceUrl)) {
             editor.setText(mInitialEditorSource);
         }
+        editor.setRedoUndoEnabled(true);
         DebugBar debugBar = mEditorView.getDebugBar();
         debugBar.setTitle(null);
         debugBar.setCodeEvaluator(null);

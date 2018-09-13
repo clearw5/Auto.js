@@ -144,7 +144,7 @@ public class CodeEditor extends HVScrollView {
     }
 
     public boolean canUndo() {
-        return mTextViewRedoUndo.canRedo();
+        return mTextViewRedoUndo.canUndo();
     }
 
     public boolean canRedo() {
