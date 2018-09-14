@@ -32,7 +32,7 @@ public class Debugger implements DebugCallbackInternal {
     @Nullable
     private ScriptExecution mScriptExecution;
     @Nullable
-    private Dim.SourceInfo mSourceInfo;
+    private volatile Dim.SourceInfo mCurrentSourceInfo;
     private WeakReference<DebugCallback> mWeakDebugCallback;
 
 
@@ -56,7 +56,7 @@ public class Debugger implements DebugCallbackInternal {
         if (!sourceInfo.url().equals(mSourceUrl)) {
             return;
         }
-        mSourceInfo = sourceInfo;
+        mCurrentSourceInfo = sourceInfo;
         if(mDebugCallback != null){
             mDebugCallback.updateSourceText(sourceInfo);
         }
@@ -75,6 +75,7 @@ public class Debugger implements DebugCallbackInternal {
             return;
         }
         mSkipOtherFileBreakpoint = false;
+        mCurrentSourceInfo = lastFrame.sourceInfo();
         if(mDebugCallback != null){
             mDebugCallback.enterInterrupt(lastFrame, threadTitle, alertMessage);
         }
@@ -101,8 +102,9 @@ public class Debugger implements DebugCallbackInternal {
     }
 
     public void breakpoint(int line, boolean enabled) {
-        if (mSourceInfo != null) {
-            mSourceInfo.breakpoint(line, enabled);
+        Dim.SourceInfo sourceInfo = mCurrentSourceInfo;
+        if (sourceInfo != null) {
+            sourceInfo.breakpoint(line, enabled);
         }
     }
 
@@ -150,7 +152,7 @@ public class Debugger implements DebugCallbackInternal {
         mDim.detach();
         mScriptExecution = null;
         mSourceUrl = null;
-        mSourceInfo = null;
+        mCurrentSourceInfo = null;
     }
 
     public void setDebugCallback(DebugCallback debugCallback) {
