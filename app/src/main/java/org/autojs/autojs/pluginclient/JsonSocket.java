@@ -6,10 +6,13 @@ import android.util.Log;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.net.Socket;
 
 import io.reactivex.Observable;
@@ -17,7 +20,7 @@ import io.reactivex.subjects.PublishSubject;
 
 public class JsonSocket {
 
-    private static final byte DELIMITER = '#';
+    private static final char DELIMITER = '#';
     private static final String DELIMITER_STRING = "#";
     private static final String LOG_TAG = "JsonSocket";
 
@@ -38,8 +41,9 @@ public class JsonSocket {
     }
 
     public int write(JsonElement element) throws IOException {
-        byte[] bytes = element.toString().getBytes();
-        String length = bytes.length + DELIMITER_STRING;
+        String json = element.toString();
+        byte[] bytes = json.getBytes();
+        String length = json.length() + DELIMITER_STRING;
         mOutputStream.write(length.getBytes());
         mOutputStream.write(bytes);
         Log.d(LOG_TAG, "write: length = " + bytes.length + ", json = " + element);
@@ -70,7 +74,9 @@ public class JsonSocket {
 
     private void dispatchJson(String json) {
         try {
-            JsonElement element = mJsonParser.parse(json);
+            JsonReader reader = new JsonReader(new StringReader(json));
+            reader.setLenient(true);
+            JsonElement element = mJsonParser.parse(reader);
             mJsonElementPublishSubject.onNext(element);
         } catch (JsonParseException e) {
             e.printStackTrace();
@@ -82,25 +88,25 @@ public class JsonSocket {
         return mClosed;
     }
 
-    private static class ByteQueue {
-        byte[] data;
+    private static class CharQueue {
+        char[] data;
         int offset = 0;
         int size = 0;
 
-        public ByteQueue(int initialCapacity) {
-            data = new byte[initialCapacity];
+        public CharQueue(int initialCapacity) {
+            data = new char[initialCapacity];
         }
 
-        int read(InputStream stream) throws IOException {
+        int read(InputStreamReader reader) throws IOException {
             if (size >= data.length) {
                 resize();
             }
             int end = offset + size;
             int n;
             if (end >= data.length) {
-                n = stream.read(data, 0, offset);
+                n = reader.read(data, 0, offset);
             } else {
-                n = stream.read(data, end, data.length - end);
+                n = reader.read(data, end, data.length - end);
             }
             size += n;
             return n;
@@ -127,7 +133,7 @@ public class JsonSocket {
             if (end < data.length) {
                 str = new String(data, offset, len);
             } else {
-                byte[] bytes = new byte[len];
+                char[] bytes = new char[len];
                 int firstPartLength = data.length - offset;
                 int secondPartLength = len - firstPartLength;
                 System.arraycopy(data, offset, bytes, 0, firstPartLength);
@@ -139,7 +145,7 @@ public class JsonSocket {
         }
 
         private void resize() {
-            byte[] newData = new byte[data.length * 2];
+            char[] newData = new char[data.length * 2];
             int end = offset + size;
             if (end < data.length) {
                 System.arraycopy(data, offset, newData, 0, size);
@@ -159,13 +165,13 @@ public class JsonSocket {
     private class SocketReader implements Runnable {
 
         private final Socket mSocket;
-        private final InputStream mInputStream;
+        private final InputStreamReader mInputStreamReader;
         private int mJsonDataLength = -1;
-        private ByteQueue mByteQueue = new ByteQueue(4096);
+        private CharQueue mCharQueue = new CharQueue(4096);
 
         private SocketReader(Socket socket) throws IOException {
             mSocket = socket;
-            mInputStream = mSocket.getInputStream();
+            mInputStreamReader = new InputStreamReader(mSocket.getInputStream());
         }
 
 
@@ -183,22 +189,22 @@ public class JsonSocket {
 
         private void readLoop() throws Exception {
             int n;
-            while ((n = mByteQueue.read(mInputStream)) > 0) {
-                onChunk(mByteQueue, n);
+            while ((n = mCharQueue.read(mInputStreamReader)) > 0) {
+                onChunk(mCharQueue, n);
             }
         }
 
-        private void onChunk(ByteQueue byteQueue, int chunkSize) {
+        private void onChunk(CharQueue charQueue, int chunkSize) {
             if (mJsonDataLength <= 0) {
-                tryReadingJsonDataLength(byteQueue, chunkSize);
+                tryReadingJsonDataLength(charQueue, chunkSize);
             }
             if (mJsonDataLength <= 0) {
                 return;
             }
-            if (byteQueue.size < mJsonDataLength) {
+            if (charQueue.size < mJsonDataLength) {
                 return;
             }
-            String json = byteQueue.popAsString(mJsonDataLength);
+            String json = charQueue.popAsString(mJsonDataLength);
             Log.d(LOG_TAG, "json = " + json);
             mJsonDataLength = -1;
             dispatchJson(json);
@@ -206,14 +212,14 @@ public class JsonSocket {
         }
 
 
-        private void tryReadingJsonDataLength(ByteQueue byteQueue, int chunkSize) {
-            int end = byteQueue.offset + byteQueue.size;
+        private void tryReadingJsonDataLength(CharQueue charQueue, int chunkSize) {
+            int end = charQueue.offset + charQueue.size;
             int start = end - chunkSize;
             for (int i = start; i < end; i++) {
-                if (byteQueue.data[i] == DELIMITER) {
-                    String jsonDataLength = new String(byteQueue.data, byteQueue.offset, i - byteQueue.offset);
+                if (charQueue.data[i] == DELIMITER) {
+                    String jsonDataLength = new String(charQueue.data, charQueue.offset, i - charQueue.offset);
                     Log.d(LOG_TAG, "json data length = " + jsonDataLength);
-                    byteQueue.pop(i - byteQueue.offset + 1);
+                    charQueue.pop(i - charQueue.offset + 1);
                     receiveJsonDataLength(jsonDataLength);
                     break;
                 }
