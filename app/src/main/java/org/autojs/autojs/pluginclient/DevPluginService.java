@@ -18,14 +18,16 @@ import org.autojs.autojs.BuildConfig;
 import org.autojs.autojs.tool.EmptyObservers;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 /**
  * Created by Stardust on 2017/5/11.
@@ -71,7 +73,7 @@ public class DevPluginService {
     private final DevPluginResponseHandler mResponseHandler = new DevPluginResponseHandler();
     private final Handler mHandshakeTimeoutHandler = new Handler(Looper.getMainLooper());
 
-    private volatile JsonSocket mSocket;
+    private volatile JsonWebSocket mSocket;
 
     public static DevPluginService getInstance() {
         return sInstance;
@@ -105,7 +107,7 @@ public class DevPluginService {
     }
 
     @AnyThread
-    public Observable<JsonSocket> connectToServer(String host) {
+    public Observable<JsonWebSocket> connectToServer(String host) {
         int port = PORT;
         String ip = host;
         int i = host.lastIndexOf(':');
@@ -114,23 +116,32 @@ public class DevPluginService {
             ip = host.substring(0, i);
         }
         mConnectionState.onNext(new State(State.CONNECTING));
+
         return socket(ip, port)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(this::onSocketError);
     }
 
     @AnyThread
-    private Observable<JsonSocket> socket(String ip, int port) {
-        return Observable.fromCallable(() -> {
-            JsonSocket socket = new JsonSocket(new Socket(ip, port));
-            socket.data()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnComplete(() -> mConnectionState.onNext(new State(State.DISCONNECTED)))
-                    .subscribe(data -> onSocketData(socket, data), this::onSocketError);
-            sayHelloToServer(socket);
-            return socket;
-        })
-                .subscribeOn(Schedulers.io());
+    private Observable<JsonWebSocket> socket(String ip, int port) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .readTimeout(0, TimeUnit.MILLISECONDS)
+                .build();
+        String url = ip + ":" + port;
+        if (!url.startsWith("ws://") && !url.startsWith("wss://")) {
+            url = "ws://" + url;
+        }
+        return Observable.just(new JsonWebSocket(client, new Request.Builder()
+                .url(url)
+                .build()))
+                .doOnNext(socket -> {
+                    mSocket = socket;
+                    socket.data()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnComplete(() -> mConnectionState.onNext(new State(State.DISCONNECTED)))
+                            .subscribe(data -> onSocketData(socket, data), this::onSocketError);
+                    sayHelloToServer(socket);
+                });
     }
 
     @MainThread
@@ -144,7 +155,7 @@ public class DevPluginService {
     }
 
     @MainThread
-    private void onSocketData(JsonSocket jsonSocket, JsonElement element) {
+    private void onSocketData(JsonWebSocket jsonWebSocket, JsonElement element) {
         if (!element.isJsonObject()) {
             Log.w(LOG_TAG, "onSocketData: not json object: " + element);
             return;
@@ -152,14 +163,14 @@ public class DevPluginService {
         JsonObject obj = element.getAsJsonObject();
         JsonElement type = obj.get("type");
         if (type != null && type.isJsonPrimitive() && type.getAsString().equals(TYPE_HELLO)) {
-            onServerHello(jsonSocket, obj);
+            onServerHello(jsonWebSocket, obj);
             return;
         }
         mResponseHandler.handle(obj);
     }
 
     @WorkerThread
-    private void sayHelloToServer(JsonSocket socket) throws IOException {
+    private void sayHelloToServer(JsonWebSocket socket) throws IOException {
         writeMap(socket, TYPE_HELLO, new MapEntries<String, Object>()
                 .entry("device_name", Build.BRAND + " " + Build.MODEL)
                 .entry("client_version", CLIENT_VERSION)
@@ -174,36 +185,36 @@ public class DevPluginService {
     }
 
     @MainThread
-    private void onHandshakeTimeout(JsonSocket socket) {
+    private void onHandshakeTimeout(JsonWebSocket socket) {
         Log.i(LOG_TAG, "onHandshakeTimeout");
         mConnectionState.onNext(new State(State.DISCONNECTED, new SocketTimeoutException("handshake timeout")));
         socket.close();
     }
 
     @MainThread
-    private void onServerHello(JsonSocket jsonSocket, JsonObject message) {
+    private void onServerHello(JsonWebSocket jsonWebSocket, JsonObject message) {
         Log.i(LOG_TAG, "onServerHello: " + message);
-        mSocket = jsonSocket;
+        mSocket = jsonWebSocket;
         mConnectionState.onNext(new State(State.CONNECTED));
     }
 
-    @WorkerThread
-    private static int write(JsonSocket socket, String type, JsonObject data) throws IOException {
+    @AnyThread
+    private static boolean write(JsonWebSocket socket, String type, JsonObject data) {
         JsonObject json = new JsonObject();
         json.addProperty("type", type);
         json.add("data", data);
         return socket.write(json);
     }
 
-    @WorkerThread
-    private static int writePair(JsonSocket socket, String type, Pair<String, String> pair) throws IOException {
+    @AnyThread
+    private static boolean writePair(JsonWebSocket socket, String type, Pair<String, String> pair) {
         JsonObject data = new JsonObject();
         data.addProperty(pair.first, pair.second);
         return write(socket, type, data);
     }
 
-    @WorkerThread
-    private static int writeMap(JsonSocket socket, String type, Map<String, ?> map) throws IOException {
+    @AnyThread
+    private static boolean writeMap(JsonWebSocket socket, String type, Map<String, ?> map) {
         JsonObject data = new JsonObject();
         for (Map.Entry<String, ?> entry : map.entrySet()) {
             Object value = entry.getValue();
@@ -230,9 +241,6 @@ public class DevPluginService {
     public void log(String log) {
         if (!isConnected())
             return;
-        Observable.fromCallable(() ->
-                writePair(mSocket, "log", new Pair<>("log", log)))
-                .subscribeOn(Schedulers.io())
-                .subscribe(EmptyObservers.consumer(), Throwable::printStackTrace);
+        writePair(mSocket, "log", new Pair<>("log", log));
     }
 }
