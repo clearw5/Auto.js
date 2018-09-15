@@ -60,7 +60,7 @@ public class CodeEditText extends AppCompatEditText {
     protected HVScrollView mParentScrollView;
 
     private final CopyOnWriteArrayList<CodeEditor.CursorChangeCallback> mCursorChangeCallbacks = new CopyOnWriteArrayList<>();
-    private  JavaScriptHighlighter.HighlightTokens mHighlightTokens;
+    private volatile JavaScriptHighlighter.HighlightTokens mHighlightTokens;
     private Theme mTheme;
     private TimingLogger mLogger = new TimingLogger(LOG_TAG, "draw");
     private Paint mLineHighlightPaint = new Paint();
@@ -192,10 +192,11 @@ public class CodeEditText extends AppCompatEditText {
             return;
         }
         JavaScriptHighlighter.HighlightTokens highlightTokens = mHighlightTokens;
+        Log.d(LOG_TAG, "drawText: tokens = " + highlightTokens);
         Layout layout = getLayout();
         int lineCount = getLineCount();
         int textLength = highlightTokens == null ? 0 : highlightTokens.getText().length();
-        String text = highlightTokens == null ? "" : highlightTokens.getText();
+        Editable text = getText();
         int paddingLeft = getPaddingLeft();
         int scrollX = Math.max(getRealScrollX() - paddingLeft, 0);
         Paint paint = getPaint();
@@ -260,10 +261,10 @@ public class CodeEditText extends AppCompatEditText {
             }
             paint.setColor(previousColor);
             float offsetX = paint.measureText(text, lineStart, previousColorPos);
-            if(previousColorPos < 0 || visibleCharEnd > textLength || previousColorPos >= visibleCharEnd){
+            if (previousColorPos < 0 || visibleCharEnd > textLength || previousColorPos >= visibleCharEnd) {
                 Log.e(LOG_TAG, "IndexOutOfBounds: previousColorPos = " + previousColorPos + ", visibleCharEnd = "
-                 +visibleCharEnd + ", textLength = " + textLength);
-                postInvalidate();
+                        + visibleCharEnd + ", textLength = " + textLength);
+                //postInvalidate();
                 return;
             }
             canvas.drawText(text, previousColorPos, visibleCharEnd, paddingLeft + offsetX, lineBaseline, paint);
@@ -413,10 +414,12 @@ public class CodeEditText extends AppCompatEditText {
 
 
     public void updateHighlightTokens(JavaScriptHighlighter.HighlightTokens highlightTokens) {
-        post(() -> {
-            mHighlightTokens = highlightTokens;
-            invalidate();
-        });
+        if (mHighlightTokens != null && mHighlightTokens.getId() >= highlightTokens.getId()) {
+            return;
+        }
+        mHighlightTokens = highlightTokens;
+        Log.d(LOG_TAG, "updateHighlightTokens: tokens = " + highlightTokens);
+        postInvalidate();
     }
 
     @Override
