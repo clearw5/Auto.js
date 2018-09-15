@@ -93,9 +93,13 @@
     <com.stardust.theme.preference.ThemeColorPreferenceCategory
         android:layout="@layout/preference_category_custom"
         android:title="@string/text_ad">
-        <Preference
+        <com.afollestad.materialdialogs.prefs.MaterialListPreference
+            android:defaultValue="0"
+            android:entries="@array/ad_types_keys"
+            android:entryValues="@array/ad_types_values"
+            android:key="@string/key_ad_type"
             android:layout="@layout/preference_custom"
-            android:title="@string/show_ad"
+            android:title="@string/text_ad_type_settings"
             />
         <com.afollestad.materialdialogs.prefs.MaterialListPreference
             android:defaultValue="@string/text_default"

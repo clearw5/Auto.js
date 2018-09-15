@@ -149,5 +149,5 @@ dependencies {
     compile project(':automator')
     compile project(':common')
     compile project(':autojs')
-    implementation 'com.google.android.gms:play-services-ads:11.8.0'
+    implementation (name: 'ads8', ext: 'aar')
 }

@@ -6,13 +6,17 @@ package org.autojs.autojs;
 
 public final class Constants {
 
-    public static final String LOG_TAG_ADMOB = "Admob";
-    public static final String ADMOB_APP_ID = "ca-app-pub-5495978608535144~9896346219";
-    public static final String ADMOB_SPLASH_BANNER_ID = "ca-app-pub-5495978608535144/3281269730";
+    public static final int AD_TYPE_RANDOM = 0;
+    public static final int AD_TYPE_NEWS = 1;
+    public static final int AD_TYPE_SOCIAL = 2;
+    public static final int AD_TYPE_ANIMATION = 3;
+    public static final int AD_TYPE_GAMES = 4;
 
-    public static final String ADMOB_INTERSTITIAL_ID = "ca-app-pub-5495978608535144/7282625313";
-    public static final String ADMOB_APK_BUILDER_REWARD_ID = "ca-app-pub-5495978608535144/2977306962";
-    public static final String ADMOB_BANNER_TEST_ID = "ca-app-pub-3940256099942544/6300978111";
-    public static final String ADMOB_INTERSTITIAL_TEST_ID = "ca-app-pub-3940256099942544/1033173712";
-    public static final String ADMOB_REWARD_VIDEO_TEST_ID = "ca-app-pub-3940256099942544/5224354917";
+    public static final int UMENG_ID_NEWS = 36787;
+    public static final int UMENG_ID_SOCIAL = 36785;
+    public static final int UMENG_ID_ANIMATION = 36781;
+    public static final int UMENG_ID_GAMES = 36615;
+
+    public static final int[] UMENG_IDS = {UMENG_ID_NEWS, UMENG_ID_SOCIAL, UMENG_ID_ANIMATION, UMENG_ID_GAMES};
+
 }

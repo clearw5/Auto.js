@@ -98,7 +98,7 @@ public class Pref {
     }
 
     public static boolean shouldShowAd() {
-        if(isFirstDay()){
+        if(isFirstDay() && !BuildConfig.DEBUG){
             return false;
         }
         String adShowingMode = def().getString(getString(R.string.key_ad_showing_mode), "Default");
@@ -114,6 +114,15 @@ public class Pref {
                 return true;
         }
         return true;
+    }
+
+    public static int getAdType(){
+        try {
+            return Integer.parseInt(def().getString(getString(R.string.key_ad_type), String.valueOf(Constants.AD_TYPE_RANDOM)));
+        }catch (Exception e){
+            e.printStackTrace();
+            return Constants.AD_TYPE_RANDOM;
+        }
     }
 
     private static boolean isFirstDay() {

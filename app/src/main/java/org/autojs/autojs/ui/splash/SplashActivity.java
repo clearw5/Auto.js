@@ -2,32 +2,24 @@ package org.autojs.autojs.ui.splash;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Html;
 import android.util.Log;
-import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
+import com.xcy8.ads.listener.LoadAdListener;
+import com.xcy8.ads.view.FullScreenAdView;
+import com.xcy8.ads.view.skipview.OnFullScreenListener;
 
-import org.autojs.autojs.BuildConfig;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.Constants;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.main.MainActivity_;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
+import java.util.Random;
 
 /**
  * Created by Stardust on 2017/7/7.
@@ -50,7 +42,8 @@ public class SplashActivity extends BaseActivity {
 
     private Handler mHandler;
 
-    private InterstitialAd mInterstitialAd;
+    @ViewById(R.id.full_screen_view)
+    FullScreenAdView mFullScreenAdView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,6 +55,10 @@ public class SplashActivity extends BaseActivity {
             enterNextActivity();
             return;
         }
+    }
+
+    @AfterViews
+    void afterViews(){
         fetchSplashAD();
     }
 
@@ -77,7 +74,7 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        enterNextActivityIfNeeded();
+        //enterNextActivityIfNeeded();
     }
 
     @Override
@@ -96,48 +93,39 @@ public class SplashActivity extends BaseActivity {
 
     private void fetchSplashAD() {
         mAdLoading = true;
-        mHandler.postDelayed(() -> {
-            if (mAdLoading){
-                enterNextActivity();
-            }
-        }, 1500);
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(BuildConfig.DEBUG ? Constants.ADMOB_INTERSTITIAL_TEST_ID : Constants.ADMOB_INTERSTITIAL_ID);
-        mInterstitialAd.setAdListener(new AdListener() {
+        mFullScreenAdView.setFullScreenListener(this::enterNextActivity);
+        mFullScreenAdView.setLoadAdListener(new LoadAdListener() {
             @Override
-            public void onAdLoaded() {
+            public void onSuccess() {
                 mAdLoading = false;
-                if(!mAlreadyEnterNextActivity){
-                    mInterstitialAd.show();
-                }
+                Log.d(LOG_TAG, "onAdLoadSuccess");
             }
 
             @Override
-            public void onAdClosed() {
-                enterNextActivity();
-            }
-
-            @Override
-            public void onAdClicked() {
-                enterNextActivity();
-            }
-
-            @Override
-            public void onAdFailedToLoad(int i) {
+            public void onFailure(String s) {
                 mAdLoading = false;
+                Log.e(LOG_TAG, "onAdLoadFailure: " + s);
                 enterNextActivity();
-                Log.d(Constants.LOG_TAG_ADMOB, "Fail to load interstitial ad: " + i);
             }
-
         });
-        mInterstitialAd.loadAd(buildAdRequest());
+        mHandler.postDelayed(() -> {
+            if (mAdLoading) {
+               enterNextActivity();
+            }
+        }, 2000);
+        mFullScreenAdView.loadAd(getAdId(), false);
     }
 
-    private AdRequest buildAdRequest() {
-        AdRequest.Builder builder = new AdRequest.Builder();
-        if (BuildConfig.DEBUG) {
-            builder.addTestDevice("774E105820188FA387B617ECD279B167");
-        }
-        return builder.build();
+    private String getAdId() {
+        int type = Pref.getAdType();
+        int id = type >= 1 && type <= Constants.UMENG_IDS.length ? Constants.UMENG_IDS[type - 1]
+                : Constants.UMENG_IDS[new Random().nextInt(Constants.UMENG_IDS.length)];
+        return String.valueOf(id);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mFullScreenAdView.clean();
     }
 }

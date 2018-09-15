@@ -16,31 +16,24 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.stardust.autojs.project.ProjectConfig;
-import org.autojs.autojs.BuildConfig;
-import org.autojs.autojs.Constants;
-import org.autojs.autojs.R;
-import org.autojs.autojs.autojs.build.AutoJsApkBuilder;
-import org.autojs.autojs.build.ApkBuilderPluginHelper;
-import org.autojs.autojs.storage.file.StorageFileProvider;
-import org.autojs.autojs.model.script.ScriptFile;
-import org.autojs.autojs.tool.BitmapTool;
-import org.autojs.autojs.ui.BaseActivity;
-import org.autojs.autojs.ui.filechooser.FileChooserDialogBuilder;
-import org.autojs.autojs.ui.shortcut.ShortcutIconSelectActivity;
-import org.autojs.autojs.ui.shortcut.ShortcutIconSelectActivity_;
-import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.IntentUtil;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.autojs.autojs.R;
+import org.autojs.autojs.autojs.build.AutoJsApkBuilder;
+import org.autojs.autojs.build.ApkBuilderPluginHelper;
+import org.autojs.autojs.model.script.ScriptFile;
+import org.autojs.autojs.storage.file.StorageFileProvider;
+import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
+import org.autojs.autojs.tool.BitmapTool;
+import org.autojs.autojs.ui.BaseActivity;
+import org.autojs.autojs.ui.filechooser.FileChooserDialogBuilder;
+import org.autojs.autojs.ui.shortcut.ShortcutIconSelectActivity;
+import org.autojs.autojs.ui.shortcut.ShortcutIconSelectActivity_;
 
 import java.io.File;
 import java.io.InputStream;
@@ -55,7 +48,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Stardust on 2017/10/22.
  */
 @EActivity(R.layout.activity_build)
-public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.ProgressCallback, RewardedVideoAdListener {
+public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.ProgressCallback {
 
     public static final String EXTRA_SOURCE_FILE = BuildActivity.class.getName() + ".extra_source_file";
 
@@ -84,13 +77,10 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
 
     private MaterialDialog mProgressDialog;
     private boolean mIsDefaultIcon = true;
-    private RewardedVideoAd mRewardedVideoAd;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
-        mRewardedVideoAd.setRewardedVideoAdListener(this);
     }
 
     @AfterViews
@@ -106,9 +96,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     }
 
     private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd(BuildConfig.DEBUG ? Constants.ADMOB_REWARD_VIDEO_TEST_ID :
-                        Constants.ADMOB_APK_BUILDER_REWARD_ID,
-                new AdRequest.Builder().build());
+
     }
 
     private void checkApkBuilderPlugin() {
@@ -357,61 +345,4 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
 
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mRewardedVideoAd.pause(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mRewardedVideoAd.resume(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mRewardedVideoAd.destroy(this);
-    }
-
-    @Override
-    public void onRewardedVideoAdLoaded() {
-        mRewardedVideoAd.show();
-        Log.d(Constants.LOG_TAG_ADMOB, "onRewardedVideoAdLoaded");
-    }
-
-    @Override
-    public void onRewardedVideoAdOpened() {
-        Log.d(Constants.LOG_TAG_ADMOB, "onRewardedVideoAdLoaded");
-
-    }
-
-    @Override
-    public void onRewardedVideoStarted() {
-        Log.d(Constants.LOG_TAG_ADMOB, "onRewardedVideoAdLoaded");
-
-    }
-
-    @Override
-    public void onRewardedVideoAdClosed() {
-        Log.d(Constants.LOG_TAG_ADMOB, "onRewardedVideoAdLoaded");
-    }
-
-    @Override
-    public void onRewarded(RewardItem rewardItem) {
-        Log.d(Constants.LOG_TAG_ADMOB, "onRewarded: type=" + rewardItem.getType() + ", amount=" + rewardItem.getAmount());
-
-    }
-
-    @Override
-    public void onRewardedVideoAdLeftApplication() {
-        Log.d(Constants.LOG_TAG_ADMOB, "onRewardedVideoAdLeftApplication");
-    }
-
-    @Override
-    public void onRewardedVideoAdFailedToLoad(int i) {
-        Log.d(Constants.LOG_TAG_ADMOB, "onRewardedVideoAdFailedToLoad: " + i);
-
-    }
 }

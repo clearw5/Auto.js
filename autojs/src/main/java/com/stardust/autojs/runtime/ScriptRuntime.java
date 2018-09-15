@@ -222,7 +222,7 @@ public class ScriptRuntime {
         if (loopers != null)
             throw new IllegalStateException("already initialized");
         threads = new Threads(this);
-        timers = new Timers(bridges, threads);
+        timers = new Timers(this);
         loopers = new Loopers(this);
         events = new Events(uiHandler.getContext(), accessibilityBridge, this);
         mThread = Thread.currentThread();

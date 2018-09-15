@@ -387,4 +387,6 @@
     <string name="text_class_or_package_name">类/包名</string>
     <string name="text_view_docs">查看文档</string>
     <string name="text_en_import">import</string>
+    <string name="key_ad_type">key_ad_type</string>
+    <string name="text_ad_type_settings">广告类型设置</string>
 </resources>

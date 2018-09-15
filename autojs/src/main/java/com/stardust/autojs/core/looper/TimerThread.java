@@ -41,7 +41,7 @@ public class TimerThread extends ThreadCompat {
     @Override
     public void run() {
         mRuntime.loopers.prepare();
-        mTimer = new Timer(mRuntime.bridges, mMaxCallbackUptimeMillisForAllThreads);
+        mTimer = new Timer(mRuntime, mMaxCallbackUptimeMillisForAllThreads);
         sTimerMap.put(Thread.currentThread(), mTimer);
         notifyRunning();
         new Handler().post(mTarget);
