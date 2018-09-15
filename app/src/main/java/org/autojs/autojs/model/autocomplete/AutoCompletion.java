@@ -1,18 +1,22 @@
 package org.autojs.autojs.model.autocomplete;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.EditText;
 
 import org.autojs.autojs.model.indices.Module;
 import org.autojs.autojs.model.indices.Modules;
 import org.autojs.autojs.model.indices.Property;
 import org.autojs.autojs.ui.widget.SimpleTextWatcher;
+import org.mozilla.javascript.ast.Loop;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +43,8 @@ public class AutoCompletion {
     private AutoCompleteCallback mAutoCompleteCallback;
     private ExecutorService mExecutorService = Executors.newSingleThreadExecutor();
     private AnyWordsCompletion mAnyWordsCompletion;
+    private AtomicInteger mExecuteId = new AtomicInteger();
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     public AutoCompletion(Context context, EditText editText) {
         buildDictionaryTree(context);
@@ -80,10 +86,19 @@ public class AutoCompletion {
         if (mPropertyPrefill == null && module == null)
             return;
         String prefill = mPropertyPrefill;
+        int id = mExecuteId.incrementAndGet();
         mExecutorService.execute(() -> {
+            if (id != mExecuteId.get())
+                return;
             List<CodeCompletion> completions = findCodeCompletion(module, prefill);
             CodeCompletions codeCompletions = new CodeCompletions(cursor, completions);
-            mAutoCompleteCallback.updateCodeCompletion(codeCompletions);
+            if (id != mExecuteId.get())
+                return;
+            mHandler.post(() -> {
+                if (id != mExecuteId.get())
+                    return;
+                mAutoCompleteCallback.updateCodeCompletion(codeCompletions);
+            });
         });
 
     }

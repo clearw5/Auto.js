@@ -317,6 +317,11 @@ public class CodeEditor extends HVScrollView {
         mCodeEditText.getText().insert(selection, insertText);
     }
 
+    public void insert(int line, String insertText) {
+        int selection = mCodeEditText.getLayout().getLineStart(line);
+        mCodeEditText.getText().insert(selection, insertText);
+    }
+
     public void moveCursor(int dCh) {
         mCodeEditText.setSelection(mCodeEditText.getSelectionStart() + dCh);
     }

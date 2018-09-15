@@ -17,6 +17,8 @@ public abstract class JavaScriptSource extends ScriptSource {
 
     public static final String ENGINE = "com.stardust.autojs.script.JavaScriptSource.Engine";
 
+    public static final String EXECUTION_MODE_UI_PREFIX = "\"ui\";";
+
     public static final int EXECUTION_MODE_NORMAL = 0;
     public static final int EXECUTION_MODE_UI = 0x00000001;
     public static final int EXECUTION_MODE_AUTO = 0x00000002;

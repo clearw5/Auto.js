@@ -9,25 +9,16 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Looper;
 import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.stardust.app.GlobalAppContext;
 
-import org.autojs.autojs.App;
 import org.autojs.autojs.BuildConfig;
-import org.autojs.autojs.R;
+import org.mozilla.javascript.RhinoException;
 
-import com.stardust.util.IntentUtil;
 import com.stardust.view.accessibility.AccessibilityService;
-import com.tencent.bugly.Bugly;
 import com.tencent.bugly.crashreport.BuglyLog;
 import com.tencent.bugly.crashreport.CrashReport;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Map;
 
@@ -36,21 +27,24 @@ public class CrashHandler extends CrashReport.CrashHandleCallback implements Unc
     private static int crashCount = 0;
     private static long firstCrashMillis = 0;
     private final Class<?> mErrorReportClass;
-    private UncaughtExceptionHandler mDefaultHandler;
+    private UncaughtExceptionHandler mBuglyHandler;
+    private UncaughtExceptionHandler mSystemHandler;
 
     public CrashHandler(Class<?> errorReportClass) {
         this.mErrorReportClass = errorReportClass;
-        mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
+        mSystemHandler = Thread.getDefaultUncaughtExceptionHandler();
     }
 
-    public void setDefaultHandler(UncaughtExceptionHandler defaultHandler) {
-        mDefaultHandler = defaultHandler;
+    public void setBuglyHandler(UncaughtExceptionHandler buglyHandler) {
+        mBuglyHandler = buglyHandler;
     }
 
     public void uncaughtException(Thread thread, Throwable ex) {
         Log.e(TAG, "Uncaught Exception", ex);
         if (thread != Looper.getMainLooper().getThread()) {
-            CrashReport.postCatchedException(ex, thread);
+            if(!(ex instanceof RhinoException)){
+                CrashReport.postCatchedException(ex, thread);
+            }
             return;
         }
         AccessibilityService service = AccessibilityService.getInstance();
@@ -60,7 +54,11 @@ public class CrashHandler extends CrashReport.CrashHandleCallback implements Unc
         } else {
             BuglyLog.d(TAG, "cannot disable service: " + service);
         }
-        mDefaultHandler.uncaughtException(thread, ex);
+        if (BuildConfig.DEBUG) {
+            mSystemHandler.uncaughtException(thread, ex);
+        } else {
+            mBuglyHandler.uncaughtException(thread, ex);
+        }
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,7 +44,8 @@ import static org.autojs.autojs.ui.edit.EditorView.EXTRA_READ_ONLY;
  * Created by Stardust on 2017/1/29.
  */
 @EActivity(R.layout.activity_edit)
-public class EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, PermissionRequestProxyActivity {
+public class
+EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, PermissionRequestProxyActivity {
 
     private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
 
@@ -84,6 +86,18 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
         setUpToolbar();
     }
 
+    @Nullable
+    @Override
+    public ActionMode onWindowStartingActionMode(ActionMode.Callback callback) {
+        return super.onWindowStartingActionMode(callback);
+    }
+
+    @Nullable
+    @Override
+    public ActionMode onWindowStartingActionMode(ActionMode.Callback callback, int type) {
+        return super.onWindowStartingActionMode(callback, type);
+    }
+
     private void onLoadFileError(String message) {
         new ThemeColorMaterialDialogBuilder(this)
                 .title(getString(R.string.text_cannot_read_file))
@@ -111,6 +125,13 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean isScriptRunning = mEditorView.getScriptExecutionId() != ScriptExecution.NO_ID;
+        MenuItem forceStopItem = menu.findItem(R.id.action_force_stop);
+        forceStopItem.setEnabled(isScriptRunning);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public boolean onPrepareActionMode(Menu menu) {
         boolean isScriptRunning = mEditorView.getScriptExecutionId() != ScriptExecution.NO_ID;
         MenuItem forceStopItem = menu.findItem(R.id.action_force_stop);
         forceStopItem.setEnabled(isScriptRunning);

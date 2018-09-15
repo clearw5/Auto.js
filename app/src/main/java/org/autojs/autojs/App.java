@@ -30,7 +30,6 @@ import org.autojs.autojs.ui.error.ErrorReportActivity;
 
 import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
-import com.tencent.bugly.Bugly;
 import com.tencent.bugly.crashreport.CrashReport;
 
 
@@ -77,7 +76,7 @@ public class App extends MultiDexApplication {
 
         CrashReport.initCrashReport(getApplicationContext(), BUGLY_APP_ID, false, strategy);
 
-        crashHandler.setDefaultHandler(Thread.getDefaultUncaughtExceptionHandler());
+        crashHandler.setBuglyHandler(Thread.getDefaultUncaughtExceptionHandler());
         Thread.setDefaultUncaughtExceptionHandler(crashHandler);
     }
 

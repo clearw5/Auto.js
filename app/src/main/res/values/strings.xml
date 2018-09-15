@@ -383,4 +383,8 @@
     <string name="error_connect_to_remote">连接失败: %s</string>
     <string name="text_are_you_sure_to_delete">确定要删除%s吗</string>
     <string name="text_run_on_boot">开机时运行</string>
+    <string name="text_search_java_class">搜索Java包/类</string>
+    <string name="text_class_or_package_name">类/包名</string>
+    <string name="text_view_docs">查看文档</string>
+    <string name="text_en_import">import</string>
 </resources>

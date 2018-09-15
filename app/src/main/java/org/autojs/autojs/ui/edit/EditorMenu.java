@@ -1,15 +1,21 @@
 package org.autojs.autojs.ui.edit;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.autojs.script.JavaScriptSource;
+import com.stardust.autojs.script.ScriptSource;
 import com.stardust.pio.PFiles;
 
 import org.autojs.autojs.R;
+import org.autojs.autojs.model.indices.AndroidClass;
+import org.autojs.autojs.model.indices.ClassSearchingItem;
 import org.autojs.autojs.ui.build.BuildActivity;
 import org.autojs.autojs.ui.build.BuildActivity_;
 import org.autojs.autojs.ui.common.NotAskAgainDialog;
@@ -18,6 +24,7 @@ import org.autojs.autojs.ui.log.LogActivity_;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import com.stardust.util.ClipboardUtil;
+import com.stardust.util.IntentUtil;
 
 import java.util.Locale;
 
@@ -28,6 +35,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  * Created by Stardust on 2017/9/28.
  */
 
+@SuppressLint("CheckResult")
 public class EditorMenu {
 
     private EditorView mEditorView;
@@ -112,6 +120,9 @@ public class EditorMenu {
             case R.id.action_console:
                 showConsole();
                 return true;
+            case R.id.action_import_java_class:
+                importJavaPackageOrClass();
+                return true;
             case R.id.action_editor_text_size:
                 mEditorView.selectTextSize();
                 return true;
@@ -130,6 +141,52 @@ public class EditorMenu {
 
         }
         return false;
+    }
+
+    private void importJavaPackageOrClass() {
+        mEditor.getSelection()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s ->
+                        new ClassSearchDialogBuilder(mContext)
+                                .setQuery(s)
+                                .itemClick((dialog, item, pos) -> showClassSearchingItem(dialog, item))
+                                .title(R.string.text_search_java_class)
+                                .show()
+                );
+    }
+
+    private void showClassSearchingItem(MaterialDialog dialog, ClassSearchingItem item) {
+        String title;
+        String desc;
+        if (item instanceof ClassSearchingItem.ClassItem) {
+            AndroidClass androidClass = ((ClassSearchingItem.ClassItem) item).getAndroidClass();
+            title = androidClass.getClassName();
+            desc = androidClass.getFullName();
+        } else {
+            title = ((ClassSearchingItem.PackageItem) item).getPackageName();
+            desc = title;
+        }
+        new ThemeColorMaterialDialogBuilder(mContext)
+                .title(title)
+                .content(desc)
+                .positiveText(R.string.text_copy)
+                .negativeText(R.string.text_en_import)
+                .neutralText(R.string.text_view_docs)
+                .onPositive((ignored, which) -> {
+                    ClipboardUtil.setClip(mContext, desc);
+                    Toast.makeText(mContext, R.string.text_already_copy_to_clip, Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                })
+                .onNegative((ignored, which) -> {
+                    if (mEditor.getText().startsWith(JavaScriptSource.EXECUTION_MODE_UI_PREFIX)) {
+                        mEditor.insert(1, item.getImportText() + ";\n");
+                    } else {
+                        mEditor.insert(0, item.getImportText() + ";\n");
+                    }
+                })
+                .onNeutral((ignored, which) -> IntentUtil.browse(mContext, item.getUrl()))
+                .onAny((ignored, which) -> dialog.dismiss())
+                .show();
     }
 
     private void startBuildApkActivity() {

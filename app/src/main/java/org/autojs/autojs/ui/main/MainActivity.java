@@ -1,6 +1,7 @@
 package org.autojs.autojs.ui.main;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +34,7 @@ import org.autojs.autojs.BuildConfig;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
+import org.autojs.autojs.model.indices.AndroidClassIndices;
 import org.autojs.autojs.storage.file.StorageFileProvider;
 import org.autojs.autojs.timing.TimedTaskManager;
 import org.autojs.autojs.tool.AccessibilityServiceTool;
@@ -67,6 +70,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.opencv.core.Core;
 
 import java.util.Arrays;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, BackPressedHandler.HostActivity, PermissionRequestProxyActivity {

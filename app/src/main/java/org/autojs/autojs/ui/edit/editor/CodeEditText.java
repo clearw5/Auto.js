@@ -60,7 +60,7 @@ public class CodeEditText extends AppCompatEditText {
     protected HVScrollView mParentScrollView;
 
     private final CopyOnWriteArrayList<CodeEditor.CursorChangeCallback> mCursorChangeCallbacks = new CopyOnWriteArrayList<>();
-    private volatile JavaScriptHighlighter.HighlightTokens mHighlightTokens;
+    private  JavaScriptHighlighter.HighlightTokens mHighlightTokens;
     private Theme mTheme;
     private TimingLogger mLogger = new TimingLogger(LOG_TAG, "draw");
     private Paint mLineHighlightPaint = new Paint();
@@ -195,7 +195,7 @@ public class CodeEditText extends AppCompatEditText {
         Layout layout = getLayout();
         int lineCount = getLineCount();
         int textLength = highlightTokens == null ? 0 : highlightTokens.getText().length();
-        Editable text = getText();
+        String text = highlightTokens == null ? "" : highlightTokens.getText();
         int paddingLeft = getPaddingLeft();
         int scrollX = Math.max(getRealScrollX() - paddingLeft, 0);
         Paint paint = getPaint();
@@ -260,6 +260,12 @@ public class CodeEditText extends AppCompatEditText {
             }
             paint.setColor(previousColor);
             float offsetX = paint.measureText(text, lineStart, previousColorPos);
+            if(previousColorPos < 0 || visibleCharEnd > textLength || previousColorPos >= visibleCharEnd){
+                Log.e(LOG_TAG, "IndexOutOfBounds: previousColorPos = " + previousColorPos + ", visibleCharEnd = "
+                 +visibleCharEnd + ", textLength = " + textLength);
+                postInvalidate();
+                return;
+            }
             canvas.drawText(text, previousColorPos, visibleCharEnd, paddingLeft + offsetX, lineBaseline, paint);
             if (DEBUG) {
                 mLogger.addSplit("draw line " + line + " (" + (visibleCharEnd - visibleCharStart) + ") ");
@@ -407,8 +413,10 @@ public class CodeEditText extends AppCompatEditText {
 
 
     public void updateHighlightTokens(JavaScriptHighlighter.HighlightTokens highlightTokens) {
-        mHighlightTokens = highlightTokens;
-        postInvalidate();
+        post(() -> {
+            mHighlightTokens = highlightTokens;
+            invalidate();
+        });
     }
 
     @Override

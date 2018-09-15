@@ -3,6 +3,8 @@ package org.autojs.autojs.ui.widget;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import org.autojs.autojs.model.indices.ClassSearchingItem;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -75,5 +77,16 @@ public class AutoAdapter<DT> extends RecyclerView.Adapter<BindableViewHolder<DT>
 
     public List<DT> getData() {
         return mData;
+    }
+
+    public void removeAll() {
+        mData.clear();
+        notifyDataSetChanged();
+    }
+
+    public void notifyDataSetChanged(List<DT> result) {
+        mData.clear();
+        mData.addAll(result);
+        notifyDataSetChanged();
     }
 }
