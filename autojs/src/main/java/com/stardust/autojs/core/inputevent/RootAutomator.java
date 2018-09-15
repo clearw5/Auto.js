@@ -13,6 +13,7 @@ import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.util.ScreenMetrics;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.stardust.autojs.core.inputevent.InputEventCodes.*;
@@ -45,7 +46,7 @@ public class RootAutomator implements Shell.Callback {
         mContext = context;
         mShell = new Shell(true);
         mShell.setCallback(this);
-        if(waitForReady){
+        if (waitForReady) {
             waitForReady();
         }
     }
@@ -61,11 +62,11 @@ public class RootAutomator implements Shell.Callback {
     }
 
     private void waitForReady() throws IOException {
-        if(mReady){
+        if (mReady) {
             return;
         }
-        synchronized (mReadyLock){
-            if(mReady){
+        synchronized (mReadyLock) {
+            if (mReady) {
                 return;
             }
             try {
@@ -168,7 +169,7 @@ public class RootAutomator implements Shell.Callback {
     }
 
     public void touchDown(int x, int y, int id) throws IOException {
-        if(mSlotIdMap.size() == 0){
+        if (mSlotIdMap.size() == 0) {
             touchDown0(x, y, id);
             return;
         }
@@ -199,17 +200,17 @@ public class RootAutomator implements Shell.Callback {
     }
 
     public void touchUp(int id) throws IOException {
-        int slotId ;
+        int slotId;
         int i = mSlotIdMap.indexOfKey(id);
-        if( i < 0){
+        if (i < 0) {
             slotId = 0;
-        }else {
+        } else {
             slotId = mSlotIdMap.valueAt(i);
             mSlotIdMap.removeAt(i);
         }
         sendEvent(EV_ABS, ABS_MT_SLOT, slotId);
         sendEvent(EV_ABS, ABS_MT_TRACKING_ID, 0xffffffff);
-        if(mSlotIdMap.size() == 0){
+        if (mSlotIdMap.size() == 0) {
             sendEvent(EV_KEY, BTN_TOUCH, 0x00000000);
             sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000000);
         }
@@ -281,9 +282,10 @@ public class RootAutomator implements Shell.Callback {
         String deviceNameOrPath = RootAutomatorEngine.getDeviceNameOrPath(mContext, InputDevices.getTouchDeviceName());
         Log.d(LOG_TAG, "deviceNameOrPath: " + deviceNameOrPath);
         mShell.exec("chmod 777 " + path);
-        String command = path + " -d " + deviceNameOrPath;
+        String command = String.format(Locale.getDefault(), "%s -d %s -sw %d -sh %d", path, deviceNameOrPath,
+                ScreenMetrics.getDeviceScreenWidth(), ScreenMetrics.getDeviceScreenHeight());
         mShell.exec(command);
-        synchronized (mReadyLock){
+        synchronized (mReadyLock) {
             Log.d(LOG_TAG, "notify ready");
             mReady = true;
             mReadyLock.notifyAll();

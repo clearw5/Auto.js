@@ -192,7 +192,7 @@ public class CodeEditText extends AppCompatEditText {
             return;
         }
         JavaScriptHighlighter.HighlightTokens highlightTokens = mHighlightTokens;
-        Log.d(LOG_TAG, "drawText: tokens = " + highlightTokens);
+        //Log.d(LOG_TAG, "drawText: tokens = " + highlightTokens);
         Layout layout = getLayout();
         int lineCount = getLineCount();
         int textLength = highlightTokens == null ? 0 : highlightTokens.getText().length();
