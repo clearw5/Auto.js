@@ -220,10 +220,8 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
     @Subscribe
     public void onExplorerChange(ExplorerChangeEvent event) {
-        if (event.getAction() == ExplorerChangeEvent.ALL
-                || (event.getAction() == ExplorerChangeEvent.CHANGE &&
-                mCurrentPageState.page.getPath().equals(event.getPage().getPath()))
-                || (event.getAction() == Explorer)) {
+        if ((event.getAction() == ExplorerChangeEvent.ALL)
+                || mCurrentPageState.page.getPath().equals(event.getPage().getPath())) {
             loadItemList();
         }
     }
@@ -462,14 +460,14 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
             PopupMenu popupMenu = new PopupMenu(getContext(), mOptions);
             popupMenu.inflate(R.menu.menu_script_options);
             Menu menu = popupMenu.getMenu();
-            if(!mExplorerItem.isExecutable()){
+            if (!mExplorerItem.isExecutable()) {
                 menu.removeItem(R.id.run_repeatedly);
                 menu.removeItem(R.id.more);
             }
-            if(!mExplorerItem.canDelete()){
+            if (!mExplorerItem.canDelete()) {
                 menu.removeItem(R.id.delete);
             }
-            if(!mExplorerItem.canRename()){
+            if (!mExplorerItem.canRename()) {
                 menu.removeItem(R.id.rename);
             }
             popupMenu.setOnMenuItemClickListener(ExplorerView.this);

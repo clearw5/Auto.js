@@ -6,15 +6,12 @@ public class ExplorerChangeEvent {
     public static final int CREATE = 1;
     public static final int CHANGE = 2;
     public static final int ALL = 3;
+    public static final int CHILDREN_CHANGE = 4;
 
     private final int mAction;
     private final ExplorerItem mItem;
     private final ExplorerItem mNewItem;
     private final ExplorerPage mPage;
-
-    public ExplorerChangeEvent(ExplorerPage page) {
-        this(page, CHANGE, null, null);
-    }
 
     public ExplorerChangeEvent(ExplorerPage parent, int action, ExplorerItem oldItem, ExplorerItem newItem) {
         mAction = action;

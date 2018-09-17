@@ -179,6 +179,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
             case 2:
                 new ScriptOperations(getContext(), mExplorerView, mExplorerView.getCurrentPage())
                         .importFile();
+                break;
             case 3:
                 ProjectConfigActivity_.intent(getContext())
                         .extra(ProjectConfigActivity.EXTRA_PARENT_DIRECTORY, mExplorerView.getCurrentPage().getPath())

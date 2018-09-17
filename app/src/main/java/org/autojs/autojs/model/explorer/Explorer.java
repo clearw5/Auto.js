@@ -30,49 +30,60 @@ public class Explorer {
         this(explorerProvider, cacheSize, EventBus.getDefault());
     }
 
-    public void notifyChildrenChanged(ExplorerPage itemGroup) {
-        clearCache(itemGroup);
-        mEventBus.post(new ExplorerChangeEvent(itemGroup));
+    public void notifyChildrenChanged(ExplorerPage page) {
+        clearCache(page);
+        mEventBus.post(new ExplorerChangeEvent(page, CHILDREN_CHANGE, null));
     }
 
     public void notifyItemChanged(ExplorerItem oldItem, ExplorerItem newItem) {
-        ExplorerPage itemGroup = getParentFromCache(oldItem);
-        if (itemGroup != null) {
-            itemGroup.updateChild(oldItem, newItem);
+        ExplorerPage parent = getParent(oldItem);
+        ExplorerPage cachedParent = getFromCache(parent);
+        if (cachedParent != null) {
+            cachedParent.updateChild(oldItem, newItem);
         }
-        mEventBus.post(new ExplorerChangeEvent(oldItem.getParent(), CHANGE, oldItem, newItem));
+        mEventBus.post(new ExplorerChangeEvent(parent, CHANGE, oldItem, newItem));
     }
 
-    private ExplorerPage getParentFromCache(ExplorerItem item) {
-        if (mExplorerPageLruCache == null) {
-            return null;
-        }
-        ExplorerPage parent = item.getParent();
-        if (parent == null) {
-            if (item instanceof ExplorerFileItem) {
-                PFile parentFile = ((ExplorerFileItem) item).getFile().getParentFile();
-                return parentFile == null ? null : mExplorerPageLruCache.get(parentFile.getPath());
-            }
+    private ExplorerPage getFromCache(ExplorerPage parent) {
+        if(mExplorerPageLruCache == null || parent == null){
             return null;
         }
         return mExplorerPageLruCache.get(parent.getPath());
     }
 
+    private ExplorerPage getParentFromCache(ExplorerItem item) {
+        return getFromCache(getParent(item));
+    }
+
 
     public void notifyItemRemoved(ExplorerItem item) {
-        ExplorerPage itemGroup = getParentFromCache(item);
-        if (itemGroup != null) {
-            itemGroup.removeChild(item);
+        ExplorerPage parent = getParent(item);
+        ExplorerPage cachedParent = getFromCache(parent);
+        if (cachedParent != null) {
+            cachedParent.removeChild(item);
         }
-        mEventBus.post(new ExplorerChangeEvent(item.getParent(), REMOVE, item));
+        mEventBus.post(new ExplorerChangeEvent(parent, REMOVE, item));
+    }
+
+    private ExplorerPage getParent(ExplorerItem item) {
+        ExplorerPage parent = item.getParent();
+        if (parent == null) {
+            if (item instanceof ExplorerFileItem) {
+                PFile parentFile = ((ExplorerFileItem) item).getFile().getParentFile();
+                return new ExplorerDirPage(parentFile, null);
+            }
+            return null;
+        }
+        return parent;
     }
 
     public void notifyItemCreated(ExplorerItem item) {
-        ExplorerPage itemGroup = getParentFromCache(item);
-        if (itemGroup != null) {
-            itemGroup.addChild(item);
+        ExplorerPage parent = getParent(item);
+        ExplorerPage cachedParent = getFromCache(parent);
+        if (cachedParent != null) {
+            cachedParent.addChild(item);
         }
-        mEventBus.post(new ExplorerChangeEvent(item.getParent(), CREATE, item));
+        mEventBus.post(new ExplorerChangeEvent(parent, CREATE, item));
     }
 
     @SuppressWarnings("unchecked")

@@ -100,7 +100,7 @@ public class Pref {
     }
 
     public static boolean shouldShowAd() {
-        if (isFirstDay() && !BuildConfig.DEBUG) {
+        if (isFirstDay()) {
             return false;
         }
         String adShowingMode = def().getString(getString(R.string.key_ad_showing_mode), "Default");
