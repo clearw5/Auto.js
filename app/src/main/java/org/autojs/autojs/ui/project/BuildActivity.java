@@ -1,4 +1,4 @@
-package org.autojs.autojs.ui.build;
+package org.autojs.autojs.ui.project;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;

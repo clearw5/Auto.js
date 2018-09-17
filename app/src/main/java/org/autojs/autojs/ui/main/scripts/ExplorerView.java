@@ -9,6 +9,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +24,11 @@ import org.autojs.autojs.model.explorer.Explorer;
 import org.autojs.autojs.model.explorer.ExplorerChangeEvent;
 import org.autojs.autojs.model.explorer.ExplorerItem;
 import org.autojs.autojs.model.explorer.ExplorerPage;
+import org.autojs.autojs.model.explorer.ExplorerSamplePage;
 import org.autojs.autojs.model.script.ScriptFile;
 import org.autojs.autojs.model.script.Scripts;
-import org.autojs.autojs.ui.build.BuildActivity;
-import org.autojs.autojs.ui.build.BuildActivity_;
+import org.autojs.autojs.ui.project.BuildActivity;
+import org.autojs.autojs.ui.project.BuildActivity_;
 import org.autojs.autojs.ui.common.ScriptLoopDialog;
 import org.autojs.autojs.ui.common.ScriptOperations;
 import org.autojs.autojs.ui.explorer.ExplorerViewHelper;
@@ -219,7 +221,9 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
     @Subscribe
     public void onExplorerChange(ExplorerChangeEvent event) {
         if (event.getAction() == ExplorerChangeEvent.ALL
-                || mCurrentPageState.page.equals(event.getItemGroup())) {
+                || (event.getAction() == ExplorerChangeEvent.CHANGE &&
+                mCurrentPageState.page.getPath().equals(event.getPage().getPath()))
+                || (event.getAction() == Explorer)) {
             loadItemList();
         }
     }
@@ -457,6 +461,17 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
             mSelectedItem = mExplorerItem;
             PopupMenu popupMenu = new PopupMenu(getContext(), mOptions);
             popupMenu.inflate(R.menu.menu_script_options);
+            Menu menu = popupMenu.getMenu();
+            if(!mExplorerItem.isExecutable()){
+                menu.removeItem(R.id.run_repeatedly);
+                menu.removeItem(R.id.more);
+            }
+            if(!mExplorerItem.canDelete()){
+                menu.removeItem(R.id.delete);
+            }
+            if(!mExplorerItem.canRename()){
+                menu.removeItem(R.id.rename);
+            }
             popupMenu.setOnMenuItemClickListener(ExplorerView.this);
             popupMenu.show();
         }
@@ -484,7 +499,9 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
         public void bind(ExplorerPage data, int position) {
             mName.setText(ExplorerViewHelper.getDisplayName(data));
             mIcon.setImageResource(ExplorerViewHelper.getIcon(data));
+            mOptions.setVisibility(data instanceof ExplorerSamplePage ? GONE : VISIBLE);
             mExplorerPage = data;
+
         }
 
         @OnClick(R.id.item)

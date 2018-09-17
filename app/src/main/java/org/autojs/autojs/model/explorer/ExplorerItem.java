@@ -10,6 +10,7 @@ public interface ExplorerItem {
     String TYPE_JSON = "json";
     String TYPE_XML = "xml";
     String TYPE_UNKNOWN = "?";
+    String TYPE_APK = "apk";
 
     String getName();
 
@@ -18,6 +19,10 @@ public interface ExplorerItem {
     String getPath();
 
     long lastModified();
+
+    boolean canDelete();
+
+    boolean canRename();
 
     String getType();
 

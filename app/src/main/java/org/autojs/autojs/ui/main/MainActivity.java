@@ -166,7 +166,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
                 .add(new MyScriptListFragment_(), R.string.text_file)
                 .add(new DocsFragment_(), R.string.text_tutorial)
                 .add(new CommunityFragment_(), R.string.text_community)
-                .add(new MarketFragment_(), R.string.text_sample)
+                .add(new MarketFragment_(), R.string.text_market)
                 .add(new TaskManagerFragment_(), R.string.text_manage)
                 .build();
         mViewPager.setAdapter(mPagerAdapter);

@@ -13,6 +13,7 @@ import android.widget.SeekBar;
 
 import org.autojs.autojs.R;
 import org.autojs.autojs.network.VersionService;
+
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.BackPressedHandler;
 
@@ -51,16 +52,19 @@ public abstract class BaseActivity extends AppCompatActivity {
         return (T) findViewById(resId);
     }
 
-    protected void checkPermission(String... permissions) {
+    protected boolean checkPermission(String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             String[] requestPermissions = getRequestPermissions(permissions);
             if (requestPermissions.length > 0) {
                 requestPermissions(requestPermissions, PERMISSION_REQUEST_CODE);
+                return false;
             }
+            return true;
         } else {
             int[] grantResults = new int[permissions.length];
             Arrays.fill(grantResults, PERMISSION_GRANTED);
             onRequestPermissionsResult(PERMISSION_REQUEST_CODE, permissions, grantResults);
+            return false;
         }
     }
 

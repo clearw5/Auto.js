@@ -3,11 +3,10 @@ package org.autojs.autojs.build;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
 
 import com.stardust.pio.UncheckedIOException;
 import org.autojs.autojs.BuildConfig;
-import org.autojs.autojs.ui.build.BuildActivity;
+
 import com.stardust.util.DeveloperUtils;
 
 import java.io.IOException;

@@ -152,7 +152,7 @@ public class FileChooseListView extends ExplorerView {
         CheckBoxCompat mCheckBox;
 
         @BindView(R.id.icon)
-         ImageView mIcon;
+        ImageView mIcon;
 
         private ExplorerPage mExplorerPage;
 

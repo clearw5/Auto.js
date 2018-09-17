@@ -1,9 +1,12 @@
 package org.autojs.autojs.ui.splash;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.xcy8.ads.listener.LoadAdListener;
@@ -24,7 +27,6 @@ import java.util.Random;
 /**
  * Created by Stardust on 2017/7/7.
  */
-@EActivity(R.layout.activity_splash)
 public class SplashActivity extends BaseActivity {
 
     public static final String NOT_START_MAIN_ACTIVITY = "notStartMainActivity";
@@ -32,8 +34,6 @@ public class SplashActivity extends BaseActivity {
 
     private static final String LOG_TAG = SplashActivity.class.getSimpleName();
 
-    @ViewById(R.id.logo)
-    ImageView mLogo;
 
     private boolean mCanEnterNextActivity = false;
     private boolean mNotStartMainActivity;
@@ -42,7 +42,6 @@ public class SplashActivity extends BaseActivity {
 
     private Handler mHandler;
 
-    @ViewById(R.id.full_screen_view)
     FullScreenAdView mFullScreenAdView;
 
     @Override
@@ -51,15 +50,16 @@ public class SplashActivity extends BaseActivity {
         mHandler = new Handler();
         mNotStartMainActivity = getIntent().getBooleanExtra(NOT_START_MAIN_ACTIVITY, false);
         boolean forceShowAd = getIntent().getBooleanExtra(FORCE_SHOW_AD, false);
+        setContentView(R.layout.activity_splash);
+        mFullScreenAdView = (FullScreenAdView) findViewById(R.id.full_screen_view);
         if (!forceShowAd && !Pref.shouldShowAd()) {
-            enterNextActivity();
-            return;
+            mFullScreenAdView.setVisibility(View.INVISIBLE);
+            mHandler.postDelayed(this::enterNextActivity, 1500);
+        } else {
+            if(checkPermission(Manifest.permission.READ_PHONE_STATE)){
+                fetchSplashAD();
+            }
         }
-    }
-
-    @AfterViews
-    void afterViews(){
-        fetchSplashAD();
     }
 
     void enterNextActivity() {
@@ -89,6 +89,12 @@ public class SplashActivity extends BaseActivity {
             return;
         }
         mCanEnterNextActivity = true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        fetchSplashAD();
     }
 
     private void fetchSplashAD() {

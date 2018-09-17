@@ -25,8 +25,10 @@ import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.external.ScriptIntents;
 import org.autojs.autojs.model.explorer.Explorer;
+import org.autojs.autojs.model.explorer.ExplorerDirPage;
 import org.autojs.autojs.model.explorer.ExplorerFileItem;
 import org.autojs.autojs.model.explorer.ExplorerItem;
+import org.autojs.autojs.model.explorer.ExplorerPage;
 import org.autojs.autojs.model.explorer.Explorers;
 import org.autojs.autojs.storage.file.TmpScriptFiles;
 import org.autojs.autojs.model.sample.SampleFile;
@@ -58,7 +60,7 @@ import io.reactivex.subjects.PublishSubject;
 public class ScriptOperations {
 
     private static final String LOG_TAG = "ScriptOperations";
-    private final ExplorerItem mExplorerItem;
+    private final ExplorerPage mExplorerPage;
     private Context mContext;
     private View mView;
     private ScriptFile mCurrentDirectory;
@@ -69,15 +71,15 @@ public class ScriptOperations {
         mView = view;
         mCurrentDirectory = currentDirectory;
         mExplorer = Explorers.workspace();
-        mExplorerItem = new ExplorerFileItem(currentDirectory, null);
+        mExplorerPage = new ExplorerDirPage(currentDirectory, null);
     }
 
-    public ScriptOperations(Context context, View view, ExplorerItem item) {
+    public ScriptOperations(Context context, View view, ExplorerPage page) {
         mContext = context;
         mView = view;
-        mCurrentDirectory = item.toScriptFile();
+        mCurrentDirectory = page.toScriptFile();
         mExplorer = Explorers.workspace();
-        mExplorerItem = item;
+        mExplorerPage = page;
     }
 
     public ScriptOperations(Context context, View view) {
@@ -118,7 +120,7 @@ public class ScriptOperations {
     }
 
     private void notifyFileCreated(ScriptFile directory, ScriptFile scriptFile) {
-        mExplorer.notifyItemCreated(new ExplorerFileItem(scriptFile, mExplorerItem.getParent()));
+        mExplorer.notifyItemCreated(new ExplorerFileItem(scriptFile, mExplorerPage));
     }
 
     public void newScriptFile() {
@@ -236,8 +238,8 @@ public class ScriptOperations {
     }
 
     private void notifyFileChanged(ScriptFile directory, ScriptFile oldFile, PFile newFile) {
-        mExplorer.notifyItemChanged(new ExplorerFileItem(oldFile, mExplorerItem.getParent()),
-                new ExplorerFileItem(newFile, mExplorerItem.getParent()));
+        mExplorer.notifyItemChanged(new ExplorerFileItem(oldFile, mExplorerPage),
+                new ExplorerFileItem(newFile, mExplorerPage));
     }
 
     public void createShortcut(ScriptFile file) {
@@ -270,7 +272,7 @@ public class ScriptOperations {
     }
 
     private void notifyFileRemoved(ScriptFile directory, ScriptFile scriptFile) {
-        mExplorer.notifyItemRemoved(new ExplorerFileItem(scriptFile, mExplorerItem.getParent()));
+        mExplorer.notifyItemRemoved(new ExplorerFileItem(scriptFile, mExplorerPage));
     }
 
 

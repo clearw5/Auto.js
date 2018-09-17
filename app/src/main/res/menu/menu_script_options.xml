@@ -18,7 +18,9 @@
         android:title="@string/text_send"/>
 
 
-    <item android:title="@string/text_more">
+    <item
+        android:id="@+id/more"
+        android:title="@string/text_more">
 
         <menu>
 

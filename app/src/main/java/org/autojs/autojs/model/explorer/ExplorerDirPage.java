@@ -42,8 +42,19 @@ public class ExplorerDirPage extends ExplorerFileItem implements ExplorerPage {
         }
     }
 
+    protected int indexOf(ExplorerItem child){
+        int i = 0;
+        for(ExplorerItem item : mChildren){
+            if(item.getPath().equals(child.getPath())){
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+
     public boolean updateChild(ExplorerItem oldItem, ExplorerItem newItem) {
-        int i = mChildren.indexOf(oldItem);
+        int i = indexOf(oldItem);
         if (i < 0) {
             return false;
         }
@@ -52,7 +63,12 @@ public class ExplorerDirPage extends ExplorerFileItem implements ExplorerPage {
     }
 
     public boolean removeChild(ExplorerItem item) {
-        return mChildren.remove(item);
+        int i = indexOf(item);
+        if(i < 0){
+            return false;
+        }
+        mChildren.remove(i);
+        return true;
     }
 
     public void addChild(ExplorerItem item) {

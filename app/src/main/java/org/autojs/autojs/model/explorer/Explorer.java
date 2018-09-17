@@ -84,7 +84,7 @@ public class Explorer {
 
 
     public Single<ExplorerPage> fetchChildren(ExplorerPage page) {
-        ExplorerPage cachedGroup = mExplorerPageLruCache.get(page.getPath());
+        ExplorerPage cachedGroup = mExplorerPageLruCache == null ? null : mExplorerPageLruCache.get(page.getPath());
         if (cachedGroup != null) {
             page.copyChildren(cachedGroup);
             return Single.just(page);
@@ -92,7 +92,8 @@ public class Explorer {
         return mExplorerProvider.getExplorerPage(page)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(g -> {
-                    mExplorerPageLruCache.put(g.getPath(), g);
+                    if (mExplorerPageLruCache != null)
+                        mExplorerPageLruCache.put(g.getPath(), g);
                     page.copyChildren(g);
                     return page;
                 });

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
@@ -22,7 +23,7 @@ public class ProjectConfig {
 
     public static final String CONFIG_FILE_NAME = "project.json";
 
-    private static final Gson GSON = new Gson();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     @SerializedName("name")
     private String mName;

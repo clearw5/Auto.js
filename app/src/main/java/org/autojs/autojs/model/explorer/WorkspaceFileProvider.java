@@ -3,6 +3,7 @@ package org.autojs.autojs.model.explorer;
 import android.content.Context;
 import android.content.res.AssetManager;
 
+import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
 
@@ -38,22 +39,35 @@ public class WorkspaceFileProvider extends ExplorerFileProvider {
         String path = page.getPath();
         return listFiles(new PFile(path))
                 .collectInto(createExplorerPage(path, parent), (p, file) -> {
-                    if(file.isDirectory()){
-                        if(file.getPath().startsWith(mSampleDir.getPath())){
+                    if (file.isDirectory()) {
+                        ProjectConfig projectConfig = ProjectConfig.fromProjectDir(file.getPath());
+                        if (projectConfig != null) {
+                            p.addChild(new ExplorerProjectPage(file, parent, projectConfig));
+                            return;
+                        }
+                        if (inSampleDir(file)) {
                             p.addChild(new ExplorerSamplePage(file, p));
-                        }else {
+                        } else {
                             p.addChild(new ExplorerDirPage(file, p));
                         }
-                    }else {
-                        p.addChild(new ExplorerFileItem(file, p));
+                    } else {
+                        if (file.getPath().startsWith(mSampleDir.getPath())) {
+                            p.addChild(new ExplorerSamleItem(file, p));
+                        } else {
+                            p.addChild(new ExplorerFileItem(file, p));
+                        }
                     }
                 })
                 .subscribeOn(Schedulers.io());
     }
 
+    private boolean inSampleDir(PFile file) {
+        return file.getPath().startsWith(mSampleDir.getPath());
+    }
+
     @Override
     protected Observable<PFile> listFiles(PFile directory) {
-        if (directory.getPath().startsWith(mSampleDir.getPath())) {
+        if (inSampleDir(directory)) {
             return listSamples(directory);
         }
         return super.listFiles(directory);
@@ -61,9 +75,9 @@ public class WorkspaceFileProvider extends ExplorerFileProvider {
 
     private Observable<PFile> listSamples(PFile directory) {
         String pathOfSample;
-        if(directory.getPath().length() <= mSampleDir.getPath().length() + 1){
+        if (directory.getPath().length() <= mSampleDir.getPath().length() + 1) {
             pathOfSample = "";
-        }else {
+        } else {
             pathOfSample = directory.getPath().substring(mSampleDir.getPath().length());
         }
         String pathOfAsset = SAMPLE_PATH + pathOfSample;
@@ -71,13 +85,13 @@ public class WorkspaceFileProvider extends ExplorerFileProvider {
                 .flatMap(path -> Observable.fromArray(mAssetManager.list(path)))
                 .map(child -> {
                     PFile file = new PFile(new File(directory, child).getPath());
-                    if(file.exists()){
-                       return file;
+                    if (file.exists()) {
+                        return file;
                     }
                     try {
                         InputStream stream = mAssetManager.open(pathOfAsset + "/" + child);
                         PFiles.copyStream(stream, file.getPath());
-                    }catch (FileNotFoundException e){
+                    } catch (FileNotFoundException e) {
                         file.mkdirs();
                     }
                     return file;
@@ -88,7 +102,7 @@ public class WorkspaceFileProvider extends ExplorerFileProvider {
     protected ExplorerDirPage createExplorerPage(String path, ExplorerPage parent) {
         ExplorerDirPage page = super.createExplorerPage(path, parent);
         if (new File(path).equals(new File(Pref.getScriptDirPath()))) {
-            page.addChild( ExplorerSamplePage.createRoot(mSampleDir));
+            page.addChild(ExplorerSamplePage.createRoot(mSampleDir));
         }
         return page;
     }

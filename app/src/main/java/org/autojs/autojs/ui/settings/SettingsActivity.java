@@ -8,23 +8,18 @@ import android.preference.PreferenceScreen;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Toast;
 
-import org.autojs.autojs.network.VersionService;
-import org.autojs.autojs.ui.BaseActivity;
-import org.autojs.autojs.ui.error.IssueReporterActivity;
-import org.autojs.autojs.ui.splash.SplashActivity;
-import org.autojs.autojs.ui.splash.SplashActivity_;
-import org.autojs.autojs.ui.update.UpdateCheckDialog;
-import com.stardust.theme.preference.ThemeColorPreferenceFragment;
-import com.stardust.util.IntentUtil;
-import com.stardust.util.MapEntries;
-import org.autojs.autojs.R;
 import com.stardust.theme.app.ColorSelectActivity;
+import com.stardust.theme.preference.ThemeColorPreferenceFragment;
 import com.stardust.theme.util.ListBuilder;
+import com.stardust.util.MapEntries;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.autojs.autojs.R;
+import org.autojs.autojs.ui.BaseActivity;
+import org.autojs.autojs.ui.error.IssueReporterActivity;
+import org.autojs.autojs.ui.update.UpdateCheckDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,12 +102,6 @@ public class SettingsActivity extends BaseActivity {
             super.onStart();
             ACTION_MAP = new MapEntries<String, Runnable>()
                     .entry(getString(R.string.text_theme_color), () -> selectThemeColor(getActivity()))
-                    .entry(getString(R.string.show_ad), () -> {
-                        SplashActivity_.intent(getActivity())
-                                .extra(SplashActivity.NOT_START_MAIN_ACTIVITY, true)
-                                .extra(SplashActivity.FORCE_SHOW_AD, true)
-                                .start();
-                    })
                     .entry(getString(R.string.text_check_for_updates), () -> new UpdateCheckDialog(getActivity())
                             .show())
                     .entry(getString(R.string.text_issue_report), () -> startActivity(new Intent(getActivity(), IssueReporterActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)))

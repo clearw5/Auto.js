@@ -389,4 +389,11 @@
     <string name="text_en_import">import</string>
     <string name="key_ad_type">key_ad_type</string>
     <string name="text_ad_type_settings">广告类型设置</string>
+    <string name="text_market">市场</string>
+    <string name="text_launch_config">运行配置</string>
+    <string name="text_main_file_name">主脚本名称</string>
+    <string name="default_main_file_name">main.js</string>
+    <string name="text_project">项目</string>
+    <string name="text_project_location">项目位置</string>
+    <string name="text_new_project">新建项目</string>
 </resources>

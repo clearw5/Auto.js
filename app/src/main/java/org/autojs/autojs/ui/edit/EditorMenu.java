@@ -10,14 +10,13 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.script.JavaScriptSource;
-import com.stardust.autojs.script.ScriptSource;
 import com.stardust.pio.PFiles;
 
 import org.autojs.autojs.R;
 import org.autojs.autojs.model.indices.AndroidClass;
 import org.autojs.autojs.model.indices.ClassSearchingItem;
-import org.autojs.autojs.ui.build.BuildActivity;
-import org.autojs.autojs.ui.build.BuildActivity_;
+import org.autojs.autojs.ui.project.BuildActivity;
+import org.autojs.autojs.ui.project.BuildActivity_;
 import org.autojs.autojs.ui.common.NotAskAgainDialog;
 import org.autojs.autojs.ui.edit.editor.CodeEditor;
 import org.autojs.autojs.ui.log.LogActivity_;

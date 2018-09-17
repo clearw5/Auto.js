@@ -1,7 +1,5 @@
 package org.autojs.autojs.model.explorer;
 
-import android.graphics.Color;
-
 import com.stardust.pio.PFile;
 
 import org.autojs.autojs.model.script.ScriptFile;
@@ -53,6 +51,16 @@ public class ExplorerFileItem implements ExplorerItem {
     }
 
     @Override
+    public boolean canDelete() {
+        return mFile.canWrite();
+    }
+
+    @Override
+    public boolean canRename() {
+        return mFile.canWrite();
+    }
+
+    @Override
     public String getType() {
         if(mFile.isDirectory()){
             return "/";
@@ -73,7 +81,7 @@ public class ExplorerFileItem implements ExplorerItem {
     @Override
     public boolean isEditable() {
         String type = getType();
-        return type.equals("js") || type.equals("json") || type.equals("xml");
+        return !type.equals(TYPE_AUTO_FILE) && !type.equals(TYPE_APK);
     }
 
     @Override

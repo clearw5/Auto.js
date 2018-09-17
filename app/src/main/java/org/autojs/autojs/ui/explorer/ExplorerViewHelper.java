@@ -9,6 +9,7 @@ import org.autojs.autojs.R;
 import org.autojs.autojs.model.explorer.ExplorerFileItem;
 import org.autojs.autojs.model.explorer.ExplorerItem;
 import org.autojs.autojs.model.explorer.ExplorerPage;
+import org.autojs.autojs.model.explorer.ExplorerProjectPage;
 import org.autojs.autojs.model.explorer.ExplorerSamplePage;
 
 import static android.support.v4.content.ContextCompat.getColor;
@@ -61,6 +62,9 @@ public class ExplorerViewHelper {
     public static int getIcon(ExplorerPage page) {
         if (page instanceof ExplorerSamplePage) {
             return R.drawable.ic_sample_dir;
+        }
+        if(page instanceof ExplorerProjectPage){
+            return R.drawable.ic_project;
         }
         return R.drawable.ic_folder_yellow_100px;
     }

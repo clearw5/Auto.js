@@ -35,7 +35,7 @@
         tools:replace="android:label, android:icon, android:allowBackup">
 
         <activity
-            android:name=".ui.splash.SplashActivity_"
+            android:name=".ui.splash.SplashActivity"
             android:hardwareAccelerated="true"
             android:label="@string/_app_name"
             android:theme="@style/AppTheme.Splash">
@@ -96,7 +96,8 @@
             android:name=".ui.user.RegisterActivity_"
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".ui.user.WebActivity_"/>
-        <activity android:name=".ui.build.BuildActivity_"/>
+        <activity android:name=".ui.project.BuildActivity_"/>
+        <activity android:name=".ui.project.ProjectConfigActivity_"/>
         <activity android:name=".ui.log.LogActivity_"/>
         <activity android:name=".ui.doc.DocumentationActivity_"/>
         <activity android:name=".ui.shortcut.ShortcutIconSelectActivity_"/>

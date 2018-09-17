@@ -10,15 +10,15 @@ public class ExplorerChangeEvent {
     private final int mAction;
     private final ExplorerItem mItem;
     private final ExplorerItem mNewItem;
-    private final ExplorerPage mItemGroup;
+    private final ExplorerPage mPage;
 
-    public ExplorerChangeEvent(ExplorerPage itemGroup) {
-        this(itemGroup, CHANGE, null, null);
+    public ExplorerChangeEvent(ExplorerPage page) {
+        this(page, CHANGE, null, null);
     }
 
     public ExplorerChangeEvent(ExplorerPage parent, int action, ExplorerItem oldItem, ExplorerItem newItem) {
         mAction = action;
-        mItemGroup = parent;
+        mPage = parent;
         mNewItem = newItem;
         mItem = oldItem;
     }
@@ -43,7 +43,7 @@ public class ExplorerChangeEvent {
         return mNewItem;
     }
 
-    public ExplorerPage getItemGroup() {
-        return mItemGroup;
+    public ExplorerPage getPage() {
+        return mPage;
     }
 }

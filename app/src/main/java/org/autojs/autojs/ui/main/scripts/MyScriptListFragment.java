@@ -21,6 +21,8 @@ import org.autojs.autojs.ui.common.ScriptOperations;
 import org.autojs.autojs.ui.main.FloatingActionMenu;
 import org.autojs.autojs.ui.main.QueryEvent;
 import org.autojs.autojs.ui.main.ViewPagerFragment;
+import org.autojs.autojs.ui.project.ProjectConfigActivity;
+import org.autojs.autojs.ui.project.ProjectConfigActivity_;
 import org.autojs.autojs.ui.viewmodel.ExplorerItemList;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -177,6 +179,11 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
             case 2:
                 new ScriptOperations(getContext(), mExplorerView, mExplorerView.getCurrentPage())
                         .importFile();
+            case 3:
+                ProjectConfigActivity_.intent(getContext())
+                        .extra(ProjectConfigActivity.EXTRA_PARENT_DIRECTORY, mExplorerView.getCurrentPage().getPath())
+                        .extra(ProjectConfigActivity.EXTRA_NEW_PROJECT, true)
+                        .start();
                 break;
 
         }
