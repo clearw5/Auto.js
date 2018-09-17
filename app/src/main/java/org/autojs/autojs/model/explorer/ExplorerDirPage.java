@@ -1,0 +1,88 @@
+package org.autojs.autojs.model.explorer;
+
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+
+import com.stardust.pio.PFile;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+
+public class ExplorerDirPage extends ExplorerFileItem implements ExplorerPage {
+
+    private List<ExplorerItem> mChildren = Collections.emptyList();
+
+    public ExplorerDirPage(PFile file, ExplorerPage parent) {
+        super(file, parent);
+    }
+
+    public ExplorerDirPage(String path, ExplorerPage parent) {
+        super(path, parent);
+    }
+
+    public ExplorerDirPage(File file, ExplorerPage parent) {
+        super(file, parent);
+    }
+
+    public void copyChildren(ExplorerPage g) {
+        ensureChildListWritable();
+        mChildren.clear();
+        mChildren.addAll(((ExplorerDirPage) g).mChildren);
+    }
+
+    private void ensureChildListWritable() {
+        if (mChildren == Collections.EMPTY_LIST) {
+            mChildren = new ArrayList<>();
+        }
+    }
+
+    public boolean updateChild(ExplorerItem oldItem, ExplorerItem newItem) {
+        int i = mChildren.indexOf(oldItem);
+        if (i < 0) {
+            return false;
+        }
+        mChildren.set(i, newItem);
+        return true;
+    }
+
+    public boolean removeChild(ExplorerItem item) {
+        return mChildren.remove(item);
+    }
+
+    public void addChild(ExplorerItem item) {
+        ensureChildListWritable();
+        mChildren.add(item);
+    }
+
+    @NonNull
+    @Override
+    public Iterator<ExplorerItem> iterator() {
+        return mChildren.iterator();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void forEach(Consumer<? super ExplorerItem> action) {
+        mChildren.forEach(action);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public Spliterator<ExplorerItem> spliterator() {
+        return mChildren.spliterator();
+    }
+
+    public static ExplorerDirPage createRoot(String path){
+        return new ExplorerDirPage(path, null);
+    }
+
+    public static ExplorerPage createRoot(File directory) {
+        return new ExplorerDirPage(directory, null);
+    }
+}

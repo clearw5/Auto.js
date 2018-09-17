@@ -6,11 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 
 import org.autojs.autojs.R;
-import org.autojs.autojs.storage.file.SampleFileProvider;
-import org.autojs.autojs.model.script.Scripts;
 import org.autojs.autojs.ui.main.QueryEvent;
 import org.autojs.autojs.ui.main.ViewPagerFragment;
-import org.autojs.autojs.ui.main.scripts.ScriptListView;
+import org.autojs.autojs.ui.main.scripts.ExplorerView;
 import com.stardust.util.BackPressedHandler;
 
 import org.androidannotations.annotations.AfterViews;
@@ -22,16 +20,13 @@ import org.greenrobot.eventbus.Subscribe;
 /**
  * Created by Stardust on 2017/10/28.
  */
-@EFragment(R.layout.fragment_sample_list)
-public class SampleListFragment extends ViewPagerFragment implements BackPressedHandler {
+@EFragment(R.layout.fragment_market)
+public class MarketFragment extends ViewPagerFragment implements BackPressedHandler {
 
 
-    public SampleListFragment() {
+    public MarketFragment() {
         super(ROTATION_GONE);
     }
-
-    @ViewById(R.id.sample_list)
-    ScriptListView mScriptFileList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,9 +36,7 @@ public class SampleListFragment extends ViewPagerFragment implements BackPressed
 
     @AfterViews
     void setUpViews() {
-        mScriptFileList.setDirectorySpanSize(2);
-        mScriptFileList.setStorageFileProvider(new SampleFileProvider(getContext()));
-        mScriptFileList.setOnScriptFileClickListener((view, file) -> Scripts.edit(file));
+
     }
 
     @Override
@@ -70,10 +63,7 @@ public class SampleListFragment extends ViewPagerFragment implements BackPressed
 
     @Override
     public boolean onBackPressed(Activity activity) {
-        if (mScriptFileList.canGoBack()) {
-            mScriptFileList.goBack();
-            return true;
-        }
+
         return false;
     }
 
@@ -84,11 +74,9 @@ public class SampleListFragment extends ViewPagerFragment implements BackPressed
             return;
         }
         if (event == QueryEvent.CLEAR) {
-            mScriptFileList.setFilter(null);
             return;
         }
-        String query = event.getQuery();
-        mScriptFileList.setFilter((file -> file.getSimplifiedName().contains(query)));
+
     }
 
 

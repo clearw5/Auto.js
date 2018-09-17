@@ -10,9 +10,9 @@ import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.network.NodeBB;
-import org.autojs.autojs.storage.file.StorageFileProvider;
 import org.autojs.autojs.model.script.Scripts;
 import org.autojs.autojs.network.download.DownloadManager;
 import org.autojs.autojs.ui.common.OptionListView;
@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 
 import butterknife.OnClick;
 import butterknife.Optional;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
@@ -134,7 +133,7 @@ public class CommunityWebView extends EWebView {
             }
             new FileChooserDialogBuilder(getContext())
                     .title(R.string.text_select_file_to_upload)
-                    .dir(StorageFileProvider.getDefaultDirectoryPath())
+                    .dir(Pref.getScriptDirPath())
                     .singleChoice(file -> callback.onReceiveValue(Uri.fromFile(file)))
                     .cancelListener(dialog -> callback.onReceiveValue(null))
                     .show();

@@ -6,22 +6,22 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 
-import com.stardust.autojs.script.AutoFileSource;
-import org.autojs.autojs.R;
-import org.autojs.autojs.model.script.ScriptFile;
-import org.autojs.autojs.model.script.Scripts;
-import org.autojs.autojs.storage.file.StorageFileProvider;
-import org.autojs.autojs.tool.SimpleObserver;
-import org.autojs.autojs.ui.common.ScriptOperations;
-import org.autojs.autojs.ui.main.FloatingActionMenu;
-import org.autojs.autojs.ui.main.QueryEvent;
-import org.autojs.autojs.ui.main.ViewPagerFragment;
-import org.autojs.autojs.ui.viewmodel.ScriptList;
 import com.stardust.util.BackPressedHandler;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.autojs.autojs.Pref;
+import org.autojs.autojs.R;
+import org.autojs.autojs.model.explorer.ExplorerDirPage;
+import org.autojs.autojs.model.explorer.Explorers;
+import org.autojs.autojs.model.script.Scripts;
+import org.autojs.autojs.tool.SimpleObserver;
+import org.autojs.autojs.ui.common.ScriptOperations;
+import org.autojs.autojs.ui.main.FloatingActionMenu;
+import org.autojs.autojs.ui.main.QueryEvent;
+import org.autojs.autojs.ui.main.ViewPagerFragment;
+import org.autojs.autojs.ui.viewmodel.ExplorerItemList;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -40,7 +40,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
     }
 
     @ViewById(R.id.script_file_list)
-    ScriptListView mScriptFileList;
+    ExplorerView mExplorerView;
 
     private FloatingActionMenu mFloatingActionMenu;
 
@@ -52,12 +52,12 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
 
     @AfterViews
     void setUpViews() {
-        ScriptList.SortConfig sortConfig = ScriptList.SortConfig.from(PreferenceManager.getDefaultSharedPreferences(getContext()));
-        mScriptFileList.setSortConfig(sortConfig);
-        mScriptFileList.setStorageFileProvider(StorageFileProvider.getDefault());
-        mScriptFileList.setOnScriptFileClickListener((view, file) -> {
-            if (file.getType() == ScriptFile.TYPE_JAVA_SCRIPT) {
-                Scripts.edit(file);
+        ExplorerItemList.SortConfig sortConfig = ExplorerItemList.SortConfig.from(PreferenceManager.getDefaultSharedPreferences(getContext()));
+        mExplorerView.setSortConfig(sortConfig);
+        mExplorerView.setExplorer(Explorers.workspace(), ExplorerDirPage.createRoot(Pref.getScriptDirPath()));
+        mExplorerView.setOnItemClickListener((view, item) -> {
+            if (item.isEditable()) {
+                Scripts.edit(item.toScriptFile());
             }
         });
     }
@@ -113,8 +113,8 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
             mFloatingActionMenu.collapse();
             return true;
         }
-        if (mScriptFileList.canGoBack()) {
-            mScriptFileList.goBack();
+        if (mExplorerView.canGoBack()) {
+            mExplorerView.goBack();
             return true;
         }
         return false;
@@ -134,17 +134,17 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
             return;
         }
         if (event == QueryEvent.CLEAR) {
-            mScriptFileList.setFilter(null);
+            mExplorerView.setFilter(null);
             return;
         }
         String query = event.getQuery();
-        mScriptFileList.setFilter((file -> file.getSimplifiedName().contains(query)));
+        mExplorerView.setFilter((item -> item.getName().contains(query)));
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mScriptFileList.getSortConfig().saveInto(PreferenceManager.getDefaultSharedPreferences(getContext()));
+        mExplorerView.getSortConfig().saveInto(PreferenceManager.getDefaultSharedPreferences(getContext()));
     }
 
     @Override
@@ -163,19 +163,19 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
 
     @Override
     public void onClick(FloatingActionButton button, int pos) {
-        if (mScriptFileList == null)
+        if (mExplorerView == null)
             return;
         switch (pos) {
             case 0:
-                new ScriptOperations(getContext(), mScriptFileList, mScriptFileList.getCurrentDirectory())
+                new ScriptOperations(getContext(), mExplorerView, mExplorerView.getCurrentPage())
                         .newDirectory();
                 break;
             case 1:
-                new ScriptOperations(getContext(), mScriptFileList, mScriptFileList.getCurrentDirectory())
+                new ScriptOperations(getContext(), mExplorerView, mExplorerView.getCurrentPage())
                         .newScriptFile();
                 break;
             case 2:
-                new ScriptOperations(getContext(), mScriptFileList, mScriptFileList.getCurrentDirectory())
+                new ScriptOperations(getContext(), mExplorerView, mExplorerView.getCurrentPage())
                         .importFile();
                 break;
 

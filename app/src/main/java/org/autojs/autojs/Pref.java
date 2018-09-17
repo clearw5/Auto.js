@@ -2,6 +2,7 @@ package org.autojs.autojs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 
 import com.stardust.app.GlobalAppContext;
@@ -9,6 +10,7 @@ import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 
 import org.autojs.autojs.autojs.key.GlobalKeyObserver;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -98,7 +100,7 @@ public class Pref {
     }
 
     public static boolean shouldShowAd() {
-        if(isFirstDay() && !BuildConfig.DEBUG){
+        if (isFirstDay() && !BuildConfig.DEBUG) {
             return false;
         }
         String adShowingMode = def().getString(getString(R.string.key_ad_showing_mode), "Default");
@@ -116,10 +118,10 @@ public class Pref {
         return true;
     }
 
-    public static int getAdType(){
+    public static int getAdType() {
         try {
             return Integer.parseInt(def().getString(getString(R.string.key_ad_type), String.valueOf(Constants.AD_TYPE_RANDOM)));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return Constants.AD_TYPE_RANDOM;
         }
@@ -127,7 +129,7 @@ public class Pref {
 
     private static boolean isFirstDay() {
         long firstUsingMillis = def().getLong("firstUsingMillis", -1);
-        if(firstUsingMillis == -1){
+        if (firstUsingMillis == -1) {
             def().edit().putLong("firstUsingMillis", System.currentTimeMillis()).apply();
             return true;
         }
@@ -195,7 +197,8 @@ public class Pref {
     }
 
     public static String getScriptDirPath() {
-        return def().getString(getString(R.string.key_script_dir_path),
+        String dir = def().getString(getString(R.string.key_script_dir_path),
                 getString(R.string.default_value_script_dir_path));
+        return new File(Environment.getExternalStorageDirectory(), dir).getPath();
     }
 }

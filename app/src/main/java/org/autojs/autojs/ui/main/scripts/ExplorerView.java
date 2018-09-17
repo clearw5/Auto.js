@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.Nullable;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,21 +16,27 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
+
 import org.autojs.autojs.R;
+import org.autojs.autojs.model.explorer.Explorer;
+import org.autojs.autojs.model.explorer.ExplorerChangeEvent;
+import org.autojs.autojs.model.explorer.ExplorerItem;
+import org.autojs.autojs.model.explorer.ExplorerPage;
 import org.autojs.autojs.model.script.ScriptFile;
 import org.autojs.autojs.model.script.Scripts;
-import org.autojs.autojs.storage.file.StorageFileProvider;
 import org.autojs.autojs.ui.build.BuildActivity;
 import org.autojs.autojs.ui.build.BuildActivity_;
 import org.autojs.autojs.ui.common.ScriptLoopDialog;
 import org.autojs.autojs.ui.common.ScriptOperations;
-import org.autojs.autojs.ui.viewmodel.ScriptList;
+import org.autojs.autojs.ui.explorer.ExplorerViewHelper;
+import org.autojs.autojs.ui.viewmodel.ExplorerItemList;
 import org.autojs.autojs.ui.widget.BindableViewHolder;
 import org.autojs.autojs.theme.widget.ThemeColorSwipeRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.Stack;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,83 +50,93 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Stardust on 2017/8/21.
  */
 
-public class ScriptListView extends ThemeColorSwipeRefreshLayout implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
+public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
+    private static final String LOG_TAG = "ExplorerView";
 
-    private static final String LOG_TAG = "ScriptListView";
-
-    public interface OnScriptFileClickListener {
-        void onScriptFileClick(View view, ScriptFile file);
+    public interface OnItemClickListener {
+        void onItemClick(View view, ExplorerItem item);
     }
 
     public interface OnItemOperatedListener {
-        void OnItemOperated(ScriptFile file);
+        void OnItemOperated(ExplorerItem item);
     }
 
-    protected static final int VIEW_TYPE_FILE = 0;
-    protected static final int VIEW_TYPE_DIRECTORY = 1;
+    protected static final int VIEW_TYPE_ITEM = 0;
+    protected static final int VIEW_TYPE_PAGE = 1;
     //category是类别，也即"文件", "文件夹"那两个
     protected static final int VIEW_TYPE_CATEGORY = 2;
 
     private static final int positionOfCategoryDir = 0;
-    private ScriptList mScriptList = new ScriptList();
-    private RecyclerView mScriptListView;
-    private ScriptListAdapter mScriptListAdapter = new ScriptListAdapter();
-    private ScriptFile mCurrentDirectory;
-    protected OnScriptFileClickListener mOnScriptFileClickListener;
-    private Function<PFile, Boolean> mFilter;
-    private OnItemOperatedListener mOnItemOperatedListener;
-    protected ScriptFile mSelectedScriptFile;
-    private StorageFileProvider mStorageFileProvider;
-    private boolean mDirSortMenuShowing = false;
-    private boolean mDirsCollapsed;
-    private boolean mFilesCollapsed;
-    private int mDirectorySpanSize = 1;
 
-    public ScriptListView(Context context) {
+    private ExplorerItemList mExplorerItemList = new ExplorerItemList();
+    private RecyclerView mExplorerItemListView;
+    private ExplorerAdapter mExplorerAdapter = new ExplorerAdapter();
+    protected OnItemClickListener mOnItemClickListener;
+    private Function<ExplorerItem, Boolean> mFilter;
+    private OnItemOperatedListener mOnItemOperatedListener;
+    protected ExplorerItem mSelectedItem;
+    private Explorer mExplorer;
+    private Stack<ExplorerPageState> mPageStateHistory = new Stack<>();
+    private ExplorerPageState mCurrentPageState = new ExplorerPageState();
+    private boolean mDirSortMenuShowing = false;
+    private int mDirectorySpanSize = 2;
+
+    public ExplorerView(Context context) {
         super(context);
         init();
     }
 
-    public ScriptListView(Context context, @Nullable AttributeSet attrs) {
+    public ExplorerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public ScriptFile getCurrentDirectory() {
-        return mCurrentDirectory;
+    public ExplorerPage getCurrentPage() {
+        return mCurrentPageState.page;
     }
 
-    public void setCurrentDirectory(ScriptFile currentDirectory) {
-        mCurrentDirectory = currentDirectory;
-        mDirsCollapsed = false;
-        mFilesCollapsed = false;
-        loadScriptList();
-    }
-
-    public void setOnScriptFileClickListener(OnScriptFileClickListener onScriptFileClickListener) {
-        mOnScriptFileClickListener = onScriptFileClickListener;
-    }
-
-    public void setStorageFileProvider(StorageFileProvider storageFileProvider) {
-        setStorageFileProvider(storageFileProvider, new ScriptFile(storageFileProvider.getInitialDirectory()));
+    public void setRootPage(ExplorerPage page) {
+        mPageStateHistory.clear();
+        mCurrentPageState = new ExplorerPageState(page);
+        loadItemList();
     }
 
 
-    public void setSortConfig(ScriptList.SortConfig sortConfig) {
-        mScriptList.setSortConfig(sortConfig);
+    public void enterChildPage(ExplorerPage childItemGroup) {
+        mPageStateHistory.push(mCurrentPageState);
+        mCurrentPageState = new ExplorerPageState(childItemGroup);
+        loadItemList();
     }
 
-    public ScriptList.SortConfig getSortConfig() {
-        return mScriptList.getSortConfig();
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
     }
 
-    public void setStorageFileProvider(StorageFileProvider fileProvider, ScriptFile currentDirectory) {
-        if (mStorageFileProvider != null)
-            mStorageFileProvider.unregisterDirectoryChangeListener(this);
-        mStorageFileProvider = fileProvider;
-        setCurrentDirectory(currentDirectory);
-        mStorageFileProvider.registerDirectoryChangeListener(this);
+    public void setSortConfig(ExplorerItemList.SortConfig sortConfig) {
+        mExplorerItemList.setSortConfig(sortConfig);
+    }
+
+    public ExplorerItemList.SortConfig getSortConfig() {
+        return mExplorerItemList.getSortConfig();
+    }
+
+    public void setExplorer(Explorer explorer, ExplorerPage rootPage) {
+        if (mExplorer != null)
+            mExplorer.unregisterChangeListener(this);
+        mExplorer = explorer;
+        setRootPage(rootPage);
+        mExplorer.registerChangeListener(this);
+    }
+
+    public void setExplorer(Explorer explorer, ExplorerPage rootPage, ExplorerPage currentPage) {
+        if (mExplorer != null)
+            mExplorer.unregisterChangeListener(this);
+        mExplorer = explorer;
+        mPageStateHistory.clear();
+        mCurrentPageState = new ExplorerPageState(rootPage);
+        mExplorer.registerChangeListener(this);
+        enterChildPage(currentPage);
     }
 
     public void setOnItemOperatedListener(OnItemOperatedListener onItemOperatedListener) {
@@ -129,35 +144,36 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
     }
 
     public boolean canGoBack() {
-        return !mCurrentDirectory.equals(mStorageFileProvider.getInitialDirectory());
+        return !mPageStateHistory.empty();
     }
 
     public void goBack() {
-        setCurrentDirectory(mCurrentDirectory.getParentFile());
+        mCurrentPageState = mPageStateHistory.pop();
+        loadItemList();
     }
 
     public void setDirectorySpanSize(int directorySpanSize) {
         mDirectorySpanSize = directorySpanSize;
     }
 
-    public void setFilter(Function<PFile, Boolean> filter) {
+    public void setFilter(Function<ExplorerItem, Boolean> filter) {
         mFilter = filter;
         reload();
     }
 
     public void reload() {
-        loadScriptList();
+        loadItemList();
     }
 
     private void init() {
         setOnRefreshListener(this);
-        mScriptListView = new RecyclerView(getContext());
-        addView(mScriptListView);
-        initScriptListRecyclerView();
+        mExplorerItemListView = new RecyclerView(getContext());
+        addView(mExplorerItemListView);
+        initExplorerItemListView();
     }
 
-    private void initScriptListRecyclerView() {
-        mScriptListView.setAdapter(mScriptListAdapter);
+    private void initExplorerItemListView() {
+        mExplorerItemListView.setAdapter(mExplorerAdapter);
         GridLayoutManager manager = new GridLayoutManager(getContext(), 2);
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -170,102 +186,105 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
                 return 2;
             }
         });
-        mScriptListView.setLayoutManager(manager);
+        mExplorerItemListView.setLayoutManager(manager);
     }
 
     private int positionOfCategoryFile() {
-        if (mDirsCollapsed)
+        if (mCurrentPageState.dirsCollapsed)
             return 1;
-        return mScriptList.directoryCount() + 1;
+        return mExplorerItemList.groupCount() + 1;
     }
 
-    private void loadScriptList() {
+    @SuppressLint("CheckResult")
+    private void loadItemList() {
         setRefreshing(true);
-        mStorageFileProvider.getDirectoryFiles(mCurrentDirectory)
+        mExplorer.fetchChildren(mCurrentPageState.page)
                 .subscribeOn(Schedulers.io())
-                .filter(f -> mFilter == null ? true : mFilter.apply(f))
-                .collectInto(mScriptList.cloneConfig(), (list, file) -> {
-                    if (file instanceof ScriptFile) {
-                        list.add((ScriptFile) file);
-                    } else {
-                        list.add(new ScriptFile(file));
-                    }
+                .flatMapObservable(page -> {
+                    mCurrentPageState.page = page;
+                    return Observable.fromIterable(page);
                 })
+                .filter(f -> mFilter == null ? true : mFilter.apply(f))
+                .collectInto(mExplorerItemList.cloneConfig(), ExplorerItemList::add)
                 .observeOn(Schedulers.computation())
-                .doOnSuccess(ScriptList::sort)
+                .doOnSuccess(ExplorerItemList::sort)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {
-                    mScriptList = list;
-                    mScriptListAdapter.notifyDataSetChanged();
+                    mExplorerItemList = list;
+                    mExplorerAdapter.notifyDataSetChanged();
                     setRefreshing(false);
                 });
     }
 
     @Subscribe
-    public void onDirectoryChange(StorageFileProvider.DirectoryChangeEvent event) {
-        if (!event.getDir().equals(mCurrentDirectory)) {
-            return;
+    public void onExplorerChange(ExplorerChangeEvent event) {
+        if (event.getAction() == ExplorerChangeEvent.ALL
+                || mCurrentPageState.page.equals(event.getItemGroup())) {
+            loadItemList();
         }
-        loadScriptList();
     }
 
     @Override
     public void onRefresh() {
-        mStorageFileProvider.notifyDirectoryChanged(mCurrentDirectory);
+        mExplorer.notifyChildrenChanged(mCurrentPageState.page);
     }
 
+
+    public ScriptFile getCurrentDirectory() {
+        return getCurrentPage().toScriptFile();
+    }
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.rename:
-                new ScriptOperations(getContext(), this, getCurrentDirectory())
-                        .rename(mSelectedScriptFile)
+                new ScriptOperations(getContext(), this, getCurrentPage())
+                        .rename(mSelectedItem.toScriptFile())
                         .subscribe();
                 break;
             case R.id.delete:
-                new ScriptOperations(getContext(), this, getCurrentDirectory())
-                        .delete(mSelectedScriptFile);
+                new ScriptOperations(getContext(), this, getCurrentPage())
+                        .delete(mSelectedItem.toScriptFile());
                 break;
             case R.id.run_repeatedly:
-                new ScriptLoopDialog(getContext(), mSelectedScriptFile)
+                new ScriptLoopDialog(getContext(), mSelectedItem.toScriptFile())
                         .show();
                 notifyOperated();
                 break;
             case R.id.create_shortcut:
-                new ScriptOperations(getContext(), this, getCurrentDirectory())
-                        .createShortcut(mSelectedScriptFile);
+                new ScriptOperations(getContext(), this, getCurrentPage())
+                        .createShortcut(mSelectedItem.toScriptFile());
                 break;
             case R.id.open_by_other_apps:
-                Scripts.openByOtherApps(mSelectedScriptFile);
+                Scripts.openByOtherApps(mSelectedItem.toScriptFile());
                 notifyOperated();
                 break;
             case R.id.send:
-                Scripts.send(mSelectedScriptFile);
+                Scripts.send(mSelectedItem.toScriptFile());
                 notifyOperated();
                 break;
             case R.id.timed_task:
-                new ScriptOperations(getContext(), this, getCurrentDirectory())
-                        .timedTask(mSelectedScriptFile);
+                new ScriptOperations(getContext(), this, getCurrentPage())
+                        .timedTask(mSelectedItem.toScriptFile());
                 notifyOperated();
                 break;
             case R.id.action_build_apk:
                 BuildActivity_.intent(getContext())
-                        .extra(BuildActivity.EXTRA_SOURCE_FILE, mSelectedScriptFile.getPath())
+                        .extra(BuildActivity.EXTRA_SOURCE_FILE, mSelectedItem.getPath())
                         .start();
                 notifyOperated();
                 break;
             case R.id.action_sort_by_date:
-                sort(ScriptList.SORT_TYPE_DATE, mDirSortMenuShowing);
+                sort(ExplorerItemList.SORT_TYPE_DATE, mDirSortMenuShowing);
                 break;
             case R.id.action_sort_by_type:
-                sort(ScriptList.SORT_TYPE_TYPE, mDirSortMenuShowing);
+                sort(ExplorerItemList.SORT_TYPE_TYPE, mDirSortMenuShowing);
                 break;
             case R.id.action_sort_by_name:
-                sort(ScriptList.SORT_TYPE_NAME, mDirSortMenuShowing);
+                sort(ExplorerItemList.SORT_TYPE_NAME, mDirSortMenuShowing);
                 break;
             case R.id.action_sort_by_size:
-                sort(ScriptList.SORT_TYPE_SIZE, mDirSortMenuShowing);
+                sort(ExplorerItemList.SORT_TYPE_SIZE, mDirSortMenuShowing);
                 break;
             default:
                 return false;
@@ -275,7 +294,7 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
 
     protected void notifyOperated() {
         if (mOnItemOperatedListener != null) {
-            mOnItemOperatedListener.OnItemOperated(mSelectedScriptFile);
+            mOnItemOperatedListener.OnItemOperated(mSelectedItem);
         }
     }
 
@@ -284,17 +303,17 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
         setRefreshing(true);
         Observable.fromCallable(() -> {
             if (isDir) {
-                mScriptList.sortDir(sortType);
+                mExplorerItemList.sortItemGroup(sortType);
             } else {
-                mScriptList.sortFile(sortType);
+                mExplorerItemList.sortFile(sortType);
             }
-            return mScriptList;
+            return mExplorerItemList;
         })
 
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(o -> {
-                    mScriptListAdapter.notifyDataSetChanged();
+                    mExplorerAdapter.notifyDataSetChanged();
                     setRefreshing(false);
                 });
     }
@@ -303,38 +322,38 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (mStorageFileProvider != null)
-            mStorageFileProvider.registerDirectoryChangeListener(this);
+        if (mExplorer != null)
+            mExplorer.registerChangeListener(this);
 
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mStorageFileProvider.unregisterDirectoryChangeListener(this);
+        mExplorer.unregisterChangeListener(this);
     }
 
 
     protected BindableViewHolder<?> onCreateViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
-        if (viewType == VIEW_TYPE_FILE) {
-            return new ScriptFileViewHolder(inflater.inflate(R.layout.script_file_list_file, parent, false));
-        } else if (viewType == VIEW_TYPE_DIRECTORY) {
-            return new DirectoryViewHolder(inflater.inflate(R.layout.script_file_list_directory, parent, false));
+        if (viewType == VIEW_TYPE_ITEM) {
+            return new ExplorerItemViewHolder(inflater.inflate(R.layout.script_file_list_file, parent, false));
+        } else if (viewType == VIEW_TYPE_PAGE) {
+            return new ExplorerPageViewHolder(inflater.inflate(R.layout.script_file_list_directory, parent, false));
         } else {
             return new CategoryViewHolder(inflater.inflate(R.layout.script_file_list_category, parent, false));
         }
     }
 
-    protected RecyclerView getScriptListView() {
-        return mScriptListView;
+    protected RecyclerView getExplorerItemListView() {
+        return mExplorerItemListView;
     }
 
-    private class ScriptListAdapter extends RecyclerView.Adapter<BindableViewHolder<?>> {
+    private class ExplorerAdapter extends RecyclerView.Adapter<BindableViewHolder<?>> {
 
         @Override
         public BindableViewHolder<?> onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            return ScriptListView.this.onCreateViewHolder(inflater, parent, viewType);
+            return ExplorerView.this.onCreateViewHolder(inflater, parent, viewType);
         }
 
         @SuppressWarnings("unchecked")
@@ -343,15 +362,14 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
             int positionOfCategoryFile = positionOfCategoryFile();
             BindableViewHolder bindableViewHolder = (BindableViewHolder) holder;
             if (position == positionOfCategoryDir || position == positionOfCategoryFile) {
-                // FIXME: 2017/10/20 java.lang.ClassCastException: java.lang.Boolean cannot be cast to org.autojs.autojs.model.script.ScriptFile
                 bindableViewHolder.bind(position == positionOfCategoryDir, position);
                 return;
             }
             if (position < positionOfCategoryFile) {
-                bindableViewHolder.bind(mScriptList.getDir(position - 1), position);
+                bindableViewHolder.bind(mExplorerItemList.getItemGroup(position - 1), position);
                 return;
             }
-            bindableViewHolder.bind(mScriptList.getFile(position - positionOfCategoryFile - 1), position);
+            bindableViewHolder.bind(mExplorerItemList.getItem(position - positionOfCategoryFile - 1), position);
         }
 
         @Override
@@ -360,27 +378,26 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
             if (position == positionOfCategoryDir || position == positionOfCategoryFile) {
                 return VIEW_TYPE_CATEGORY;
             } else if (position < positionOfCategoryFile) {
-                return VIEW_TYPE_DIRECTORY;
+                return VIEW_TYPE_PAGE;
             } else {
-                return VIEW_TYPE_FILE;
+                return VIEW_TYPE_ITEM;
             }
         }
 
         @Override
         public int getItemCount() {
             int count = 0;
-            if (!mDirsCollapsed) {
-                count += mScriptList.directoryCount();
+            if (!mCurrentPageState.dirsCollapsed) {
+                count += mExplorerItemList.groupCount();
             }
-            if (!mFilesCollapsed) {
-                count += mScriptList.fileCount();
+            if (!mCurrentPageState.filesCollapsed) {
+                count += mExplorerItemList.itemCount();
             }
             return count + 2;
         }
     }
 
-    protected class ScriptFileViewHolder extends BindableViewHolder<ScriptFile> {
-
+    protected class ExplorerItemViewHolder extends BindableViewHolder<ExplorerItem> {
 
         @BindView(R.id.name)
         TextView mName;
@@ -392,92 +409,95 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
         View mOptions;
         @BindView(R.id.edit)
         View mEdit;
-        GradientDrawable mFirstCharBackground;
-        private ScriptFile mScriptFile;
+        @BindView(R.id.run)
+        View mRun;
 
-        ScriptFileViewHolder(View itemView) {
+        GradientDrawable mFirstCharBackground;
+        private ExplorerItem mExplorerItem;
+
+        ExplorerItemViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             mFirstCharBackground = (GradientDrawable) mFirstChar.getBackground();
         }
 
         @Override
-        public void bind(ScriptFile file, int position) {
-            mScriptFile = file;
-            mName.setText(file.getSimplifiedName());
-            mDesc.setText(PFiles.getHumanReadableSize(file.length()));
-            if (file.getType() == ScriptFile.TYPE_JAVA_SCRIPT) {
-                mFirstChar.setText("J");
-                mFirstCharBackground.setColor(ResourcesCompat.getColor(getResources(), R.color.color_j, getContext().getTheme()));
-                mEdit.setVisibility(VISIBLE);
-            } else {
-                mFirstChar.setText("R");
-                mFirstCharBackground.setColor(ResourcesCompat.getColor(getResources(), R.color.color_r, getContext().getTheme()));
-                mEdit.setVisibility(GONE);
-            }
+        public void bind(ExplorerItem item, int position) {
+            mExplorerItem = item;
+            mName.setText(ExplorerViewHelper.getDisplayName(item));
+            mDesc.setText(PFiles.getHumanReadableSize(item.getSize()));
+            mFirstChar.setText(ExplorerViewHelper.getIconText(item));
+            mFirstCharBackground.setColor(ExplorerViewHelper.getIconColor(item));
+            mEdit.setVisibility(item.isEditable() ? VISIBLE : GONE);
+            mRun.setVisibility(item.isExecutable() ? VISIBLE : GONE);
         }
 
         @OnClick(R.id.item)
         void onItemClick() {
-            if (mOnScriptFileClickListener != null) {
-                mOnScriptFileClickListener.onScriptFileClick(itemView, mScriptFile);
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onItemClick(itemView, mExplorerItem);
             }
             notifyOperated();
         }
 
         @OnClick(R.id.run)
         void run() {
-            Scripts.run(mScriptFile);
+            Scripts.run(new ScriptFile(mExplorerItem.getPath()));
             notifyOperated();
         }
 
         @OnClick(R.id.edit)
         void edit() {
-            Scripts.edit(mScriptFile);
+            Scripts.edit(new ScriptFile(mExplorerItem.getPath()));
             notifyOperated();
         }
 
         @OnClick(R.id.more)
         void showOptionMenu() {
-            mSelectedScriptFile = mScriptFile;
+            mSelectedItem = mExplorerItem;
             PopupMenu popupMenu = new PopupMenu(getContext(), mOptions);
             popupMenu.inflate(R.menu.menu_script_options);
-            popupMenu.setOnMenuItemClickListener(ScriptListView.this);
+            popupMenu.setOnMenuItemClickListener(ExplorerView.this);
             popupMenu.show();
         }
     }
 
-    protected class DirectoryViewHolder extends BindableViewHolder<ScriptFile> {
+    protected class ExplorerPageViewHolder extends BindableViewHolder<ExplorerPage> {
 
         @BindView(R.id.name)
         public TextView mName;
+
         @BindView(R.id.more)
         public View mOptions;
 
-        private ScriptFile mScriptFile;
+        @BindView(R.id.icon)
+        public ImageView mIcon;
 
-        DirectoryViewHolder(View itemView) {
+        private ExplorerPage mExplorerPage;
+
+        ExplorerPageViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
         @Override
-        public void bind(ScriptFile data, int position) {
-            mName.setText(data.getSimplifiedName());
-            mScriptFile = data;
+        public void bind(ExplorerPage data, int position) {
+            mName.setText(ExplorerViewHelper.getDisplayName(data));
+            mIcon.setImageResource(ExplorerViewHelper.getIcon(data));
+            mExplorerPage = data;
         }
 
         @OnClick(R.id.item)
         void onItemClick() {
-            setCurrentDirectory(mScriptFile);
+            enterChildPage(mExplorerPage);
         }
 
         @OnClick(R.id.more)
         void showOptionMenu() {
-            mSelectedScriptFile = mScriptFile;
+            mSelectedItem = mExplorerPage;
             PopupMenu popupMenu = new PopupMenu(getContext(), mOptions);
             popupMenu.inflate(R.menu.menu_dir_options);
-            popupMenu.setOnMenuItemClickListener(ScriptListView.this);
+            popupMenu.setOnMenuItemClickListener(ExplorerView.this);
             popupMenu.show();
         }
     }
@@ -516,12 +536,12 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
                 mGoBack.setVisibility(GONE);
             }
             if (isDirCategory) {
-                mArrow.setRotation(mDirsCollapsed ? -90 : 0);
-                mSortOrder.setImageResource(mScriptList.isDirSortedAscending() ?
+                mArrow.setRotation(mCurrentPageState.dirsCollapsed ? -90 : 0);
+                mSortOrder.setImageResource(mExplorerItemList.isDirSortedAscending() ?
                         R.drawable.ic_ascending_order : R.drawable.ic_descending_order);
             } else {
-                mArrow.setRotation(mFilesCollapsed ? -90 : 0);
-                mSortOrder.setImageResource(mScriptList.isFileSortedAscending() ?
+                mArrow.setRotation(mCurrentPageState.filesCollapsed ? -90 : 0);
+                mSortOrder.setImageResource(mExplorerItemList.isFileSortedAscending() ?
                         R.drawable.ic_ascending_order : R.drawable.ic_descending_order);
             }
         }
@@ -529,15 +549,15 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
         @OnClick(R.id.order)
         void changeSortOrder() {
             if (mIsDir) {
-                mSortOrder.setImageResource(mScriptList.isDirSortedAscending() ?
+                mSortOrder.setImageResource(mExplorerItemList.isDirSortedAscending() ?
                         R.drawable.ic_ascending_order : R.drawable.ic_descending_order);
-                mScriptList.setDirSortedAscending(!mScriptList.isDirSortedAscending());
-                sort(mScriptList.getDirSortType(), mIsDir);
+                mExplorerItemList.setDirSortedAscending(!mExplorerItemList.isDirSortedAscending());
+                sort(mExplorerItemList.getDirSortType(), mIsDir);
             } else {
-                mSortOrder.setImageResource(mScriptList.isFileSortedAscending() ?
+                mSortOrder.setImageResource(mExplorerItemList.isFileSortedAscending() ?
                         R.drawable.ic_ascending_order : R.drawable.ic_descending_order);
-                mScriptList.setFileSortedAscending(!mScriptList.isFileSortedAscending());
-                sort(mScriptList.getFileSortType(), mIsDir);
+                mExplorerItemList.setFileSortedAscending(!mExplorerItemList.isFileSortedAscending());
+                sort(mExplorerItemList.getFileSortType(), mIsDir);
             }
         }
 
@@ -545,7 +565,7 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
         void showSortOptions() {
             PopupMenu popupMenu = new PopupMenu(getContext(), mSort);
             popupMenu.inflate(R.menu.menu_sort_options);
-            popupMenu.setOnMenuItemClickListener(ScriptListView.this);
+            popupMenu.setOnMenuItemClickListener(ExplorerView.this);
             mDirSortMenuShowing = mIsDir;
             popupMenu.show();
 
@@ -561,11 +581,27 @@ public class ScriptListView extends ThemeColorSwipeRefreshLayout implements Swip
         @OnClick(R.id.title_container)
         void collapseOrExpand() {
             if (mIsDir) {
-                mDirsCollapsed = !mDirsCollapsed;
+                mCurrentPageState.dirsCollapsed = !mCurrentPageState.dirsCollapsed;
             } else {
-                mFilesCollapsed = !mFilesCollapsed;
+                mCurrentPageState.filesCollapsed = !mCurrentPageState.filesCollapsed;
             }
-            mScriptListAdapter.notifyDataSetChanged();
+            mExplorerAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private static class ExplorerPageState {
+
+        ExplorerPage page;
+
+        boolean dirsCollapsed;
+
+        boolean filesCollapsed;
+
+        ExplorerPageState() {
+        }
+
+        ExplorerPageState(ExplorerPage page) {
+            this.page = page;
         }
     }
 }

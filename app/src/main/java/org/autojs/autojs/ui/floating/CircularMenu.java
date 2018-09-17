@@ -15,19 +15,22 @@ import com.stardust.autojs.core.record.Recorder;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.FloatyWindow;
 import com.stardust.floatingcircularactionmenu.CircularActionMenu;
+
+import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.accessibility.AccessibilityService;
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.autojs.record.GlobalActionRecorder;
+import org.autojs.autojs.model.explorer.ExplorerDirPage;
+import org.autojs.autojs.model.explorer.Explorers;
 import org.autojs.autojs.model.script.Scripts;
-import org.autojs.autojs.storage.file.StorageFileProvider;
 import org.autojs.autojs.tool.AccessibilityServiceTool;
 import org.autojs.autojs.tool.RootTool;
 import org.autojs.autojs.ui.common.NotAskAgainDialog;
 import org.autojs.autojs.ui.floating.layoutinspector.LayoutBoundsFloatyWindow;
 import org.autojs.autojs.ui.floating.layoutinspector.LayoutHierarchyFloatyWindow;
 import org.autojs.autojs.ui.main.MainActivity_;
-import org.autojs.autojs.ui.main.scripts.ScriptListView;
+import org.autojs.autojs.ui.main.scripts.ExplorerView;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.Func1;
@@ -132,16 +135,16 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     @OnClick(R.id.script_list)
     void showScriptList() {
         mWindow.collapse();
-        ScriptListView listView = new ScriptListView(mContext);
-        listView.setStorageFileProvider(StorageFileProvider.getDefault());
-        listView.setDirectorySpanSize(2);
+        ExplorerView explorerView = new ExplorerView(mContext);
+        explorerView.setExplorer(Explorers.workspace(), ExplorerDirPage.createRoot(Pref.getScriptDirPath()));
+        explorerView.setDirectorySpanSize(2);
         final MaterialDialog dialog = new ThemeColorMaterialDialogBuilder(mContext)
                 .title(R.string.text_run_script)
-                .customView(listView, false)
+                .customView(explorerView, false)
                 .positiveText(R.string.cancel)
                 .build();
-        listView.setOnItemOperatedListener(file -> dialog.dismiss());
-        listView.setOnScriptFileClickListener((view, file) -> Scripts.run(file));
+        explorerView.setOnItemOperatedListener(file -> dialog.dismiss());
+        explorerView.setOnItemClickListener((view, item) -> Scripts.run(item.toScriptFile()));
         DialogUtils.showDialog(dialog);
     }
 

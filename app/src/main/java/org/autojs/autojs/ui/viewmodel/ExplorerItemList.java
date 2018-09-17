@@ -2,11 +2,10 @@ package org.autojs.autojs.ui.viewmodel;
 
 import android.content.SharedPreferences;
 
-import org.autojs.autojs.model.script.ScriptFile;
-import org.autojs.autojs.ui.main.scripts.ScriptListView;
-import com.stardust.util.FileSorter;
+import org.autojs.autojs.model.explorer.ExplorerItem;
+import org.autojs.autojs.model.explorer.ExplorerPage;
+import org.autojs.autojs.model.explorer.ExplorerSorter;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -14,7 +13,7 @@ import java.util.Comparator;
  * Created by Stardust on 2017/9/30.
  */
 
-public class ScriptList {
+public class ExplorerItemList {
 
     public static class SortConfig {
 
@@ -83,8 +82,8 @@ public class ScriptList {
     public static final int SORT_TYPE_DATE = 0x40;
 
     private SortConfig mSortConfig = new SortConfig();
-    private ArrayList<ScriptFile> mScriptFiles = new ArrayList<>();
-    private ArrayList<ScriptFile> mDirectories = new ArrayList<>();
+    private ArrayList<ExplorerItem> mItems = new ArrayList<>();
+    private ArrayList<ExplorerPage> mItemGroups = new ArrayList<>();
 
 
     public boolean isDirSortedAscending() {
@@ -111,66 +110,66 @@ public class ScriptList {
         mSortConfig.mFileSortedAscending = fileSortedAscending;
     }
 
-    private Comparator<File> getComparator(int sortType) {
+    private Comparator<ExplorerItem> getComparator(int sortType) {
         switch (sortType) {
             case SORT_TYPE_NAME:
-                return FileSorter.NAME;
+                return ExplorerSorter.NAME;
             case SORT_TYPE_DATE:
-                return FileSorter.DATE;
+                return ExplorerSorter.DATE;
             case SORT_TYPE_SIZE:
-                return FileSorter.SIZE;
+                return ExplorerSorter.SIZE;
             case SORT_TYPE_TYPE:
-                return FileSorter.TYPE;
+                return ExplorerSorter.TYPE;
         }
         throw new IllegalArgumentException("unknown type " + sortType);
     }
 
-    public int directoryCount() {
-        return mDirectories.size();
+    public int groupCount() {
+        return mItemGroups.size();
     }
 
-    public int fileCount() {
-        return mScriptFiles.size();
+    public int itemCount() {
+        return mItems.size();
     }
 
     public void clear() {
-        mScriptFiles.clear();
-        mDirectories.clear();
+        mItems.clear();
+        mItemGroups.clear();
     }
 
-    public void add(ScriptFile file) {
-        if (file.isDirectory()) {
-            mDirectories.add(file);
+    public void add(ExplorerItem item) {
+        if (item instanceof ExplorerPage) {
+            mItemGroups.add((ExplorerPage) item);
         } else {
-            mScriptFiles.add(file);
+            mItems.add(item);
         }
     }
 
-    public ScriptFile getDir(int i) {
-        return mDirectories.get(i);
+    public ExplorerPage getItemGroup(int i) {
+        return mItemGroups.get(i);
     }
 
-    public ScriptFile getFile(int i) {
-        return mScriptFiles.get(i);
+    public ExplorerItem getItem(int i) {
+        return mItems.get(i);
     }
 
     public int count() {
-        return mScriptFiles.size() + mDirectories.size();
+        return mItems.size() + mItemGroups.size();
     }
 
-    public void sortDir(int sortType) {
+    public void sortItemGroup(int sortType) {
         mSortConfig.mDirSortType = sortType;
-        FileSorter.sort(mDirectories, getComparator(sortType), mSortConfig.mDirSortedAscending);
+        ExplorerSorter.sort(mItemGroups, getComparator(sortType), mSortConfig.mDirSortedAscending);
     }
 
     public void sortFile(int sortType) {
         mSortConfig.mFileSortType = sortType;
-        FileSorter.sort(mScriptFiles, getComparator(sortType), mSortConfig.mFileSortedAscending);
+        ExplorerSorter.sort(mItems, getComparator(sortType), mSortConfig.mFileSortedAscending);
     }
 
     public void sort() {
-        FileSorter.sort(mDirectories, getComparator(mSortConfig.mDirSortType), mSortConfig.mDirSortedAscending);
-        FileSorter.sort(mScriptFiles, getComparator(mSortConfig.mFileSortType), mSortConfig.mFileSortedAscending);
+        ExplorerSorter.sort(mItemGroups, getComparator(mSortConfig.mDirSortType), mSortConfig.mDirSortedAscending);
+        ExplorerSorter.sort(mItems, getComparator(mSortConfig.mFileSortType), mSortConfig.mFileSortedAscending);
     }
 
     public SortConfig getSortConfig() {
@@ -181,8 +180,8 @@ public class ScriptList {
         mSortConfig = sortConfig;
     }
 
-    public ScriptList cloneConfig() {
-        ScriptList list = new ScriptList();
+    public ExplorerItemList cloneConfig() {
+        ExplorerItemList list = new ExplorerItemList();
         list.mSortConfig = mSortConfig;
         return list;
     }

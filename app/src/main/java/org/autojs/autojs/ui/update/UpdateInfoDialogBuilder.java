@@ -18,12 +18,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.util.IntentUtil;
 
 import org.autojs.autojs.BuildConfig;
+import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.network.download.DownloadManager;
 import org.autojs.autojs.network.entity.VersionInfo;
-import org.autojs.autojs.storage.file.StorageFileProvider;
 import org.autojs.autojs.tool.IntentTool;
 import org.autojs.autojs.ui.widget.CommonMarkdownView;
+
+import java.io.File;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
@@ -113,7 +115,7 @@ public class UpdateInfoDialogBuilder extends MaterialDialog.Builder {
 
     @SuppressLint("CheckResult")
     private void directlyDownload(String downloadUrl) {
-        final String path = StorageFileProvider.getDefaultDirectoryPath() + "AutoJs.apk";
+        final String path = new File(Pref.getScriptDirPath(), "AutoJs.apk").getPath();
         DownloadManager.getInstance().downloadWithProgress(getContext(), downloadUrl, path)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(file -> IntentUtil.installApk(getContext(), file.getPath()),

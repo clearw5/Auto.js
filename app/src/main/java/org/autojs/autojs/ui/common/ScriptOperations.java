@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,22 +21,24 @@ import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 
+import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.external.ScriptIntents;
+import org.autojs.autojs.model.explorer.Explorer;
+import org.autojs.autojs.model.explorer.ExplorerFileItem;
+import org.autojs.autojs.model.explorer.ExplorerItem;
+import org.autojs.autojs.model.explorer.Explorers;
 import org.autojs.autojs.storage.file.TmpScriptFiles;
 import org.autojs.autojs.model.sample.SampleFile;
 import org.autojs.autojs.model.script.ScriptFile;
 import org.autojs.autojs.model.script.Scripts;
-import org.autojs.autojs.storage.file.StorageFileProvider;
 import org.autojs.autojs.network.download.DownloadManager;
-import org.autojs.autojs.tool.SimpleObserver;
 import org.autojs.autojs.ui.filechooser.FileChooserDialogBuilder;
 import org.autojs.autojs.ui.shortcut.ShortcutCreateActivity;
 import org.autojs.autojs.ui.timing.TimedTaskSettingActivity_;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,23 +54,34 @@ import io.reactivex.subjects.PublishSubject;
  * Created by Stardust on 2017/7/31.
  */
 
+@SuppressLint("CheckResult")
 public class ScriptOperations {
 
     private static final String LOG_TAG = "ScriptOperations";
+    private final ExplorerItem mExplorerItem;
     private Context mContext;
     private View mView;
     private ScriptFile mCurrentDirectory;
-    private StorageFileProvider mStorageFileProvider;
+    private Explorer mExplorer;
 
     public ScriptOperations(Context context, View view, ScriptFile currentDirectory) {
         mContext = context;
         mView = view;
         mCurrentDirectory = currentDirectory;
-        mStorageFileProvider = StorageFileProvider.getDefault();
+        mExplorer = Explorers.workspace();
+        mExplorerItem = new ExplorerFileItem(currentDirectory, null);
+    }
+
+    public ScriptOperations(Context context, View view, ExplorerItem item) {
+        mContext = context;
+        mView = view;
+        mCurrentDirectory = item.toScriptFile();
+        mExplorer = Explorers.workspace();
+        mExplorerItem = item;
     }
 
     public ScriptOperations(Context context, View view) {
-        this(context, view, new ScriptFile(StorageFileProvider.getDefaultDirectory()));
+        this(context, view, new ScriptFile(Pref.getScriptDirPath()));
     }
 
     public void newScriptFileForScript(final String script) {
@@ -97,12 +109,16 @@ public class ScriptOperations {
                     return;
                 }
             }
-            mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(path));
+            notifyFileCreated(mCurrentDirectory, new ScriptFile(path));
             if (edit)
                 Scripts.edit(path);
         } else {
             showMessage(R.string.text_create_fail);
         }
+    }
+
+    private void notifyFileCreated(ScriptFile directory, ScriptFile scriptFile) {
+        mExplorer.notifyItemCreated(new ExplorerFileItem(scriptFile, mExplorerItem.getParent()));
     }
 
     public void newScriptFile() {
@@ -123,7 +139,7 @@ public class ScriptOperations {
                     return pathTo;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(path -> mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(path)));
+                .doOnNext(path -> notifyFileCreated(mCurrentDirectory, new ScriptFile(path)));
     }
 
     public Observable<String> importFile(String prefix, final InputStream inputStream, final String ext) {
@@ -136,7 +152,7 @@ public class ScriptOperations {
                     } else {
                         showMessage(R.string.text_import_fail);
                     }
-                    mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(pathTo));
+                    notifyFileCreated(mCurrentDirectory, new ScriptFile(pathTo));
                     return pathTo;
                 });
     }
@@ -148,7 +164,7 @@ public class ScriptOperations {
                     ScriptFile newDir = new ScriptFile(getCurrentDirectory(), path);
                     if (newDir.mkdirs()) {
                         showMessage(R.string.text_already_create);
-                        mStorageFileProvider.notifyFileCreated(mCurrentDirectory, new ScriptFile(newDir));
+                        notifyFileCreated(mCurrentDirectory, new ScriptFile(newDir));
                     } else {
                         showMessage(R.string.text_create_fail);
                     }
@@ -213,10 +229,15 @@ public class ScriptOperations {
                 .map(newName -> {
                     PFile newFile = file.renameAndReturnNewFile(newName);
                     if (newFile != null) {
-                        mStorageFileProvider.notifyFileChanged(mCurrentDirectory, oldFile, newFile);
+                        notifyFileChanged(mCurrentDirectory, oldFile, newFile);
                     }
                     return newFile != null;
                 });
+    }
+
+    private void notifyFileChanged(ScriptFile directory, ScriptFile oldFile, PFile newFile) {
+        mExplorer.notifyItemChanged(new ExplorerFileItem(oldFile, mExplorerItem.getParent()),
+                new ExplorerFileItem(newFile, mExplorerItem.getParent()));
     }
 
     public void createShortcut(ScriptFile file) {
@@ -244,8 +265,12 @@ public class ScriptOperations {
                 .subscribe(deleted -> {
                     showMessage(deleted ? R.string.text_already_delete : R.string.text_delete_failed);
                     if (deleted)
-                        mStorageFileProvider.notifyFileRemoved(mCurrentDirectory, scriptFile);
+                        notifyFileRemoved(mCurrentDirectory, scriptFile);
                 });
+    }
+
+    private void notifyFileRemoved(ScriptFile directory, ScriptFile scriptFile) {
+        mExplorer.notifyItemRemoved(new ExplorerFileItem(scriptFile, mExplorerItem.getParent()));
     }
 
 

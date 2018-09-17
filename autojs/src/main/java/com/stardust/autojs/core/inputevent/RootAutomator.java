@@ -41,9 +41,15 @@ public class RootAutomator implements Shell.Callback {
     private final Object mReadyLock = new Object();
     private volatile boolean mReady = false;
     private final Context mContext;
+    private String mInputDevice;
 
-    public RootAutomator(Context context, boolean waitForReady) throws IOException {
+    public RootAutomator(Context context, String inputDevice, boolean waitForReady) throws IOException {
         mContext = context;
+        if (inputDevice == null) {
+            mInputDevice = RootAutomatorEngine.getDeviceNameOrPath(mContext, InputDevices.getTouchDeviceName());
+        } else {
+            mInputDevice = inputDevice;
+        }
         mShell = new Shell(true);
         mShell.setCallback(this);
         if (waitForReady) {
@@ -180,19 +186,21 @@ public class RootAutomator implements Shell.Callback {
         sendEvent(EV_ABS, ABS_MT_POSITION_X, scaleX(x));
         sendEvent(EV_ABS, ABS_MT_POSITION_Y, scaleY(y));
         sendEvent(EV_ABS, ABS_MT_TOUCH_MAJOR, 5);
-        sendEvent(EV_SYN, SYN_REPORT, 0x00000000);
+        sendEvent(EV_ABS, ABS_MT_WIDTH_MAJOR, 5);
+        sendEvent(EV_SYN, SYN_REPORT, 0);
     }
 
     private void touchDown0(int x, int y, int id) throws IOException {
         mSlotIdMap.put(id, 0);
         sendEvent(EV_ABS, ABS_MT_TRACKING_ID, mTracingId.getAndIncrement());
-        sendEvent(EV_KEY, BTN_TOUCH, 0x00000001);
-        sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000001);
+        sendEvent(EV_KEY, BTN_TOUCH, DOWN);
+        //sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000001);
         sendEvent(EV_ABS, ABS_MT_POSITION_X, scaleX(x));
         sendEvent(EV_ABS, ABS_MT_POSITION_Y, scaleY(y));
         //sendEvent(EV_ABS, ABS_MT_PRESSURE, 200);
         sendEvent(EV_ABS, ABS_MT_TOUCH_MAJOR, 5);
-        sendEvent(EV_SYN, SYN_REPORT, 0x00000000);
+        sendEvent(EV_ABS, ABS_MT_WIDTH_MAJOR, 5);
+        sendEvent(EV_SYN, SYN_REPORT, 0);
     }
 
     public void touchDown(int x, int y) throws IOException {
@@ -211,8 +219,8 @@ public class RootAutomator implements Shell.Callback {
         sendEvent(EV_ABS, ABS_MT_SLOT, slotId);
         sendEvent(EV_ABS, ABS_MT_TRACKING_ID, 0xffffffff);
         if (mSlotIdMap.size() == 0) {
-            sendEvent(EV_KEY, BTN_TOUCH, 0x00000000);
-            sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000000);
+            sendEvent(EV_KEY, BTN_TOUCH, UP);
+            //sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000000);
         }
         sendEvent(EV_SYN, SYN_REPORT, 0x00000000);
     }

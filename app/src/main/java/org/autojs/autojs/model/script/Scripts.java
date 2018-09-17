@@ -12,17 +12,18 @@ import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.ScriptSource;
 
+import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.external.ScriptIntents;
 import org.autojs.autojs.external.shortcut.Shortcut;
 import org.autojs.autojs.external.shortcut.ShortcutActivity;
-import org.autojs.autojs.storage.file.StorageFileProvider;
 import org.autojs.autojs.ui.edit.EditActivity;
 
 import org.mozilla.javascript.RhinoException;
 
 import java.io.File;
+import java.io.FileFilter;
 
 /**
  * Created by Stardust on 2017/5/3.
@@ -34,6 +35,9 @@ public class Scripts {
     public static final String EXTRA_EXCEPTION_MESSAGE = "message";
     public static final String EXTRA_EXCEPTION_LINE_NUMBER = "lineNumber";
     public static final String EXTRA_EXCEPTION_COLUMN_NUMBER = "columnNumber";
+
+    public static final FileFilter FILE_FILTER = file ->
+            file.isDirectory() || file.getName().endsWith(".js") || file.getName().endsWith(".auto");
 
     private static final ScriptExecutionListener BROADCAST_SENDER_SCRIPT_EXECUTION_LISTENER = new SimpleScriptExecutionListener() {
 
@@ -99,8 +103,8 @@ public class Scripts {
 
     public static ScriptExecution run(ScriptSource source) {
         return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
-                .executePath(StorageFileProvider.getDefaultDirectoryPath())
-                .requirePath(StorageFileProvider.getDefaultDirectoryPath()));
+                .executePath(Pref.getScriptDirPath())
+                .requirePath(Pref.getScriptDirPath()));
     }
 
     public static ScriptExecution runWithBroadcastSender(File file) {

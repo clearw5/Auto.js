@@ -24,7 +24,7 @@
         </com.stardust.theme.widget.ThemeColorToolbar>
     </android.support.design.widget.AppBarLayout>
 
-    <org.autojs.autojs.ui.main.scripts.ScriptListView
+    <org.autojs.autojs.ui.main.scripts.ExplorerView
         android:id="@+id/script_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

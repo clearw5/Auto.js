@@ -9,8 +9,9 @@ import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.autojs.script.SequenceScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
+
+import org.autojs.autojs.Pref;
 import org.autojs.autojs.autojs.AutoJs;
-import org.autojs.autojs.storage.file.StorageFileProvider;
 import org.autojs.autojs.model.script.PathChecker;
 
 import java.io.File;
@@ -51,7 +52,7 @@ public class ScriptIntents {
             }
             config.executePath(new File(path).getParent());
         } else {
-            config.executePath(StorageFileProvider.getDefaultDirectoryPath());
+            config.executePath(Pref.getScriptDirPath());
         }
         if (source == null) {
             return false;

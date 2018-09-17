@@ -21,13 +21,12 @@
         android:paddingTop="16dp">
 
         <ImageView
+            android:id="@+id/icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/ic_folder_yellow_100px"
-            android:tint="#ffda93"/>
+            android:layout_marginRight="16dp"/>
 
         <TextView
             android:id="@+id/name"

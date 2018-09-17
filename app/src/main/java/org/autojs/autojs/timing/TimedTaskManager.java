@@ -14,8 +14,8 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.ModelAdapter;
 import com.stardust.app.GlobalAppContext;
 
+import org.autojs.autojs.Pref;
 import org.autojs.autojs.storage.database.ModelChange;
-import org.autojs.autojs.storage.file.StorageFileProvider;
 
 import java.io.File;
 import java.util.List;
@@ -106,7 +106,7 @@ public class TimedTaskManager {
     public Flowable<IntentTask> getIntentTaskOfAction(String action) {
         IntentTask intentTask = new IntentTask();
         intentTask.setAction(Intent.ACTION_BOOT_COMPLETED);
-        intentTask.setScriptPath(new File(StorageFileProvider.getDefaultDirectory(), "boot.js").getPath());
+        intentTask.setScriptPath(new File(Pref.getScriptDirPath(), "boot.js").getPath());
         return Flowable.just(intentTask);
 //        return RXSQLite.rx(SQLite.select().from(IntentTask.class))
 //                .queryStreamResults()
