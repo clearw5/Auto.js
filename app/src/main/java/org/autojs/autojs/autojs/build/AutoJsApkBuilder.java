@@ -50,6 +50,7 @@ public class AutoJsApkBuilder extends ApkBuilder {
         public static AppConfig fromProjectConfig(String projectDir, ProjectConfig projectConfig) {
             return new AppConfig()
                     .setAppName(projectConfig.getName())
+                    .setPackageName(projectConfig.getPackageName())
                     .ignoreDir(new File(projectDir, projectConfig.getBuildDir()))
                     .setVersionCode(projectConfig.getVersionCode())
                     .setVersionName(projectConfig.getVersionName())
