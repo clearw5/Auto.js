@@ -397,4 +397,5 @@
     <string name="text_project_location">项目位置</string>
     <string name="text_new_project">新建项目</string>
     <string name="text_js_file">js文件</string>
+    <string name="text_invalid_project">无效项目</string>
 </resources>

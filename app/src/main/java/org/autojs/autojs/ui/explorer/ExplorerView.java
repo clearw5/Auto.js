@@ -111,7 +111,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
         mCurrentPageState = currentPageState;
         if (mCurrentPageState.page instanceof ExplorerProjectPage) {
             mProjectToolbar.setVisibility(VISIBLE);
-            mProjectToolbar.setProject(currentPageState.page.toScriptFile(), ((ExplorerProjectPage) currentPageState.page).getProjectConfig());
+            mProjectToolbar.setProject(currentPageState.page.toScriptFile());
         } else {
             mProjectToolbar.setVisibility(GONE);
         }

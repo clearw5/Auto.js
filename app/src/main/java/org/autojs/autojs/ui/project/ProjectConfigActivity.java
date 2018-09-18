@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.stardust.autojs.project.ProjectConfig;
+import com.stardust.autojs.runtime.api.Dialogs;
 import com.stardust.pio.PFiles;
 
 import org.androidannotations.annotations.AfterViews;
@@ -24,6 +25,7 @@ import org.autojs.autojs.model.explorer.ExplorerFileItem;
 import org.autojs.autojs.model.explorer.ExplorerItem;
 import org.autojs.autojs.model.explorer.Explorers;
 import org.autojs.autojs.model.project.ProjectTemplate;
+import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.widget.SimpleTextWatcher;
 
@@ -89,11 +91,21 @@ public class ProjectConfigActivity extends BaseActivity {
             }
             mDirectory = new File(dir);
             mProjectConfig = ProjectConfig.fromProjectDir(dir);
+            if (mProjectConfig == null) {
+                new ThemeColorMaterialDialogBuilder(this)
+                        .title(R.string.text_invalid_project)
+                        .positiveText(R.string.ok)
+                        .dismissListener(dialogInterface -> finish())
+                        .show();
+            }
         }
     }
 
     @AfterViews
     void setupViews() {
+        if (mProjectConfig == null) {
+            return;
+        }
         setToolbarAsBack(mNewProject ? getString(R.string.text_new_project) : mProjectConfig.getName());
         if (mNewProject) {
             mAppName.addTextChangedListener(new SimpleTextWatcher(s ->
