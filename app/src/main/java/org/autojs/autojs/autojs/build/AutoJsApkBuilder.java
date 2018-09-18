@@ -1,16 +1,15 @@
 package org.autojs.autojs.autojs.build;
 
 import android.graphics.Bitmap;
-import android.text.TextUtils;
+import android.graphics.BitmapFactory;
 
 import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.apkbuilder.ApkBuilder;
 import com.stardust.autojs.apkbuilder.ManifestEditor;
 import com.stardust.autojs.apkbuilder.util.StreamUtils;
+import com.stardust.autojs.project.BuildInfo;
 import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.pio.PFiles;
-
-import org.autojs.autojs.App;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
 /**
@@ -42,9 +42,26 @@ public class AutoJsApkBuilder extends ApkBuilder {
         String appName;
         String versionName;
         int versionCode;
-        String jsPath;
+        String sourcePath;
         String packageName;
+        ArrayList<File> ignoredDirs = new ArrayList<>();
         Callable<Bitmap> icon;
+
+        public static AppConfig fromProjectConfig(String projectDir, ProjectConfig projectConfig) {
+            return new AppConfig()
+                    .setAppName(projectConfig.getName())
+                    .ignoreDir(new File(projectDir, projectConfig.getBuildDir()))
+                    .setVersionCode(projectConfig.getVersionCode())
+                    .setVersionName(projectConfig.getVersionName())
+                    .setIcon(projectConfig.getIcon())
+                    .setSourcePath(projectDir);
+        }
+
+
+        public AppConfig ignoreDir(File dir) {
+            ignoredDirs.add(dir);
+            return this;
+        }
 
         public AppConfig setAppName(String appName) {
             this.appName = appName;
@@ -61,8 +78,8 @@ public class AutoJsApkBuilder extends ApkBuilder {
             return this;
         }
 
-        public AppConfig setJsPath(String jsPath) {
-            this.jsPath = jsPath;
+        public AppConfig setSourcePath(String sourcePath) {
+            this.sourcePath = sourcePath;
             return this;
         }
 
@@ -76,6 +93,31 @@ public class AutoJsApkBuilder extends ApkBuilder {
             this.icon = icon;
             return this;
         }
+
+        public AppConfig setIcon(String iconPath) {
+            this.icon = () -> BitmapFactory.decodeFile(iconPath);
+            return this;
+        }
+
+        public String getAppName() {
+            return appName;
+        }
+
+        public String getVersionName() {
+            return versionName;
+        }
+
+        public int getVersionCode() {
+            return versionCode;
+        }
+
+        public String getSourcePath() {
+            return sourcePath;
+        }
+
+        public String getPackageName() {
+            return packageName;
+        }
     }
 
     private ProgressCallback mProgressCallback;
@@ -86,6 +128,7 @@ public class AutoJsApkBuilder extends ApkBuilder {
     public AutoJsApkBuilder(InputStream apkInputStream, File outApkFile, String workspacePath) {
         super(apkInputStream, outApkFile, workspacePath);
         mWorkspacePath = workspacePath;
+        PFiles.ensureDir(outApkFile.getPath());
     }
 
     public AutoJsApkBuilder(File inFile, File outFile, String workspacePath) throws FileNotFoundException {
@@ -124,7 +167,9 @@ public class AutoJsApkBuilder extends ApkBuilder {
                 StreamUtils.write(new FileInputStream(child),
                         new FileOutputStream(new File(toDir, child.getName())));
             } else {
-                copyDir(PFiles.join(relativePath, child.getName() + "/"), child.getPath());
+                if (!mAppConfig.ignoredDirs.contains(child)) {
+                    copyDir(PFiles.join(relativePath, child.getName() + "/"), child.getPath());
+                }
             }
         }
     }
@@ -144,26 +189,19 @@ public class AutoJsApkBuilder extends ApkBuilder {
                 .setPackageName(config.packageName);
         setArscPackageName(config.packageName);
         updateProjectConfig(config);
-        setScriptFile(config.jsPath);
+        setScriptFile(config.sourcePath);
         return this;
     }
 
     private void updateProjectConfig(AppConfig config) {
-        if (!PFiles.isDir(config.jsPath)) {
+        if (!PFiles.isDir(config.sourcePath)) {
             return;
         }
-        ProjectConfig projectConfig = ProjectConfig.fromProjectDir(config.jsPath);
-        if (projectConfig == null)
-            projectConfig = new ProjectConfig();
-        projectConfig.setName(config.appName)
-                .setPackageName(config.packageName)
-                .setVersionCode(config.versionCode)
-                .setVersionName(config.versionName);
-        if (TextUtils.isEmpty(projectConfig.getMainScriptFile())) {
-            projectConfig.setMainScriptFile("main.js");
-        }
-        updateProjectConfigAssets(projectConfig, config.jsPath, config.jsPath);
-        PFiles.write(ProjectConfig.configFileOfDir(config.jsPath), projectConfig.toJson());
+        ProjectConfig projectConfig = ProjectConfig.fromProjectDir(config.sourcePath);
+        long buildNumber = projectConfig.getBuildInfo().getBuildNumber();
+        projectConfig.setBuildInfo(BuildInfo.generate(buildNumber + 1));
+        //updateProjectConfigAssets(projectConfig, config.sourcePath, config.sourcePath);
+        PFiles.write(ProjectConfig.configFileOfDir(config.sourcePath), projectConfig.toJson());
     }
 
     private void updateProjectConfigAssets(ProjectConfig config, String projectDir, String dir) {
@@ -189,8 +227,11 @@ public class AutoJsApkBuilder extends ApkBuilder {
         mManifestEditor.commit();
         if (mAppConfig.icon != null) {
             try {
-                mAppConfig.icon.call().compress(Bitmap.CompressFormat.PNG, 100,
-                        new FileOutputStream(new File(mWorkspacePath, "res/mipmap/ic_launcher.png")));
+                Bitmap bitmap = mAppConfig.icon.call();
+                if (bitmap != null) {
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100,
+                            new FileOutputStream(new File(mWorkspacePath, "res/mipmap/ic_launcher.png")));
+                }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -203,6 +244,7 @@ public class AutoJsApkBuilder extends ApkBuilder {
         if (mProgressCallback != null) {
             GlobalAppContext.post(() -> mProgressCallback.onSign(AutoJsApkBuilder.this));
         }
+
         return (AutoJsApkBuilder) super.sign();
     }
 

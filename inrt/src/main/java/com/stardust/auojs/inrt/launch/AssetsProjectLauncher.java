@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 
 import com.stardust.auojs.inrt.BuildConfig;
 import com.stardust.auojs.inrt.LogActivity;
@@ -81,15 +82,12 @@ public class AssetsProjectLauncher {
     private void prepare() {
         String projectConfigPath = PFiles.join(mProjectDir, ProjectConfig.CONFIG_FILE_NAME);
         ProjectConfig projectConfig = ProjectConfig.fromFile(projectConfigPath);
-        if (!BuildConfig.DEBUG && projectConfig != null && projectConfig.getVersionCode() == mProjectConfig.getVersionCode()) {
+        if (!BuildConfig.DEBUG && projectConfig != null &&
+                TextUtils.equals(projectConfig.getBuildInfo().getBuildId(), mProjectConfig.getBuildInfo().getBuildId())) {
             return;
         }
-        PFiles.copyAsset(mActivity, PFiles.join(mAssetsProjectDir, ProjectConfig.CONFIG_FILE_NAME), projectConfigPath);
-        PFiles.copyAsset(mActivity, PFiles.join(mAssetsProjectDir, mProjectConfig.getMainScriptFile()),
-                mMainScriptFile.getPath());
-        for (String asset : mProjectConfig.getAssets()) {
-            PFiles.copyAsset(mActivity, PFiles.join(mAssetsProjectDir, asset), PFiles.join(mProjectDir, asset));
-        }
+        PFiles.deleteRecursively(new File(mAssetsProjectDir));
+        PFiles.copyAssetDir(mActivity, mAssetsProjectDir, mProjectDir);
     }
 
 }

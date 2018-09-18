@@ -10,8 +10,10 @@ import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -50,12 +52,15 @@ import io.reactivex.schedulers.Schedulers;
 @EActivity(R.layout.activity_build)
 public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.ProgressCallback {
 
-    public static final String EXTRA_SOURCE_FILE = BuildActivity.class.getName() + ".extra_source_file";
+    public static final String EXTRA_SOURCE = BuildActivity.class.getName() + ".extra_source_file";
 
     private static final String LOG_TAG = "BuildActivity";
 
     @ViewById(R.id.source_path)
     TextInputEditText mSourcePath;
+
+    @ViewById(R.id.source_path_container)
+    View mSourcePathContainer;
 
     @ViewById(R.id.output_path)
     TextInputEditText mOutputPath;
@@ -75,7 +80,12 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     @ViewById(R.id.icon)
     ImageView mIcon;
 
+    @ViewById(R.id.app_config)
+    CardView mAppConfig;
+
+    private ProjectConfig mProjectConfig;
     private MaterialDialog mProgressDialog;
+    private String mSource;
     private boolean mIsDefaultIcon = true;
 
     @Override
@@ -86,17 +96,11 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     @AfterViews
     void setupViews() {
         setToolbarAsBack(getString(R.string.text_build_apk));
-        String sourcePath = getIntent().getStringExtra(EXTRA_SOURCE_FILE);
-        if (sourcePath != null) {
-            setupWithSourceFile(new ScriptFile(sourcePath));
+        mSource = getIntent().getStringExtra(EXTRA_SOURCE);
+        if (mSource != null) {
+            setupWithSourceFile(new ScriptFile(mSource));
         }
-
-        loadRewardedVideoAd();
         checkApkBuilderPlugin();
-    }
-
-    private void loadRewardedVideoAd() {
-
     }
 
     private void checkApkBuilderPlugin() {
@@ -119,7 +123,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         new ThemeColorMaterialDialogBuilder(this)
                 .content(msgRes)
                 .positiveText(R.string.ok)
-                .negativeText(R.string.text_exit)
+                .negativeText(R.string.cancel)
                 .onPositive((dialog, which) -> downloadPlugin())
                 .onNegative((dialog, which) -> {
                     if (finishIfCanceled) finish();
@@ -162,18 +166,18 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     }
 
     private void setSource(File file) {
-        mSourcePath.setText(file.getPath());
-        if (!file.isDirectory())
+        if (!file.isDirectory()) {
+            mSourcePath.setText(file.getPath());
             return;
-        ProjectConfig config = ProjectConfig.fromProjectDir(file.getPath());
-        if (config == null)
+        }
+        mProjectConfig = ProjectConfig.fromProjectDir(file.getPath());
+        if (mProjectConfig == null) {
             return;
-        mAppName.setText(config.getName());
-        mPackageName.setText(config.getPackageName());
-        mVersionCode.setText(String.valueOf(config.getVersionCode()));
-        mVersionName.setText(config.getVersionName());
+        }
+        mOutputPath.setText(new File(mSource, mProjectConfig.getBuildDir()).getPath());
+        mAppConfig.setVisibility(View.GONE);
+        mSourcePathContainer.setVisibility(View.GONE);
     }
-
 
     @Click(R.id.select_output)
     void selectOutputDirPath() {
@@ -218,7 +222,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     }
 
     private boolean checkNotEmpty(TextInputEditText editText) {
-        if (!TextUtils.isEmpty(editText.getText()))
+        if (!TextUtils.isEmpty(editText.getText()) || !editText.isShown())
             return true;
         // TODO: 2017/12/8 more beautiful ways?
         String hint = ((TextInputLayout) editText.getParent().getParent()).getHint().toString();
@@ -228,39 +232,47 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
 
     @SuppressLint("CheckResult")
     private void doBuildingApk() {
+        AutoJsApkBuilder.AppConfig appConfig = createAppConfig();
+        File tmpDir = new File(getCacheDir(), "build/");
+        File outApk = new File(mOutputPath.getText().toString(),
+                String.format("%s_v%s.apk", appConfig.getAppName(), appConfig.getVersionName()));
+        showProgressDialog();
+        Observable.fromCallable(() -> callApkBuilder(tmpDir, outApk, appConfig))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(apkBuilder -> onBuildSuccessful(outApk),
+                        this::onBuildFailed);
+    }
+
+    private AutoJsApkBuilder.AppConfig createAppConfig() {
+        if (mProjectConfig != null) {
+            return AutoJsApkBuilder.AppConfig.fromProjectConfig(mSource, mProjectConfig);
+        }
         String jsPath = mSourcePath.getText().toString();
         String versionName = mVersionName.getText().toString();
         int versionCode = Integer.parseInt(mVersionCode.getText().toString());
         String appName = mAppName.getText().toString();
         String packageName = mPackageName.getText().toString();
-        File tmpDir = new File(getCacheDir(), "build/");
-        File outApk = new File(mOutputPath.getText().toString(),
-                String.format("%s_v%s.apk", appName, versionName));
-        showProgressDialog();
-        Observable.fromCallable(() -> {
-                    InputStream templateApk = ApkBuilderPluginHelper.openTemplateApk(BuildActivity.this);
-                    return new AutoJsApkBuilder(templateApk, outApk, tmpDir.getPath())
-                            .setProgressCallback(BuildActivity.this)
-                            .prepare()
-                            .withConfig(new AutoJsApkBuilder.AppConfig()
-                                    .setAppName(appName)
-                                    .setJsPath(jsPath)
-                                    .setPackageName(packageName)
-                                    .setVersionCode(versionCode)
-                                    .setVersionName(versionName)
-                                    .setIcon(mIsDefaultIcon ? null : (Callable<Bitmap>) () ->
-                                            BitmapTool.drawableToBitmap(mIcon.getDrawable())
-                                    )
-                            )
-                            .build()
-                            .sign()
-                            .cleanWorkspace();
-                }
-        )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(apkBuilder -> onBuildSuccessful(outApk),
-                        this::onBuildFailed);
+        return new AutoJsApkBuilder.AppConfig()
+                .setAppName(appName)
+                .setSourcePath(jsPath)
+                .setPackageName(packageName)
+                .setVersionCode(versionCode)
+                .setVersionName(versionName)
+                .setIcon(mIsDefaultIcon ? null : (Callable<Bitmap>) () ->
+                        BitmapTool.drawableToBitmap(mIcon.getDrawable())
+                );
+    }
+
+    private AutoJsApkBuilder callApkBuilder(File tmpDir, File outApk, AutoJsApkBuilder.AppConfig appConfig) throws Exception {
+        InputStream templateApk = ApkBuilderPluginHelper.openTemplateApk(BuildActivity.this);
+        return new AutoJsApkBuilder(templateApk, outApk, tmpDir.getPath())
+                .setProgressCallback(BuildActivity.this)
+                .prepare()
+                .withConfig(appConfig)
+                .build()
+                .sign()
+                .cleanWorkspace();
     }
 
     private void showProgressDialog() {

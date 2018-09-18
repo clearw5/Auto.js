@@ -8,12 +8,11 @@ import android.support.design.widget.FloatingActionButton;
 import org.autojs.autojs.R;
 import org.autojs.autojs.ui.main.QueryEvent;
 import org.autojs.autojs.ui.main.ViewPagerFragment;
-import org.autojs.autojs.ui.main.scripts.ExplorerView;
+
 import com.stardust.util.BackPressedHandler;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 

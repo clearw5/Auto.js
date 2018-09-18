@@ -3,6 +3,7 @@ package org.autojs.autojs.model.script;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.execution.ExecutionConfig;
@@ -96,15 +97,27 @@ public class Scripts {
     }
 
     public static ScriptExecution run(ScriptFile file) {
-        return AutoJs.getInstance().getScriptEngineService().execute(file.toSource(), new ExecutionConfig()
-                .executePath(file.getParent()));
+        try {
+            return AutoJs.getInstance().getScriptEngineService().execute(file.toSource(), new ExecutionConfig()
+                    .executePath(file.getParent()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(GlobalAppContext.get(), e.getMessage(), Toast.LENGTH_LONG).show();
+            return null;
+        }
     }
 
 
     public static ScriptExecution run(ScriptSource source) {
-        return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
+        try {
+            return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
                 .executePath(Pref.getScriptDirPath())
                 .requirePath(Pref.getScriptDirPath()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(GlobalAppContext.get(), e.getMessage(), Toast.LENGTH_LONG).show();
+            return null;
+        }
     }
 
     public static ScriptExecution runWithBroadcastSender(File file) {

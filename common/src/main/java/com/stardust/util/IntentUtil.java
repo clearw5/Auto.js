@@ -92,4 +92,12 @@ public class IntentUtil {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
+
+    public static void viewFile(Context context, String path) {
+        path = "file://" + path;
+        String mimeType = MimeTypes.fromFileOr(path, "*/*");
+        context.startActivity(new Intent(Intent.ACTION_VIEW)
+                .setDataAndType(Uri.parse(path), mimeType)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
 }

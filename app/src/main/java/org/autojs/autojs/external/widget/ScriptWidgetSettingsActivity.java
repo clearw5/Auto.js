@@ -16,7 +16,7 @@ import org.autojs.autojs.model.explorer.ExplorerDirPage;
 import org.autojs.autojs.model.explorer.ExplorerFileProvider;
 import org.autojs.autojs.model.script.Scripts;
 import org.autojs.autojs.ui.BaseActivity;
-import org.autojs.autojs.ui.main.scripts.ExplorerView;
+import org.autojs.autojs.ui.explorer.ExplorerView;
 
 /**
  * Created by Stardust on 2017/7/11.

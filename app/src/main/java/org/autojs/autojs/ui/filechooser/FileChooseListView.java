@@ -19,7 +19,7 @@ import org.autojs.autojs.model.explorer.ExplorerItem;
 import org.autojs.autojs.model.explorer.ExplorerPage;
 import org.autojs.autojs.model.script.ScriptFile;
 import org.autojs.autojs.ui.explorer.ExplorerViewHelper;
-import org.autojs.autojs.ui.main.scripts.ExplorerView;
+import org.autojs.autojs.ui.explorer.ExplorerView;
 import org.autojs.autojs.ui.widget.BindableViewHolder;
 import org.autojs.autojs.ui.widget.CheckBoxCompat;
 

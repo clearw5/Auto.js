@@ -8,8 +8,10 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.text.Editable;
 import android.text.InputType;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -123,9 +125,46 @@ public class ScriptOperations {
         mExplorer.notifyItemCreated(new ExplorerFileItem(scriptFile, mExplorerPage));
     }
 
-    public void newScriptFile() {
-        showFileNameInputDialog("", "js")
-                .subscribe(input -> createScriptFile(getCurrentDirectoryPath() + input + ".js", null, true));
+    public void newFile() {
+        DialogUtils.showDialog(new ThemeColorMaterialDialogBuilder(mContext).title(R.string.text_name)
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .alwaysCallInputCallback()
+                .input(getString(R.string.text_please_input_name), "", false, (dialog, input) ->
+                        validateInput(dialog, dialog.isPromptCheckBoxChecked() ? ".js" : null))
+                .checkBoxPromptRes(R.string.text_js_file, true, (buttonView, isChecked) -> {
+                })
+                .onPositive((dialog, which) -> {
+                    boolean createJs = dialog.isPromptCheckBoxChecked();
+                    assert dialog.getInputEditText() != null;
+                    if (createJs) {
+                        createScriptFile(getCurrentDirectoryPath() + dialog.getInputEditText().getText() + ".js", null, true);
+                    } else {
+                        createScriptFile(getCurrentDirectoryPath() + dialog.getInputEditText().getText(), null, false);
+                    }
+                })
+                .build());
+    }
+
+    private void validateInput(MaterialDialog dialog, String extension) {
+        EditText editText = dialog.getInputEditText();
+        if (editText == null)
+            return;
+        Editable input = editText.getText();
+        int errorResId = 0;
+        if (input == null || input.length() == 0) {
+            dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+            return;
+        }
+        if (new File(getCurrentDirectory(), extension == null ? input.toString() : input.toString() + extension).exists()) {
+            errorResId = R.string.text_file_exists;
+        }
+        if (errorResId == 0) {
+            editText.setError(null);
+            dialog.getActionButton(DialogAction.POSITIVE).setEnabled(true);
+        } else {
+            editText.setError(getString(errorResId));
+            dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+        }
     }
 
     public Observable<String> importFile(final String pathFrom) {
@@ -223,23 +262,22 @@ public class ScriptOperations {
         }
     }
 
-    public Observable<Boolean> rename(final ScriptFile file) {
-        final ScriptFile oldFile = new ScriptFile(file.getPath());
-        String originalName = file.getSimplifiedName();
-        return showNameInputDialog(originalName, new InputCallback(file.isDirectory() ? null : PFiles.getExtension(file.getName()),
+    public Observable<Boolean> rename(final ExplorerFileItem item) {
+        final ScriptFile oldFile = new ScriptFile(item.getPath());
+        String originalName = item.getName();
+        return showNameInputDialog(originalName, new InputCallback(oldFile.isDirectory() ? null : PFiles.getExtension(item.getName()),
                 originalName))
                 .map(newName -> {
-                    PFile newFile = file.renameAndReturnNewFile(newName);
-                    if (newFile != null) {
-                        notifyFileChanged(mCurrentDirectory, oldFile, newFile);
+                    ExplorerFileItem newItem = item.rename(newName);
+                    if (newItem != null) {
+                        notifyFileChanged(mCurrentDirectory, item, newItem);
                     }
-                    return newFile != null;
+                    return newItem != null;
                 });
     }
 
-    private void notifyFileChanged(ScriptFile directory, ScriptFile oldFile, PFile newFile) {
-        mExplorer.notifyItemChanged(new ExplorerFileItem(oldFile, mExplorerPage),
-                new ExplorerFileItem(newFile, mExplorerPage));
+    private void notifyFileChanged(ScriptFile directory, ExplorerFileItem oldItem, ExplorerFileItem newItem) {
+        mExplorer.notifyItemChanged(oldItem, newItem);
     }
 
     public void createShortcut(ScriptFile file) {
@@ -353,22 +391,12 @@ public class ScriptOperations {
             EditText editText = dialog.getInputEditText();
             if (editText == null)
                 return;
-            int errorResId = 0;
-            if (input == null || input.length() == 0) {
-                errorResId = R.string.text_name_should_not_be_empty;
-            } else if (!input.equals(mExcluded)) {
-                if (new File(getCurrentDirectory(), mExtension == null ? input.toString() : input.toString() + mExtension).exists()) {
-                    errorResId = R.string.text_file_exists;
-                }
-            }
-            if (errorResId == 0) {
+            if (mExcluded != null && input.equals(mExcluded)) {
                 editText.setError(null);
                 dialog.getActionButton(DialogAction.POSITIVE).setEnabled(true);
-            } else {
-                editText.setError(getString(errorResId));
-                dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+                return;
             }
-
+            validateInput(dialog, mExtension);
         }
     }
 

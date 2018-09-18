@@ -19,7 +19,7 @@ import org.autojs.autojs.external.ScriptIntents;
 import org.autojs.autojs.model.explorer.ExplorerDirPage;
 import org.autojs.autojs.model.explorer.Explorers;
 import org.autojs.autojs.ui.BaseActivity;
-import org.autojs.autojs.ui.main.scripts.ExplorerView;
+import org.autojs.autojs.ui.explorer.ExplorerView;
 
 import static org.autojs.autojs.ui.edit.EditorView.EXTRA_CONTENT;
 

@@ -57,6 +57,7 @@
                             android:textColor="?android:textColorSecondary"/>
 
                         <LinearLayout
+                            android:id="@+id/source_path_container"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
@@ -116,6 +117,7 @@
                 </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.CardView
+                    android:id="@+id/app_config"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="6dp"

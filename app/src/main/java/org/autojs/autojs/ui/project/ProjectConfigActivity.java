@@ -4,12 +4,15 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
-import android.text.Editable;
+import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.stardust.autojs.project.LaunchConfig;
 import com.stardust.autojs.project.ProjectConfig;
+import com.stardust.pio.PFiles;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -17,13 +20,18 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.R;
 import org.autojs.autojs.model.explorer.ExplorerDirPage;
+import org.autojs.autojs.model.explorer.ExplorerFileItem;
+import org.autojs.autojs.model.explorer.ExplorerItem;
 import org.autojs.autojs.model.explorer.Explorers;
 import org.autojs.autojs.model.project.ProjectTemplate;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.widget.SimpleTextWatcher;
 
 import java.io.File;
-import java.util.concurrent.Executors;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 @EActivity(R.layout.activity_project_config)
 public class ProjectConfigActivity extends BaseActivity {
@@ -75,7 +83,7 @@ public class ProjectConfigActivity extends BaseActivity {
             mProjectConfig = new ProjectConfig();
         } else {
             String dir = getIntent().getStringExtra(EXTRA_DIRECTORY);
-            if(dir == null){
+            if (dir == null) {
                 finish();
                 return;
             }
@@ -87,10 +95,18 @@ public class ProjectConfigActivity extends BaseActivity {
     @AfterViews
     void setupViews() {
         setToolbarAsBack(mNewProject ? getString(R.string.text_new_project) : mProjectConfig.getName());
-        mAppName.addTextChangedListener(new SimpleTextWatcher(s ->
-                mProjectLocation.setText(new File(mParentDirectory, s.toString()).getPath()))
-        );
-
+        if (mNewProject) {
+            mAppName.addTextChangedListener(new SimpleTextWatcher(s ->
+                    mProjectLocation.setText(new File(mParentDirectory, s.toString()).getPath()))
+            );
+        } else {
+            mAppName.setText(mProjectConfig.getName());
+            mVersionCode.setText(String.valueOf(mProjectConfig.getVersionCode()));
+            mPackageName.setText(mProjectConfig.getPackageName());
+            mVersionName.setText(mProjectConfig.getVersionName());
+            mMainFileName.setText(mProjectConfig.getMainScriptFile());
+            mProjectLocation.setVisibility(View.GONE);
+        }
     }
 
     @SuppressLint("CheckResult")
@@ -100,26 +116,60 @@ public class ProjectConfigActivity extends BaseActivity {
         if (!checkInputs()) {
             return;
         }
-        if(mNewProject){
+        if (mNewProject) {
             String location = mProjectLocation.getText().toString();
             new ProjectTemplate(mProjectConfig, new File(location))
                     .newProject()
                     .subscribe(ignored -> {
-                        Explorers.workspace().notifyItemCreated(new ExplorerDirPage(location, null));
+                        Explorers.workspace().notifyChildrenChanged(new ExplorerDirPage(mParentDirectory, null));
                         finish();
+                    }, e -> {
+                        e.printStackTrace();
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        } else {
+            Observable.fromCallable(() -> {
+                PFiles.write(ProjectConfig.configFileOfDir(mDirectory.getPath()),
+                        mProjectConfig.toJson());
+                return Void.TYPE;
+            })
+                    .observeOn(Schedulers.io())
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe(ignored -> {
+                        ExplorerFileItem item = new ExplorerFileItem(mDirectory, null);
+                        Explorers.workspace().notifyItemChanged(item, item);
+                        finish();
+                    }, e -> {
+                        e.printStackTrace();
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         }
     }
 
-    private void syncProjectConfig(){
+    private void syncProjectConfig() {
         mProjectConfig.setName(mAppName.getText().toString());
         mProjectConfig.setVersionCode(Integer.parseInt(mVersionCode.getText().toString()));
         mProjectConfig.setVersionName(mVersionName.getText().toString());
         mProjectConfig.setMainScriptFile(mMainFileName.getText().toString());
+        mProjectConfig.setPackageName(mPackageName.getText().toString());
         //mProjectConfig.getLaunchConfig().setHideLogs(true);
     }
 
     private boolean checkInputs() {
-        return true;
+        boolean inputValid = true;
+        inputValid &= checkNotEmpty(mAppName);
+        inputValid &= checkNotEmpty(mVersionCode);
+        inputValid &= checkNotEmpty(mVersionName);
+        inputValid &= checkNotEmpty(mPackageName);
+        return inputValid;
+    }
+
+    private boolean checkNotEmpty(TextInputEditText editText) {
+        if (!TextUtils.isEmpty(editText.getText()))
+            return true;
+        // TODO: 2017/12/8 more beautiful ways?
+        String hint = ((TextInputLayout) editText.getParent().getParent()).getHint().toString();
+        editText.setError(hint + getString(R.string.text_should_not_be_empty));
+        return false;
     }
 }

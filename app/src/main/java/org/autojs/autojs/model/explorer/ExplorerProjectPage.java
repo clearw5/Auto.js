@@ -24,6 +24,12 @@ public class ExplorerProjectPage extends ExplorerDirPage {
         mProjectConfig = projectConfig;
     }
 
+    public ProjectConfig getProjectConfig() {
+        return mProjectConfig;
+    }
 
-
+    @Override
+    public ExplorerFileItem rename(String newName) {
+        return new ExplorerProjectPage(getFile().renameAndReturnNewFile(newName), getParent(), mProjectConfig);
+    }
 }

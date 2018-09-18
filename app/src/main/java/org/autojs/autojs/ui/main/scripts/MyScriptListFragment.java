@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 
 import com.stardust.util.BackPressedHandler;
+import com.stardust.util.IntentUtil;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -18,6 +19,7 @@ import org.autojs.autojs.model.explorer.Explorers;
 import org.autojs.autojs.model.script.Scripts;
 import org.autojs.autojs.tool.SimpleObserver;
 import org.autojs.autojs.ui.common.ScriptOperations;
+import org.autojs.autojs.ui.explorer.ExplorerView;
 import org.autojs.autojs.ui.main.FloatingActionMenu;
 import org.autojs.autojs.ui.main.QueryEvent;
 import org.autojs.autojs.ui.main.ViewPagerFragment;
@@ -60,6 +62,8 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
         mExplorerView.setOnItemClickListener((view, item) -> {
             if (item.isEditable()) {
                 Scripts.edit(item.toScriptFile());
+            } else {
+                IntentUtil.viewFile(getContext(), item.getPath());
             }
         });
     }
@@ -174,7 +178,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
                 break;
             case 1:
                 new ScriptOperations(getContext(), mExplorerView, mExplorerView.getCurrentPage())
-                        .newScriptFile();
+                        .newFile();
                 break;
             case 2:
                 new ScriptOperations(getContext(), mExplorerView, mExplorerView.getCurrentPage())

@@ -30,7 +30,7 @@ import org.autojs.autojs.ui.common.NotAskAgainDialog;
 import org.autojs.autojs.ui.floating.layoutinspector.LayoutBoundsFloatyWindow;
 import org.autojs.autojs.ui.floating.layoutinspector.LayoutHierarchyFloatyWindow;
 import org.autojs.autojs.ui.main.MainActivity_;
-import org.autojs.autojs.ui.main.scripts.ExplorerView;
+import org.autojs.autojs.ui.explorer.ExplorerView;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.Func1;

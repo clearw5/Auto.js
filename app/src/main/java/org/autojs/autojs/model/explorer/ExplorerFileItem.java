@@ -5,10 +5,17 @@ import com.stardust.pio.PFile;
 import org.autojs.autojs.model.script.ScriptFile;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ExplorerFileItem implements ExplorerItem {
 
-    private final PFile mFile;
+    private static final Set<String> sEditableFileExts = new HashSet<>(Arrays.asList(
+            "js", "java", "xml", "json", "txt", "log", "ts"
+    ));
+
+    private PFile mFile;
     private final ExplorerPage mParent;
 
     public ExplorerFileItem(PFile file, ExplorerPage parent) {
@@ -60,9 +67,13 @@ public class ExplorerFileItem implements ExplorerItem {
         return mFile.canWrite();
     }
 
+    public ExplorerFileItem rename(String newName) {
+        return new ExplorerFileItem(mFile.renameAndReturnNewFile(newName), getParent());
+    }
+
     @Override
     public String getType() {
-        if(mFile.isDirectory()){
+        if (mFile.isDirectory()) {
             return "/";
         }
         return mFile.getExtension();
@@ -80,8 +91,7 @@ public class ExplorerFileItem implements ExplorerItem {
 
     @Override
     public boolean isEditable() {
-        String type = getType();
-        return !type.equals(TYPE_AUTO_FILE) && !type.equals(TYPE_APK);
+        return sEditableFileExts.contains(getType());
     }
 
     @Override

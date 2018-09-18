@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.rhino.debug.DebugCallback;
 import com.stardust.autojs.rhino.debug.Debugger;
 import com.stardust.autojs.rhino.debug.Dim;
@@ -77,7 +78,12 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
         mCurrentEditorSourceUrl = mInitialEditorSourceUrl = mEditorView.getFile().toString();
         mInitialEditorSource = mEditorView.getEditor().getText();
         setupEditor();
-        mDebugger.attach(mEditorView.run(false));
+        ScriptExecution execution = mEditorView.run(false);
+        if (execution != null) {
+            mDebugger.attach(execution);
+        } else {
+            mEditorView.exitDebugging();
+        }
         Log.d(LOG_TAG, "onViewCreated");
     }
 

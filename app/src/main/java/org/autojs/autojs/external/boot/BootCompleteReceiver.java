@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.stardust.autojs.execution.ExecutionConfig;
 
@@ -37,6 +38,11 @@ public class BootCompleteReceiver extends BroadcastReceiver {
         ExecutionConfig config = new ExecutionConfig();
         config.setArgument("intent", intent.clone());
         config.executePath(file.getParent());
-        AutoJs.getInstance().getScriptEngineService().execute(file.toSource(), config);
+        try {
+            AutoJs.getInstance().getScriptEngineService().execute(file.toSource(), config);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 }

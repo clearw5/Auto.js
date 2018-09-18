@@ -8,8 +8,8 @@ android {
         applicationId "org.autojs.autojs"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 416
-        versionName "4.0.2 Alpha11"
+        versionCode 420
+        versionName "4.0.3 Alpha"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {

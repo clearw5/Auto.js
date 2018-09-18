@@ -2,6 +2,7 @@ package com.stardust.autojs.project;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,7 +33,7 @@ public class ProjectConfig {
     private String mVersionName;
 
     @SerializedName("versionCode")
-    private int mVersionCode;
+    private int mVersionCode = -1;
 
     @SerializedName("packageName")
     private String mPackageName;
@@ -46,11 +47,40 @@ public class ProjectConfig {
     @SerializedName("launchConfig")
     private LaunchConfig mLaunchConfig;
 
+    @SerializedName("build")
+    private BuildInfo mBuildInfo = new BuildInfo();
+
+    @SerializedName("icon")
+    private String mIcon;
+
     public static ProjectConfig fromJson(String json) {
         if (json == null) {
             return null;
         }
-        return GSON.fromJson(json, ProjectConfig.class);
+        ProjectConfig config = GSON.fromJson(json, ProjectConfig.class);
+        if(!isValid(config)){
+            return null;
+        }
+        return config;
+    }
+
+    private static boolean isValid(ProjectConfig config) {
+        if(TextUtils.isEmpty(config.getName())){
+            return false;
+        }
+        if(TextUtils.isEmpty(config.getPackageName())){
+            return false;
+        }
+        if(TextUtils.isEmpty(config.getVersionName())){
+            return false;
+        }
+        if(TextUtils.isEmpty(config.getMainScriptFile())){
+            return false;
+        }
+        if(config.getVersionCode() == -1){
+            return false;
+        }
+        return true;
     }
 
 
@@ -81,6 +111,13 @@ public class ProjectConfig {
         return PFiles.join(projectDir, CONFIG_FILE_NAME);
     }
 
+    public BuildInfo getBuildInfo() {
+        return mBuildInfo;
+    }
+
+    public void setBuildInfo(BuildInfo buildInfo) {
+        mBuildInfo = buildInfo;
+    }
 
     public String getName() {
         return mName;
@@ -166,4 +203,15 @@ public class ProjectConfig {
         return GSON.toJson(this);
     }
 
+    public String getIcon() {
+        return mIcon;
+    }
+
+    public void setIcon(String icon) {
+        mIcon = icon;
+    }
+
+    public String getBuildDir() {
+        return "build";
+    }
 }

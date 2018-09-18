@@ -175,14 +175,6 @@ public class ScriptEngineService {
         return execute(new ScriptExecutionTask(source, null, config));
     }
 
-    public ScriptExecution execute(ScriptSource source, ScriptExecutionListener listener) {
-        return execute(source, listener, ExecutionConfig.getDefault());
-    }
-
-    public ScriptExecution execute(ScriptSource source) {
-        return execute(source, null, ExecutionConfig.getDefault());
-    }
-
     @Subscribe
     public void onScriptExecution(ScriptExecutionEvent event) {
         if (event.getCode() == ScriptExecutionEvent.ON_START) {

@@ -1,4 +1,4 @@
-package org.autojs.autojs.ui.main.scripts;
+package org.autojs.autojs.ui.explorer;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -22,8 +23,10 @@ import com.stardust.pio.PFiles;
 import org.autojs.autojs.R;
 import org.autojs.autojs.model.explorer.Explorer;
 import org.autojs.autojs.model.explorer.ExplorerChangeEvent;
+import org.autojs.autojs.model.explorer.ExplorerFileItem;
 import org.autojs.autojs.model.explorer.ExplorerItem;
 import org.autojs.autojs.model.explorer.ExplorerPage;
+import org.autojs.autojs.model.explorer.ExplorerProjectPage;
 import org.autojs.autojs.model.explorer.ExplorerSamplePage;
 import org.autojs.autojs.model.script.ScriptFile;
 import org.autojs.autojs.model.script.Scripts;
@@ -31,7 +34,6 @@ import org.autojs.autojs.ui.project.BuildActivity;
 import org.autojs.autojs.ui.project.BuildActivity_;
 import org.autojs.autojs.ui.common.ScriptLoopDialog;
 import org.autojs.autojs.ui.common.ScriptOperations;
-import org.autojs.autojs.ui.explorer.ExplorerViewHelper;
 import org.autojs.autojs.ui.viewmodel.ExplorerItemList;
 import org.autojs.autojs.ui.widget.BindableViewHolder;
 import org.autojs.autojs.theme.widget.ThemeColorSwipeRefreshLayout;
@@ -73,6 +75,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
     private ExplorerItemList mExplorerItemList = new ExplorerItemList();
     private RecyclerView mExplorerItemListView;
+    private ExplorerProjectToolbar mProjectToolbar;
     private ExplorerAdapter mExplorerAdapter = new ExplorerAdapter();
     protected OnItemClickListener mOnItemClickListener;
     private Function<ExplorerItem, Boolean> mFilter;
@@ -100,14 +103,24 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
     public void setRootPage(ExplorerPage page) {
         mPageStateHistory.clear();
-        mCurrentPageState = new ExplorerPageState(page);
+        setCurrentPageState(new ExplorerPageState(page));
         loadItemList();
     }
 
+    private void setCurrentPageState(ExplorerPageState currentPageState) {
+        mCurrentPageState = currentPageState;
+        if (mCurrentPageState.page instanceof ExplorerProjectPage) {
+            mProjectToolbar.setVisibility(VISIBLE);
+            mProjectToolbar.setProject(currentPageState.page.toScriptFile(), ((ExplorerProjectPage) currentPageState.page).getProjectConfig());
+        } else {
+            mProjectToolbar.setVisibility(GONE);
+        }
+    }
 
     public void enterChildPage(ExplorerPage childItemGroup) {
+        mCurrentPageState.position = ((LinearLayoutManager) mExplorerItemListView.getLayoutManager()).findFirstVisibleItemPosition();
         mPageStateHistory.push(mCurrentPageState);
-        mCurrentPageState = new ExplorerPageState(childItemGroup);
+        setCurrentPageState(new ExplorerPageState(childItemGroup));
         loadItemList();
     }
 
@@ -136,7 +149,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
             mExplorer.unregisterChangeListener(this);
         mExplorer = explorer;
         mPageStateHistory.clear();
-        mCurrentPageState = new ExplorerPageState(rootPage);
+        setCurrentPageState(new ExplorerPageState(rootPage));
         mExplorer.registerChangeListener(this);
         enterChildPage(currentPage);
     }
@@ -150,7 +163,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
     }
 
     public void goBack() {
-        mCurrentPageState = mPageStateHistory.pop();
+        setCurrentPageState(mPageStateHistory.pop());
         loadItemList();
     }
 
@@ -169,8 +182,9 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
     private void init() {
         setOnRefreshListener(this);
-        mExplorerItemListView = new RecyclerView(getContext());
-        addView(mExplorerItemListView);
+        inflate(getContext(), R.layout.explorer_view, this);
+        mExplorerItemListView = findViewById(R.id.explorer_item_list);
+        mProjectToolbar = findViewById(R.id.project_toolbar);
         initExplorerItemListView();
     }
 
@@ -215,6 +229,9 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
                     mExplorerItemList = list;
                     mExplorerAdapter.notifyDataSetChanged();
                     setRefreshing(false);
+                    post(() ->
+                            mExplorerItemListView.scrollToPosition(mCurrentPageState.position)
+                    );
                 });
     }
 
@@ -229,6 +246,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
     @Override
     public void onRefresh() {
         mExplorer.notifyChildrenChanged(mCurrentPageState.page);
+        mProjectToolbar.refresh();
     }
 
 
@@ -241,7 +259,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
         switch (item.getItemId()) {
             case R.id.rename:
                 new ScriptOperations(getContext(), this, getCurrentPage())
-                        .rename(mSelectedItem.toScriptFile())
+                        .rename((ExplorerFileItem) mSelectedItem)
                         .subscribe();
                 break;
             case R.id.delete:
@@ -272,7 +290,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
                 break;
             case R.id.action_build_apk:
                 BuildActivity_.intent(getContext())
-                        .extra(BuildActivity.EXTRA_SOURCE_FILE, mSelectedItem.getPath())
+                        .extra(BuildActivity.EXTRA_SOURCE, mSelectedItem.getPath())
                         .start();
                 notifyOperated();
                 break;
@@ -611,6 +629,8 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
         boolean dirsCollapsed;
 
         boolean filesCollapsed;
+
+        int position;
 
         ExplorerPageState() {
         }

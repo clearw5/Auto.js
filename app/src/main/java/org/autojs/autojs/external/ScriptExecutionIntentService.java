@@ -18,6 +18,10 @@ public class ScriptExecutionIntentService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         if (intent == null)
             return;
-        ScriptIntents.handleIntent(this, intent);
+        try {
+            ScriptIntents.handleIntent(this, intent);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
