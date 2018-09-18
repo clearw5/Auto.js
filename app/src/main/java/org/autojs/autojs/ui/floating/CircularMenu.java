@@ -115,7 +115,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
             @Override
             public View inflateActionView(FloatyService service, CircularMenuWindow window) {
                 View actionView = View.inflate(service, R.layout.circular_action_view, null);
-                mActionViewIcon = (RoundedImageView) actionView.findViewById(R.id.icon);
+                mActionViewIcon = actionView.findViewById(R.id.icon);
                 return actionView;
             }
 

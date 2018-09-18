@@ -1,11 +1,8 @@
 package org.autojs.autojs.ui.floating;
 
-import android.app.Activity;
 import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.util.Log;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,8 +12,12 @@ import com.stardust.enhancedfloaty.FloatyWindow;
 import com.stardust.enhancedfloaty.WindowBridge;
 import com.stardust.floatingcircularactionmenu.CircularActionMenu;
 import com.stardust.floatingcircularactionmenu.gesture.BounceDragGesture;
+import com.stardust.util.ScreenMetrics;
 
 public class CircularMenuWindow implements FloatyWindow {
+
+    private static final String KEY_POSITION_X = CircularMenuWindow.class.getName() + ".position.x";
+    private static final String KEY_POSITION_Y = CircularMenuWindow.class.getName() + ".position.y";
 
     protected CircularMenuFloaty mFloaty;
     protected WindowManager mWindowManager;
@@ -66,6 +67,9 @@ public class CircularMenuWindow implements FloatyWindow {
     }
 
     private void setInitialState() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        int y = preferences.getInt(KEY_POSITION_Y, ScreenMetrics.getDeviceScreenHeight() / 2);
+        mActionViewWindowBridge.updatePosition(mActionViewWindowBridge.getX(), y);
         keepToSide();
     }
 
@@ -190,6 +194,11 @@ public class CircularMenuWindow implements FloatyWindow {
     }
 
     public void close() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        preferences.edit()
+                .putInt(KEY_POSITION_X, mActionViewWindowBridge.getX())
+                .putInt(KEY_POSITION_Y, mActionViewWindowBridge.getY())
+                .apply();
         mOrientationEventListener.disable();
         this.mWindowManager.removeView(this.mCircularActionMenu);
         this.mWindowManager.removeView(this.mCircularActionView);
