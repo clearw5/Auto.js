@@ -147,7 +147,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         }
         setChecked(mConnectionItem, DevPluginService.getInstance().isConnected());
         if(Pref.isForegroundServiceEnabled()){
-            GlobalAppContext.get().startService(new Intent(getContext(), ForegroundService.class));
+            ForegroundService.start(GlobalAppContext.get());
             setChecked(mForegroundServiceItem, true);
         }
     }
@@ -265,9 +265,9 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     private void toggleForegroundService(DrawerMenuItemViewHolder holder) {
         boolean checked = holder.getSwitchCompat().isChecked();
         if(checked){
-            GlobalAppContext.get().startService(new Intent(getContext(), ForegroundService.class));
+            ForegroundService.start(GlobalAppContext.get());
         }else {
-            GlobalAppContext.get().stopService(new Intent(getContext(), ForegroundService.class));
+            ForegroundService.stop(GlobalAppContext.get());
         }
     }
 

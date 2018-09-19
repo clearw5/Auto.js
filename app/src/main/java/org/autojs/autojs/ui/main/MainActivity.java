@@ -37,6 +37,7 @@ import org.autojs.autojs.BuildConfig;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
+import org.autojs.autojs.external.foreground.ForegroundService;
 import org.autojs.autojs.model.explorer.Explorers;
 import org.autojs.autojs.tool.AccessibilityServiceTool;
 import org.autojs.autojs.ui.BaseActivity;
@@ -208,6 +209,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     public void exitCompletely() {
         finish();
         FloatyWindowManger.hideCircularMenu();
+        ForegroundService.stop(this);
         stopService(new Intent(this, FloatyService.class));
         AutoJs.getInstance().getScriptEngineService().stopAll();
     }
@@ -264,6 +266,12 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Override
     public void onBackPressed() {
+        Fragment fragment = mPagerAdapter.getStoredFragment(mViewPager.getCurrentItem());
+        if (fragment instanceof BackPressedHandler) {
+            if (((BackPressedHandler) fragment).onBackPressed(this)) {
+                return;
+            }
+        }
         if (!mBackPressObserver.onBackPressed(this)) {
             super.onBackPressed();
         }

@@ -35,7 +35,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  * Created by Stardust on 2017/3/13.
  */
 @EFragment(R.layout.fragment_my_script_list)
-public class MyScriptListFragment extends ViewPagerFragment implements BackPressedHandler, FloatingActionMenu.OnFloatingActionButtonClickListener {
+public class MyScriptListFragment extends ViewPagerFragment implements FloatingActionMenu.OnFloatingActionButtonClickListener {
 
     private static final String TAG = "MyScriptListFragment";
 
@@ -66,22 +66,6 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
                 IntentUtil.viewFile(getContext(), item.getPath());
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((BackPressedHandler.HostActivity) getActivity())
-                .getBackPressedObserver()
-                .registerHandlerAtFront(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        ((BackPressedHandler.HostActivity) getActivity())
-                .getBackPressedObserver()
-                .unregisterHandler(this);
     }
 
     @Override

@@ -136,7 +136,7 @@ public class BlockedMaterialDialog extends MaterialDialog {
         }
 
         public MaterialDialog.Builder itemsCallbackMultiChoice(@Nullable Integer[] selectedIndices) {
-            dismissListener(dialog -> setAndNotify(new Integer[0]));
+            dismissListener(dialog -> setAndNotify(new int[0]));
             super.itemsCallbackMultiChoice(selectedIndices, (dialog, which, text) -> {
                 setAndNotify(ArrayUtils.unbox(which));
                 return true;

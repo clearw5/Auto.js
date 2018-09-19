@@ -62,7 +62,6 @@ public class MarketFragment extends ViewPagerFragment implements BackPressedHand
 
     @Override
     public boolean onBackPressed(Activity activity) {
-
         return false;
     }
 
