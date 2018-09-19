@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
+import android.util.Log;
 
 import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.R;
@@ -333,7 +334,7 @@ public class ScriptRuntime {
         }
     }
 
-    public void loadDex(String path){
+    public void loadDex(String path) {
         path = files.path(path);
         try {
             ((AndroidClassLoader) ContextFactory.getGlobal().getApplicationClassLoader()).loadDex(new File(path));
@@ -375,6 +376,7 @@ public class ScriptRuntime {
     }
 
     public void onExit() {
+        Log.d(TAG, "on exit");
         //清除interrupt状态
         ThreadCompat.interrupted();
         //悬浮窗需要第一时间关闭以免出现恶意脚本全屏悬浮窗屏蔽屏幕并且在exit中写死循环的问题
@@ -398,6 +400,7 @@ public class ScriptRuntime {
         }
         ignoresException(sensors::unregisterAll);
         ignoresException(timers::recycle);
+        ignoresException(ui::recycle);
     }
 
     private void ignoresException(Runnable r) {

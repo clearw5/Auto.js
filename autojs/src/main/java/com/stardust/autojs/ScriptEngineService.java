@@ -67,9 +67,7 @@ public class ScriptEngineService {
         }
 
         private void onFinish(ScriptExecution execution) {
-            if (execution.getEngine() instanceof JavaScriptEngine) {
-                ((JavaScriptEngine) execution.getEngine()).getRuntime().onExit();
-            }
+
         }
 
         @Override
@@ -87,6 +85,7 @@ public class ScriptEngineService {
     };
 
 
+    private static ScriptEngineService sInstance;
     private final Context mContext;
     private UiHandler mUiHandler;
     private final Console mGlobalConsole;
@@ -210,6 +209,18 @@ public class ScriptEngineService {
         }
         return mScriptExecutions.get(id);
     }
+
+    public static void setInstance(ScriptEngineService service) {
+        if (sInstance != null) {
+            throw new IllegalStateException();
+        }
+        sInstance = service;
+    }
+
+    public static ScriptEngineService getInstance() {
+        return sInstance;
+    }
+
 
     private static class EngineLifecycleObserver implements ScriptEngineManager.EngineLifecycleCallback {
 

@@ -91,7 +91,7 @@ public class App extends MultiDexApplication {
             // You should not init your app in this process.
             return;
         }
-        LeakCanary.install(this);
+        //LeakCanary.install(this);
     }
 
     private void init() {

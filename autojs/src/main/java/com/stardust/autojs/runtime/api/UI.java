@@ -113,6 +113,10 @@ public class UI extends ProxyObject {
         }
     }
 
+    public void recycle(){
+        mDynamicLayoutInflater.setContext(null);
+    }
+
     private class Drawables extends com.stardust.autojs.core.ui.inflater.util.Drawables {
 
         @Override

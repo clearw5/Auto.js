@@ -17,7 +17,6 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Created by Stardust on 2018/2/5.
@@ -92,7 +91,7 @@ public class Sensors extends EventEmitter implements Loopers.LooperQuitHandler {
         mScriptBridges = runtime.bridges;
         mNoOpSensorEventEmitter = new SensorEventEmitter(runtime.bridges);
         mScriptRuntime = runtime;
-        runtime.loopers.addLooperQuiteHandler(this);
+        runtime.loopers.addLooperQuitHandler(this);
     }
 
     public SensorEventEmitter register(String sensorName) {
@@ -167,5 +166,6 @@ public class Sensors extends EventEmitter implements Loopers.LooperQuitHandler {
             }
             mSensorEventEmitters.clear();
         }
+        mScriptRuntime.loopers.removeLooperQuitHandler(this);
     }
 }
