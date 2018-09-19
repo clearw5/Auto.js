@@ -398,4 +398,9 @@
     <string name="text_new_project">新建项目</string>
     <string name="text_js_file">js文件</string>
     <string name="text_invalid_project">无效项目</string>
+    <string name="text_foreground_service">前台服务</string>
+    <string name="key_foreground_servie">key_foreground_service</string>
+    <string name="foreground_notification_channel_name">前台服务通知</string>
+    <string name="foreground_notification_title">Auto.js保持运行中</string>
+    <string name="foreground_notification_text">点击进入主界面</string>
 </resources>

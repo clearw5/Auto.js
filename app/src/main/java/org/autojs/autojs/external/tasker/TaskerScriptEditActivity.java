@@ -63,4 +63,9 @@ public class TaskerScriptEditActivity extends BaseActivity {
         TaskerScriptEditActivity.super.finish();
     }
 
+    @Override
+    protected void onDestroy() {
+        mEditorView.destroy();
+        super.onDestroy();
+    }
 }

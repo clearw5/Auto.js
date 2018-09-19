@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -35,7 +36,7 @@ public class JsBeautifier {
         void onException(Exception e);
     }
 
-    private Executor mExecutor = Executors.newSingleThreadExecutor();
+    private ExecutorService mExecutor = Executors.newSingleThreadExecutor();
     private Context mContext;
     private Function mJsBeautifyFunction;
     private org.mozilla.javascript.Context mScriptContext;
@@ -120,6 +121,11 @@ public class JsBeautifier {
             exitContext();
             throw new UncheckedIOException(e);
         }
+    }
+
+    public void shutdown(){
+        mExecutor.shutdownNow();
+        mView = null;
     }
 
 }

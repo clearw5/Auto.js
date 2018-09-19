@@ -180,6 +180,7 @@ EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHo
 
     @Override
     protected void onDestroy() {
+        mEditorView.destroy();
         super.onDestroy();
     }
 

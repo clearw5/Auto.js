@@ -392,7 +392,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
             Snackbar.make(this, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         }
         ScriptExecution execution = Scripts.runWithBroadcastSender(mFile);
-        if(execution == null){
+        if (execution == null) {
             return null;
         }
         mScriptExecutionId = execution.getId();
@@ -670,5 +670,10 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         mScriptExecutionId = bundle.getInt("script_execution_id", ScriptExecution.NO_ID);
         super.onRestoreInstanceState(superData);
         setMenuItemStatus(R.id.run, mScriptExecutionId == ScriptExecution.NO_ID);
+    }
+
+    public void destroy() {
+        mEditor.destroy();
+        mAutoCompletion.shutdown();
     }
 }

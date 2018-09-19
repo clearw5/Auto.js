@@ -161,4 +161,7 @@ public class AutoCompletion {
     }
 
 
+    public void shutdown(){
+        mExecutorService.shutdownNow();
+    }
 }
