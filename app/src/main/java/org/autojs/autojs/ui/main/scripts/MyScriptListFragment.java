@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.RecyclerView;
 
+import com.stardust.app.GlobalAppContext;
 import com.stardust.util.BackPressedHandler;
 import com.stardust.util.IntentUtil;
 
@@ -26,6 +28,7 @@ import org.autojs.autojs.ui.main.ViewPagerFragment;
 import org.autojs.autojs.ui.project.ProjectConfigActivity;
 import org.autojs.autojs.ui.project.ProjectConfigActivity_;
 import org.autojs.autojs.ui.viewmodel.ExplorerItemList;
+import org.autojs.autojs.ui.widget.ExpandableRecyclerView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -63,7 +66,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements FloatingA
             if (item.isEditable()) {
                 Scripts.edit(item.toScriptFile());
             } else {
-                IntentUtil.viewFile(getContext(), item.getPath());
+                IntentUtil.viewFile(GlobalAppContext.get(), item.getPath());
             }
         });
     }
@@ -82,7 +85,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements FloatingA
     private void initFloatingActionMenuIfNeeded(final FloatingActionButton fab) {
         if (mFloatingActionMenu != null)
             return;
-        mFloatingActionMenu = ((FloatingActionMenu) getActivity().findViewById(R.id.floating_action_menu));
+        mFloatingActionMenu = getActivity().findViewById(R.id.floating_action_menu);
         mFloatingActionMenu.getState()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SimpleObserver<Boolean>() {
