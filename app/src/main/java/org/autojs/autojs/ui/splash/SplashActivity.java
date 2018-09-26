@@ -51,7 +51,7 @@ public class SplashActivity extends BaseActivity {
         mNotStartMainActivity = getIntent().getBooleanExtra(NOT_START_MAIN_ACTIVITY, false);
         boolean forceShowAd = getIntent().getBooleanExtra(FORCE_SHOW_AD, false);
         setContentView(R.layout.activity_splash);
-        mFullScreenAdView = (FullScreenAdView) findViewById(R.id.full_screen_view);
+        mFullScreenAdView = findViewById(R.id.full_screen_view);
         if (!forceShowAd && !Pref.shouldShowAd()) {
             mFullScreenAdView.setVisibility(View.INVISIBLE);
             mHandler.postDelayed(this::enterNextActivity, 1500);
