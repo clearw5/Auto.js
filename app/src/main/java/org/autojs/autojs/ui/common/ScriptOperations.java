@@ -122,7 +122,11 @@ public class ScriptOperations {
     }
 
     private void notifyFileCreated(ScriptFile directory, ScriptFile scriptFile) {
-        mExplorer.notifyItemCreated(new ExplorerFileItem(scriptFile, mExplorerPage));
+        if (scriptFile.isDirectory()) {
+            mExplorer.notifyItemCreated(new ExplorerDirPage(scriptFile, mExplorerPage));
+        } else {
+            mExplorer.notifyItemCreated(new ExplorerFileItem(scriptFile, mExplorerPage));
+        }
     }
 
     public void newFile() {

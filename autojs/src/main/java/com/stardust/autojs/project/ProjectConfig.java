@@ -88,7 +88,6 @@ public class ProjectConfig {
         try {
             return fromJson(PFiles.read(context.getAssets().open(path)));
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -97,7 +96,6 @@ public class ProjectConfig {
         try {
             return fromJson(PFiles.read(path));
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
