@@ -2,33 +2,19 @@ package org.autojs.autojs.timing;
 
 import android.content.IntentFilter;
 
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.NotNull;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
+import org.autojs.autojs.storage.database.BaseModel;
 
-import org.autojs.autojs.storage.database.IntentTaskDatabase;
-import org.autojs.autojs.storage.database.TimedTaskDatabase;
+public class IntentTask extends BaseModel {
 
-@Table(database = IntentTaskDatabase.class)
-public class IntentTask {
+    public static final String TABLE = "IntentTask";
 
-    @PrimaryKey(autoincrement = true, quickCheckAutoIncrement = true)
-    @Column(name = "id")
-    int mId = -1;
+    private String mScriptPath;
 
-    @NotNull
-    @Column(name = "script_path")
-    String mScriptPath;
+    private String mAction;
 
-    @Column(name = "action")
-    String mAction;
+    private String mCategory;
 
-    @Column(name = "category")
-    String mCategory;
-
-    @Column(name = "data_type")
-    String mDataType;
+    private String mDataType;
 
     public IntentFilter getIntentFilter() {
         IntentFilter filter = new IntentFilter();
@@ -46,14 +32,6 @@ public class IntentTask {
             }
         }
         return filter;
-    }
-
-    public int getId() {
-        return mId;
-    }
-
-    public void setId(int id) {
-        mId = id;
     }
 
     public String getScriptPath() {

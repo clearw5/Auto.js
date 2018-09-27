@@ -8,6 +8,7 @@ import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.pio.PFiles;
 
 import org.autojs.autojs.R;
+import org.autojs.autojs.timing.IntentTask;
 import org.autojs.autojs.timing.TimedTask;
 import org.autojs.autojs.timing.TimedTaskManager;
 
@@ -30,10 +31,24 @@ public abstract class Task {
     public static class PendingTask extends Task {
 
         private TimedTask mTimedTask;
+        private IntentTask mIntentTask;
 
 
         public PendingTask(TimedTask timedTask) {
             mTimedTask = timedTask;
+            mIntentTask = null;
+        }
+
+        public PendingTask(IntentTask intentTask) {
+            mIntentTask = intentTask;
+            mTimedTask = null;
+        }
+
+        public boolean taskEquals(Object task){
+            if(mTimedTask != null){
+                return mTimedTask.equals(task);
+            }
+            return mIntentTask.equals(task);
         }
 
         public TimedTask getTimedTask() {
@@ -42,14 +57,20 @@ public abstract class Task {
 
         @Override
         public String getName() {
-            return PFiles.getSimplifiedPath(mTimedTask.getScriptPath());
+            return PFiles.getSimplifiedPath(getScriptPath());
         }
 
         @Override
         public String getDesc() {
-            long nextTime = mTimedTask.getNextTime();
-            return GlobalAppContext.getString(R.string.text_next_run_time) + ": " +
-                    DateTimeFormat.shortDateTime().print(nextTime);
+            if (mTimedTask != null) {
+                long nextTime = mTimedTask.getNextTime();
+                return GlobalAppContext.getString(R.string.text_next_run_time) + ": " +
+                        DateTimeFormat.shortDateTime().print(nextTime);
+            } else {
+                assert mIntentTask != null;
+                return mIntentTask.getAction();
+            }
+
         }
 
         @Override
@@ -57,9 +78,18 @@ public abstract class Task {
             TimedTaskManager.getInstance().removeTask(mTimedTask);
         }
 
+        private String getScriptPath() {
+            if (mTimedTask != null) {
+                return mTimedTask.getScriptPath();
+            } else {
+                assert mIntentTask != null;
+                return mIntentTask.getScriptPath();
+            }
+        }
+
         @Override
         public String getEngineName() {
-            if (mTimedTask.getScriptPath().endsWith(".js")) {
+            if (getScriptPath().endsWith(".js")) {
                 return JavaScriptSource.ENGINE;
             } else {
                 return AutoFileSource.ENGINE;
@@ -68,6 +98,10 @@ public abstract class Task {
 
         public void setTimedTask(TimedTask timedTask) {
             mTimedTask = timedTask;
+        }
+
+        public void setIntentTask(IntentTask intentTask) {
+            mIntentTask = intentTask;
         }
     }
 

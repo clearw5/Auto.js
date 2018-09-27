@@ -1,11 +1,9 @@
 package org.autojs.autojs;
 
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,28 +11,23 @@ import android.widget.ImageView;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.flurry.android.FlurryAgent;
-import com.raizlabs.android.dbflow.config.DatabaseConfig;
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.runtime.DirectModelNotifier;
 import com.squareup.leakcanary.LeakCanary;
 import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.core.ui.inflater.ImageLoader;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
+import com.stardust.theme.ThemeColor;
+import com.stardust.theme.ThemeColorManager;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.autojs.key.GlobalKeyObserver;
+import org.autojs.autojs.external.receiver.DynamicBroadcastReceiver;
 import org.autojs.autojs.network.GlideApp;
 import org.autojs.autojs.storage.database.IntentTaskDatabase;
 import org.autojs.autojs.storage.database.TimedTaskDatabase;
 import org.autojs.autojs.timing.TimedTaskScheduler;
 import org.autojs.autojs.tool.CrashHandler;
 import org.autojs.autojs.ui.error.ErrorReportActivity;
-
-import com.stardust.theme.ThemeColor;
-import com.stardust.theme.ThemeColorManager;
-import com.tencent.bugly.crashreport.CrashReport;
-
 
 import java.lang.ref.WeakReference;
 
@@ -48,6 +41,7 @@ public class App extends MultiDexApplication {
     private static final String BUGLY_APP_ID = "19b3607b53";
 
     private static WeakReference<App> instance;
+    private DynamicBroadcastReceiver mDynamicBroadcastReceiver;
 
     public static App getApp() {
         return instance.get();
@@ -92,17 +86,10 @@ public class App extends MultiDexApplication {
             return;
         }
         //LeakCanary.install(this);
+
     }
 
     private void init() {
-        FlowManager.init(FlowConfig.builder(this)
-                .addDatabaseConfig(DatabaseConfig.builder(TimedTaskDatabase.class)
-                        .modelNotifier(DirectModelNotifier.get())
-                        .build())
-                .addDatabaseConfig(DatabaseConfig.builder(IntentTaskDatabase.class)
-                        .modelNotifier(DirectModelNotifier.get())
-                        .build())
-                .build());
         ThemeColorManager.setDefaultThemeColor(new ThemeColor(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorPrimaryDark), getResources().getColor(R.color.colorAccent)));
         ThemeColorManager.init(this);
         AutoJs.initInstance(this);
@@ -111,6 +98,7 @@ public class App extends MultiDexApplication {
         }
         setupDrawableImageLoader();
         TimedTaskScheduler.checkTasksRepeatedlyIfNeeded(this);
+        mDynamicBroadcastReceiver = new DynamicBroadcastReceiver(this);
     }
 
     private void setupDrawableImageLoader() {

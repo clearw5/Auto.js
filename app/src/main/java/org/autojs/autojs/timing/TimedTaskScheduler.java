@@ -28,7 +28,6 @@ public class TimedTaskScheduler extends BroadcastReceiver {
     private static final long INTERVAL = TimeUnit.MINUTES.toMillis(1);
     private static final long ONE_HOUR = TimeUnit.HOURS.toMillis(1);
     private static PendingIntent sCheckTasksPendingIntent;
-    private static long mNextRtcWakeupMillis = -1;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -38,7 +37,7 @@ public class TimedTaskScheduler extends BroadcastReceiver {
     }
 
     @SuppressLint("CheckResult")
-    private static void checkTasks(Context context) {
+    public static void checkTasks(Context context) {
         TimedTaskManager.getInstance().getAllTasks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -83,7 +82,7 @@ public class TimedTaskScheduler extends BroadcastReceiver {
 
 
     public static void checkTasksRepeatedlyIfNeeded(Context context) {
-        if (TimedTaskManager.getInstance().countTasks() > 0 && mNextRtcWakeupMillis > 0) {
+        if (TimedTaskManager.getInstance().countTasks() > 0) {
             setupNextRtcWakeup(context, System.currentTimeMillis() + 5000);
         }
     }
@@ -95,7 +94,6 @@ public class TimedTaskScheduler extends BroadcastReceiver {
         }
         AlarmManager alarmManager = getAlarmManager(context);
         setExactCompat(alarmManager, createTaskCheckPendingIntent(context), millis);
-        mNextRtcWakeupMillis = millis;
     }
 
 

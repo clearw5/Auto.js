@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -27,6 +28,9 @@ import android.widget.Toast;
 
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.stardust.autojs.execution.ExecutionConfig;
+import com.stardust.util.BiMap;
+import com.stardust.util.BiMaps;
+import com.stardust.util.MapEntries;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.CheckedChange;
@@ -49,6 +53,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Stardust on 2017/11/28.
@@ -61,6 +66,13 @@ public class TimedTaskSettingActivity extends BaseActivity {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern("yy-MM-dd");
     private static final int REQUEST_CODE_IGNORE_BATTERY = 27101;
     private static final String LOG_TAG = "TimedTaskSettings";
+
+    private static final BiMap<Integer, String> ACTIONS = BiMaps.<Integer, String>newBuilder()
+            .put(R.id.run_on_boot, Intent.ACTION_BOOT_COMPLETED)
+            .put(R.id.run_on_screen_off, Intent.ACTION_SCREEN_OFF)
+            .put(R.id.run_on_screen_on, Intent.ACTION_SCREEN_ON)
+            .build();
+
 
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
@@ -77,9 +89,14 @@ public class TimedTaskSettingActivity extends BaseActivity {
     @ViewById(R.id.weekly_task_radio)
     RadioButton mWeeklyTaskRadio;
 
-    @ViewById(R.id.run_on_boot_radio)
-    RadioButton mRunOnBootRadio;
+    @ViewById(R.id.run_on_broadcast)
+    RadioButton mRunOnBroadcast;
 
+    @ViewById(R.id.action)
+    EditText mOtherBroadcastAction;
+
+    @ViewById(R.id.broadcast_group)
+    RadioGroup mBroadcastGroup;
 
     @ViewById(R.id.disposable_task_time)
     TextView mDisposableTaskTime;
@@ -98,14 +115,13 @@ public class TimedTaskSettingActivity extends BaseActivity {
 
     private List<CheckBox> mDayOfWeekCheckBoxes = new ArrayList<>();
 
-
     private ScriptFile mScriptFile;
     private TimedTask mTimedTask;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int taskId = getIntent().getIntExtra(TaskReceiver.EXTRA_TASK_ID, -1);
+        long taskId = getIntent().getLongExtra(TaskReceiver.EXTRA_TASK_ID, -1);
         if (taskId != -1) {
             mTimedTask = TimedTaskManager.getInstance().getTimedTask(taskId);
             if (mTimedTask != null) {
@@ -175,7 +191,7 @@ public class TimedTaskSettingActivity extends BaseActivity {
     }
 
 
-    @CheckedChange({R.id.daily_task_radio, R.id.weekly_task_radio, R.id.disposable_task_radio})
+    @CheckedChange({R.id.daily_task_radio, R.id.weekly_task_radio, R.id.disposable_task_radio, R.id.run_on_broadcast})
     void onCheckedChanged(CompoundButton button) {
         ExpandableRelativeLayout relativeLayout = findExpandableLayoutOf(button);
         if (button.isChecked()) {
@@ -271,8 +287,6 @@ public class TimedTaskSettingActivity extends BaseActivity {
             } else {
                 createOrUpdateTimedTask();
             }
-
-
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -288,12 +302,8 @@ public class TimedTaskSettingActivity extends BaseActivity {
     }
 
     private void createOrUpdateTimedTask() {
-        if (mRunOnBootRadio.isChecked()) {
-            IntentTask task = new IntentTask();
-            task.setAction(Intent.ACTION_BOOT_COMPLETED);
-            task.setScriptPath(mScriptFile.getPath());
-            TimedTaskManager.getInstance().addTask(task);
-            finish();
+        if (mRunOnBroadcast.isChecked()) {
+            createIntentTask();
             return;
         }
         TimedTask task = createTimedTask();
@@ -306,6 +316,26 @@ public class TimedTaskSettingActivity extends BaseActivity {
             task.setId(mTimedTask.getId());
             TimedTaskManager.getInstance().updateTask(task);
         }
+        finish();
+    }
+
+
+    private void createIntentTask() {
+        int buttonId = mBroadcastGroup.getCheckedRadioButtonId();
+        String action;
+        if(buttonId == R.id.run_on_other_broadcast){
+            action = mOtherBroadcastAction.getText().toString();
+            if(action.isEmpty()){
+                mOtherBroadcastAction.setError(getString(R.string.text_should_not_be_empty));
+                return;
+            }
+        }else {
+            action = ACTIONS.get(buttonId);
+        }
+        IntentTask task = new IntentTask();
+        task.setAction(action);
+        task.setScriptPath(mScriptFile.getPath());
+        TimedTaskManager.getInstance().addTask(task);
         finish();
     }
 }

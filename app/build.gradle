@@ -129,11 +129,6 @@ dependencies {
         exclude group: 'com.android.support'
     })
     annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
-    //dbflow
-    annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:4.1.2"
-    compile "com.github.Raizlabs.DBFlow:dbflow-core:4.1.2"
-    compile "com.github.Raizlabs.DBFlow:dbflow:4.1.2"
-    compile "com.github.Raizlabs.DBFlow:dbflow-rx2:4.1.2"
     //joda time
     compile 'joda-time:joda-time:2.9.9'
     // Tasker Plugin

@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.pio.PFile;
+import com.tencent.bugly.crashreport.BuglyLog;
 
 import org.autojs.autojs.R;
 import org.autojs.autojs.model.explorer.Explorer;
@@ -66,7 +67,6 @@ public class FileChooserDialogBuilder extends ThemeColorMaterialDialogBuilder {
     public FileChooserDialogBuilder dir(String rootDir, String initialDir) {
         mRootDir = rootDir;
         mInitialDir = initialDir;
-
         return this;
     }
 

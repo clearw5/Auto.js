@@ -8,6 +8,7 @@ import com.stardust.autojs.execution.ScriptExecution;
 
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
+import org.autojs.autojs.timing.IntentTask;
 import org.autojs.autojs.timing.TimedTask;
 import org.autojs.autojs.timing.TimedTaskManager;
 
@@ -55,39 +56,55 @@ public abstract class TaskGroup implements Parent<Task> {
 
         @Override
         public void refresh() {
-            List<TimedTask> timedTasks = TimedTaskManager.getInstance().getAllTasksAsList();
-            mTasks.clear();
-            for (TimedTask timedTask : timedTasks) {
+            for (TimedTask timedTask : TimedTaskManager.getInstance().getAllTasksAsList()) {
                 mTasks.add(new Task.PendingTask(timedTask));
+            }
+            for (IntentTask intentTask : TimedTaskManager.getInstance().getAllIntentTasksAsList()) {
+                mTasks.add(new Task.PendingTask(intentTask));
             }
         }
 
-        public int addTask(TimedTask timedTask) {
+        public int addTask(Object task) {
             int pos = mTasks.size();
-            mTasks.add(new Task.PendingTask(timedTask));
+            if (task instanceof TimedTask) {
+                mTasks.add(new Task.PendingTask((TimedTask) task));
+            } else if (task instanceof IntentTask) {
+                mTasks.add(new Task.PendingTask((IntentTask) task));
+            } else {
+                throw new IllegalArgumentException("task = " + task);
+            }
             return pos;
         }
 
-        public int removeTask(TimedTask data) {
+        public int removeTask(Object data) {
             int i = indexOf(data);
             if (i >= 0)
                 mTasks.remove(i);
             return i;
         }
 
-        private int indexOf(TimedTask data) {
+        private int indexOf(Object data) {
             for (int i = 0; i < mTasks.size(); i++) {
-                if (((Task.PendingTask) mTasks.get(i)).getTimedTask().equals(data)) {
+                Task.PendingTask task = (Task.PendingTask) mTasks.get(i);
+                if (task.taskEquals(data)) {
                     return i;
                 }
             }
             return -1;
         }
 
-        public int updateTask(TimedTask task) {
+
+        public int updateTask(Object task) {
             int i = indexOf(task);
-            if (i >= 0)
-                ((Task.PendingTask) mTasks.get(i)).setTimedTask(task);
+            if (i >= 0) {
+                if (task instanceof TimedTask) {
+                    ((Task.PendingTask) mTasks.get(i)).setTimedTask((TimedTask) task);
+                } else if (task instanceof IntentTask) {
+                    ((Task.PendingTask) mTasks.get(i)).setIntentTask((IntentTask) task);
+                } else {
+                    throw new IllegalArgumentException("task = " + task);
+                }
+            }
             return i;
         }
     }
