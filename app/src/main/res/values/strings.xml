@@ -419,4 +419,6 @@
     <string name="text_run_on_package_uninstall">应用卸载时</string>
     <string name="text_run_on_package_update">应用更新时</string>
     <string name="text_run_on_headset_plug">耳机插拔时</string>
+    <string name="text_run_on_time_tick">每分钟一次</string>
+    <string name="text_run_on_config_change">某些设置(屏幕方向,地区等)更改时</string>
 </resources>

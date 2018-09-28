@@ -86,6 +86,8 @@ public class TimedTaskSettingActivity extends BaseActivity {
             .put(Intent.ACTION_PACKAGE_REMOVED, R.string.text_run_on_package_uninstall)
             .put(Intent.ACTION_PACKAGE_REPLACED, R.string.text_run_on_package_update)
             .put(Intent.ACTION_HEADSET_PLUG, R.string.text_run_on_headset_plug)
+            .put(Intent.ACTION_CONFIGURATION_CHANGED, R.string.text_run_on_config_change)
+            .put(Intent.ACTION_TIME_TICK, R.string.text_run_on_time_tick)
             .build();
 
     private static final BiMap<Integer, String> ACTIONS = BiMaps.<Integer, String>newBuilder()
@@ -101,6 +103,8 @@ public class TimedTaskSettingActivity extends BaseActivity {
             .put(R.id.run_on_package_uninstall, Intent.ACTION_PACKAGE_REMOVED)
             .put(R.id.run_on_package_update, Intent.ACTION_PACKAGE_REPLACED)
             .put(R.id.run_on_headset_plug, Intent.ACTION_HEADSET_PLUG)
+            .put(R.id.run_on_config_change, Intent.ACTION_CONFIGURATION_CHANGED)
+            .put(R.id.run_on_time_tick, Intent.ACTION_TIME_TICK)
             .build();
 
 

@@ -8,6 +8,7 @@ import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
 
 import org.autojs.autojs.Pref;
+import org.autojs.autojs.model.sample.SampleFile;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -52,7 +53,7 @@ public class WorkspaceFileProvider extends ExplorerFileProvider {
                         }
                     } else {
                         if (file.getPath().startsWith(mSampleDir.getPath())) {
-                            p.addChild(new ExplorerSamleItem(file, p));
+                            p.addChild(new ExplorerSampleItem(file, p));
                         } else {
                             p.addChild(new ExplorerFileItem(file, p));
                         }
@@ -96,6 +97,10 @@ public class WorkspaceFileProvider extends ExplorerFileProvider {
                     }
                     return file;
                 });
+    }
+
+    public static void resetSample(SampleFile sampleFile){
+
     }
 
     @Override

@@ -376,6 +376,22 @@
                                         android:text="@string/text_run_on_headset_plug"/>
 
                                     <RadioButton
+                                        android:id="@+id/run_on_config_change"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_config_change"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_time_tick"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_time_tick"/>
+
+                                    <RadioButton
                                         android:id="@+id/run_on_other_broadcast"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
@@ -397,6 +413,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:hint="@string/text_broadcast_action"
+                                        android:maxLines="2"
                                         android:text="@string/text_broadcast_action_prefix"/>
 
                                 </android.support.design.widget.TextInputLayout>
