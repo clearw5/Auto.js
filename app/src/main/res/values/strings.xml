@@ -403,10 +403,20 @@
     <string name="foreground_notification_channel_name">前台服务通知</string>
     <string name="foreground_notification_title">Auto.js保持运行中</string>
     <string name="foreground_notification_text">点击进入主界面</string>
-    <string name="text_run_on_boot">开机时运行</string>
-    <string name="text_run_on_screen_on">亮屏时运行</string>
-    <string name="text_run_on_screen_off">息屏时运行</string>
     <string name="text_run_on_other_broadcast">其他事件(广播)</string>
     <string name="text_broadcast_action">广播Action</string>
     <string name="text_broadcast_action_prefix">android.intent.action.</string>
+    <string name="text_run_on_boot">开机时</string>
+    <string name="text_run_on_screen_on">亮屏时</string>
+    <string name="text_run_on_screen_off">息屏时</string>
+    <string name="error_empty_selection">请选择一个广播事件选项</string>
+    <string name="text_run_on_battery_change">电量变化时</string>
+    <string name="text_run_on_screen_unlock">屏幕解锁时</string>
+    <string name="text_run_on_power_connect">电源连接时</string>
+    <string name="text_run_on_power_disconnect">电源断开时</string>
+    <string name="text_run_on_conn_change">网络连接变化时</string>
+    <string name="text_run_on_package_install">新应用安装时</string>
+    <string name="text_run_on_package_uninstall">应用卸载时</string>
+    <string name="text_run_on_package_update">应用更新时</string>
+    <string name="text_run_on_headset_plug">耳机插拔时</string>
 </resources>

@@ -56,6 +56,7 @@ public abstract class TaskGroup implements Parent<Task> {
 
         @Override
         public void refresh() {
+            mTasks.clear();
             for (TimedTask timedTask : TimedTaskManager.getInstance().getAllTasksAsList()) {
                 mTasks.add(new Task.PendingTask(timedTask));
             }

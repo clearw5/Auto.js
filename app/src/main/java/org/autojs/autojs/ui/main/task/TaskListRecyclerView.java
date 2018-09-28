@@ -32,6 +32,7 @@ import org.autojs.autojs.timing.IntentTask;
 import org.autojs.autojs.timing.TaskReceiver;
 import org.autojs.autojs.timing.TimedTask;
 import org.autojs.autojs.timing.TimedTaskManager;
+import org.autojs.autojs.ui.timing.TimedTaskSettingActivity;
 import org.autojs.autojs.ui.timing.TimedTaskSettingActivity_;
 
 import java.util.ArrayList;
@@ -248,8 +249,11 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
 
         void onItemClick(View view) {
             if (mTask instanceof Task.PendingTask) {
+                Task.PendingTask task = (Task.PendingTask) mTask;
+                String extra = task.getTimedTask() == null ? TimedTaskSettingActivity.EXTRA_INTENT_TASK_ID
+                        : TimedTaskSettingActivity.EXTRA_TASK_ID;
                 TimedTaskSettingActivity_.intent(getContext())
-                        .extra(TaskerScriptEditActivity.EXTRA_TASK_ID, ((Task.PendingTask) mTask).getTimedTask().getId())
+                        .extra(extra, task.getId())
                         .start();
             }
         }

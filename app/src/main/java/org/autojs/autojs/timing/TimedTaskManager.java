@@ -3,9 +3,11 @@ package org.autojs.autojs.timing;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.stardust.app.GlobalAppContext;
 
+import org.autojs.autojs.App;
 import org.autojs.autojs.storage.database.IntentTaskDatabase;
 import org.autojs.autojs.storage.database.ModelChange;
 import org.autojs.autojs.storage.database.TimedTaskDatabase;
@@ -15,7 +17,6 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.subjects.PublishSubject;
 
 /**
  * Created by Stardust on 2017/11/27.
@@ -82,7 +83,12 @@ public class TimedTaskManager {
     @SuppressLint("CheckResult")
     public void addTask(IntentTask intentTask) {
         mIntentTaskDatabase.insert(intentTask)
-                .subscribe(EmptyObservers.consumer(), Throwable::printStackTrace);
+                .subscribe(i -> {
+                    if(!TextUtils.isEmpty(intentTask.getAction())){
+                        App.getApp().getDynamicBroadcastReceivers()
+                                .register(intentTask.getAction());
+                    }
+                }, Throwable::printStackTrace);
     }
 
     @SuppressLint("CheckResult")
@@ -128,6 +134,17 @@ public class TimedTaskManager {
         TimedTaskScheduler.scheduleTaskIfNeeded(mContext, task);
     }
 
+    @SuppressLint("CheckResult")
+    public void updateTask(IntentTask task) {
+        mIntentTaskDatabase.update(task)
+                .subscribe(i -> {
+                    if(i > 0 && !TextUtils.isEmpty(task.getAction())){
+                        App.getApp().getDynamicBroadcastReceivers()
+                                .register(task.getAction());
+                    }
+                }, Throwable::printStackTrace);
+    }
+
     public long countTasks() {
         return mTimedTaskDatabase.count();
     }
@@ -138,5 +155,13 @@ public class TimedTaskManager {
 
     public Observable<ModelChange<IntentTask>> getIntentTaskChanges() {
         return mIntentTaskDatabase.getModelChange();
+    }
+
+    public IntentTask getIntentTask(long intentTaskId) {
+        return mIntentTaskDatabase.queryById(intentTaskId);
+    }
+
+    public Flowable<IntentTask> getAllIntentTasks() {
+        return mIntentTaskDatabase.queryAllAsFlowable();
     }
 }

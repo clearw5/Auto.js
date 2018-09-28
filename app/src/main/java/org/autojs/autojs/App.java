@@ -1,5 +1,6 @@
 package org.autojs.autojs;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -21,15 +22,16 @@ import com.tencent.bugly.crashreport.CrashReport;
 
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.autojs.key.GlobalKeyObserver;
-import org.autojs.autojs.external.receiver.DynamicBroadcastReceiver;
+import org.autojs.autojs.external.receiver.DynamicBroadcastReceivers;
 import org.autojs.autojs.network.GlideApp;
-import org.autojs.autojs.storage.database.IntentTaskDatabase;
-import org.autojs.autojs.storage.database.TimedTaskDatabase;
+import org.autojs.autojs.timing.IntentTask;
+import org.autojs.autojs.timing.TimedTaskManager;
 import org.autojs.autojs.timing.TimedTaskScheduler;
 import org.autojs.autojs.tool.CrashHandler;
 import org.autojs.autojs.ui.error.ErrorReportActivity;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 /**
  * Created by Stardust on 2017/1/27.
@@ -41,7 +43,7 @@ public class App extends MultiDexApplication {
     private static final String BUGLY_APP_ID = "19b3607b53";
 
     private static WeakReference<App> instance;
-    private DynamicBroadcastReceiver mDynamicBroadcastReceiver;
+    private DynamicBroadcastReceivers mDynamicBroadcastReceivers;
 
     public static App getApp() {
         return instance.get();
@@ -54,6 +56,10 @@ public class App extends MultiDexApplication {
         setUpStaticsTool();
         setUpDebugEnvironment();
         init();
+    }
+
+    public DynamicBroadcastReceivers getDynamicBroadcastReceivers() {
+        return mDynamicBroadcastReceivers;
     }
 
     private void setUpStaticsTool() {
@@ -98,7 +104,18 @@ public class App extends MultiDexApplication {
         }
         setupDrawableImageLoader();
         TimedTaskScheduler.checkTasksRepeatedlyIfNeeded(this);
-        mDynamicBroadcastReceiver = new DynamicBroadcastReceiver(this);
+        initDynamicBroadcastReceivers();
+    }
+
+    @SuppressLint("CheckResult")
+    private void initDynamicBroadcastReceivers() {
+        mDynamicBroadcastReceivers = new DynamicBroadcastReceivers(this);
+        TimedTaskManager.getInstance().getAllIntentTasks()
+                .filter(task -> task.getAction() != null)
+                .map(IntentTask::getAction)
+                .collectInto(new ArrayList<String>(), ArrayList::add)
+                .subscribe(list -> mDynamicBroadcastReceivers.register(list),
+                        Throwable::printStackTrace);
     }
 
     private void setupDrawableImageLoader() {

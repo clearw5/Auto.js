@@ -304,6 +304,78 @@
                                         android:text="@string/text_run_on_screen_off"/>
 
                                     <RadioButton
+                                        android:id="@+id/run_on_screen_unlock"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_screen_unlock"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_battery_change"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_battery_change"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_power_connect"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_power_connect"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_power_disconnect"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_power_disconnect"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_conn_change"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_conn_change"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_package_install"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_package_install"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_package_uninstall"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_package_uninstall"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_package_update"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_package_update"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_headset_plug"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_headset_plug"/>
+
+                                    <RadioButton
                                         android:id="@+id/run_on_other_broadcast"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"

@@ -3,6 +3,8 @@ package org.autojs.autojs.ui.timing;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.ColorFilter;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,7 +32,7 @@ import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.stardust.autojs.execution.ExecutionConfig;
 import com.stardust.util.BiMap;
 import com.stardust.util.BiMaps;
-import com.stardust.util.MapEntries;
+import com.stardust.util.MapBuilder;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.CheckedChange;
@@ -61,16 +63,44 @@ import java.util.Map;
 @EActivity(R.layout.activity_timed_task_setting)
 public class TimedTaskSettingActivity extends BaseActivity {
 
+    public static final String EXTRA_INTENT_TASK_ID = "intent_task_id";
+    public static final String EXTRA_TASK_ID = TaskReceiver.EXTRA_TASK_ID;
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormat.forPattern("HH:mm");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern("yy-MM-dd");
     private static final int REQUEST_CODE_IGNORE_BATTERY = 27101;
+
     private static final String LOG_TAG = "TimedTaskSettings";
+
+
+    public static final Map<String, Integer> ACTION_DESC_MAP = new MapBuilder<String, Integer>()
+            .put(Intent.ACTION_BOOT_COMPLETED, R.string.text_run_on_boot)
+            .put(Intent.ACTION_SCREEN_OFF, R.string.text_run_on_screen_off)
+            .put(Intent.ACTION_SCREEN_ON, R.string.text_run_on_screen_on)
+            .put(Intent.ACTION_USER_PRESENT, R.string.text_run_on_screen_unlock)
+            .put(Intent.ACTION_BATTERY_CHANGED, R.string.text_run_on_battery_change)
+            .put(Intent.ACTION_POWER_CONNECTED, R.string.text_run_on_power_connect)
+            .put(Intent.ACTION_POWER_DISCONNECTED, R.string.text_run_on_power_disconnect)
+            .put(ConnectivityManager.CONNECTIVITY_ACTION, R.string.text_run_on_conn_change)
+            .put(Intent.ACTION_PACKAGE_ADDED, R.string.text_run_on_package_install)
+            .put(Intent.ACTION_PACKAGE_REMOVED, R.string.text_run_on_package_uninstall)
+            .put(Intent.ACTION_PACKAGE_REPLACED, R.string.text_run_on_package_update)
+            .put(Intent.ACTION_HEADSET_PLUG, R.string.text_run_on_headset_plug)
+            .build();
 
     private static final BiMap<Integer, String> ACTIONS = BiMaps.<Integer, String>newBuilder()
             .put(R.id.run_on_boot, Intent.ACTION_BOOT_COMPLETED)
             .put(R.id.run_on_screen_off, Intent.ACTION_SCREEN_OFF)
             .put(R.id.run_on_screen_on, Intent.ACTION_SCREEN_ON)
+            .put(R.id.run_on_screen_unlock, Intent.ACTION_USER_PRESENT)
+            .put(R.id.run_on_battery_change, Intent.ACTION_BATTERY_CHANGED)
+            .put(R.id.run_on_power_connect, Intent.ACTION_POWER_CONNECTED)
+            .put(R.id.run_on_power_disconnect, Intent.ACTION_POWER_DISCONNECTED)
+            .put(R.id.run_on_conn_change, ConnectivityManager.CONNECTIVITY_ACTION)
+            .put(R.id.run_on_package_install, Intent.ACTION_PACKAGE_ADDED)
+            .put(R.id.run_on_package_uninstall, Intent.ACTION_PACKAGE_REMOVED)
+            .put(R.id.run_on_package_update, Intent.ACTION_PACKAGE_REPLACED)
+            .put(R.id.run_on_headset_plug, Intent.ACTION_HEADSET_PLUG)
             .build();
 
 
@@ -90,7 +120,10 @@ public class TimedTaskSettingActivity extends BaseActivity {
     RadioButton mWeeklyTaskRadio;
 
     @ViewById(R.id.run_on_broadcast)
-    RadioButton mRunOnBroadcast;
+    RadioButton mRunOnBroadcastRadio;
+
+    @ViewById(R.id.run_on_other_broadcast)
+    RadioButton mRunOnOtherBroadcast;
 
     @ViewById(R.id.action)
     EditText mOtherBroadcastAction;
@@ -117,22 +150,31 @@ public class TimedTaskSettingActivity extends BaseActivity {
 
     private ScriptFile mScriptFile;
     private TimedTask mTimedTask;
+    private IntentTask mIntentTask;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        long taskId = getIntent().getLongExtra(TaskReceiver.EXTRA_TASK_ID, -1);
+        long taskId = getIntent().getLongExtra(EXTRA_TASK_ID, -1);
         if (taskId != -1) {
             mTimedTask = TimedTaskManager.getInstance().getTimedTask(taskId);
             if (mTimedTask != null) {
                 mScriptFile = new ScriptFile(mTimedTask.getScriptPath());
             }
         } else {
-            String path = getIntent().getStringExtra(ScriptIntents.EXTRA_KEY_PATH);
-            if (TextUtils.isEmpty(path)) {
-                finish();
+            long intentTaskId = getIntent().getLongExtra(EXTRA_INTENT_TASK_ID, -1);
+            if (intentTaskId != -1) {
+                mIntentTask = TimedTaskManager.getInstance().getIntentTask(intentTaskId);
+                if (mIntentTask != null) {
+                    mScriptFile = new ScriptFile(mIntentTask.getScriptPath());
+                }
+            } else {
+                String path = getIntent().getStringExtra(ScriptIntents.EXTRA_KEY_PATH);
+                if (TextUtils.isEmpty(path)) {
+                    finish();
+                }
+                mScriptFile = new ScriptFile(path);
             }
-            mScriptFile = new ScriptFile(path);
         }
 
     }
@@ -144,7 +186,7 @@ public class TimedTaskSettingActivity extends BaseActivity {
             mToolbar.setSubtitle(mScriptFile.getName());
         }
         findDayOfWeekCheckBoxes(mWeeklyTaskContainer);
-        setUpTime();
+        setUpTaskSettings();
     }
 
     private void findDayOfWeekCheckBoxes(ViewGroup parent) {
@@ -161,13 +203,32 @@ public class TimedTaskSettingActivity extends BaseActivity {
 
     }
 
-    private void setUpTime() {
+    private void setUpTaskSettings() {
         mDisposableTaskDate.setText(DATE_FORMATTER.print(LocalDate.now()));
         mDisposableTaskTime.setText(TIME_FORMATTER.print(LocalTime.now()));
-        if (mTimedTask == null) {
-            mDailyTaskRadio.setChecked(true);
+        if (mTimedTask != null) {
+            setupTime();
             return;
         }
+        if (mIntentTask != null) {
+            setupAction();
+            return;
+        }
+        mDailyTaskRadio.setChecked(true);
+    }
+
+    private void setupAction() {
+        mRunOnBroadcastRadio.setChecked(true);
+        Integer buttonId = ACTIONS.getKey(mIntentTask.getAction());
+        if (buttonId == null) {
+            mRunOnOtherBroadcast.setChecked(true);
+            mOtherBroadcastAction.setText(mIntentTask.getAction());
+        } else {
+            ((RadioButton) findViewById(buttonId)).setChecked(true);
+        }
+    }
+
+    private void setupTime() {
         if (mTimedTask.isDisposable()) {
             mDisposableTaskRadio.setChecked(true);
             mDisposableTaskTime.setText(TIME_FORMATTER.print(mTimedTask.getMillis()));
@@ -187,7 +248,6 @@ public class TimedTaskSettingActivity extends BaseActivity {
                 mDayOfWeekCheckBoxes.get(i).setChecked(mTimedTask.hasDayOfWeek(i + 1));
             }
         }
-
     }
 
 
@@ -285,7 +345,7 @@ public class TimedTaskSettingActivity extends BaseActivity {
                 startActivityForResult(new Intent().setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
                         .setData(Uri.parse("package:" + getPackageName())), REQUEST_CODE_IGNORE_BATTERY);
             } else {
-                createOrUpdateTimedTask();
+                createOrUpdateTask();
             }
             return true;
         }
@@ -296,14 +356,14 @@ public class TimedTaskSettingActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_IGNORE_BATTERY) {
             Log.d(LOG_TAG, "result code = " + requestCode);
-            createOrUpdateTimedTask();
+            createOrUpdateTask();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void createOrUpdateTimedTask() {
-        if (mRunOnBroadcast.isChecked()) {
-            createIntentTask();
+    private void createOrUpdateTask() {
+        if (mRunOnBroadcastRadio.isChecked()) {
+            createOrUpdateIntentTask();
             return;
         }
         TimedTask task = createTimedTask();
@@ -311,6 +371,9 @@ public class TimedTaskSettingActivity extends BaseActivity {
             return;
         if (mTimedTask == null) {
             TimedTaskManager.getInstance().addTask(task);
+            if (mIntentTask != null) {
+                TimedTaskManager.getInstance().removeTask(mIntentTask);
+            }
             Toast.makeText(this, R.string.text_already_create, Toast.LENGTH_SHORT).show();
         } else {
             task.setId(mTimedTask.getId());
@@ -320,22 +383,36 @@ public class TimedTaskSettingActivity extends BaseActivity {
     }
 
 
-    private void createIntentTask() {
+    private void createOrUpdateIntentTask() {
         int buttonId = mBroadcastGroup.getCheckedRadioButtonId();
+        if (buttonId == -1) {
+            Toast.makeText(this, R.string.error_empty_selection, Toast.LENGTH_SHORT).show();
+            return;
+        }
         String action;
-        if(buttonId == R.id.run_on_other_broadcast){
+        if (buttonId == R.id.run_on_other_broadcast) {
             action = mOtherBroadcastAction.getText().toString();
-            if(action.isEmpty()){
+            if (action.isEmpty()) {
                 mOtherBroadcastAction.setError(getString(R.string.text_should_not_be_empty));
                 return;
             }
-        }else {
+        } else {
             action = ACTIONS.get(buttonId);
         }
         IntentTask task = new IntentTask();
         task.setAction(action);
         task.setScriptPath(mScriptFile.getPath());
-        TimedTaskManager.getInstance().addTask(task);
+        if (mIntentTask != null) {
+            task.setId(mIntentTask.getId());
+            TimedTaskManager.getInstance().updateTask(task);
+            Toast.makeText(this, R.string.text_already_create, Toast.LENGTH_SHORT).show();
+        } else {
+            TimedTaskManager.getInstance().addTask(task);
+            if (mTimedTask != null) {
+                TimedTaskManager.getInstance().removeTask(mTimedTask);
+            }
+        }
+
         finish();
     }
 }

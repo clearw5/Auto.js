@@ -31,7 +31,6 @@ import static org.autojs.autojs.ui.edit.EditorView.EXTRA_SAVE_ENABLED;
 public class TaskerScriptEditActivity extends BaseActivity {
 
     public static final int REQUEST_CODE = 10016;
-    public static final String EXTRA_INTENT_TASK_ID = "intent_task_id";
     public static final String EXTRA_TASK_ID = TaskReceiver.EXTRA_TASK_ID;
 
     public static void edit(Activity activity, String title, String summary, String content) {

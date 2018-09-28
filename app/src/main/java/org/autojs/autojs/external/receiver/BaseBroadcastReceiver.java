@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,7 +25,7 @@ public class BaseBroadcastReceiver extends BroadcastReceiver {
 
     @SuppressLint("CheckResult")
     public void onReceive(Context context, Intent intent) {
-        Log.d(LOG_TAG, "onReceive: action = " + intent.getAction() + ", intent = " + intent);
+        Log.d(LOG_TAG, "onReceive: intent = " + intent + ", this = " + this);
         try {
             TimedTaskManager.getInstance().getIntentTaskOfAction(intent.getAction())
                     .subscribeOn(Schedulers.io())

@@ -7,7 +7,7 @@ import android.support.annotation.RequiresApi;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.stardust.automator.UiObject;
-import com.stardust.util.MapEntries;
+import com.stardust.util.MapBuilder;
 
 import java.util.Map;
 
@@ -17,15 +17,15 @@ import java.util.Map;
 
 public class ActionFactory {
 
-    private static Map<Integer, Object> searchUpAction = new MapEntries<Integer, Object>()
-            .entry(AccessibilityNodeInfo.ACTION_CLICK, null)
-            .entry(AccessibilityNodeInfo.ACTION_LONG_CLICK, null)
-            .entry(AccessibilityNodeInfo.ACTION_SELECT, null)
-            .entry(AccessibilityNodeInfo.ACTION_FOCUS, null)
-            .entry(AccessibilityNodeInfo.ACTION_SELECT, null)
-            .entry(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, null)
-            .entry(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, null)
-            .map();
+    private static Map<Integer, Object> searchUpAction = new MapBuilder<Integer, Object>()
+            .put(AccessibilityNodeInfo.ACTION_CLICK, null)
+            .put(AccessibilityNodeInfo.ACTION_LONG_CLICK, null)
+            .put(AccessibilityNodeInfo.ACTION_SELECT, null)
+            .put(AccessibilityNodeInfo.ACTION_FOCUS, null)
+            .put(AccessibilityNodeInfo.ACTION_SELECT, null)
+            .put(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, null)
+            .put(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, null)
+            .build();
 
     public static SimpleAction createActionWithTextFilter(int action, String text, int index) {
         if (searchUpAction.containsKey(action))
