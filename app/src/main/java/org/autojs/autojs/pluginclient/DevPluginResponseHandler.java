@@ -99,7 +99,9 @@ public class DevPluginResponseHandler implements Handler {
         if (!name.endsWith(".js")) {
             name = name + ".js";
         }
-        PFiles.write(new File(Pref.getScriptDirPath(), name), script);
+        File file = new File(Pref.getScriptDirPath(), name);
+        PFiles.ensureDir(file.getPath());
+        PFiles.write(file, script);
         GlobalAppContext.toast(R.string.text_script_save_successfully);
     }
 }
