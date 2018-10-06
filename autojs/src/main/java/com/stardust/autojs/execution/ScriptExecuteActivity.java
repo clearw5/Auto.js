@@ -140,9 +140,11 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(LOG_TAG, "onDestroy");
-        mScriptEngine.put("activity", null);
-        mScriptEngine.setTag("activity", null);
-        mScriptEngine.destroy();
+        if(mScriptEngine != null){
+            mScriptEngine.put("activity", null);
+            mScriptEngine.setTag("activity", null);
+            mScriptEngine.destroy();
+        }
         mScriptExecution = null;
     }
 

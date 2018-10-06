@@ -7,11 +7,10 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
-import com.stardust.automator.UiObject;
+import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 import com.stardust.view.accessibility.AccessibilityNotificationObserver;
 import com.stardust.view.accessibility.AccessibilityService;
-import com.stardust.view.accessibility.NotificationListener;
 
 
 /**
@@ -27,18 +26,27 @@ public abstract class AccessibilityBridge {
     public static final int MODE_NORMAL = 0;
     public static final int MODE_FAST = 1;
 
-    private int mMode = MODE_NORMAL;
-    private AccessibilityConfig mConfig;
-    private WindowFilter mWindowFilter;
+    public static final int FLAG_FIND_ON_UI_THREAD = 1;
 
-    public AccessibilityBridge(AccessibilityConfig config) {
+    private int mMode = MODE_NORMAL;
+    private int mFlags = 0;
+    private final AccessibilityConfig mConfig;
+    private WindowFilter mWindowFilter;
+    private final UiHandler mUiHandler;
+
+    public AccessibilityBridge(AccessibilityConfig config, UiHandler uiHandler) {
         mConfig = config;
+        mUiHandler = uiHandler;
         mConfig.seal();
     }
 
     public abstract void ensureServiceEnabled();
 
     public abstract void waitForServiceEnabled();
+
+    public void post(Runnable r) {
+        mUiHandler.post(r);
+    }
 
     @Nullable
     public abstract AccessibilityService getService();
@@ -62,7 +70,7 @@ public abstract class AccessibilityBridge {
                 return activeWindow.getRoot();
             }
         }
-        if (mMode == MODE_FAST) {
+        if ((mMode & MODE_FAST) != 0) {
             return service.fastRootInActiveWindow();
         }
         return service.getRootInActiveWindow();
@@ -75,9 +83,16 @@ public abstract class AccessibilityBridge {
     @NonNull
     public abstract AccessibilityInfoProvider getInfoProvider();
 
-
     public void setMode(int mode) {
         mMode = mode;
+    }
+
+    public int getFlags() {
+        return mFlags;
+    }
+
+    public void setFlags(int flags) {
+        mFlags = flags;
     }
 
     @NonNull

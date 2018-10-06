@@ -111,7 +111,7 @@ public abstract class AutoJs {
         return new ScriptRuntime.Builder()
                 .setConsole(new StardustConsole(mUiHandler, mGlobalConsole))
                 .setScreenCaptureRequester(mScreenCaptureRequester)
-                .setAccessibilityBridge(new AccessibilityBridgeImpl())
+                .setAccessibilityBridge(new AccessibilityBridgeImpl(mUiHandler))
                 .setUiHandler(mUiHandler)
                 .setAppUtils(mAppUtils)
                 .setEngineService(mScriptEngineService)
@@ -183,8 +183,8 @@ public abstract class AutoJs {
 
     private class AccessibilityBridgeImpl extends AccessibilityBridge {
 
-        public AccessibilityBridgeImpl() {
-            super(createAccessibilityConfig());
+        public AccessibilityBridgeImpl(UiHandler uiHandler) {
+            super(createAccessibilityConfig(), uiHandler);
         }
 
         @Override
