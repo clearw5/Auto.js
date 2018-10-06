@@ -2,6 +2,8 @@ package org.autojs.autojs.ui.floating;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.stardust.app.GlobalAppContext;
@@ -9,9 +11,11 @@ import com.stardust.autojs.util.FloatingPermission;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.FloatyWindow;
 import com.stardust.enhancedfloaty.util.FloatingWindowPermissionUtil;
+
 import org.autojs.autojs.App;
 import org.autojs.autojs.R;
 import org.autojs.autojs.ui.floating.CircularMenu;
+
 import com.stardust.util.IntentUtil;
 
 import java.lang.ref.WeakReference;
@@ -73,5 +77,13 @@ public class FloatyWindowManger {
         if (menu != null)
             menu.close();
         sCircularMenu = null;
+    }
+
+    public static int getWindowType() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else {
+            return WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        }
     }
 }

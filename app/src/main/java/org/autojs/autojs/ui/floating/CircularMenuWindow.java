@@ -3,6 +3,7 @@ package org.autojs.autojs.ui.floating;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.view.Gravity;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.WindowManager;
@@ -94,8 +95,10 @@ public class CircularMenuWindow implements FloatyWindow {
     }
 
     private WindowManager.LayoutParams createWindowLayoutParams() {
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(-2, -2, 2003, 520, -3);
-        layoutParams.gravity = 51;
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT,
+                FloatyWindowManger.getWindowType(), 520, -3);
+        layoutParams.gravity = Gravity.LEFT | Gravity.TOP;
         return layoutParams;
     }
 
