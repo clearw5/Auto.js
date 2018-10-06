@@ -532,7 +532,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         return mEditor;
     }
 
-    public void find(String keywords, boolean usingRegex) {
+    public void find(String keywords, boolean usingRegex) throws CodeEditor.CheckedPatternSyntaxException {
         mEditor.find(keywords, usingRegex);
         showSearchToolbar(false);
     }
@@ -547,12 +547,12 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
                 .commit();
     }
 
-    public void replace(String keywords, String replacement, boolean usingRegex) {
+    public void replace(String keywords, String replacement, boolean usingRegex) throws CodeEditor.CheckedPatternSyntaxException {
         mEditor.replace(keywords, replacement, usingRegex);
         showSearchToolbar(true);
     }
 
-    public void replaceAll(String keywords, String replacement, boolean usingRegex) {
+    public void replaceAll(String keywords, String replacement, boolean usingRegex) throws CodeEditor.CheckedPatternSyntaxException {
         mEditor.replaceAll(keywords, replacement, usingRegex);
     }
 
