@@ -2,11 +2,11 @@
 
 buildscript {
     repositories {
-        jcenter()
         google()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.4'
 
     }
 }
@@ -18,9 +18,19 @@ allprojects {
             url "https://jitpack.io"
         }
         google()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+    versions = [
+        target: 28,
+        mini: 17,
+        compile: 28,
+        buildTool: '28.0.3'
+    ]
 }

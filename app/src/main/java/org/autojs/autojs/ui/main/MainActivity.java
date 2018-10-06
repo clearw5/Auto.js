@@ -176,6 +176,8 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     private void setUpViewPagerFragmentBehaviors() {
+
+
         mPagerAdapter.setOnFragmentInstantiateListener((pos, fragment) -> {
             ((ViewPagerFragment) fragment).setFab(mFab);
             if (pos == mViewPager.getCurrentItem()) {

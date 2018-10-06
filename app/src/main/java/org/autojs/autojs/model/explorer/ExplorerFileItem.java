@@ -1,6 +1,7 @@
 package org.autojs.autojs.model.explorer;
 
 import com.stardust.pio.PFile;
+import com.stardust.util.ObjectHelper;
 
 import org.autojs.autojs.model.script.ScriptFile;
 
@@ -8,6 +9,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
 
 public class ExplorerFileItem implements ExplorerItem {
 
@@ -19,6 +21,7 @@ public class ExplorerFileItem implements ExplorerItem {
     private final ExplorerPage mParent;
 
     public ExplorerFileItem(PFile file, ExplorerPage parent) {
+        ObjectHelper.requireNonNull(file, "file");
         mFile = file;
         mParent = parent;
     }

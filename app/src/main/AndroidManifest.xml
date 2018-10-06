@@ -23,6 +23,7 @@
     <!-- Ad SDK Permissions -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
+
     <application
         xmlns:tools="http://schemas.android.com/tools"
         android:name=".App"
@@ -33,6 +34,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label, android:icon, android:allowBackup">
+
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.1" />
 
         <activity
             android:name=".ui.splash.SplashActivity"

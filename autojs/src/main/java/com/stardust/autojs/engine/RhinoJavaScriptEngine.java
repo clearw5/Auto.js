@@ -205,6 +205,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         @Override
         protected void observeInstructionCount(Context cx, int instructionCount) {
             if (Thread.currentThread().isInterrupted() && Looper.myLooper() != Looper.getMainLooper()) {
+                Log.d("DDDDD", "thread interrupt: "  + Thread.currentThread());
                 throw new ScriptInterruptedException();
             }
         }

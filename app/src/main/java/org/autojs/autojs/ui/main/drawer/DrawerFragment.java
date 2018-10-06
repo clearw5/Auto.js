@@ -239,9 +239,9 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         SettingsActivity.selectThemeColor(getActivity());
     }
 
+    @SuppressLint("CheckResult")
     private void enableAccessibilityServiceByRootIfNeeded() {
         Observable.fromCallable(() -> Pref.shouldEnableAccessibilityServiceByRoot() && !isAccessibilityServiceEnabled())
-                .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(needed -> {
                     if (needed) {
