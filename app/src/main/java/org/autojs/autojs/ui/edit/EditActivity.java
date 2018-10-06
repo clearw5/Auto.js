@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,6 +49,7 @@ public class
 EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, PermissionRequestProxyActivity {
 
     private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
+    private static final String LOG_TAG = "EditActivity";
 
     @ViewById(R.id.editor_view)
     EditorView mEditorView;
@@ -125,6 +127,7 @@ EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHo
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        Log.d(LOG_TAG, "onPrepareOptionsMenu: " + menu);
         boolean isScriptRunning = mEditorView.getScriptExecutionId() != ScriptExecution.NO_ID;
         MenuItem forceStopItem = menu.findItem(R.id.action_force_stop);
         forceStopItem.setEnabled(isScriptRunning);
@@ -132,6 +135,7 @@ EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHo
     }
 
     public boolean onPrepareActionMode(Menu menu) {
+        Log.d(LOG_TAG, "onPrepareActionMode: " + menu);
         boolean isScriptRunning = mEditorView.getScriptExecutionId() != ScriptExecution.NO_ID;
         MenuItem forceStopItem = menu.findItem(R.id.action_force_stop);
         forceStopItem.setEnabled(isScriptRunning);
@@ -140,11 +144,37 @@ EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHo
 
     @Override
     public void onActionModeStarted(ActionMode mode) {
+        Log.d(LOG_TAG, "onActionModeStarted: " + mode);
         Menu menu = mode.getMenu();
         MenuItem item = menu.getItem(menu.size() - 1);
         menu.add(item.getGroupId(), R.id.action_delete_line, 10000, R.string.text_delete_line);
         menu.add(item.getGroupId(), R.id.action_copy_line, 20000, R.string.text_copy_line);
         super.onActionModeStarted(mode);
+    }
+
+    @Override
+    public void onSupportActionModeStarted(@NonNull android.support.v7.view.ActionMode mode) {
+        Log.d(LOG_TAG, "onSupportActionModeStarted: mode = " + mode);
+        super.onSupportActionModeStarted(mode);
+    }
+
+    @Nullable
+    @Override
+    public android.support.v7.view.ActionMode onWindowStartingSupportActionMode(@NonNull android.support.v7.view.ActionMode.Callback callback) {
+        Log.d(LOG_TAG, "onWindowStartingSupportActionMode: callback = " + callback);
+        return super.onWindowStartingSupportActionMode(callback);
+    }
+
+    @Override
+    public ActionMode startActionMode(ActionMode.Callback callback, int type) {
+        Log.d(LOG_TAG, "startActionMode: callback = " + callback + ", type = " +  type);
+        return super.startActionMode(callback, type);
+    }
+
+    @Override
+    public ActionMode startActionMode(ActionMode.Callback callback) {
+        Log.d(LOG_TAG, "startActionMode: callback = " + callback );
+        return super.startActionMode(callback);
     }
 
     @Override

@@ -94,7 +94,12 @@ public class TimedTaskManager {
     @SuppressLint("CheckResult")
     public void removeTask(IntentTask intentTask) {
         mIntentTaskDatabase.delete(intentTask)
-                .subscribe(EmptyObservers.consumer(), Throwable::printStackTrace);;
+                .subscribe(i -> {
+                    if(!TextUtils.isEmpty(intentTask.getAction())){
+                        App.getApp().getDynamicBroadcastReceivers()
+                                .unregister(intentTask.getAction());
+                    }
+                }, Throwable::printStackTrace);
     }
 
     public Flowable<TimedTask> getAllTasks() {

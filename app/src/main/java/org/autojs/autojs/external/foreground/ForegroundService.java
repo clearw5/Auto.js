@@ -13,10 +13,11 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 
-import com.stardust.app.GlobalAppContext;
-
 import org.autojs.autojs.R;
 import org.autojs.autojs.ui.main.MainActivity_;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 public class ForegroundService extends Service {
 
@@ -64,6 +65,7 @@ public class ForegroundService extends Service {
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(contentIntent)
                 .setChannelId(CHANEL_ID)
+                .setVibrate(new long[0])
                 .build();
     }
 

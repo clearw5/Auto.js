@@ -37,4 +37,12 @@ public class StaticBroadcastReceiver extends BaseBroadcastReceiver {
             "android.net.conn.CONNECTIVITY_CHANGE"
     ));
 
+    static final List<String> PACKAGE_ACTIONS = new ArrayList<>(Arrays.asList(
+            "android.intent.action.PACKAGE_ADDED",
+            "android.intent.action.PACKAGE_CHANGED",
+            "android.intent.action.PACKAGE_DATA_CLEARED",
+            "android.intent.action.PACKAGE_REMOVED",
+            "android.intent.action.PACKAGE_RESTARTED"
+    ));
+
 }
