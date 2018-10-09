@@ -71,6 +71,7 @@
     </android.support.design.widget.CoordinatorLayout>
 
     <fragment
+        android:id="@+id/fragment_drawer"
         android:name="org.autojs.autojs.ui.main.drawer.DrawerFragment_"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

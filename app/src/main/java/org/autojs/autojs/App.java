@@ -18,6 +18,7 @@ import com.stardust.autojs.core.ui.inflater.ImageLoader;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
 import com.stardust.theme.ThemeColor;
 import com.stardust.theme.ThemeColorManager;
+import com.tencent.bugly.Bugly;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import org.autojs.autojs.autojs.AutoJs;

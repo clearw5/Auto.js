@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.support.design.widget.TabLayout;
 import android.util.Log;
 import android.util.Pair;
 
