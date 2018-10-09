@@ -3,7 +3,8 @@ package com.stardust.autojs.rhino;
 import android.util.Log;
 
 import com.android.dx.command.dexer.Main;
-import com.android.dx.dex.file.DexFile;
+import com.stardust.pio.PFiles;
+import com.stardust.util.MD5;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -16,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +44,11 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
     public AndroidClassLoader(ClassLoader parent, File dir) {
         this.parent = parent;
         mCacheDir = dir;
-        dir.mkdirs();
+        if (dir.exists()) {
+            PFiles.deleteFilesOfDir(dir);
+        } else {
+            dir.mkdirs();
+        }
     }
 
     /**
@@ -53,13 +59,13 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
         Log.d(LOG_TAG, "defineClass: name = " + name + " data.length = " + data.length);
         File classFile = null;
         try {
-            classFile = generateTempClassFile(name, false);
+            classFile = generateTempFile(name, false);
             final ZipFile zipFile = new ZipFile(classFile);
             final ZipParameters parameters = new ZipParameters();
             parameters.setFileNameInZip(name.replace('.', '/') + ".class");
             parameters.setSourceExternalStream(true);
             zipFile.addStream(new ByteArrayInputStream(data), parameters);
-            return dexJar(classFile).loadClass(name);
+            return dexJar(classFile, null).loadClass(name);
         } catch (IOException | ZipException | ClassNotFoundException e) {
             throw new FatalLoadingException(e);
         } finally {
@@ -69,7 +75,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
         }
     }
 
-    private File generateTempClassFile(String name, boolean create) throws IOException {
+    private File generateTempFile(String name, boolean create) throws IOException {
         File file = new File(mCacheDir, name.hashCode() + System.currentTimeMillis() + ".jar");
         if (create) {
             if (!file.exists()) {
@@ -83,8 +89,16 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
 
     public void loadJar(File jar) throws IOException {
         Log.d(LOG_TAG, "loadJar: jar = " + jar);
+        if (!jar.exists() || !jar.canRead()) {
+            throw new FileNotFoundException("File does not exist or readable: " + jar.getPath());
+        }
+        File dexFile = new File(mCacheDir, generateDexFileName(jar));
+        if (dexFile.exists()) {
+            loadDex(dexFile);
+            return;
+        }
         try {
-            final File classFile = generateTempClassFile(jar.getPath(), false);
+            final File classFile = generateTempFile(jar.getPath(), false);
             final ZipFile zipFile = new ZipFile(classFile);
             final ZipFile jarFile = new ZipFile(jar);
             //noinspection unchecked
@@ -96,9 +110,19 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
                     zipFile.addStream(jarFile.getInputStream(header), parameters);
                 }
             }
-            dexJar(classFile);
+            dexJar(classFile, dexFile);
+            classFile.delete();
         } catch (ZipException e) {
             throw new IOException(e);
+        }
+    }
+
+    private String generateDexFileName(File jar) {
+        String message = jar.getPath() + "_" + jar.lastModified();
+        try {
+            return MD5.md5(message);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -112,15 +136,20 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
         return loader;
     }
 
-    private DexClassLoader dexJar(File classFile) throws IOException {
+    private DexClassLoader dexJar(File classFile, File dexFile) throws IOException {
         final Main.Arguments arguments = new Main.Arguments();
         arguments.fileNames = new String[]{classFile.getPath()};
-        File dexFile = generateTempClassFile("dex-" + classFile.getPath(), true);
+        boolean isTmpDex = dexFile == null;
+        if (isTmpDex) {
+            dexFile = generateTempFile("dex-" + classFile.getPath(), true);
+        }
         arguments.outName = dexFile.getPath();
         arguments.jarOutput = true;
         Main.run(arguments);
         DexClassLoader loader = loadDex(dexFile);
-        dexFile.delete();
+        if (isTmpDex) {
+            dexFile.delete();
+        }
         return loader;
     }
 

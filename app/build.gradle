@@ -16,8 +16,8 @@ android {
         applicationId "org.autojs.autojs"
         minSdkVersion versions.mini
         targetSdkVersion versions.target
-        versionCode 423
-        versionName "4.0.3 Alpha4"
+        versionCode versions.appVersionCode
+        versionName versions.appVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {

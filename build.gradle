@@ -28,9 +28,11 @@ task clean(type: Delete) {
 
 ext {
     versions = [
-        target: 28,
-        mini: 17,
-        compile: 28,
-        buildTool: '28.0.3'
+            appVersionCode: 423,
+            appVersionName: '4.0.3 Alpha4',
+            target        : 28,
+            mini          : 17,
+            compile       : 28,
+            buildTool     : '28.0.3'
     ]
 }
