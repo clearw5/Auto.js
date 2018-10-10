@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
@@ -27,12 +29,5 @@ task clean(type: Delete) {
 }
 
 ext {
-    versions = [
-            appVersionCode: 423,
-            appVersionName: '4.0.3 Alpha4',
-            target        : 28,
-            mini          : 17,
-            compile       : 28,
-            buildTool     : '28.0.3'
-    ]
+    versions = new JsonSlurper().parse(file('./project-versions.json'))
 }

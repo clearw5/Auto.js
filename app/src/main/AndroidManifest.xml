@@ -69,7 +69,7 @@
         </activity>
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name=".external.fileprovider.AppFileProvider"
             android:authorities="org.autojs.autojs.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">

@@ -75,9 +75,7 @@ public class SplashActivity extends AppCompatActivity {
                 runScript();
             }
         } else {
-            int[] grantResults = new int[permissions.length];
-            Arrays.fill(grantResults, PERMISSION_GRANTED);
-            onRequestPermissionsResult(PERMISSION_REQUEST_CODE, permissions, grantResults);
+            runScript();
         }
     }
 

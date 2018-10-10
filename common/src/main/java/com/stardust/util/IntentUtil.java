@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 
 import java.io.File;
 
@@ -93,11 +94,37 @@ public class IntentUtil {
         context.startActivity(intent);
     }
 
-    public static void viewFile(Context context, String path) {
-        path = "file://" + path;
+    public static void viewFile(Context context, String path, String fileProviderAuthority) {
         String mimeType = MimeTypes.fromFileOr(path, "*/*");
+        viewFile(context, path, mimeType, fileProviderAuthority);
+    }
+
+    public static void viewFile(Context context, String path, String mimeType, String fileProviderAuthority) {
+        Uri uri;
+        if (fileProviderAuthority == null) {
+            uri = Uri.parse("file://" + path);
+        } else {
+            uri = FileProvider.getUriForFile(context, fileProviderAuthority, new File(path));
+        }
         context.startActivity(new Intent(Intent.ACTION_VIEW)
-                .setDataAndType(Uri.parse(path), mimeType)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                .setDataAndType(uri, mimeType)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
+    }
+
+    public static void editFile(Context context, String path, String fileProviderAuthority) {
+        String mimeType = MimeTypes.fromFileOr(path, "*/*");
+        Uri uri;
+        if (fileProviderAuthority == null) {
+            uri = Uri.parse("file://" + path);
+        } else {
+            uri = FileProvider.getUriForFile(context, fileProviderAuthority, new File(path));
+        }
+        context.startActivity(new Intent(Intent.ACTION_EDIT)
+                .setDataAndType(uri, mimeType)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
     }
 }

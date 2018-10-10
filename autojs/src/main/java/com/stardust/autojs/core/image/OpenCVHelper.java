@@ -31,7 +31,7 @@ public class OpenCVHelper {
     }
 
     public static void initIfNeeded(Activity activity, InitializeCallback callback) {
-        if(mInitialized){
+        if (mInitialized) {
             callback.onInitFinish();
             return;
         }
@@ -55,17 +55,18 @@ public class OpenCVHelper {
         public void onManagerConnected(int status) {
             switch (status) {
                 case 0:
+                    finish();
                     break;
                 case 1:
                 default:
                     Log.e(LOG_TAG, "OpenCV loading failed!");
                     new MaterialDialog.Builder(mActivity)
-                        .title("OpenCV error")
-                        .content("OpenCV was not initialised correctly. Application will be shut down")
-                        .cancelable(false)
-                        .positiveText("OK")
-                        .onPositive((dialog, which) -> finish())
-                        .show();
+                            .title("OpenCV error")
+                            .content("OpenCV was not initialised correctly. Application will be shut down")
+                            .cancelable(false)
+                            .positiveText("OK")
+                            .onPositive((dialog, which) -> finish())
+                            .show();
                     break;
                 case 2:
                     Log.e(LOG_TAG, "Package installation failed!");
@@ -117,6 +118,8 @@ public class OpenCVHelper {
                             .negativeText("Exit")
                             .onNegative(((dialog, which) -> callback.cancel()))
                             .show();
+                default:
+                    finish();
             }
 
         }
