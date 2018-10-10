@@ -53,6 +53,8 @@ import io.reactivex.schedulers.Schedulers;
 @EActivity(R.layout.activity_build)
 public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.ProgressCallback {
 
+    private static final int REQUEST_CODE = 44401;
+
     public static final String EXTRA_SOURCE = BuildActivity.class.getName() + ".extra_source_file";
 
     private static final String LOG_TAG = "BuildActivity";
@@ -194,7 +196,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     @Click(R.id.icon)
     void selectIcon() {
         ShortcutIconSelectActivity_.intent(this)
-                .startForResult(31209);
+                .startForResult(REQUEST_CODE);
     }
 
     @Click(R.id.fab)
@@ -333,27 +335,13 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         if (resultCode != RESULT_OK) {
             return;
         }
-        String packageName = data.getStringExtra(ShortcutIconSelectActivity.EXTRA_PACKAGE_NAME);
-        if (packageName != null) {
-            try {
-                mIcon.setImageDrawable(getPackageManager().getApplicationIcon(packageName));
-                mIsDefaultIcon = false;
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-            return;
-        }
-        if (data.getData() == null)
-            return;
-        Observable.fromCallable(() -> BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData())))
-                .subscribeOn(Schedulers.computation())
+        ShortcutIconSelectActivity.getBitmapFromIntent(getApplicationContext(), data)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((bitmap -> {
+                .subscribe(bitmap -> {
                     mIcon.setImageBitmap(bitmap);
                     mIsDefaultIcon = false;
-                }), error -> {
-                    Log.e(LOG_TAG, "decode stream", error);
-                });
+                }, Throwable::printStackTrace);
 
     }
 

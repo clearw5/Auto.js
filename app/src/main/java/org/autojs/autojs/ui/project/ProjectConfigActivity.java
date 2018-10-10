@@ -1,6 +1,8 @@
 package org.autojs.autojs.ui.project;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -12,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.stardust.autojs.project.ProjectConfig;
-import com.stardust.autojs.runtime.api.Dialogs;
 import com.stardust.pio.PFiles;
 
 import org.androidannotations.annotations.AfterViews;
@@ -22,14 +23,18 @@ import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.R;
 import org.autojs.autojs.model.explorer.ExplorerDirPage;
 import org.autojs.autojs.model.explorer.ExplorerFileItem;
-import org.autojs.autojs.model.explorer.ExplorerItem;
 import org.autojs.autojs.model.explorer.Explorers;
 import org.autojs.autojs.model.project.ProjectTemplate;
+import org.autojs.autojs.network.GlideApp;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 import org.autojs.autojs.ui.BaseActivity;
+import org.autojs.autojs.ui.shortcut.ShortcutIconSelectActivity;
+import org.autojs.autojs.ui.shortcut.ShortcutIconSelectActivity_;
 import org.autojs.autojs.ui.widget.SimpleTextWatcher;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -43,6 +48,8 @@ public class ProjectConfigActivity extends BaseActivity {
     public static final String EXTRA_NEW_PROJECT = "new_project";
 
     public static final String EXTRA_DIRECTORY = "directory";
+
+    private static final int REQUEST_CODE = 12477;
 
 
     @ViewById(R.id.project_location)
@@ -70,6 +77,7 @@ public class ProjectConfigActivity extends BaseActivity {
     private File mParentDirectory;
     private ProjectConfig mProjectConfig;
     private boolean mNewProject;
+    private Bitmap mIconBitmap;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -118,6 +126,12 @@ public class ProjectConfigActivity extends BaseActivity {
             mVersionName.setText(mProjectConfig.getVersionName());
             mMainFileName.setText(mProjectConfig.getMainScriptFile());
             mProjectLocation.setVisibility(View.GONE);
+            String icon = mProjectConfig.getIcon();
+            if (icon != null) {
+                GlideApp.with(this)
+                        .load(new File(mDirectory, icon))
+                        .into(mIcon);
+            }
         }
     }
 
@@ -128,9 +142,22 @@ public class ProjectConfigActivity extends BaseActivity {
         if (!checkInputs()) {
             return;
         }
+        if (mIconBitmap != null) {
+            saveIcon(mIconBitmap)
+                    .subscribe(ignored -> saveProjectConfig(), e -> {
+                        e.printStackTrace();
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        } else {
+            saveProjectConfig();
+        }
+
+    }
+
+    @SuppressLint("CheckResult")
+    private void saveProjectConfig() {
         if (mNewProject) {
-            String location = mProjectLocation.getText().toString();
-            new ProjectTemplate(mProjectConfig, new File(location))
+            new ProjectTemplate(mProjectConfig, mDirectory)
                     .newProject()
                     .subscribe(ignored -> {
                         Explorers.workspace().notifyChildrenChanged(new ExplorerDirPage(mParentDirectory, null));
@@ -158,12 +185,22 @@ public class ProjectConfigActivity extends BaseActivity {
         }
     }
 
+    @Click(R.id.icon)
+    void selectIcon() {
+        ShortcutIconSelectActivity_.intent(this)
+                .startForResult(REQUEST_CODE);
+    }
+
     private void syncProjectConfig() {
         mProjectConfig.setName(mAppName.getText().toString());
         mProjectConfig.setVersionCode(Integer.parseInt(mVersionCode.getText().toString()));
         mProjectConfig.setVersionName(mVersionName.getText().toString());
         mProjectConfig.setMainScriptFile(mMainFileName.getText().toString());
         mProjectConfig.setPackageName(mPackageName.getText().toString());
+        if (mNewProject) {
+            String location = mProjectLocation.getText().toString();
+            mDirectory = new File(location);
+        }
         //mProjectConfig.getLaunchConfig().setHideLogs(true);
     }
 
@@ -184,4 +221,43 @@ public class ProjectConfigActivity extends BaseActivity {
         editText.setError(hint + getString(R.string.text_should_not_be_empty));
         return false;
     }
+
+
+    @SuppressLint("CheckResult")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        ShortcutIconSelectActivity.getBitmapFromIntent(getApplicationContext(), data)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(bitmap -> {
+                            mIcon.setImageBitmap(bitmap);
+                            mIconBitmap = bitmap;
+                        },
+                        Throwable::printStackTrace);
+    }
+
+    @SuppressLint("CheckResult")
+    private Observable<String> saveIcon(Bitmap b) {
+        return Observable.just(b)
+                .map(bitmap -> {
+                    String iconPath = mProjectConfig.getIcon();
+                    if (iconPath == null) {
+                        iconPath = "res/logo.png";
+                    }
+                    File iconFile = new File(mDirectory, iconPath);
+                    PFiles.ensureDir(iconFile.getPath());
+                    FileOutputStream fos = new FileOutputStream(iconFile);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                    fos.close();
+                    return iconPath;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(iconPath -> mProjectConfig.setIcon(iconPath));
+
+    }
+
 }
