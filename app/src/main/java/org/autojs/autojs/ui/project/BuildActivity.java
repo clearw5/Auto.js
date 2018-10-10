@@ -25,10 +25,12 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.autojs.autojs.App;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.build.AutoJsApkBuilder;
 import org.autojs.autojs.build.ApkBuilderPluginHelper;
+import org.autojs.autojs.external.fileprovider.AppFileProvider;
 import org.autojs.autojs.model.script.ScriptFile;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 import org.autojs.autojs.tool.BitmapTool;
@@ -301,7 +303,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
                 .positiveText(R.string.text_install)
                 .negativeText(R.string.cancel)
                 .onPositive((dialog, which) ->
-                        IntentUtil.installApk(BuildActivity.this, outApk.getPath())
+                        IntentUtil.installApk(BuildActivity.this, outApk.getPath(), AppFileProvider.AUTHORITY)
                 )
                 .show();
 
