@@ -3,7 +3,7 @@ package com.stardust.autojs.script;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.stardust.util.MapEntries;
+import com.stardust.util.MapBuilder;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -23,10 +23,10 @@ public abstract class JavaScriptSource extends ScriptSource {
     public static final int EXECUTION_MODE_UI = 0x00000001;
     public static final int EXECUTION_MODE_AUTO = 0x00000002;
 
-    private static final Map<String, Integer> EXECUTION_MODES = new MapEntries<String, Integer>()
-            .entry("ui", EXECUTION_MODE_UI)
-            .entry("auto", EXECUTION_MODE_AUTO)
-            .map();
+    private static final Map<String, Integer> EXECUTION_MODES = new MapBuilder<String, Integer>()
+            .put("ui", EXECUTION_MODE_UI)
+            .put("auto", EXECUTION_MODE_AUTO)
+            .build();
     private static final int EXECUTION_MODE_STRING_MAX_LENGTH = 7;
 
     private int mExecutionMode = -1;

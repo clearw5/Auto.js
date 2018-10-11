@@ -2,10 +2,12 @@ package org.autojs.autojs.ui.edit.editor;
 
 
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.TimingLogger;
 
 import com.stardust.autojs.rhino.TokenStream;
 import com.stardust.pio.UncheckedIOException;
+
 import org.autojs.autojs.ui.edit.theme.Theme;
 import org.autojs.autojs.ui.widget.SimpleTextWatcher;
 
@@ -46,7 +48,7 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
 
         @Override
         public String toString() {
-            return super.toString() + "{count = " + mCount + ", length = "  + mText.length() + "}";
+            return super.toString() + "{count = " + mCount + ", length = " + mText.length() + "}";
         }
 
         public int getCharCount() {
@@ -60,16 +62,18 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
 
     private Theme mTheme;
     private CodeEditText mCodeEditText;
-    private ThreadPoolExecutor mExecutorService =  new ThreadPoolExecutor(3, 6,
+    private ThreadPoolExecutor mExecutorService = new ThreadPoolExecutor(3, 6,
             2L, TimeUnit.MINUTES, new LinkedBlockingQueue<>());
     private AtomicInteger mRunningHighlighterId = new AtomicInteger();
     private TimingLogger mLogger = new TimingLogger(CodeEditText.LOG_TAG, "highlight");
+    private final TextWatcher mTextWatcher;
 
     public JavaScriptHighlighter(Theme theme, CodeEditText codeEditText) {
         mExecutorService.allowCoreThreadTimeOut(true);
         mTheme = theme;
         mCodeEditText = codeEditText;
-        codeEditText.addTextChangedListener(new SimpleTextWatcher(this));
+        mTextWatcher = new SimpleTextWatcher(this);
+        codeEditText.addTextChangedListener(mTextWatcher);
     }
 
     @Override
@@ -112,5 +116,9 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
         mCodeEditText.updateHighlightTokens(highlightTokens);
     }
 
+    public void shutdown() {
+        mCodeEditText.removeTextChangedListener(mTextWatcher);
+        mExecutorService.shutdownNow();
+    }
 
 }

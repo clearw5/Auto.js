@@ -12,10 +12,9 @@ import android.util.Pair;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.stardust.util.MapEntries;
+import com.stardust.util.MapBuilder;
 
 import org.autojs.autojs.BuildConfig;
-import org.autojs.autojs.tool.EmptyObservers;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -24,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -171,12 +169,12 @@ public class DevPluginService {
 
     @WorkerThread
     private void sayHelloToServer(JsonWebSocket socket) throws IOException {
-        writeMap(socket, TYPE_HELLO, new MapEntries<String, Object>()
-                .entry("device_name", Build.BRAND + " " + Build.MODEL)
-                .entry("client_version", CLIENT_VERSION)
-                .entry("app_version", BuildConfig.VERSION_NAME)
-                .entry("app_version_code", BuildConfig.VERSION_CODE)
-                .map());
+        writeMap(socket, TYPE_HELLO, new MapBuilder<String, Object>()
+                .put("device_name", Build.BRAND + " " + Build.MODEL)
+                .put("client_version", CLIENT_VERSION)
+                .put("app_version", BuildConfig.VERSION_NAME)
+                .put("app_version_code", BuildConfig.VERSION_CODE)
+                .build());
         mHandshakeTimeoutHandler.postDelayed(() -> {
             if (mSocket != socket && !socket.isClosed()) {
                 onHandshakeTimeout(socket);

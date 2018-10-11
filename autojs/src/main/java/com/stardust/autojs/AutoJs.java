@@ -65,6 +65,7 @@ public abstract class AutoJs {
         mNotificationObserver = new AccessibilityNotificationObserver(mContext);
         mAccessibilityInfoProvider = new AccessibilityInfoProvider(mContext.getPackageManager());
         mScriptEngineService = buildScriptEngineService();
+        ScriptEngineService.setInstance(mScriptEngineService);
         init();
     }
 

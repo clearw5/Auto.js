@@ -39,6 +39,7 @@ import org.autojs.autojs.ui.shortcut.ShortcutIconSelectActivity_;
 
 import java.io.File;
 import java.io.InputStream;
+import java.security.KeyStore;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
@@ -116,7 +117,6 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         if (version < ApkBuilderPluginHelper.getSuitablePluginVersion()) {
             showPluginDownloadDialog(R.string.apk_builder_plugin_version_too_low, false);
         }
-
     }
 
     private void showPluginDownloadDialog(int msgRes, boolean finishIfCanceled) {

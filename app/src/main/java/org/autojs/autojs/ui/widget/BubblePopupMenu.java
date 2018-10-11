@@ -58,7 +58,7 @@ public class BubblePopupMenu extends PopupWindow {
         } else {
             params.leftMargin = 0;
         }
-        if (y + height > screenHeight) {
+        if (y > screenHeight / 2) {
             getContentView().setRotation(180);
             mRecyclerView.setRotation(180);
             params.leftMargin = -params.leftMargin;

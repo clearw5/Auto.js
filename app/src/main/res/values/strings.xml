@@ -382,7 +382,7 @@
     <string name="text_use_alarm_clock">使用系统闹钟唤醒Auto.js</string>
     <string name="error_connect_to_remote">连接失败: %s</string>
     <string name="text_are_you_sure_to_delete">确定要删除%s吗</string>
-    <string name="text_run_on_boot">开机时运行</string>
+    <string name="text_run_on_broadcast">特定事件(广播)触发运行</string>
     <string name="text_search_java_class">搜索Java包/类</string>
     <string name="text_class_or_package_name">类/包名</string>
     <string name="text_view_docs">查看文档</string>
@@ -397,4 +397,28 @@
     <string name="text_project_location">项目位置</string>
     <string name="text_new_project">新建项目</string>
     <string name="text_js_file">js文件</string>
+    <string name="text_invalid_project">无效项目</string>
+    <string name="text_foreground_service">前台服务</string>
+    <string name="key_foreground_servie">key_foreground_service</string>
+    <string name="foreground_notification_channel_name">前台服务通知</string>
+    <string name="foreground_notification_title">Auto.js保持运行中</string>
+    <string name="foreground_notification_text">点击进入主界面</string>
+    <string name="text_run_on_other_broadcast">其他事件(广播)</string>
+    <string name="text_broadcast_action">广播Action</string>
+    <string name="text_broadcast_action_prefix">android.intent.action.</string>
+    <string name="text_run_on_boot">开机时</string>
+    <string name="text_run_on_screen_on">亮屏时</string>
+    <string name="text_run_on_screen_off">息屏时</string>
+    <string name="error_empty_selection">请选择一个广播事件选项</string>
+    <string name="text_run_on_battery_change">电量变化时</string>
+    <string name="text_run_on_screen_unlock">屏幕解锁时</string>
+    <string name="text_run_on_power_connect">电源连接时</string>
+    <string name="text_run_on_power_disconnect">电源断开时</string>
+    <string name="text_run_on_conn_change">网络连接变化时</string>
+    <string name="text_run_on_package_install">新应用安装时</string>
+    <string name="text_run_on_package_uninstall">应用卸载时</string>
+    <string name="text_run_on_package_update">应用更新时</string>
+    <string name="text_run_on_headset_plug">耳机插拔时</string>
+    <string name="text_run_on_time_tick">每分钟一次</string>
+    <string name="text_run_on_config_change">某些设置(屏幕方向,地区等)更改时</string>
 </resources>

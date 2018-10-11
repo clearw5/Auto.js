@@ -5,6 +5,7 @@ import android.support.annotation.CallSuper;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.ScriptSource;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -68,7 +69,7 @@ public interface ScriptEngine<S extends ScriptSource> {
     abstract class AbstractScriptEngine<S extends ScriptSource> implements ScriptEngine<S> {
 
 
-        private Map<String, Object> mTags = new ConcurrentHashMap<>();
+        private Map<String, Object> mTags = new HashMap<>();
         private OnDestroyListener mOnDestroyListener;
         private boolean mDestroyed = false;
         private Exception mUncaughtException;
@@ -76,9 +77,11 @@ public interface ScriptEngine<S extends ScriptSource> {
 
         @Override
         public synchronized void setTag(String key, Object value) {
-            if (value == null)
-                return;
-            mTags.put(key, value);
+            if (value == null) {
+                mTags.remove(key);
+            } else {
+                mTags.put(key, value);
+            }
         }
 
         @Override

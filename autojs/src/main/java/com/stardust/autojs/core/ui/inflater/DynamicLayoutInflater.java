@@ -146,20 +146,24 @@ public class DynamicLayoutInflater {
     }
 
     public View inflate(String xml, @Nullable ViewGroup parent) {
+        return inflate(xml, parent, parent != null);
+    }
+
+    public View inflate(String xml, @Nullable ViewGroup parent, boolean attachToParent) {
         View view = mLayoutInflaterDelegate.beforeInflation(xml, parent);
         if (view != null)
             return view;
         xml = convertXml(xml);
-        return mLayoutInflaterDelegate.afterInflation(doInflation(xml, parent), xml, parent);
+        return mLayoutInflaterDelegate.afterInflation(doInflation(xml, parent, attachToParent), xml, parent);
     }
 
-    protected View doInflation(String xml, @Nullable ViewGroup parent) {
+    protected View doInflation(String xml, @Nullable ViewGroup parent, boolean attachToParent) {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document document = db.parse(new ByteArrayInputStream(xml.getBytes()));
-            return inflate(document.getDocumentElement(), parent, true);
+            return inflate(document.getDocumentElement(), parent, attachToParent);
         } catch (Exception e) {
             throw new InflateException(e);
         }

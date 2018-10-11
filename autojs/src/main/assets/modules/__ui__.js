@@ -19,7 +19,7 @@ module.exports = function (runtime, global) {
             xml = xml.toXMLString();
         }
         runtime.ui.layoutInflater.setContext(activity);
-        var view = runtime.ui.layoutInflater.inflate(xml);
+        var view = runtime.ui.layoutInflater.inflate(xml, activity.window.decorView, false);
         ui.setContentView(view);
     }
 
@@ -80,7 +80,7 @@ module.exports = function (runtime, global) {
 
     ui.post = function (action, delay) {
         delay = delay || 0;
-        runtime.getUiHandler().postDelay(wrapUiAction(action), delay);
+        runtime.getUiHandler().postDelayed(wrapUiAction(action), delay);
     }
 
     ui.statusBarColor = function (color) {

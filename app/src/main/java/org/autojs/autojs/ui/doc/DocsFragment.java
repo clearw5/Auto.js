@@ -75,22 +75,11 @@ public class DocsFragment extends ViewPagerFragment implements BackPressedHandle
 
 
     @Override
-    public void onResume() {
-        super.onResume();
-        ((BackPressedHandler.HostActivity) getActivity())
-                .getBackPressedObserver()
-                .registerHandlerAtFront(this);
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         Bundle savedWebViewState = new Bundle();
         mWebView.saveState(savedWebViewState);
         getArguments().putBundle("savedWebViewState", savedWebViewState);
-        ((BackPressedHandler.HostActivity) getActivity())
-                .getBackPressedObserver()
-                .unregisterHandler(this);
     }
 
     @Override

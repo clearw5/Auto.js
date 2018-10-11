@@ -46,7 +46,7 @@ public class Threads {
         TimerThread thread = createThread(runnable);
         synchronized (mThreads) {
             mThreads.add(thread);
-            thread.setName(thread.getName() + " (Spawn-" + mSpawnCount + ")");
+            thread.setName(mMainThread.getName() + " (Spawn-" + mSpawnCount + ")");
             mSpawnCount++;
         }
         thread.start();

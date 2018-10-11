@@ -3,14 +3,17 @@ package org.autojs.autojs.ui.main;
 import android.support.annotation.CallSuper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
+
+import com.stardust.util.BackPressedHandler;
 
 /**
  * Created by Stardust on 2017/8/22.
  */
 
-public abstract class ViewPagerFragment extends Fragment {
+public abstract class ViewPagerFragment extends Fragment implements BackPressedHandler {
 
     protected static final int ROTATION_GONE = -1;
 

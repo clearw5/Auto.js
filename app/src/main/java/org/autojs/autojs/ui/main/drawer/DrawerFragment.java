@@ -1,5 +1,6 @@
 package org.autojs.autojs.ui.main.drawer;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -22,6 +23,7 @@ import com.stardust.notification.NotificationListenerService;
 
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
+import org.autojs.autojs.external.foreground.ForegroundService;
 import org.autojs.autojs.network.GlideApp;
 import org.autojs.autojs.network.UserService;
 import org.autojs.autojs.tool.EmptyObservers;
@@ -107,6 +109,8 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     };
 
     private DrawerMenuItem mNotificationPermissionItem = new DrawerMenuItem(R.drawable.ic_ali_notification, R.string.text_notification_permission, 0, this::goToNotificationServiceSettings);
+    private DrawerMenuItem mForegroundServiceItem = new DrawerMenuItem(R.drawable.ic_service_green, R.string.text_foreground_service, R.string.key_foreground_servie, this::toggleForegroundService);
+
     private DrawerMenuItem mFloatingWindowItem = new DrawerMenuItem(R.drawable.ic_robot_64, R.string.text_floating_window, 0, this::showOrDismissFloatingWindow);
     private DrawerMenuItem mCheckForUpdatesItem = new DrawerMenuItem(R.drawable.ic_check_for_updates, R.string.text_check_for_updates, this::checkForUpdates);
 
@@ -142,6 +146,10 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
             setChecked(mFloatingWindowItem, true);
         }
         setChecked(mConnectionItem, DevPluginService.getInstance().isConnected());
+        if(Pref.isForegroundServiceEnabled()){
+            ForegroundService.start(GlobalAppContext.get());
+            setChecked(mForegroundServiceItem, true);
+        }
     }
 
     private void initMenuItems() {
@@ -150,6 +158,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 mAccessibilityServiceItem,
                 mStableModeItem,
                 mNotificationPermissionItem,
+                mForegroundServiceItem,
 
                 new DrawerMenuGroup(R.string.text_script_record),
                 mFloatingWindowItem,
@@ -165,6 +174,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     }
 
 
+    @SuppressLint("CheckResult")
     @Click(R.id.avatar)
     void loginOrShowUserInfo() {
         UserService.getInstance()
@@ -250,6 +260,17 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
             DevPluginService.getInstance().disconnectIfNeeded();
         }
     }
+
+
+    private void toggleForegroundService(DrawerMenuItemViewHolder holder) {
+        boolean checked = holder.getSwitchCompat().isChecked();
+        if(checked){
+            ForegroundService.start(GlobalAppContext.get());
+        }else {
+            ForegroundService.stop(GlobalAppContext.get());
+        }
+    }
+
 
     private void inputRemoteHost() {
         String host = Pref.getServerAddressOrDefault(WifiTool.getRouterIp(getActivity()));

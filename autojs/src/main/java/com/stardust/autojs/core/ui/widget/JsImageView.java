@@ -51,7 +51,7 @@ public class JsImageView extends RoundedImageView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth());
+        setMeasuredDimension(getMeasuredWidth(), getMeasuredHeight());
         if (mCircle) {
             setCornerRadius(getMeasuredWidth() / 2);
         }

@@ -373,6 +373,11 @@ public class CodeEditor extends HVScrollView {
         mCodeEditText.removeAllBreakpoints();
     }
 
+    public void destroy(){
+        mJavaScriptHighlighter.shutdown();
+        mJsBeautifier.shutdown();
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         int codeWidth = getWidth() - getPaddingLeft() - getPaddingRight();

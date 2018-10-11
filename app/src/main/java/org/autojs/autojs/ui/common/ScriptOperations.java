@@ -22,6 +22,7 @@ import com.stardust.app.GlobalAppContext;
 import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
+import com.tencent.bugly.crashreport.BuglyLog;
 
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
@@ -122,7 +123,11 @@ public class ScriptOperations {
     }
 
     private void notifyFileCreated(ScriptFile directory, ScriptFile scriptFile) {
-        mExplorer.notifyItemCreated(new ExplorerFileItem(scriptFile, mExplorerPage));
+        if (scriptFile.isDirectory()) {
+            mExplorer.notifyItemCreated(new ExplorerDirPage(scriptFile, mExplorerPage));
+        } else {
+            mExplorer.notifyItemCreated(new ExplorerFileItem(scriptFile, mExplorerPage));
+        }
     }
 
     public void newFile() {
@@ -315,9 +320,11 @@ public class ScriptOperations {
 
 
     public Observable<ScriptFile> download(String url) {
+        BuglyLog.i(LOG_TAG, "dir = " + Pref.getScriptDirPath() + ", sdcard = " + Environment.getExternalStorageDirectory() + ", url = " + url);
         String fileName = DownloadManager.parseFileNameLocally(url);
         return new FileChooserDialogBuilder(mContext)
                 .title(R.string.text_select_save_path)
+                .dir(Pref.getScriptDirPath())
                 .chooseDir()
                 .singleChoice()
                 .map(saveDir -> new File(saveDir, fileName).getPath())

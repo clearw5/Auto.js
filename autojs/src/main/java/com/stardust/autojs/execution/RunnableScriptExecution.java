@@ -6,6 +6,7 @@ import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.ScriptSource;
+import com.stardust.lang.ThreadCompat;
 
 /**
  * Created by Stardust on 2017/5/1.
@@ -24,6 +25,7 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
 
     @Override
     public void run() {
+        ThreadCompat.currentThread().setName("ScriptThread-" + getId() + "[" + getSource() + "]");
         execute();
     }
 

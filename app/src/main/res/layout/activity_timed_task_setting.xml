@@ -253,12 +253,175 @@
                         </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
                         <RadioButton
-                            android:id="@+id/run_on_boot_radio"
+                            android:id="@+id/run_on_broadcast"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
                             android:paddingLeft="16dp"
-                            android:text="@string/text_run_on_boot"/>
+                            android:text="@string/text_run_on_broadcast"/>
+
+                        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:ael_expanded="false"
+                            app:ael_interpolator="fastOutSlowIn"
+                            app:ael_orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="24dp"
+                                android:orientation="vertical">
+
+                                <RadioGroup
+                                    android:id="@+id/broadcast_group"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_boot"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_boot"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_screen_on"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_screen_on"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_screen_off"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_screen_off"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_screen_unlock"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_screen_unlock"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_battery_change"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_battery_change"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_power_connect"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_power_connect"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_power_disconnect"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_power_disconnect"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_conn_change"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_conn_change"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_package_install"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_package_install"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_package_uninstall"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_package_uninstall"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_package_update"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_package_update"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_headset_plug"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_headset_plug"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_config_change"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_config_change"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_time_tick"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_time_tick"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_other_broadcast"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_other_broadcast"/>
+
+                                </RadioGroup>
+
+                                <android.support.design.widget.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="36dp"
+                                    android:layout_marginTop="2dp">
+
+
+                                    <android.support.design.widget.TextInputEditText
+                                        android:id="@+id/action"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="@string/text_broadcast_action"
+                                        android:maxLines="2"
+                                        android:text="@string/text_broadcast_action_prefix"/>
+
+                                </android.support.design.widget.TextInputLayout>
+
+                            </LinearLayout>
+
+
+                        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
                     </RadioGroup>
                 </LinearLayout>
 

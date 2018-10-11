@@ -4,9 +4,6 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,7 +11,6 @@ import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.autojs.project.ProjectLauncher;
 import com.stardust.pio.PFile;
 
-import org.androidannotations.annotations.Click;
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.model.explorer.ExplorerChangeEvent;
@@ -59,15 +55,19 @@ public class ExplorerProjectToolbar extends CardView {
         setOnClickListener(view -> edit());
     }
 
-    public void setProject(PFile dir, ProjectConfig config) {
+    public void setProject(PFile dir) {
+        mProjectConfig = ProjectConfig.fromProjectDir(dir.getPath());
+        if(mProjectConfig == null){
+            setVisibility(GONE);
+            return;
+        }
         mDirectory = dir;
-        mProjectConfig = config;
-        mProjectName.setText(config.getName());
+        mProjectName.setText(mProjectConfig.getName());
     }
 
     public void refresh() {
         if (mDirectory != null) {
-            setProject(mDirectory, ProjectConfig.fromProjectDir(mDirectory.getPath()));
+            setProject(mDirectory);
         }
     }
 

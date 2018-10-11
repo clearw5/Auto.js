@@ -9,6 +9,7 @@ import java.util.LinkedList;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
@@ -45,6 +46,10 @@ public class TextViewUndoRedo {
     private boolean mEnabled = true;
 
     private int mInitialHistoryStackSize;
+
+    private Handler mHandler = new Handler();
+    private int mTextChangeId = 0;
+    private boolean mTextChanging = false;
 
     // =================================================================== //
 
@@ -404,7 +409,6 @@ public class TextViewUndoRedo {
             if (mIsUndoOrRedo || !mEnabled) {
                 return;
             }
-
             mBeforeChange = s.subSequence(start, start + count);
         }
 
@@ -415,7 +419,10 @@ public class TextViewUndoRedo {
             }
 
             mAfterChange = s.subSequence(start, start + count);
+            mTextChangeId++;
             mEditHistory.add(new EditItem(start, mBeforeChange, mAfterChange));
+            int textChangeId = mTextChangeId;
+            //TODO 增加连续输入文字当成一次撤销的功能
         }
 
         public void afterTextChanged(Editable s) {

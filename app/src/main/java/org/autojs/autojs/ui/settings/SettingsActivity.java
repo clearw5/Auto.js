@@ -12,7 +12,7 @@ import android.view.View;
 import com.stardust.theme.app.ColorSelectActivity;
 import com.stardust.theme.preference.ThemeColorPreferenceFragment;
 import com.stardust.theme.util.ListBuilder;
-import com.stardust.util.MapEntries;
+import com.stardust.util.MapBuilder;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -100,14 +100,14 @@ public class SettingsActivity extends BaseActivity {
         @Override
         public void onStart() {
             super.onStart();
-            ACTION_MAP = new MapEntries<String, Runnable>()
-                    .entry(getString(R.string.text_theme_color), () -> selectThemeColor(getActivity()))
-                    .entry(getString(R.string.text_check_for_updates), () -> new UpdateCheckDialog(getActivity())
+            ACTION_MAP = new MapBuilder<String, Runnable>()
+                    .put(getString(R.string.text_theme_color), () -> selectThemeColor(getActivity()))
+                    .put(getString(R.string.text_check_for_updates), () -> new UpdateCheckDialog(getActivity())
                             .show())
-                    .entry(getString(R.string.text_issue_report), () -> startActivity(new Intent(getActivity(), IssueReporterActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)))
-                    .entry(getString(R.string.text_about_me_and_repo), () -> startActivity(new Intent(getActivity(), AboutActivity_.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)))
-                    .entry(getString(R.string.text_licenses), () -> showLicenseDialog())
-                    .map();
+                    .put(getString(R.string.text_issue_report), () -> startActivity(new Intent(getActivity(), IssueReporterActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)))
+                    .put(getString(R.string.text_about_me_and_repo), () -> startActivity(new Intent(getActivity(), AboutActivity_.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)))
+                    .put(getString(R.string.text_licenses), () -> showLicenseDialog())
+                    .build();
         }
 
         @Override

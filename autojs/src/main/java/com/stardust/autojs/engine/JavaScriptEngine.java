@@ -46,6 +46,12 @@ public abstract class JavaScriptEngine extends ScriptEngine.AbstractScriptEngine
     }
 
     @Override
+    public synchronized void destroy() {
+        mRuntime.onExit();
+        super.destroy();
+    }
+
+    @Override
     public String toString() {
         return "ScriptEngine@" + Integer.toHexString(hashCode()) + "{" +
                 "source='" + getTag(TAG_SOURCE) + "'," +

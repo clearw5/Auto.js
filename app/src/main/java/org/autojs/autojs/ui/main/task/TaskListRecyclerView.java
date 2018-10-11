@@ -13,29 +13,27 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.stardust.autojs.workground.WrapContentLinearLayoutManager;
-
 import com.bignerdranch.expandablerecyclerview.ChildViewHolder;
 import com.bignerdranch.expandablerecyclerview.ExpandableRecyclerAdapter;
 import com.bignerdranch.expandablerecyclerview.ParentViewHolder;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.stardust.autojs.ScriptEngineService;
-import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
-import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.script.AutoFileSource;
+import com.stardust.autojs.workground.WrapContentLinearLayoutManager;
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
+import org.autojs.autojs.external.tasker.TaskerScriptEditActivity;
 import org.autojs.autojs.storage.database.ModelChange;
+import org.autojs.autojs.timing.IntentTask;
 import org.autojs.autojs.timing.TaskReceiver;
 import org.autojs.autojs.timing.TimedTask;
 import org.autojs.autojs.timing.TimedTaskManager;
+import org.autojs.autojs.ui.timing.TimedTaskSettingActivity;
 import org.autojs.autojs.ui.timing.TimedTaskSettingActivity_;
-
-import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +58,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
     private TaskGroup.PendingTaskGroup mPendingTaskGroup;
     private Adapter mAdapter;
     private Disposable mTimedTaskChangeDisposable;
-    private final ScriptEngineService mScriptEngineService = AutoJs.getInstance().getScriptEngineService();
+    private Disposable mIntentTaskChangeDisposable;
     private ScriptExecutionListener mScriptExecutionListener = new SimpleScriptExecutionListener() {
         @Override
         public void onStart(final ScriptExecution execution) {
@@ -135,7 +133,10 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
         AutoJs.getInstance().getScriptEngineService().registerGlobalScriptExecutionListener(mScriptExecutionListener);
         mTimedTaskChangeDisposable = TimedTaskManager.getInstance().getTimeTaskChanges()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onTimedTaskChange);
+                .subscribe(this::onTaskChange);
+        mIntentTaskChangeDisposable = TimedTaskManager.getInstance().getIntentTaskChanges()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::onTaskChange);
     }
 
     @Override
@@ -151,26 +152,25 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
         super.onDetachedFromWindow();
         AutoJs.getInstance().getScriptEngineService().unregisterGlobalScriptExecutionListener(mScriptExecutionListener);
         mTimedTaskChangeDisposable.dispose();
+        mIntentTaskChangeDisposable.dispose();
     }
 
-    void onTimedTaskChange(ModelChange<TimedTask> taskChange) {
-        if (taskChange.getAction() == BaseModel.Action.INSERT) {
+    void onTaskChange(ModelChange taskChange) {
+        if (taskChange.getAction() == ModelChange.INSERT) {
             mAdapter.notifyChildInserted(1, mPendingTaskGroup.addTask(taskChange.getData()));
-        } else if (taskChange.getAction() == BaseModel.Action.DELETE) {
+        } else if (taskChange.getAction() == ModelChange.DELETE) {
             final int i = mPendingTaskGroup.removeTask(taskChange.getData());
-            // FIXME: 2017/11/28 task id is always 0
             if (i >= 0) {
                 mAdapter.notifyChildRemoved(1, i);
             } else {
                 Log.w(LOG_TAG, "data inconsistent on change: " + taskChange);
                 refresh();
             }
-        } else if (taskChange.getAction() == BaseModel.Action.UPDATE) {
+        } else if (taskChange.getAction() == ModelChange.UPDATE) {
             final int i = mPendingTaskGroup.updateTask(taskChange.getData());
             if (i >= 0) {
                 mAdapter.notifyChildChanged(1, i);
             } else {
-                Log.w(LOG_TAG, "data inconsistent on change: " + taskChange);
                 refresh();
             }
         }
@@ -249,8 +249,11 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
 
         void onItemClick(View view) {
             if (mTask instanceof Task.PendingTask) {
+                Task.PendingTask task = (Task.PendingTask) mTask;
+                String extra = task.getTimedTask() == null ? TimedTaskSettingActivity.EXTRA_INTENT_TASK_ID
+                        : TimedTaskSettingActivity.EXTRA_TASK_ID;
                 TimedTaskSettingActivity_.intent(getContext())
-                        .extra(TaskReceiver.EXTRA_TASK_ID, ((Task.PendingTask) mTask).getTimedTask().getId())
+                        .extra(extra, task.getId())
                         .start();
             }
         }
@@ -263,8 +266,8 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
 
         TaskGroupViewHolder(@NonNull View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.title);
-            icon = (ImageView) itemView.findViewById(R.id.icon);
+            title = itemView.findViewById(R.id.title);
+            icon = itemView.findViewById(R.id.icon);
             itemView.setOnClickListener(view -> {
                 if (isExpanded()) {
                     collapseView();

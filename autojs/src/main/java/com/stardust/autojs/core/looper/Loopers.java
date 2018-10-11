@@ -5,7 +5,6 @@ import android.os.Looper;
 import android.os.MessageQueue;
 import android.util.Log;
 
-import com.android.dx.util.IntSet;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.Threads;
 import com.stardust.autojs.runtime.api.Timers;
@@ -33,7 +32,7 @@ public class Loopers implements MessageQueue.IdleHandler {
     private volatile ThreadLocal<Boolean> waitWhenIdle = new ThreadLocal<>();
     private volatile ThreadLocal<HashSet<Integer>> waitIds = new ThreadLocal<>();
     private volatile ThreadLocal<Integer> maxWaitId = new ThreadLocal<>();
-    private volatile ThreadLocal<CopyOnWriteArrayList<LooperQuitHandler>> looperQuitHanders = new ThreadLocal<>();
+    private volatile ThreadLocal<CopyOnWriteArrayList<LooperQuitHandler>> looperQuitHandlers = new ThreadLocal<>();
     private volatile Looper mServantLooper;
     private Timers mTimers;
     private ScriptRuntime mScriptRuntime;
@@ -58,17 +57,17 @@ public class Loopers implements MessageQueue.IdleHandler {
         return mMainLooper;
     }
 
-    public void addLooperQuiteHandler(LooperQuitHandler handler) {
-        CopyOnWriteArrayList<LooperQuitHandler> handlers = looperQuitHanders.get();
+    public void addLooperQuitHandler(LooperQuitHandler handler) {
+        CopyOnWriteArrayList<LooperQuitHandler> handlers = looperQuitHandlers.get();
         if (handlers == null) {
             handlers = new CopyOnWriteArrayList<>();
-            looperQuitHanders.set(handlers);
+            looperQuitHandlers.set(handlers);
         }
         handlers.add(handler);
     }
 
-    public boolean removeLooperQuiteHandler(LooperQuitHandler handler) {
-        CopyOnWriteArrayList<LooperQuitHandler> handlers = looperQuitHanders.get();
+    public boolean removeLooperQuitHandler(LooperQuitHandler handler) {
+        CopyOnWriteArrayList<LooperQuitHandler> handlers = looperQuitHandlers.get();
         return handlers != null && handlers.remove(handler);
     }
 
@@ -82,7 +81,7 @@ public class Loopers implements MessageQueue.IdleHandler {
         if (waitWhenIdle.get() || !waitIds.get().isEmpty()) {
             return false;
         }
-        CopyOnWriteArrayList<LooperQuitHandler> handlers = looperQuitHanders.get();
+        CopyOnWriteArrayList<LooperQuitHandler> handlers = looperQuitHandlers.get();
         if (handlers == null) {
             return true;
         }

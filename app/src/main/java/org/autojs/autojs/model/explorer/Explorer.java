@@ -30,6 +30,10 @@ public class Explorer {
         this(explorerProvider, cacheSize, EventBus.getDefault());
     }
 
+    public ExplorerProvider getProvider() {
+        return mExplorerProvider;
+    }
+
     public void notifyChildrenChanged(ExplorerPage page) {
         clearCache(page);
         mEventBus.post(new ExplorerChangeEvent(page, CHILDREN_CHANGE, null));

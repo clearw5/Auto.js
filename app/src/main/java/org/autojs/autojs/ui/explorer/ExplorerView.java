@@ -27,7 +27,11 @@ import org.autojs.autojs.model.explorer.ExplorerFileItem;
 import org.autojs.autojs.model.explorer.ExplorerItem;
 import org.autojs.autojs.model.explorer.ExplorerPage;
 import org.autojs.autojs.model.explorer.ExplorerProjectPage;
+import org.autojs.autojs.model.explorer.ExplorerSampleItem;
 import org.autojs.autojs.model.explorer.ExplorerSamplePage;
+import org.autojs.autojs.model.explorer.Explorers;
+import org.autojs.autojs.model.explorer.WorkspaceFileProvider;
+import org.autojs.autojs.model.sample.SampleFile;
 import org.autojs.autojs.model.script.ScriptFile;
 import org.autojs.autojs.model.script.Scripts;
 import org.autojs.autojs.ui.project.BuildActivity;
@@ -111,7 +115,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
         mCurrentPageState = currentPageState;
         if (mCurrentPageState.page instanceof ExplorerProjectPage) {
             mProjectToolbar.setVisibility(VISIBLE);
-            mProjectToolbar.setProject(currentPageState.page.toScriptFile(), ((ExplorerProjectPage) currentPageState.page).getProjectConfig());
+            mProjectToolbar.setProject(currentPageState.page.toScriptFile());
         } else {
             mProjectToolbar.setVisibility(GONE);
         }
@@ -306,6 +310,8 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
             case R.id.action_sort_by_size:
                 sort(ExplorerItemList.SORT_TYPE_SIZE, mDirSortMenuShowing);
                 break;
+            case R.id.reset:
+               // WorkspaceFileProvider.resetSample(mSelectedItem.toScriptFile());
             default:
                 return false;
         }
@@ -487,6 +493,9 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
             }
             if (!mExplorerItem.canRename()) {
                 menu.removeItem(R.id.rename);
+            }
+            if(mExplorerItem instanceof ExplorerSampleItem){
+
             }
             popupMenu.setOnMenuItemClickListener(ExplorerView.this);
             popupMenu.show();

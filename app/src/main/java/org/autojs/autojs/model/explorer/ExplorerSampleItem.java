@@ -4,16 +4,16 @@ import com.stardust.pio.PFile;
 
 import java.io.File;
 
-public class ExplorerSamleItem extends ExplorerFileItem {
-    public ExplorerSamleItem(PFile file, ExplorerPage parent) {
+public class ExplorerSampleItem extends ExplorerFileItem {
+    public ExplorerSampleItem(PFile file, ExplorerPage parent) {
         super(file, parent);
     }
 
-    public ExplorerSamleItem(String path, ExplorerPage parent) {
+    public ExplorerSampleItem(String path, ExplorerPage parent) {
         super(path, parent);
     }
 
-    public ExplorerSamleItem(File file, ExplorerPage parent) {
+    public ExplorerSampleItem(File file, ExplorerPage parent) {
         super(file, parent);
     }
 

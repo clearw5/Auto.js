@@ -8,8 +8,8 @@ android {
         applicationId "org.autojs.autojs"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 420
-        versionName "4.0.3 Alpha"
+        versionCode 421
+        versionName "4.0.3 Alpha2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -24,7 +24,7 @@ android {
         }
         release {
             shrinkResources false
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -83,10 +83,10 @@ dependencies {
     })
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
     // Android supports
-    compile 'com.android.support:appcompat-v7:25.4.0'
-    compile 'com.android.support:cardview-v7:25.4.0'
-    compile 'com.android.support:design:25.4.0'
-    compile 'com.android.support:multidex:1.0.2'
+    compile 'com.android.support:appcompat-v7:27.1.1'
+    compile 'com.android.support:cardview-v7:27.1.1'
+    compile 'com.android.support:design:27.1.1'
+    compile 'com.android.support:multidex:1.0.3'
     // Personal libraries
     compile 'com.github.hyb1996:MutableTheme:0.2.2'
     // Material Dialogs
@@ -129,11 +129,6 @@ dependencies {
         exclude group: 'com.android.support'
     })
     annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
-    //dbflow
-    annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:4.1.2"
-    compile "com.github.Raizlabs.DBFlow:dbflow-core:4.1.2"
-    compile "com.github.Raizlabs.DBFlow:dbflow:4.1.2"
-    compile "com.github.Raizlabs.DBFlow:dbflow-rx2:4.1.2"
     //joda time
     compile 'joda-time:joda-time:2.9.9'
     // Tasker Plugin
@@ -146,6 +141,10 @@ dependencies {
     compile('com.afollestad.material-dialogs:commons:0.9.2.3', {
         exclude group: 'com.android.support'
     })
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
+    // Optional, if you use support library fragments:
+    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
     compile project(':automator')
     compile project(':common')
     compile project(':autojs')

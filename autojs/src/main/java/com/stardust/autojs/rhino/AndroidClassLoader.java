@@ -3,6 +3,7 @@ package com.stardust.autojs.rhino;
 import android.util.Log;
 
 import com.android.dx.command.dexer.Main;
+import com.android.dx.dex.file.DexFile;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;

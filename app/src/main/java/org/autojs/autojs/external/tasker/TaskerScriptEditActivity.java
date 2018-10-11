@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import org.autojs.autojs.R;
+import org.autojs.autojs.timing.TaskReceiver;
 import org.autojs.autojs.tool.EmptyObservers;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.edit.EditorView;
@@ -29,7 +30,8 @@ import static org.autojs.autojs.ui.edit.EditorView.EXTRA_SAVE_ENABLED;
 @EActivity(R.layout.activity_tasker_script_edit)
 public class TaskerScriptEditActivity extends BaseActivity {
 
-    public static final int REQUEST_CODE = "Love you. Can we go back?".hashCode() >> 16;
+    public static final int REQUEST_CODE = 10016;
+    public static final String EXTRA_TASK_ID = TaskReceiver.EXTRA_TASK_ID;
 
     public static void edit(Activity activity, String title, String summary, String content) {
         activity.startActivityForResult(new Intent(activity, TaskerScriptEditActivity_.class)
@@ -63,4 +65,9 @@ public class TaskerScriptEditActivity extends BaseActivity {
         TaskerScriptEditActivity.super.finish();
     }
 
+    @Override
+    protected void onDestroy() {
+        mEditorView.destroy();
+        super.onDestroy();
+    }
 }
