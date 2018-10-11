@@ -14,6 +14,13 @@ public class NativeJavaObjectWithPrototype extends NativeJavaObject {
         super(scope, javaObject, staticType);
     }
 
+    public NativeJavaObjectWithPrototype(Scriptable scope, Object javaObject, Class<?> staticType, boolean isAdapter) {
+        super(scope, javaObject, staticType, isAdapter);
+    }
+
+    public NativeJavaObjectWithPrototype() {
+    }
+
     @Override
     public boolean has(String name, Scriptable start) {
         return super.has(name, start) || (prototype != null && prototype.has(name, start))

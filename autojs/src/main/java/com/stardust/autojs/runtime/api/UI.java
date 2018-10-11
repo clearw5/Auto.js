@@ -55,6 +55,14 @@ public class UI extends ProxyObject {
         mProperties.put("layoutInflater", this.mDynamicLayoutInflater);
     }
 
+    public DynamicLayoutInflater getDynamicLayoutInflater() {
+        return mDynamicLayoutInflater;
+    }
+
+    public ResourceParser getResourceParser() {
+        return mResourceParser;
+    }
+
     @SuppressWarnings("unchecked")
     public static <V extends View> V unwrapJsViewObject(@Nullable NativeObject object, Class<V> c) {
         if (object == null)
