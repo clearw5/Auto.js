@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -35,6 +36,7 @@ import org.autojs.autojs.ui.widget.SimpleTextWatcher;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -50,6 +52,7 @@ public class ProjectConfigActivity extends BaseActivity {
     public static final String EXTRA_DIRECTORY = "directory";
 
     private static final int REQUEST_CODE = 12477;
+    private static final Pattern REGEX_PACKAGE_NAME = Pattern.compile("^([A-Za-z][A-Za-z\\d_]*\\.)+([A-Za-z][A-Za-z\\d_]*)$");
 
 
     @ViewById(R.id.project_location)
@@ -138,10 +141,10 @@ public class ProjectConfigActivity extends BaseActivity {
     @SuppressLint("CheckResult")
     @Click(R.id.fab)
     void commit() {
-        syncProjectConfig();
         if (!checkInputs()) {
             return;
         }
+        syncProjectConfig();
         if (mIconBitmap != null) {
             saveIcon(mIconBitmap)
                     .subscribe(ignored -> saveProjectConfig(), e -> {
@@ -209,8 +212,23 @@ public class ProjectConfigActivity extends BaseActivity {
         inputValid &= checkNotEmpty(mAppName);
         inputValid &= checkNotEmpty(mVersionCode);
         inputValid &= checkNotEmpty(mVersionName);
-        inputValid &= checkNotEmpty(mPackageName);
+        inputValid &= checkPackageNameValid(mPackageName);
         return inputValid;
+    }
+
+    private boolean checkPackageNameValid(TextInputEditText editText) {
+        Editable text = editText.getText();
+        String hint = ((TextInputLayout) editText.getParent().getParent()).getHint().toString();
+        if(TextUtils.isEmpty(text)){
+            editText.setError(hint + getString(R.string.text_should_not_be_empty));
+            return false;
+        }
+        if(!REGEX_PACKAGE_NAME.matcher(text).matches()){
+            editText.setError(getString(R.string.text_invalid_package_name));
+            return false;
+        }
+        return true;
+
     }
 
     private boolean checkNotEmpty(TextInputEditText editText) {

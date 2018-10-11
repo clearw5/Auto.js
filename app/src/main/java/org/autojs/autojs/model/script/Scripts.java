@@ -1,5 +1,6 @@
 package org.autojs.autojs.model.script;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -147,9 +148,10 @@ public class Scripts {
     }
 
     public static void send(ScriptFile file) {
-        GlobalAppContext.get().startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND)
+        Context context = GlobalAppContext.get();
+        context.startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND)
                         .setType("text/plain")
-                        .putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file)),
+                        .putExtra(Intent.EXTRA_STREAM, IntentUtil.getUriOfFile(context, file.getPath(), AppFileProvider.AUTHORITY)),
                 GlobalAppContext.getString(R.string.text_send)
         ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 

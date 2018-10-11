@@ -422,4 +422,5 @@
     <string name="text_run_on_time_tick">每分钟一次</string>
     <string name="text_run_on_config_change">某些设置(屏幕方向,地区等)更改时</string>
     <string name="error_pattern_syntax">正则表达式错误</string>
+    <string name="text_invalid_package_name">非法包名</string>
 </resources>

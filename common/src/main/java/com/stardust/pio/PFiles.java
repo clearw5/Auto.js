@@ -4,6 +4,8 @@ import android.app.NativeActivity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Environment;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.stardust.util.Func1;
 
@@ -18,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -284,31 +287,36 @@ public class PFiles {
     }
 
 
-    public static boolean copyAssetDir(Context context, String assetsDir, String toDir) {
+    public static void copyAssetDir(Context context, String assetsDir, String toDir, String[] list) throws IOException {
         new File(toDir).mkdirs();
         AssetManager manager = context.getAssets();
-        try {
-            String[] list = manager.list(assetsDir);
-            if (list == null)
-                return false;
-            for (String file : list) {
-                InputStream stream;
-                try {
-                    stream = manager.open(join(assetsDir, file));
-                } catch (IOException e) {
-                    if (!copyAssetDir(context, join(assetsDir, file), join(toDir, file))) {
-                        return false;
-                    }
-                    continue;
-                }
-                copyStream(stream, join(toDir, file));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+        if (list == null) {
+            list = manager.list(assetsDir);
         }
-        return true;
-
+        if (list == null)
+            throw new IOException("not a directory: " + assetsDir);
+        for (String file : list) {
+            if(TextUtils.isEmpty(file)){
+                continue;
+            }
+            String fullAssetsPath = join(assetsDir, file);
+            String[] children = manager.list(fullAssetsPath);
+            if (children == null || children.length == 0) {
+                InputStream stream = null;
+                try {
+                    stream = manager.open(fullAssetsPath);
+                    copyStream(stream, join(toDir, file));
+                } catch (IOException e) {
+                    throw e;
+                } finally {
+                    if (stream != null) {
+                        stream.close();
+                    }
+                }
+            } else {
+                copyAssetDir(context, fullAssetsPath, join(toDir, file), children);
+            }
+        }
     }
 
     public static String renameWithoutExtensionAndReturnNewPath(String path, String newName) {

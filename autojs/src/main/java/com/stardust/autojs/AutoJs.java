@@ -54,7 +54,7 @@ public abstract class AutoJs {
     private final AccessibilityInfoProvider mAccessibilityInfoProvider;
     private final ScreenCaptureRequester mScreenCaptureRequester = new ScreenCaptureRequesterImpl();
     private final ScriptEngineService mScriptEngineService;
-    private final Console mGlobalConsole;
+    private final GlobalStardustConsole mGlobalConsole;
 
 
     protected AutoJs(final Application application) {
@@ -70,7 +70,7 @@ public abstract class AutoJs {
         init();
     }
 
-    protected Console createGlobalConsole() {
+    protected GlobalStardustConsole createGlobalConsole() {
         return new GlobalStardustConsole(mUiHandler);
     }
 
@@ -161,7 +161,7 @@ public abstract class AutoJs {
         return mLayoutInspector;
     }
 
-    public Console getGlobalConsole() {
+    public GlobalStardustConsole getGlobalConsole() {
         return mGlobalConsole;
     }
 

@@ -81,14 +81,17 @@ public class ImageWrapper {
     }
 
     public int getWidth() {
+        ensureNotRecycled();
         return mWidth;
     }
 
     public int getHeight() {
+        ensureNotRecycled();
         return mHeight;
     }
 
     public Mat getMat() {
+        ensureNotRecycled();
         if (mMat == null && mBitmap != null) {
             mMat = new Mat();
             Utils.bitmapToMat(mBitmap, mMat);
@@ -119,6 +122,7 @@ public class ImageWrapper {
     }
 
     public Bitmap getBitmap() {
+        ensureNotRecycled();
         return mBitmap;
     }
 

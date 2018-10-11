@@ -12,17 +12,16 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.stardust.auojs.inrt.launch.AssetsProjectLauncher;
+import com.stardust.auojs.inrt.autojs.AutoJs;
 import com.stardust.auojs.inrt.launch.GlobalProjectLauncher;
 import com.stardust.autojs.core.image.OpenCVHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static android.content.pm.PackageManager.PERMISSION_DENIED;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 /**
  * Created by Stardust on 2018/2/2.
@@ -58,7 +57,18 @@ public class SplashActivity extends AppCompatActivity {
 
 
     private void runScript() {
-        new Thread(() -> GlobalProjectLauncher.getInstance().launch(this)).start();
+        new Thread(() -> {
+            try {
+                GlobalProjectLauncher.getInstance().launch(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> {
+                    Toast.makeText(SplashActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(SplashActivity.this, LogActivity.class));
+                    AutoJs.getInstance().getGlobalConsole().printStackTrace(e);
+                });
+            }
+        }).start();
     }
 
     @Override

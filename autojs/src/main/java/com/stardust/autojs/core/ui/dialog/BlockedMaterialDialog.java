@@ -3,8 +3,10 @@ package com.stardust.autojs.core.ui.dialog;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.os.Build;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.view.Window;
 import android.view.WindowManager;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -29,7 +31,13 @@ public class BlockedMaterialDialog extends MaterialDialog {
     @Override
     public void show() {
         if (!isActivityContext(getContext())) {
-            getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
+            int type;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            } else {
+                type = WindowManager.LayoutParams.TYPE_PHONE;
+            }
+            getWindow().setType(type);
         }
         super.show();
     }

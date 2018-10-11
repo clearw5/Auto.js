@@ -13,6 +13,7 @@ import com.stardust.app.DialogUtils;
 import com.stardust.enhancedfloaty.FloatyService;
 import org.autojs.autojs.R;
 import org.autojs.autojs.ui.codegeneration.CodeGenerateDialog;
+import org.autojs.autojs.ui.floating.FloatyWindowManger;
 import org.autojs.autojs.ui.floating.FullScreenFloatyWindow;
 import com.stardust.view.accessibility.NodeInfo;
 import org.autojs.autojs.ui.widget.BubblePopupMenu;
@@ -115,7 +116,7 @@ public class LayoutBoundsFloatyWindow extends FullScreenFloatyWindow {
                     .customView(mNodeInfoView, false)
                     .theme(Theme.LIGHT)
                     .build();
-            mNodeInfoDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
+            mNodeInfoDialog.getWindow().setType(FloatyWindowManger.getWindowType());
         }
     }
 

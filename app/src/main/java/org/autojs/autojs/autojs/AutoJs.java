@@ -45,7 +45,7 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
     }
 
     @Override
-    protected Console createGlobalConsole() {
+    protected GlobalStardustConsole createGlobalConsole() {
         return new GlobalStardustConsole(getUiHandler()) {
             @Override
             public String println(int level, CharSequence charSequence) {

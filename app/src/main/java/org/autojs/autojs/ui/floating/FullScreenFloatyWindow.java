@@ -24,7 +24,7 @@ public abstract class FullScreenFloatyWindow implements FloatyWindow {
         mLayoutParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.TYPE_PHONE,
+                FloatyWindowManger.getWindowType(),
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 PixelFormat.TRANSLUCENT);
         mWindowManager.addView(mView, mLayoutParams);

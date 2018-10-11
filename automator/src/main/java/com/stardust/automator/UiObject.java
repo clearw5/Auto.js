@@ -63,6 +63,7 @@ public class UiObject extends AccessibilityNodeInfoCompat {
         mIndexInParent = indexInParent;
         if (DEBUG)
             mStackTrace = Arrays.toString(Thread.currentThread().getStackTrace());
+
     }
 
 

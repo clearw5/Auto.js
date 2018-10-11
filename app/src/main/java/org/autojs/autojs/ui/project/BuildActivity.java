@@ -2,15 +2,14 @@ package org.autojs.autojs.ui.project;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.CardView;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -25,7 +24,6 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
-import org.autojs.autojs.App;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.build.AutoJsApkBuilder;
@@ -41,9 +39,9 @@ import org.autojs.autojs.ui.shortcut.ShortcutIconSelectActivity_;
 
 import java.io.File;
 import java.io.InputStream;
-import java.security.KeyStore;
 import java.util.Locale;
 import java.util.concurrent.Callable;
+import java.util.regex.Pattern;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -60,6 +58,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     public static final String EXTRA_SOURCE = BuildActivity.class.getName() + ".extra_source_file";
 
     private static final String LOG_TAG = "BuildActivity";
+    private static final Pattern REGEX_PACKAGE_NAME = Pattern.compile("^([A-Za-z][A-Za-z\\d_]*\\.)+([A-Za-z][A-Za-z\\d_]*)$");
 
     @ViewById(R.id.source_path)
     TextInputEditText mSourcePath;
@@ -221,8 +220,23 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         inputValid &= checkNotEmpty(mSourcePath);
         inputValid &= checkNotEmpty(mVersionCode);
         inputValid &= checkNotEmpty(mVersionName);
-        inputValid &= checkNotEmpty(mPackageName);
+        inputValid &= checkPackageNameValid(mPackageName);
         return inputValid;
+    }
+
+    private boolean checkPackageNameValid(TextInputEditText editText) {
+        Editable text = editText.getText();
+        String hint = ((TextInputLayout) editText.getParent().getParent()).getHint().toString();
+        if(TextUtils.isEmpty(text)){
+            editText.setError(hint + getString(R.string.text_should_not_be_empty));
+            return false;
+        }
+        if(!REGEX_PACKAGE_NAME.matcher(text).matches()){
+            editText.setError(getString(R.string.text_invalid_package_name));
+            return false;
+        }
+        return true;
+
     }
 
     private boolean checkNotEmpty(TextInputEditText editText) {

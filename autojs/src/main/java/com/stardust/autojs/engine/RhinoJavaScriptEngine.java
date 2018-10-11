@@ -193,6 +193,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
             }
             return super.wrap(cx, scope, obj, staticType);
         }
+
     }
 
     private static class InterruptibleAndroidContextFactory extends AndroidContextFactory {

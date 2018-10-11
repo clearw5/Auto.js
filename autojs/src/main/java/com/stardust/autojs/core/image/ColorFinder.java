@@ -112,7 +112,8 @@ public class ColorFinder {
             ColorDetector colorDetector = new ColorDetector.DifferenceDetector(color, threshold);
             x += startingPoint.x;
             y += startingPoint.y;
-            if (x >= image.getWidth() || y >= image.getHeight()) {
+            if (x >= image.getWidth() || y >= image.getHeight()
+                || x < 0 || y < 0) {
                 return false;
             }
             int c = image.pixel(x, y);

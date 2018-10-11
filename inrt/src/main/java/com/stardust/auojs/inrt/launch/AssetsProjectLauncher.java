@@ -17,8 +17,10 @@ import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.pio.PFiles;
+import com.stardust.pio.UncheckedIOException;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Stardust on 2018/1/24.
@@ -86,8 +88,12 @@ public class AssetsProjectLauncher {
                 TextUtils.equals(projectConfig.getBuildInfo().getBuildId(), mProjectConfig.getBuildInfo().getBuildId())) {
             return;
         }
-        PFiles.deleteRecursively(new File(mAssetsProjectDir));
-        PFiles.copyAssetDir(mActivity, mAssetsProjectDir, mProjectDir);
+        PFiles.deleteRecursively(new File(mProjectDir));
+        try {
+            PFiles.copyAssetDir(mActivity, mAssetsProjectDir, mProjectDir, null);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
 }

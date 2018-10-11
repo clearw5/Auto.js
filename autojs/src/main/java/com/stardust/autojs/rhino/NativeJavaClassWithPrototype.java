@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class NativeJavaClassWithPrototype extends NativeJavaClass {
 
     private static final Object NULL = new Object();
-    private ConcurrentHashMap<String, Object> mProperties = new ConcurrentHashMap();
+    private ConcurrentHashMap<String, Object> mProperties = new ConcurrentHashMap<>();
 
     public NativeJavaClassWithPrototype(Scriptable scope, Class<?> javaClass) {
         super(scope, javaClass);

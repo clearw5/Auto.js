@@ -3,6 +3,7 @@ package com.stardust.autojs.core.console;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.stardust.autojs.R;
@@ -17,6 +18,8 @@ import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.util.UiHandler;
 import com.stardust.util.ViewUtil;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -113,6 +116,13 @@ public class StardustConsole extends AbstractConsole {
 
     public ArrayList<Log> getAllLogs() {
         return mLogs;
+    }
+
+    public void printStackTrace(Throwable t) {
+        StringWriter out = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(out);
+        t.printStackTrace(printWriter);
+        println(android.util.Log.ERROR, t.toString());
     }
 
     @Override

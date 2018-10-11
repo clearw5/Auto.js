@@ -41,6 +41,7 @@ public class ScriptIntents {
         long interval = intent.getLongExtra(EXTRA_KEY_LOOP_INTERVAL, 0);
         ScriptSource source = null;
         ExecutionConfig config = new ExecutionConfig().loop(delay, loopTimes, interval);
+        config.setArgument("intent", intent);
         if (path == null && script != null) {
             source = new StringScriptSource(script);
         } else if (path != null && new PathChecker(context).checkAndToastError(path)) {

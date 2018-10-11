@@ -79,8 +79,15 @@ public class JsDialog {
         Context context = mDialog.getContext();
         if (!DialogUtils.isActivityContext(context)) {
             Window window = mDialog.getWindow();
-            if (window != null)
-                window.setType(WindowManager.LayoutParams.TYPE_PHONE);
+            if (window != null){
+                int type;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+                } else {
+                    type = WindowManager.LayoutParams.TYPE_PHONE;
+                }
+                window.setType(type);
+            }
         }
     }
 
