@@ -21,7 +21,6 @@ public class NativeJavaObjectWithPrototype extends NativeJavaObject {
     public NativeJavaObjectWithPrototype() {
     }
 
-
     @Override
     public boolean has(String name, Scriptable start) {
         return super.has(name, start) || (prototype != null && prototype.has(name, start))
