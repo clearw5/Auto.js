@@ -39,7 +39,7 @@ public class TextViewInflater<V extends TextView> extends BaseViewInflater<V> {
             .map("web", Linkify.WEB_URLS);
     private static final ValueMapper<TextUtils.TruncateAt> ELLIPSIZE = new ValueMapper<TextUtils.TruncateAt>("ellipsize")
             .map("end", TextUtils.TruncateAt.END)
-            .map("marquee", TextUtils.TruncateAt.MIDDLE)
+            .map("marquee", TextUtils.TruncateAt.MARQUEE)
             .map("none", null)
             .map("start", TextUtils.TruncateAt.START)
             .map("middle", TextUtils.TruncateAt.MIDDLE);

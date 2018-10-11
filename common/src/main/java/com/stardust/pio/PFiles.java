@@ -395,6 +395,19 @@ public class PFiles {
         return file.delete();
     }
 
+    public static boolean deleteFilesOfDir(File dir) {
+        if (!dir.isDirectory())
+            throw new IllegalArgumentException("not a directory: " + dir);
+        File[] children = dir.listFiles();
+        if (children != null) {
+            for (File child : children) {
+                if (!deleteRecursively(child))
+                    return false;
+            }
+        }
+        return true;
+    }
+
     public static boolean remove(String path) {
         return new File(path).delete();
     }

@@ -13,6 +13,7 @@ import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.console.GlobalStardustConsole;
 import com.stardust.autojs.core.console.StardustConsole;
+import com.stardust.autojs.core.image.OpenCVHelper;
 import com.stardust.autojs.core.image.capture.ScreenCaptureRequestActivity;
 import com.stardust.autojs.core.image.capture.ScreenCaptureRequester;
 import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;
@@ -76,8 +77,6 @@ public abstract class AutoJs {
     protected void init() {
         addAccessibilityServiceDelegates();
         registerActivityLifecycleCallbacks();
-        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_13, mContext, new BaseLoaderCallback(mContext) {
-        });
     }
 
     public abstract void ensureAccessibilityServiceEnabled();
@@ -111,7 +110,7 @@ public abstract class AutoJs {
         return new ScriptRuntime.Builder()
                 .setConsole(new StardustConsole(mUiHandler, mGlobalConsole))
                 .setScreenCaptureRequester(mScreenCaptureRequester)
-                .setAccessibilityBridge(new AccessibilityBridgeImpl())
+                .setAccessibilityBridge(new AccessibilityBridgeImpl(mUiHandler))
                 .setUiHandler(mUiHandler)
                 .setAppUtils(mAppUtils)
                 .setEngineService(mScriptEngineService)
@@ -183,8 +182,8 @@ public abstract class AutoJs {
 
     private class AccessibilityBridgeImpl extends AccessibilityBridge {
 
-        public AccessibilityBridgeImpl() {
-            super(createAccessibilityConfig());
+        public AccessibilityBridgeImpl(UiHandler uiHandler) {
+            super(createAccessibilityConfig(), uiHandler);
         }
 
         @Override

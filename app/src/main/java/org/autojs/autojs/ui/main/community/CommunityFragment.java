@@ -63,7 +63,7 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
     @AfterViews
     void setUpViews() {
         mWebView = mEWebView.getWebView();
-        String url = "http://www.autojs.org/";
+        String url = "https://www.autojs.org/";
         Bundle savedWebViewState = getArguments().getBundle("savedWebViewState");
         if (savedWebViewState != null) {
             mWebView.restoreState(savedWebViewState);

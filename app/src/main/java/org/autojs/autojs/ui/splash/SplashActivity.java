@@ -3,19 +3,16 @@ package org.autojs.autojs.ui.splash;
 import android.Manifest;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
+import com.stardust.autojs.core.image.OpenCVHelper;
 import com.xcy8.ads.listener.LoadAdListener;
 import com.xcy8.ads.view.FullScreenAdView;
-import com.xcy8.ads.view.skipview.OnFullScreenListener;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.Constants;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
@@ -33,6 +30,7 @@ public class SplashActivity extends BaseActivity {
     public static final String FORCE_SHOW_AD = "forceShowAd";
 
     private static final String LOG_TAG = SplashActivity.class.getSimpleName();
+    private static final long INIT_TIMEOUT = 1500;
 
 
     private boolean mCanEnterNextActivity = false;
@@ -47,19 +45,31 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHandler = new Handler();
-        mNotStartMainActivity = getIntent().getBooleanExtra(NOT_START_MAIN_ACTIVITY, false);
+        init();
         boolean forceShowAd = getIntent().getBooleanExtra(FORCE_SHOW_AD, false);
-        setContentView(R.layout.activity_splash);
-        mFullScreenAdView = findViewById(R.id.full_screen_view);
+        final long millis = SystemClock.uptimeMillis();
         if (!forceShowAd && !Pref.shouldShowAd()) {
             mFullScreenAdView.setVisibility(View.INVISIBLE);
-            mHandler.postDelayed(this::enterNextActivity, 1500);
         } else {
-            if(checkPermission(Manifest.permission.READ_PHONE_STATE)){
+            if (checkPermission(Manifest.permission.READ_PHONE_STATE)) {
                 fetchSplashAD();
             }
         }
+        OpenCVHelper.initIfNeeded(this, () -> {
+            long delay = INIT_TIMEOUT - (SystemClock.uptimeMillis() - millis);
+            if (delay <= 0) {
+                enterNextActivity();
+                return;
+            }
+            mHandler.postDelayed(SplashActivity.this::enterNextActivity, delay);
+        });
+    }
+
+    private void init() {
+        setContentView(R.layout.activity_splash);
+        mFullScreenAdView = findViewById(R.id.full_screen_view);
+        mHandler = new Handler();
+        mNotStartMainActivity = getIntent().getBooleanExtra(NOT_START_MAIN_ACTIVITY, false);
     }
 
     void enterNextActivity() {
@@ -116,7 +126,7 @@ public class SplashActivity extends BaseActivity {
         });
         mHandler.postDelayed(() -> {
             if (mAdLoading) {
-               enterNextActivity();
+                enterNextActivity();
             }
         }, 2000);
         mFullScreenAdView.loadAd(getAdId(), false);

@@ -1,5 +1,6 @@
 package com.stardust.autojs.core.accessibility;
 
+import android.os.Looper;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -13,6 +14,7 @@ import com.stardust.automator.UiGlobalSelector;
 import com.stardust.automator.UiObject;
 import com.stardust.automator.UiObjectCollection;
 import com.stardust.automator.filter.DfsFilter;
+import com.stardust.concurrent.VolatileBox;
 import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
@@ -72,6 +74,18 @@ public class UiSelector extends UiGlobalSelector {
     @ScriptInterface
     public UiObjectCollection find() {
         ensureAccessibilityServiceEnabled();
+        if((mAccessibilityBridge.getFlags() & AccessibilityBridge.FLAG_FIND_ON_UI_THREAD)!=0
+            && Looper.myLooper() != Looper.getMainLooper()){
+            VolatileBox<UiObjectCollection> result = new VolatileBox<>();
+            mAccessibilityBridge.post(() -> result.setAndNotify(findImpl()));
+            return result.blockedGet();
+        }
+        return findImpl();
+    }
+
+    @NonNull
+    @ScriptInterface
+    protected UiObjectCollection findImpl() {
         AccessibilityNodeInfo root = mAccessibilityBridge.getRootInCurrentWindow();
         if (BuildConfig.DEBUG)
             Log.d(TAG, "find: root = " + root);
@@ -97,6 +111,7 @@ public class UiSelector extends UiGlobalSelector {
         }
         return regex;
     }
+
 
     @Override
     public UiGlobalSelector classNameMatches(String regex) {

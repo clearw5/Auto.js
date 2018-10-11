@@ -48,14 +48,18 @@ public class AutoJsApkBuilder extends ApkBuilder {
         Callable<Bitmap> icon;
 
         public static AppConfig fromProjectConfig(String projectDir, ProjectConfig projectConfig) {
-            return new AppConfig()
+            String icon = projectConfig.getIcon();
+            AppConfig appConfig = new AppConfig()
                     .setAppName(projectConfig.getName())
                     .setPackageName(projectConfig.getPackageName())
                     .ignoreDir(new File(projectDir, projectConfig.getBuildDir()))
                     .setVersionCode(projectConfig.getVersionCode())
                     .setVersionName(projectConfig.getVersionName())
-                    .setIcon(projectConfig.getIcon())
                     .setSourcePath(projectDir);
+            if (icon != null) {
+                appConfig.setIcon(new File(projectDir, icon).getPath());
+            }
+            return appConfig;
         }
 
 

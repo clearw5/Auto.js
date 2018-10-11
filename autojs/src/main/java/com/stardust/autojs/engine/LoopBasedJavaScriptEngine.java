@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.MessageQueue;
+import android.util.Log;
 
 import com.stardust.autojs.core.looper.LooperHelper;
 import com.stardust.autojs.script.JavaScriptSource;
@@ -44,6 +45,7 @@ public class LoopBasedJavaScriptEngine extends RhinoJavaScriptEngine {
                 if (callback != null)
                     callback.onResult(o);
             } catch (Exception e) {
+                Log.d("DDDDD", "execute: "  + e.getMessage());
                 if (callback == null) {
                     throw e;
                 } else {

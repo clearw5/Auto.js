@@ -1,12 +1,14 @@
+import groovy.json.JsonSlurper
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
     repositories {
-        jcenter()
         google()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.4'
 
     }
 }
@@ -18,9 +20,14 @@ allprojects {
             url "https://jitpack.io"
         }
         google()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+    versions = new JsonSlurper().parse(file('./project-versions.json'))
 }

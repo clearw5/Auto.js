@@ -80,7 +80,7 @@ public class ConsoleFloaty extends ResizableExpandableFloaty.AbstractResizableEx
     }
 
     private void initConsoleTitle(View view) {
-        mTitleView = (TextView) view.findViewById(R.id.title);
+        mTitleView = view.findViewById(R.id.title);
         if (mTitle != null) {
             mTitleView.setText(mTitle);
         }
@@ -91,7 +91,7 @@ public class ConsoleFloaty extends ResizableExpandableFloaty.AbstractResizableEx
     }
 
     private void setUpConsole(View view, ResizableExpandableFloatyWindow window) {
-        ConsoleView consoleView = (ConsoleView) view.findViewById(R.id.console);
+        ConsoleView consoleView = view.findViewById(R.id.console);
         consoleView.setConsole(mConsole);
         consoleView.setWindow(window);
         initConsoleTitle(view);

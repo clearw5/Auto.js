@@ -109,6 +109,10 @@ module.exports = function(runtime, global){
         "fast": 1
     }
 
+    const flagsMap = {
+        "findOnUiThread": 1
+    };
+
     var auto = function(mode){
         if(mode){
             global.auto.setMode(mode);
@@ -120,12 +124,31 @@ module.exports = function(runtime, global){
         runtime.accessibilityBridge.waitForServiceEnabled();
     }
 
-    auto.setMode = function(mode){
+    auto.setMode = function(modeStr){
         if(typeof(mode) !== "string"){
             throw new TypeError("mode should be a string");
         }
-        mode = modes[mode.toLowerCase()] || 0;
+        let mode = modes[modeStr];
+        if(mode == undefined){
+            throw new Error("unknown mode for auto.setMode(): " + modeStr)
+        }
         runtime.accessibilityBridge.setMode(mode);
+    }
+
+    auto.setFlags = function(flags){
+        if(typeof(flags) !== "string"){
+            throw new TypeError("flags should be a string");
+        }
+        let flagsInt = 0;
+        let flagStrings = flags.split("|");
+        for(let i = 0; i < flagStrings.length; i++){
+            let flag = flagsMap[flagStrings[i]];
+            if(flag == undefined){
+                throw new Error("unknown flag for auto.setFlags(): " + flagStrings[i]);
+            }
+            flagsInt |= flag;
+        }
+        runtime.accessibilityBridge.setFlags(flagsInt);
     }
 
     auto.getService = function(){

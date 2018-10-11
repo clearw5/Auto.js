@@ -10,8 +10,11 @@ import android.widget.CheckBox;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.app.GlobalAppContext;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
+import org.autojs.autojs.ui.edit.editor.CodeEditor;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,20 +46,16 @@ public class FindOrReplaceDialogBuilder extends ThemeColorMaterialDialogBuilder 
 
     private EditorView mEditorView;
 
-
     public FindOrReplaceDialogBuilder(@NonNull Context context, EditorView editorView) {
         super(context);
         mEditorView = editorView;
         setupViews();
         restoreState();
-        onPositive(new MaterialDialog.SingleButtonCallback() {
-
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                storeState();
-                findOrReplace();
-            }
-
+        autoDismiss(false);
+        onNegative((dialog, which)-> dialog.dismiss());
+        onPositive((dialog, which) -> {
+            storeState();
+            findOrReplace(dialog);
         });
     }
 
@@ -96,21 +95,27 @@ public class FindOrReplaceDialogBuilder extends ThemeColorMaterialDialogBuilder 
         }
     }
 
-    private void findOrReplace() {
+    private void findOrReplace(MaterialDialog dialog) {
         String keywords = mKeywordsEditText.getText().toString();
         if (keywords.isEmpty()) {
             return;
         }
-        boolean usingRegex = mRegexCheckBox.isChecked();
-        if (!mReplaceCheckBox.isChecked()) {
-            mEditorView.find(keywords, usingRegex);
-        } else {
-            String replacement = mReplacementEditText.getText().toString();
-            if (mReplaceAllCheckBox.isChecked()) {
-                mEditorView.replaceAll(keywords, replacement, usingRegex);
+        try {
+            boolean usingRegex = mRegexCheckBox.isChecked();
+            if (!mReplaceCheckBox.isChecked()) {
+                mEditorView.find(keywords, usingRegex);
             } else {
-                mEditorView.replace(keywords, replacement, usingRegex);
+                String replacement = mReplacementEditText.getText().toString();
+                if (mReplaceAllCheckBox.isChecked()) {
+                    mEditorView.replaceAll(keywords, replacement, usingRegex);
+                } else {
+                    mEditorView.replace(keywords, replacement, usingRegex);
+                }
             }
+            dialog.dismiss();
+        } catch (CodeEditor.CheckedPatternSyntaxException e) {
+            e.printStackTrace();
+            mKeywordsEditText.setError(getContext().getString(R.string.error_pattern_syntax));
         }
 
     }

@@ -12,11 +12,13 @@ import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.ScriptSource;
+import com.stardust.util.IntentUtil;
 
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.external.ScriptIntents;
+import org.autojs.autojs.external.fileprovider.AppFileProvider;
 import org.autojs.autojs.external.shortcut.Shortcut;
 import org.autojs.autojs.external.shortcut.ShortcutActivity;
 import org.autojs.autojs.ui.edit.EditActivity;
@@ -71,8 +73,7 @@ public class Scripts {
 
 
     public static void openByOtherApps(String path) {
-        Uri uri = Uri.parse("file://" + path);
-        GlobalAppContext.get().startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(uri, "text/plain").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        IntentUtil.viewFile(GlobalAppContext.get(), path, "text/plain", AppFileProvider.AUTHORITY);
     }
 
     public static void openByOtherApps(File file) {
@@ -111,8 +112,8 @@ public class Scripts {
     public static ScriptExecution run(ScriptSource source) {
         try {
             return AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
-                .executePath(Pref.getScriptDirPath())
-                .requirePath(Pref.getScriptDirPath()));
+                    .executePath(Pref.getScriptDirPath())
+                    .requirePath(Pref.getScriptDirPath()));
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(GlobalAppContext.get(), e.getMessage(), Toast.LENGTH_LONG).show();

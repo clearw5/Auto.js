@@ -23,6 +23,7 @@
     <!-- Ad SDK Permissions -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
+
     <application
         xmlns:tools="http://schemas.android.com/tools"
         android:name=".App"
@@ -33,6 +34,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label, android:icon, android:allowBackup">
+
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.1" />
 
         <activity
             android:name=".ui.splash.SplashActivity"
@@ -64,7 +69,7 @@
         </activity>
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name=".external.fileprovider.AppFileProvider"
             android:authorities="org.autojs.autojs.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -139,11 +144,6 @@
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="android.intent.action.TIME_SET"/>
                 <action android:name="android.intent.action.TIMEZONE_CHANGED"/>
-                <action android:name="android.intent.action.PACKAGE_ADDED"/>
-                <action android:name="android.intent.action.PACKAGE_CHANGED"/>
-                <action android:name="android.intent.action.PACKAGE_DATA_CLEARED"/>
-                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
-                <action android:name="android.intent.action.PACKAGE_RESTARTED"/>
                 <action android:name="android.intent.action.UID_REMOVED"/>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>

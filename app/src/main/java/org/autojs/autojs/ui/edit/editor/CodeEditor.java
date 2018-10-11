@@ -19,6 +19,7 @@ import com.stardust.util.TextUtils;
 import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import io.reactivex.Observable;
 
@@ -41,6 +42,11 @@ import io.reactivex.Observable;
  */
 public class CodeEditor extends HVScrollView {
 
+    public static class CheckedPatternSyntaxException extends Exception {
+        public CheckedPatternSyntaxException(PatternSyntaxException cause) {
+            super(cause);
+        }
+    }
 
     public interface CursorChangeCallback {
 
@@ -222,9 +228,13 @@ public class CodeEditor extends HVScrollView {
         mTextViewRedoUndo.redo();
     }
 
-    public void find(String keywords, boolean usingRegex) {
+    public void find(String keywords, boolean usingRegex) throws CheckedPatternSyntaxException {
         if (usingRegex) {
-            mMatcher = Pattern.compile(keywords).matcher(mCodeEditText.getText());
+            try {
+                mMatcher = Pattern.compile(keywords).matcher(mCodeEditText.getText());
+            }catch (PatternSyntaxException e){
+                throw new CheckedPatternSyntaxException(e);
+            }
             mKeywords = null;
         } else {
             mKeywords = keywords;
@@ -233,17 +243,21 @@ public class CodeEditor extends HVScrollView {
         findNext();
     }
 
-    public void replace(String keywords, String replacement, boolean usingRegex) {
+    public void replace(String keywords, String replacement, boolean usingRegex) throws CheckedPatternSyntaxException {
         mReplacement = replacement == null ? "" : replacement;
         find(keywords, usingRegex);
     }
 
-    public void replaceAll(String keywords, String replacement, boolean usingRegex) {
+    public void replaceAll(String keywords, String replacement, boolean usingRegex) throws CheckedPatternSyntaxException {
         if (!usingRegex) {
             keywords = Pattern.quote(keywords);
         }
         String text = mCodeEditText.getText().toString();
-        text = text.replaceAll(keywords, replacement);
+        try {
+            text = text.replaceAll(keywords, replacement);
+        }catch (PatternSyntaxException e){
+            throw new CheckedPatternSyntaxException(e);
+        }
         setText(text);
     }
 

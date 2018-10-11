@@ -5,10 +5,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.RecyclerView;
 
 import com.stardust.app.GlobalAppContext;
-import com.stardust.util.BackPressedHandler;
 import com.stardust.util.IntentUtil;
 
 import org.androidannotations.annotations.AfterViews;
@@ -16,6 +14,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
+import org.autojs.autojs.external.fileprovider.AppFileProvider;
 import org.autojs.autojs.model.explorer.ExplorerDirPage;
 import org.autojs.autojs.model.explorer.Explorers;
 import org.autojs.autojs.model.script.Scripts;
@@ -28,7 +27,6 @@ import org.autojs.autojs.ui.main.ViewPagerFragment;
 import org.autojs.autojs.ui.project.ProjectConfigActivity;
 import org.autojs.autojs.ui.project.ProjectConfigActivity_;
 import org.autojs.autojs.ui.viewmodel.ExplorerItemList;
-import org.autojs.autojs.ui.widget.ExpandableRecyclerView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -66,7 +64,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements FloatingA
             if (item.isEditable()) {
                 Scripts.edit(item.toScriptFile());
             } else {
-                IntentUtil.viewFile(GlobalAppContext.get(), item.getPath());
+                IntentUtil.viewFile(GlobalAppContext.get(), item.getPath(), AppFileProvider.AUTHORITY);
             }
         });
     }

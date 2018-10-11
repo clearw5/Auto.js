@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.stardust.auojs.inrt.launch.AssetsProjectLauncher;
 import com.stardust.auojs.inrt.launch.GlobalProjectLauncher;
+import com.stardust.autojs.core.image.OpenCVHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,18 +31,24 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 public class SplashActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 11186;
+    private static final long INIT_TIMEOUT = 2500;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!Pref.isFirstUsing()) {
-            main();
-            return;
-        }
         setContentView(R.layout.activity_splash);
-        TextView slug = (TextView) findViewById(R.id.slug);
+        TextView slug = findViewById(R.id.slug);
         slug.setTypeface(Typeface.createFromAsset(getAssets(), "roboto_medium.ttf"));
-        new Handler().postDelayed(this::main, 2500);
+        final long millis = SystemClock.uptimeMillis();
+        OpenCVHelper.initIfNeeded(this, () -> {
+            long delay = INIT_TIMEOUT - (SystemClock.uptimeMillis() - millis);
+            if (!Pref.isFirstUsing() || delay <= 0) {
+                main();
+                return;
+            }
+            new Handler().postDelayed(SplashActivity.this::main, delay);
+        });
+
     }
 
     private void main() {
@@ -67,9 +75,7 @@ public class SplashActivity extends AppCompatActivity {
                 runScript();
             }
         } else {
-            int[] grantResults = new int[permissions.length];
-            Arrays.fill(grantResults, PERMISSION_GRANTED);
-            onRequestPermissionsResult(PERMISSION_REQUEST_CODE, permissions, grantResults);
+            runScript();
         }
     }
 

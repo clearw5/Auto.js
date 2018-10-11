@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '26.0.2'
+    compileSdkVersion versions.compile
+    buildToolsVersion versions.buildTool
 
     defaultConfig {
         applicationId "com.stardust.auojs.inrt"
-        minSdkVersion 17
-        targetSdkVersion 23
-        versionCode 210
-        versionName "4.0.2 Alpha5"
+        minSdkVersion versions.mini
+        targetSdkVersion versions.target
+        versionCode versions.appVersionCode - 200
+        versionName versions.appVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             abiFilters 'armeabi-v7a'
@@ -36,6 +36,39 @@ android {
     }
 }
 
+
+task buildApkPlugin {
+    doLast {
+        def pluginProjectDirPath = '..\\..\\AutoJsApkBuilderPlugin'
+        def pluginProjectDir = file(pluginProjectDirPath)
+        if(!pluginProjectDir.exists() || !pluginProjectDir.isDirectory()){
+            println 'pluginProjectDir not exists'
+            return
+        }
+        copy {
+            from file('build\\outputs\\apk\\release\\')
+            into new File(pluginProjectDir, 'app\\src\\main\\assets')
+            include "inrt-release-unsigned.apk"
+            rename "inrt-release-unsigned.apk", 'template.apk'
+        }
+        exec {
+            workingDir pluginProjectDir
+            commandLine 'gradlew.bat', 'assembleRelease'
+        }
+        copy {
+            from new File(pluginProjectDir, 'app\\build\\outputs\\apk\\release')
+            into file('..\\common\\release')
+            include '*-release.apk'
+        }
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'assembleRelease') {
+        task.finalizedBy 'buildApkPlugin'
+    }
+}
+
 repositories {
     flatDir {
         dirs 'libs'
@@ -44,17 +77,16 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.4.0'
     //Glide
-    compile('com.github.bumptech.glide:glide:4.2.0', {
+    implementation('com.github.bumptech.glide:glide:4.2.0', {
         exclude group: 'com.android.support'
     })
-    testCompile 'junit:junit:4.12'
-    compile project(':automator')
-    compile project(':common')
-    compile project(':autojs')
+    testImplementation 'junit:junit:4.12'
+    implementation project(':automator')
+    implementation project(':common')
+    implementation project(':autojs')
 }

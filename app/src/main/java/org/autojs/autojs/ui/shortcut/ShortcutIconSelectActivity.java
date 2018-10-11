@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import org.autojs.autojs.R;
+import org.autojs.autojs.tool.BitmapTool;
 import org.autojs.autojs.ui.BaseActivity;
 
 import org.androidannotations.annotations.AfterViews;
@@ -24,6 +28,7 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -95,6 +100,23 @@ public class ShortcutIconSelectActivity extends BaseActivity {
             setResult(RESULT_OK, data);
             finish();
         }
+    }
+
+    public static Observable<Bitmap> getBitmapFromIntent(Context context, Intent data) {
+        String packageName = data.getStringExtra(EXTRA_PACKAGE_NAME);
+        if (packageName != null) {
+            return Observable.fromCallable(() -> {
+                Drawable drawable = context.getPackageManager().getApplicationIcon(packageName);
+                return BitmapTool.drawableToBitmap(drawable);
+            });
+        }
+        Uri uri = data.getData();
+        if (uri == null) {
+            return Observable.error(new IllegalArgumentException("invalid intent"));
+        }
+        return Observable.fromCallable(() ->
+                BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri))
+        );
     }
 
     private class AppItem {

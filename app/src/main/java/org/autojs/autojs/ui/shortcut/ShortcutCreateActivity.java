@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -131,6 +132,7 @@ public class ShortcutCreateActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("CheckResult")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != RESULT_OK) {
@@ -146,7 +148,11 @@ public class ShortcutCreateActivity extends AppCompatActivity {
             }
             return;
         }
-        Observable.fromCallable(() -> BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData())))
+        Uri uri = data.getData();
+        if(uri == null){
+            return;
+        }
+        Observable.fromCallable(() -> BitmapFactory.decodeStream(getContentResolver().openInputStream(uri)))
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((bitmap -> {

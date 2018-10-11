@@ -43,9 +43,9 @@ public class LogActivity extends AppCompatActivity {
 
     private void setupView() {
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ConsoleView consoleView = (ConsoleView) findViewById(R.id.console);
+        ConsoleView consoleView = findViewById(R.id.console);
         consoleView.setConsole((StardustConsole) AutoJs.getInstance().getGlobalConsole());
         consoleView.findViewById(R.id.input_container).setVisibility(View.GONE);
     }

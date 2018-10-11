@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 
 import java.io.File;
 
@@ -84,20 +85,47 @@ public class IntentUtil {
         return goToAppDetailSettings(context, context.getPackageName());
     }
 
-    // FIXME: 2018/7/11 Permission denial
-    public static void installApk(Context context, String path) {
+    public static void installApk(Context context, String path, String fileProviderAuthority) {
+        Uri uri = getUriOfFile(context, path, fileProviderAuthority);
         Intent intent = new Intent(Intent.ACTION_VIEW);
-
-        intent.setDataAndType(Uri.fromFile(new File(path)), "application/vnd.android.package-archive");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setDataAndType(uri, "application/vnd.android.package-archive");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         context.startActivity(intent);
     }
 
-    public static void viewFile(Context context, String path) {
-        path = "file://" + path;
+    public static void viewFile(Context context, String path, String fileProviderAuthority) {
         String mimeType = MimeTypes.fromFileOr(path, "*/*");
+        viewFile(context, path, mimeType, fileProviderAuthority);
+    }
+
+    public static Uri getUriOfFile(Context context, String path, String fileProviderAuthority) {
+        Uri uri;
+        if (fileProviderAuthority == null) {
+            uri = Uri.parse("file://" + path);
+        } else {
+            uri = FileProvider.getUriForFile(context, fileProviderAuthority, new File(path));
+        }
+        return uri;
+    }
+
+    public static void viewFile(Context context, String path, String mimeType, String fileProviderAuthority) {
+        Uri uri = getUriOfFile(context, path, fileProviderAuthority);
         context.startActivity(new Intent(Intent.ACTION_VIEW)
-                .setDataAndType(Uri.parse(path), mimeType)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                .setDataAndType(uri, mimeType)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
+    }
+
+    public static void editFile(Context context, String path, String fileProviderAuthority) {
+        String mimeType = MimeTypes.fromFileOr(path, "*/*");
+        Uri uri = getUriOfFile(context, path, fileProviderAuthority);
+        context.startActivity(new Intent(Intent.ACTION_EDIT)
+                .setDataAndType(uri, mimeType)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
     }
 }

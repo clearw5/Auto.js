@@ -40,6 +40,12 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
         }
 
         public void addToken(int tokenStart, int tokenEnd, int color) {
+            if(mCount < tokenStart){
+                int c = mCount > 0 ? colors[mCount - 1] : color;
+                for (int i = mCount; i < tokenStart; i++) {
+                    colors[i] = c;
+                }
+            }
             for (int i = tokenStart; i < tokenEnd; i++) {
                 colors[i] = color;
             }
