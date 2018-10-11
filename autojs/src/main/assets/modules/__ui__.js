@@ -196,6 +196,7 @@ module.exports = function (runtime, global) {
     }
 
     function decorate(view) {
+        return view;
         var javaObject = view;
         var view = global.events.__asEmitter__(Object.create(view));
         view.__javaObject__ = javaObject;

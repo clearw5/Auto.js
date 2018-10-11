@@ -71,6 +71,10 @@ public class MutableOkHttp extends OkHttpClient {
         muteClient();
     }
 
+    public synchronized void muteClient(Builder builder) {
+        mOkHttpClient = newClient(builder);
+    }
+
     protected synchronized void muteClient() {
         mOkHttpClient = newClient(mOkHttpClient.newBuilder());
     }

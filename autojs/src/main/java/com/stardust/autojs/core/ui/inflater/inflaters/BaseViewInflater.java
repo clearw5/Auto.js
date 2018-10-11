@@ -149,16 +149,16 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
                 }
                 break;
             case "layout_gravity":
-                if (parent != null && parent instanceof LinearLayout) {
+                if (parent instanceof LinearLayout) {
                     ((LinearLayout.LayoutParams) layoutParams).gravity = Gravities.parse(value);
-                } else if (parent != null && parent instanceof FrameLayout) {
+                } else if (parent instanceof FrameLayout) {
                     ((FrameLayout.LayoutParams) layoutParams).gravity = Gravities.parse(value);
                 } else {
                     return setLayoutGravity(parent, view, Gravities.parse(value));
                 }
                 break;
             case "layout_weight":
-                if (parent != null && parent instanceof LinearLayout) {
+                if (parent instanceof LinearLayout) {
                     ((LinearLayout.LayoutParams) layoutParams).weight = Float.parseFloat(value);
                 }
                 break;

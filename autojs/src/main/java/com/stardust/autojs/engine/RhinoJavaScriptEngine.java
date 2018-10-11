@@ -2,9 +2,11 @@ package com.stardust.autojs.engine;
 
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 
 import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.BuildConfig;
+import com.stardust.autojs.core.ui.widget.NativeView;
 import com.stardust.autojs.rhino.AndroidContextFactory;
 import com.stardust.autojs.rhino.NativeJavaClassWithPrototype;
 import com.stardust.autojs.rhino.NativeJavaObjectWithPrototype;
@@ -182,7 +184,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private class WrapFactory extends org.mozilla.javascript.WrapFactory {
 
-
         @Override
         public Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType) {
             if (obj instanceof String) {
@@ -194,6 +195,13 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
             return super.wrap(cx, scope, obj, staticType);
         }
 
+        @Override
+        public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, Class<?> staticType) {
+            if (javaObject instanceof View) {
+                return new NativeView(scope, (View) javaObject, staticType, getRuntime());
+            }
+            return super.wrapAsJavaObject(cx, scope, javaObject, staticType);
+        }
     }
 
     private static class InterruptibleAndroidContextFactory extends AndroidContextFactory {
@@ -206,7 +214,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         @Override
         protected void observeInstructionCount(Context cx, int instructionCount) {
             if (Thread.currentThread().isInterrupted() && Looper.myLooper() != Looper.getMainLooper()) {
-                Log.d("DDDDD", "thread interrupt: "  + Thread.currentThread());
                 throw new ScriptInterruptedException();
             }
         }
