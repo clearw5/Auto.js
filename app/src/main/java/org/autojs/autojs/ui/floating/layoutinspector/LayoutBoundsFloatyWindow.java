@@ -11,11 +11,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.stardust.app.DialogUtils;
 import com.stardust.enhancedfloaty.FloatyService;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.ui.codegeneration.CodeGenerateDialog;
 import org.autojs.autojs.ui.floating.FloatyWindowManger;
 import org.autojs.autojs.ui.floating.FullScreenFloatyWindow;
+
 import com.stardust.view.accessibility.NodeInfo;
+
 import org.autojs.autojs.ui.widget.BubblePopupMenu;
 
 import java.util.Arrays;
@@ -39,8 +42,8 @@ public class LayoutBoundsFloatyWindow extends FullScreenFloatyWindow {
     }
 
     @Override
-    protected View inflateView(FloatyService service) {
-        mContext = new ContextThemeWrapper(service, R.style.AppTheme);
+    protected View onCreateView(FloatyService floatyService) {
+        mContext = new ContextThemeWrapper(floatyService, R.style.AppTheme);
         mLayoutBoundsView = new LayoutBoundsView(mContext) {
             @Override
             public boolean dispatchKeyEvent(KeyEvent event) {
@@ -51,11 +54,10 @@ public class LayoutBoundsFloatyWindow extends FullScreenFloatyWindow {
                 return super.dispatchKeyEvent(event);
             }
         };
-        setupView();
         return mLayoutBoundsView;
     }
 
-    private void setupView() {
+    protected void onViewCreated(View v) {
         mLayoutBoundsView.setOnNodeInfoSelectListener(info -> {
             mSelectedNode = info;
             ensureOperationPopMenu();

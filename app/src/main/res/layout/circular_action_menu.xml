@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.stardust.floatingcircularactionmenu.CircularActionMenu xmlns:android="http://schemas.android.com/apk/res/android"
+<org.autojs.autojs.ui.floating.CircularActionMenu xmlns:android="http://schemas.android.com/apk/res/android"
                                                             xmlns:app="http://schemas.android.com/apk/res-auto"
                                                             android:layout_width="wrap_content"
                                                             android:layout_height="wrap_content"
@@ -60,4 +60,4 @@
         android:src="@drawable/ic_circular_menu_settings"/>
 
 
-</com.stardust.floatingcircularactionmenu.CircularActionMenu>
+</org.autojs.autojs.ui.floating.CircularActionMenu>

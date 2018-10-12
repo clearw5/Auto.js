@@ -27,4 +27,9 @@
         <attr name="title"/>
     </declare-styleable>
 
+    <declare-styleable name="CircularActionMenu">
+        <attr name="cam_radius" format="dimension|reference"/>
+        <attr name="cam_angle" format="integer"/>
+    </declare-styleable>
+
 </resources>
