@@ -49,7 +49,7 @@ public class TimerThread extends ThreadCompat {
             Looper.loop();
         } catch (Exception e) {
             if (!ScriptInterruptedException.causedByInterrupted(e)) {
-                mRuntime.console.error(Thread.currentThread().toString() + ": " + ScriptEngineService.getScriptTrace(e));
+                mRuntime.console.error(Thread.currentThread().toString() + ": ", e);
             }
         } finally {
             onExit();

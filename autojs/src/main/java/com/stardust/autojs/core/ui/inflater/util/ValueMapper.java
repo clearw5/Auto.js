@@ -23,7 +23,18 @@ public class ValueMapper<V> {
     }
 
 
-    public V getOr(String key, V defValue) {
+    public ValueMapper<V> mapDefault(String key, V value) {
+        mHashMap.put(key, value);
+        mHashMap.put("", value);
+        return this;
+    }
+
+    public ValueMapper<V> mapDefault(V value) {
+        mHashMap.put("", value);
+        return this;
+    }
+
+    public V get(String key, V defValue) {
         V v = mHashMap.get(key);
         if (v == null) {
             return defValue;

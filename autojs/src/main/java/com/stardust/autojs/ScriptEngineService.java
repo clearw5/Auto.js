@@ -1,7 +1,6 @@
 package com.stardust.autojs;
 
 import android.content.Context;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.stardust.autojs.engine.JavaScriptEngine;
@@ -21,22 +20,19 @@ import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.lang.ThreadCompat;
-import com.stardust.util.TextUtils;
 import com.stardust.util.UiHandler;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.ScriptStackElement;
-import org.mozilla.javascript.WrappedException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PipedReader;
-import java.io.PipedWriter;
 import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -77,7 +73,7 @@ public class ScriptEngineService {
             if (!causedByInterrupted(e)) {
                 if (execution.getEngine() instanceof JavaScriptEngine) {
                     ((JavaScriptEngine) execution.getEngine()).getRuntime()
-                            .console.error(getScriptTrace(e));
+                            .console.error(e);
                 }
                 EVENT_BUS.post(new ScriptExecutionEvent(ScriptExecutionEvent.ON_EXCEPTION, e.getMessage()));
             }
@@ -279,35 +275,6 @@ public class ScriptEngineService {
 
         public String getMessage() {
             return mMessage;
-        }
-    }
-
-    public static String getScriptTrace(Exception e) {
-        StringBuilder scriptTrace = new StringBuilder();
-        if (e instanceof RhinoException) {
-            RhinoException rhinoException = (RhinoException) e;
-            scriptTrace.append(rhinoException.details()).append("\n");
-            for (ScriptStackElement element : rhinoException.getScriptStack()) {
-                element.renderV8Style(scriptTrace);
-                scriptTrace.append("\n");
-            }
-            scriptTrace.append("- - - - - - - - - - -\n");
-        }
-        try {
-            PipedReader reader = new PipedReader(8192);
-            PrintWriter writer = new PrintWriter(new PipedWriter(reader));
-            e.printStackTrace(writer);
-            writer.close();
-            BufferedReader bufferedReader = new BufferedReader(reader);
-            String line;
-            //scriptTrace.append(TextUtils.toEmptyIfNull(e.getMessage()));
-            while ((line = bufferedReader.readLine()) != null) {
-                scriptTrace.append("\n").append(line);
-            }
-            return scriptTrace.toString();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-            return e.getMessage();
         }
     }
 

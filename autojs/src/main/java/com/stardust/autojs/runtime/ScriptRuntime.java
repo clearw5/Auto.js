@@ -50,9 +50,15 @@ import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 
 import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.RhinoException;
+import org.mozilla.javascript.ScriptStackElement;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +75,7 @@ import static android.content.pm.PackageManager.PERMISSION_DENIED;
 public class ScriptRuntime {
 
     private static final String TAG = "ScriptRuntime";
+
 
 
     public static class Builder {
@@ -384,7 +391,7 @@ public class ScriptRuntime {
         try {
             events.emit("exit");
         } catch (Exception ignored) {
-            console.error("exception on exit: " + ScriptEngineService.getScriptTrace(ignored));
+            console.error("exception on exit: ", ignored);
         }
         ignoresException(threads::shutDownAll);
         ignoresException(events::recycle);
@@ -425,6 +432,38 @@ public class ScriptRuntime {
 
     public Object removeProperty(String key) {
         return mProperties.remove(key);
+    }
+
+    public static String getStackTrace(Throwable e, boolean printJavaStackTrace){
+        StringBuilder scriptTrace = new StringBuilder();
+        if (e instanceof RhinoException) {
+            RhinoException rhinoException = (RhinoException) e;
+            scriptTrace.append(rhinoException.details()).append("\n");
+            for (ScriptStackElement element : rhinoException.getScriptStack()) {
+                element.renderV8Style(scriptTrace);
+                scriptTrace.append("\n");
+            }
+            if(printJavaStackTrace){
+                scriptTrace.append("- - - - - - - - - - -\n");
+            }else {
+                return scriptTrace.toString();
+            }
+        }
+        try {
+            StringWriter stringWriter = new StringWriter();
+            PrintWriter writer = new PrintWriter(stringWriter);
+            e.printStackTrace(writer);
+            writer.close();
+            BufferedReader bufferedReader = new BufferedReader(new StringReader(writer.toString()));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                scriptTrace.append("\n").append(line);
+            }
+            return scriptTrace.toString();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            return e.getMessage();
+        }
     }
 
 }

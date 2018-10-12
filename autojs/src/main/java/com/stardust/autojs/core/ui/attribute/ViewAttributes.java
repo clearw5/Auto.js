@@ -112,6 +112,7 @@ public class ViewAttributes {
         init();
     }
 
+
     public boolean contains(String name) {
         return mAttributes.containsKey(name);
     }
@@ -264,7 +265,7 @@ public class ViewAttributes {
             case "match_parent":
                 return ViewGroup.LayoutParams.MATCH_PARENT;
             default:
-                return Dimensions.parseToPixel(dim, mView.getResources().getDisplayMetrics(), (ViewGroup) mView.getParent(), true);
+                return Dimensions.parseToPixel(dim, mView, (ViewGroup) mView.getParent(), true);
         }
     }
 

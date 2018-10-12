@@ -3,11 +3,13 @@ package com.stardust.autojs.core.console;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.WindowManager;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.annotation.ScriptInterface;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.AbstractConsole;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
@@ -118,11 +120,12 @@ public class StardustConsole extends AbstractConsole {
         return mLogs;
     }
 
-    public void printStackTrace(Throwable t) {
-        StringWriter out = new StringWriter();
-        PrintWriter printWriter = new PrintWriter(out);
-        t.printStackTrace(printWriter);
-        println(android.util.Log.ERROR, t.toString());
+    public void printAllStackTrace(Throwable t) {
+        println(android.util.Log.ERROR, ScriptRuntime.getStackTrace(t, true));
+    }
+
+    public String getStackTrace(Throwable t) {
+        return ScriptRuntime.getStackTrace(t, false);
     }
 
     @Override
@@ -270,5 +273,21 @@ public class StardustConsole extends AbstractConsole {
     @Override
     public void setTitle(CharSequence title) {
         mConsoleFloaty.setTitle(title);
+    }
+
+    @Override
+    public void error(@Nullable Object data, Object... options) {
+        if (data instanceof Throwable) {
+            data = getStackTrace((Throwable) data);
+        }
+        if (options != null && options.length > 0) {
+            for (int i = 0; i < options.length; i++) {
+                Object option = options[i];
+                if (option instanceof Throwable) {
+                    options[i] = getStackTrace((Throwable) option);
+                }
+            }
+        }
+        super.error(data, options);
     }
 }

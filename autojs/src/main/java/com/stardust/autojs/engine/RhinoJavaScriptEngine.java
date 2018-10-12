@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.BuildConfig;
+import com.stardust.autojs.core.ui.ViewExtras;
 import com.stardust.autojs.core.ui.nativeview.NativeView;
 import com.stardust.autojs.rhino.AndroidContextFactory;
 import com.stardust.autojs.rhino.RhinoAndroidHelper;
@@ -189,7 +190,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         @Override
         public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, Class<?> staticType) {
             if (javaObject instanceof View) {
-                return NativeView.fromView(scope, (View) javaObject, staticType, getRuntime());
+                return ViewExtras.getNativeView(scope, (View) javaObject, staticType, getRuntime());
             }
             return super.wrapAsJavaObject(cx, scope, javaObject, staticType);
         }

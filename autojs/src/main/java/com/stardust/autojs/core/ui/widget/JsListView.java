@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.stardust.autojs.R;
+import com.stardust.autojs.core.ui.ViewExtras;
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
 import com.stardust.autojs.core.ui.nativeview.NativeView;
 import com.stardust.autojs.core.ui.nativeview.ViewPrototype;
@@ -126,7 +127,7 @@ public class JsListView extends RecyclerView {
                 int pos = getAdapterPosition();
                 return mOnItemTouchListener.onItemLongClick(JsListView.this, itemView, mDataSourceAdapter.getItem(mDataSource, pos), pos);
             });
-            NativeView nativeView = NativeView.fromView(JsListView.this);
+            NativeView nativeView = ViewExtras.getNativeView(JsListView.this);
             if (nativeView != null) {
                 ViewPrototype prototype = nativeView.getViewPrototype();
                 prototype.emit("item_bind", itemView, new ItemHolder(this));

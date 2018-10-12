@@ -65,7 +65,7 @@ public class SplashActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     Toast.makeText(SplashActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     startActivity(new Intent(SplashActivity.this, LogActivity.class));
-                    AutoJs.getInstance().getGlobalConsole().printStackTrace(e);
+                    AutoJs.getInstance().getGlobalConsole().printAllStackTrace(e);
                 });
             }
         }).start();

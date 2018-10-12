@@ -30,12 +30,12 @@ public class Dimensions {
 
     private static final Pattern DIMENSION_PATTERN = Pattern.compile("([+-]?[0-9.]+)([a-zA-Z]*)");
 
-    public static int parseToPixel(String dimension, DisplayMetrics metrics, ViewGroup parent, boolean horizontal) {
-        if (dimension.endsWith("%")) {
+    public static int parseToPixel(String dimension, View view, ViewGroup parent, boolean horizontal) {
+        if (dimension.endsWith("%") && parent != null) {
             float pct = Float.parseFloat(dimension.substring(0, dimension.length() - 1)) / 100.0f;
             return (int) (pct * (horizontal ? parent.getMeasuredWidth() : parent.getMeasuredHeight()));
         }
-        return parseToIntPixel(dimension, parent.getContext());
+        return parseToIntPixel(dimension, view.getContext());
     }
 
     public static float parseToPixel(String dimension, View view) {
@@ -59,7 +59,7 @@ public class Dimensions {
         if (!m.matches()) {
             throw new InflateException("dimension cannot be resolved: " + dimension);
         }
-        int unit = m.groupCount() == 2 ? UNITS.getOr(m.group(2), TypedValue.COMPLEX_UNIT_DIP) : TypedValue.COMPLEX_UNIT_DIP;
+        int unit = m.groupCount() == 2 ? UNITS.get(m.group(2), TypedValue.COMPLEX_UNIT_DIP) : TypedValue.COMPLEX_UNIT_DIP;
         float value = Integer.valueOf(m.group(1));
         return TypedValue.applyDimension(unit, value, context.getResources().getDisplayMetrics());
     }

@@ -5,6 +5,7 @@ import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -13,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 
+import com.stardust.autojs.core.ui.ViewExtras;
+import com.stardust.autojs.core.ui.attribute.ViewAttributes;
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
 import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.ViewInflater;
@@ -37,6 +40,7 @@ import java.util.Map;
 
 public class BaseViewInflater<V extends View> implements ViewInflater<V> {
 
+    private static final String LOG_TAG = "BaseViewInflater";
 
     public static final ValueMapper<PorterDuff.Mode> TINT_MODES = new ValueMapper<PorterDuff.Mode>("tintMode")
             .map("add", PorterDuff.Mode.ADD)
@@ -106,9 +110,19 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
         return mResourceParser.getDrawables();
     }
 
+    public ResourceParser getResourceParser() {
+        return mResourceParser;
+    }
 
     @Override
     public boolean setAttr(V view, String attr, String value, ViewGroup parent, Map<String, String> attrs) {
+        ViewAttributes viewAttributes = ViewExtras.getViewAttributes(view, getResourceParser());
+        ViewAttributes.Attribute attribute = viewAttributes.get(attr);
+        if (attribute != null) {
+            attribute.set(value);
+            return true;
+        }
+        Log.d(LOG_TAG, "setAttr cannot use ViewAttributes: attr = " + attr);
         Integer layoutRule = null;
         boolean layoutTarget = false;
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
@@ -129,7 +143,7 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
                         layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                         break;
                     default:
-                        layoutParams.width = Dimensions.parseToPixel(value, view.getResources().getDisplayMetrics(), parent, true);
+                        layoutParams.width = Dimensions.parseToPixel(value, view, parent, true);
                         break;
                 }
                 break;
@@ -144,7 +158,7 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
                         layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
                         break;
                     default:
-                        layoutParams.height = Dimensions.parseToPixel(value, view.getResources().getDisplayMetrics(), parent, false);
+                        layoutParams.height = Dimensions.parseToPixel(value, view, parent, false);
                         break;
                 }
                 break;

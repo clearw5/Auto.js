@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.ui.JsViewHelper;
+import com.stardust.autojs.core.ui.ViewExtras;
 import com.stardust.autojs.core.ui.attribute.ViewAttributes;
 import com.stardust.autojs.rhino.NativeJavaObjectWithPrototype;
 
@@ -42,31 +43,12 @@ public class NativeView extends NativeJavaObjectWithPrototype {
     private final View mView;
     private final ViewPrototype mViewPrototype;
 
-    public NativeView(Scriptable scope, View javaObject, Class<?> staticType, com.stardust.autojs.runtime.ScriptRuntime runtime) {
-        super(scope, javaObject, staticType);
-        mViewAttributes = new ViewAttributes(runtime.ui.getResourceParser(), javaObject);
-        mView = javaObject;
+    public NativeView(Scriptable scope, View view, Class<?> staticType, com.stardust.autojs.runtime.ScriptRuntime runtime) {
+        super(scope, view, staticType);
+        mViewAttributes = ViewExtras.getViewAttributes(view, runtime.ui.getResourceParser());
+        mView = view;
         mViewPrototype = new ViewPrototype(mView, scope, runtime);
         prototype = new NativeJavaObject(scope, mViewPrototype, mViewPrototype.getClass());
-    }
-
-    public static NativeView fromView(Scriptable scope, View view, Class<?> staticType, com.stardust.autojs.runtime.ScriptRuntime runtime) {
-        Object tag = view.getTag(R.id.view_tag_native_view);
-        if (tag instanceof NativeView) {
-            return (NativeView) tag;
-        } else {
-            NativeView nativeView = new NativeView(scope, view, staticType, runtime);
-            view.setTag(R.id.view_tag_native_view, nativeView);
-            return nativeView;
-        }
-    }
-
-    public static NativeView fromView(View view) {
-        Object tag = view.getTag(R.id.view_tag_native_view);
-        if (tag instanceof NativeView)
-            return (NativeView) tag;
-        else
-            return null;
     }
 
     @Override

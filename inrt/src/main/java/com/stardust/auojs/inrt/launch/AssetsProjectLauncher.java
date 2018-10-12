@@ -77,7 +77,7 @@ public class AssetsProjectLauncher {
             mScriptExecution = AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
                     .executePath(mProjectDir));
         } catch (Exception e) {
-            AutoJs.getInstance().getGlobalConsole().error(ScriptEngineService.getScriptTrace(e));
+            AutoJs.getInstance().getGlobalConsole().error(e);
         }
     }
 
