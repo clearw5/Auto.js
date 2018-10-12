@@ -42,6 +42,7 @@ import org.autojs.autojs.ui.viewmodel.ExplorerItemList;
 import org.autojs.autojs.ui.widget.BindableViewHolder;
 import org.autojs.autojs.theme.widget.ThemeColorSwipeRefreshLayout;
 
+import org.autojs.autojs.workground.WrapContentGridLayoutManger;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Stack;
@@ -194,7 +195,8 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
     private void initExplorerItemListView() {
         mExplorerItemListView.setAdapter(mExplorerAdapter);
-        GridLayoutManager manager = new GridLayoutManager(getContext(), 2);
+        WrapContentGridLayoutManger manager = new WrapContentGridLayoutManger(getContext(), 2);
+        manager.setDebugInfo("ExplorerView");
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -311,7 +313,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
                 sort(ExplorerItemList.SORT_TYPE_SIZE, mDirSortMenuShowing);
                 break;
             case R.id.reset:
-               // WorkspaceFileProvider.resetSample(mSelectedItem.toScriptFile());
+                // WorkspaceFileProvider.resetSample(mSelectedItem.toScriptFile());
             default:
                 return false;
         }
@@ -494,7 +496,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
             if (!mExplorerItem.canRename()) {
                 menu.removeItem(R.id.rename);
             }
-            if(mExplorerItem instanceof ExplorerSampleItem){
+            if (mExplorerItem instanceof ExplorerSampleItem) {
 
             }
             popupMenu.setOnMenuItemClickListener(ExplorerView.this);

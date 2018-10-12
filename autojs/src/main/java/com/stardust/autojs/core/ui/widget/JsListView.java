@@ -54,6 +54,9 @@ public class JsListView extends RecyclerView {
         setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
     }
 
+    protected ScriptRuntime getScriptRuntime() {
+        return mScriptRuntime;
+    }
 
     public void setOnItemTouchListener(OnItemTouchListener onItemTouchListener) {
         mOnItemTouchListener = onItemTouchListener;
