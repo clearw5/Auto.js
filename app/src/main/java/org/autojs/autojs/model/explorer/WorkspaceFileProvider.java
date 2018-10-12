@@ -8,7 +8,7 @@ import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
 
 import org.autojs.autojs.Pref;
-import org.autojs.autojs.model.sample.SampleFile;
+import org.autojs.autojs.model.script.ScriptFile;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import io.reactivex.Observable;
+import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
@@ -99,8 +100,18 @@ public class WorkspaceFileProvider extends ExplorerFileProvider {
                 });
     }
 
-    public static void resetSample(SampleFile sampleFile){
-
+    public Observable<ScriptFile> resetSample(ScriptFile file) {
+        if (file.getPath().length() <= mSampleDir.getPath().length() + 1) {
+            return null;
+        }
+        String pathOfSample = file.getPath().substring(mSampleDir.getPath().length());
+        String pathOfAsset = SAMPLE_PATH + pathOfSample;
+        return Observable.fromCallable(() -> {
+            InputStream stream = mAssetManager.open(pathOfAsset);
+            PFiles.copyStream(stream, file.getPath());
+            return file;
+        })
+                .subscribeOn(Schedulers.io());
     }
 
     @Override

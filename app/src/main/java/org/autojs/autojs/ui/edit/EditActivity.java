@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.autojs.core.permission.OnRequestPermissionsResultCallback;
@@ -21,7 +20,7 @@ import com.stardust.pio.PFiles;
 
 import org.autojs.autojs.R;
 import org.autojs.autojs.storage.file.TmpScriptFiles;
-import org.autojs.autojs.tool.EmptyObservers;
+import org.autojs.autojs.tool.Observers;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 
@@ -82,7 +81,7 @@ EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHo
     void setUpViews() {
         mEditorView.handleIntent(getIntent())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(EmptyObservers.consumer(),
+                .subscribe(Observers.consumer(),
                         ex -> onLoadFileError(ex.getMessage()));
         mEditorMenu = new EditorMenu(mEditorView);
         setUpToolbar();

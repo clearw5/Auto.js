@@ -22,6 +22,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.engine.JavaScriptEngine;
@@ -45,6 +46,7 @@ import org.autojs.autojs.model.autocomplete.Symbols;
 import org.autojs.autojs.model.indices.Module;
 import org.autojs.autojs.model.indices.Property;
 import org.autojs.autojs.model.script.Scripts;
+import org.autojs.autojs.tool.Observers;
 import org.autojs.autojs.ui.doc.ManualDialog;
 import org.autojs.autojs.ui.edit.completion.CodeCompletionBar;
 import org.autojs.autojs.ui.edit.debug.DebugBar;
@@ -384,7 +386,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     @SuppressLint("CheckResult")
     public void runAndSaveFileIfNeeded() {
         save().observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> run(true));
+                .subscribe(s -> run(true), Observers.toastMessage());
     }
 
     public ScriptExecution run(boolean showMessage) {
@@ -434,8 +436,14 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         }
     }
 
+    @SuppressLint("CheckResult")
     public void saveFile() {
-        save().subscribe();
+        save()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(Observers.consumer(), e -> {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
     void findNext() {

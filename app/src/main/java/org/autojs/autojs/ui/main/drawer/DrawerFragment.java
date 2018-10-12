@@ -26,7 +26,7 @@ import org.autojs.autojs.R;
 import org.autojs.autojs.external.foreground.ForegroundService;
 import org.autojs.autojs.network.GlideApp;
 import org.autojs.autojs.network.UserService;
-import org.autojs.autojs.tool.EmptyObservers;
+import org.autojs.autojs.tool.Observers;
 import org.autojs.autojs.ui.common.NotAskAgainDialog;
 import org.autojs.autojs.ui.floating.CircularMenu;
 import org.autojs.autojs.ui.floating.FloatyWindowManger;
@@ -279,7 +279,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 .input("", host, (dialog, input) -> {
                     Pref.saveServerAddress(input.toString());
                     DevPluginService.getInstance().connectToServer(input.toString())
-                            .subscribe(EmptyObservers.consumer(), this::onConnectException);
+                            .subscribe(Observers.consumer(), this::onConnectException);
                 })
                 .neutralText(R.string.text_help)
                 .onNeutral((dialog, which) -> {

@@ -134,7 +134,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     private void checkPermissions() {
-        checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     private void showAccessibilitySettingPromptIfDisabled() {

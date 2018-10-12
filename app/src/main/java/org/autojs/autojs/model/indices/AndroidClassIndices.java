@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.autojs.autojs.tool.EmptyObservers;
+import org.autojs.autojs.tool.Observers;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -101,7 +101,7 @@ public class AndroidClassIndices {
                 .doOnNext(this::load)
                 .subscribeOn(Schedulers.from(mSingleThreadExecutor))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(EmptyObservers.consumer(), t -> {
+                .subscribe(Observers.consumer(), t -> {
                     mLoadThrowable = t;
                     t.printStackTrace();
                 });

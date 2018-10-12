@@ -11,7 +11,7 @@ import org.autojs.autojs.App;
 import org.autojs.autojs.storage.database.IntentTaskDatabase;
 import org.autojs.autojs.storage.database.ModelChange;
 import org.autojs.autojs.storage.database.TimedTaskDatabase;
-import org.autojs.autojs.tool.EmptyObservers;
+import org.autojs.autojs.tool.Observers;
 
 import java.util.List;
 
@@ -58,11 +58,11 @@ public class TimedTaskManager {
             return;
         if (task.isDisposable()) {
             mTimedTaskDatabase.delete(task)
-                    .subscribe(EmptyObservers.consumer(), Throwable::printStackTrace);
+                    .subscribe(Observers.consumer(), Throwable::printStackTrace);
         } else {
             task.setScheduled(false);
             mTimedTaskDatabase.update(task)
-                    .subscribe(EmptyObservers.consumer(), Throwable::printStackTrace);
+                    .subscribe(Observers.consumer(), Throwable::printStackTrace);
         }
     }
 
@@ -70,13 +70,13 @@ public class TimedTaskManager {
     public void removeTask(TimedTask timedTask) {
         TimedTaskScheduler.cancel(mContext, timedTask);
         mTimedTaskDatabase.delete(timedTask)
-                .subscribe(EmptyObservers.consumer(), Throwable::printStackTrace);
+                .subscribe(Observers.consumer(), Throwable::printStackTrace);
     }
 
     @SuppressLint("CheckResult")
     public void addTask(TimedTask timedTask) {
         mTimedTaskDatabase.insert(timedTask)
-                .subscribe(EmptyObservers.consumer(), Throwable::printStackTrace);;
+                .subscribe(Observers.consumer(), Throwable::printStackTrace);;
         TimedTaskScheduler.scheduleTaskIfNeeded(mContext, timedTask);
     }
 
@@ -119,7 +119,7 @@ public class TimedTaskManager {
     public void notifyTaskScheduled(TimedTask timedTask) {
         timedTask.setScheduled(true);
         mTimedTaskDatabase.update(timedTask)
-                .subscribe(EmptyObservers.consumer(), Throwable::printStackTrace);
+                .subscribe(Observers.consumer(), Throwable::printStackTrace);
 
     }
 
@@ -134,7 +134,7 @@ public class TimedTaskManager {
     @SuppressLint("CheckResult")
     public void updateTask(TimedTask task) {
         mTimedTaskDatabase.update(task)
-                .subscribe(EmptyObservers.consumer(), Throwable::printStackTrace);
+                .subscribe(Observers.consumer(), Throwable::printStackTrace);
         TimedTaskScheduler.cancel(mContext, task);
         TimedTaskScheduler.scheduleTaskIfNeeded(mContext, task);
     }

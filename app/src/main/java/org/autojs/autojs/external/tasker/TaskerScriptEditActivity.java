@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import org.autojs.autojs.R;
 import org.autojs.autojs.timing.TaskReceiver;
-import org.autojs.autojs.tool.EmptyObservers;
+import org.autojs.autojs.tool.Observers;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.edit.EditorView;
 
@@ -16,8 +16,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
 
 import static org.autojs.autojs.ui.edit.EditorView.EXTRA_CONTENT;
 import static org.autojs.autojs.ui.edit.EditorView.EXTRA_NAME;
@@ -50,7 +48,7 @@ public class TaskerScriptEditActivity extends BaseActivity {
                 .putExtra(EXTRA_RUN_ENABLED, false)
                 .putExtra(EXTRA_SAVE_ENABLED, false))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(EmptyObservers.consumer(),
+                .subscribe(Observers.consumer(),
                         ex -> {
                             Toast.makeText(TaskerScriptEditActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
                             finish();

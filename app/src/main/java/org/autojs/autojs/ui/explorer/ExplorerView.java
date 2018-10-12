@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +35,7 @@ import org.autojs.autojs.model.explorer.WorkspaceFileProvider;
 import org.autojs.autojs.model.sample.SampleFile;
 import org.autojs.autojs.model.script.ScriptFile;
 import org.autojs.autojs.model.script.Scripts;
+import org.autojs.autojs.tool.Observers;
 import org.autojs.autojs.ui.project.BuildActivity;
 import org.autojs.autojs.ui.project.BuildActivity_;
 import org.autojs.autojs.ui.common.ScriptLoopDialog;
@@ -313,7 +315,12 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
                 sort(ExplorerItemList.SORT_TYPE_SIZE, mDirSortMenuShowing);
                 break;
             case R.id.reset:
-                // WorkspaceFileProvider.resetSample(mSelectedItem.toScriptFile());
+                Explorers.Providers.workspace().resetSample(mSelectedItem.toScriptFile())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(ignored -> {
+                            Snackbar.make(this, R.string.text_reset_succeed, Snackbar.LENGTH_SHORT).show();
+                        }, Observers.toastMessage());
+                break;
             default:
                 return false;
         }
@@ -496,8 +503,8 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
             if (!mExplorerItem.canRename()) {
                 menu.removeItem(R.id.rename);
             }
-            if (mExplorerItem instanceof ExplorerSampleItem) {
-
+            if (!(mExplorerItem instanceof ExplorerSampleItem)) {
+                menu.removeItem(R.id.reset);
             }
             popupMenu.setOnMenuItemClickListener(ExplorerView.this);
             popupMenu.show();
