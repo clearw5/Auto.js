@@ -42,6 +42,10 @@ public class Dimensions {
         return parseToPixel(dimension, view.getContext());
     }
 
+    public static float parseToPixel(View view, String dimension) {
+        return parseToPixel(dimension, view.getContext());
+    }
+
     public static float parseToPixel(String dimension, Context context) {
         if (dimension.startsWith("?")) {
             int[] attr = {context.getResources().getIdentifier(dimension.substring(1), "attr",

@@ -38,7 +38,7 @@ import java.util.Map;
 public class BaseViewInflater<V extends View> implements ViewInflater<V> {
 
 
-    protected static final ValueMapper<PorterDuff.Mode> TINT_MODES = new ValueMapper<PorterDuff.Mode>("tintMode")
+    public static final ValueMapper<PorterDuff.Mode> TINT_MODES = new ValueMapper<PorterDuff.Mode>("tintMode")
             .map("add", PorterDuff.Mode.ADD)
             .map("multiply", PorterDuff.Mode.MULTIPLY)
             .map("screen", PorterDuff.Mode.SCREEN)
@@ -46,27 +46,27 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
             .map("src_in", PorterDuff.Mode.SRC_IN)
             .map("src_over", PorterDuff.Mode.SRC_OVER);
 
-    private static final ValueMapper<Integer> DRAWABLE_CACHE_QUALITIES = new ValueMapper<Integer>("drawingCacheQuality")
+    public static final ValueMapper<Integer> DRAWABLE_CACHE_QUALITIES = new ValueMapper<Integer>("drawingCacheQuality")
             .map("auto", View.DRAWING_CACHE_QUALITY_AUTO)
             .map("high", View.DRAWING_CACHE_QUALITY_HIGH)
             .map("low", View.DRAWING_CACHE_QUALITY_LOW);
 
-    private static final ValueMapper<Integer> IMPORTANT_FOR_ACCESSIBILITY = new ValueMapper<Integer>("importantForAccessibility")
+    public static final ValueMapper<Integer> IMPORTANT_FOR_ACCESSIBILITY = new ValueMapper<Integer>("importantForAccessibility")
             .map("auto", 0) //View.IMPORTANT_FOR_ACCESSIBILITY_AUTO)
             .map("no", 2) //View.IMPORTANT_FOR_ACCESSIBILITY_NO)
             .map("noHideDescendants", 4) //View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS)
             .map("yes", 1); //View.IMPORTANT_FOR_ACCESSIBILITY_YES);
-    private static final ValueMapper<Integer> LAYOUT_DIRECTIONS = new ValueMapper<Integer>("layoutDirection")
+    public static final ValueMapper<Integer> LAYOUT_DIRECTIONS = new ValueMapper<Integer>("layoutDirection")
             .map("inherit", 2)
             .map("locale", 3)
             .map("ltr", 0)
             .map("rtl", 1);
-    private static final ValueMapper<Integer> SCROLLBARS_STYLES = new ValueMapper<Integer>("scrollbarStyle")
+    public static final ValueMapper<Integer> SCROLLBARS_STYLES = new ValueMapper<Integer>("scrollbarStyle")
             .map("insideInset", View.SCROLLBARS_INSIDE_INSET)
             .map("insideOverlay", View.SCROLLBARS_INSIDE_OVERLAY)
             .map("outsideInset", View.SCROLLBARS_OUTSIDE_INSET)
             .map("outsideOverlay", View.SCROLLBARS_OUTSIDE_OVERLAY);
-    private static final ValueMapper<Integer> SCROLL_INDICATORS = new ValueMapper<Integer>("scrollIndicators")
+    public static final ValueMapper<Integer> SCROLL_INDICATORS = new ValueMapper<Integer>("scrollIndicators")
             .map("bottom", 2) //View.SCROLL_INDICATOR_BOTTOM)
             .map("end", 20) //View.SCROLL_INDICATOR_END)
             .map("left", 4) //View.SCROLL_INDICATOR_LEFT)
@@ -74,11 +74,11 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
             .map("right", 8) //View.SCROLL_INDICATOR_RIGHT)
             .map("start", 10) //View.SCROLL_INDICATOR_START)
             .map("top", 1); //View.SCROLL_INDICATOR_TOP)
-    private static final ValueMapper<Integer> VISIBILITY = new ValueMapper<Integer>("visibility")
+    public static final ValueMapper<Integer> VISIBILITY = new ValueMapper<Integer>("visibility")
             .map("visible", View.VISIBLE)
             .map("invisible", View.INVISIBLE)
             .map("gone", View.GONE);
-    private static final ValueMapper<Integer> TEXT_DIRECTIONS = new ValueMapper<Integer>("textDirection")
+    public static final ValueMapper<Integer> TEXT_DIRECTIONS = new ValueMapper<Integer>("textDirection")
             .map("anyRtl", 2)
             .map("firstStrong", 1)
             .map("firstStrongLtr", 6)
@@ -87,7 +87,7 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
             .map("locale", 5)
             .map("ltr", 3)
             .map("rtl", 4);
-    private static final ValueMapper<Integer> TEXT_ALIGNMENTS = new ValueMapper<Integer>("textAlignment")
+    public static final ValueMapper<Integer> TEXT_ALIGNMENTS = new ValueMapper<Integer>("textAlignment")
             .map("center", 4)
             .map("gravity", 1)
             .map("inherit", 0)
@@ -451,7 +451,7 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
                 }
                 break;
             case "requiresFadingEdge":
-                for (String str : value.split("|")) {
+                for (String str : value.split("\\|")) {
                     if (str.equals("horizontal")) {
                         view.setHorizontalFadingEdgeEnabled(true);
                     } else if (str.equals("vertical")) {
@@ -472,10 +472,10 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
                 view.setSaveEnabled(Boolean.valueOf(value));
                 break;
             case "scaleX":
-                view.setScaleX(Dimensions.parseToPixel(value, view));
+                view.setScaleX(Float.parseFloat(value));
                 break;
             case "scaleY":
-                view.setScaleY(Dimensions.parseToPixel(value, view));
+                view.setScaleY(Float.parseFloat(value));
                 break;
             case "scrollIndicators":
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

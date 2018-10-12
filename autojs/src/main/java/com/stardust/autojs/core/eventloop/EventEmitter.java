@@ -145,7 +145,7 @@ public class EventEmitter {
     }
 
     public String[] eventNames() {
-        return mListenersMap.keySet().toArray(new String[mListenersMap.size()]);
+        return mListenersMap.keySet().toArray(new String[0]);
     }
 
     public int listenerCount(String eventName) {

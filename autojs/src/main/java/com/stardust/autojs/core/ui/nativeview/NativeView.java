@@ -79,10 +79,13 @@ public class NativeView extends NativeJavaObjectWithPrototype {
 
     @Override
     public void put(String name, Scriptable start, Object value) {
-        ViewAttributes.Attribute attribute = mViewAttributes.get(name);
-        if (attribute != null) {
-            attribute.set(ScriptRuntime.toString(value));
-            return;
+        if (value != null && (value instanceof CharSequence ||
+                value.getClass().getName().equals("org.mozilla.javascript.NativeString"))) {
+            ViewAttributes.Attribute attribute = mViewAttributes.get(name);
+            if (attribute != null) {
+                attribute.set(ScriptRuntime.toString(value));
+                return;
+            }
         }
         super.put(name, start, value);
     }
