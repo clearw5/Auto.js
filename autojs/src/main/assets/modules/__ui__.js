@@ -4,10 +4,7 @@ module.exports = function (runtime, global) {
     require("array-observe.min")();
 
     var J = util.java;
-
-
     var ui = {};
-    ui.__view_cache__ = {};
 
     ui.__defineGetter__("emitter", ()=>  activity ? activity.getEventEmitter() : null);
 
@@ -34,7 +31,6 @@ module.exports = function (runtime, global) {
 
     ui.setContentView = function (view) {
         ui.view = view;
-        ui.__view_cache__ = {};
         ui.run(function () {
             activity.setContentView(view);
         });
@@ -43,15 +39,11 @@ module.exports = function (runtime, global) {
     ui.findById = function (id) {
         if (!ui.view)
             return null;
-        var v = ui.findByStringId(ui.view, id);
-        if (v) {
-            v = decorate(v);
-        }
-        return v;
+        return ui.findByStringId(ui.view, id);
     }
 
     ui.isUiThread = function () {
-        importClass(android.os.Looper);
+        let Looper = android.os.Looper;
         return Looper.myLooper() == Looper.getMainLooper();
     }
 
@@ -192,110 +184,7 @@ module.exports = function (runtime, global) {
                 }).call(ctx);
             }
         });
-
     }
-
-    function decorate(view) {
-        return view;
-        var javaObject = view;
-        var view = global.events.__asEmitter__(Object.create(view));
-        view.__javaObject__ = javaObject;
-        if (view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsListView"
-            || view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsGridView") {
-            view = decorateList(view);
-        }
-        var gestureDetector = new android.view.GestureDetector(context, {
-            onDown: function (e) {
-                e = wrapMotionEvent(e);
-                emit("touch_down", e, view);
-                return e.consumed;
-            },
-            onShowPress: function (e) {
-                e = wrapMotionEvent(e);
-                emit("show_press", e, view);
-            },
-            onSingleTapUp: function (e) {
-                e = wrapMotionEvent(e);
-                emit("single_tap", e, view);
-                return e.consumed;
-            },
-            onScroll: function (e1, e2, distanceX, distanceY) {
-                e1 = wrapMotionEvent(e1);
-                e2 = wrapMotionEvent(e2);
-                emit("scroll", e1, e2, distanceX, distanceY, view);
-                return e1.consumed || e2.consumed;
-            },
-            onLongPress: function (e) {
-                e = wrapMotionEvent(e);
-                emit("long_press", e, view);
-            },
-            onFling: function (e1, e2, velocityX, velocityY) {
-                e1 = wrapMotionEvent(e1);
-                e2 = wrapMotionEvent(e2);
-                emit("fling", e1, e2, velocityX, velocityY, view);
-                return e1.consumed || e2.consumed;
-            }
-        });
-        view.setOnTouchListener(function (v, event) {
-            if (gestureDetector.onTouchEvent(event)) {
-                return true;
-            }
-            event = wrapMotionEvent(event);
-            event.consumed = false;
-            emit("touch", event, view);
-            return event.consumed;
-        });
-        if(!J.instanceOf(view, "android.widget.AdapterView")){
-            view.setOnLongClickListener(function (v) {
-                var event = {};
-                event.consumed = false;
-                emit("long_click", event, view);
-                return event.consumed;
-            });
-            view.setOnClickListener(function (v) {
-                emit("click", view);
-            });
-        }
-
-        view.setOnKeyListener(function (v, keyCode, event) {
-            event = wrapMotionEvent(event);
-            emit("key", keyCode, event, v);
-            return event.consumed;
-        });
-        if (typeof (view.setOnCheckedChangeListener) == 'function') {
-            view.setOnCheckedChangeListener(function (v, isChecked) {
-                emit("check", isChecked == true ? true : false, view);
-            });
-        }
-        view._id = function (id) {
-            return ui.findByStringId(view, id);
-        }
-        view.click = function (listener) {
-            if (listener) {
-                view.setOnClickListener(new android.view.View.OnClickListener(wrapUiAction(listener)));
-            } else {
-                view.performClick();
-            }
-        }
-        view.longClick = function (listener) {
-            if (listener) {
-                view.setOnLongClickListener(wrapUiAction(listener, false));
-            } else {
-                view.performLongClick();
-            }
-        }
-        function emit() {
-            var args = arguments;
-            global.__exitIfError__(function () {
-                //不支持使用apply的原因是rhino会把参数中的primitive变成object
-                functionApply(view, view.emit, args);
-                //view.emit.apply(view, args);
-            });
-        }
-        return view;
-    }
-
-
 
     function initListView(list) {
         list.setDataSourceAdapter({
@@ -327,31 +216,6 @@ module.exports = function (runtime, global) {
         });
     }
 
-    function decorateList(list) {
-        list.setOnItemTouchListener({
-            onItemClick: function(listView, itemView, item, pos){
-                emit("item_click", item, pos, itemView, listView);
-            },
-            onItemLongClick: function(listView, itemView, item, pos){
-                var event = {};
-                event.consumed = false;
-                emit("item_long_click", event, item, pos, itemView, listView);
-                return event.consumed;
-            }
-        });
-        function emit() {
-            var args = arguments;
-            global.__exitIfError__(function () {
-                //不支持使用apply的原因是rhino会把参数中的primitive变成object
-                functionApply(list, list.emit, args);
-                //view.emit.apply(view, args);
-            });
-        }
-        return list;
-    }
-
-    ui.__decorate__ = decorate;
-
     function wrapUiAction(action, defReturnValue) {
         if (typeof (activity) != 'undefined') {
             return function () { return action(); };
@@ -361,30 +225,6 @@ module.exports = function (runtime, global) {
         }
     }
 
-    function wrapMotionEvent(e) {
-        e = Object.create(e);
-        e.consumed = false;
-        return e;
-    }
-
-    function functionApply(obj, func, args) {
-        if (args.length == 0)
-            return func.call(obj);
-        if (args.length == 1)
-            return func.call(obj, args[0]);
-        if (args.length == 2)
-            return func.call(obj, args[0], args[1]);
-        if (args.length == 3)
-            return func.call(obj, args[0], args[1], args[2]);
-        if (args.length == 4)
-            return func.call(obj, args[0], args[1], args[2], args[3]);
-        if (args.length == 5)
-            return func.call(obj, args[0], args[1], args[2], args[3], args[4]);
-        if (args.length == 6)
-            return func.call(obj, args[0], args[1], args[2], args[3], args[4], args[5]);
-        throw new Error("too many arguments: " + args.length);
-    }
-
     var proxy = runtime.ui;
     proxy.__proxy__ = {
         set: function (name, value) {
@@ -392,14 +232,9 @@ module.exports = function (runtime, global) {
         },
         get: function (name) {
             if (!ui[name] && ui.view) {
-                var cache = ui.__view_cache__[name];
-                if (cache) {
-                    return cache;
-                }
-                cache = ui.findById(name);
-                if (cache) {
-                    ui.__view_cache__[name] = cache;
-                     return cache;
+                let v = ui.findById(name);
+                if (v) {
+                    return v;
                 }
             }
             return ui[name];

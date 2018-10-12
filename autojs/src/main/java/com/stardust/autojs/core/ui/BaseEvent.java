@@ -6,21 +6,21 @@ import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
 
-public class JsEvent extends NativeJavaObjectWithPrototype {
+public class BaseEvent extends NativeJavaObjectWithPrototype {
 
     private boolean mConsumed = false;
 
-    public JsEvent(Scriptable scope, Object javaObject, Class<?> staticType) {
+    public BaseEvent(Scriptable scope, Object javaObject, Class<?> staticType) {
         super(scope, javaObject, staticType);
     }
 
-    public JsEvent(Scriptable scope, Object javaObject, Class<?> staticType, boolean isAdapter) {
+    public BaseEvent(Scriptable scope, Object javaObject, Class<?> staticType, boolean isAdapter) {
         super(scope, javaObject, staticType, isAdapter);
     }
 
 
 
-    public JsEvent(Scriptable scope, Object javaObject) {
+    public BaseEvent(Scriptable scope, Object javaObject) {
         super(scope, javaObject, javaObject.getClass());
     }
 

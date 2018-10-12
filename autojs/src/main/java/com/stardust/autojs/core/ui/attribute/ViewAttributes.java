@@ -1,4 +1,4 @@
-package com.stardust.autojs.core.ui.xview;
+package com.stardust.autojs.core.ui.attribute;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
@@ -15,7 +15,6 @@ import com.stardust.autojs.core.ui.inflater.util.Dimensions;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
 import com.stardust.autojs.core.ui.inflater.util.Gravities;
 import com.stardust.autojs.core.ui.inflater.util.Ids;
-import com.stardust.autojs.core.ui.widget.NativeView;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

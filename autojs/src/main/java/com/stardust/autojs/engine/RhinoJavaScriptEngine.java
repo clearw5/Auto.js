@@ -6,10 +6,8 @@ import android.view.View;
 
 import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.BuildConfig;
-import com.stardust.autojs.core.ui.widget.NativeView;
+import com.stardust.autojs.core.ui.nativeview.NativeView;
 import com.stardust.autojs.rhino.AndroidContextFactory;
-import com.stardust.autojs.rhino.NativeJavaClassWithPrototype;
-import com.stardust.autojs.rhino.NativeJavaObjectWithPrototype;
 import com.stardust.autojs.rhino.RhinoAndroidHelper;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.JavaScriptSource;
@@ -18,13 +16,9 @@ import com.stardust.automator.UiObjectCollection;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 
-import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ImporterTopLevel;
-import org.mozilla.javascript.NativeJavaClass;
-import org.mozilla.javascript.NativeJavaObject;
-import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.RequireBuilder;
@@ -33,12 +27,9 @@ import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptPr
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -184,6 +175,8 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private class WrapFactory extends org.mozilla.javascript.WrapFactory {
 
+        private final WeakHashMap<Object, Scriptable> mWrapCache = new WeakHashMap<>();
+
         @Override
         public Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType) {
             if (obj instanceof String) {
@@ -198,7 +191,12 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         @Override
         public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, Class<?> staticType) {
             if (javaObject instanceof View) {
-                return new NativeView(scope, (View) javaObject, staticType, getRuntime());
+                Scriptable wrap = mWrapCache.get(javaObject);
+                if(wrap == null){
+                    wrap = new NativeView(scope, (View) javaObject, staticType, getRuntime());
+                    mWrapCache.put(javaObject, wrap);
+                }
+                return wrap;
             }
             return super.wrapAsJavaObject(cx, scope, javaObject, staticType);
         }

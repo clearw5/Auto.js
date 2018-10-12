@@ -196,6 +196,7 @@ module = (typeof module === 'undefined') ? {} : module;
   Require.extensions = {};
   require = Require;
 
+  Module.require = require;
   module.exports = Module;
 
   function loadJSON (file) {

@@ -1,6 +1,5 @@
 package com.stardust.autojs.rhino;
 
-import org.mozilla.javascript.JavaMembers;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.Scriptable;
 
@@ -26,7 +25,6 @@ public class BindingNativeJavaObject extends NativeJavaObject {
             dynamicType = this.staticType;
         }
 
-        this.members.
 
     }
 }
