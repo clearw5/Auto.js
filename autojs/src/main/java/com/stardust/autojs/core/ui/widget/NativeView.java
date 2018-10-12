@@ -20,6 +20,7 @@ import com.stardust.autojs.core.ui.inflater.util.Gravities;
 import com.stardust.autojs.core.ui.inflater.util.Ids;
 import com.stardust.autojs.rhino.NativeJavaObjectWithPrototype;
 
+import org.mozilla.javascript.NativeJavaMethod;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
