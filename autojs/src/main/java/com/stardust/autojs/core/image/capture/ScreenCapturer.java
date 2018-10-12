@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.view.OrientationEventListener;
 
 import com.stardust.autojs.runtime.exception.ScriptException;
@@ -34,7 +35,7 @@ public class ScreenCapturer {
     private final Object mCachedImageLock = new Object();
     private final MediaProjectionManager mProjectionManager;
     private ImageReader mImageReader;
-    private final MediaProjection mMediaProjection;
+    private MediaProjection mMediaProjection;
     private VirtualDisplay mVirtualDisplay;
     private volatile Looper mImageAcquireLooper;
     private volatile Image mUnderUsingImage;
@@ -55,7 +56,7 @@ public class ScreenCapturer {
         mScreenDensity = screenDensity;
         mHandler = handler;
         mProjectionManager = (MediaProjectionManager) context.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-        mMediaProjection = mProjectionManager.getMediaProjection(Activity.RESULT_OK, mData);
+        mMediaProjection = mProjectionManager.getMediaProjection(Activity.RESULT_OK, (Intent) mData.clone());
         mHandler = handler;
         setOrientation(orientation);
         observeOrientation();
@@ -88,6 +89,9 @@ public class ScreenCapturer {
 
 
     private void refreshVirtualDisplay(int orientation) {
+        if (mImageAcquireLooper != null) {
+            mImageAcquireLooper.quit();
+        }
         if (mImageReader != null) {
             mImageReader.close();
         }
@@ -95,6 +99,10 @@ public class ScreenCapturer {
             mVirtualDisplay.release();
         }
         mImageAvailable = false;
+        if (mMediaProjection != null) {
+            mMediaProjection.stop();
+        }
+        mMediaProjection = mProjectionManager.getMediaProjection(Activity.RESULT_OK, (Intent) mData.clone());
         int screenHeight = ScreenMetrics.getOrientationAwareScreenHeight(orientation);
         int screenWidth = ScreenMetrics.getOrientationAwareScreenWidth(orientation);
         initVirtualDisplay(screenWidth, screenHeight, mScreenDensity);
@@ -114,10 +122,12 @@ public class ScreenCapturer {
             return;
         }
         new Thread(() -> {
+            Log.d(LOG_TAG, "AcquireImageLoop: start");
             Looper.prepare();
             mImageAcquireLooper = Looper.myLooper();
             setImageListener(new Handler());
             Looper.loop();
+            Log.d(LOG_TAG, "AcquireImageLoop: stop");
         }).start();
     }
 
@@ -188,6 +198,7 @@ public class ScreenCapturer {
         }
         if (mMediaProjection != null) {
             mMediaProjection.stop();
+            mMediaProjection = null;
         }
         if (mVirtualDisplay != null) {
             mVirtualDisplay.release();

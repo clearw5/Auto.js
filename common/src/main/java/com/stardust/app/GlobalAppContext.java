@@ -20,8 +20,6 @@ public class GlobalAppContext {
     private static Handler sHandler;
 
     public static void set(Application a) {
-        if (sApplicationContext != null)
-            throw new IllegalStateException();
         sHandler = new Handler(Looper.getMainLooper());
         sApplicationContext = a.getApplicationContext();
     }
