@@ -14,7 +14,6 @@ import com.stardust.app.OperationDialogBuilder;
 import com.stardust.autojs.core.record.Recorder;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.FloatyWindow;
-import com.stardust.floatingcircularactionmenu.CircularActionMenu;
 
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;

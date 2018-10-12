@@ -122,7 +122,7 @@ public class Floaty {
         }
 
         public View findView(String id) {
-            return JsViewHelper.findViewByStringId(mWindow.getWindowContent(), id);
+            return JsViewHelper.findViewByStringId(mWindow.getContentView(), id);
         }
 
         public int getX() {

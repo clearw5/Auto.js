@@ -18,6 +18,15 @@ public class JsGridView extends JsListView {
     @Override
     protected void init() {
         super.init();
-        setLayoutManager(new GridLayoutManager(getContext(), 1));
+        setLayoutManager(new GridLayoutManager(getContext(), 1){
+            @Override
+            public void onLayoutChildren(Recycler recycler, State state) {
+                try {
+                    super.onLayoutChildren(recycler, state);
+                } catch (IndexOutOfBoundsException e) {
+                    getScriptRuntime().console.error(e);
+                }
+            }
+        });
     }
 }

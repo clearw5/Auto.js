@@ -78,6 +78,7 @@ public class App extends MultiDexApplication {
     }
 
     private void setUpDebugEnvironment() {
+        Bugly.isDev = false;
         CrashHandler crashHandler = new CrashHandler(ErrorReportActivity.class);
 
         CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());

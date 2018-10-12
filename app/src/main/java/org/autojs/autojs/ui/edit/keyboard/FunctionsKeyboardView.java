@@ -27,6 +27,7 @@ import org.autojs.autojs.model.indices.Module;
 import org.autojs.autojs.model.indices.Modules;
 import org.autojs.autojs.model.indices.Property;
 import org.autojs.autojs.ui.widget.GridDividerDecoration;
+import org.autojs.autojs.workground.WrapContentGridLayoutManger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,10 +99,11 @@ public class FunctionsKeyboardView extends FrameLayout {
     }
 
     private void initPropertiesView() {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), SPAN_COUNT);
-        mPropertiesView.setLayoutManager(gridLayoutManager);
+        WrapContentGridLayoutManger manager = new WrapContentGridLayoutManger(getContext(), 2);
+        manager.setDebugInfo("FunctionsKeyboardView");
+        mPropertiesView.setLayoutManager(manager);
         mPropertiesView.setAdapter(new PropertiesAdapter());
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 
             @Override
             public int getSpanSize(int position) {

@@ -3,7 +3,6 @@ package org.autojs.autojs.ui.floating;
 import android.view.View;
 
 import com.stardust.enhancedfloaty.FloatyService;
-import com.stardust.floatingcircularactionmenu.CircularActionMenu;
 
 public interface CircularMenuFloaty {
 

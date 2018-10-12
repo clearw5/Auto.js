@@ -44,8 +44,8 @@ public class LayoutHierarchyFloatyWindow extends FullScreenFloatyWindow {
 
 
     @Override
-    protected View inflateView(FloatyService service) {
-        mContext = new ContextThemeWrapper(service, R.style.AppTheme);
+    protected View onCreateView(FloatyService floatyService) {
+        mContext = new ContextThemeWrapper(floatyService, R.style.AppTheme);
         mLayoutHierarchyView = new LayoutHierarchyView(mContext) {
             @Override
             public boolean dispatchKeyEvent(KeyEvent event) {
@@ -56,11 +56,11 @@ public class LayoutHierarchyFloatyWindow extends FullScreenFloatyWindow {
                 return super.dispatchKeyEvent(event);
             }
         };
-        setupView();
         return mLayoutHierarchyView;
     }
 
-    private void setupView() {
+    @Override
+    protected void onViewCreated(View v) {
         mLayoutHierarchyView.setBackgroundColor(COLOR_SHADOW);
         mLayoutHierarchyView.setShowClickedNodeBounds(true);
         mLayoutHierarchyView.getBoundsPaint().setStrokeWidth(3);

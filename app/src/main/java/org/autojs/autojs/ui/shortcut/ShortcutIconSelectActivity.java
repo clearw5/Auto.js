@@ -25,6 +25,7 @@ import org.autojs.autojs.ui.BaseActivity;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.autojs.autojs.workground.WrapContentGridLayoutManger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,9 @@ public class ShortcutIconSelectActivity extends BaseActivity {
 
     private void setupApps() {
         mApps.setAdapter(new AppsAdapter());
-        mApps.setLayoutManager(new GridLayoutManager(this, 5));
+        WrapContentGridLayoutManger manager = new WrapContentGridLayoutManger(this, 2);
+        manager.setDebugInfo("IconSelectView");
+        mApps.setLayoutManager(manager);
         loadApps();
     }
 
