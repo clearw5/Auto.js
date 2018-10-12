@@ -22,6 +22,15 @@ public class ValueMapper<V> {
         return this;
     }
 
+
+    public V getOr(String key, V defValue) {
+        V v = mHashMap.get(key);
+        if (v == null) {
+            return defValue;
+        }
+        return v;
+    }
+
     public V get(String key) {
         V v = mHashMap.get(key);
         if (v == null) {

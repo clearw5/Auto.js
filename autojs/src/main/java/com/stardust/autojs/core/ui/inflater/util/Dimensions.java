@@ -59,7 +59,7 @@ public class Dimensions {
         if (!m.matches()) {
             throw new InflateException("dimension cannot be resolved: " + dimension);
         }
-        int unit = m.groupCount() == 2 ? UNITS.get(m.group(2)) : TypedValue.COMPLEX_UNIT_PX;
+        int unit = m.groupCount() == 2 ? UNITS.getOr(m.group(2), TypedValue.COMPLEX_UNIT_DIP) : TypedValue.COMPLEX_UNIT_DIP;
         float value = Integer.valueOf(m.group(1));
         return TypedValue.applyDimension(unit, value, context.getResources().getDisplayMetrics());
     }
