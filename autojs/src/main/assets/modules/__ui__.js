@@ -42,6 +42,10 @@ module.exports = function (runtime, global) {
         return ui.findByStringId(ui.view, id);
     }
 
+    ui.findView = function(id) {
+        return ui.findById(id);
+    }
+
     ui.isUiThread = function () {
         let Looper = android.os.Looper;
         return Looper.myLooper() == Looper.getMainLooper();

@@ -32,18 +32,21 @@ public class FloatyWindowManger {
 
     private static WeakReference<CircularMenu> sCircularMenu;
 
-    public static void addWindow(Context context, FloatyWindow window) {
+    public static boolean addWindow(Context context, FloatyWindow window) {
         context.startService(new Intent(context, FloatyService.class));
-        FloatingPermission.ensurePermissionGranted(context);
+        boolean hasPermission = FloatingPermission.ensurePermissionGranted(context);
         try {
             FloatyService.addWindow(window);
+            return true;
             // SecurityException: https://github.com/hyb1996-guest/AutoJsIssueReport/issues/4781
         } catch (Exception e) {
             e.printStackTrace();
-            manageDrawOverlays(context);
-            Toast.makeText(context, R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
-
+            if(hasPermission){
+                manageDrawOverlays(context);
+                Toast.makeText(context, R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
+            }
         }
+        return false;
     }
 
     public static boolean isCircularMenuShowing() {

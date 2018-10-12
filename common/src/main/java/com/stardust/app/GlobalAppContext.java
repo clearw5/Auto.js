@@ -72,4 +72,8 @@ public class GlobalAppContext {
     public static void post(Runnable r) {
         sHandler.post(r);
     }
+
+    public static void postDelayed(Runnable r, long m) {
+        sHandler.postDelayed(r, m);
+    }
 }

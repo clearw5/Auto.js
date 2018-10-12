@@ -37,7 +37,7 @@
 
         <meta-data
             android:name="android.max_aspect"
-            android:value="2.1" />
+            android:value="2.1"/>
 
         <activity
             android:name=".ui.splash.SplashActivity"
@@ -126,6 +126,33 @@
 
         <activity android:name=".external.tasker.TaskPrefEditActivity_"/>
 
+        <service
+            android:name=".external.tile.LayoutBoundsTile"
+            android:icon="@drawable/ic_circular_menu_bounds"
+            android:label="@string/text_inspect_layout_bounds"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="false"/>
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".external.tile.LayoutHierarchyTile"
+            android:icon="@drawable/ic_circular_menu_hierarchy"
+            android:label="@string/text_inspect_layout_hierarchy"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="false"/>
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
+
         <activity-alias
             android:name=".external.tasker.PluginActivity"
             android:exported="true"
@@ -138,10 +165,10 @@
             </intent-filter>
         </activity-alias>
 
-        <receiver android:name="org.autojs.autojs.external.receiver.StaticBroadcastReceiver" >
+        <receiver android:name="org.autojs.autojs.external.receiver.StaticBroadcastReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
                 <action android:name="android.intent.action.TIME_SET"/>
                 <action android:name="android.intent.action.TIMEZONE_CHANGED"/>
                 <action android:name="android.intent.action.UID_REMOVED"/>
@@ -170,6 +197,7 @@
                 <action android:name="android.intent.action.PACKAGE_DATA_CLEARED"/>
                 <action android:name="android.intent.action.PACKAGE_REMOVED"/>
                 <action android:name="android.intent.action.PACKAGE_RESTARTED"/>
+
                 <data android:scheme="package"/>
             </intent-filter>
         </receiver>

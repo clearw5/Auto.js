@@ -1,11 +1,14 @@
 package com.stardust.autojs.core.ui.widget;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;

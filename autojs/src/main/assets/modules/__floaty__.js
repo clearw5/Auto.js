@@ -26,13 +26,8 @@ module.exports = function(runtime, global){
             get: function(name) {
                var value = window[name];
                if(typeof(value) == 'undefined'){
-                   value = viewCache[name];
                    if(!value){
                         value = window.findView(name);
-                        if(value){
-                            value = ui.__decorate__(value);
-                            viewCache[name] = value;
-                        }
                    }
                    if(!value){
                       value = undefined;

@@ -1,5 +1,6 @@
 package org.autojs.autojs.ui.shortcut;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -58,12 +59,13 @@ public class ShortcutIconSelectActivity extends BaseActivity {
 
     private void setupApps() {
         mApps.setAdapter(new AppsAdapter());
-        WrapContentGridLayoutManger manager = new WrapContentGridLayoutManger(this, 2);
+        WrapContentGridLayoutManger manager = new WrapContentGridLayoutManger(this, 5);
         manager.setDebugInfo("IconSelectView");
         mApps.setLayoutManager(manager);
         loadApps();
     }
 
+    @SuppressLint("CheckResult")
     private void loadApps() {
         List<ApplicationInfo> packages = mPackageManager.getInstalledApplications(PackageManager.GET_META_DATA);
         Observable.fromIterable(packages)

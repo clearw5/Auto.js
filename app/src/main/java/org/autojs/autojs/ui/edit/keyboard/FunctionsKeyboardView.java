@@ -99,7 +99,7 @@ public class FunctionsKeyboardView extends FrameLayout {
     }
 
     private void initPropertiesView() {
-        WrapContentGridLayoutManger manager = new WrapContentGridLayoutManger(getContext(), 2);
+        WrapContentGridLayoutManger manager = new WrapContentGridLayoutManger(getContext(), SPAN_COUNT);
         manager.setDebugInfo("FunctionsKeyboardView");
         mPropertiesView.setLayoutManager(manager);
         mPropertiesView.setAdapter(new PropertiesAdapter());

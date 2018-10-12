@@ -12,13 +12,9 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.stardust.R;
-import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.enhancedfloaty.util.FloatingWindowPermissionUtil;
-import com.stardust.lang.ThreadCompat;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Set;
 
 import ezy.assist.compat.RomUtil;
 import ezy.assist.compat.SettingsCompat;
@@ -42,12 +38,13 @@ public class FloatingPermission {
         }
     }
 
-    public static void ensurePermissionGranted(Context context) {
+    public static boolean ensurePermissionGranted(Context context) {
         if (!canDrawOverlays(context)) {
             Toast.makeText(context, R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
             manageDrawOverlays(context);
-            return;
+            return false;
         }
+        return true;
     }
 
     public static void waitForPermissionGranted(Context context) throws InterruptedException {
