@@ -7,9 +7,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.stardust.autojs.R;
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
+import com.stardust.autojs.core.ui.nativeview.NativeView;
+import com.stardust.autojs.core.ui.nativeview.ViewPrototype;
 import com.stardust.autojs.runtime.ScriptRuntime;
 
+import org.mozilla.javascript.NativeJavaObject;
+import org.mozilla.javascript.Scriptable;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -83,7 +88,26 @@ public class JsListView extends RecyclerView {
         mItemTemplate = itemTemplate;
     }
 
-    private class ViewHolder extends RecyclerView.ViewHolder {
+
+    public static class ItemHolder {
+        private final ViewHolder mViewHolder;
+
+        ItemHolder(ViewHolder viewHolder) {
+            mViewHolder = viewHolder;
+        }
+
+        public int getPosition() {
+            return mViewHolder.getAdapterPosition();
+        }
+
+        public Object getItem() {
+            return mViewHolder.item;
+        }
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        Object item = null;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -99,7 +123,14 @@ public class JsListView extends RecyclerView {
                 int pos = getAdapterPosition();
                 return mOnItemTouchListener.onItemLongClick(JsListView.this, itemView, mDataSourceAdapter.getItem(mDataSource, pos), pos);
             });
+            NativeView nativeView = NativeView.fromView(JsListView.this);
+            if (nativeView != null) {
+                ViewPrototype prototype = nativeView.getViewPrototype();
+                prototype.emit("item_bind", itemView, new ItemHolder(this));
+            }
         }
+
+
     }
 
     private class Adapter extends RecyclerView.Adapter<ViewHolder> {
@@ -121,7 +152,9 @@ public class JsListView extends RecyclerView {
         public void onBindViewHolder(ViewHolder holder, int position) {
             try {
                 Object oldCtx = mScriptRuntime.ui.getBindingContext();
-                mScriptRuntime.ui.setBindingContext(mDataSourceAdapter.getItem(mDataSource, position));
+                Object item = mDataSourceAdapter.getItem(mDataSource, position);
+                holder.item = item;
+                mScriptRuntime.ui.setBindingContext(item);
                 mDynamicLayoutInflater.setInflateFlags(DynamicLayoutInflater.FLAG_JUST_DYNAMIC_ATTRS);
                 applyDynamicAttrs(mItemTemplate, holder.itemView, JsListView.this);
                 mScriptRuntime.ui.setBindingContext(oldCtx);

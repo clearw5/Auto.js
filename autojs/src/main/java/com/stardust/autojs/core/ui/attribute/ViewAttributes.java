@@ -88,24 +88,11 @@ public class ViewAttributes {
     private final Drawables mDrawables;
     private final View mView;
 
-    public ViewAttributes(Drawables drawables, View view) {
-        mDrawables = drawables;
+    public ViewAttributes(ResourceParser resourceParser, View view) {
+        mDrawables = resourceParser.getDrawables();
         mView = view;
         init();
     }
-
-    public static ViewAttributes fromView(ResourceParser parser, View view) {
-        ViewAttributes attributes;
-        Object tag = view.getTag(R.id.view_tag_view_attrs);
-        if (!(tag instanceof ViewAttributes)) {
-            attributes = new ViewAttributes(parser.getDrawables(), view);
-            view.setTag(R.id.view_tag_view_attrs, attributes);
-        } else {
-            attributes = (ViewAttributes) tag;
-        }
-        return attributes;
-    }
-
 
     public boolean contains(String name) {
         return mAttributes.containsKey(name);

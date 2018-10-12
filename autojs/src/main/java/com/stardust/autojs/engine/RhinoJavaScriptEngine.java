@@ -175,8 +175,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
     private class WrapFactory extends org.mozilla.javascript.WrapFactory {
 
-        private final WeakHashMap<Object, Scriptable> mWrapCache = new WeakHashMap<>();
-
         @Override
         public Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType) {
             if (obj instanceof String) {
@@ -191,12 +189,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         @Override
         public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, Class<?> staticType) {
             if (javaObject instanceof View) {
-                Scriptable wrap = mWrapCache.get(javaObject);
-                if(wrap == null){
-                    wrap = new NativeView(scope, (View) javaObject, staticType, getRuntime());
-                    mWrapCache.put(javaObject, wrap);
-                }
-                return wrap;
+                return NativeView.fromView(scope, (View) javaObject, staticType, getRuntime());
             }
             return super.wrapAsJavaObject(cx, scope, javaObject, staticType);
         }

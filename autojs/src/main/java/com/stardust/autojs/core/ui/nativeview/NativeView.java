@@ -1,21 +1,15 @@
 package com.stardust.autojs.core.ui.nativeview;
 
-import android.annotation.SuppressLint;
-import android.os.Build;
 import android.view.View;
-import android.widget.CompoundButton;
 
-import com.stardust.autojs.core.eventloop.EventEmitter;
-import com.stardust.autojs.core.ui.BaseEvent;
+import com.stardust.autojs.R;
+import com.stardust.autojs.core.ui.JsViewHelper;
 import com.stardust.autojs.core.ui.attribute.ViewAttributes;
-import com.stardust.autojs.core.ui.widget.JsListView;
 import com.stardust.autojs.rhino.NativeJavaObjectWithPrototype;
 
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
-
-import java.util.HashSet;
 
 public class NativeView extends NativeJavaObjectWithPrototype {
 
@@ -46,15 +40,34 @@ public class NativeView extends NativeJavaObjectWithPrototype {
 
     private final ViewAttributes mViewAttributes;
     private final View mView;
+    private final ViewPrototype mViewPrototype;
 
     public NativeView(Scriptable scope, View javaObject, Class<?> staticType, com.stardust.autojs.runtime.ScriptRuntime runtime) {
         super(scope, javaObject, staticType);
-        mViewAttributes = ViewAttributes.fromView(runtime.ui.getResourceParser(), javaObject);
+        mViewAttributes = new ViewAttributes(runtime.ui.getResourceParser(), javaObject);
         mView = javaObject;
-        ViewPrototype viewPrototype = new ViewPrototype(mView, scope, runtime);
-        prototype = new NativeJavaObject(scope, viewPrototype, viewPrototype.getClass());
+        mViewPrototype = new ViewPrototype(mView, scope, runtime);
+        prototype = new NativeJavaObject(scope, mViewPrototype, mViewPrototype.getClass());
     }
 
+    public static NativeView fromView(Scriptable scope, View view, Class<?> staticType, com.stardust.autojs.runtime.ScriptRuntime runtime) {
+        Object tag = view.getTag(R.id.view_tag_native_view);
+        if (tag instanceof NativeView) {
+            return (NativeView) tag;
+        } else {
+            NativeView nativeView = new NativeView(scope, view, staticType, runtime);
+            view.setTag(R.id.view_tag_native_view, nativeView);
+            return nativeView;
+        }
+    }
+
+    public static NativeView fromView(View view) {
+        Object tag = view.getTag(R.id.view_tag_native_view);
+        if (tag instanceof NativeView)
+            return (NativeView) tag;
+        else
+            return null;
+    }
 
     @Override
     public boolean has(String name, Scriptable start) {
@@ -80,9 +93,20 @@ public class NativeView extends NativeJavaObjectWithPrototype {
         if (attribute != null) {
             return attribute.get();
         }
-        return super.get(name, start);
+        if (super.has(name, start)) {
+            return super.get(name, start);
+        } else {
+            View view = JsViewHelper.findViewByStringId(mView, name);
+            if (view != null) {
+                return view;
+            }
+        }
+        return Scriptable.NOT_FOUND;
     }
 
+    public ViewPrototype getViewPrototype() {
+        return mViewPrototype;
+    }
 
     @Override
     public View unwrap() {
