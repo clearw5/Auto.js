@@ -119,6 +119,7 @@ public class CodeEditText extends AppCompatEditText {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        Log.v(LOG_TAG, "onDraw");
         mLogger.reset();
         if (mParentScrollView == null) {
             mParentScrollView = (HVScrollView) getParent();
