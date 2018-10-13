@@ -48,7 +48,9 @@ public class ImageViewAttributes extends ViewAttributes {
                 getDrawables().setupWithImage(getView(), value)
         );
         registerAttr("tint", Color::parseColor, value -> {
-            ImageViewCompat.setImageTintList(getView(), ColorStateList.valueOf(value));
+            // FIXME: 2018/10/13 setImageTineList not working
+            PorterDuff.Mode mode = ImageViewCompat.getImageTintMode(getView());
+            getView().setColorFilter(value, mode == null ? PorterDuff.Mode.SRC_ATOP : mode);
         });
         registerAttr("tintMode", TINT_MODES::get, value -> {
             ImageViewCompat.setImageTintMode(getView(), value);
