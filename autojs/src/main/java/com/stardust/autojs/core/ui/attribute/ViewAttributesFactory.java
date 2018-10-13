@@ -1,7 +1,10 @@
 package com.stardust.autojs.core.ui.attribute;
 
+import android.support.design.widget.AppBarLayout;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.stardust.autojs.core.ui.inflater.ResourceParser;
 
@@ -17,6 +20,8 @@ public class ViewAttributesFactory {
 
     static {
         sViewAttributesCreators.put(ImageView.class, ImageViewAttributes::new);
+        sViewAttributesCreators.put(AppBarLayout.class, AppbarAttributes::new);
+        sViewAttributesCreators.put(TextView.class, TextViewAttributes::new);
     }
 
     public static void put(Class<? extends View> clazz, ViewAttributesCreator creator) {

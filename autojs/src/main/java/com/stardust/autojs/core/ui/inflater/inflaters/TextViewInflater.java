@@ -30,6 +30,12 @@ import java.util.Map;
 
 public class TextViewInflater<V extends TextView> extends BaseViewInflater<V> {
 
+    private static final int LEFT = 0;
+    private static final int TOP = 1;
+    private static final int RIGHT = 2;
+    private static final int BOTTOM = 3;
+
+
     private static final ValueMapper<Integer> AUTO_LINK_MASKS = new ValueMapper<Integer>("autoLink")
             .map("all", Linkify.ALL)
             .map("email", Linkify.EMAIL_ADDRESSES)
@@ -367,6 +373,18 @@ public class TextViewInflater<V extends TextView> extends BaseViewInflater<V> {
         mCapitalize = null;
         mAutoText = false;
     }
+
+    private void setDrawable(V view, int d) {
+        Drawable[] drawables = view.getCompoundDrawables();
+        view.setCompoundDrawables(
+                mDrawableLeft != null ? mDrawableLeft : drawables[0],
+                mDrawableTop != null ? mDrawableTop : drawables[1],
+                mDrawableRight != null ? mDrawableRight : drawables[2],
+                mDrawableBottom != null ? mDrawableBottom : drawables[3]
+        );
+        mDrawableLeft = mDrawableBottom = mDrawableRight = mDrawableTop = null;
+    }
+
 
     private void setDrawables(V view) {
         Drawable[] drawables = view.getCompoundDrawables();

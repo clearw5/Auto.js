@@ -351,8 +351,16 @@ public class ViewAttributes {
                 this::parseDrawable, applier)));
     }
 
+    protected void registerPixelAttr(String name, ValueApplier<Float> applier) {
+        registerAttr(name, this::parseDimensionToPixel, applier);
+    }
+
     protected void registerIntPixelAttr(String name, ValueApplier<Integer> applier) {
         registerAttr(name, this::parseDimensionToIntPixel, applier);
+    }
+
+    protected void registerIdAttr(String name, ValueApplier<Integer> applier) {
+        registerAttr(name, Ids::parse, applier);
     }
 
     protected void registerBooleanAttr(String name, ValueApplier<Boolean> applier) {
