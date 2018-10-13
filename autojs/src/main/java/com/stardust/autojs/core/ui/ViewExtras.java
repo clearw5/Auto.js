@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.ui.attribute.ViewAttributes;
+import com.stardust.autojs.core.ui.attribute.ViewAttributesFactory;
 import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.nativeview.NativeView;
 import com.stardust.autojs.runtime.ScriptRuntime;
@@ -33,7 +34,7 @@ public class ViewExtras {
         ViewExtras extras = get(view);
         ViewAttributes attributes = extras.getViewAttributes();
         if (attributes == null) {
-            attributes = new ViewAttributes(parser, view);
+            attributes =  ViewAttributesFactory.create(parser, view);
             extras.setViewAttributes(attributes);
         }
         return attributes;

@@ -37,9 +37,7 @@ public class ImageViewInflater<V extends ImageView> extends BaseViewInflater<V> 
                 view.setBaselineAlignBottom(Boolean.valueOf(value));
                 break;
             case "cropToPadding":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setCropToPadding(Boolean.valueOf(value));
-                }
+                view.setCropToPadding(Boolean.valueOf(value));
                 break;
             case "maxHeight":
                 view.setMaxHeight(Dimensions.parseToIntPixel(value, view));

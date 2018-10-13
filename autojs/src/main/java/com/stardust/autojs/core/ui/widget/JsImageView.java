@@ -1,6 +1,8 @@
 package com.stardust.autojs.core.ui.widget;
 
 import android.content.Context;
+import android.support.v4.widget.ImageViewCompat;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -20,6 +22,7 @@ public class JsImageView extends RoundedImageView {
     public JsImageView(Context context) {
         super(context);
     }
+
 
     public JsImageView(Context context, AttributeSet attrs) {
         super(context, attrs);

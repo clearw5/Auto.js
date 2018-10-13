@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.stardust.autojs.core.internal.Functions;
@@ -23,6 +24,8 @@ import com.stardust.autojs.core.ui.inflater.util.Drawables;
 import com.stardust.autojs.core.ui.inflater.util.Gravities;
 import com.stardust.autojs.core.ui.inflater.util.Ids;
 import com.stardust.autojs.core.ui.inflater.util.Strings;
+import com.stardust.util.BiMap;
+import com.stardust.util.Supplier;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -86,6 +89,10 @@ public class ViewAttributes {
         void apply(T value);
     }
 
+    protected interface ValueGetter<T> {
+        T get();
+    }
+
     protected static class MappingAttributeSetter<T> implements AttributeSetter {
 
         private final ValueConverter<T> mValueConverter;
@@ -102,6 +109,7 @@ public class ViewAttributes {
         }
     }
 
+
     private Map<String, Attribute> mAttributes = new HashMap<>();
     private final Drawables mDrawables;
     private final View mView;
@@ -112,6 +120,14 @@ public class ViewAttributes {
         init();
     }
 
+
+    public Drawables getDrawables() {
+        return mDrawables;
+    }
+
+    public View getView() {
+        return mView;
+    }
 
     public boolean contains(String name) {
         return mAttributes.containsKey(name);
@@ -207,37 +223,37 @@ public class ViewAttributes {
         registerAttr("layoutDirection", LAYOUT_DIRECTIONS::get, mView::setLayoutDirection);
     }
 
-    private void setForegroundTintMode(PorterDuff.Mode mode) {
+    protected void setForegroundTintMode(PorterDuff.Mode mode) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mView.setForegroundTintMode(mode);
         }
     }
 
-    private void setForegroundGravity(int g) {
+    protected void setForegroundGravity(int g) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mView.setForegroundGravity(g);
         }
     }
 
-    private void setForeground(Drawable foreground) {
+    protected void setForeground(Drawable foreground) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mView.setForeground(foreground);
         }
     }
 
-    private void forceHasOverlappingRendering(boolean b) {
+    protected void forceHasOverlappingRendering(boolean b) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             mView.forceHasOverlappingRendering(b);
         }
     }
 
-    private void setElevation(int e) {
+    protected void setElevation(int e) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mView.setElevation(e);
         }
     }
 
-    private void setScrollbars(String scrollbars) {
+    protected void setScrollbars(String scrollbars) {
         for (String str : scrollbars.split("\\|")) {
             if (str.equals("horizontal")) {
                 mView.setHorizontalScrollBarEnabled(true);
@@ -248,16 +264,16 @@ public class ViewAttributes {
     }
 
 
-    private float parseDimensionToPixel(String value) {
+    protected float parseDimensionToPixel(String value) {
         return Dimensions.parseToPixel(mView, value);
     }
 
-    private int parseDimensionToIntPixel(String value) {
+    protected int parseDimensionToIntPixel(String value) {
         return Dimensions.parseToIntPixel(value, mView);
     }
 
 
-    private int parseDimension(String dim) {
+    protected int parseDimension(String dim) {
         switch (dim) {
             case "wrap_content":
                 return ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -271,6 +287,21 @@ public class ViewAttributes {
 
     protected void registerAttr(String name, Attribute attribute) {
         mAttributes.put(name, attribute);
+    }
+
+    protected <V> void registerAttr(String name, ValueGetter<V> getter, ValueApplier<V> setter, BiMap<String, V> biMap) {
+        mAttributes.put(name, new Attribute() {
+            @Override
+            public String get() {
+                return biMap.getKey(getter.get());
+            }
+
+            @Override
+            public void set(String value) {
+                V v = biMap.get(value);
+                setter.apply(v);
+            }
+        });
     }
 
     protected void registerAttr(String name, AttributeGetter getter, AttributeSetter setter) {
@@ -315,9 +346,17 @@ public class ViewAttributes {
     }
 
 
-    private void registerDrawableAttrs(String[] names, ValueApplier<Drawable> applier) {
+    protected void registerDrawableAttrs(String[] names, ValueApplier<Drawable> applier) {
         registerAttrs(names, new BaseAttribute(new MappingAttributeSetter<>(
                 this::parseDrawable, applier)));
+    }
+
+    protected void registerIntPixelAttr(String name, ValueApplier<Integer> applier) {
+        registerAttr(name, this::parseDimensionToIntPixel, applier);
+    }
+
+    protected void registerBooleanAttr(String name, ValueApplier<Boolean> applier) {
+        registerAttr(name, Boolean::parseBoolean, applier);
     }
 
 
@@ -325,7 +364,7 @@ public class ViewAttributes {
         return mDrawables.parse(mView, value);
     }
 
-    private boolean setGravity(int g) {
+    protected boolean setGravity(int g) {
         try {
             Method setGravity = mView.getClass().getMethod("setGravity", int.class);
             setGravity.invoke(mView, g);
@@ -336,7 +375,7 @@ public class ViewAttributes {
         }
     }
 
-    private void setMargin(int margin) {
+    protected void setMargin(int margin) {
         if (mView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
             params.bottomMargin = params.leftMargin = params.topMargin = params.rightMargin = margin;
@@ -347,28 +386,28 @@ public class ViewAttributes {
         }
     }
 
-    private void setMarginLeft(int margin) {
+    protected void setMarginLeft(int margin) {
         if (mView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
             params.leftMargin = margin;
         }
     }
 
-    private void setMarginRight(int margin) {
+    protected void setMarginRight(int margin) {
         if (mView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
             params.rightMargin = margin;
         }
     }
 
-    private void setMarginTop(int margin) {
+    protected void setMarginTop(int margin) {
         if (mView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
             params.topMargin = margin;
         }
     }
 
-    private void setMarginBottom(int margin) {
+    protected void setMarginBottom(int margin) {
         if (mView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
             params.bottomMargin = margin;
@@ -377,72 +416,72 @@ public class ViewAttributes {
         }
     }
 
-    private void setMarginStart(int margin) {
+    protected void setMarginStart(int margin) {
         if (mView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
             params.setMarginStart(margin);
         }
     }
 
-    private void setMarginEnd(int margin) {
+    protected void setMarginEnd(int margin) {
         if (mView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
             params.setMarginEnd(margin);
         }
     }
 
-    private void setPadding(int padding) {
+    protected void setPadding(int padding) {
         mView.setPadding(padding, padding, padding, padding);
     }
 
-    private void setPaddingLeft(int padding) {
+    protected void setPaddingLeft(int padding) {
         mView.setPadding(padding, mView.getPaddingTop(), mView.getPaddingRight(), mView.getPaddingBottom());
     }
 
 
-    private void setPaddingRight(int padding) {
+    protected void setPaddingRight(int padding) {
         mView.setPadding(mView.getPaddingLeft(), mView.getPaddingTop(), padding, mView.getPaddingBottom());
     }
 
 
-    private void setPaddingTop(int padding) {
+    protected void setPaddingTop(int padding) {
         mView.setPadding(mView.getPaddingLeft(), padding, mView.getPaddingRight(), mView.getPaddingBottom());
     }
 
 
-    private void setPaddingStart(int padding) {
+    protected void setPaddingStart(int padding) {
         mView.setPaddingRelative(padding, mView.getPaddingTop(), mView.getPaddingEnd(), mView.getPaddingBottom());
     }
 
 
-    private void setPaddingEnd(int padding) {
+    protected void setPaddingEnd(int padding) {
         mView.setPaddingRelative(mView.getPaddingStart(), mView.getPaddingTop(), padding, mView.getPaddingBottom());
     }
 
 
-    private void setPaddingBottom(int padding) {
+    protected void setPaddingBottom(int padding) {
         mView.setPadding(mView.getPaddingLeft(), mView.getPaddingTop(), mView.getPaddingRight(), padding);
     }
 
-    private void setBackgroundTint(int color) {
+    protected void setBackgroundTint(int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mView.setBackgroundTintList(ColorStateList.valueOf(color));
         }
     }
 
-    private void setContextClickable(boolean clickable) {
+    protected void setContextClickable(boolean clickable) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mView.setContextClickable(clickable);
         }
     }
 
-    private void setChecked(boolean checked) {
+    protected void setChecked(boolean checked) {
         if (mView instanceof CompoundButton) {
             ((CompoundButton) mView).setChecked(checked);
         }
     }
 
-    private void setLayoutGravity(int gravity) {
+    protected void setLayoutGravity(int gravity) {
         ViewParent parent = mView.getParent();
         ViewGroup.LayoutParams layoutParams = mView.getLayoutParams();
         if (parent instanceof LinearLayout) {
@@ -463,7 +502,7 @@ public class ViewAttributes {
         }
     }
 
-    private void setLayoutWeight(float weight) {
+    protected void setLayoutWeight(float weight) {
         ViewParent parent = mView.getParent();
         ViewGroup.LayoutParams layoutParams = mView.getLayoutParams();
         if (parent instanceof LinearLayout) {
@@ -473,25 +512,25 @@ public class ViewAttributes {
     }
 
 
-    private void setWidth(int width) {
+    protected void setWidth(int width) {
         ViewGroup.LayoutParams layoutParams = mView.getLayoutParams();
         layoutParams.width = width;
         mView.setLayoutParams(layoutParams);
     }
 
 
-    private void setHeight(int height) {
+    protected void setHeight(int height) {
         ViewGroup.LayoutParams layoutParams = mView.getLayoutParams();
         layoutParams.height = height;
         mView.setLayoutParams(layoutParams);
     }
 
-    private String parseString(String value) {
+    protected String parseString(String value) {
         return Strings.parse(mView, value);
     }
 
-    private static <
-            T1, T2> ValueApplier<T2> bind(Functions.VoidFunc2<T1, T2> func2, T1 t1) {
+    protected static <T1, T2> ValueApplier<T2> bind(Functions.VoidFunc2<T1, T2> func2, T1 t1) {
         return value -> func2.call(t1, value);
     }
+
 }

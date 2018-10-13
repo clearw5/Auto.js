@@ -22,8 +22,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.service.autofill.AutofillService;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.Layout;
@@ -32,6 +35,7 @@ import android.util.Log;
 import android.util.TimingLogger;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.autofill.AutofillManager;
 
 import org.autojs.autojs.ui.edit.theme.Theme;
 import org.autojs.autojs.ui.edit.theme.TokenMapping;
@@ -93,6 +97,15 @@ public class CodeEditText extends AppCompatEditText {
         setHorizontallyScrolling(true);
         mTheme = Theme.getDefault(getContext());
         mLineHighlightPaint.setStyle(Paint.Style.FILL);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            setImportantForAutofill(IMPORTANT_FOR_AUTOFILL_NO);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public int getAutofillType() {
+        return AUTOFILL_TYPE_NONE;
     }
 
     public LinkedHashMap<Integer, CodeEditor.Breakpoint> getBreakpoints() {

@@ -230,18 +230,10 @@ public class TextViewInflater<V extends TextView> extends BaseViewInflater<V> {
                 }
                 break;
             case "lineSpacingExtra":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setLineSpacing(Dimensions.parseToIntPixel(value, view), view.getLineSpacingMultiplier());
-                } else {
-                    mLineSpacingExtra = Dimensions.parseToIntPixel(value, view);
-                }
+                view.setLineSpacing(Dimensions.parseToIntPixel(value, view), view.getLineSpacingMultiplier());
                 break;
             case "lineSpacingMultiplier":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setLineSpacing(view.getLineSpacingExtra(), Dimensions.parseToIntPixel(value, view));
-                } else {
-                    mLineSpacingMultiplier = Dimensions.parseToIntPixel(value, view);
-                }
+                view.setLineSpacing(view.getLineSpacingExtra(), Dimensions.parseToIntPixel(value, view));
                 break;
             case "lines":
                 view.setLines(Integer.valueOf(value));
@@ -302,24 +294,16 @@ public class TextViewInflater<V extends TextView> extends BaseViewInflater<V> {
                 view.setSelectAllOnFocus(Boolean.valueOf(value));
                 break;
             case "shadowColor":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setShadowLayer(view.getShadowRadius(), view.getShadowDx(), view.getShadowDy(), Colors.parse(view, value));
-                }
+                view.setShadowLayer(view.getShadowRadius(), view.getShadowDx(), view.getShadowDy(), Colors.parse(view, value));
                 break;
             case "shadowDx":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setShadowLayer(view.getShadowRadius(), Dimensions.parseToPixel(value, view), view.getShadowDy(), view.getShadowColor());
-                }
+                view.setShadowLayer(view.getShadowRadius(), Dimensions.parseToPixel(value, view), view.getShadowDy(), view.getShadowColor());
                 break;
             case "shadowDy":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setShadowLayer(view.getShadowRadius(), view.getShadowDx(), Dimensions.parseToPixel(value, view), view.getShadowColor());
-                }
+                view.setShadowLayer(view.getShadowRadius(), view.getShadowDx(), Dimensions.parseToPixel(value, view), view.getShadowColor());
                 break;
             case "shadowRadius":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setShadowLayer(Dimensions.parseToPixel(value, view), view.getShadowDx(), view.getShadowDy(), view.getShadowColor());
-                }
+                view.setShadowLayer(Dimensions.parseToPixel(value, view), view.getShadowDx(), view.getShadowDy(), view.getShadowColor());
                 break;
             case "singleLine":
                 view.setSingleLine(Boolean.valueOf(value));
