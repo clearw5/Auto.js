@@ -23,6 +23,7 @@ public class ViewPrototype {
     private final HashSet<String> mRegisteredEvents = new HashSet<>();
     private final Scriptable mScope;
     private final ViewAttributes mViewAttributes;
+    private Object mWidget;
 
     public ViewPrototype(View view, ViewAttributes viewAttributes, Scriptable scope, ScriptRuntime runtime) {
         mView = view;
@@ -48,6 +49,14 @@ public class ViewPrototype {
         if (attribute != null) {
             attribute.set(org.mozilla.javascript.ScriptRuntime.toString(value));
         }
+    }
+
+    public void setWidget(Object widget) {
+        mWidget = widget;
+    }
+
+    public Object getWidget() {
+        return mWidget;
     }
 
     public void click() {

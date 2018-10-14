@@ -82,6 +82,11 @@ module.exports = function(runtime, global){
         context.startActivity(Intent.createChooser(i, "发送邮件").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
+    app.getUriForFile = function(file){
+        return android.support.v4.content.FileProvider.getUriForFile(context,
+            "org.autojs.autojs.fileprovider", new java.io.File(files.path(path)));
+    };
+
     function toArray(arg){
         if(typeof(arg) == 'string'){
             return [arg];

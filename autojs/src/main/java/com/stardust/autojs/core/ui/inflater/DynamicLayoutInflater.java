@@ -208,12 +208,11 @@ public class DynamicLayoutInflater {
             }
         }
         ViewInflater<View> inflater = applyAttributes(context, view, attrs, parent);
-        if (!(view instanceof ViewGroup) || !node.hasChildNodes()) {
-            return view;
-        }
-        inflateChildren(context, inflater, node, (ViewGroup) view);
-        if (inflater instanceof ViewGroupInflater) {
-            applyPendingAttributesOfChildren(context, (ViewGroupInflater) inflater, (ViewGroup) view);
+        if (view instanceof ViewGroup && node.hasChildNodes()) {
+            inflateChildren(context, inflater, node, (ViewGroup) view);
+            if (inflater instanceof ViewGroupInflater) {
+                applyPendingAttributesOfChildren(context, (ViewGroupInflater) inflater, (ViewGroup) view);
+            }
         }
         return mLayoutInflaterDelegate.afterInflateView(context, view, node, parent, attachToParent);
     }

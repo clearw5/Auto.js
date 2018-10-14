@@ -2,7 +2,7 @@
 
 var ColoredButton = (function() {
     //继承至ui.Widget
-    util.extends(ColoredButton, ui.Widget);
+    util.extend(ColoredButton, ui.Widget);
 
     function ColoredButton() {
         //调用父类构造函数

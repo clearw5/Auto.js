@@ -138,6 +138,10 @@ module.exports = function (runtime, global) {
             return null;
         },
         afterInflateView: function (context, view, node, parent, attachToParent) {
+            let widget = view.widget;
+            if(widget && context.get("root") != widget){
+                widget.notifyAfterInflation(view);
+            }
             return view;
         },
         beforeCreateView: function (context, node, viewName, parent, attrs) {
@@ -145,6 +149,7 @@ module.exports = function (runtime, global) {
                 let Widget = ui.__widgets__[viewName];
                 let widget = new Widget();
                 let ctx = layoutInflater.newInflateContext();
+                ctx.put("root", widget);
                 ctx.put("widget", widget);
                 let view = ui.__inflate__(ctx, widget.renderInternal(), parent, false);
                 return view;
@@ -159,6 +164,7 @@ module.exports = function (runtime, global) {
             var widget = context.get("widget");
             if(widget != null){
                 widget.view = view;
+                view.widget = widget;
                 let viewAttrs = com.stardust.autojs.core.ui.ViewExtras.getViewAttributes(view, layoutInflater.resourceParser);
                 viewAttrs.setViewAttributeDelegate({
                     has: function(name) {
@@ -291,6 +297,25 @@ module.exports = function (runtime, global) {
             return (< />)
         };
         Widget.prototype.defineAttr = function(attrName, getter, setter){
+            var attrAlias = attrName;
+            var applier = null;
+            if(typeof(arguments[1]) == 'string'){
+                attrAlias = arguments[1];
+                if(arguments.length >= 3){
+                    applier = arguments[2];
+                }
+            } else if(typeof(arguments[1]) == 'function' && typeof(arguments[2]) != 'function'){
+                applier = arguments[1];
+            }
+            if(!(typeof(arguments[1]) == 'function' && typeof(arguments[2]) == 'function')){
+                getter = ()=> {
+                    return this[attrAlias];
+                };
+                setter = (view, attrName, value, setter)=> {
+                    this[attrAlias] = value;
+                    applier && applier(view, attrName, value, setter);
+                };
+            }
             this.__attrs__[attrName] = {
                 getter: getter,
                 setter: setter
@@ -310,6 +335,11 @@ module.exports = function (runtime, global) {
                 this.onViewCreated(view);
             }
         };
+        Widget.prototype.notifyAfterInflation = function(view){
+            if(typeof(this.onFinishInflation) == 'function'){
+                this.onFinishInflation(view);
+            }
+        }
         return Widget;
     })();
 
