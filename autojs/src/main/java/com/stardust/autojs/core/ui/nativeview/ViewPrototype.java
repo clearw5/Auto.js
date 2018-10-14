@@ -2,6 +2,8 @@ package com.stardust.autojs.core.ui.nativeview;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
+import android.os.Looper;
+import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -14,13 +16,16 @@ import com.stardust.autojs.runtime.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ViewPrototype {
 
     private final EventEmitter mEventEmitter;
     private final View mView;
-    private final HashSet<String> mRegisteredEvents = new HashSet<>();
+    private final Set<String> mRegisteredEvents = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final Scriptable mScope;
     private final ViewAttributes mViewAttributes;
     private Object mWidget;
@@ -94,9 +99,21 @@ public class ViewPrototype {
         if (mRegisteredEvents.contains(eventName)) {
             return;
         }
-        if (registerEvent(eventName)) {
-            mRegisteredEvents.add(eventName);
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            if (registerEvent(eventName)) {
+                mRegisteredEvents.add(eventName);
+            }
+        } else {
+            mView.post(() -> {
+                if (mRegisteredEvents.contains(eventName)) {
+                    return;
+                }
+                if (registerEvent(eventName)) {
+                    mRegisteredEvents.add(eventName);
+                }
+            });
         }
+
     }
 
     @SuppressLint("ClickableViewAccessibility")

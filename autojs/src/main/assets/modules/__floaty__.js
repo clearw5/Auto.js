@@ -2,23 +2,23 @@
 module.exports = function(runtime, global){
     var floaty = {};
 
-    floaty.window = function(layout){
+    floaty.window = function(xml){
         if(typeof(xml) == 'xml'){
             xml = xml.toXMLString();
         }
         return wrap(runtime.floaty.window(function(context, parent){
              runtime.ui.layoutInflater.setContext(context);
-             return ui.__inflate__(runtime.ui.layoutInflater.inflate(xml.toString(), parent, true));
+             return runtime.ui.layoutInflater.inflate(xml.toString(), parent, true);
         }));
     }
 
-    floaty.rawWindow = function(layout){
+    floaty.rawWindow = function(xml){
         if(typeof(xml) == 'xml'){
             xml = xml.toXMLString();
         }
         return wrap(runtime.floaty.rawWindow(function(context, parent){
              runtime.ui.layoutInflater.setContext(context);
-             return ui.__inflate__(runtime.ui.layoutInflater.inflate(xml.toString(), parent, true));
+             return runtime.ui.layoutInflater.inflate(xml.toString(), parent, true);
         }));
     }
 

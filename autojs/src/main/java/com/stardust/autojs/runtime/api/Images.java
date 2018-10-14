@@ -14,6 +14,7 @@ import android.util.Base64;
 import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
+import android.widget.ListView;
 
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.image.ColorFinder;

@@ -70,14 +70,27 @@ public class ScriptEngineService {
         public void onException(ScriptExecution execution, Exception e) {
             e.printStackTrace();
             onFinish(execution);
+            String message = null;
             if (!causedByInterrupted(e)) {
+                message = e.getMessage();
                 if (execution.getEngine() instanceof JavaScriptEngine) {
                     ((JavaScriptEngine) execution.getEngine()).getRuntime()
                             .console.error(e);
                 }
-                EVENT_BUS.post(new ScriptExecutionEvent(ScriptExecutionEvent.ON_EXCEPTION, e.getMessage()));
+            }
+            if (execution.getEngine() instanceof JavaScriptEngine) {
+                JavaScriptEngine engine = (JavaScriptEngine) execution.getEngine();
+                Exception uncaughtException = engine.getUncaughtException();
+                if (uncaughtException != null) {
+                    engine.getRuntime().console.error(uncaughtException);
+                    message = uncaughtException.getMessage();
+                }
+            }
+            if (message != null) {
+                EVENT_BUS.post(new ScriptExecutionEvent(ScriptExecutionEvent.ON_EXCEPTION, message));
             }
         }
+
     };
 
 

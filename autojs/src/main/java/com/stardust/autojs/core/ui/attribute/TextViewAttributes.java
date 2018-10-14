@@ -14,7 +14,6 @@ public class TextViewAttributes extends ViewAttributes {
     @Override
     protected void onRegisterAttrs() {
         super.onRegisterAttrs();
-
     }
 
     @Override
