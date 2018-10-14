@@ -40,13 +40,13 @@ public class Floaty {
         mLayoutInflater = ui.getLayoutInflater();
     }
 
-    public JsResizableWindow window(String xml) {
+    public JsResizableWindow window(BaseResizableFloatyWindow.ViewSupplier supplier) {
         try {
             FloatingPermission.waitForPermissionGranted(mContext);
         } catch (InterruptedException e) {
             throw new ScriptInterruptedException();
         }
-        JsResizableWindow window = new JsResizableWindow((context, parent) -> mLayoutInflater.inflate(xml, parent));
+        JsResizableWindow window = new JsResizableWindow(supplier);
         addWindow(window);
         return window;
     }
@@ -63,13 +63,13 @@ public class Floaty {
         return window;
     }
 
-    public JsRawWindow rawWindow(String xml) {
+    public JsRawWindow rawWindow(RawWindow.RawFloaty floaty) {
         try {
             FloatingPermission.waitForPermissionGranted(mContext);
         } catch (InterruptedException e) {
             throw new ScriptInterruptedException();
         }
-        JsRawWindow window = new JsRawWindow((context, parent) -> mLayoutInflater.inflate(xml, parent));
+        JsRawWindow window = new JsRawWindow(floaty);
         addWindow(window);
         return window;
     }

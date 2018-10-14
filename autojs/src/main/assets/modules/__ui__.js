@@ -6,27 +6,46 @@ module.exports = function (runtime, global) {
     var J = util.java;
     var ui = {};
 
+    ui.__widgets__ = {};
+
     ui.__defineGetter__("emitter", ()=>  activity ? activity.getEventEmitter() : null);
 
     ui.layout = function (xml) {
         if(!activity){
             throw new Error("需要在ui模式下运行才能使用该函数");
         }
-        if(typeof(xml) == 'xml'){
-            xml = xml.toXMLString();
-        }
         runtime.ui.layoutInflater.setContext(activity);
         var view = runtime.ui.layoutInflater.inflate(xml, activity.window.decorView, false);
         ui.setContentView(view);
     }
 
-    ui.inflate = function(xml, parent){
+    ui.inflate = function(xml, parent, attachToParent){
         if(!activity){
             throw new Error("需要在ui模式下运行才能使用该函数");
         }
+        if(typeof(xml) == 'xml'){
+            xml = xml.toXMLString();
+        }
         parent = parent || null;
+        attachToParent = !!attachToParent;
         runtime.ui.layoutInflater.setContext(activity);
-        return decorate(runtime.ui.layoutInflater.inflate(xml.toString(), parent));
+        return runtime.ui.layoutInflater.inflate(xml.toString(), parent, attachToParent);
+    }
+
+    ui.__inflate__ = function(ctx, xml, parent, attachToParent){
+        if(typeof(xml) == 'xml'){
+            xml = xml.toXMLString();
+        }
+        parent = parent || null;
+        attachToParent = !!attachToParent;
+        return runtime.ui.layoutInflater.inflate(ctx, xml.toString(), parent, attachToParent);
+    }
+
+    ui.registerWidget = function(name, widget){
+        if(typeof(widget) !== 'function'){
+            throw new TypeError('widget should be a class-like function');
+        }
+        ui.__widgets__[name] = widget;
     }
 
     ui.setContentView = function (view) {
@@ -103,64 +122,96 @@ module.exports = function (runtime, global) {
     runtime.ui.bindingContext = global;
     var layoutInflater = runtime.ui.layoutInflater;
     layoutInflater.setLayoutInflaterDelegate({
-        beforeConvertXml: function (xml) {
+        beforeConvertXml: function (context, xml) {
             return null;
         },
-        afterConvertXml: function (xml) {
+        afterConvertXml: function (context, xml) {
             return xml;
         },
-        afterInflation: function (result, xml, parent) {
+        afterInflation: function (context, result, xml, parent) {
             return result;
         },
-        beforeInflation: function (xml, parent) {
+        beforeInflation: function (context, xml, parent) {
             return null;
         },
-        beforeInflateView: function (node, parent, attachToParent) {
+        beforeInflateView: function (context, node, parent, attachToParent) {
             return null;
         },
-        afterInflateView: function (view, node, parent, attachToParent) {
+        afterInflateView: function (context, view, node, parent, attachToParent) {
             return view;
         },
-        beforeCreateView: function (node, viewName, attrs) {
+        beforeCreateView: function (context, node, viewName, parent, attrs) {
+            if(ui.__widgets__.hasOwnProperty(viewName)){
+                let Widget = ui.__widgets__[viewName];
+                let widget = new Widget();
+                let ctx = layoutInflater.newInflateContext();
+                ctx.put("widget", widget);
+                let view = ui.__inflate__(ctx, widget.renderInternal(), parent, false);
+                return view;
+            };
             return null;
         },
-        afterCreateView: function (view, node, viewName, attrs) {
+        afterCreateView: function (context, view, node, viewName, parent, attrs) {
             if (view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsListView" ||
                 view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsGridView") {
                 initListView(view);
             }
+            var widget = context.get("widget");
+            if(widget != null){
+                widget.view = view;
+                let viewAttrs = com.stardust.autojs.core.ui.ViewExtras.getViewAttributes(view, layoutInflater.resourceParser);
+                viewAttrs.setViewAttributeDelegate({
+                    has: function(name) {
+                        return widget.hasAttr(name);
+                    },
+                    get: function(view, name, getter){
+                        return widget.getAttr(view, name, getter);
+                    },
+                    set: function(view, name, value, setter) {
+                        widget.setAttr(view, name, value, setter);
+                    }
+                });
+                widget.notifyViewCreated(view);
+            }
             return view;
         },
-        beforeApplyAttributes: function (view, inflater, attrs, parent) {
+        beforeApplyAttributes: function (context, view, inflater, attrs, parent) {
             return false;
         },
-        afterApplyAttributes: function (view, inflater, attrs, parent) {
-
+        afterApplyAttributes: function (context, view, inflater, attrs, parent) {
+            context.remove("widget");
         },
-        beforeInflateChildren: function (inflater, node, parent) {
+        beforeInflateChildren: function (context, inflater, node, parent) {
             return false;
         },
-        afterInflateChildren: function (inflater, node, parent) {
+        afterInflateChildren: function (context, inflater, node, parent) {
 
         },
-        afterApplyPendingAttributesOfChildren: function (inflater, view) {
+        afterApplyPendingAttributesOfChildren: function (context, inflater, view) {
 
         },
-        beforeApplyPendingAttributesOfChildren: function (inflater, view) {
+        beforeApplyPendingAttributesOfChildren: function (context, inflater, view) {
             return false;
         },
-        beforeApplyAttribute: function (inflater, view, ns, attrName, value, parent, attrs) {
+        beforeApplyAttribute: function (context, inflater, view, ns, attrName, value, parent, attrs) {
             var isDynamic = layoutInflater.isDynamicValue(value);
             if ((isDynamic && layoutInflater.getInflateFlags() == layoutInflater.FLAG_IGNORES_DYNAMIC_ATTRS)
                     || (!isDynamic && layoutInflater.getInflateFlags() == layoutInflater.FLAG_JUST_DYNAMIC_ATTRS)) {
                 return true;
             }
             value = bind(value);
-            inflater.setAttr(view, ns, attrName, value, parent, attrs);
-            this.afterApplyAttribute(inflater, view, ns, attrName, value, parent, attrs);
+            let widget = context.get("widget");
+            if(widget != null && widget.hasAttr(attrName)){
+                widget.setAttr(view, attrName, value, (view, attrName, value)=>{
+                    inflater.setAttr(view, ns, attrName, value, parent, attrs);
+                });
+            } else {
+                inflater.setAttr(view, ns, attrName, value, parent, attrs);
+            }
+            this.afterApplyAttribute(context, inflater, view, ns, attrName, value, parent, attrs);
             return true;
         },
-        afterApplyAttribute: function (inflater, view, ns, attrName, value, parent, attrs) {
+        afterApplyAttribute: function (context, inflater, view, ns, attrName, value, parent, attrs) {
 
         }
     });
@@ -228,6 +279,39 @@ module.exports = function (runtime, global) {
             return __exitIfError__(action, defReturnValue);
         }
     }
+
+    ui.Widget = (function(){
+        function Widget(){
+            this.__attrs__ = {};
+        }
+        Widget.prototype.renderInternal = function(){
+            if(typeof(this.render) === 'function'){
+                return this.render();
+            }
+            return (< />)
+        };
+        Widget.prototype.defineAttr = function(attrName, getter, setter){
+            this.__attrs__[attrName] = {
+                getter: getter,
+                setter: setter
+            };
+        };
+        Widget.prototype.hasAttr = function(attrName){
+            return this.__attrs__.hasOwnProperty(attrName);
+        };
+        Widget.prototype.setAttr = function(view, attrName, value, setter){
+            this.__attrs__[attrName].setter(view, attrName, value, setter);
+        };
+        Widget.prototype.getAttr = function(view, attrName, getter){
+            return this.__attrs__[attrName].getter(view, attrName, getter);
+        };
+        Widget.prototype.notifyViewCreated = function(view){
+            if(typeof(this.onViewCreated) == 'function'){
+                this.onViewCreated(view);
+            }
+        };
+        return Widget;
+    })();
 
     var proxy = runtime.ui;
     proxy.__proxy__ = {

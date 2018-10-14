@@ -81,7 +81,7 @@ EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHo
     void setUpViews() {
         mEditorView.handleIntent(getIntent())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(Observers.consumer(),
+                .subscribe(Observers.emptyConsumer(),
                         ex -> onLoadFileError(ex.getMessage()));
         mEditorMenu = new EditorMenu(mEditorView);
         setUpToolbar();

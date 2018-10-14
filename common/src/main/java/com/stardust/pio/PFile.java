@@ -64,7 +64,7 @@ public class PFile extends File {
         if (renameTo(newFile)) {
             return newFile;
         } else {
-            return null;
+            return this;
         }
     }
 

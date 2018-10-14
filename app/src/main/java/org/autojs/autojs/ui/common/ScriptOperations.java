@@ -51,6 +51,7 @@ import java.io.InputStream;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.internal.functions.ObjectHelper;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
@@ -267,17 +268,19 @@ public class ScriptOperations {
         }
     }
 
-    public Observable<Boolean> rename(final ExplorerFileItem item) {
+    public Observable<ExplorerFileItem> rename(final ExplorerFileItem item) {
         final ScriptFile oldFile = new ScriptFile(item.getPath());
         String originalName = item.getName();
         return showNameInputDialog(originalName, new InputCallback(oldFile.isDirectory() ? null : PFiles.getExtension(item.getName()),
                 originalName))
                 .map(newName -> {
                     ExplorerFileItem newItem = item.rename(newName);
-                    if (newItem != null) {
-                        notifyFileChanged(mCurrentDirectory, item, newItem);
+                    if (ObjectHelper.equals(newItem.toScriptFile(), item.toScriptFile())) {
+                        showMessage(R.string.error_cannot_rename);
+                        throw new IOException();
                     }
-                    return newItem != null;
+                    notifyFileChanged(mCurrentDirectory, item, newItem);
+                    return newItem;
                 });
     }
 

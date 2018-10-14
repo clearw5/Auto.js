@@ -1,24 +1,16 @@
 package com.stardust.autojs.core.ui.widget;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.os.Handler;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.stardust.autojs.R;
 import com.stardust.autojs.core.ui.ViewExtras;
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
 import com.stardust.autojs.core.ui.nativeview.NativeView;
 import com.stardust.autojs.core.ui.nativeview.ViewPrototype;
 import com.stardust.autojs.runtime.ScriptRuntime;
 
-import org.mozilla.javascript.NativeJavaObject;
-import org.mozilla.javascript.Scriptable;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -143,7 +135,7 @@ public class JsListView extends RecyclerView {
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             try {
                 mDynamicLayoutInflater.setInflateFlags(DynamicLayoutInflater.FLAG_IGNORES_DYNAMIC_ATTRS);
-                return new ViewHolder(mDynamicLayoutInflater.inflate(mItemTemplate, parent, false));
+                return new ViewHolder(mDynamicLayoutInflater.inflate(mDynamicLayoutInflater.newInflateContext(), mItemTemplate, parent, false));
             } catch (Exception e) {
                 mScriptRuntime.exit(e);
                 return new ViewHolder(new View(parent.getContext()));
@@ -170,7 +162,7 @@ public class JsListView extends RecyclerView {
         }
 
         private void applyDynamicAttrs(Node node, View itemView, ViewGroup parent) {
-            mDynamicLayoutInflater.applyAttributes(itemView, mDynamicLayoutInflater.getAttributesMap(node), parent);
+            mDynamicLayoutInflater.applyAttributes(mDynamicLayoutInflater.newInflateContext(), itemView, mDynamicLayoutInflater.getAttributesMap(node), parent);
             if (!(itemView instanceof ViewGroup))
                 return;
             ViewGroup viewGroup = (ViewGroup) itemView;

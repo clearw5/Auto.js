@@ -454,7 +454,7 @@ public class ScriptRuntime {
             PrintWriter writer = new PrintWriter(stringWriter);
             e.printStackTrace(writer);
             writer.close();
-            BufferedReader bufferedReader = new BufferedReader(new StringReader(writer.toString()));
+            BufferedReader bufferedReader = new BufferedReader(new StringReader(stringWriter.toString()));
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 scriptTrace.append("\n").append(line);

@@ -15,6 +15,7 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.stardust.autojs.core.internal.Functions;
 import com.stardust.autojs.core.ui.inflater.ResourceParser;
@@ -113,6 +114,7 @@ public class ViewAttributes {
     private Map<String, Attribute> mAttributes = new HashMap<>();
     private final Drawables mDrawables;
     private final View mView;
+    private ViewAttributeDelegate mViewAttributeDelegate;
 
     public ViewAttributes(ResourceParser resourceParser, View view) {
         mDrawables = resourceParser.getDrawables();
@@ -120,6 +122,9 @@ public class ViewAttributes {
         init();
     }
 
+    public void setViewAttributeDelegate(ViewAttributeDelegate viewAttributeDelegate) {
+        mViewAttributeDelegate = viewAttributeDelegate;
+    }
 
     public Drawables getDrawables() {
         return mDrawables;
@@ -130,13 +135,41 @@ public class ViewAttributes {
     }
 
     public boolean contains(String name) {
-        return mAttributes.containsKey(name);
+        return mAttributes.containsKey(name) ||
+                (mViewAttributeDelegate != null && mViewAttributeDelegate.has(name));
     }
 
     public Attribute get(String name) {
+        if (mViewAttributeDelegate != null && mViewAttributeDelegate.has(name)) {
+            return new Attribute() {
+                @Override
+                public String get() {
+                    return mViewAttributeDelegate.get(getView(), name, ViewAttributes.this::getAttrValue);
+                }
+
+                @Override
+                public void set(String value) {
+                    mViewAttributeDelegate.set(getView(), name, value, ViewAttributes.this::setAttrValue);
+                }
+            };
+        }
         return mAttributes.get(name);
     }
 
+    public String getAttrValue(String name) {
+        Attribute attribute = mAttributes.get(name);
+        if (attribute != null) {
+            return attribute.get();
+        }
+        return null;
+    }
+
+    public void setAttrValue(String name, String value) {
+        Attribute attribute = mAttributes.get(name);
+        if (attribute != null) {
+            attribute.set(value);
+        }
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     private void init() {
@@ -248,9 +281,7 @@ public class ViewAttributes {
     }
 
     protected void setElevation(int e) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mView.setElevation(e);
-        }
+        ViewCompat.setElevation(mView, e);
     }
 
     protected void setScrollbars(String scrollbars) {
@@ -472,15 +503,14 @@ public class ViewAttributes {
     }
 
     protected void setBackgroundTint(int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mView.setBackgroundTintList(ColorStateList.valueOf(color));
-        }
+        ViewCompat.setBackgroundTintList(mView, ColorStateList.valueOf(color));
     }
 
     protected void setContextClickable(boolean clickable) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mView.setContextClickable(clickable);
         }
+
     }
 
     protected void setChecked(boolean checked) {

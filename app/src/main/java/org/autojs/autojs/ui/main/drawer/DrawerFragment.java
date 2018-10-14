@@ -279,7 +279,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 .input("", host, (dialog, input) -> {
                     Pref.saveServerAddress(input.toString());
                     DevPluginService.getInstance().connectToServer(input.toString())
-                            .subscribe(Observers.consumer(), this::onConnectException);
+                            .subscribe(Observers.emptyConsumer(), this::onConnectException);
                 })
                 .neutralText(R.string.text_help)
                 .onNeutral((dialog, which) -> {

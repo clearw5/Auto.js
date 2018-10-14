@@ -46,4 +46,30 @@ J.toJsArray = function(list, nullListToEmptyArray){
     return arr;
 }
 
+J.objectToMap = function(obj){
+    if(obj == null || obj === undefined){
+        return null;
+    }
+    let map = new java.util.HashMap();
+    for(let key in obj){
+        if(obj.hasOwnProperty(key)){
+            map.put(key, obj[key]);
+        }
+    }
+    return map;
+}
+
+J.mapToObject = function(map){
+    if(map == null || map === undefined){
+        return null;
+    }
+    let iter = map.entrySet().iterator();
+    let obj = {};
+    while(iter.hasNext()){
+        let entry = iter.next();
+        obj[entry.key] = entry.value;
+    }
+    return obj;
+}
+
 module.exports = J;

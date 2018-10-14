@@ -3,7 +3,10 @@ package com.stardust.autojs.script;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.stardust.autojs.rhino.TokenStream;
 import com.stardust.util.MapBuilder;
+
+import org.mozilla.javascript.Token;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -63,13 +66,17 @@ public abstract class JavaScriptSource extends ScriptSource {
     }
 
     private int parseExecutionMode(String script) {
-        if (script == null || script.length() == 0 || script.charAt(0) != '"')
+        if (script == null || script.length() == 0)
             return EXECUTION_MODE_NORMAL;
-        int i = script.lastIndexOf("\";", EXECUTION_MODE_STRING_MAX_LENGTH + 2);
-        if (i == -1)
-            return EXECUTION_MODE_NORMAL;
-        String modeString = script.substring(1, i);
-        return parseExecutionMode(modeString.split(" "));
+        if(script.charAt(0) == '"'){
+            int i = script.lastIndexOf("\";", EXECUTION_MODE_STRING_MAX_LENGTH + 2);
+            if (i >= 0){
+                String modeString = script.substring(1, i);
+                return parseExecutionMode(modeString.split(" "));
+            }
+        }
+        return EXECUTION_MODE_NORMAL;
+
     }
 
     private int parseExecutionMode(String[] modeStrings) {

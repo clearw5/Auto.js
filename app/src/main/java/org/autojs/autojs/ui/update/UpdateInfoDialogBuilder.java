@@ -119,7 +119,7 @@ public class UpdateInfoDialogBuilder extends MaterialDialog.Builder {
         final String path = new File(Pref.getScriptDirPath(), "AutoJs.apk").getPath();
         DownloadManager.getInstance().downloadWithProgress(getContext(), downloadUrl, path)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(file -> IntentUtil.installApk(getContext(), file.getPath(), AppFileProvider.AUTHORITY),
+                .subscribe(file -> IntentUtil.installApkOrToast(getContext(), file.getPath(), AppFileProvider.AUTHORITY),
                         error -> {
                             error.printStackTrace();
                             Toast.makeText(getContext(), R.string.text_download_failed, Toast.LENGTH_SHORT).show();

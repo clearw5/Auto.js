@@ -101,7 +101,7 @@ public class AndroidClassIndices {
                 .doOnNext(this::load)
                 .subscribeOn(Schedulers.from(mSingleThreadExecutor))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(Observers.consumer(), t -> {
+                .subscribe(Observers.emptyConsumer(), t -> {
                     mLoadThrowable = t;
                     t.printStackTrace();
                 });

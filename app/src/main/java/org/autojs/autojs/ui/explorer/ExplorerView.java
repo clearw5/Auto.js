@@ -31,8 +31,6 @@ import org.autojs.autojs.model.explorer.ExplorerProjectPage;
 import org.autojs.autojs.model.explorer.ExplorerSampleItem;
 import org.autojs.autojs.model.explorer.ExplorerSamplePage;
 import org.autojs.autojs.model.explorer.Explorers;
-import org.autojs.autojs.model.explorer.WorkspaceFileProvider;
-import org.autojs.autojs.model.sample.SampleFile;
 import org.autojs.autojs.model.script.ScriptFile;
 import org.autojs.autojs.model.script.Scripts;
 import org.autojs.autojs.tool.Observers;
@@ -268,7 +266,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
             case R.id.rename:
                 new ScriptOperations(getContext(), this, getCurrentPage())
                         .rename((ExplorerFileItem) mSelectedItem)
-                        .subscribe();
+                        .subscribe(Observers.emptyObserver());
                 break;
             case R.id.delete:
                 new ScriptOperations(getContext(), this, getCurrentPage())

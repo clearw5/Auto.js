@@ -58,11 +58,11 @@ public class TimedTaskManager {
             return;
         if (task.isDisposable()) {
             mTimedTaskDatabase.delete(task)
-                    .subscribe(Observers.consumer(), Throwable::printStackTrace);
+                    .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
         } else {
             task.setScheduled(false);
             mTimedTaskDatabase.update(task)
-                    .subscribe(Observers.consumer(), Throwable::printStackTrace);
+                    .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
         }
     }
 
@@ -70,13 +70,13 @@ public class TimedTaskManager {
     public void removeTask(TimedTask timedTask) {
         TimedTaskScheduler.cancel(mContext, timedTask);
         mTimedTaskDatabase.delete(timedTask)
-                .subscribe(Observers.consumer(), Throwable::printStackTrace);
+                .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
     }
 
     @SuppressLint("CheckResult")
     public void addTask(TimedTask timedTask) {
         mTimedTaskDatabase.insert(timedTask)
-                .subscribe(Observers.consumer(), Throwable::printStackTrace);;
+                .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);;
         TimedTaskScheduler.scheduleTaskIfNeeded(mContext, timedTask);
     }
 
@@ -119,7 +119,7 @@ public class TimedTaskManager {
     public void notifyTaskScheduled(TimedTask timedTask) {
         timedTask.setScheduled(true);
         mTimedTaskDatabase.update(timedTask)
-                .subscribe(Observers.consumer(), Throwable::printStackTrace);
+                .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
 
     }
 
@@ -134,7 +134,7 @@ public class TimedTaskManager {
     @SuppressLint("CheckResult")
     public void updateTask(TimedTask task) {
         mTimedTaskDatabase.update(task)
-                .subscribe(Observers.consumer(), Throwable::printStackTrace);
+                .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
         TimedTaskScheduler.cancel(mContext, task);
         TimedTaskScheduler.scheduleTaskIfNeeded(mContext, task);
     }

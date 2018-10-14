@@ -1,8 +1,9 @@
 package com.stardust.autojs.core.ui.nativeview;
 
+import android.graphics.PorterDuff;
 import android.view.View;
+import android.widget.Button;
 
-import com.stardust.autojs.R;
 import com.stardust.autojs.core.ui.JsViewHelper;
 import com.stardust.autojs.core.ui.ViewExtras;
 import com.stardust.autojs.core.ui.attribute.ViewAttributes;
@@ -47,7 +48,7 @@ public class NativeView extends NativeJavaObjectWithPrototype {
         super(scope, view, staticType);
         mViewAttributes = ViewExtras.getViewAttributes(view, runtime.ui.getResourceParser());
         mView = view;
-        mViewPrototype = new ViewPrototype(mView, scope, runtime);
+        mViewPrototype = new ViewPrototype(mView, mViewAttributes, scope, runtime);
         prototype = new NativeJavaObject(scope, mViewPrototype, mViewPrototype.getClass());
     }
 
@@ -60,24 +61,7 @@ public class NativeView extends NativeJavaObjectWithPrototype {
     }
 
     @Override
-    public void put(String name, Scriptable start, Object value) {
-        if (value != null && (value instanceof CharSequence ||
-                value.getClass().getName().equals("org.mozilla.javascript.NativeString"))) {
-            ViewAttributes.Attribute attribute = mViewAttributes.get(name);
-            if (attribute != null) {
-                attribute.set(ScriptRuntime.toString(value));
-                return;
-            }
-        }
-        super.put(name, start, value);
-    }
-
-    @Override
     public Object get(String name, Scriptable start) {
-        ViewAttributes.Attribute attribute = mViewAttributes.get(name);
-        if (attribute != null) {
-            return attribute.get();
-        }
         if (super.has(name, start)) {
             return super.get(name, start);
         } else {

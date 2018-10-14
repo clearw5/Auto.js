@@ -7,6 +7,7 @@ import android.widget.CompoundButton;
 
 import com.stardust.autojs.core.eventloop.EventEmitter;
 import com.stardust.autojs.core.ui.BaseEvent;
+import com.stardust.autojs.core.ui.attribute.ViewAttributes;
 import com.stardust.autojs.core.ui.widget.JsListView;
 import com.stardust.autojs.runtime.ScriptRuntime;
 
@@ -20,11 +21,32 @@ public class ViewPrototype {
     private final View mView;
     private final HashSet<String> mRegisteredEvents = new HashSet<>();
     private final Scriptable mScope;
+    private final ViewAttributes mViewAttributes;
 
-    public ViewPrototype(View view, Scriptable scope, ScriptRuntime runtime) {
+    public ViewPrototype(View view, ViewAttributes viewAttributes, Scriptable scope, ScriptRuntime runtime) {
         mView = view;
+        mViewAttributes = viewAttributes;
         mEventEmitter = runtime.events.emitter();
         mScope = scope;
+    }
+
+    public ViewAttributes getViewAttributes() {
+        return mViewAttributes;
+    }
+
+    public Object attr(String name) {
+        ViewAttributes.Attribute attribute = mViewAttributes.get(name);
+        if (attribute != null) {
+            return attribute.get();
+        }
+        return null;
+    }
+
+    public void attr(String name, Object value) {
+        ViewAttributes.Attribute attribute = mViewAttributes.get(name);
+        if (attribute != null) {
+            attribute.set(org.mozilla.javascript.ScriptRuntime.toString(value));
+        }
     }
 
     public void click() {

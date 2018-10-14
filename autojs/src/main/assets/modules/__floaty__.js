@@ -3,17 +3,23 @@ module.exports = function(runtime, global){
     var floaty = {};
 
     floaty.window = function(layout){
-        if(typeof(layout) == 'xml'){
-            layout = layout.toXMLString();
+        if(typeof(xml) == 'xml'){
+            xml = xml.toXMLString();
         }
-        return wrap(runtime.floaty.window(layout));
+        return wrap(runtime.floaty.window(function(context, parent){
+             runtime.ui.layoutInflater.setContext(context);
+             return ui.__inflate__(runtime.ui.layoutInflater.inflate(xml.toString(), parent, true));
+        }));
     }
 
     floaty.rawWindow = function(layout){
-        if(typeof(layout) == 'xml'){
-            layout = layout.toXMLString();
+        if(typeof(xml) == 'xml'){
+            xml = xml.toXMLString();
         }
-        return wrap(runtime.floaty.rawWindow(layout));
+        return wrap(runtime.floaty.rawWindow(function(context, parent){
+             runtime.ui.layoutInflater.setContext(context);
+             return ui.__inflate__(runtime.ui.layoutInflater.inflate(xml.toString(), parent, true));
+        }));
     }
 
     function wrap(window){

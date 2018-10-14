@@ -48,7 +48,7 @@ public class TaskerScriptEditActivity extends BaseActivity {
                 .putExtra(EXTRA_RUN_ENABLED, false)
                 .putExtra(EXTRA_SAVE_ENABLED, false))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(Observers.consumer(),
+                .subscribe(Observers.emptyConsumer(),
                         ex -> {
                             Toast.makeText(TaskerScriptEditActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
                             finish();

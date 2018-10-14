@@ -119,6 +119,7 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
         ViewAttributes viewAttributes = ViewExtras.getViewAttributes(view, getResourceParser());
         ViewAttributes.Attribute attribute = viewAttributes.get(attr);
         if (attribute != null) {
+            Log.d(LOG_TAG, "setAttr use ViewAttributes: attr = " + attr);
             attribute.set(value);
             return true;
         }
@@ -284,6 +285,7 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
             case "paddingBottom":
                 view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight(), Dimensions.parseToIntPixel(value, view));
                 break;
+            case "bg":
             case "background":
                 getDrawables().setupWithViewBackground(view, value);
                 break;

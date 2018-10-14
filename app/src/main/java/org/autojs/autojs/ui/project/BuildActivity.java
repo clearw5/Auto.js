@@ -317,7 +317,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
                 .positiveText(R.string.text_install)
                 .negativeText(R.string.cancel)
                 .onPositive((dialog, which) ->
-                        IntentUtil.installApk(BuildActivity.this, outApk.getPath(), AppFileProvider.AUTHORITY)
+                        IntentUtil.installApkOrToast(BuildActivity.this, outApk.getPath(), AppFileProvider.AUTHORITY)
                 )
                 .show();
 
