@@ -43,7 +43,7 @@ public class FloatyWindowManger {
             e.printStackTrace();
             if(hasPermission){
                 manageDrawOverlays(context);
-                Toast.makeText(context, R.string.text_no_floating_window_permission, Toast.LENGTH_SHORT).show();
+                GlobalAppContext.toast(R.string.text_no_floating_window_permission);
             }
         }
         return false;

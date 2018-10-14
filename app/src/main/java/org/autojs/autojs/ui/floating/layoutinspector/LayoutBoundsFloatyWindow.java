@@ -17,6 +17,7 @@ import org.autojs.autojs.ui.codegeneration.CodeGenerateDialog;
 import org.autojs.autojs.ui.floating.FloatyWindowManger;
 import org.autojs.autojs.ui.floating.FullScreenFloatyWindow;
 
+import com.stardust.view.accessibility.LayoutInspector;
 import com.stardust.view.accessibility.NodeInfo;
 
 import org.autojs.autojs.ui.widget.BubblePopupMenu;
@@ -39,6 +40,21 @@ public class LayoutBoundsFloatyWindow extends FullScreenFloatyWindow {
 
     public LayoutBoundsFloatyWindow(NodeInfo rootNode) {
         mRootNode = rootNode;
+    }
+
+    public static void capture(LayoutInspector inspector, Context context) {
+        LayoutInspector.CaptureAvailableListener listener = new LayoutInspector.CaptureAvailableListener() {
+            @Override
+            public void onCaptureAvailable(NodeInfo capture) {
+                inspector.removeCaptureAvailableListener(this);
+                LayoutBoundsFloatyWindow window = new LayoutBoundsFloatyWindow(capture);
+                FloatyWindowManger.addWindow(context, window);
+            }
+        };
+        inspector.addCaptureAvailableListener(listener);
+        if (!inspector.captureCurrentWindow()) {
+            inspector.removeCaptureAvailableListener(listener);
+        }
     }
 
     @Override

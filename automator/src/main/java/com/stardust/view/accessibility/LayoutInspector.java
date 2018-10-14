@@ -5,10 +5,6 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.stardust.view.accessibility.AccessibilityService;
-import com.stardust.util.UnderuseExecutors;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -29,18 +25,18 @@ public class LayoutInspector {
     private Executor mExecutor = Executors.newSingleThreadExecutor();
     private CopyOnWriteArrayList<CaptureAvailableListener> mCaptureAvailableListeners = new CopyOnWriteArrayList<>();
 
-    public void captureCurrentWindow() {
+    public boolean captureCurrentWindow() {
         AccessibilityService service = AccessibilityService.getInstance();
         if (service == null) {
             Log.d(LOG_TAG, "captureCurrentWindow: service = null");
             mCapture = null;
-            return;
+            return false;
         }
         final AccessibilityNodeInfo root = getRootInActiveWindow(service);
         if (root == null) {
             Log.d(LOG_TAG, "captureCurrentWindow: root = null");
             mCapture = null;
-            return;
+            return false;
         }
         mExecutor.execute(() -> {
             mDumping = true;
@@ -50,7 +46,7 @@ public class LayoutInspector {
                 l.onCaptureAvailable(mCapture);
             }
         });
-
+        return true;
     }
 
     public void addCaptureAvailableListener(CaptureAvailableListener l){

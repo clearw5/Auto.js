@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.stardust.autojs.annotation.ScriptInterface;
@@ -47,6 +48,11 @@ public class AppUtils {
             return false;
         }
 
+    }
+
+    @ScriptInterface
+    public void sendLocalBroadcastSync(Intent intent){
+        LocalBroadcastManager.getInstance(mContext).sendBroadcastSync(intent);
     }
 
     @ScriptInterface

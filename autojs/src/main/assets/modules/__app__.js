@@ -55,6 +55,11 @@ module.exports = function(runtime, global){
     }
 
     app.sendBroadcast = function(i){
+        if(typeof(i) == "string"){
+            if(runtime.getProperty("broadcast." + i)){
+                app.sendLocalBroadcastSync(app.intent({action: runtime.getProperty("broadcast." + i)}));
+            }
+        }
         context.sendBroadcast(app.intent(i));
     }
 
