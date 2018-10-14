@@ -61,13 +61,17 @@ public abstract class AutoJs {
         mContext = application.getApplicationContext();
         mApplication = application;
         mUiHandler = new UiHandler(mContext);
-        mAppUtils = new AppUtils(mContext);
+        mAppUtils = createAppUtils(mContext);
         mGlobalConsole = createGlobalConsole();
         mNotificationObserver = new AccessibilityNotificationObserver(mContext);
         mAccessibilityInfoProvider = new AccessibilityInfoProvider(mContext.getPackageManager());
         mScriptEngineService = buildScriptEngineService();
         ScriptEngineService.setInstance(mScriptEngineService);
         init();
+    }
+
+    protected AppUtils createAppUtils(Context context) {
+        return new AppUtils(mContext);
     }
 
     protected GlobalStardustConsole createGlobalConsole() {
