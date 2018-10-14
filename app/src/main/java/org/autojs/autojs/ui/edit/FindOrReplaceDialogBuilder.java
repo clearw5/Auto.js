@@ -3,14 +3,12 @@ package org.autojs.autojs.ui.edit;
 import android.content.Context;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputEditText;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stardust.app.GlobalAppContext;
 
 import org.autojs.autojs.R;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
@@ -39,10 +37,10 @@ public class FindOrReplaceDialogBuilder extends ThemeColorMaterialDialogBuilder 
     CheckBox mReplaceAllCheckBox;
 
     @BindView(R.id.keywords)
-    TextInputEditText mKeywordsEditText;
+    EditText mKeywordsEditText;
 
     @BindView(R.id.replacement)
-    TextInputEditText mReplacementEditText;
+    EditText mReplacementEditText;
 
     private EditorView mEditorView;
 

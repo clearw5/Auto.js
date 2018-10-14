@@ -12,6 +12,7 @@ import com.stardust.autojs.core.ui.widget.JsListView;
 import com.stardust.autojs.runtime.ScriptRuntime;
 
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.Undefined;
 
 import java.util.HashSet;
 
@@ -39,7 +40,7 @@ public class ViewPrototype {
         if (attribute != null) {
             return attribute.get();
         }
-        return null;
+        return Undefined.SCRIPTABLE_UNDEFINED;
     }
 
     public void attr(String name, Object value) {
