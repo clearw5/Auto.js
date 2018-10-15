@@ -125,7 +125,7 @@ module.exports = function(runtime, global){
     }
 
     auto.setMode = function(modeStr){
-        if(typeof(mode) !== "string"){
+        if(typeof(modeStr) !== "string"){
             throw new TypeError("mode should be a string");
         }
         let mode = modes[modeStr];
