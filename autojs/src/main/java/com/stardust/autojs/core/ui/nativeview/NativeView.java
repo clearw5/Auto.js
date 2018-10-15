@@ -10,6 +10,7 @@ import com.stardust.autojs.core.ui.attribute.ViewAttributes;
 import com.stardust.autojs.rhino.NativeJavaObjectWithPrototype;
 
 import org.mozilla.javascript.NativeJavaObject;
+import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
 
@@ -49,7 +50,8 @@ public class NativeView extends NativeJavaObjectWithPrototype {
         mViewAttributes = ViewExtras.getViewAttributes(view, runtime.ui.getResourceParser());
         mView = view;
         mViewPrototype = new ViewPrototype(mView, mViewAttributes, scope, runtime);
-        prototype = new NativeJavaObject(scope, mViewPrototype, mViewPrototype.getClass());
+        prototype = new NativeJavaObjectWithPrototype(scope, mViewPrototype, mViewPrototype.getClass());
+        prototype.setPrototype(new NativeObject());
     }
 
     @Override
