@@ -1,9 +1,5 @@
 package com.stardust.autojs.runtime;
 
-import android.view.View;
-
-import com.stardust.autojs.core.accessibility.UiCollection;
-
 /**
  * Created by Stardust on 2017/7/21.
  */

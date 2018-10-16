@@ -1531,7 +1531,7 @@ public class Dim {
          */
         public boolean breakpoint(int line, boolean value) {
             if (!breakableLine(line)) {
-                throw new IllegalArgumentException(String.valueOf(line));
+                return false;
             }
             boolean changed;
             synchronized (breakpoints) {
