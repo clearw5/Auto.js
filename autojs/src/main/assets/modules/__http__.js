@@ -131,7 +131,14 @@ module.exports = function(runtime, scope){
     function setHeaders(r, headers){
       for(var key in headers){
         if(headers.hasOwnProperty(key)){
-            r.header(key, headers[key]);
+            let value = headers[key];
+            if(Array.isArray(value)){
+                value.forEach(v => {
+                    r.header(key, v);
+                });
+            }else{
+                r.header(key, value);
+            }
         }
       }
     }
@@ -159,7 +166,17 @@ module.exports = function(runtime, scope){
         var headers = res.headers();
         r.headers = {};
         for(var i = 0; i < headers.size(); i++){
-            r.headers[headers.name(i)] = headers.value(i);
+            let name = headers.name(i);
+            let value = headers.value(i);
+            if(r.headers.hasOwnProperty(name)){
+                let origin = r.headers[name];
+                if(!Array.isArray(origin)){
+                    r.headers[name] = [origin];
+                }
+                r.headers[name].push(value);
+            }else{
+                r.headers[name] = value;
+            }
         }
         r.body = {};
         var body = res.body();
