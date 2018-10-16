@@ -100,7 +100,9 @@ public class XmlConverter {
             .handler("paddingRight", new AttributeHandler.DimenHandler("paddingRight"))
             .handler("paddingTop", new AttributeHandler.DimenHandler("paddingTop"))
             .handler("paddingBottom", new AttributeHandler.DimenHandler("paddingBottom"))
-            .defaultHandler(new AttributeHandler.MappedAttributeHandler());
+            .defaultHandler(new AttributeHandler.MappedAttributeHandler()
+                    .mapName("align", "layout_gravity")
+            );
 
     public static String convertToAndroidLayout(String xml) throws IOException, SAXException, ParserConfigurationException {
         return convertToAndroidLayout(new InputSource(new StringReader(xml)));

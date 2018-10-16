@@ -77,7 +77,6 @@ public class ScriptRuntime {
     private static final String TAG = "ScriptRuntime";
 
 
-
     public static class Builder {
         private UiHandler mUiHandler;
         private Console mConsole;
@@ -352,6 +351,8 @@ public class ScriptRuntime {
 
     public void exit() {
         mThread.interrupt();
+        engines.myEngine().forceStop();
+        threads.exit();
         if (Looper.myLooper() != Looper.getMainLooper()) {
             throw new ScriptInterruptedException();
         }
@@ -359,9 +360,7 @@ public class ScriptRuntime {
 
     public void exit(Exception e) {
         engines.myEngine().uncaughtException(e);
-        if (Looper.myLooper() != Looper.getMainLooper()) {
-            throw new ScriptException(e);
-        }
+        exit();
     }
 
     @Deprecated
@@ -434,7 +433,7 @@ public class ScriptRuntime {
         return mProperties.remove(key);
     }
 
-    public static String getStackTrace(Throwable e, boolean printJavaStackTrace){
+    public static String getStackTrace(Throwable e, boolean printJavaStackTrace) {
         StringBuilder scriptTrace = new StringBuilder();
         if (e instanceof RhinoException) {
             RhinoException rhinoException = (RhinoException) e;
@@ -443,9 +442,9 @@ public class ScriptRuntime {
                 element.renderV8Style(scriptTrace);
                 scriptTrace.append("\n");
             }
-            if(printJavaStackTrace){
+            if (printJavaStackTrace) {
                 scriptTrace.append("- - - - - - - - - - -\n");
-            }else {
+            } else {
                 return scriptTrace.toString();
             }
         }

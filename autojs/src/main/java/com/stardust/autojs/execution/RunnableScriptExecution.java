@@ -14,6 +14,7 @@ import com.stardust.lang.ThreadCompat;
 
 public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecution implements Runnable {
 
+
     private static final String TAG = "RunnableJSExecution";
     private ScriptEngine mScriptEngine;
     private ScriptEngineManager mScriptEngineManager;
@@ -39,16 +40,25 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
         try {
             prepare(engine);
             Object r = doExecution(engine);
+            Exception uncaughtException = engine.getUncaughtException();
+            if (uncaughtException != null) {
+                onException(engine, uncaughtException);
+                return null;
+            }
             getListener().onSuccess(this, r);
             return r;
         } catch (Exception e) {
-            e.printStackTrace();
-            getListener().onException(this, e);
+            onException(engine, e);
+            return null;
         } finally {
             Log.d(TAG, "Engine destroy");
             engine.destroy();
         }
-        return null;
+    }
+
+    protected void onException(ScriptEngine engine, Exception e) {
+        Log.w(TAG, "onException: engine = " + engine, e);
+        getListener().onException(this, e);
     }
 
     private void prepare(ScriptEngine engine) {

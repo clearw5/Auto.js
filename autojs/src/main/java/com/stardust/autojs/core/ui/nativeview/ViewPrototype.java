@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Looper;
 import android.support.v4.view.ViewCompat;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -119,10 +120,19 @@ public class ViewPrototype {
     @SuppressLint("ClickableViewAccessibility")
     private boolean registerEvent(String eventName) {
         switch (eventName) {
+            case "touch_down":
+            case "touch_up":
             case "touch": {
                 mView.setOnTouchListener((v, event) -> {
                     BaseEvent e = new BaseEvent(mScope, event, event.getClass());
                     //Log.d(LOG_TAG, "this = " + NativeView.this + ", emitter = " + mEventEmitter + ", view = " + mView);
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        emit("touch_down", e, v);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        emit("touch_up", e, v);
+                    } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                        emit("touch_move", e, v);
+                    }
                     emit("touch", e, v);
                     return e.isConsumed();
                 });
@@ -143,7 +153,12 @@ public class ViewPrototype {
             case "key": {
                 mView.setOnKeyListener((v, keyCode, event) -> {
                     BaseEvent e = new BaseEvent(mScope, event, event.getClass());
-                    emit("key", e, keyCode, v);
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        emit("key_down", keyCode, e, v);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        emit("key_up", keyCode, e, v);
+                    }
+                    emit("key", keyCode, e, v);
                     return e.isConsumed();
                 });
             }

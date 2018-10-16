@@ -23,6 +23,7 @@ public class Threads {
     private final Thread mMainThread;
     private MainThreadProxy mMainThreadProxy;
     private int mSpawnCount = 0;
+    private boolean mExit = false;
 
     public Threads(ScriptRuntime runtime) {
         mRuntime = runtime;
@@ -44,11 +45,14 @@ public class Threads {
     public TimerThread start(Runnable runnable) {
         TimerThread thread = createThread(runnable);
         synchronized (mThreads) {
+            if (mExit) {
+                throw new IllegalStateException("script exiting");
+            }
             mThreads.add(thread);
             thread.setName(mMainThread.getName() + " (Spawn-" + mSpawnCount + ")");
             mSpawnCount++;
+            thread.start();
         }
-        thread.start();
         return thread;
     }
 
@@ -92,6 +96,12 @@ public class Threads {
         }
     }
 
+    public void exit() {
+        synchronized (mThreads) {
+            shutDownAll();
+            mExit = true;
+        }
+    }
 
     public boolean hasRunningThreads() {
         synchronized (mThreads) {
