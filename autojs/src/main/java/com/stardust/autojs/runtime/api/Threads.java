@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.stardust.autojs.core.looper.MainThreadProxy;
 import com.stardust.autojs.core.looper.TimerThread;
-import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.concurrent.VolatileDispose;
 
@@ -56,10 +55,7 @@ public class Threads {
     @NonNull
     private TimerThread createThread(Runnable runnable) {
         return new TimerThread(mRuntime, mRuntime.timers.getMaxCallbackUptimeMillisForAllThreads(),
-                () -> {
-                    ((RhinoJavaScriptEngine) mRuntime.engines.myEngine()).createContext();
-                    runnable.run();
-                }
+                runnable
         ) {
             @Override
             protected void onExit() {

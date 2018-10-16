@@ -88,9 +88,5 @@ public class LoopBasedJavaScriptEngine extends RhinoJavaScriptEngine {
         super.init();
     }
 
-    public static void initEngine(){
-        RhinoJavaScriptEngine.initEngine();
-    }
-
 
 }

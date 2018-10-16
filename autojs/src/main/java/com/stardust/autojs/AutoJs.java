@@ -13,7 +13,6 @@ import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.console.GlobalStardustConsole;
 import com.stardust.autojs.core.console.StardustConsole;
-import com.stardust.autojs.core.image.OpenCVHelper;
 import com.stardust.autojs.core.image.capture.ScreenCaptureRequestActivity;
 import com.stardust.autojs.core.image.capture.ScreenCaptureRequester;
 import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;
@@ -21,10 +20,10 @@ import com.stardust.autojs.core.util.Shell;
 import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
 import com.stardust.autojs.engine.RootAutomatorEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
+import com.stardust.autojs.rhino.InterruptibleAndroidContextFactory;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 import com.stardust.autojs.runtime.api.AppUtils;
-import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.util.ScreenMetrics;
@@ -34,8 +33,10 @@ import com.stardust.view.accessibility.AccessibilityNotificationObserver;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.LayoutInspector;
 
-import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.OpenCVLoader;
+import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.Scriptable;
+
+import java.io.File;
 
 /**
  * Created by Stardust on 2017/11/29.
@@ -105,9 +106,13 @@ public abstract class AutoJs {
             engine.setRuntime(createRuntime());
             return engine;
         });
-        LoopBasedJavaScriptEngine.initEngine();
+        initContextFactory();
         mScriptEngineManager.registerEngine(AutoFileSource.ENGINE, () -> new RootAutomatorEngine(mContext));
 
+    }
+
+    protected void initContextFactory() {
+        ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mContext.getCacheDir(), "classes")));
     }
 
     protected ScriptRuntime createRuntime() {

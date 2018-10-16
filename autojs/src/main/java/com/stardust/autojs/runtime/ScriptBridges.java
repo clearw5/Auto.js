@@ -19,8 +19,6 @@ public class ScriptBridges {
 
         Object toArray(Iterable o);
 
-        Object asArray(Object o);
-
         Object toString(Object obj);
 
     }
@@ -46,12 +44,6 @@ public class ScriptBridges {
         checkBridges();
         return mBridges.toArray(c);
     }
-
-    public Object asArray(Object o) {
-        checkBridges();
-        return mBridges.asArray(o);
-    }
-
 
     public Object toString(Object obj) {
         checkBridges();

@@ -230,10 +230,6 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         }
     }
 
-    public void setSupportActionBar(@Nullable NativeObject toolbar) {
-        super.setSupportActionBar(UI.unwrapJsViewObject(toolbar, Toolbar.class));
-    }
-
     private static class ActivityScriptExecution extends ScriptExecution.AbstractScriptExecution {
 
         private ScriptEngine mScriptEngine;

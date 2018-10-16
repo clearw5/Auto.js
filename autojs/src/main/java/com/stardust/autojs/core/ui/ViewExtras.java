@@ -1,5 +1,6 @@
 package com.stardust.autojs.core.ui;
 
+import android.util.Log;
 import android.view.View;
 
 import com.stardust.autojs.R;
@@ -13,6 +14,7 @@ import org.mozilla.javascript.Scriptable;
 
 public class ViewExtras {
 
+    private static final String LOG_TAG = "ViewExtras";
     private NativeView mNativeView;
 
     private ViewAttributes mViewAttributes;
@@ -20,6 +22,7 @@ public class ViewExtras {
     public static ViewExtras get(View view) {
         ViewExtras extras;
         Object tag = view.getTag(R.id.view_tag_view_extras);
+        Log.d(LOG_TAG, "view = " + view + ", tag = " + tag);
         if (tag instanceof ViewExtras) {
             extras = (ViewExtras) tag;
         } else {
@@ -34,7 +37,7 @@ public class ViewExtras {
         ViewExtras extras = get(view);
         ViewAttributes attributes = extras.getViewAttributes();
         if (attributes == null) {
-            attributes =  ViewAttributesFactory.create(parser, view);
+            attributes = ViewAttributesFactory.create(parser, view);
             extras.setViewAttributes(attributes);
         }
         return attributes;

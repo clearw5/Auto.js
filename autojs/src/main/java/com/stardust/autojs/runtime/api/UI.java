@@ -63,21 +63,6 @@ public class UI extends ProxyObject {
         return mResourceParser;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <V extends View> V unwrapJsViewObject(@Nullable NativeObject object, Class<V> c) {
-        if (object == null)
-            return null;
-        if (!object.containsKey("__javaObject__")) {
-            throw new ClassCastException("object " + object + " cannot be cast to " + c.getName());
-        }
-        Object view = object.get("__javaObject__");
-        if (!c.isInstance(view)) {
-            throw new ClassCastException("object " + object + " cannot be cast to " + c.getName());
-        }
-        return (V) view;
-
-    }
-
     public Object getBindingContext() {
         return mProperties.get("bindingContext");
     }

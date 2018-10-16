@@ -11,7 +11,6 @@ public class ResourceParser {
 
     private final Drawables mDrawables;
 
-
     public ResourceParser(Drawables drawables) {
         mDrawables = drawables;
     }

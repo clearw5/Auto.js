@@ -42,23 +42,6 @@ function wrap(value){
     return value;
 }
 
-bridges.asArray = function (list) {
-    var arr = [];
-    for (var i = 0; i < list.size(); i++) {
-        arr.push(list.get(i));
-    }
-    for (var key in list) {
-        if (typeof (key) == 'number')
-            continue;
-        var v = list[key];
-        if (typeof (v) == 'function') {
-            arr[key] = v.bind(list);
-        } else {
-            arr[key] = v;
-        }
-    }
-    return arr;
-};
 bridges.toArray = function (iterable) {
     var iterator = iterable.iterator();
     var arr = [];

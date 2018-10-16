@@ -1,25 +1,23 @@
 package com.stardust.autojs.engine;
 
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 
-import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.BuildConfig;
 import com.stardust.autojs.core.ui.ViewExtras;
-import com.stardust.autojs.core.ui.nativeview.NativeView;
-import com.stardust.autojs.rhino.AndroidContextFactory;
 import com.stardust.autojs.rhino.RhinoAndroidHelper;
-import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
+import com.stardust.autojs.rhino.TopLevelScope;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
+import com.stardust.automator.UiObject;
 import com.stardust.automator.UiObjectCollection;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.ImporterTopLevel;
+import org.mozilla.javascript.NativeArray;
+import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.RequireBuilder;
@@ -28,9 +26,10 @@ import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptPr
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Locale;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -44,18 +43,17 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
 
     private static final String MODULES_PATH = "modules";
-    private static int contextCount = 0;
     private static StringScriptSource sInitScript;
     private static final ConcurrentHashMap<Context, RhinoJavaScriptEngine> sContextEngineMap = new ConcurrentHashMap<>();
 
     private Context mContext;
-    private Scriptable mScriptable;
+    private TopLevelScope mScriptable;
     private Thread mThread;
     private android.content.Context mAndroidContext;
 
     public RhinoJavaScriptEngine(android.content.Context context) {
         mAndroidContext = context;
-        mContext = createContext();
+        mContext = enterContext();
         mScriptable = createScope(mContext);
     }
 
@@ -92,8 +90,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         Log.d(LOG_TAG, "on destroy");
         sContextEngineMap.remove(getContext());
         Context.exit();
-        contextCount--;
-        Log.d(LOG_TAG, "contextCount = " + contextCount);
     }
 
     public Thread getThread() {
@@ -142,15 +138,14 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         return mScriptable;
     }
 
-    protected Scriptable createScope(Context context) {
-        ImporterTopLevel importerTopLevel = new ImporterTopLevel();
-        importerTopLevel.initStandardObjects(context, false);
-        return importerTopLevel;
+    protected TopLevelScope createScope(Context context) {
+        TopLevelScope topLevelScope = new TopLevelScope();
+        topLevelScope.initStandardObjects(context, false);
+        return topLevelScope;
     }
 
-    public Context createContext() {
+    public Context enterContext() {
         Context context = new RhinoAndroidHelper(mAndroidContext).enterContext();
-        contextCount++;
         setupContext(context);
         sContextEngineMap.put(context, this);
         return context;
@@ -163,12 +158,6 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         context.setWrapFactory(new WrapFactory());
     }
 
-    public static void initEngine() {
-        if (!ContextFactory.hasExplicitGlobal()) {
-            android.content.Context context = GlobalAppContext.get();
-            ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(context.getCacheDir(), "classes")));
-        }
-    }
 
     public static RhinoJavaScriptEngine getEngineOfContext(Context context) {
         return sContextEngineMap.get(context);
@@ -178,43 +167,34 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
 
         @Override
         public Object wrap(Context cx, Scriptable scope, Object obj, Class<?> staticType) {
+            Object result;
             if (obj instanceof String) {
-                return getRuntime().bridges.toString(obj.toString());
+                result = getRuntime().bridges.toString(obj.toString());
+            } else if (staticType == UiObjectCollection.class) {
+                UiObjectCollection collection = (UiObjectCollection) obj;
+                Object[] array = new Object[collection.size()];
+                for (int i = 0; i < array.length; i++) {
+                    array[i] = wrapAsJavaObject(cx, scope, collection.get(i), UiObject.class);
+                }
+                NativeArray nativeArray = new NativeArray(array);
+                nativeArray.setPrototype(new NativeJavaObject(scope, collection, staticType));
+                result = nativeArray;
+            } else {
+                result = super.wrap(cx, scope, obj, staticType);
             }
-            if (staticType == UiObjectCollection.class) {
-                return getRuntime().bridges.asArray(obj);
-            }
-            return super.wrap(cx, scope, obj, staticType);
+            return result;
         }
 
         @Override
         public Scriptable wrapAsJavaObject(Context cx, Scriptable scope, Object javaObject, Class<?> staticType) {
+            Scriptable result;
             if (javaObject instanceof View) {
-                return ViewExtras.getNativeView(scope, (View) javaObject, staticType, getRuntime());
+                result = ViewExtras.getNativeView(scope, (View) javaObject, staticType, getRuntime());
+            } else {
+                result = super.wrapAsJavaObject(cx, scope, javaObject, staticType);
             }
-            return super.wrapAsJavaObject(cx, scope, javaObject, staticType);
-        }
-    }
-
-    private static class InterruptibleAndroidContextFactory extends AndroidContextFactory {
-
-        public InterruptibleAndroidContextFactory(File cacheDirectory) {
-            super(cacheDirectory);
-        }
-
-
-        @Override
-        protected void observeInstructionCount(Context cx, int instructionCount) {
-            if (Thread.currentThread().isInterrupted() && Looper.myLooper() != Looper.getMainLooper()) {
-                throw new ScriptInterruptedException();
-            }
-        }
-
-        @Override
-        protected Context makeContext() {
-            Context cx = super.makeContext();
-            cx.setInstructionObserverThreshold(10000);
-            return cx;
+            //Log.d(LOG_TAG, "wrapAsJavaObject: java = " + javaObject + ", result = " + result + ", scope = " + scope);
+            return result;
         }
 
     }

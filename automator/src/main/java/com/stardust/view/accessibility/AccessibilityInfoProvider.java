@@ -60,7 +60,7 @@ public class AccessibilityInfoProvider implements AccessibilityDelegate {
             return;
         try {
             ComponentName componentName = new ComponentName(latestPackageStr, latestClassStr);
-            mLatestActivity = mPackageManager.getActivityInfo(componentName, 0).name;
+            mLatestActivity = mPackageManager.getActivityInfo(componentName, PackageManager.MATCH_DEFAULT_ONLY).name;
         } catch (PackageManager.NameNotFoundException ignored) {
             return;
         }

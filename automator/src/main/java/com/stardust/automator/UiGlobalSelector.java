@@ -446,7 +446,9 @@ public class UiGlobalSelector {
         for (ListFilter filter : mFilters) {
             str.append(filter.toString()).append(".");
         }
-        str.deleteCharAt(str.length() - 1);
+        if(str.length() > 0){
+            str.deleteCharAt(str.length() - 1);
+        }
         return str.toString();
     }
 }

@@ -1,6 +1,5 @@
 package com.stardust.autojs.runtime.api;
 
-import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.pio.PFileInterface;
 import com.stardust.pio.PFiles;
@@ -22,6 +21,7 @@ public class Files {
         mRuntime = runtime;
     }
 
+    // FIXME: 2018/10/16 is not correct in sub-directory?
     public String path(String relativePath) {
         String cwd = cwd();
         if (cwd == null || relativePath == null || relativePath.startsWith("/"))

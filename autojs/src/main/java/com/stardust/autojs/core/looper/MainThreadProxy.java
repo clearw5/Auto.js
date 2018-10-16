@@ -1,7 +1,5 @@
 package com.stardust.autojs.core.looper;
 
-import android.content.pm.PackageManager;
-
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.lang.ThreadCompat;
 

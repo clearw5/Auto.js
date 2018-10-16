@@ -25,8 +25,4 @@ public class JsTabLayout extends TabLayout {
     public JsTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
-    public void setupWithViewPager(NativeObject viewPager) {
-        setupWithViewPager(UI.unwrapJsViewObject(viewPager, ViewPager.class));
-    }
 }

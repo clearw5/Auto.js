@@ -4,15 +4,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.CallSuper;
 
-import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.engine.RhinoJavaScriptEngine;
-import com.stardust.autojs.runtime.ScriptBridges;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.concurrent.VolatileBox;
 import com.stardust.lang.ThreadCompat;
-
-import org.mozilla.javascript.NativeArray;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -43,6 +39,7 @@ public class TimerThread extends ThreadCompat {
         mRuntime.loopers.prepare();
         mTimer = new Timer(mRuntime, mMaxCallbackUptimeMillisForAllThreads);
         sTimerMap.put(Thread.currentThread(), mTimer);
+        ((RhinoJavaScriptEngine) mRuntime.engines.myEngine()).enterContext();
         notifyRunning();
         new Handler().post(mTarget);
         try {
@@ -54,6 +51,7 @@ public class TimerThread extends ThreadCompat {
         } finally {
             onExit();
             mTimer = null;
+            org.mozilla.javascript.Context.exit();
             sTimerMap.remove(Thread.currentThread(), mTimer);
         }
     }

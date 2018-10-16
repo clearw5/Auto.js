@@ -3,6 +3,8 @@ package org.mozilla.javascript;
 import android.os.Looper;
 import android.util.Log;
 
+import com.stardust.autojs.engine.RhinoJavaScriptEngine;
+
 import org.mozilla.javascript.jdk15.VMBridge_jdk15;
 
 import java.lang.reflect.Constructor;
@@ -19,6 +21,9 @@ public class VMBridge_custom extends VMBridge_jdk15 {
 
     @Override
     protected Object newInterfaceProxy(Object proxyHelper, ContextFactory cf, InterfaceAdapter adapter, Object target, Scriptable topScope) {
+        Context context = Context.getCurrentContext();
+        InterfaceAdapterWrapper adapterWrapper = new InterfaceAdapterWrapper(adapter, context);
+        RhinoJavaScriptEngine engine = RhinoJavaScriptEngine.getEngineOfContext(context);
         // --- The following code is copied from super class --
         Constructor<?> c = (Constructor) proxyHelper;
         InvocationHandler handler = (proxy, method, args) -> {
@@ -43,25 +48,19 @@ public class VMBridge_custom extends VMBridge_jdk15 {
                 // If so, catch any exception of invoking
                 // Because an exception on ui thread will cause the whole app to crash
                 try {
-                    Object result = adapter.invoke(cf, target, topScope, proxy, method, args);
+                    Object result = adapterWrapper.invoke(cf, target, topScope, proxy, method, args);
                     return castReturnValue(method, result);
                 } catch (Exception e) {
                     e.printStackTrace();
                     // notify the script thread to exit
-                    Object jsRuntime = topScope.get("runtime", null);
-                    Log.d(LOG_TAG, "jsRuntime = " + jsRuntime);
-                    if (jsRuntime instanceof NativeJavaObject) {
-                        Object runtime = ((NativeJavaObject) jsRuntime).unwrap();
-                        Log.d(LOG_TAG, "runtime = " + runtime);
-                        if(runtime instanceof com.stardust.autojs.runtime.ScriptRuntime){
-                            ((com.stardust.autojs.runtime.ScriptRuntime) runtime).exit(e);
-                        }
-                    }
+                    com.stardust.autojs.runtime.ScriptRuntime runtime = engine.getRuntime();
+                    Log.d(LOG_TAG, "runtime = " + runtime);
+                    runtime.exit(e);
                     // even if we caught the exception, we must return a value to for the method call.
                     return defaultValue(method.getReturnType());
                 }
             } else {
-                return castReturnValue(method, adapter.invoke(cf, target, topScope, proxy, method, args));
+                return castReturnValue(method, adapterWrapper.invoke(cf, target, topScope, proxy, method, args));
             }
         };
 
@@ -114,5 +113,37 @@ public class VMBridge_custom extends VMBridge_jdk15 {
             return "";
         }
         return null;
+    }
+
+    private class InterfaceAdapterWrapper {
+
+        private final InterfaceAdapter mInterfaceAdapter;
+        private final Context mCallerContext;
+
+        private InterfaceAdapterWrapper(InterfaceAdapter interfaceAdapter, Context callerContext) {
+            mInterfaceAdapter = interfaceAdapter;
+            mCallerContext = callerContext;
+        }
+
+        public Object invoke(ContextFactory cf, Object target, Scriptable topScope, Object thisObject, Method method, Object[] args) {
+            ContextAction action = cx -> invokeImpl(cx, target, topScope, thisObject, method, args);
+            return call(cf, action);
+        }
+
+        private Object call(ContextFactory cf, ContextAction action) {
+            Context cx = Context.enter(null, cf);
+            //TODO null check
+            cx.setWrapFactory(mCallerContext.getWrapFactory());
+            try {
+                return action.run(cx);
+            } finally {
+                Context.exit();
+            }
+        }
+
+
+        public Object invokeImpl(Context cx, Object target, Scriptable topScope, Object thisObject, Method method, Object[] args) {
+            return mInterfaceAdapter.invokeImpl(cx, target, topScope, thisObject, method, args);
+        }
     }
 }

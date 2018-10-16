@@ -42,7 +42,7 @@ public class UiObjectCollection {
     }
 
     public UiObject[] toArray(){
-        return mNodes.toArray(new UiObject[mNodes.size()]);
+        return mNodes.toArray(new UiObject[0]);
     }
 
     public boolean performAction(int action) {
