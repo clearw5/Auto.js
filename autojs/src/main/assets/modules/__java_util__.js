@@ -8,15 +8,18 @@ function typeToClass(type) {
     if (typeof(type) != 'string') {
         return type;
     }
+    if(type == 'string'){
+        return java.lang.String;
+    }
     var types = {
         "int": "Integer",
         "long": "Long",
-        "string": "String",
         "double": "Double",
         "char": "Character",
         "byte": "Byte",
         "float": "Float"
     };
+
     if (types[type]) {
         return Packages["java.lang." + types[type]].TYPE;
     }

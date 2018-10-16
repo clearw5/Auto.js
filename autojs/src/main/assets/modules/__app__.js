@@ -65,7 +65,7 @@ module.exports = function(runtime, global){
 
     app.sendEmail = function(options){
         options = options || {};
-        var i = new Intent(Intent.ACTION_SENDTO);
+        var i = new Intent(Intent.ACTION_SEND);
         if(options.email){
             i.putExtra(Intent.EXTRA_EMAIL, toArray(options.email));
         }
@@ -84,20 +84,25 @@ module.exports = function(runtime, global){
         if(options.attachment){
             i.putExtra(Intent.EXTRA_STREAM, android.content.Uri.parse("file://" + options.attachment));
         }
+        i.setType("message/rfc822");
         context.startActivity(Intent.createChooser(i, "发送邮件").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    function toArray(arg){
+        if(typeof(arg) == 'string'){
+            arg = [arg];
+        }
+        let arr = util.java.array("string", arg.length);
+        for(let i = 0; i < arg.length; i++){
+            arr[i] = arg;
+        }
+        return arr;
     }
 
     app.getUriForFile = function(file){
         return android.support.v4.content.FileProvider.getUriForFile(context,
             "org.autojs.autojs.fileprovider", new java.io.File(files.path(path)));
     };
-
-    function toArray(arg){
-        if(typeof(arg) == 'string'){
-            return [arg];
-        }
-        return arg;
-    }
 
     app.launch = app.launchPackage;
 
