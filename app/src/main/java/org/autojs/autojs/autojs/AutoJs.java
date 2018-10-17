@@ -63,12 +63,18 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
     private BroadcastReceiver mLayoutInspectBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ensureAccessibilityServiceEnabled();
-            String action = intent.getAction();
-            if (LayoutBoundsFloatyWindow.class.getName().equals(action)) {
-                capture(LayoutBoundsFloatyWindow::new);
-            } else if (LayoutHierarchyFloatyWindow.class.getName().equals(action)) {
-                capture(LayoutHierarchyFloatyWindow::new);
+            try {
+                ensureAccessibilityServiceEnabled();
+                String action = intent.getAction();
+                if (LayoutBoundsFloatyWindow.class.getName().equals(action)) {
+                    capture(LayoutBoundsFloatyWindow::new);
+                } else if (LayoutHierarchyFloatyWindow.class.getName().equals(action)) {
+                    capture(LayoutHierarchyFloatyWindow::new);
+                }
+            } catch (Exception e) {
+                if (Looper.myLooper() != Looper.getMainLooper()) {
+                    throw e;
+                }
             }
         }
     };
