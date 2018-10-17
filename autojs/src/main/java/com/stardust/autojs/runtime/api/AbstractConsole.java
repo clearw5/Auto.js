@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.stardust.autojs.runtime.exception.ScriptException;
 
+import java.util.Formatter;
+
 /**
  * Created by Stardust on 2017/5/1.
  */
@@ -62,5 +64,6 @@ public abstract class AbstractConsole implements Console {
             throw new ScriptException(new AssertionError(format(data, options)));
         }
     }
+
 
 }
