@@ -33,6 +33,7 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:replace="android:label, android:icon, android:allowBackup">
 
         <meta-data
