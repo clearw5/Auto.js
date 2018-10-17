@@ -78,12 +78,7 @@ public class FloatingPermission {
                 SettingsCompat.manageDrawOverlays(context);
             }
         } catch (Exception ex) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                manageDrawOverlaysForAndroidM(context);
-            } else {
-                FloatingWindowPermissionUtil.goToAppDetailSettings(context, context.getPackageName());
-
-            }
+            FloatingWindowPermissionUtil.goToAppDetailSettings(context, context.getPackageName());
         }
     }
 
