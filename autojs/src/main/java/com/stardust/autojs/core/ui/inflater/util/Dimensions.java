@@ -2,6 +2,7 @@ package com.stardust.autojs.core.ui.inflater.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.InflateException;
@@ -70,6 +71,21 @@ public class Dimensions {
 
     public static int parseToIntPixel(String value, Context context) {
         return Math.round(parseToPixel(value, context));
+    }
+
+    public static int[] parseToIntPixelArray(View view, String value) {
+        String[] split = value.split(" ");
+        int[] pixels = new int[4];
+        for (int i = 0; i < split.length; i++) {
+            pixels[i] = parseToIntPixel(split[i], view);
+        }
+        if (split.length == 1) {
+            pixels[1] = pixels[2] = pixels[3] = pixels[0];
+        } else if (split.length == 2) {
+            pixels[2] = pixels[0];
+            pixels[3] = pixels[1];
+        }
+        return pixels;
     }
 }
 

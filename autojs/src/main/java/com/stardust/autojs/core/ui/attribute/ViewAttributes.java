@@ -25,6 +25,7 @@ import com.stardust.autojs.core.ui.inflater.util.Drawables;
 import com.stardust.autojs.core.ui.inflater.util.Gravities;
 import com.stardust.autojs.core.ui.inflater.util.Ids;
 import com.stardust.autojs.core.ui.inflater.util.Strings;
+import com.stardust.autojs.rhino.debug.Dim;
 import com.stardust.util.BiMap;
 import com.stardust.util.Supplier;
 
@@ -44,6 +45,14 @@ import static com.stardust.autojs.core.ui.inflater.inflaters.BaseViewInflater.TI
 import static com.stardust.autojs.core.ui.inflater.inflaters.BaseViewInflater.VISIBILITY;
 
 public class ViewAttributes {
+
+    public interface Getter<T> {
+        T get();
+    }
+
+    public interface Setter<T> {
+        void set(T value);
+    }
 
     public interface Attribute {
         String get();
@@ -73,40 +82,30 @@ public class ViewAttributes {
         }
     }
 
-    protected interface AttributeGetter {
-        String get();
+    protected interface AttributeGetter extends Getter<String> {
     }
 
 
-    protected interface AttributeSetter {
-        void set(String value);
+    protected interface AttributeSetter extends Setter<String> {
     }
 
     protected interface ValueConverter<T> {
         T convert(String value);
     }
 
-    protected interface ValueApplier<T> {
-        void apply(T value);
-    }
-
-    protected interface ValueGetter<T> {
-        T get();
-    }
-
     protected static class MappingAttributeSetter<T> implements AttributeSetter {
 
         private final ValueConverter<T> mValueConverter;
-        private final ValueApplier<T> mValueApplier;
+        private final Setter<T> mSetter;
 
-        public MappingAttributeSetter(ValueConverter<T> valueConverter, ValueApplier<T> valueApplier) {
+        public MappingAttributeSetter(ValueConverter<T> valueConverter, Setter<T> Setter) {
             mValueConverter = valueConverter;
-            mValueApplier = valueApplier;
+            mSetter = Setter;
         }
 
         @Override
         public void set(String value) {
-            mValueApplier.apply(mValueConverter.convert(value));
+            mSetter.set(mValueConverter.convert(value));
         }
     }
 
@@ -186,14 +185,14 @@ public class ViewAttributes {
         registerDrawableAttrs(new String[]{"bg", "background"}, mView::setBackground);
         registerAttr("layout_gravity", Gravities::parse, this::setLayoutGravity);
         registerAttr("layout_weight", Float::parseFloat, this::setLayoutWeight);
-        registerAttr("layout_margin", this::parseDimension, this::setMargin);
+        registerAttr("layout_margin", this::setMargin);
         registerAttr("layout_marginLeft", this::parseDimension, this::setMarginLeft);
         registerAttr("layout_marginRight", this::parseDimension, this::setMarginRight);
         registerAttr("layout_marginTop", this::parseDimension, this::setMarginTop);
         registerAttr("layout_marginBottom", this::parseDimension, this::setMarginBottom);
         registerAttr("layout_marginStart", this::parseDimension, this::setMarginStart);
         registerAttr("layout_marginEnd", this::parseDimension, this::setMarginEnd);
-        registerAttr("padding", this::parseDimension, this::setPadding);
+        registerAttr("padding",this::setPadding);
         registerAttr("paddingLeft", this::parseDimension, this::setPaddingLeft);
         registerAttr("paddingRight", this::parseDimension, this::setPaddingRight);
         registerAttr("paddingTop", this::parseDimension, this::setPaddingTop);
@@ -320,7 +319,7 @@ public class ViewAttributes {
         mAttributes.put(name, attribute);
     }
 
-    protected <V> void registerAttr(String name, ValueGetter<V> getter, ValueApplier<V> setter, BiMap<String, V> biMap) {
+    protected <V> void registerAttr(String name, Getter<V> getter, Setter<V> setter, BiMap<String, V> biMap) {
         mAttributes.put(name, new Attribute() {
             @Override
             public String get() {
@@ -330,7 +329,7 @@ public class ViewAttributes {
             @Override
             public void set(String value) {
                 V v = biMap.get(value);
-                setter.apply(v);
+                setter.set(v);
             }
         });
     }
@@ -353,11 +352,11 @@ public class ViewAttributes {
         mAttributes.put(name, new BaseAttribute(setter));
     }
 
-    protected <T> void registerAttr(String name, ValueConverter<T> converter, ValueApplier<T> applier) {
+    protected <T> void registerAttr(String name, ValueConverter<T> converter, Setter<T> applier) {
         mAttributes.put(name, new BaseAttribute(new MappingAttributeSetter<>(converter, applier)));
     }
 
-    protected <T> void registerAttrs(String[] names, ValueConverter<T> converter, ValueApplier<T> applier) {
+    protected <T> void registerAttrs(String[] names, ValueConverter<T> converter, Setter<T> applier) {
         registerAttrs(names, new MappingAttributeSetter<>(converter, applier));
     }
 
@@ -371,30 +370,30 @@ public class ViewAttributes {
         }
     }
 
-    protected void registerDrawableAttr(String name, ValueApplier<Drawable> applier) {
+    protected void registerDrawableAttr(String name, Setter<Drawable> applier) {
         mAttributes.put(name, new BaseAttribute(new MappingAttributeSetter<>(
                 this::parseDrawable, applier)));
     }
 
 
-    protected void registerDrawableAttrs(String[] names, ValueApplier<Drawable> applier) {
+    protected void registerDrawableAttrs(String[] names, Setter<Drawable> applier) {
         registerAttrs(names, new BaseAttribute(new MappingAttributeSetter<>(
                 this::parseDrawable, applier)));
     }
 
-    protected void registerPixelAttr(String name, ValueApplier<Float> applier) {
+    protected void registerPixelAttr(String name, Setter<Float> applier) {
         registerAttr(name, this::parseDimensionToPixel, applier);
     }
 
-    protected void registerIntPixelAttr(String name, ValueApplier<Integer> applier) {
+    protected void registerIntPixelAttr(String name, Setter<Integer> applier) {
         registerAttr(name, this::parseDimensionToIntPixel, applier);
     }
 
-    protected void registerIdAttr(String name, ValueApplier<Integer> applier) {
+    protected void registerIdAttr(String name, Setter<Integer> applier) {
         registerAttr(name, Ids::parse, applier);
     }
 
-    protected void registerBooleanAttr(String name, ValueApplier<Boolean> applier) {
+    protected void registerBooleanAttr(String name, Setter<Boolean> applier) {
         registerAttr(name, Boolean::parseBoolean, applier);
     }
 
@@ -414,14 +413,16 @@ public class ViewAttributes {
         }
     }
 
-    protected void setMargin(int margin) {
+    protected void setMargin(String  margin) {
         if (mView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
-            params.bottomMargin = params.leftMargin = params.topMargin = params.rightMargin = margin;
+            int[] pixels = Dimensions.parseToIntPixelArray(getView(), margin);
+            params.setMargins(pixels[0], pixels[1], pixels[2], pixels[3]);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                params.setMarginStart(margin);
-                params.setMarginEnd(margin);
+                params.setMarginStart(pixels[0]);
+                params.setMarginEnd(pixels[2]);
             }
+            getView().setLayoutParams(params);
         }
     }
 
@@ -469,8 +470,9 @@ public class ViewAttributes {
         }
     }
 
-    protected void setPadding(int padding) {
-        mView.setPadding(padding, padding, padding, padding);
+    protected void setPadding(String padding) {
+        int[] pixels = Dimensions.parseToIntPixelArray(getView(), padding);
+        mView.setPadding(pixels[0], pixels[1], pixels[2], pixels[3]);
     }
 
     protected void setPaddingLeft(int padding) {
@@ -567,7 +569,7 @@ public class ViewAttributes {
         return Strings.parse(mView, value);
     }
 
-    protected static <T1, T2> ValueApplier<T2> bind(Functions.VoidFunc2<T1, T2> func2, T1 t1) {
+    protected static <T1, T2> Setter<T2> bind(Functions.VoidFunc2<T1, T2> func2, T1 t1) {
         return value -> func2.call(t1, value);
     }
 

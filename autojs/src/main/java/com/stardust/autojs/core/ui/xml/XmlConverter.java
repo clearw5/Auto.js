@@ -3,6 +3,7 @@ package com.stardust.autojs.core.ui.xml;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.webkit.WebView;
@@ -82,6 +83,7 @@ public class XmlConverter {
                     .map("appbar", AppBarLayout.class.getName())
                     .map("tabs", JsTabLayout.class.getName())
                     .map("viewpager", JsViewPager.class.getName())
+                    .map("card", CardView.class.getName())
             );
 
     private static final AttributeHandler ATTRIBUTE_HANDLER = new AttributeHandler.AttrNameRouter()
@@ -90,8 +92,8 @@ public class XmlConverter {
             .handler("size", new AttributeHandler.DimenHandler("textSize"))
             .handler("id", new AttributeHandler.IdHandler())
             .handler("vertical", new AttributeHandler.OrientationHandler())
-            .handler("margin", new AttributeHandler.MarginPaddingHandler("layout_margin"))
-            .handler("padding", new AttributeHandler.MarginPaddingHandler("padding"))
+            .handler("margin", new AttributeHandler.DimenHandler("layout_margin"))
+            .handler("padding", new AttributeHandler.DimenHandler("padding"))
             .handler("marginLeft", new AttributeHandler.DimenHandler("layout_marginLeft"))
             .handler("marginRight", new AttributeHandler.DimenHandler("layout_marginRight"))
             .handler("marginTop", new AttributeHandler.DimenHandler("layout_marginTop"))
