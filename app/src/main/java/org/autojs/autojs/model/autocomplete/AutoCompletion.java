@@ -45,11 +45,13 @@ public class AutoCompletion {
     private AnyWordsCompletion mAnyWordsCompletion;
     private AtomicInteger mExecuteId = new AtomicInteger();
     private Handler mHandler = new Handler(Looper.getMainLooper());
+    private final EditText mEditText;
 
     public AutoCompletion(Context context, EditText editText) {
         buildDictionaryTree(context);
+        mEditText = editText;
         mAnyWordsCompletion = new AnyWordsCompletion(mExecutorService);
-        editText.addTextChangedListener(new SimpleTextWatcher(mAnyWordsCompletion));
+        editText.addTextChangedListener(mAnyWordsCompletion);
     }
 
     public void setAutoCompleteCallback(AutoCompleteCallback autoCompleteCallback) {
@@ -162,6 +164,7 @@ public class AutoCompletion {
 
 
     public void shutdown(){
+        mEditText.removeTextChangedListener(mAnyWordsCompletion);
         mExecutorService.shutdownNow();
     }
 }

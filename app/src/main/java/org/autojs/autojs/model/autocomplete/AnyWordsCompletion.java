@@ -1,6 +1,7 @@
 package org.autojs.autojs.model.autocomplete;
 
 import android.text.Editable;
+import android.text.TextWatcher;
 
 import org.autojs.autojs.model.indices.Property;
 import org.autojs.autojs.ui.widget.SimpleTextWatcher;
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
  * Created by Stardust on 2018/2/26.
  */
 
-public class AnyWordsCompletion implements SimpleTextWatcher.AfterTextChangedListener {
+public class AnyWordsCompletion extends SimpleTextWatcher {
 
 
     private static final String PATTERN = "[\\W]";
