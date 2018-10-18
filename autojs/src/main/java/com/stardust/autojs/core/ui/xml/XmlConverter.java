@@ -1,6 +1,7 @@
 package com.stardust.autojs.core.ui.xml;
 
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.CardView;
@@ -84,6 +85,7 @@ public class XmlConverter {
                     .map("tabs", JsTabLayout.class.getName())
                     .map("viewpager", JsViewPager.class.getName())
                     .map("card", CardView.class.getName())
+                    .map("fab", FloatingActionButton.class.getName())
             );
 
     private static final AttributeHandler ATTRIBUTE_HANDLER = new AttributeHandler.AttrNameRouter()

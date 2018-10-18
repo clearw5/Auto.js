@@ -1,6 +1,7 @@
 package com.stardust.autojs.core.ui.attribute;
 
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,6 +25,7 @@ public class ViewAttributesFactory {
         sViewAttributesCreators.put(AppBarLayout.class, AppbarAttributes::new);
         sViewAttributesCreators.put(TextView.class, TextViewAttributes::new);
         sViewAttributesCreators.put(CardView.class, CardAttributes::new);
+        sViewAttributesCreators.put(FloatingActionButton.class, FabViewAttributes::new);
     }
 
     public static void put(Class<? extends View> clazz, ViewAttributesCreator creator) {
