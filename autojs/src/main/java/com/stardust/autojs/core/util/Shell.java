@@ -304,7 +304,9 @@ public class Shell extends AbstractShell {
             super.finish();
             if (!mShouldReadOutput)
                 return;
-            mReadingThread.interrupt();
+            if(mReadingThread != null){
+                mReadingThread.interrupt();
+            }
             try {
                 mBufferedReader.close();
                 mOutputStream.close();
