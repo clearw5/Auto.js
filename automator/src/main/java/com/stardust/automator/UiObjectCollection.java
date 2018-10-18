@@ -337,12 +337,6 @@ public class UiObjectCollection implements List<UiObject> {
         return mNodes.parallelStream();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public void forEach(java.util.function.Consumer<? super UiObject> action) {
-        mNodes.forEach(action);
-    }
-
     public int size() {
         return mNodes.size();
     }
