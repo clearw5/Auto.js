@@ -119,11 +119,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
 
     private String generateDexFileName(File jar) {
         String message = jar.getPath() + "_" + jar.lastModified();
-        try {
-            return MD5.md5(message);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+        return MD5.md5(message);
     }
 
     public DexClassLoader loadDex(File file) throws FileNotFoundException {

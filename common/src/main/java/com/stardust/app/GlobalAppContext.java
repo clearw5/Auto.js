@@ -69,6 +69,19 @@ public class GlobalAppContext {
         });
     }
 
+    public static void toast(final int resId, final Object... args) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            Toast.makeText(get(), getString(resId, args), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        sHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(get(), getString(resId, args), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     public static void post(Runnable r) {
         sHandler.post(r);
     }

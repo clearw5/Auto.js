@@ -1,5 +1,6 @@
 package org.autojs.autojs.model.script;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;

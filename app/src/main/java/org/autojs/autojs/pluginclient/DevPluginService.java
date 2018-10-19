@@ -12,12 +12,15 @@ import android.util.Pair;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.stardust.app.GlobalAppContext;
 import com.stardust.util.MapBuilder;
 
 import org.autojs.autojs.BuildConfig;
 
-import java.io.IOException;
+import java.io.File;
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -36,6 +39,7 @@ public class DevPluginService {
     private static final int CLIENT_VERSION = 2;
     private static final String LOG_TAG = "DevPluginService";
     private static final String TYPE_HELLO = "hello";
+    private static final String TYPE_BYTES_COMMAND = "bytes_command";
     private static final long HANDSHAKE_TIMEOUT = 10 * 1000;
 
     public static class State {
@@ -68,13 +72,19 @@ public class DevPluginService {
     private static final int PORT = 9317;
     private static DevPluginService sInstance = new DevPluginService();
     private final PublishSubject<State> mConnectionState = PublishSubject.create();
-    private final DevPluginResponseHandler mResponseHandler = new DevPluginResponseHandler();
-    private final Handler mHandshakeTimeoutHandler = new Handler(Looper.getMainLooper());
-
+    private final DevPluginResponseHandler mResponseHandler;
+    private final HashMap<String, JsonWebSocket.Bytes> mBytes = new HashMap<>();
+    private final HashMap<String, JsonObject> mRequiredBytesCommands = new HashMap<>();
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
     private volatile JsonWebSocket mSocket;
 
     public static DevPluginService getInstance() {
         return sInstance;
+    }
+
+    public DevPluginService() {
+        File cache = new File(GlobalAppContext.get().getCacheDir(), "remote_project");
+        mResponseHandler = new DevPluginResponseHandler(cache);
     }
 
     @AnyThread
@@ -134,12 +144,20 @@ public class DevPluginService {
                 .build()))
                 .doOnNext(socket -> {
                     mSocket = socket;
-                    socket.data()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnComplete(() -> mConnectionState.onNext(new State(State.DISCONNECTED)))
-                            .subscribe(data -> onSocketData(socket, data), this::onSocketError);
+                    subscribeMessage(socket);
                     sayHelloToServer(socket);
                 });
+    }
+
+    @SuppressLint("CheckResult")
+    private void subscribeMessage(JsonWebSocket socket) {
+        socket.data()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(() -> mConnectionState.onNext(new State(State.DISCONNECTED)))
+                .subscribe(data -> onSocketData(socket, data), this::onSocketError);
+        socket.bytes()
+                .doOnComplete(() -> mConnectionState.onNext(new State(State.DISCONNECTED)))
+                .subscribe(data -> onSocketData(socket, data), this::onSocketError);
     }
 
     @MainThread
@@ -158,24 +176,64 @@ public class DevPluginService {
             Log.w(LOG_TAG, "onSocketData: not json object: " + element);
             return;
         }
-        JsonObject obj = element.getAsJsonObject();
-        JsonElement type = obj.get("type");
-        if (type != null && type.isJsonPrimitive() && type.getAsString().equals(TYPE_HELLO)) {
-            onServerHello(jsonWebSocket, obj);
-            return;
+        try {
+            JsonObject obj = element.getAsJsonObject();
+            JsonElement typeElement = obj.get("type");
+            if (typeElement == null || !typeElement.isJsonPrimitive()) {
+                return;
+            }
+            String type = typeElement.getAsString();
+            if (type.equals(TYPE_HELLO)) {
+                onServerHello(jsonWebSocket, obj);
+                return;
+            }
+            if (TYPE_BYTES_COMMAND.equals(type)) {
+                String md5 = obj.get("md5").getAsString();
+                JsonWebSocket.Bytes bytes = mBytes.remove(md5);
+                if (bytes != null) {
+                    handleBytes(obj, bytes);
+                } else {
+                    mRequiredBytesCommands.put(md5, obj);
+                }
+                return;
+            }
+            mResponseHandler.handle(obj);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        mResponseHandler.handle(obj);
+
+    }
+
+    @SuppressLint("CheckResult")
+    private void handleBytes(JsonObject obj, JsonWebSocket.Bytes bytes) {
+        mResponseHandler.handleBytes(obj, bytes)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(dir -> {
+                    obj.get("data").getAsJsonObject().add("dir", new JsonPrimitive(dir.getPath()));
+                    mResponseHandler.handle(obj);
+                });
+
     }
 
     @WorkerThread
-    private void sayHelloToServer(JsonWebSocket socket) throws IOException {
+    private void onSocketData(JsonWebSocket jsonWebSocket, JsonWebSocket.Bytes bytes) {
+        JsonObject command = mRequiredBytesCommands.remove(bytes.md5);
+        if (command != null) {
+            handleBytes(command, bytes);
+        } else {
+            mBytes.put(bytes.md5, bytes);
+        }
+    }
+
+    @WorkerThread
+    private void sayHelloToServer(JsonWebSocket socket) {
         writeMap(socket, TYPE_HELLO, new MapBuilder<String, Object>()
                 .put("device_name", Build.BRAND + " " + Build.MODEL)
                 .put("client_version", CLIENT_VERSION)
                 .put("app_version", BuildConfig.VERSION_NAME)
                 .put("app_version_code", BuildConfig.VERSION_CODE)
                 .build());
-        mHandshakeTimeoutHandler.postDelayed(() -> {
+        mHandler.postDelayed(() -> {
             if (mSocket != socket && !socket.isClosed()) {
                 onHandshakeTimeout(socket);
             }

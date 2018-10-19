@@ -424,4 +424,6 @@
     <string name="error_pattern_syntax">正则表达式错误</string>
     <string name="text_invalid_package_name">非法包名</string>
     <string name="error_cannot_rename">重命名失败</string>
+    <string name="text_project_save_success">项目已经保存到%s</string>
+    <string name="text_project_save_error">项目保存失败 %s</string>
 </resources>

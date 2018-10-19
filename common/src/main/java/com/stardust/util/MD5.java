@@ -5,13 +5,17 @@ import java.security.NoSuchAlgorithmException;
 
 public class MD5 {
 
-    public static byte[] md5Bytes(String message) throws NoSuchAlgorithmException {
-        MessageDigest md5 = MessageDigest.getInstance("MD5");
-        md5.update(message.getBytes());
-        return md5.digest();
+    public static byte[] md5Bytes(String message) {
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            md5.update(message.getBytes());
+            return md5.digest();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static String md5(String message) throws NoSuchAlgorithmException {
+    public static String md5(String message) {
         byte[] bytes = md5Bytes(message);
         StringBuilder hexString = new StringBuilder(32);
         for (byte b : bytes) {
@@ -22,5 +26,7 @@ public class MD5 {
             hexString.append(hex);
         }
         return hexString.toString();
+
+
     }
 }

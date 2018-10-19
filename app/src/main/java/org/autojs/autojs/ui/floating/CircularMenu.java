@@ -145,6 +145,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
         explorerView.setOnItemOperatedListener(file -> dialog.dismiss());
         explorerView.setOnItemClickListener((view, item) -> Scripts.run(item.toScriptFile()));
         DialogUtils.showDialog(dialog);
+
     }
 
     @Optional
