@@ -45,6 +45,7 @@ public class OpenCVHelper {
         });
     }
 
+
     public static class LoaderCallback implements LoaderCallbackInterface {
         private Activity mActivity;
 

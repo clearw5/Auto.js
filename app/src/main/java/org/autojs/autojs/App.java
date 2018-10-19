@@ -14,6 +14,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.flurry.android.FlurryAgent;
 import com.squareup.leakcanary.LeakCanary;
 import com.stardust.app.GlobalAppContext;
+import com.stardust.autojs.core.image.OpenCVHelper;
 import com.stardust.autojs.core.ui.inflater.ImageLoader;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
 import com.stardust.theme.ThemeColor;
@@ -30,6 +31,8 @@ import org.autojs.autojs.timing.TimedTaskManager;
 import org.autojs.autojs.timing.TimedTaskScheduler;
 import org.autojs.autojs.tool.CrashHandler;
 import org.autojs.autojs.ui.error.ErrorReportActivity;
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.OpenCVLoader;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -107,6 +110,7 @@ public class App extends MultiDexApplication {
         setupDrawableImageLoader();
         TimedTaskScheduler.checkTasksRepeatedlyIfNeeded(this);
         initDynamicBroadcastReceivers();
+
     }
 
     @SuppressLint("CheckResult")

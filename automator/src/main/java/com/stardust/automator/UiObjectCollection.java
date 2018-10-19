@@ -55,7 +55,7 @@ import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.
  * Created by Stardust on 2017/3/9.
  */
 
-public class UiObjectCollection implements List<UiObject> {
+public class UiObjectCollection {
 
     public static final UiObjectCollection EMPTY = UiObjectCollection.of(Collections.<UiObject>emptyList());
 
@@ -73,59 +73,55 @@ public class UiObjectCollection implements List<UiObject> {
         return mNodes.toArray(new UiObject[0]);
     }
 
-    @Override
     public <T> T[] toArray(T[] a) {
         return mNodes.toArray(a);
     }
 
-    @Override
     public boolean add(UiObject uiObject) {
         return mNodes.add(uiObject);
     }
 
-    @Override
     public boolean remove(Object o) {
         return mNodes.remove(o);
     }
 
-    @Override
     public boolean containsAll(Collection<?> c) {
         return mNodes.containsAll(c);
     }
 
-    @Override
+
     public boolean addAll(Collection<? extends UiObject> c) {
         return mNodes.addAll(c);
     }
 
-    @Override
+
     public boolean addAll(int index, Collection<? extends UiObject> c) {
         return mNodes.addAll(index, c);
     }
 
-    @Override
+
     public boolean removeAll(Collection<?> c) {
         return mNodes.removeAll(c);
     }
 
-    @Override
+
     public boolean retainAll(Collection<?> c) {
         return mNodes.retainAll(c);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
+
     public void replaceAll(UnaryOperator<UiObject> operator) {
         mNodes.replaceAll(operator);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
+
     public void sort(Comparator<? super UiObject> c) {
         mNodes.sort(c);
     }
 
-    @Override
+
     public void clear() {
         mNodes.clear();
     }
@@ -270,69 +266,69 @@ public class UiObjectCollection implements List<UiObject> {
         return mNodes.get(i);
     }
 
-    @Override
+
     public UiObject set(int index, UiObject element) {
         return mNodes.set(index, element);
     }
 
-    @Override
+
     public void add(int index, UiObject element) {
         mNodes.add(index, element);
     }
 
-    @Override
+
     public UiObject remove(int index) {
         return mNodes.remove(index);
     }
 
-    @Override
+
     public int indexOf(Object o) {
         return mNodes.indexOf(o);
     }
 
-    @Override
+
     public int lastIndexOf(Object o) {
         return mNodes.lastIndexOf(o);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
+
     public ListIterator<UiObject> listIterator() {
         return mNodes.listIterator();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
+
     public ListIterator<UiObject> listIterator(int index) {
         return mNodes.listIterator(index);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
+
     public List<UiObject> subList(int fromIndex, int toIndex) {
         return mNodes.subList(fromIndex, toIndex);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
+
     public Spliterator<UiObject> spliterator() {
         return mNodes.spliterator();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
+
     public boolean removeIf(Predicate<? super UiObject> filter) {
         return mNodes.removeIf(filter);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
+
     public Stream<UiObject> stream() {
         return mNodes.stream();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
+
     public Stream<UiObject> parallelStream() {
         return mNodes.parallelStream();
     }
@@ -341,17 +337,17 @@ public class UiObjectCollection implements List<UiObject> {
         return mNodes.size();
     }
 
-    @Override
+
     public boolean isEmpty() {
         return mNodes.isEmpty();
     }
 
-    @Override
+
     public boolean contains(Object o) {
         return mNodes.contains(o);
     }
 
-    @Override
+
     public Iterator<UiObject> iterator() {
         return mNodes.iterator();
     }

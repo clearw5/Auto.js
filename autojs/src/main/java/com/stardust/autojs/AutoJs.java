@@ -35,6 +35,8 @@ import com.stardust.view.accessibility.LayoutInspector;
 
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Scriptable;
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.OpenCVLoader;
 
 import java.io.File;
 
@@ -82,6 +84,9 @@ public abstract class AutoJs {
     protected void init() {
         addAccessibilityServiceDelegates();
         registerActivityLifecycleCallbacks();
+        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_13, mContext, new BaseLoaderCallback(mContext) {
+
+        });
     }
 
     public abstract void ensureAccessibilityServiceEnabled();
