@@ -176,14 +176,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
             if (obj instanceof String) {
                 result = getRuntime().bridges.toString(obj.toString());
             } else if (staticType == UiObjectCollection.class) {
-                UiObjectCollection collection = (UiObjectCollection) obj;
-                Object[] array = new Object[collection.size()];
-                for (int i = 0; i < array.length; i++) {
-                    array[i] = wrapAsJavaObject(cx, scope, collection.get(i), UiObject.class);
-                }
-                NativeArray nativeArray = new NativeArray(array);
-                nativeArray.setPrototype(TopLevel.getBuiltinPrototype(scope, TopLevel.Builtins.Array));
-                result = new NativeArrayLikeJavaObject(scope, collection, staticType, nativeArray);
+                result = getRuntime().bridges.asArray(obj);
             } else {
                 result = super.wrap(cx, scope, obj, staticType);
             }

@@ -7,6 +7,7 @@ package com.stardust.autojs.runtime;
 public class ScriptBridges {
 
 
+
     public interface Bridges {
 
         Object[] NO_ARGUMENTS = new Object[0];
@@ -17,6 +18,7 @@ public class ScriptBridges {
 
         Object toString(Object obj);
 
+        Object asArray(Object obj);
     }
 
     private Bridges mBridges;
@@ -46,4 +48,8 @@ public class ScriptBridges {
         return mBridges.toString(obj);
     }
 
+    public Object asArray(Object obj) {
+        checkBridges();
+        return mBridges.asArray(obj);
+    }
 }
