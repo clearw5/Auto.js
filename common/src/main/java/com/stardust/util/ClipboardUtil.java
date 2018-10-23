@@ -18,7 +18,8 @@ public class ClipboardUtil {
     }
 
     public static CharSequence getClip(Context context) {
-        return ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE)).getPrimaryClip().getItemAt(0).getText();
+        ClipData clip = ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE)).getPrimaryClip();
+        return (clip == null || clip.getItemCount() == 0) ? null : clip.getItemAt(0).getText();
     }
 
     @NonNull

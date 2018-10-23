@@ -20,6 +20,7 @@ public class ExecutionConfig implements Serializable {
     public long interval = 0;
     public int loopTimes = 1;
     private Map<String, Object> mArguments = new HashMap<>();
+    private int mIntentFlags = 0;
 
     public static ExecutionConfig getDefault() {
         return new ExecutionConfig();
@@ -29,6 +30,15 @@ public class ExecutionConfig implements Serializable {
 
     public ExecutionConfig runInNewThread(boolean runInNewThread) {
         this.runInNewThread = runInNewThread;
+        return this;
+    }
+
+    public int getIntentFlags() {
+        return mIntentFlags;
+    }
+
+    public ExecutionConfig setIntentFlags(int intentFlags) {
+        mIntentFlags = intentFlags;
         return this;
     }
 

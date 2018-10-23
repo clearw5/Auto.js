@@ -49,7 +49,8 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         ActivityScriptExecution execution = new ActivityScriptExecution(manager, task);
         Intent i = new Intent(context, ScriptExecuteActivity.class)
                 .putExtra(EXTRA_EXECUTION_ID, execution.getId())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(task.getConfig().getIntentFlags());
         context.startActivity(i);
         return execution;
     }
@@ -140,7 +141,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(LOG_TAG, "onDestroy");
-        if(mScriptEngine != null){
+        if (mScriptEngine != null) {
             mScriptEngine.put("activity", null);
             mScriptEngine.setTag("activity", null);
             mScriptEngine.destroy();

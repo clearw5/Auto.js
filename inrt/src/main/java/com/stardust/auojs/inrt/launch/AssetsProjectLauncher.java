@@ -11,11 +11,12 @@ import com.stardust.auojs.inrt.BuildConfig;
 import com.stardust.auojs.inrt.LogActivity;
 import com.stardust.auojs.inrt.Pref;
 import com.stardust.auojs.inrt.autojs.AutoJs;
-import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.execution.ExecutionConfig;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.autojs.script.JavaScriptFileSource;
+import com.stardust.autojs.script.JavaScriptSource;
+import com.stardust.autojs.script.ScriptSource;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 
@@ -49,13 +50,12 @@ public class AssetsProjectLauncher {
     public void launch(Activity activity) {
         //如果需要隐藏日志界面，则直接运行脚本
         if (mProjectConfig.getLaunchConfig().shouldHideLogs() || Pref.shouldHideLogs()) {
-            activity.finish();
-            runScript();
+            runScript(activity);
         } else {
             //如果不隐藏日志界面
             //如果当前已经是日志界面则直接运行脚本
             if (activity instanceof LogActivity) {
-                runScript();
+                runScript(null);
             } else {
                 //否则显示日志界面并在日志界面中运行脚本
                 mHandler.post(() -> {
@@ -67,15 +67,23 @@ public class AssetsProjectLauncher {
         }
     }
 
-    private void runScript() {
+    private void runScript(Activity activity) {
         if (mScriptExecution != null && mScriptExecution.getEngine() != null &&
                 !mScriptExecution.getEngine().isDestroyed()) {
             return;
         }
         try {
             JavaScriptFileSource source = new JavaScriptFileSource("main", mMainScriptFile);
-            mScriptExecution = AutoJs.getInstance().getScriptEngineService().execute(source, new ExecutionConfig()
-                    .executePath(mProjectDir));
+            ExecutionConfig config = new ExecutionConfig()
+                    .executePath(mProjectDir);
+            if ((source.getExecutionMode() & JavaScriptSource.EXECUTION_MODE_UI) != 0) {
+                config.setIntentFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            } else {
+                if (activity != null) {
+                    activity.finish();
+                }
+            }
+            mScriptExecution = AutoJs.getInstance().getScriptEngineService().execute(source, config);
         } catch (Exception e) {
             AutoJs.getInstance().getGlobalConsole().error(e);
         }
