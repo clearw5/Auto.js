@@ -59,12 +59,12 @@ public class ScriptEngineProxy<S extends ScriptSource> implements ScriptEngine<S
     }
 
     @Override
-    public void uncaughtException(Exception throwable) {
+    public void uncaughtException(Throwable throwable) {
         mScriptEngine.uncaughtException(throwable);
     }
 
     @Override
-    public Exception getUncaughtException() {
+    public Throwable getUncaughtException() {
         return mScriptEngine.getUncaughtException();
     }
 

@@ -16,6 +16,7 @@ import com.stardust.autojs.core.image.Colors;
 import com.stardust.autojs.core.permission.PermissionRequestProxyActivity;
 import com.stardust.autojs.core.permission.Permissions;
 import com.stardust.autojs.rhino.AndroidClassLoader;
+import com.stardust.autojs.rhino.TopLevelScope;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
@@ -26,6 +27,7 @@ import com.stardust.autojs.runtime.api.Files;
 import com.stardust.autojs.runtime.api.Floaty;
 import com.stardust.autojs.core.looper.Loopers;
 import com.stardust.autojs.runtime.api.Media;
+import com.stardust.autojs.runtime.api.Plugins;
 import com.stardust.autojs.runtime.api.Sensors;
 import com.stardust.autojs.runtime.api.Threads;
 import com.stardust.autojs.runtime.api.Timers;
@@ -193,6 +195,9 @@ public class ScriptRuntime {
     @ScriptVariable
     public final Media media;
 
+    @ScriptVariable
+    public final Plugins plugins;
+
     private Images images;
 
     private static WeakReference<Context> applicationContext;
@@ -201,6 +206,7 @@ public class ScriptRuntime {
     private Supplier<AbstractShell> mShellSupplier;
     private ScreenMetrics mScreenMetrics = new ScreenMetrics();
     private Thread mThread;
+    private TopLevelScope mTopLevelScope;
 
 
     protected ScriptRuntime(Builder builder) {
@@ -223,6 +229,7 @@ public class ScriptRuntime {
         floaty = new Floaty(uiHandler, ui, this);
         files = new Files(this);
         media = new Media(context, this);
+        plugins = new Plugins(context, this);
     }
 
     public void init() {
@@ -234,6 +241,17 @@ public class ScriptRuntime {
         events = new Events(uiHandler.getContext(), accessibilityBridge, this);
         mThread = Thread.currentThread();
         sensors = new Sensors(uiHandler.getContext(), this);
+    }
+
+    public TopLevelScope getTopLevelScope() {
+        return mTopLevelScope;
+    }
+
+    public void setTopLevelScope(TopLevelScope topLevelScope) {
+        if (mTopLevelScope != null) {
+            throw new IllegalStateException("top level has already exists");
+        }
+        mTopLevelScope = topLevelScope;
     }
 
     public static void setApplicationContext(Context context) {
@@ -358,7 +376,7 @@ public class ScriptRuntime {
         }
     }
 
-    public void exit(Exception e) {
+    public void exit(Throwable e) {
         engines.myEngine().uncaughtException(e);
         exit();
     }
@@ -389,7 +407,7 @@ public class ScriptRuntime {
         ignoresException(floaty::closeAll);
         try {
             events.emit("exit");
-        } catch (Exception ignored) {
+        } catch (Throwable ignored) {
             console.error("exception on exit: ", ignored);
         }
         ignoresException(threads::shutDownAll);
@@ -412,7 +430,7 @@ public class ScriptRuntime {
     private void ignoresException(Runnable r) {
         try {
             r.run();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }

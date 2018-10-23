@@ -40,14 +40,14 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
         try {
             prepare(engine);
             Object r = doExecution(engine);
-            Exception uncaughtException = engine.getUncaughtException();
+            Throwable uncaughtException = engine.getUncaughtException();
             if (uncaughtException != null) {
                 onException(engine, uncaughtException);
                 return null;
             }
             getListener().onSuccess(this, r);
             return r;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             onException(engine, e);
             return null;
         } finally {
@@ -56,7 +56,7 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
         }
     }
 
-    protected void onException(ScriptEngine engine, Exception e) {
+    protected void onException(ScriptEngine engine, Throwable e) {
         Log.w(TAG, "onException: engine = " + engine, e);
         getListener().onException(this, e);
     }

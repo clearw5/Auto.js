@@ -52,7 +52,7 @@ public class Scripts {
         }
 
         @Override
-        public void onException(ScriptExecution execution, Exception e) {
+        public void onException(ScriptExecution execution, Throwable e) {
             RhinoException rhinoException = getRhinoException(e);
             int line = -1, col = 0;
             if (rhinoException != null) {

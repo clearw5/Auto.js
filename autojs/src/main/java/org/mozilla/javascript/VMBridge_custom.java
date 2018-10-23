@@ -50,7 +50,7 @@ public class VMBridge_custom extends VMBridge_jdk15 {
                 try {
                     Object result = adapterWrapper.invoke(cf, target, topScope, proxy, method, args);
                     return castReturnValue(method, result);
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     e.printStackTrace();
                     // notify the script thread to exit
                     com.stardust.autojs.runtime.ScriptRuntime runtime = engine.getRuntime();

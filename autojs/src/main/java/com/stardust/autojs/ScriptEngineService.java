@@ -67,7 +67,7 @@ public class ScriptEngineService {
         }
 
         @Override
-        public void onException(ScriptExecution execution, Exception e) {
+        public void onException(ScriptExecution execution, Throwable e) {
             e.printStackTrace();
             onFinish(execution);
             String message = null;
@@ -80,7 +80,7 @@ public class ScriptEngineService {
             }
             if (execution.getEngine() instanceof JavaScriptEngine) {
                 JavaScriptEngine engine = (JavaScriptEngine) execution.getEngine();
-                Exception uncaughtException = engine.getUncaughtException();
+                Throwable uncaughtException = engine.getUncaughtException();
                 if (uncaughtException != null) {
                     engine.getRuntime().console.error(uncaughtException);
                     message = uncaughtException.getMessage();

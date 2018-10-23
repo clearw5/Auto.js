@@ -90,7 +90,7 @@ public class AssetsProjectLauncher {
         }
         PFiles.deleteRecursively(new File(mProjectDir));
         try {
-            PFiles.copyAssetDir(mActivity, mAssetsProjectDir, mProjectDir, null);
+            PFiles.copyAssetDir(mActivity.getAssets(), mAssetsProjectDir, mProjectDir, null);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

@@ -8,6 +8,7 @@ import com.stardust.autojs.core.ui.ViewExtras;
 import com.stardust.autojs.rhino.NativeArrayLikeJavaObject;
 import com.stardust.autojs.rhino.RhinoAndroidHelper;
 import com.stardust.autojs.rhino.TopLevelScope;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
 import com.stardust.automator.UiObject;
@@ -58,6 +59,12 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     @Override
     public void put(String name, Object value) {
         ScriptableObject.putProperty(mScriptable, name, Context.javaToJS(value, mScriptable));
+    }
+
+    @Override
+    public void setRuntime(ScriptRuntime runtime) {
+        super.setRuntime(runtime);
+        runtime.setTopLevelScope(mScriptable);
     }
 
     @Override

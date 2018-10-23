@@ -10,6 +10,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -243,9 +244,40 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
     @Subscribe
     public void onExplorerChange(ExplorerChangeEvent event) {
-        if ((event.getAction() == ExplorerChangeEvent.ALL)
-                || mCurrentPageState.page.getPath().equals(event.getPage().getPath())) {
+        Log.d(LOG_TAG, "on explorer change: " + event);
+        if ((event.getAction() == ExplorerChangeEvent.ALL)) {
             loadItemList();
+            return;
+        }
+        String currentDirPath = mCurrentPageState.page.getPath();
+        String changedDirPath = event.getPage().getPath();
+        ExplorerItem item = event.getItem();
+        String changedItemPath = item == null ? null : item.getPath();
+        if (currentDirPath.equals(changedItemPath) || (currentDirPath.equals(changedDirPath) &&
+                event.getAction() == ExplorerChangeEvent.CHILDREN_CHANGE)) {
+            loadItemList();
+            return;
+        }
+        if (currentDirPath.equals(changedDirPath)) {
+            int i;
+            switch (event.getAction()) {
+                case ExplorerChangeEvent.CHANGE:
+                    i = mExplorerItemList.update(item, event.getNewItem());
+                    if (i >= 0) {
+                        mExplorerAdapter.notifyItemChanged(item, i);
+                    }
+                    break;
+                case ExplorerChangeEvent.CREATE:
+                    mExplorerItemList.insertAtFront(event.getNewItem());
+                    mExplorerAdapter.notifyItemInserted(event.getNewItem(), 0);
+                    break;
+                case ExplorerChangeEvent.REMOVE:
+                    i = mExplorerItemList.remove(item);
+                    if (i >= 0) {
+                        mExplorerAdapter.notifyItemRemoved(item, i);
+                    }
+                    break;
+            }
         }
     }
 
@@ -415,6 +447,25 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
             } else {
                 return VIEW_TYPE_ITEM;
             }
+        }
+
+        int getItemPosition(ExplorerItem item, int i) {
+            if (item instanceof ExplorerPage) {
+                return i + positionOfCategoryDir + 1;
+            }
+            return i + positionOfCategoryFile() + 1;
+        }
+
+        public void notifyItemChanged(ExplorerItem item, int i) {
+            notifyItemChanged(getItemPosition(item, i));
+        }
+
+        public void notifyItemRemoved(ExplorerItem item, int i) {
+            notifyItemRemoved(getItemPosition(item, i));
+        }
+
+        public void notifyItemInserted(ExplorerItem item, int i) {
+            notifyItemInserted(getItemPosition(item, i));
         }
 
         @Override

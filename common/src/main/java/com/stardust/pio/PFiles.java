@@ -296,9 +296,8 @@ public class PFiles {
     }
 
 
-    public static void copyAssetDir(Context context, String assetsDir, String toDir, String[] list) throws IOException {
+    public static void copyAssetDir(AssetManager manager, String assetsDir, String toDir, String[] list) throws IOException {
         new File(toDir).mkdirs();
-        AssetManager manager = context.getAssets();
         if (list == null) {
             list = manager.list(assetsDir);
         }
@@ -323,7 +322,7 @@ public class PFiles {
                     }
                 }
             } else {
-                copyAssetDir(context, fullAssetsPath, join(toDir, file), children);
+                copyAssetDir(manager, fullAssetsPath, join(toDir, file), children);
             }
         }
     }

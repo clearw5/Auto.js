@@ -35,6 +35,7 @@ public class OpenCVHelper {
             callback.onInitFinish();
             return;
         }
+
         mInitialized = true;
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_13, activity.getApplicationContext(), new LoaderCallback(activity) {
 

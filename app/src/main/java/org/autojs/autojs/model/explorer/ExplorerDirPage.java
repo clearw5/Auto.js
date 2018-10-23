@@ -44,7 +44,7 @@ public class ExplorerDirPage extends ExplorerFileItem implements ExplorerPage {
 
     @Override
     public ExplorerFileItem rename(String newName) {
-        return new ExplorerDirPage(getFile().renameAndReturnNewFile(newName), getParent());
+        return new ExplorerDirPage(getFile().renameTo(newName), getParent());
     }
 
     protected int indexOf(ExplorerItem child){

@@ -44,9 +44,9 @@ public interface ScriptEngine<S extends ScriptSource> {
 
     String cwd();
 
-    void uncaughtException(Exception throwable);
+    void uncaughtException(Throwable throwable);
 
-    Exception getUncaughtException();
+    Throwable getUncaughtException();
 
     void setId(int id);
 
@@ -72,7 +72,7 @@ public interface ScriptEngine<S extends ScriptSource> {
         private Map<String, Object> mTags = new HashMap<>();
         private OnDestroyListener mOnDestroyListener;
         private boolean mDestroyed = false;
-        private Exception mUncaughtException;
+        private Throwable mUncaughtException;
         private volatile AtomicInteger mId = new AtomicInteger(ScriptExecution.NO_ID);
 
         @Override
@@ -114,13 +114,13 @@ public interface ScriptEngine<S extends ScriptSource> {
         }
 
         @Override
-        public void uncaughtException(Exception throwable) {
+        public void uncaughtException(Throwable throwable) {
             mUncaughtException = throwable;
             forceStop();
         }
 
         @Override
-        public Exception getUncaughtException() {
+        public Throwable getUncaughtException() {
             return mUncaughtException;
         }
 

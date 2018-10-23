@@ -91,7 +91,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         }
     }
 
-    private void onException(Exception e) {
+    private void onException(Throwable e) {
         mExecutionListener.onException(mScriptExecution, e);
         super.finish();
     }
@@ -127,7 +127,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
             super.finish();
             return;
         }
-        Exception exception = mScriptEngine.getUncaughtException();
+        Throwable exception = mScriptEngine.getUncaughtException();
         if (exception != null) {
             onException(exception);
         } else {

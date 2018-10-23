@@ -57,6 +57,7 @@ public class ColorFinder {
             return new Point[0];
         }
         Point[] points = matOfPoint.toArray();
+        OpenCVHelper.release(matOfPoint);
         if (rect != null) {
             for (int i = 0; i < points.length; i++) {
                 points[i].x = mScreenMetrics.scaleX((int) (points[i].x + rect.x));

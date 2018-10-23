@@ -269,10 +269,8 @@ public class ScriptOperations {
     }
 
     public Observable<ExplorerFileItem> rename(final ExplorerFileItem item) {
-        final ScriptFile oldFile = new ScriptFile(item.getPath());
         String originalName = item.getName();
-        return showNameInputDialog(originalName, new InputCallback(oldFile.isDirectory() ? null : PFiles.getExtension(item.getName()),
-                originalName))
+        return showNameInputDialog(originalName, new InputCallback(null, originalName))
                 .map(newName -> {
                     ExplorerFileItem newItem = item.rename(newName);
                     if (ObjectHelper.equals(newItem.toScriptFile(), item.toScriptFile())) {
@@ -307,18 +305,23 @@ public class ScriptOperations {
 
     @SuppressLint("CheckResult")
     public void deleteWithoutConfirm(final ScriptFile scriptFile) {
+        boolean isDir = scriptFile.isDirectory();
         Observable.fromPublisher((Publisher<Boolean>) s -> s.onNext(PFiles.deleteRecursively(scriptFile)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deleted -> {
                     showMessage(deleted ? R.string.text_already_delete : R.string.text_delete_failed);
                     if (deleted)
-                        notifyFileRemoved(mCurrentDirectory, scriptFile);
+                        notifyFileRemoved(isDir, scriptFile);
                 });
     }
 
-    private void notifyFileRemoved(ScriptFile directory, ScriptFile scriptFile) {
-        mExplorer.notifyItemRemoved(new ExplorerFileItem(scriptFile, mExplorerPage));
+    private void notifyFileRemoved(boolean isDir, ScriptFile scriptFile) {
+        if (isDir) {
+            mExplorer.notifyItemRemoved(new ExplorerDirPage(scriptFile, mExplorerPage));
+        } else {
+            mExplorer.notifyItemRemoved(new ExplorerFileItem(scriptFile, mExplorerPage));
+        }
     }
 
 

@@ -87,14 +87,14 @@ public class Explorer {
         if (cachedParent != null) {
             cachedParent.addChild(item);
         }
-        mEventBus.post(new ExplorerChangeEvent(parent, CREATE, item));
+        mEventBus.post(new ExplorerChangeEvent(parent, CREATE, item, item));
     }
 
     @SuppressWarnings("unchecked")
     public void refreshAll() {
         if (mExplorerPageLruCache != null)
             mExplorerPageLruCache.evictAll();
-        mEventBus.post(new ExplorerChangeEvent(ALL));
+        mEventBus.post(ExplorerChangeEvent.EVENT_ALL);
     }
 
 
