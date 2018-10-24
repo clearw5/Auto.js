@@ -12,14 +12,12 @@ import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.util.Base64;
 import android.view.Display;
-import android.view.Surface;
 import android.view.WindowManager;
-import android.widget.ListView;
 
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.image.ColorFinder;
 import com.stardust.autojs.core.image.ImageWrapper;
-import com.stardust.autojs.core.image.OpenCVHelper;
+import com.stardust.autojs.core.opencv.OpenCVHelper;
 import com.stardust.autojs.core.image.capture.ScreenCaptureRequester;
 import com.stardust.autojs.core.image.capture.ScreenCapturer;
 import com.stardust.autojs.core.image.TemplateMatching;
@@ -30,11 +28,9 @@ import com.stardust.concurrent.VolatileDispose;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
 
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
+import com.stardust.autojs.core.opencv.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;

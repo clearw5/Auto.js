@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 
-import com.stardust.autojs.core.image.OpenCVHelper;
+import com.stardust.autojs.core.opencv.OpenCVHelper;
 import com.xcy8.ads.listener.LoadAdListener;
 import com.xcy8.ads.view.FullScreenAdView;
 

@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.stardust.auojs.inrt.autojs.AutoJs;
 import com.stardust.auojs.inrt.launch.GlobalProjectLauncher;
-import com.stardust.autojs.core.image.OpenCVHelper;
+import com.stardust.autojs.core.opencv.OpenCVHelper;
 
 import java.util.ArrayList;
 import java.util.List;

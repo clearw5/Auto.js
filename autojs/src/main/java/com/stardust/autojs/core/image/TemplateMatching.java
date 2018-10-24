@@ -1,14 +1,14 @@
 package com.stardust.autojs.core.image;
 
-import android.util.Log;
 import android.util.Pair;
 import android.util.TimingLogger;
 
+import com.stardust.autojs.core.opencv.OpenCVHelper;
 import com.stardust.util.Nath;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
-import org.opencv.core.Mat;
+import com.stardust.autojs.core.opencv.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Size;
@@ -100,6 +100,7 @@ public class TemplateMatching {
         }
         logger.addSplit("result:" + p);
         logger.dumpToLog();
+        OpenCVHelper.release(matchResult);
         if (similarity < strictThreshold) {
             return null;
         }

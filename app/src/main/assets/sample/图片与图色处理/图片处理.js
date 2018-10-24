@@ -2,6 +2,7 @@
 
 var url = "https://www.autojs.org/assets/uploads/profile/3-profileavatar.png";
 var logo = null;
+var currentImg = null;
 
 ui.layout(
     <vertical>
@@ -18,7 +19,14 @@ ui.layout(
 //把一张图片设置到图片控件中
 function setImage(img) {
     ui.run(() => {
+        var curImg = currentImg;
+        if(oldImg != null){
+            ui.post(()=>{
+                oldImg.recycle();
+            });
+        }
         ui.img.setImageBitmap(img.bitmap);
+        currentImg = img;
     });
 }
 
@@ -63,20 +71,20 @@ ui.hsv.on("click", () => {
 
 ui.blur.on("click", () => {
     processImg(img => {
-        //RGB转HSV
+        //模糊
         return images.blur(img, [10, 10]);
     });
 });
 
 ui.medianBlur.on("click", () => {
     processImg(img => {
-        //RGB转HSV
-        return images.medianBlur(img, 10);
+        //中值滤波
+        return images.medianBlur(img, 5);
     });
 });
 ui.gaussianBlur.on("click", () => {
     processImg(img => {
-        //RGB转HSV
+        //高斯模糊
         return images.gaussianBlur(img, [5, 5]);
     });
 });

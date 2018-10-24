@@ -283,7 +283,7 @@ module.exports = function (__runtime__, scope) {
     }
 
     function newMat() {
-        return new org.opencv.core.Mat();
+        return new com.stardust.autojs.core.opencv.Mat();
     }
 
     function matToImage(mat) {

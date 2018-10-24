@@ -45,8 +45,7 @@ import static org.autojs.autojs.ui.edit.EditorView.EXTRA_READ_ONLY;
  * Created by Stardust on 2017/1/29.
  */
 @EActivity(R.layout.activity_edit)
-public class
-EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, PermissionRequestProxyActivity {
+public class EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, PermissionRequestProxyActivity {
 
     private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
     private static final String LOG_TAG = "EditActivity";

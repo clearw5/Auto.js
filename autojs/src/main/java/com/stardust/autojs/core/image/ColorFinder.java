@@ -4,11 +4,14 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
+import com.stardust.autojs.core.opencv.MatOfPoint;
+import com.stardust.autojs.core.opencv.OpenCVHelper;
 import com.stardust.util.ScreenMetrics;
 
 import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
+
+import com.stardust.autojs.core.opencv.Mat;
+
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
@@ -48,6 +51,7 @@ public class ColorFinder {
             point.x = mScreenMetrics.scaleX((int) (point.x + rect.x));
             point.y = mScreenMetrics.scaleX((int) (point.y + rect.y));
         }
+        OpenCVHelper.release(matOfPoint);
         return point;
     }
 
@@ -86,7 +90,7 @@ public class ColorFinder {
         if (nonZeroPos.rows() == 0 || nonZeroPos.cols() == 0) {
             result = null;
         } else {
-            result = new MatOfPoint(nonZeroPos);
+            result = OpenCVHelper.newMatOfPoint(nonZeroPos);
         }
         OpenCVHelper.release(bi);
         OpenCVHelper.release(nonZeroPos);
@@ -114,7 +118,7 @@ public class ColorFinder {
             x += startingPoint.x;
             y += startingPoint.y;
             if (x >= image.getWidth() || y >= image.getHeight()
-                || x < 0 || y < 0) {
+                    || x < 0 || y < 0) {
                 return false;
             }
             int c = image.pixel(x, y);

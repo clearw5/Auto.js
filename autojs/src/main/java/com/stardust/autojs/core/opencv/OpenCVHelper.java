@@ -1,4 +1,4 @@
-package com.stardust.autojs.core.image;
+package com.stardust.autojs.core.opencv;
 
 import android.app.Activity;
 import android.support.annotation.Nullable;
@@ -9,7 +9,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import org.opencv.android.InstallCallbackInterface;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
-import org.opencv.core.Mat;
+
 
 /**
  * Created by Stardust on 2018/4/2.
@@ -23,6 +23,17 @@ public class OpenCVHelper {
 
     private static final String LOG_TAG = "OpenCVHelper";
     private static boolean mInitialized = false;
+
+    public static MatOfPoint newMatOfPoint(Mat mat){
+        return new MatOfPoint(mat);
+    }
+
+    public static void release(@Nullable MatOfPoint mat) {
+        if (mat == null)
+            return;
+        mat.release();
+    }
+
 
     public static void release(@Nullable Mat mat) {
         if (mat == null)

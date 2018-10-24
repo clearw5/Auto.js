@@ -6,10 +6,11 @@ import android.media.Image;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
+import com.stardust.autojs.core.opencv.OpenCVHelper;
 import com.stardust.pio.UncheckedIOException;
 
 import org.opencv.android.Utils;
-import org.opencv.core.Mat;
+import com.stardust.autojs.core.opencv.Mat;
 import org.opencv.highgui.Highgui;
 
 import java.io.FileNotFoundException;
