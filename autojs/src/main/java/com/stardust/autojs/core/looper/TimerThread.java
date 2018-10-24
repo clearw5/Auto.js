@@ -44,7 +44,7 @@ public class TimerThread extends ThreadCompat {
         new Handler().post(mTarget);
         try {
             Looper.loop();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             if (!ScriptInterruptedException.causedByInterrupted(e)) {
                 mRuntime.console.error(Thread.currentThread().toString() + ": ", e);
             }

@@ -99,7 +99,7 @@ module.exports = function(runtime, global){
         return arr;
     }
 
-    app.getUriForFile = function(file){
+    app.getUriForFile = function(path){
         return android.support.v4.content.FileProvider.getUriForFile(context,
             "org.autojs.autojs.fileprovider", new java.io.File(files.path(path)));
     };

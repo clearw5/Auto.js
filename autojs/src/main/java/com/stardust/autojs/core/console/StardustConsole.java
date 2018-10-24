@@ -282,13 +282,22 @@ public class StardustConsole extends AbstractConsole {
         }
         if (options != null && options.length > 0) {
             StringBuilder sb = new StringBuilder(data == null ? "" : data.toString());
+            ArrayList<Object> newOptions = new ArrayList<>();
             for (Object option : options) {
                 if (option instanceof Throwable) {
                     sb.append(getStackTrace((Throwable) option)).append(" ");
+                } else {
+                    newOptions.add(option);
                 }
             }
             data = sb.toString();
+            if (newOptions.isEmpty()) {
+                super.error(data, newOptions.toArray());
+            } else {
+                super.error(data);
+            }
+        } else {
+            super.error(data, options);
         }
-        super.error(data, options);
     }
 }

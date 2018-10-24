@@ -26,19 +26,19 @@ public class ImageWrapper {
     private int mHeight;
     private Bitmap mBitmap;
 
-    public ImageWrapper(Mat mat) {
+    protected ImageWrapper(Mat mat) {
         mMat = mat;
         mWidth = mat.cols();
         mHeight = mat.rows();
     }
 
-    public ImageWrapper(Bitmap bitmap) {
+    protected ImageWrapper(Bitmap bitmap) {
         mBitmap = bitmap;
         mWidth = bitmap.getWidth();
         mHeight = bitmap.getHeight();
     }
 
-    public ImageWrapper(Bitmap bitmap, Mat mat) {
+    protected ImageWrapper(Bitmap bitmap, Mat mat) {
         mBitmap = bitmap;
         mMat = mat;
         mWidth = bitmap.getWidth();
@@ -57,6 +57,14 @@ public class ImageWrapper {
         }
         return new ImageWrapper(toBitmap(image));
     }
+
+    public static ImageWrapper ofMat(Mat mat) {
+        if (mat == null) {
+            return null;
+        }
+        return new ImageWrapper(mat);
+    }
+
 
     public static ImageWrapper ofBitmap(Bitmap bitmap) {
         if (bitmap == null) {
@@ -123,6 +131,10 @@ public class ImageWrapper {
 
     public Bitmap getBitmap() {
         ensureNotRecycled();
+        if (mBitmap == null && mMat != null) {
+            mBitmap = Bitmap.createBitmap(mMat.width(), mMat.height(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(mMat, mBitmap);
+        }
         return mBitmap;
     }
 
@@ -141,5 +153,22 @@ public class ImageWrapper {
     public void ensureNotRecycled() {
         if (mBitmap == null && mMat == null)
             throw new IllegalStateException("image has been recycled");
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        recycle();
+    }
+
+    public ImageWrapper clone() {
+        ensureNotRecycled();
+        if (mBitmap == null) {
+            return ImageWrapper.ofMat(mMat.clone());
+        }
+        if (mMat == null) {
+            return ImageWrapper.ofBitmap(mBitmap.copy(mBitmap.getConfig(), true));
+        }
+        return new ImageWrapper(mBitmap.copy(mBitmap.getConfig(), true), mMat.clone());
     }
 }

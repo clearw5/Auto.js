@@ -30,9 +30,11 @@ import com.stardust.concurrent.VolatileDispose;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -130,14 +132,7 @@ public class Images {
     }
 
     public ImageWrapper copy(ImageWrapper image) {
-        image.ensureNotRecycled();
-        if (image.getBitmap() == null) {
-            return new ImageWrapper(image.getMat().clone());
-        }
-        if (image.getMat() == null) {
-            return new ImageWrapper(image.getBitmap().copy(image.getBitmap().getConfig(), true));
-        }
-        return new ImageWrapper(image.getBitmap().copy(image.getBitmap().getConfig(), true), image.getMat().clone());
+        return image.clone();
     }
 
     public boolean save(ImageWrapper image, String path, String format, int quality) throws IOException {
@@ -278,6 +273,5 @@ public class Images {
         }
         return point;
     }
-
 
 }
