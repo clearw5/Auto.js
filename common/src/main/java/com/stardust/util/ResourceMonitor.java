@@ -1,4 +1,3 @@
-// ResourceMonitor$onFinalize$1.java
 package com.stardust.util;
 
 import android.os.Handler;
@@ -12,7 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class ResourceMonitor {
 
-    private static final String LOG_TAG = "ResourceTracer";
+    private static final String LOG_TAG = "ResourceMonitor";
+
     private static final ConcurrentHashMap<Class<?>, SparseArray<UnclosedResourceException>> mResources;
     private static Handler mHandler;
     private static boolean mEnabled;

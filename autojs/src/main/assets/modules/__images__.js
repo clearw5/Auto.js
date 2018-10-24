@@ -68,12 +68,20 @@ module.exports = function (__runtime__, scope) {
 
     images.threshold = function (img, threshold, maxVal, type) {
         var mat = newMat();
-        type = type || "binary";
-        type = Imgproc["THRESH_" + type.toUpperCase()];
+        type = type || "BINARY";
+        type = Imgproc["THRESH_" + type];
         Imgproc.threshold(img.mat, mat, threshold, maxVal, type);
         return matToImage(mat);
     }
 
+    images.adaptiveThreshold = function(img, maxValue, adaptiveMethod, thresholdType, blockSize, C){
+        var mat = newMat();
+        adaptiveMethod = Imgproc["ADAPTIVE_THRESH_" + adaptiveMethod];
+        thresholdType = Imgproc["THRESH_" + thresholdType];
+        Imgproc.adaptiveThreshold(img.mat, mat, maxValue, adaptiveMethod, thresholdType, blockSize, C);
+        return matToImage(mat);
+
+    }
     images.blur = function (img, size, point, type) {
         var mat = newMat();
         size = newSize(size);

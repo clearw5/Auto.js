@@ -9,6 +9,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import org.opencv.android.InstallCallbackInterface;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.imgproc.Imgproc;
 
 
 /**
@@ -46,7 +47,6 @@ public class OpenCVHelper {
             callback.onInitFinish();
             return;
         }
-
         mInitialized = true;
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_13, activity.getApplicationContext(), new LoaderCallback(activity) {
 
