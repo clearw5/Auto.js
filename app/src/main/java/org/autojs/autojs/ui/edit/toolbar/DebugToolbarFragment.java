@@ -75,7 +75,7 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
         mDebugger = DebuggerSingleton.get();
         mDebugger.setWeakDebugCallback(new WeakReference<>(this));
         setInterrupted(false);
-        mCurrentEditorSourceUrl = mInitialEditorSourceUrl = mEditorView.getFile().toString();
+        mCurrentEditorSourceUrl = mInitialEditorSourceUrl = mEditorView.getUri().toString();
         mInitialEditorSource = mEditorView.getEditor().getText();
         setupEditor();
         ScriptExecution execution = mEditorView.run(false);

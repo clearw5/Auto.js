@@ -3,6 +3,7 @@ package org.autojs.autojs.ui.edit;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -59,6 +60,12 @@ EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHo
 
     public static void editFile(Context context, String path) {
         editFile(context, null, path);
+    }
+
+    public static void editFile(Context context, Uri uri) {
+        context.startActivity(new Intent(context, EditActivity_.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .setData(uri));
     }
 
     public static void editFile(Context context, String name, String path) {
@@ -166,13 +173,13 @@ EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHo
 
     @Override
     public ActionMode startActionMode(ActionMode.Callback callback, int type) {
-        Log.d(LOG_TAG, "startActionMode: callback = " + callback + ", type = " +  type);
+        Log.d(LOG_TAG, "startActionMode: callback = " + callback + ", type = " + type);
         return super.startActionMode(callback, type);
     }
 
     @Override
     public ActionMode startActionMode(ActionMode.Callback callback) {
-        Log.d(LOG_TAG, "startActionMode: callback = " + callback );
+        Log.d(LOG_TAG, "startActionMode: callback = " + callback);
         return super.startActionMode(callback);
     }
 

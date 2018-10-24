@@ -190,7 +190,7 @@ public class EditorMenu {
 
     private void startBuildApkActivity() {
         BuildActivity_.intent(mContext)
-                .extra(BuildActivity.EXTRA_SOURCE, mEditorView.getFile().getPath())
+                .extra(BuildActivity.EXTRA_SOURCE, mEditorView.getUri().getPath())
                 .start();
     }
 

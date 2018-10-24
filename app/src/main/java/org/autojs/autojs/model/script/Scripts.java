@@ -74,12 +74,12 @@ public class Scripts {
     };
 
 
-    public static void openByOtherApps(String path) {
-        IntentUtil.viewFile(GlobalAppContext.get(), path, "text/plain", AppFileProvider.AUTHORITY);
+    public static void openByOtherApps(Uri uri) {
+        IntentUtil.viewFile(GlobalAppContext.get(), uri, "text/plain", AppFileProvider.AUTHORITY);
     }
 
     public static void openByOtherApps(File file) {
-        openByOtherApps(file.getPath());
+        openByOtherApps(Uri.fromFile(file));
     }
 
     public static void createShortcut(ScriptFile scriptFile) {

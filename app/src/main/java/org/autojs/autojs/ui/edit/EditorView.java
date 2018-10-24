@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -31,6 +32,7 @@ import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.pio.PFiles;
 import com.stardust.util.BackPressedHandler;
 import com.stardust.util.Callback;
+import com.stardust.util.IntentUtil;
 import com.stardust.util.ViewUtils;
 
 import org.androidannotations.annotations.AfterViews;
@@ -116,7 +118,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     DrawerLayout mDrawerLayout;
 
     private String mName;
-    private File mFile;
+    private Uri mUri;
     private boolean mReadOnly = false;
     private int mScriptExecutionId;
     private AutoCompletion mAutoCompletion;
@@ -179,8 +181,8 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         }
     }
 
-    public File getFile() {
-        return mFile;
+    public Uri getUri() {
+        return mUri;
     }
 
     public Observable<String> handleIntent(Intent intent) {
@@ -215,21 +217,26 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
             return Observable.just(content);
         } else {
             if (path == null) {
-                return Observable.error(new IllegalArgumentException("path and content is empty"));
+                if (intent.getData() == null) {
+                    return Observable.error(new IllegalArgumentException("path and content is empty"));
+                } else {
+                    mUri = intent.getData();
+                }
+            } else {
+                mUri = Uri.fromFile(new File(path));
             }
-            mFile = new File(path);
             if (mName == null) {
-                mName = mFile.getName();
+                mName = PFiles.getNameWithoutExtension(mUri.getPath());
             }
-            return loadFile(mFile);
+            return loadUri(mUri);
         }
     }
 
 
     @SuppressLint("CheckResult")
-    private Observable<String> loadFile(final File file) {
+    private Observable<String> loadUri(final Uri uri) {
         mEditor.setProgress(true);
-        return Observable.fromCallable(() -> PFiles.read(file))
+        return Observable.fromCallable(() -> PFiles.read(getContext().getContentResolver().openInputStream(uri)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(s -> {
@@ -393,7 +400,8 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         if (showMessage) {
             Snackbar.make(this, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         }
-        ScriptExecution execution = Scripts.runWithBroadcastSender(mFile);
+        // TODO: 2018/10/24
+        ScriptExecution execution = Scripts.runWithBroadcastSender(new File(mUri.getPath()));
         if (execution == null) {
             return null;
         }
@@ -414,7 +422,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     public Observable<String> save() {
         return Observable.just(mEditor.getText())
                 .observeOn(Schedulers.io())
-                .doOnNext(s -> PFiles.write(mFile, s))
+                .doOnNext(s -> PFiles.write(getContext().getContentResolver().openOutputStream(mUri), s))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(s -> {
                     mEditor.markTextAsSaved();
@@ -489,8 +497,9 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     public void openByOtherApps() {
-        if (mFile != null)
-            Scripts.openByOtherApps(mFile);
+        if (mUri != null) {
+            Scripts.openByOtherApps(mUri);
+        }
     }
 
     public void beautifyCode() {

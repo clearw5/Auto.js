@@ -134,6 +134,25 @@ public class IntentUtil {
         return uri;
     }
 
+    public static boolean viewFile(Context context, Uri uri, String mimeType, String fileProviderAuthority) {
+        if (uri.getScheme().equals("file")) {
+            return viewFile(context, uri.getPath(), mimeType, fileProviderAuthority);
+        } else {
+            try {
+                context.startActivity(new Intent(Intent.ACTION_VIEW)
+                        .setDataAndType(uri, mimeType)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+    }
+
     public static boolean viewFile(Context context, String path, String mimeType, String fileProviderAuthority) {
         try {
             Uri uri = getUriOfFile(context, path, fileProviderAuthority);

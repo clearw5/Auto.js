@@ -136,6 +136,8 @@ public class PFiles {
             return new String(bytes, encoding);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        } finally {
+            closeSilently(is);
         }
     }
 
@@ -218,7 +220,7 @@ public class PFiles {
         }
     }
 
-    public static void write(FileOutputStream fileOutputStream, String text) {
+    public static void write(OutputStream fileOutputStream, String text) {
         write(fileOutputStream, text, "utf-8");
     }
 
@@ -226,9 +228,10 @@ public class PFiles {
     public static void write(OutputStream outputStream, String text, String encoding) {
         try {
             outputStream.write(text.getBytes(encoding));
-            outputStream.close();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        } finally {
+            closeSilently(outputStream);
         }
     }
 
