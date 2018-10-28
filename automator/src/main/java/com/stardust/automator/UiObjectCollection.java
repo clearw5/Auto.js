@@ -291,48 +291,6 @@ public class UiObjectCollection {
         return mNodes.lastIndexOf(o);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-
-    public ListIterator<UiObject> listIterator() {
-        return mNodes.listIterator();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-
-    public ListIterator<UiObject> listIterator(int index) {
-        return mNodes.listIterator(index);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-
-    public List<UiObject> subList(int fromIndex, int toIndex) {
-        return mNodes.subList(fromIndex, toIndex);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-
-    public Spliterator<UiObject> spliterator() {
-        return mNodes.spliterator();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-
-    public boolean removeIf(Predicate<? super UiObject> filter) {
-        return mNodes.removeIf(filter);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-
-    public Stream<UiObject> stream() {
-        return mNodes.stream();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-
-    public Stream<UiObject> parallelStream() {
-        return mNodes.parallelStream();
-    }
-
     public int size() {
         return mNodes.size();
     }
@@ -346,7 +304,6 @@ public class UiObjectCollection {
     public boolean contains(Object o) {
         return mNodes.contains(o);
     }
-
 
     public Iterator<UiObject> iterator() {
         return mNodes.iterator();
