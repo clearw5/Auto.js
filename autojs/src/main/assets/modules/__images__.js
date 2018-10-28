@@ -122,6 +122,20 @@ module.exports = function (__runtime__, scope) {
         return matToImage(mat);
     }
 
+    images.resize = function(img, size, interpolation) {
+        var mat = newMat();
+        interpolation = Imgproc["INTER_" + (interpolation || "LINEAR")];
+        Imgproc.resize(img.mat, mat, newSize(size), 0, 0, interpolation);
+        return matToImage(mat);
+    }
+
+    images.scale = function(img, fx, fy, interpolation) {
+        var mat = newMat();
+        interpolation = Imgproc["INTER_" + (interpolation || "LINEAR")];
+        Imgproc.resize(img.mat, mat, newSize([0, 0]), fx, fy, interpolation);
+        return matToImage(mat);
+    }
+
     images.detectsColor = function (img, color, x, y, threshold, algorithm) {
         color = parseColor(color);
         algorithm = algorithm || "diff";

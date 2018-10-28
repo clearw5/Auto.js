@@ -156,12 +156,6 @@ public class ImageWrapper {
             throw new IllegalStateException("image has been recycled");
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        recycle();
-    }
-
     public ImageWrapper clone() {
         ensureNotRecycled();
         if (mBitmap == null) {

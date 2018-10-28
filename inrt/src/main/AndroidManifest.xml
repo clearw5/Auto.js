@@ -26,8 +26,9 @@
         android:label="inrt"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:label, android:allowBackup"
-        tools:ignore="GoogleAppIndexingWarning">
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:label, android:allowBackup">
         <activity android:name=".LogActivity">
 
         </activity>

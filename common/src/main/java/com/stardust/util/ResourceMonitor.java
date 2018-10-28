@@ -13,9 +13,9 @@ public final class ResourceMonitor {
 
     private static final String LOG_TAG = "ResourceMonitor";
 
-    private static final ConcurrentHashMap<Class<?>, SparseArray<UnclosedResourceException>> mResources;
+    private static final ConcurrentHashMap<Class<?>, SparseArray<UnclosedResourceException>> mResources = new ConcurrentHashMap<>();
     private static Handler mHandler;
-    private static boolean mEnabled;
+    private static boolean mEnabled = false;
 
     public static void onOpen(ResourceMonitor.Resource resource) {
         if (!mEnabled) {
@@ -62,11 +62,6 @@ public final class ResourceMonitor {
                 });
             }
         }
-    }
-
-    static {
-        mResources = new ConcurrentHashMap<>();
-        mEnabled = BuildConfig.DEBUG;
     }
 
     public static boolean isEnabled() {
