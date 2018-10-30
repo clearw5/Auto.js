@@ -452,7 +452,8 @@ public class ScriptRuntime {
     }
 
     public static String getStackTrace(Throwable e, boolean printJavaStackTrace) {
-        StringBuilder scriptTrace = new StringBuilder();
+        String message = e.getMessage();
+        StringBuilder scriptTrace = new StringBuilder(message == null ? "" : message + "\n");
         if (e instanceof RhinoException) {
             RhinoException rhinoException = (RhinoException) e;
             scriptTrace.append(rhinoException.details()).append("\n");
@@ -479,7 +480,7 @@ public class ScriptRuntime {
             return scriptTrace.toString();
         } catch (IOException e1) {
             e1.printStackTrace();
-            return e.getMessage();
+            return message;
         }
     }
 

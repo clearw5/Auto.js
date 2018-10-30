@@ -97,6 +97,7 @@ public class Mat extends org.opencv.core.Mat implements ResourceMonitor.Resource
         if (!mReleased) {
             ResourceMonitor.onFinalize(this);
             super.release();
+            mReleased = true;
         }
         super.finalize();
     }

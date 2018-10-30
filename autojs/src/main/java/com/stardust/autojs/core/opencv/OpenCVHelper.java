@@ -9,8 +9,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import org.opencv.android.InstallCallbackInterface;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
-import org.opencv.core.Core;
-import org.opencv.imgproc.Imgproc;
 
 
 /**
@@ -33,6 +31,8 @@ public class OpenCVHelper {
     public static void release(@Nullable MatOfPoint mat) {
         if (mat == null)
             return;
+
+
         mat.release();
     }
 

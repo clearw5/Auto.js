@@ -1,6 +1,7 @@
 package org.autojs.autojs;
 
 import android.annotation.SuppressLint;
+import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;

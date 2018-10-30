@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.util.Base64;
 import android.view.Display;
@@ -29,6 +30,7 @@ import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
 
 import com.stardust.autojs.core.opencv.Mat;
+
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 
@@ -268,6 +270,14 @@ public class Images {
             OpenCVHelper.release(src);
         }
         return point;
+    }
+
+    public Mat newMat() {
+        return new Mat();
+    }
+
+    public Mat newMat(Mat mat, Rect roi) {
+        return new Mat(mat, roi);
     }
 
 }
