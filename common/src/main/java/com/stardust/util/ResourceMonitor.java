@@ -2,6 +2,7 @@ package com.stardust.util;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.stardust.BuildConfig;
@@ -13,22 +14,37 @@ public final class ResourceMonitor {
 
     private static final String LOG_TAG = "ResourceMonitor";
 
-    private static final ConcurrentHashMap<Class<?>, SparseArray<UnclosedResourceException>> mResources = new ConcurrentHashMap<>();
-    private static Handler mHandler;
-    private static boolean mEnabled = false;
+    private static final ConcurrentHashMap<Class<?>, SparseArray<Exception>> mResources = new ConcurrentHashMap<>();
+    private static Handler sHandler;
+    private static boolean mEnabled = BuildConfig.DEBUG;
+    private static ExceptionCreator sExceptionCreator;
+    private static UnclosedResourceDetectedHandler sUnclosedResourceDetectedHandler;
+
+    public static void setExceptionCreator(ExceptionCreator exceptionCreator) {
+        sExceptionCreator = exceptionCreator;
+    }
+
+    public static void setUnclosedResourceDetectedHandler(UnclosedResourceDetectedHandler unclosedResourceDetectedHandler) {
+        sUnclosedResourceDetectedHandler = unclosedResourceDetectedHandler;
+    }
 
     public static void onOpen(ResourceMonitor.Resource resource) {
         if (!mEnabled) {
             return;
         }
-        SparseArray<UnclosedResourceException> map = mResources.get(resource.getClass());
+        SparseArray<Exception> map = mResources.get(resource.getClass());
         if (map == null) {
             map = new SparseArray<>();
             mResources.put(resource.getClass(), map);
         }
         int resourceId = resource.getResourceId();
-        ResourceMonitor.UnclosedResourceException exception = new ResourceMonitor.UnclosedResourceException("id = " + resourceId + ", resource = " + resource);
-        exception.fillInStackTrace();
+        Exception exception;
+        if (sExceptionCreator == null) {
+            exception = new ResourceMonitor.UnclosedResourceException(resource);
+            exception.fillInStackTrace();
+        } else {
+            exception = sExceptionCreator.create(resource);
+        }
         map.put(resourceId, exception);
     }
 
@@ -46,18 +62,25 @@ public final class ResourceMonitor {
         if (!mEnabled) {
             return;
         }
-        SparseArray<UnclosedResourceException> map = mResources.get(resource.getClass());
+        SparseArray<Exception> map = mResources.get(resource.getClass());
         if (map != null) {
             int indexOfKey = map.indexOfKey(resource.getResourceId());
             if (indexOfKey >= 0) {
-                final ResourceMonitor.UnclosedResourceException unclosedResourceException = map.valueAt(indexOfKey);
+                final Exception exception = map.valueAt(indexOfKey);
                 map.removeAt(indexOfKey);
-                if (mHandler == null) {
-                    mHandler = new Handler(Looper.getMainLooper());
+                if (sHandler == null) {
+                    sHandler = new Handler(Looper.getMainLooper());
                 }
-                mHandler.post(new Runnable() {
+                sHandler.post(new Runnable() {
                     public final void run() {
-                        throw new UnclosedResourceDetectedException(unclosedResourceException);
+                        UnclosedResourceDetectedException detectedException = new UnclosedResourceDetectedException(exception);
+                        detectedException.fillInStackTrace();
+                        Log.w(LOG_TAG, "UnclosedResourceDetected", detectedException);
+                        if (sUnclosedResourceDetectedHandler != null) {
+                            sUnclosedResourceDetectedHandler.onUnclosedResourceDetected(detectedException);
+                        } else {
+                            throw detectedException;
+                        }
                     }
                 });
             }
@@ -73,19 +96,29 @@ public final class ResourceMonitor {
     }
 
     public static final class UnclosedResourceException extends RuntimeException {
-        public UnclosedResourceException(String message) {
-            super(message);
+        public UnclosedResourceException(Resource resource) {
+            super("id = " + resource.getResourceId() + ", resource = " + resource);
         }
+
     }
 
 
     public static final class UnclosedResourceDetectedException extends RuntimeException {
-        public UnclosedResourceDetectedException(ResourceMonitor.UnclosedResourceException cause) {
+        public UnclosedResourceDetectedException(Throwable cause) {
             super(cause);
         }
     }
 
     public interface Resource {
         int getResourceId();
+    }
+
+    public interface ExceptionCreator {
+        Exception create(Resource resource);
+    }
+
+    public interface UnclosedResourceDetectedHandler {
+
+        void onUnclosedResourceDetected(UnclosedResourceDetectedException detectedException);
     }
 }

@@ -26,6 +26,7 @@ import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptSource;
+import com.stardust.util.ResourceMonitor;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
@@ -34,7 +35,9 @@ import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.LayoutInspector;
 
 import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.WrappedException;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.OpenCVLoader;
 
@@ -90,6 +93,17 @@ public abstract class AutoJs {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        ResourceMonitor.setExceptionCreator(resource -> {
+            Exception exception;
+            if (org.mozilla.javascript.Context.getCurrentContext() != null) {
+                exception = new WrappedException(new ResourceMonitor.UnclosedResourceException(resource));
+            } else {
+                exception = new ResourceMonitor.UnclosedResourceException(resource);
+            }
+            exception.fillInStackTrace();
+            return exception;
+        });
+        ResourceMonitor.setUnclosedResourceDetectedHandler(detectedException -> mGlobalConsole.error(detectedException));
     }
 
     public abstract void ensureAccessibilityServiceEnabled();

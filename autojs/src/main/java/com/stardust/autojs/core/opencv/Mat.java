@@ -2,6 +2,7 @@ package com.stardust.autojs.core.opencv;
 
 import com.stardust.util.ResourceMonitor;
 
+import org.mozilla.javascript.ScriptRuntime;
 import org.opencv.core.Range;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;

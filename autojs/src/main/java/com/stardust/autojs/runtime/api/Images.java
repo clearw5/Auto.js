@@ -101,7 +101,7 @@ public class Images {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public ImageWrapper captureScreen() {
+    public synchronized ImageWrapper captureScreen() {
         ScriptRuntime.requiresApi(21);
         if (mScreenCapturer == null) {
             throw new SecurityException("No screen capture permission");
