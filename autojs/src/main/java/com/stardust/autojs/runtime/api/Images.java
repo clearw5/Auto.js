@@ -9,7 +9,6 @@ import android.graphics.Matrix;
 import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.util.Base64;
 import android.view.Display;
@@ -18,18 +17,17 @@ import android.view.WindowManager;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.image.ColorFinder;
 import com.stardust.autojs.core.image.ImageWrapper;
-import com.stardust.autojs.core.opencv.OpenCVHelper;
+import com.stardust.autojs.core.image.TemplateMatching;
 import com.stardust.autojs.core.image.capture.ScreenCaptureRequester;
 import com.stardust.autojs.core.image.capture.ScreenCapturer;
-import com.stardust.autojs.core.image.TemplateMatching;
+import com.stardust.autojs.core.opencv.Mat;
+import com.stardust.autojs.core.opencv.OpenCVHelper;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.concurrent.VolatileDispose;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
-
-import com.stardust.autojs.core.opencv.Mat;
 
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
@@ -52,7 +50,6 @@ public class Images {
     private ScreenCaptureRequester mScreenCaptureRequester;
     private ScreenCapturer mScreenCapturer;
     private Context mContext;
-    private Display mDisplay;
     private Image mPreCapture;
     private ImageWrapper mPreCaptureImage;
     private ScreenMetrics mScreenMetrics;
@@ -64,7 +61,6 @@ public class Images {
         mScriptRuntime = scriptRuntime;
         mScreenCaptureRequester = screenCaptureRequester;
         mContext = context;
-        mDisplay = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         mScreenMetrics = mScriptRuntime.getScreenMetrics();
         colorFinder = new ColorFinder(mScreenMetrics);
     }

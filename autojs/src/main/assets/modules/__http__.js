@@ -40,6 +40,9 @@ module.exports = function(runtime, scope){
     }
 
     http.request = function(url, options, callback){
+        if(!callback && ui.isUiThread()){
+            throw new Error("不能在ui线程执行网络操作，请加上回调函数的参数callback或在子线程执行");
+        }
         var call = http.client().newCall(http.buildRequest(url, options));
         if(!callback){
             return wrapResponse(call.execute());

@@ -42,7 +42,6 @@ public class Dialogs {
                 .showAndGet();
     }
 
-
     @ScriptInterface
     public Object alert(String title, String content, Object callback) {
         MaterialDialog.Builder builder = dialogBuilder(callback)

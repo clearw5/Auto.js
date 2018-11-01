@@ -140,6 +140,7 @@ public class UiSelector extends UiGlobalSelector {
     @ScriptInterface
     @NonNull
     public UiObjectCollection untilFind() {
+        ensureNonUiThread();
         UiObjectCollection uiObjectCollection = find();
         while (uiObjectCollection.empty()) {
             if (Thread.currentThread().isInterrupted()) {
@@ -153,6 +154,13 @@ public class UiSelector extends UiGlobalSelector {
             uiObjectCollection = find();
         }
         return uiObjectCollection;
+    }
+
+    private void ensureNonUiThread() {
+        if(Looper.myLooper() == Looper.getMainLooper()){
+            // TODO: 2018/11/1 配置字符串
+            throw new IllegalThreadStateException("不能在ui线程执行阻塞操作, 请在子线程或子脚本执行findOne()或untilFind()");
+        }
     }
 
     @ScriptInterface
