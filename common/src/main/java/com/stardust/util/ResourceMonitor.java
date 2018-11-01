@@ -16,7 +16,7 @@ public final class ResourceMonitor {
 
     private static final ConcurrentHashMap<Class<?>, SparseArray<Exception>> mResources = new ConcurrentHashMap<>();
     private static Handler sHandler;
-    private static boolean mEnabled = BuildConfig.DEBUG;
+    private static boolean sEnabled = BuildConfig.DEBUG;
     private static ExceptionCreator sExceptionCreator;
     private static UnclosedResourceDetectedHandler sUnclosedResourceDetectedHandler;
 
@@ -29,7 +29,7 @@ public final class ResourceMonitor {
     }
 
     public static void onOpen(ResourceMonitor.Resource resource) {
-        if (!mEnabled) {
+        if (!sEnabled) {
             return;
         }
         SparseArray<Exception> map = mResources.get(resource.getClass());
@@ -49,7 +49,7 @@ public final class ResourceMonitor {
     }
 
     public static void onClose(ResourceMonitor.Resource resource) {
-        if (!mEnabled) {
+        if (!sEnabled) {
             return;
         }
         SparseArray map = mResources.get(resource.getClass());
@@ -59,7 +59,7 @@ public final class ResourceMonitor {
     }
 
     public static void onFinalize(ResourceMonitor.Resource resource) {
-        if (!mEnabled) {
+        if (!sEnabled) {
             return;
         }
         SparseArray<Exception> map = mResources.get(resource.getClass());
@@ -88,11 +88,11 @@ public final class ResourceMonitor {
     }
 
     public static boolean isEnabled() {
-        return mEnabled;
+        return sEnabled;
     }
 
     public static void setEnabled(boolean mEnabled) {
-        ResourceMonitor.mEnabled = mEnabled;
+        ResourceMonitor.sEnabled = mEnabled;
     }
 
     public static final class UnclosedResourceException extends RuntimeException {

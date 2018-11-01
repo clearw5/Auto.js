@@ -87,12 +87,6 @@ public abstract class AutoJs {
     protected void init() {
         addAccessibilityServiceDelegates();
         registerActivityLifecycleCallbacks();
-        try {
-            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_13, mContext, new BaseLoaderCallback(mContext) {
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         ResourceMonitor.setExceptionCreator(resource -> {
             Exception exception;
             if (org.mozilla.javascript.Context.getCurrentContext() != null) {

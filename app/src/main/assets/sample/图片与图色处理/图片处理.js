@@ -36,6 +36,14 @@ ui.layout(
 function setImage(img) {
     ui.run(() => {
         ui.img.setImageBitmap(img.bitmap);
+        var oldImg = currentImg;
+        //不能立即回收currentImg，因为此时img控件还在使用它，应该在下次消息循环再回收它
+        ui.post(()=>{
+            if(oldImg != null){
+                oldImg.recycle();
+            }
+        });
+        currentImg = img;
     });
 }
 
@@ -52,10 +60,6 @@ function processImg(process) {
         }
         //处理图片
         var result = process(logo);
-        if(currentImg != null){
-            currentImg.recycle();
-        }
-        currentImg = result;
         //把处理后的图片设置到图片控件中
         setImage(result);
     }, 0);

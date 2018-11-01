@@ -94,8 +94,11 @@ module.exports = function (runtime, global) {
     }
 
     ui.post = function (action, delay) {
-        delay = delay || 0;
-        runtime.getUiHandler().postDelayed(wrapUiAction(action), delay);
+        if(delay == undefined){
+            runtime.getUiHandler().post(wrapUiAction(action));
+        }else{
+            runtime.getUiHandler().postDelayed(wrapUiAction(action), delay);
+        }
     }
 
     ui.statusBarColor = function (color) {

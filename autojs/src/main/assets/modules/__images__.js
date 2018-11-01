@@ -66,6 +66,7 @@ module.exports = function (runtime, scope) {
         }
 
         images.threshold = function (img, threshold, maxVal, type) {
+            initIfNeeded();
             var mat = new Mat();
             type = type || "BINARY";
             type = Imgproc["THRESH_" + type];
@@ -74,6 +75,7 @@ module.exports = function (runtime, scope) {
         }
 
         images.inRange = function (img, lowerBound, upperBound) {
+            initIfNeeded();
             var lb, ub;
             if (typeof (lowerBound) == 'string') {
                 if (typeof (upperBound) == 'string') {
@@ -99,6 +101,7 @@ module.exports = function (runtime, scope) {
 
 
         images.adaptiveThreshold = function(img, maxValue, adaptiveMethod, thresholdType, blockSize, C){
+            initIfNeeded();
             var mat = new Mat();
             adaptiveMethod = Imgproc["ADAPTIVE_THRESH_" + adaptiveMethod];
             thresholdType = Imgproc["THRESH_" + thresholdType];
@@ -107,6 +110,7 @@ module.exports = function (runtime, scope) {
 
         }
         images.blur = function (img, size, point, type) {
+            initIfNeeded();
             var mat = new Mat();
             size = newSize(size);
             type = Imgproc["BORDER_" + (type || "CONSTANT")];
@@ -119,6 +123,7 @@ module.exports = function (runtime, scope) {
         }
 
         images.medianBlur = function (img, size) {
+            initIfNeeded();
             var mat = new Mat();
             Imgproc.medianBlur(img.mat, mat, size);
             return images.matToImage(mat);
@@ -126,6 +131,7 @@ module.exports = function (runtime, scope) {
 
 
         images.gaussianBlur = function (img, size, sigmaX, sigmaY, type) {
+            initIfNeeded();
             var mat = new Mat();
             size = newSize(size);
             sigmaX = sigmaX == undefined ? 0 : sigmaX;
@@ -136,6 +142,7 @@ module.exports = function (runtime, scope) {
         }
 
         images.cvtColor = function (img, code, dstCn) {
+            initIfNeeded();
             var mat = new Mat();
             code = Imgproc["COLOR_" + code];
             if (dstCn == undefined) {
@@ -147,6 +154,7 @@ module.exports = function (runtime, scope) {
         }
 
         images.findCircles = function(grayImg, options) {
+            initIfNeeded();
             options = options || {};
             var mat = options.region == undefined ? grayImg.mat : new Mat(grayImg.mat, buildRegion(options.region, grayImg));
             var resultMat = new Mat()
@@ -176,6 +184,7 @@ module.exports = function (runtime, scope) {
         }
 
         images.resize = function(img, size, interpolation) {
+            initIfNeeded();
             var mat = new Mat();
             interpolation = Imgproc["INTER_" + (interpolation || "LINEAR")];
             Imgproc.resize(img.mat, mat, newSize(size), 0, 0, interpolation);
@@ -183,6 +192,7 @@ module.exports = function (runtime, scope) {
         }
 
         images.scale = function(img, fx, fy, interpolation) {
+            initIfNeeded();
             var mat = new Mat();
             interpolation = Imgproc["INTER_" + (interpolation || "LINEAR")];
             Imgproc.resize(img.mat, mat, newSize([0, 0]), fx, fy, interpolation);
@@ -190,6 +200,7 @@ module.exports = function (runtime, scope) {
         }
 
         images.rotate = function(img, degree, x, y) {
+            initIfNeeded();
             if(x == undefined){
                 x = img.width / 2;
             }
@@ -200,6 +211,7 @@ module.exports = function (runtime, scope) {
         }
 
         images.concat = function(img1, img2, direction, rect1, rect2) {
+            initIfNeeded();
             direction = direction || "right";
             rect1 = buildRegion(rect1, img1);
             rect2 = buildRegion(rect2, img1);
@@ -207,6 +219,7 @@ module.exports = function (runtime, scope) {
         }
 
         images.detectsColor = function (img, color, x, y, threshold, algorithm) {
+            initIfNeeded();
             color = parseColor(color);
             algorithm = algorithm || "diff";
             threshold = threshold || defaultColorThreshold;
@@ -216,6 +229,7 @@ module.exports = function (runtime, scope) {
         }
 
         images.findColor = function (img, color, options) {
+            initIfNeeded();
             color = parseColor(color);
             options = options || {};
             var region = options.region || [];
@@ -246,6 +260,7 @@ module.exports = function (runtime, scope) {
         }
 
         images.findAllPointsForColor = function (img, color, options) {
+            initIfNeeded();
             color = parseColor(color);
             options = options || {};
             if (options.similarity) {
@@ -261,6 +276,7 @@ module.exports = function (runtime, scope) {
         }
 
         images.findMultiColors = function (img, firstColor, paths, options) {
+            initIfNeeded();
             options = options || {};
             firstColor = parseColor(firstColor);
             var list = java.lang.reflect.Array.newInstance(java.lang.Integer.TYPE, paths.length * 3);
@@ -276,6 +292,7 @@ module.exports = function (runtime, scope) {
         }
 
         images.findImage = function (img, template, options) {
+            initIfNeeded();
             options = options || {};
             var threshold = options.threshold || 0.9;
             var maxLevel = -1;
@@ -333,6 +350,7 @@ module.exports = function (runtime, scope) {
         }
 
         images.matToImage = function(img){
+            initIfNeeded();
             return Image.ofMat(img);
         }
 
@@ -388,6 +406,10 @@ module.exports = function (runtime, scope) {
                 size = [size[0], size[0]];
             }
             return new Size(size[0], size[1]);
+        }
+
+        function initIfNeeded(){
+            javaImages.initOpenCvIfNeeded();
         }
     
         scope.__asGlobal__(images, ['requestScreenCapture', 'captureScreen', 'findImage', 'findImageInRegion', 'findColor', 'findColorInRegion', 'findColorEquals', 'findMultiColors']);

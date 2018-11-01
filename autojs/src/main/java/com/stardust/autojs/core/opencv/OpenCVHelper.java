@@ -1,10 +1,11 @@
 package com.stardust.autojs.core.opencv;
 
-import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.app.DialogUtils;
 
 import org.opencv.android.InstallCallbackInterface;
 import org.opencv.android.LoaderCallbackInterface;
@@ -22,7 +23,7 @@ public class OpenCVHelper {
     }
 
     private static final String LOG_TAG = "OpenCVHelper";
-    private static boolean mInitialized = false;
+    private static boolean sInitialized = false;
 
     public static MatOfPoint newMatOfPoint(Mat mat){
         return new MatOfPoint(mat);
@@ -31,11 +32,8 @@ public class OpenCVHelper {
     public static void release(@Nullable MatOfPoint mat) {
         if (mat == null)
             return;
-
-
         mat.release();
     }
-
 
     public static void release(@Nullable Mat mat) {
         if (mat == null)
@@ -43,13 +41,17 @@ public class OpenCVHelper {
         mat.release();
     }
 
-    public static void initIfNeeded(Activity activity, InitializeCallback callback) {
-        if (mInitialized) {
+    public synchronized static boolean isInitialized() {
+        return sInitialized;
+    }
+
+    public synchronized static void initIfNeeded(Context context, InitializeCallback callback) {
+        if (sInitialized) {
             callback.onInitFinish();
             return;
         }
-        mInitialized = true;
-        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_13, activity.getApplicationContext(), new LoaderCallback(activity) {
+        sInitialized = true;
+        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_13, context.getApplicationContext(), new LoaderCallback(context) {
 
             @Override
             protected void finish() {
@@ -60,10 +62,10 @@ public class OpenCVHelper {
 
 
     public static class LoaderCallback implements LoaderCallbackInterface {
-        private Activity mActivity;
+        private Context mContext;
 
-        public LoaderCallback(Activity activity) {
-            this.mActivity = activity;
+        public LoaderCallback(Context context) {
+            this.mContext = context;
         }
 
         public void onManagerConnected(int status) {
@@ -74,23 +76,23 @@ public class OpenCVHelper {
                 case 1:
                 default:
                     Log.e(LOG_TAG, "OpenCV loading failed!");
-                    new MaterialDialog.Builder(mActivity)
+                    DialogUtils.showDialog(new MaterialDialog.Builder(mContext)
                             .title("OpenCV error")
                             .content("OpenCV was not initialised correctly. Application will be shut down")
                             .cancelable(false)
                             .positiveText("OK")
                             .onPositive((dialog, which) -> finish())
-                            .show();
+                            .build());
                     break;
                 case 2:
                     Log.e(LOG_TAG, "Package installation failed!");
-                    new MaterialDialog.Builder(mActivity)
+                    DialogUtils.showDialog(new MaterialDialog.Builder(mContext)
                             .title("OpenCV Manager")
                             .content("Package installation failed!")
                             .cancelable(false)
                             .positiveText("OK")
                             .onPositive((dialog, which) -> finish())
-                            .show();
+                            .build());
                     break;
                 case 3:
                     Log.d(LOG_TAG, "OpenCV library instalation was canceled by user");
@@ -98,13 +100,13 @@ public class OpenCVHelper {
                     break;
                 case 4:
                     Log.d(LOG_TAG, "OpenCV Manager Service is uncompatible with this app!");
-                    new MaterialDialog.Builder(mActivity)
+                    DialogUtils.showDialog(new MaterialDialog.Builder(mContext)
                             .title("OpenCV Manager")
                             .content("OpenCV Manager service is incompatible with this app. Try to update it via Google Play.")
                             .cancelable(false)
                             .positiveText("OK")
                             .onPositive((dialog, which) -> finish())
-                            .show();
+                            .build());
             }
 
         }
@@ -112,7 +114,7 @@ public class OpenCVHelper {
         public void onPackageInstall(int operation, final InstallCallbackInterface callback) {
             switch (operation) {
                 case 0:
-                    new MaterialDialog.Builder(mActivity)
+                    DialogUtils.showDialog(new MaterialDialog.Builder(mContext)
                             .title("Package not found")
                             .content(callback.getPackageName() + " package was not found! Try to install it?")
                             .cancelable(false)
@@ -120,10 +122,10 @@ public class OpenCVHelper {
                             .onPositive((dialog, which) -> callback.install())
                             .negativeText("No")
                             .onNegative(((dialog, which) -> callback.cancel()))
-                            .show();
+                            .build());
                     break;
                 case 1:
-                    new MaterialDialog.Builder(mActivity)
+                    DialogUtils.showDialog(new MaterialDialog.Builder(mContext)
                             .title("OpenCV is not ready")
                             .content("Installation is in progress. Wait or exit?")
                             .cancelable(false)
@@ -131,7 +133,7 @@ public class OpenCVHelper {
                             .onPositive((dialog, which) -> callback.wait_install())
                             .negativeText("Exit")
                             .onNegative(((dialog, which) -> callback.cancel()))
-                            .show();
+                            .build());
                 default:
                     finish();
             }
@@ -139,7 +141,6 @@ public class OpenCVHelper {
         }
 
         protected void finish() {
-            mActivity.finish();
         }
     }
 

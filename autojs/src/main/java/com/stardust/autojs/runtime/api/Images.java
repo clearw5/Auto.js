@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.RequiresApi;
 import android.util.Base64;
 import android.view.Gravity;
@@ -55,6 +56,7 @@ public class Images {
     private Image mPreCapture;
     private ImageWrapper mPreCaptureImage;
     private ScreenMetrics mScreenMetrics;
+    private volatile boolean mOpenCvInitialized = false;
 
     @ScriptVariable
     public final ColorFinder colorFinder;
@@ -148,7 +150,7 @@ public class Images {
     }
 
     public static ImageWrapper concat(ImageWrapper img1, Rect rect1, ImageWrapper img2, Rect rect2, int direction) {
-        if(!Arrays.asList(Gravity.LEFT, Gravity.RIGHT, Gravity.TOP, Gravity.BOTTOM).contains(direction)){
+        if (!Arrays.asList(Gravity.LEFT, Gravity.RIGHT, Gravity.TOP, Gravity.BOTTOM).contains(direction)) {
             throw new IllegalArgumentException("unknown direction " + direction);
         }
         int width;
@@ -283,6 +285,7 @@ public class Images {
     }
 
     public Point findImage(ImageWrapper image, ImageWrapper template, float weakThreshold, float threshold, Rect rect, int maxLevel) {
+        initOpenCvIfNeeded();
         if (image == null)
             throw new NullPointerException("image = null");
         if (template == null)
@@ -315,4 +318,27 @@ public class Images {
         return new Mat(mat, roi);
     }
 
+    public void initOpenCvIfNeeded() {
+        if (mOpenCvInitialized || OpenCVHelper.isInitialized()) {
+            return;
+        }
+        Activity currentActivity = mScriptRuntime.app.getCurrentActivity();
+        Context context = currentActivity == null ? mContext : currentActivity;
+        mScriptRuntime.console.info("opencv initializing");
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            OpenCVHelper.initIfNeeded(context, () -> {
+                mOpenCvInitialized = true;
+                mScriptRuntime.console.info("opencv initialized");
+            });
+        } else {
+            VolatileDispose<Boolean> result = new VolatileDispose<>();
+            OpenCVHelper.initIfNeeded(context, () -> {
+                mOpenCvInitialized = true;
+                result.setAndNotify(true);
+                mScriptRuntime.console.info("opencv initialized");
+            });
+            result.blockedGet();
+        }
+
+    }
 }

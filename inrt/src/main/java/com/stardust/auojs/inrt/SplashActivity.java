@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -16,7 +15,6 @@ import android.widget.Toast;
 
 import com.stardust.auojs.inrt.autojs.AutoJs;
 import com.stardust.auojs.inrt.launch.GlobalProjectLauncher;
-import com.stardust.autojs.core.opencv.OpenCVHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,16 +36,11 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         TextView slug = findViewById(R.id.slug);
         slug.setTypeface(Typeface.createFromAsset(getAssets(), "roboto_medium.ttf"));
-        final long millis = SystemClock.uptimeMillis();
-        OpenCVHelper.initIfNeeded(this, () -> {
-            long delay = INIT_TIMEOUT - (SystemClock.uptimeMillis() - millis);
-            if (!Pref.isFirstUsing() || delay <= 0) {
-                main();
-                return;
-            }
-            new Handler().postDelayed(SplashActivity.this::main, delay);
-        });
-
+        if (!Pref.isFirstUsing()) {
+            main();
+        }else {
+            new Handler().postDelayed(SplashActivity.this::main, INIT_TIMEOUT);
+        }
     }
 
     private void main() {

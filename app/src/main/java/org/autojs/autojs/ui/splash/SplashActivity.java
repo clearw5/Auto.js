@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 
-import com.stardust.autojs.core.opencv.OpenCVHelper;
 import com.xcy8.ads.listener.LoadAdListener;
 import com.xcy8.ads.view.FullScreenAdView;
 
@@ -30,7 +29,7 @@ public class SplashActivity extends BaseActivity {
     public static final String FORCE_SHOW_AD = "forceShowAd";
 
     private static final String LOG_TAG = SplashActivity.class.getSimpleName();
-    private static final long INIT_TIMEOUT = 1500;
+    private static final long INIT_TIMEOUT = 1000;
 
 
     private boolean mCanEnterNextActivity = false;
@@ -47,7 +46,6 @@ public class SplashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         init();
         boolean forceShowAd = getIntent().getBooleanExtra(FORCE_SHOW_AD, false);
-        final long millis = SystemClock.uptimeMillis();
         if (!forceShowAd && !Pref.shouldShowAd()) {
             mFullScreenAdView.setVisibility(View.INVISIBLE);
         } else {
@@ -55,14 +53,7 @@ public class SplashActivity extends BaseActivity {
                 fetchSplashAD();
             }
         }
-        OpenCVHelper.initIfNeeded(this, () -> {
-            long delay = INIT_TIMEOUT - (SystemClock.uptimeMillis() - millis);
-            if (delay <= 0) {
-                enterNextActivity();
-                return;
-            }
-            mHandler.postDelayed(SplashActivity.this::enterNextActivity, delay);
-        });
+        mHandler.postDelayed(SplashActivity.this::enterNextActivity, INIT_TIMEOUT);
     }
 
     private void init() {
