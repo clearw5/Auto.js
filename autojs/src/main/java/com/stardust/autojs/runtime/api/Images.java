@@ -5,14 +5,15 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.util.Base64;
-import android.view.Display;
-import android.view.WindowManager;
+import android.view.Gravity;
 
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.image.ColorFinder;
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * Created by Stardust on 2017/5/20.
@@ -143,6 +145,43 @@ public class Images {
             throw new NullPointerException("image = null");
         }
         return image.pixel(x, y);
+    }
+
+    public static ImageWrapper concat(ImageWrapper img1, Rect rect1, ImageWrapper img2, Rect rect2, int direction) {
+        if(!Arrays.asList(Gravity.LEFT, Gravity.RIGHT, Gravity.TOP, Gravity.BOTTOM).contains(direction)){
+            throw new IllegalArgumentException("unknown direction " + direction);
+        }
+        int width;
+        int height;
+        if (direction == Gravity.LEFT || direction == Gravity.TOP) {
+            ImageWrapper tmp = img1;
+            img1 = img2;
+            img2 = tmp;
+        }
+        if (direction == Gravity.LEFT || direction == Gravity.RIGHT) {
+            width = rect1.width + rect2.width;
+            height = Math.max(rect1.height, rect2.height);
+        } else {
+            width = Math.max(rect1.width, rect2.height);
+            height = rect1.height + rect2.height;
+        }
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        if (direction == Gravity.LEFT || direction == Gravity.RIGHT) {
+            canvas.drawBitmap(img1.getBitmap(), 0, (height - rect1.height) / 2, paint);
+            canvas.drawBitmap(img2.getBitmap(), rect1.width, (height - rect2.height) / 2, paint);
+        } else {
+            canvas.drawBitmap(img1.getBitmap(), (width - rect1.width) / 2, 0, paint);
+            canvas.drawBitmap(img2.getBitmap(), (width - rect2.width) / 2, rect1.height, paint);
+        }
+        return ImageWrapper.ofBitmap(bitmap);
+    }
+
+    public ImageWrapper rotate(ImageWrapper img, float x, float y, float degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree, x, y);
+        return ImageWrapper.ofBitmap(Bitmap.createBitmap(img.getBitmap(), 0, 0, img.getWidth(), img.getHeight(), matrix, true));
     }
 
     public ImageWrapper clip(ImageWrapper img, int x, int y, int w, int h) {

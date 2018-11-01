@@ -3,6 +3,7 @@ package com.stardust.autojs.core.ui.dialog;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Looper;
 import android.support.annotation.Nullable;

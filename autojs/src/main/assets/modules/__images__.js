@@ -189,6 +189,23 @@ module.exports = function (runtime, scope) {
             return images.matToImage(mat);
         }
 
+        images.rotate = function(img, degree, x, y) {
+            if(x == undefined){
+                x = img.width / 2;
+            }
+            if(y == undefined){
+                y = img.height / 2;
+            }
+            return javaImages.rotate(img, x, y, degree);
+        }
+
+        images.concat = function(img1, img2, direction, rect1, rect2) {
+            direction = direction || "right";
+            rect1 = buildRegion(rect1, img1);
+            rect2 = buildRegion(rect2, img1);
+            return javaImages.concat(img1, rect1, img2, rect2, android.view.Gravity[direction.toUpperCase()]);
+        }
+
         images.detectsColor = function (img, color, x, y, threshold, algorithm) {
             color = parseColor(color);
             algorithm = algorithm || "diff";
@@ -345,6 +362,9 @@ module.exports = function (runtime, scope) {
         }
 
         function buildRegion(region, img) {
+            if(region == undefined){
+                region = [];
+            }
             var x = region[0] === undefined ? 0 : region[0];
             var y = region[1] === undefined ? 0 : region[1];
             var width = region[2] === undefined ? img.getWidth() - x : region[2];

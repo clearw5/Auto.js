@@ -2,17 +2,33 @@
 
 var url = "https://www.autojs.org/assets/uploads/files/1540386817060-918021-20160416200702191-185324559.jpg";
 var logo = null;
+var currentImg = null;
+
+events.on("exit", function(){
+    if(logo != null){
+        logo.recycle();
+    }
+    if(currentImg != null){
+        currentImg.recycle();
+    }
+});
 
 ui.layout(
     <vertical>
         <img id="img" w="250" h="250" url="{{url}}" />
-        <button id="grayscale" text="灰度化" />
-        <button id="binary" text="二值化" />
-        <button id="adaptiveBinary" text="自适应二值化" />
-        <button id="hsv" text="RGB转HSV" />
-        <button id="blur" text="模糊" />
-        <button id="medianBlur" text="中值滤波" />
-        <button id="gaussianBlur" text="高斯模糊" />
+        <scroll>
+            <vertical>
+                <button id="rotate" text="旋转" />
+                <button id="concat" text="拼接" />
+                <button id="grayscale" text="灰度化" />
+                <button id="binary" text="二值化" />
+                <button id="adaptiveBinary" text="自适应二值化" />
+                <button id="hsv" text="RGB转HSV" />
+                <button id="blur" text="模糊" />
+                <button id="medianBlur" text="中值滤波" />
+                <button id="gaussianBlur" text="高斯模糊" />
+            </vertical>
+        </scroll>
     </vertical>
 );
 
@@ -36,10 +52,35 @@ function processImg(process) {
         }
         //处理图片
         var result = process(logo);
+        if(currentImg != null){
+            currentImg.recycle();
+        }
+        currentImg = result;
         //把处理后的图片设置到图片控件中
         setImage(result);
     }, 0);
 }
+
+var degress = 0;
+
+ui.rotate.on("click", () => {
+    processImg(img => {
+        degress += 90;
+        //旋转degress角度
+        return images.rotate(img, degress);
+    });
+});
+
+ui.concat.on("click", () => {
+    processImg(img => {
+        if(currentImg == null){
+            toast("请先点击其他按钮，再点击本按钮");
+            return img.clone();
+        }
+        //把currentImg拼接在img右边
+        return images.concat(img, currentImg, "right");
+    });
+});
 
 ui.grayscale.on("click", () => {
     processImg(img => {
