@@ -11,6 +11,8 @@ import com.stardust.autojs.project.BuildInfo;
 import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.pio.PFiles;
 
+import org.autojs.autojs.build.TinySign;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
+
+
 
 /**
  * Created by Stardust on 2017/10/24.
@@ -129,15 +133,19 @@ public class AutoJsApkBuilder extends ApkBuilder {
     private ManifestEditor mManifestEditor;
     private String mWorkspacePath;
     private AppConfig mAppConfig;
+    private final File mOutApkFile;
+
 
     public AutoJsApkBuilder(InputStream apkInputStream, File outApkFile, String workspacePath) {
         super(apkInputStream, outApkFile, workspacePath);
         mWorkspacePath = workspacePath;
+        mOutApkFile = outApkFile;
         PFiles.ensureDir(outApkFile.getPath());
     }
 
     public AutoJsApkBuilder(File inFile, File outFile, String workspacePath) throws FileNotFoundException {
         super(inFile, outFile, workspacePath);
+        mOutApkFile = outFile;
         mWorkspacePath = workspacePath;
     }
 
@@ -249,8 +257,10 @@ public class AutoJsApkBuilder extends ApkBuilder {
         if (mProgressCallback != null) {
             GlobalAppContext.post(() -> mProgressCallback.onSign(AutoJsApkBuilder.this));
         }
-
-        return (AutoJsApkBuilder) super.sign();
+        FileOutputStream fos = new FileOutputStream(mOutApkFile);
+        TinySign.sign(new File(this.mWorkspacePath), fos);
+        fos.close();
+        return this;
     }
 
     @Override

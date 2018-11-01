@@ -227,11 +227,11 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     private boolean checkPackageNameValid(TextInputEditText editText) {
         Editable text = editText.getText();
         String hint = ((TextInputLayout) editText.getParent().getParent()).getHint().toString();
-        if(TextUtils.isEmpty(text)){
+        if (TextUtils.isEmpty(text)) {
             editText.setError(hint + getString(R.string.text_should_not_be_empty));
             return false;
         }
-        if(!REGEX_PACKAGE_NAME.matcher(text).matches()){
+        if (!REGEX_PACKAGE_NAME.matcher(text).matches()) {
             editText.setError(getString(R.string.text_invalid_package_name));
             return false;
         }
@@ -302,8 +302,10 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     }
 
     private void onBuildFailed(Throwable error) {
-        mProgressDialog.dismiss();
-        mProgressDialog = null;
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
         Toast.makeText(this, getString(R.string.text_build_failed) + error.getMessage(), Toast.LENGTH_SHORT).show();
         Log.e(LOG_TAG, "Build failed", error);
     }
