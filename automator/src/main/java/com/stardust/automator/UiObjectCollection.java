@@ -1,23 +1,15 @@
 package com.stardust.automator;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 
 import com.stardust.util.Consumer;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Spliterator;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
 
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
 import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_COLUMN_INT;
@@ -108,19 +100,6 @@ public class UiObjectCollection {
     public boolean retainAll(Collection<?> c) {
         return mNodes.retainAll(c);
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-
-    public void replaceAll(UnaryOperator<UiObject> operator) {
-        mNodes.replaceAll(operator);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-
-    public void sort(Comparator<? super UiObject> c) {
-        mNodes.sort(c);
-    }
-
 
     public void clear() {
         mNodes.clear();
