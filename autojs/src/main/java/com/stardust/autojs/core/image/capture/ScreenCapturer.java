@@ -21,6 +21,7 @@ import android.view.OrientationEventListener;
 
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
+import com.stardust.lang.ThreadCompat;
 import com.stardust.util.ScreenMetrics;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -152,7 +153,8 @@ public class ScreenCapturer {
             mException = null;
             throw new ScriptException(e);
         }
-        while (true) {
+        Thread thread = ThreadCompat.currentThread();
+        while (!thread.isInterrupted()) {
             Image cachedImage = mCachedImage.getAndSet(null);
             if (cachedImage != null) {
                 if (mUnderUsingImage != null) {
@@ -162,6 +164,7 @@ public class ScreenCapturer {
                 return cachedImage;
             }
         }
+        throw new ScriptInterruptedException();
     }
 
     public int getScreenDensity() {

@@ -1,10 +1,5 @@
 package com.stardust.autojs.core.http;
 
-import android.widget.AdapterView;
-
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
