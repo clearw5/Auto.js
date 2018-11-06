@@ -131,8 +131,6 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
         loadItemList();
     }
 
-
-
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
     }

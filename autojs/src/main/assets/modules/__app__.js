@@ -82,7 +82,7 @@ module.exports = function(runtime, global){
             i.putExtra(Intent.EXTRA_TEXT, options.text);
         }
         if(options.attachment){
-            i.putExtra(Intent.EXTRA_STREAM, android.content.Uri.parse("file://" + options.attachment));
+            i.putExtra(Intent.EXTRA_STREAM, app.parseUri(options.attachment));
         }
         i.setType("message/rfc822");
         context.startActivity(Intent.createChooser(i, "发送邮件").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -99,7 +99,17 @@ module.exports = function(runtime, global){
         return arr;
     }
 
+    app.parseUri = function(uri){
+        if(uri.startsWith("file://")){
+            return app.getUriForFile(uri);
+        }
+        return android.net.Uri.parse(uri);
+    }
+
     app.getUriForFile = function(path){
+        if(path.startsWith("file://")){
+            path = path.substring(7);
+        }
         return android.support.v4.content.FileProvider.getUriForFile(context,
             "org.autojs.autojs.fileprovider", new java.io.File(files.path(path)));
     };
