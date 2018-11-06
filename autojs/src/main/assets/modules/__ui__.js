@@ -19,6 +19,10 @@ module.exports = function (runtime, global) {
         ui.setContentView(view);
     }
 
+    ui.layoutFile = layout(file){
+        ui.layout(files.read(file));
+    }
+
     ui.inflate = function(xml, parent, attachToParent){
         if(!activity){
             throw new Error("需要在ui模式下运行才能使用该函数");
