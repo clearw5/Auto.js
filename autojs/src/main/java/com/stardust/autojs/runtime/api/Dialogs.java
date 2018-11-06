@@ -119,6 +119,13 @@ public class Dialogs {
                 .showAndGet();
     }
 
+    @ScriptInterface
+    public Object selectFile(String title, String prefill, Object callback) {
+        return ((BlockedMaterialDialog.Builder) dialogBuilder(callback)
+                .input(null, prefill, true)
+                .title(title))
+                .showAndGet();
+    }
 
     private BlockedMaterialDialog.Builder dialogBuilder(Object callback) {
         Context context = mRuntime.app.getCurrentActivity();

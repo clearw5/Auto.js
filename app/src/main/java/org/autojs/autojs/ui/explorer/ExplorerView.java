@@ -25,6 +25,7 @@ import com.stardust.pio.PFiles;
 import org.autojs.autojs.R;
 import org.autojs.autojs.model.explorer.Explorer;
 import org.autojs.autojs.model.explorer.ExplorerChangeEvent;
+import org.autojs.autojs.model.explorer.ExplorerDirPage;
 import org.autojs.autojs.model.explorer.ExplorerFileItem;
 import org.autojs.autojs.model.explorer.ExplorerItem;
 import org.autojs.autojs.model.explorer.ExplorerPage;
@@ -123,12 +124,14 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
         }
     }
 
-    public void enterChildPage(ExplorerPage childItemGroup) {
-        mCurrentPageState.position = ((LinearLayoutManager) mExplorerItemListView.getLayoutManager()).findFirstVisibleItemPosition();
+    protected void enterDirectChildPage(ExplorerPage childItemGroup) {
+        mCurrentPageState.scrollY = ((LinearLayoutManager) mExplorerItemListView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
         mPageStateHistory.push(mCurrentPageState);
         setCurrentPageState(new ExplorerPageState(childItemGroup));
         loadItemList();
     }
+
+
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
@@ -158,6 +161,25 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
         setCurrentPageState(new ExplorerPageState(rootPage));
         mExplorer.registerChangeListener(this);
         enterChildPage(currentPage);
+    }
+
+    public void enterChildPage(ExplorerPage childPage) {
+        ScriptFile root = mCurrentPageState.page.toScriptFile();
+        ScriptFile dir = childPage.toScriptFile();
+        Stack<ScriptFile> dirs = new Stack<>();
+        while (!dir.equals(root)) {
+            dir = dir.getParentFile();
+            dirs.push(dir);
+        }
+        ExplorerDirPage parent = null;
+        while (!dirs.empty()) {
+            dir = dirs.pop();
+            ExplorerDirPage dirPage = new ExplorerDirPage(dir, parent);
+            mPageStateHistory.push(new ExplorerPageState(dirPage));
+            parent = dirPage;
+        }
+        setCurrentPageState(new ExplorerPageState(childPage));
+        loadItemList();
     }
 
     public void setOnItemOperatedListener(OnItemOperatedListener onItemOperatedListener) {
@@ -237,7 +259,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
                     mExplorerAdapter.notifyDataSetChanged();
                     setRefreshing(false);
                     post(() ->
-                            mExplorerItemListView.scrollToPosition(mCurrentPageState.position)
+                            mExplorerItemListView.scrollToPosition(mCurrentPageState.scrollY)
                     );
                 });
     }
@@ -589,7 +611,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
         @OnClick(R.id.item)
         void onItemClick() {
-            enterChildPage(mExplorerPage);
+            enterDirectChildPage(mExplorerPage);
         }
 
         @OnClick(R.id.more)
@@ -697,7 +719,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
         boolean filesCollapsed;
 
-        int position;
+        int scrollY;
 
         ExplorerPageState() {
         }

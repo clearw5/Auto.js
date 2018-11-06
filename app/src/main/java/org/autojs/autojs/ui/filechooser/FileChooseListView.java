@@ -174,7 +174,7 @@ public class FileChooseListView extends ExplorerView {
 
         @OnClick(R.id.item)
         void onItemClick() {
-            enterChildPage(mExplorerPage);
+            enterDirectChildPage(mExplorerPage);
         }
 
         @OnCheckedChanged(R.id.checkbox)
