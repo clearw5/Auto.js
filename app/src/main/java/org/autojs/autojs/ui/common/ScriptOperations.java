@@ -383,7 +383,7 @@ public class ScriptOperations {
         private String mExtension;
 
         InputCallback(@Nullable String ext, String excluded) {
-            mExtension = "." + ext;
+            mExtension = ext == null ? null : "." + ext;
             mExcluded = excluded;
         }
 
@@ -404,7 +404,7 @@ public class ScriptOperations {
             EditText editText = dialog.getInputEditText();
             if (editText == null)
                 return;
-            if (mExcluded != null && input.equals(mExcluded)) {
+            if (input.equals(mExcluded)) {
                 editText.setError(null);
                 dialog.getActionButton(DialogAction.POSITIVE).setEnabled(true);
                 return;
