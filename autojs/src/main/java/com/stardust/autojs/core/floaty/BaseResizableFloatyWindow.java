@@ -37,10 +37,12 @@ public class BaseResizableFloatyWindow extends ResizableFloatyWindow {
 
     private VolatileDispose<RuntimeException> mInflateException = new VolatileDispose<>();
     private View mCloseButton;
+    private int mOffset;
 
 
     public BaseResizableFloatyWindow(Context context, ViewSupplier viewSupplier) {
         this(new MyFloaty(context, viewSupplier));
+        mOffset = context.getResources().getDimensionPixelSize(R.dimen.floaty_window_offset);
     }
 
     private BaseResizableFloatyWindow(MyFloaty floaty) {
@@ -49,6 +51,26 @@ public class BaseResizableFloatyWindow extends ResizableFloatyWindow {
 
     public RuntimeException waitForCreation() {
         return mInflateException.blockedGetOrThrow(ScriptInterruptedException.class);
+    }
+
+    @Override
+    protected WindowBridge onCreateWindowBridge(WindowManager.LayoutParams params) {
+        return new WindowBridge.DefaultImpl(params, getWindowManager(), getWindowView()) {
+            @Override
+            public int getX() {
+                return super.getX() + mOffset;
+            }
+
+            @Override
+            public int getY() {
+                return super.getY() + mOffset;
+            }
+
+            @Override
+            public void updatePosition(int x, int y) {
+                super.updatePosition(x - mOffset, y - mOffset);
+            }
+        };
     }
 
     @Override
@@ -107,6 +129,7 @@ public class BaseResizableFloatyWindow extends ResizableFloatyWindow {
         private ViewSupplier mContentViewSupplier;
         private View mRootView;
         private Context mContext;
+
 
         public MyFloaty(Context context, ViewSupplier supplier) {
             mContentViewSupplier = supplier;

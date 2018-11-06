@@ -18,6 +18,7 @@ import com.stardust.autojs.util.FloatingPermission;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.util.UiHandler;
 import com.stardust.util.ViewUtil;
+import com.stardust.util.ViewUtils;
 
 import java.util.concurrent.CopyOnWriteArraySet;
 
