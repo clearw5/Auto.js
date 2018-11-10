@@ -23,8 +23,6 @@ public class Pref {
     private static final SharedPreferences DISPOSABLE_BOOLEAN = GlobalAppContext.get().getSharedPreferences("DISPOSABLE_BOOLEAN", Context.MODE_PRIVATE);
     private static final String KEY_SERVER_ADDRESS = "KEY_SERVER_ADDRESS";
     private static final String KEY_SHOULD_SHOW_ANNUNCIATION = "KEY_SHOULD_SHOW_ANNUNCIATION";
-    private static final String KEY_FIRST_SHOW_AD = "KEY_FIRST_SHOW_AD";
-    private static final String KEY_LAST_SHOW_AD_MILLIS = "KEY_LAST_SHOW_AD_MILLIS";
     private static final String KEY_FLOATING_MENU_SHOWN = "KEY_FLOATING_MENU_SHOWN";
     private static final String KEY_EDITOR_THEME = "editor.theme";
     private static final String KEY_EDITOR_TEXT_SIZE = "editor.textSize";
@@ -105,34 +103,6 @@ public class Pref {
         return getDisposableBoolean(KEY_SHOULD_SHOW_ANNUNCIATION, true);
     }
 
-    public static boolean shouldShowAd() {
-        if (isFirstDay()) {
-            return false;
-        }
-        String adShowingMode = def().getString(getString(R.string.key_ad_showing_mode), "Default");
-        switch (adShowingMode) {
-            case "Default":
-                return true;
-            case "OncePerDay":
-                long lastShowMillis = def().getLong(KEY_LAST_SHOW_AD_MILLIS, 0);
-                if (System.currentTimeMillis() - lastShowMillis < TimeUnit.DAYS.toMillis(1)) {
-                    return false;
-                }
-                def().edit().putLong(KEY_LAST_SHOW_AD_MILLIS, System.currentTimeMillis()).apply();
-                return true;
-        }
-        return true;
-    }
-
-    public static int getAdType() {
-        try {
-            return Integer.parseInt(def().getString(getString(R.string.key_ad_type), String.valueOf(Constants.AD_TYPE_RANDOM)));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Constants.AD_TYPE_RANDOM;
-        }
-    }
-
     private static boolean isFirstDay() {
         long firstUsingMillis = def().getLong("firstUsingMillis", -1);
         if (firstUsingMillis == -1) {
@@ -140,16 +110,6 @@ public class Pref {
             return true;
         }
         return System.currentTimeMillis() - firstUsingMillis <= TimeUnit.DAYS.toMillis(1);
-    }
-
-    public static boolean isFirstShowingAd() {
-        return getDisposableBoolean(KEY_FIRST_SHOW_AD, true);
-    }
-
-    public static boolean isRecordWithRootEnabled() {
-        //always return true after version 3.0.0
-        //record without root has been deprecated
-        return true;
     }
 
     public static boolean isRecordToastEnabled() {

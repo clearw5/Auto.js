@@ -156,5 +156,4 @@ dependencies {
     implementation project(':automator')
     implementation project(':common')
     implementation project(':autojs')
-    implementation (name: 'ads8', ext: 'aar')
 }
