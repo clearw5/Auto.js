@@ -31,7 +31,9 @@ runtime.init();
         var len = functions.length;
         for(var i = 0; i < len; i++) {
             var funcName = functions[i];
-            global[funcName] = obj[funcName].bind(obj);
+            if(obj[funcName]){
+                global[funcName] = obj[funcName].bind(obj);
+            }
         }
     }
 

@@ -93,6 +93,9 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
     }
 
     public void updateTokens(String sourceString) {
+        if(mTheme == null){
+            return;
+        }
         final int id = mRunningHighlighterId.incrementAndGet();
         mExecutorService.execute(() -> {
             try {
