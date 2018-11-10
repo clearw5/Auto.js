@@ -38,7 +38,7 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/icon_container"
         android:gravity="center_vertical"
-        android:textColor="#484C4F"
+        android:textColor="?drawer_item_text_color"
         android:textSize="14sp"
         tools:text="@string/text_auto_operate_service"/>
 

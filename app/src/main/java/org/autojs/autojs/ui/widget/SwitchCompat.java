@@ -27,14 +27,11 @@ public class SwitchCompat extends android.support.v7.widget.SwitchCompat {
 
     @Override
     public void setOnCheckedChangeListener(final OnCheckedChangeListener listener) {
-        super.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mIgnoreCheckedChange) {
-                    return;
-                }
-                listener.onCheckedChanged(buttonView, isChecked);
+        super.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (mIgnoreCheckedChange) {
+                return;
             }
+            listener.onCheckedChanged(buttonView, isChecked);
         });
     }
 

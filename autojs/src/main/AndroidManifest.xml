@@ -15,20 +15,20 @@
         <activity
             android:name=".execution.ScriptExecuteActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/ScriptTheme"/>
 
 
         <activity
             android:name="com.stardust.autojs.core.permission.PermissionRequestActivity"
             android:excludeFromRecents="true"
             android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
-            android:theme="@style/AppTheme.Transparent"/>
+            android:theme="@style/ScriptTheme.Transparent"/>
 
         <activity
             android:name="com.stardust.autojs.core.image.capture.ScreenCaptureRequestActivity"
             android:excludeFromRecents="true"
             android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
-            android:theme="@style/AppTheme.Transparent"/>
+            android:theme="@style/ScriptTheme.Transparent"/>
 
 
     </application>

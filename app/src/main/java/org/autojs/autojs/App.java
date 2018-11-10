@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.multidex.MultiDexApplication;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -26,6 +27,7 @@ import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.autojs.key.GlobalKeyObserver;
 import org.autojs.autojs.external.receiver.DynamicBroadcastReceivers;
 import org.autojs.autojs.network.GlideApp;
+import org.autojs.autojs.theme.ThemeColorManagerCompat;
 import org.autojs.autojs.timing.IntentTask;
 import org.autojs.autojs.timing.TimedTaskManager;
 import org.autojs.autojs.timing.TimedTaskScheduler;
@@ -99,8 +101,7 @@ public class App extends MultiDexApplication {
     }
 
     private void init() {
-        ThemeColorManager.setDefaultThemeColor(new ThemeColor(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorPrimaryDark), getResources().getColor(R.color.colorAccent)));
-        ThemeColorManager.init(this);
+        ThemeColorManagerCompat.init(this, new ThemeColor(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorPrimaryDark), getResources().getColor(R.color.colorAccent)));
         AutoJs.initInstance(this);
         if (Pref.isRunningVolumeControlEnabled()) {
             GlobalKeyObserver.init();

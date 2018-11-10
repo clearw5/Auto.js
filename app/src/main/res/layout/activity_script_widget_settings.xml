@@ -15,6 +15,7 @@
 
         <com.stardust.theme.widget.ThemeColorToolbar
             android:id="@+id/toolbar"
+            android:theme="@style/ToolBarStyle"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay"

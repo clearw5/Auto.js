@@ -13,6 +13,7 @@
 
         <com.stardust.theme.widget.ThemeColorToolbar
             android:id="@+id/toolbar"
+            android:theme="@style/ToolBarStyle"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -30,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <android.support.design.widget.FloatingActionButton
+        <com.stardust.theme.widget.ThemeColorFloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

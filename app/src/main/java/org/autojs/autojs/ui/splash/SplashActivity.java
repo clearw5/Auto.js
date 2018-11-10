@@ -3,9 +3,9 @@ package org.autojs.autojs.ui.splash;
 import android.Manifest;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.View;
 
@@ -29,7 +29,7 @@ public class SplashActivity extends BaseActivity {
     public static final String FORCE_SHOW_AD = "forceShowAd";
 
     private static final String LOG_TAG = SplashActivity.class.getSimpleName();
-    private static final long INIT_TIMEOUT = 1000;
+    private static final long INIT_TIMEOUT = 500;
 
 
     private boolean mCanEnterNextActivity = false;

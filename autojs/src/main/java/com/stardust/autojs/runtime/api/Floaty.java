@@ -18,7 +18,6 @@ import com.stardust.autojs.util.FloatingPermission;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.util.UiHandler;
 import com.stardust.util.ViewUtil;
-import com.stardust.util.ViewUtils;
 
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -37,7 +36,7 @@ public class Floaty {
     public Floaty(UiHandler uiHandler, UI ui, ScriptRuntime runtime) {
         mUiHandler = uiHandler;
         mRuntime = runtime;
-        mContext = new ContextThemeWrapper(mUiHandler.getContext(), R.style.AppTheme);
+        mContext = new ContextThemeWrapper(mUiHandler.getContext(), R.style.ScriptTheme);
         mLayoutInflater = ui.getLayoutInflater();
     }
 

@@ -96,6 +96,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         mVersionGuard = new VersionGuard(this);
         showAnnunciationIfNeeded();
         EventBus.getDefault().register(this);
+        applyDayNightMode();
     }
 
     @AfterViews

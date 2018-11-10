@@ -18,7 +18,6 @@ import org.autojs.autojs.R;
 import org.autojs.autojs.model.indices.AndroidClassIndices;
 import org.autojs.autojs.model.indices.ClassSearchingItem;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
-import org.autojs.autojs.tool.MaterialDialogFactory;
 import org.autojs.autojs.ui.widget.AutoAdapter;
 import org.autojs.autojs.ui.widget.BindableViewHolder;
 import org.autojs.autojs.ui.widget.SimpleTextWatcher;

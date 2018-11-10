@@ -19,7 +19,7 @@ module.exports = function (runtime, global) {
         ui.setContentView(view);
     }
 
-    ui.layoutFile = layout(file){
+    ui.layoutFile = function(file) {
         ui.layout(files.read(file));
     }
 

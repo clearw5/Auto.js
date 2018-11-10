@@ -115,6 +115,18 @@ public class BiMaps {
             return mVKMap.keySet();
         }
 
+        @Override
+        public V getOr(K key, V def) {
+            V v = get(key);
+            return v == null ? def : v;
+        }
+
+        @Override
+        public K getKeyOr(V value, K def) {
+            K key = getKey(value);
+            return key == null ? def : key;
+        }
+
         @NonNull
         @Override
         public Collection<V> values() {

@@ -25,7 +25,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="inrt"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/ScriptTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:label, android:allowBackup">

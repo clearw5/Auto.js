@@ -7,8 +7,10 @@ import android.preference.PreferenceManager;
 
 import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
+import com.stardust.theme.ThemeColorManager;
 
 import org.autojs.autojs.autojs.key.GlobalKeyObserver;
+import org.autojs.autojs.theme.ThemeColorManagerCompat;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -53,6 +55,10 @@ public class Pref {
             DISPOSABLE_BOOLEAN.edit().putBoolean(key, !defaultValue).apply();
         }
         return b;
+    }
+
+    public static boolean isNightModeEnabled() {
+        return def().getBoolean(getString(R.string.key_night_mode), false);
     }
 
     public static boolean isFirstGoToAccessibilitySetting() {

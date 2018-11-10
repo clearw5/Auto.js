@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
@@ -25,6 +24,7 @@ public class Themes {
 
     private static final String ASSETS_THEMES_PATH = "editor/theme";
     private static final String DEFAULT_THEME = "Quiet Light";
+    private static final String DARK_THEME = "Dark (Visual Studio)";
 
     private static List<Theme> sThemes;
     private static Theme sDefaultTheme;
@@ -80,7 +80,7 @@ public class Themes {
     }
 
     public static Observable<Theme> getCurrent(Context context) {
-        String currentTheme = Pref.getCurrentTheme();
+        String currentTheme = Pref.isNightModeEnabled() ? DARK_THEME : Pref.getCurrentTheme();
         if (currentTheme == null)
             return getDefault(context);
         return getAllThemes(context)

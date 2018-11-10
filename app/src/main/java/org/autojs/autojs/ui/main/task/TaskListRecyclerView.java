@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.ThemeColorRecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -62,7 +63,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
     private ScriptExecutionListener mScriptExecutionListener = new SimpleScriptExecutionListener() {
         @Override
         public void onStart(final ScriptExecution execution) {
-            post(()-> mAdapter.notifyChildInserted(0, mRunningTaskGroup.addTask(execution)));
+            post(() -> mAdapter.notifyChildInserted(0, mRunningTaskGroup.addTask(execution)));
         }
 
         @Override
@@ -75,8 +76,8 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
             onFinish(execution);
         }
 
-        private void onFinish(ScriptExecution execution){
-            post(()->{
+        private void onFinish(ScriptExecution execution) {
+            post(() -> {
                 final int i = mRunningTaskGroup.removeTask(execution);
                 if (i >= 0) {
                     mAdapter.notifyChildRemoved(0, i);
@@ -105,7 +106,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
     private void init() {
         setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
         addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext())
-                .color(0xffEDEEEF)
+                .color(ContextCompat.getColor(getContext(), R.color.divider))
                 .size(2)
                 .marginResId(R.dimen.script_and_folder_list_divider_left_margin, R.dimen.script_and_folder_list_divider_right_margin)
                 .showLastDivider()

@@ -12,6 +12,7 @@
 
         <com.stardust.theme.widget.ThemeColorToolbar
             android:id="@+id/toolbar"
+            android:theme="@style/ToolBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
@@ -37,7 +38,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="6dp"
                     android:layout_marginRight="6dp"
-                    app:cardBackgroundColor="@android:color/white"
                     app:cardCornerRadius="2dp"
                     app:cardElevation="1dp"
                     app:cardUseCompatPadding="true">

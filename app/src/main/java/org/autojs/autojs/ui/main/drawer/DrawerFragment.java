@@ -27,6 +27,7 @@ import org.autojs.autojs.external.foreground.ForegroundService;
 import org.autojs.autojs.network.GlideApp;
 import org.autojs.autojs.network.UserService;
 import org.autojs.autojs.tool.Observers;
+import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.common.NotAskAgainDialog;
 import org.autojs.autojs.ui.floating.CircularMenu;
 import org.autojs.autojs.ui.floating.FloatyWindowManger;
@@ -146,7 +147,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
             setChecked(mFloatingWindowItem, true);
         }
         setChecked(mConnectionItem, DevPluginService.getInstance().isConnected());
-        if(Pref.isForegroundServiceEnabled()){
+        if (Pref.isForegroundServiceEnabled()) {
             ForegroundService.start(GlobalAppContext.get());
             setChecked(mForegroundServiceItem, true);
         }
@@ -167,6 +168,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 new DrawerMenuGroup(R.string.text_others),
                 mConnectionItem,
                 new DrawerMenuItem(R.drawable.ic_personalize, R.string.text_theme_color, this::openThemeColorSettings),
+                new DrawerMenuItem(R.drawable.ic_night_mode, R.string.text_night_mode, R.string.key_night_mode, this::toggleNightMode),
                 mCheckForUpdatesItem
         )));
         mDrawerMenu.setAdapter(mDrawerMenuAdapter);
@@ -239,6 +241,10 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         SettingsActivity.selectThemeColor(getActivity());
     }
 
+    void toggleNightMode(DrawerMenuItemViewHolder holder) {
+        ((BaseActivity) getActivity()).setNightModeEnabled(holder.getSwitchCompat().isChecked());
+    }
+
     @SuppressLint("CheckResult")
     private void enableAccessibilityServiceByRootIfNeeded() {
         Observable.fromCallable(() -> Pref.shouldEnableAccessibilityServiceByRoot() && !isAccessibilityServiceEnabled())
@@ -264,9 +270,9 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
 
     private void toggleForegroundService(DrawerMenuItemViewHolder holder) {
         boolean checked = holder.getSwitchCompat().isChecked();
-        if(checked){
+        if (checked) {
             ForegroundService.start(GlobalAppContext.get());
-        }else {
+        } else {
             ForegroundService.stop(GlobalAppContext.get());
         }
     }

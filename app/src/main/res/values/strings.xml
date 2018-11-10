@@ -426,4 +426,6 @@
     <string name="error_cannot_rename">重命名失败</string>
     <string name="text_project_save_success">项目已经保存到%s</string>
     <string name="text_project_save_error">项目保存失败 %s</string>
+    <string name="text_night_mode">夜间模式</string>
+    <string name="key_night_mode">key_night_mode</string>
 </resources>

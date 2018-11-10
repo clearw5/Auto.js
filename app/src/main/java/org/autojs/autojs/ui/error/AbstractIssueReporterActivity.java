@@ -44,6 +44,7 @@ import com.heinrichreimersoftware.androidissuereporter.model.github.GithubTarget
 import com.heinrichreimersoftware.androidissuereporter.util.ColorUtils;
 import com.heinrichreimersoftware.androidissuereporter.util.ThemeUtils;
 
+import org.autojs.autojs.ui.BaseActivity;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.client.RequestException;
@@ -64,7 +65,7 @@ import com.stardust.theme.ThemeColorManager;
  * Created by Stardust on 2017/4/3.
  */
 
-public abstract class AbstractIssueReporterActivity extends AppCompatActivity {
+public abstract class AbstractIssueReporterActivity extends BaseActivity {
 
     private static final String TAG = AbstractIssueReporterActivity.class.getSimpleName();
 

@@ -70,7 +70,7 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
 
     private void init() {
         inflate(getContext(), R.layout.console_view, this);
-        mLogListRecyclerView = (RecyclerView) findViewById(R.id.log_list);
+        mLogListRecyclerView = findViewById(R.id.log_list);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         mLogListRecyclerView.setLayoutManager(manager);
         mLogListRecyclerView.setAdapter(new Adapter());
@@ -79,7 +79,7 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
     }
 
     private void initSubmitButton() {
-        final Button submit = (Button) findViewById(R.id.submit);
+        final Button submit = findViewById(R.id.submit);
         submit.setOnClickListener(v -> {
             CharSequence input = mEditText.getText();
             submitInput(input);
@@ -96,9 +96,9 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
     }
 
     private void initEditText() {
-        mEditText = (EditText) findViewById(R.id.input);
+        mEditText = findViewById(R.id.input);
         mEditText.setFocusableInTouchMode(true);
-        mInputContainer = (LinearLayout) findViewById(R.id.input_container);
+        mInputContainer = findViewById(R.id.input_container);
         OnClickListener listener = v -> {
             if (mWindow != null) {
                 mWindow.requestWindowFocus();

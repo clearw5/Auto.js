@@ -66,9 +66,9 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
 
     private void init() {
         inflate(getContext(), R.layout.ewebview, this);
-        mWebView = (WebView) findViewById(R.id.web_view);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        mWebView = findViewById(R.id.web_view);
+        mSwipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        mProgressBar = findViewById(R.id.progress_bar);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         setUpWebView();
     }

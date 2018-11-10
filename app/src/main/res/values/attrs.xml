@@ -3,6 +3,9 @@
 
     <attr name="title" format="string|reference"/>
     <attr name="icon" format="reference"/>
+    <attr name="drawer_item_text_color" format="color|reference"/>
+    <attr name="drawer_group_text_color" format="color|reference"/>
+    <attr name="itemBackgroundDark" format="color|reference"/>
 
     <declare-styleable name="ToolbarMenuItem">
         <attr name="text" format="string|reference"/>

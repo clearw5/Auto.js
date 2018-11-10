@@ -272,7 +272,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     @AfterViews
     void init() {
-        setTheme(Theme.getDefault(getContext()));
+        //setTheme(Theme.getDefault(getContext()));
         setUpEditor();
         setUpInputMethodEnhancedBar();
         setUpFunctionsKeyboard();

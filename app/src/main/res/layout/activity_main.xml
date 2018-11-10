@@ -25,6 +25,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:theme="@style/ToolBarStyle"
                 android:title="@string/_app_name"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/AppTheme.PopupOverlay"/>
@@ -34,8 +35,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tabGravity="fill"
-                app:tabIndicatorColor="@android:color/white"
-                app:tabMode="scrollable"/>
+                app:tabIndicatorColor="@color/tab_indicator"
+                app:tabMode="scrollable"
+                app:tabSelectedTextColor="@color/tab_indicator"
+                app:tabTextColor="@color/tab_text"/>
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v4.view.ViewPager
