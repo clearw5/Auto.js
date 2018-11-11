@@ -26,7 +26,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
-import org.autojs.autojs.autojs.build.AutoJsApkBuilder;
+import org.autojs.autojs.autojs.build.ApkBuilder;
 import org.autojs.autojs.build.ApkBuilderPluginHelper;
 import org.autojs.autojs.external.fileprovider.AppFileProvider;
 import org.autojs.autojs.model.script.ScriptFile;
@@ -51,7 +51,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Stardust on 2017/10/22.
  */
 @EActivity(R.layout.activity_build)
-public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.ProgressCallback {
+public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCallback {
 
     private static final int REQUEST_CODE = 44401;
 
@@ -250,7 +250,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
 
     @SuppressLint("CheckResult")
     private void doBuildingApk() {
-        AutoJsApkBuilder.AppConfig appConfig = createAppConfig();
+        ApkBuilder.AppConfig appConfig = createAppConfig();
         File tmpDir = new File(getCacheDir(), "build/");
         File outApk = new File(mOutputPath.getText().toString(),
                 String.format("%s_v%s.apk", appConfig.getAppName(), appConfig.getVersionName()));
@@ -262,16 +262,16 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
                         this::onBuildFailed);
     }
 
-    private AutoJsApkBuilder.AppConfig createAppConfig() {
+    private ApkBuilder.AppConfig createAppConfig() {
         if (mProjectConfig != null) {
-            return AutoJsApkBuilder.AppConfig.fromProjectConfig(mSource, mProjectConfig);
+            return ApkBuilder.AppConfig.fromProjectConfig(mSource, mProjectConfig);
         }
         String jsPath = mSourcePath.getText().toString();
         String versionName = mVersionName.getText().toString();
         int versionCode = Integer.parseInt(mVersionCode.getText().toString());
         String appName = mAppName.getText().toString();
         String packageName = mPackageName.getText().toString();
-        return new AutoJsApkBuilder.AppConfig()
+        return new ApkBuilder.AppConfig()
                 .setAppName(appName)
                 .setSourcePath(jsPath)
                 .setPackageName(packageName)
@@ -282,9 +282,9 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
                 );
     }
 
-    private AutoJsApkBuilder callApkBuilder(File tmpDir, File outApk, AutoJsApkBuilder.AppConfig appConfig) throws Exception {
+    private ApkBuilder callApkBuilder(File tmpDir, File outApk, ApkBuilder.AppConfig appConfig) throws Exception {
         InputStream templateApk = ApkBuilderPluginHelper.openTemplateApk(BuildActivity.this);
-        return new AutoJsApkBuilder(templateApk, outApk, tmpDir.getPath())
+        return new ApkBuilder(templateApk, outApk, tmpDir.getPath())
                 .setProgressCallback(BuildActivity.this)
                 .prepare()
                 .withConfig(appConfig)
@@ -326,24 +326,24 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     }
 
     @Override
-    public void onPrepare(AutoJsApkBuilder builder) {
+    public void onPrepare(ApkBuilder builder) {
         mProgressDialog.setContent(R.string.apk_builder_prepare);
     }
 
     @Override
-    public void onBuild(AutoJsApkBuilder builder) {
+    public void onBuild(ApkBuilder builder) {
         mProgressDialog.setContent(R.string.apk_builder_build);
 
     }
 
     @Override
-    public void onSign(AutoJsApkBuilder builder) {
+    public void onSign(ApkBuilder builder) {
         mProgressDialog.setContent(R.string.apk_builder_package);
 
     }
 
     @Override
-    public void onClean(AutoJsApkBuilder builder) {
+    public void onClean(ApkBuilder builder) {
         mProgressDialog.setContent(R.string.apk_builder_clean);
     }
 

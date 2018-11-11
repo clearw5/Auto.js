@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.stardust.app.GlobalAppContext;
-import com.stardust.autojs.apkbuilder.ApkBuilder;
+import com.stardust.autojs.apkbuilder.ApkPackager;
 import com.stardust.autojs.apkbuilder.ManifestEditor;
 import com.stardust.autojs.apkbuilder.util.StreamUtils;
 import com.stardust.autojs.project.BuildInfo;
@@ -13,6 +13,7 @@ import com.stardust.pio.PFiles;
 
 import org.autojs.autojs.build.TinySign;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -22,23 +23,27 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
+import pxb.android.StringItem;
+import pxb.android.axml.AxmlWriter;
+import zhao.arsceditor.ResDecoder.ARSCDecoder;
+import zhao.arsceditor.ResDecoder.data.ResTable;
 
 
 /**
  * Created by Stardust on 2017/10/24.
  */
 
-public class AutoJsApkBuilder extends ApkBuilder {
+public class ApkBuilder {
 
 
     public interface ProgressCallback {
-        void onPrepare(AutoJsApkBuilder builder);
+        void onPrepare(ApkBuilder builder);
 
-        void onBuild(AutoJsApkBuilder builder);
+        void onBuild(ApkBuilder builder);
 
-        void onSign(AutoJsApkBuilder builder);
+        void onSign(ApkBuilder builder);
 
-        void onClean(AutoJsApkBuilder builder);
+        void onClean(ApkBuilder builder);
 
     }
 
@@ -73,38 +78,38 @@ public class AutoJsApkBuilder extends ApkBuilder {
         }
 
         public AppConfig setAppName(String appName) {
-            this.appName = appName;
+            appName = appName;
             return this;
         }
 
         public AppConfig setVersionName(String versionName) {
-            this.versionName = versionName;
+            versionName = versionName;
             return this;
         }
 
         public AppConfig setVersionCode(int versionCode) {
-            this.versionCode = versionCode;
+            versionCode = versionCode;
             return this;
         }
 
         public AppConfig setSourcePath(String sourcePath) {
-            this.sourcePath = sourcePath;
+            sourcePath = sourcePath;
             return this;
         }
 
         public AppConfig setPackageName(String packageName) {
-            this.packageName = packageName;
+            packageName = packageName;
             return this;
         }
 
 
         public AppConfig setIcon(Callable<Bitmap> icon) {
-            this.icon = icon;
+            icon = icon;
             return this;
         }
 
         public AppConfig setIcon(String iconPath) {
-            this.icon = () -> BitmapFactory.decodeFile(iconPath);
+            icon = () -> BitmapFactory.decodeFile(iconPath);
             return this;
         }
 
@@ -130,39 +135,36 @@ public class AutoJsApkBuilder extends ApkBuilder {
     }
 
     private ProgressCallback mProgressCallback;
+    private ApkPackager mApkPackager;
+    private String mArscPackageName;
     private ManifestEditor mManifestEditor;
     private String mWorkspacePath;
     private AppConfig mAppConfig;
     private final File mOutApkFile;
 
 
-    public AutoJsApkBuilder(InputStream apkInputStream, File outApkFile, String workspacePath) {
-        super(apkInputStream, outApkFile, workspacePath);
+    public ApkBuilder(InputStream apkInputStream, File outApkFile, String workspacePath) {
         mWorkspacePath = workspacePath;
         mOutApkFile = outApkFile;
+        mApkPackager = new ApkPackager(apkInputStream, mWorkspacePath);
         PFiles.ensureDir(outApkFile.getPath());
     }
 
-    public AutoJsApkBuilder(File inFile, File outFile, String workspacePath) throws FileNotFoundException {
-        super(inFile, outFile, workspacePath);
-        mOutApkFile = outFile;
-        mWorkspacePath = workspacePath;
-    }
-
-    public AutoJsApkBuilder setProgressCallback(ProgressCallback callback) {
+    public ApkBuilder setProgressCallback(ProgressCallback callback) {
         mProgressCallback = callback;
         return this;
     }
 
-    @Override
-    public AutoJsApkBuilder prepare() throws IOException {
+    public ApkBuilder prepare() throws IOException {
         if (mProgressCallback != null) {
-            GlobalAppContext.post(() -> mProgressCallback.onPrepare(AutoJsApkBuilder.this));
+            GlobalAppContext.post(() -> mProgressCallback.onPrepare(ApkBuilder.this));
         }
-        return (AutoJsApkBuilder) super.prepare();
+        (new File(mWorkspacePath)).mkdirs();
+        mApkPackager.unzip();
+        return this;
     }
 
-    public AutoJsApkBuilder setScriptFile(String path) throws IOException {
+    public ApkBuilder setScriptFile(String path) throws IOException {
         if (PFiles.isDir(path)) {
             copyDir("assets/project/", path);
         } else {
@@ -173,7 +175,7 @@ public class AutoJsApkBuilder extends ApkBuilder {
 
     public void copyDir(String relativePath, String path) throws IOException {
         File fromDir = new File(path);
-        File toDir = new File(this.mWorkspacePath, relativePath);
+        File toDir = new File(mWorkspacePath, relativePath);
         toDir.mkdir();
         for (File child : fromDir.listFiles()) {
             if (child.isFile()) {
@@ -187,13 +189,12 @@ public class AutoJsApkBuilder extends ApkBuilder {
         }
     }
 
-    @Override
     public ApkBuilder replaceFile(String relativePath, String newFilePath) throws IOException {
-        StreamUtils.write(new FileInputStream(newFilePath), new FileOutputStream(new File(this.mWorkspacePath, relativePath)));
+        StreamUtils.write(new FileInputStream(newFilePath), new FileOutputStream(new File(mWorkspacePath, relativePath)));
         return this;
     }
 
-    public AutoJsApkBuilder withConfig(AppConfig config) throws IOException {
+    public ApkBuilder withConfig(AppConfig config) throws IOException {
         mAppConfig = config;
         mManifestEditor = editManifest()
                 .setAppName(config.appName)
@@ -206,6 +207,15 @@ public class AutoJsApkBuilder extends ApkBuilder {
         return this;
     }
 
+    public ManifestEditor editManifest() throws FileNotFoundException {
+        mManifestEditor = new ManifestEditorWithAuthorities(new FileInputStream(getManifestFile()));
+        return mManifestEditor;
+    }
+
+    protected File getManifestFile() {
+        return new File(mWorkspacePath, "AndroidManifest.xml");
+    }
+
     private void updateProjectConfig(AppConfig config) {
         if (!PFiles.isDir(config.sourcePath)) {
             return;
@@ -213,29 +223,12 @@ public class AutoJsApkBuilder extends ApkBuilder {
         ProjectConfig projectConfig = ProjectConfig.fromProjectDir(config.sourcePath);
         long buildNumber = projectConfig.getBuildInfo().getBuildNumber();
         projectConfig.setBuildInfo(BuildInfo.generate(buildNumber + 1));
-        //updateProjectConfigAssets(projectConfig, config.sourcePath, config.sourcePath);
         PFiles.write(ProjectConfig.configFileOfDir(config.sourcePath), projectConfig.toJson());
     }
 
-    private void updateProjectConfigAssets(ProjectConfig config, String projectDir, String dir) {
-        File main = new File(projectDir, config.getMainScriptFile());
-        for (File file : new File(dir).listFiles()) {
-            if (file.isDirectory()) {
-                updateProjectConfigAssets(config, projectDir, file.getPath());
-                continue;
-            }
-            if (file.equals(main)) {
-                continue;
-            }
-            String relative = new File(projectDir).toURI().relativize(file.toURI()).getPath();
-            config.addAsset(relative);
-        }
-    }
-
-    @Override
-    public AutoJsApkBuilder build() throws IOException {
+    public ApkBuilder build() throws IOException {
         if (mProgressCallback != null) {
-            GlobalAppContext.post(() -> mProgressCallback.onBuild(AutoJsApkBuilder.this));
+            GlobalAppContext.post(() -> mProgressCallback.onBuild(ApkBuilder.this));
         }
         mManifestEditor.commit();
         if (mAppConfig.icon != null) {
@@ -249,25 +242,75 @@ public class AutoJsApkBuilder extends ApkBuilder {
                 throw new RuntimeException(e);
             }
         }
-        return (AutoJsApkBuilder) super.build();
+        if (mManifestEditor != null) {
+            mManifestEditor.writeTo(new FileOutputStream(getManifestFile()));
+        }
+        if (mArscPackageName != null) {
+            buildArsc();
+        }
+        return this;
     }
 
-    @Override
-    public AutoJsApkBuilder sign() throws Exception {
+    public ApkBuilder sign() throws Exception {
         if (mProgressCallback != null) {
-            GlobalAppContext.post(() -> mProgressCallback.onSign(AutoJsApkBuilder.this));
+            GlobalAppContext.post(() -> mProgressCallback.onSign(ApkBuilder.this));
         }
         FileOutputStream fos = new FileOutputStream(mOutApkFile);
-        TinySign.sign(new File(this.mWorkspacePath), fos);
+        TinySign.sign(new File(mWorkspacePath), fos);
         fos.close();
         return this;
     }
 
-    @Override
-    public AutoJsApkBuilder cleanWorkspace() {
+    public ApkBuilder cleanWorkspace() {
         if (mProgressCallback != null) {
-            GlobalAppContext.post(() -> mProgressCallback.onClean(AutoJsApkBuilder.this));
+            GlobalAppContext.post(() -> mProgressCallback.onClean(ApkBuilder.this));
         }
-        return (AutoJsApkBuilder) super.cleanWorkspace();
+        delete(new File(mWorkspacePath));
+        return this;
+    }
+
+    public ApkBuilder setArscPackageName(String packageName) throws IOException {
+        mArscPackageName = packageName;
+        return this;
+    }
+
+    private void buildArsc() throws IOException {
+        File oldArsc = new File(mWorkspacePath, "resources.arsc");
+        File newArsc = new File(mWorkspacePath, "resources.arsc.new");
+        ARSCDecoder decoder = new ARSCDecoder(new BufferedInputStream(new FileInputStream(oldArsc)), (ResTable) null, false);
+        FileOutputStream fos = new FileOutputStream(newArsc);
+        decoder.CloneArsc(fos, mArscPackageName, true);
+        oldArsc.delete();
+        newArsc.renameTo(oldArsc);
+    }
+
+    private void delete(File file) {
+        if (file.isFile()) {
+            file.delete();
+        } else {
+            File[] files = file.listFiles();
+
+            for (File child : files) {
+                delete(child);
+            }
+            file.delete();
+        }
+    }
+
+    private class ManifestEditorWithAuthorities extends ManifestEditor {
+
+        ManifestEditorWithAuthorities(InputStream manifestInputStream) {
+            super(manifestInputStream);
+        }
+
+        @Override
+        public void onAttr(AxmlWriter.Attr attr) {
+            if ("authorities".equals(attr.name.data) && attr.value instanceof StringItem) {
+                ((StringItem) attr.value).data = mAppConfig.packageName + ".fileprovider";
+            } else {
+                super.onAttr(attr);
+            }
+
+        }
     }
 }
