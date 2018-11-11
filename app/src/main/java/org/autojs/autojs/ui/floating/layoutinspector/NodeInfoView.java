@@ -34,6 +34,7 @@ public class NodeInfoView extends RecyclerView {
     private static final String[] FIELD_NAMES = {
             "id",
             "idHex",
+            "fullId",
             "bounds",
             "depth",
             "desc",

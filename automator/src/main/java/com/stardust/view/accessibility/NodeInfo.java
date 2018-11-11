@@ -28,6 +28,7 @@ public class NodeInfo {
 
     public String id;
     public String idHex;
+    public String fullId;
     public String desc;
     public String className;
     public String packageName;
@@ -60,7 +61,8 @@ public class NodeInfo {
 
 
     public NodeInfo(Resources resources, UiObject node, NodeInfo parent) {
-        id = simplifyId(node.getViewIdResourceName());
+        fullId = node.getViewIdResourceName();
+        id = simplifyId(fullId);
         desc = node.desc();
         className = node.className();
         packageName = node.packageName();
@@ -96,8 +98,8 @@ public class NodeInfo {
         indexInParent = node.indexInParent();
 
         this.parent = parent;
-        if (resources != null && packageName != null && id != null) {
-            idHex = "0x" + Integer.toHexString(resources.getIdentifier(node.getViewIdResourceName(), null, null));
+        if (resources != null && packageName != null && fullId != null) {
+            idHex = "0x" + Integer.toHexString(resources.getIdentifier(fullId, null, null));
         }
     }
 
