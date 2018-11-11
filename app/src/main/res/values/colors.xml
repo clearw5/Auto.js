@@ -27,6 +27,9 @@
     <color name="tab_text">#a0ffffff</color>
     <color name="toolbar">@android:color/white</color>
     <color name="toolbar_disabled">#77e0e0e0</color>
+    <color name="console_debug">#cc000000</color>
+    <color name="console_verbose">#dfc0c0c0</color>
+
 
 
 </resources>

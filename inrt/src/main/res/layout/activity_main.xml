@@ -24,5 +24,7 @@
     <com.stardust.autojs.core.console.ConsoleView
         android:id="@+id/console"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        app:color_debug="#cc000000"
+        app:color_verbose="#dfc0c0c0"/>
 </LinearLayout>

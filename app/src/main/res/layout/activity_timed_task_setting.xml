@@ -37,7 +37,6 @@
                 android:layout_marginLeft="6dp"
                 android:layout_marginRight="6dp"
                 android:layout_marginTop="12dp"
-                app:cardBackgroundColor="@android:color/white"
                 app:cardCornerRadius="2dp"
                 app:cardElevation="1dp"
                 app:cardUseCompatPadding="true">
@@ -125,7 +124,7 @@
                                     android:layout_height="36dp"
                                     android:layout_marginLeft="12dp"
                                     android:gravity="center_vertical"
-                                    android:textColor="#202020"
+                                    android:textColor="?android:textColorPrimary"
                                     android:textSize="16sp"/>
                             </LinearLayout>
 
@@ -154,7 +153,7 @@
                                     android:layout_height="36dp"
                                     android:layout_marginLeft="12dp"
                                     android:gravity="center_vertical"
-                                    android:textColor="#202020"
+                                    android:textColor="?android:textColorPrimary"
                                     android:textSize="16sp"/>
                             </LinearLayout>
 

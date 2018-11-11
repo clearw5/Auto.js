@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ConsoleView">
+        <attr name="color_debug" format="reference|color"/>
+        <attr name="color_verbose" format="reference|color"/>
+        <attr name="color_info" format="reference|color"/>
+        <attr name="color_warn" format="reference|color"/>
+        <attr name="color_error" format="reference|color"/>
+        <attr name="color_assert" format="reference|color"/>
+    </declare-styleable>
+</resources>

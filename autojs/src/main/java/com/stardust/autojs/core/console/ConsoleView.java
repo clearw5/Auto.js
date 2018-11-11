@@ -1,6 +1,7 @@
 package com.stardust.autojs.core.console;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,11 +18,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.stardust.autojs.R;
-import com.stardust.concurrent.ConcurrentArrayList;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
+import com.stardust.util.MapBuilder;
 import com.stardust.util.SparseArrayEntries;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by Stardust on 2017/5/2.
@@ -29,6 +31,15 @@ import java.util.ArrayList;
  * TODO: 优化为无锁形式
  */
 public class ConsoleView extends FrameLayout implements StardustConsole.LogListener {
+
+    private static final Map<Integer, Integer> ATTRS = new MapBuilder<Integer, Integer>()
+            .put(R.styleable.ConsoleView_color_verbose, Log.VERBOSE)
+            .put(R.styleable.ConsoleView_color_debug, Log.DEBUG)
+            .put(R.styleable.ConsoleView_color_info, Log.INFO)
+            .put(R.styleable.ConsoleView_color_warn, Log.WARN)
+            .put(R.styleable.ConsoleView_color_error, Log.ERROR)
+            .put(R.styleable.ConsoleView_color_assert, Log.ASSERT)
+            .build();
 
     static final SparseArray<Integer> COLORS = new SparseArrayEntries<Integer>()
             .entry(Log.VERBOSE, 0xdfc0c0c0)
@@ -40,7 +51,7 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
             .sparseArray();
 
     private static final int REFRESH_INTERVAL = 100;
-    private SparseArray<Integer> mColors = COLORS;
+    private SparseArray<Integer> mColors = COLORS.clone();
     private StardustConsole mConsole;
     private RecyclerView mLogListRecyclerView;
     private EditText mEditText;
@@ -51,25 +62,33 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
 
     public ConsoleView(Context context) {
         super(context);
-        init();
+        init(null);
     }
 
     public ConsoleView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(attrs);
     }
 
     public ConsoleView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(attrs);
     }
 
     public void setColors(SparseArray<Integer> colors) {
         mColors = colors;
     }
 
-    private void init() {
+    private void init(AttributeSet attrs) {
         inflate(getContext(), R.layout.console_view, this);
+        if (attrs != null) {
+            TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.ConsoleView);
+            for (Map.Entry<Integer, Integer> attr : ATTRS.entrySet()) {
+                int styleable = attr.getKey();
+                int logLevel = attr.getValue();
+                mColors.put(logLevel, typedArray.getColor(styleable, mColors.get(logLevel)));
+            }
+        }
         mLogListRecyclerView = findViewById(R.id.log_list);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         mLogListRecyclerView.setLayoutManager(manager);

@@ -15,18 +15,8 @@ import java.util.Locale;
 public class GlobalStardustConsole extends StardustConsole {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault());
 
-    private final SparseArray<Integer> mColors;
-
     public GlobalStardustConsole(UiHandler uiHandler) {
         super(uiHandler);
-        mColors = ConsoleView.COLORS.clone();
-        mColors.put(android.util.Log.DEBUG, 0xcc000000);
-    }
-
-    @Override
-    public void setConsoleView(ConsoleView consoleView) {
-        super.setConsoleView(consoleView);
-        consoleView.setColors(mColors);
     }
 
     @Override

@@ -2,8 +2,6 @@ package com.stardust.autojs.core.ui.inflater.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v7.widget.CardView;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.InflateException;
 import android.view.View;

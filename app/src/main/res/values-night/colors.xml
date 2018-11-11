@@ -13,4 +13,7 @@
     <color name="tab_text">#3A3A3C</color>
     <color name="toolbar">#8D8D8E</color>
     <color name="toolbar_disabled">#3A3A3C</color>
+    <color name="console_debug">#dfc0c0c0</color>
+    <color name="console_verbose">#7F7F80</color>
+
 </resources>
