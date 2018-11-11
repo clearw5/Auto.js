@@ -1,5 +1,6 @@
 package com.stardust.view.accessibility;
 
+import android.content.Context;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
@@ -24,6 +25,11 @@ public class LayoutInspector {
     private volatile boolean mDumping = false;
     private Executor mExecutor = Executors.newSingleThreadExecutor();
     private CopyOnWriteArrayList<CaptureAvailableListener> mCaptureAvailableListeners = new CopyOnWriteArrayList<>();
+    private final Context mContext;
+
+    public LayoutInspector(Context context) {
+        mContext = context;
+    }
 
     public boolean captureCurrentWindow() {
         AccessibilityService service = AccessibilityService.getInstance();
@@ -40,7 +46,7 @@ public class LayoutInspector {
         }
         mExecutor.execute(() -> {
             mDumping = true;
-            mCapture = NodeInfo.capture(root);
+            mCapture = NodeInfo.capture(mContext, root);
             mDumping = false;
             for (CaptureAvailableListener l : mCaptureAvailableListeners) {
                 l.onCaptureAvailable(mCapture);

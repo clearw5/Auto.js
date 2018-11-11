@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.autojs.autojs.R;
+
 import com.stardust.view.accessibility.NodeInfo;
 import com.stardust.util.ClipboardUtil;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -32,6 +33,7 @@ public class NodeInfoView extends RecyclerView {
 
     private static final String[] FIELD_NAMES = {
             "id",
+            "idHex",
             "bounds",
             "depth",
             "desc",

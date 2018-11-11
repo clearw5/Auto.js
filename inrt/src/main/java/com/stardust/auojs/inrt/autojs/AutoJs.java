@@ -10,6 +10,7 @@ import com.stardust.auojs.inrt.Pref;
 import com.stardust.auojs.inrt.R;
 import com.stardust.auojs.inrt.SettingsActivity;
 import com.stardust.autojs.runtime.ScriptRuntime;
+import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.view.accessibility.AccessibilityService;
@@ -35,6 +36,11 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
     private AutoJs(Application application) {
         super(application);
         getScriptEngineService().registerGlobalScriptExecutionListener(new ScriptExecutionGlobalListener());
+    }
+
+    @Override
+    protected AppUtils createAppUtils(Context context) {
+        return new AppUtils(context, context.getPackageName() + ".fileprovider");
     }
 
 

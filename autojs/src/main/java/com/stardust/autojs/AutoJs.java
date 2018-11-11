@@ -52,7 +52,7 @@ public abstract class AutoJs {
     private final AccessibilityActionRecorder mAccessibilityActionRecorder = new AccessibilityActionRecorder();
     private final AccessibilityNotificationObserver mNotificationObserver;
     private ScriptEngineManager mScriptEngineManager;
-    private final LayoutInspector mLayoutInspector = new LayoutInspector();
+    private final LayoutInspector mLayoutInspector;
     private final Context mContext;
     private final Application mApplication;
     private final UiHandler mUiHandler;
@@ -66,6 +66,7 @@ public abstract class AutoJs {
     protected AutoJs(final Application application) {
         mContext = application.getApplicationContext();
         mApplication = application;
+        mLayoutInspector = new LayoutInspector(mContext);
         mUiHandler = new UiHandler(mContext);
         mAppUtils = createAppUtils(mContext);
         mGlobalConsole = createGlobalConsole();

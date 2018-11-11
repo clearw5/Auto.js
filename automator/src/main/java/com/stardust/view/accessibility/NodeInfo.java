@@ -1,5 +1,8 @@
 package com.stardust.view.accessibility;
 
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
@@ -10,6 +13,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.stardust.automator.UiObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -23,6 +27,7 @@ public class NodeInfo {
     private Rect mBoundsInParent = new Rect();
 
     public String id;
+    public String idHex;
     public String desc;
     public String className;
     public String packageName;
@@ -54,8 +59,7 @@ public class NodeInfo {
     public NodeInfo parent;
 
 
-
-    public NodeInfo(UiObject node, NodeInfo parent) {
+    public NodeInfo(Resources resources, UiObject node, NodeInfo parent) {
         id = simplifyId(node.getViewIdResourceName());
         desc = node.desc();
         className = node.className();
@@ -92,7 +96,9 @@ public class NodeInfo {
         indexInParent = node.indexInParent();
 
         this.parent = parent;
-
+        if (resources != null && packageName != null && id != null) {
+            idHex = "0x" + Integer.toHexString(resources.getIdentifier(node.getViewIdResourceName(), null, null));
+        }
     }
 
     private String simplifyId(String idResourceName) {
@@ -116,21 +122,35 @@ public class NodeInfo {
     }
 
 
-    public static NodeInfo capture(@NonNull UiObject uiObject, @Nullable NodeInfo parent) {
-        NodeInfo nodeInfo = new NodeInfo(uiObject, parent);
+    static NodeInfo capture(HashMap<String, Resources> resourcesCache, Context context, @NonNull UiObject uiObject, @Nullable NodeInfo parent) {
+        String pkg = uiObject.packageName();
+        Resources resources = null;
+        if (pkg != null) {
+            resources = resourcesCache.get(pkg);
+            if (resources == null) {
+                try {
+                    resources = context.getPackageManager().getResourcesForApplication(pkg);
+                    resourcesCache.put(pkg, resources);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        NodeInfo nodeInfo = new NodeInfo(resources, uiObject, parent);
         int childCount = uiObject.getChildCount();
         for (int i = 0; i < childCount; i++) {
             UiObject child = uiObject.child(i);
             if (child != null) {
-                nodeInfo.children.add(capture(child, nodeInfo));
+                nodeInfo.children.add(capture(resourcesCache, context, child, nodeInfo));
             }
         }
         return nodeInfo;
     }
 
-    public static NodeInfo capture(@NonNull AccessibilityNodeInfo root) {
+    public static NodeInfo capture(Context context, @NonNull AccessibilityNodeInfo root) {
         UiObject r = UiObject.createRoot(root);
-        return capture(r, null);
+        HashMap<String, Resources> resourcesCache = new HashMap<>();
+        return capture(resourcesCache, context, r, null);
     }
 
     @NonNull
