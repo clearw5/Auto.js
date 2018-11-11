@@ -150,7 +150,6 @@ public class IntentUtil {
                 return false;
             }
         }
-
     }
 
     public static boolean viewFile(Context context, String path, String mimeType, String fileProviderAuthority) {
