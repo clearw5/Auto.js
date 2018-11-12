@@ -94,6 +94,7 @@ public class AppUtils {
         return IntentUtil.goToAppDetailSettings(mContext, packageName);
     }
 
+    @ScriptInterface
     public String getFileProviderAuthority() {
         return mFileProviderAuthority;
     }
