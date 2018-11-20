@@ -25,7 +25,6 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.service.autofill.AutofillService;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
@@ -35,7 +34,8 @@ import android.util.Log;
 import android.util.TimingLogger;
 import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.autofill.AutofillManager;
+import android.widget.TextView;
+import android.widget.TextViewHelper;
 
 import org.autojs.autojs.ui.edit.theme.Theme;
 import org.autojs.autojs.ui.edit.theme.TokenMapping;
@@ -450,8 +450,13 @@ public class CodeEditText extends AppCompatEditText {
     @Override
     public Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();
-        Parcelable superData = super.onSaveInstanceState();
-        bundle.putParcelable("super_data", superData);
+        Editable text = getText();
+        TextView.SavedState savedState = (SavedState) super.onSaveInstanceState();
+        if (text != null && text.length() > 50 * 1024) {
+            // avoid TransactionTooLargeException
+            TextViewHelper.setText(savedState, "");
+        }
+        bundle.putParcelable("super_data", savedState);
         bundle.putInt("debugging_line", mDebuggingLine);
         int[] breakpoints = new int[mBreakpoints.size()];
         int i = 0;

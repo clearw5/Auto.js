@@ -21,15 +21,10 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.stardust.app.OnActivityResultDelegate;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.tool.ImageSelector;
-import com.stardust.util.IntentUtil;
 
-import org.androidannotations.annotations.OnActivityResult;
-import org.androidannotations.annotations.ViewById;
-
-import java.io.File;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;

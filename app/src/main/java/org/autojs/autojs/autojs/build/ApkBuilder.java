@@ -78,33 +78,33 @@ public class ApkBuilder {
         }
 
         public AppConfig setAppName(String appName) {
-            appName = appName;
+            this.appName = appName;
             return this;
         }
 
         public AppConfig setVersionName(String versionName) {
-            versionName = versionName;
+            this.versionName = versionName;
             return this;
         }
 
         public AppConfig setVersionCode(int versionCode) {
-            versionCode = versionCode;
+            this.versionCode = versionCode;
             return this;
         }
 
         public AppConfig setSourcePath(String sourcePath) {
-            sourcePath = sourcePath;
+            this.sourcePath = sourcePath;
             return this;
         }
 
         public AppConfig setPackageName(String packageName) {
-            packageName = packageName;
+            this.packageName = packageName;
             return this;
         }
 
 
         public AppConfig setIcon(Callable<Bitmap> icon) {
-            icon = icon;
+            this.icon = icon;
             return this;
         }
 
