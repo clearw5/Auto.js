@@ -1,12 +1,16 @@
 package com.stardust.autojs.core.console;
 
-import android.util.SparseArray;
-
 import com.stardust.util.UiHandler;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import de.mindpipe.android.logging.log4j.LogConfigurator;
 
 /**
  * Created by Stardust on 2017/10/22.
@@ -14,6 +18,7 @@ import java.util.Locale;
 
 public class GlobalStardustConsole extends StardustConsole {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault());
+    private static final Logger LOGGER = Logger.getLogger(GlobalStardustConsole.class);
 
     public GlobalStardustConsole(UiHandler uiHandler) {
         super(uiHandler);
@@ -23,8 +28,27 @@ public class GlobalStardustConsole extends StardustConsole {
     public String println(int level, CharSequence charSequence) {
         String log = String.format(Locale.getDefault(), "%s/%s: %s",
                 DATE_FORMAT.format(new Date()), getLevelChar(level), charSequence.toString());
+        LOGGER.log(toLog4jLevel(level), log);
         super.println(level, log);
         return log;
+    }
+
+    private Priority toLog4jLevel(int level) {
+        switch (level) {
+            case android.util.Log.VERBOSE:
+                return Level.DEBUG;
+            case android.util.Log.DEBUG:
+                return Level.DEBUG;
+            case android.util.Log.INFO:
+                return Level.INFO;
+            case android.util.Log.WARN:
+                return Level.WARN;
+            case android.util.Log.ERROR:
+                return Level.ERROR;
+            case android.util.Log.ASSERT:
+                return Level.FATAL;
+        }
+        throw new IllegalArgumentException("invalid level = " + level);
     }
 
     private String getLevelChar(int level) {

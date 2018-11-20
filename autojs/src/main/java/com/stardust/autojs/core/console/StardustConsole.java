@@ -213,6 +213,7 @@ public class StardustConsole extends AbstractConsole {
         });
     }
 
+
     public void setSize(int w, int h) {
         if (mShown) {
             mUiHandler.post(() -> {

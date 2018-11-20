@@ -43,4 +43,5 @@ public interface Console {
     String println(int level, CharSequence charSequence);
 
     void setTitle(CharSequence title);
+
 }
