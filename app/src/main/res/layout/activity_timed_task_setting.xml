@@ -14,9 +14,9 @@
         <com.stardust.theme.widget.ThemeColorToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:theme="@style/ToolBarStyle"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+            android:theme="@style/ToolBarStyle"
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
     </android.support.design.widget.AppBarLayout>
@@ -35,8 +35,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
-                android:layout_marginRight="6dp"
                 android:layout_marginTop="12dp"
+                android:layout_marginRight="6dp"
                 app:cardCornerRadius="2dp"
                 app:cardElevation="1dp"
                 app:cardUseCompatPadding="true">
@@ -108,8 +108,8 @@
                                 android:background="?selectableItemBackground"
                                 android:gravity="center_vertical"
                                 android:orientation="horizontal"
-                                android:paddingBottom="6dp"
-                                android:paddingTop="6dp">
+                                android:paddingTop="6dp"
+                                android:paddingBottom="6dp">
 
                                 <org.autojs.autojs.theme.widget.ThemeColorImageViewCompat
                                     android:layout_width="24dp"
@@ -132,8 +132,8 @@
                                 android:id="@+id/disposable_task_date_container"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentBottom="true"
                                 android:layout_below="@+id/disposable_task_time_container"
+                                android:layout_alignParentBottom="true"
                                 android:background="?selectableItemBackground"
                                 android:gravity="center_vertical"
                                 android:orientation="horizontal"
@@ -405,21 +405,20 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="36dp"
-                                    android:layout_marginTop="2dp">
+                                    android:layout_marginTop="2dp"
+                                    android:hint="@string/text_broadcast_action">
 
 
                                     <android.support.design.widget.TextInputEditText
                                         android:id="@+id/action"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:hint="@string/text_broadcast_action"
                                         android:maxLines="2"
                                         android:text="@string/text_broadcast_action_prefix"/>
 
                                 </android.support.design.widget.TextInputLayout>
 
                             </LinearLayout>
-
 
                         </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
                     </RadioGroup>

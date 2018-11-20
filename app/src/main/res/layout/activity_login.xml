@@ -18,9 +18,9 @@
 
             <com.stardust.theme.widget.ThemeColorToolbar
                 android:id="@+id/toolbar"
-                android:theme="@style/ToolBarStyle"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:theme="@style/ToolBarStyle"
                 android:title="@string/text_login"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/AppTheme.PopupOverlay"/>
@@ -31,16 +31,17 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
+            android:layout_marginTop="12dp"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="12dp">
+            android:layout_marginBottom="8dp"
+            android:hint="@string/text_username">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/text_username"
+
                 android:textColor="?android:textColorPrimary"/>
 
         </android.support.design.widget.TextInputLayout>
@@ -49,13 +50,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp">
+            android:layout_marginRight="8dp"
+            android:hint="@string/text_password">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/text_password"
                 android:inputType="textPassword"
                 android:textColor="?android:textColorPrimary"/>
 

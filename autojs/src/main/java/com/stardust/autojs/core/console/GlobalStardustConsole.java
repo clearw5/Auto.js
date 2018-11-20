@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import de.mindpipe.android.logging.log4j.LogConfigurator;
 
 /**
  * Created by Stardust on 2017/10/22.
