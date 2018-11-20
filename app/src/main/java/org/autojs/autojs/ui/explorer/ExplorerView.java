@@ -168,6 +168,9 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
         Stack<ScriptFile> dirs = new Stack<>();
         while (!dir.equals(root)) {
             dir = dir.getParentFile();
+            if (dir == null) {
+                break;
+            }
             dirs.push(dir);
         }
         ExplorerDirPage parent = null;

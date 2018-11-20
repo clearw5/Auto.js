@@ -117,7 +117,7 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
 
     private boolean isInPostsPage() {
         String url = mWebView.getUrl();
-        return url.matches(POSTS_PAGE_PATTERN);
+        return url != null &&  url.matches(POSTS_PAGE_PATTERN);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
         }
 
         public void addToken(int tokenStart, int tokenEnd, int color) {
-            if(mCount < tokenStart){
+            if (mCount < tokenStart) {
                 int c = mCount > 0 ? colors[mCount - 1] : color;
                 for (int i = mCount; i < tokenStart; i++) {
                     colors[i] = c;
@@ -93,10 +93,13 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
     }
 
     public void updateTokens(String sourceString) {
-        if(mTheme == null){
+        if (mTheme == null) {
             return;
         }
         final int id = mRunningHighlighterId.incrementAndGet();
+        if (mExecutorService.isShutdown() || mExecutorService.isTerminated() || mExecutorService.isTerminating()) {
+            return;
+        }
         mExecutorService.execute(() -> {
             try {
                 mLogger.reset();

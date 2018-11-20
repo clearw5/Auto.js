@@ -52,7 +52,10 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
     }
 
 
-    public static void initInstance(Application application) {
+    public synchronized static void initInstance(Application application) {
+        if (instance != null) {
+            return;
+        }
         instance = new AutoJs(application);
     }
 

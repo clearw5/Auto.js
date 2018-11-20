@@ -70,7 +70,12 @@ public class ScreenCapturer {
                 int orientation = mContext.getResources().getConfiguration().orientation;
                 if (mOrientation == ORIENTATION_AUTO && mDetectedOrientation != orientation) {
                     mDetectedOrientation = orientation;
-                    refreshVirtualDisplay(orientation);
+                    try {
+                        refreshVirtualDisplay(orientation);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        mException = e;
+                    }
                 }
             }
 
@@ -148,8 +153,8 @@ public class ScreenCapturer {
 
     @Nullable
     public Image capture() {
-        if (mException != null) {
-            Exception e = mException;
+        Exception e = mException;
+        if (e != null) {
             mException = null;
             throw new ScriptException(e);
         }
