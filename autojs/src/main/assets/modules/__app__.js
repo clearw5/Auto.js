@@ -62,7 +62,11 @@ module.exports = function (runtime, global) {
                 throw new Error("class " + i + " not found");
             }
         }
-        context.startActivity(app.intent(i).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        if(i && i.root) {
+            shell("am start " + app.intentToShell(i), true);
+        }else{
+            context.startActivity(app.intent(i).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        }
     }
 
     app.sendBroadcast = function (i) {
@@ -71,7 +75,19 @@ module.exports = function (runtime, global) {
                 app.sendLocalBroadcastSync(app.intent({ action: runtime.getProperty("broadcast." + i) }));
             }
         }
-        context.sendBroadcast(app.intent(i));
+        if(i && i.root) {
+            shell("am broadcast " + app.intentToShell(i), true);
+        }else{
+            context.sendBroadcast(app.intent(i));
+        }
+    }
+
+    app.startService = function(i) {
+        if(i && i.root) {
+            shell("am startservice " + app.intentToShell(i), true);
+        }else{
+            context.startService(app.intent(i));
+        }
     }
 
     app.sendEmail = function (options) {
@@ -138,6 +154,101 @@ module.exports = function (runtime, global) {
         versionCode: org.autojs.autojs.BuildConfig.VERSION_CODE,
         versionName: org.autojs.autojs.BuildConfig.VERSION_NAME
     };
+
+    app.intentToShell = function(i) {
+        var cmd = "";
+        function quoteStr(str) {
+            return "'" + str.replace("'", "\\'") + "'";
+        }
+        function isInt(value) {
+            return Bumber.isInteger(value) && value <= java.lang.Integer.MAX_VALUE && value >= java.lang.Integer.MIN_VALUE;
+        }
+        function typeChar(value){
+            if(typeof(value) == 'boolean'){
+                return 'z';
+            }
+            if(typeof(value) == 'number'){
+                if(Number.isInteger(value)){
+                    if(isInt(value)){
+                        return 'i';
+                    }else{
+                        return 'l';
+                    }
+                }else{
+                    return 'f';
+                }
+            }
+            throw new TypeError("unknown type: " + value);
+        }
+        function addOption(option, param, quote) {
+            if(quote == undefined || quote === true){
+                param = quoteStr(param);
+            }
+            cmd += " -" + option + " " + param;
+        }
+        if (i.className && i.packageName) {
+           addOption("n", i.packageName + "/" + i.className);
+        }
+        if (i.extras) {
+            for (var key in i.extras) {
+                let value = i.extras[key];
+                if(typeof(value) == 'string'){
+                    addOption("-es",  quoteStr(key) + ' ' + quoteStr(value), false);
+                }else if(Array.isArray(value)){
+                    if(value.length == 0){
+                        throw new Error('Empty array: ' + key);
+                    }
+                    var e = value[0];
+                    if(typeof(e) == 'string'){
+                        cmd += ' --esa ' + quoteStr(key) + ' ';
+                        for(let str of value){
+                            cmd += quoteStr(str) + ',';
+                        }
+                        cmd = cmd.substring(0, cmd.length - 1);
+                    }else{
+                        addOption('-e' + typeChar(e) + 'a', quoteStr(key) + ' ' + value, false);
+                    }
+                }else {
+                    addOption('-e' + typeChar(value), quoteStr(key) + ' ' + value, false);
+                }
+            }
+        }
+        if (i.category) {
+            if (i.category instanceof Array) {
+                for (var j = 0; i < i.category.length; j++) {
+                    addOption('c', i.category[j], false);
+                }
+            } else {
+                addOption('c', i.category, false);
+            }
+        }
+        if (i.action) {
+            if (i.action.indexOf(".") == -1) {
+                i.action = "android.intent.action." + i.action;
+            }
+            addOption('a', i.action);
+        }
+        if (i.flags) {
+            let flags = 0;
+            if (Array.isArray(i.flags)) {
+                for (let j = 0; j < i.flags.length; j++) {
+                    flags |= parseIntentFlag(i.flags[j]);
+                }
+            } else {
+                flags = parseIntentFlag(i.flags);
+            }
+            addOption('f', flags, false);
+        }
+        if (i.type) {
+            addOption('t', i.type, false);
+        }
+        if (i.data) {
+            addOption('d', i.data, false);
+        }
+        return cmd;
+    }
+
+    
 
     global.__asGlobal__(app, ['launchPackage', 'launch', 'launchApp', 'getPackageName', 'getAppName', 'openAppSetting']);
 

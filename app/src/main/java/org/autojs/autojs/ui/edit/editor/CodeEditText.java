@@ -190,14 +190,6 @@ public class CodeEditText extends AppCompatEditText {
         }
     }
 
-    @Override
-    public boolean onTextContextMenuItem(int id) {
-        if (id == android.R.id.paste) {
-            ClipboardUtil.setClip(getContext(), ClipboardUtil.getClip(getContext()).toString());
-        }
-        return super.onTextContextMenuItem(id);
-    }
-
     //该方法中内联了很多函数来提高效率 但是 这是必要的吗？？？
     // 绘制文本着色
     private void drawText(Canvas canvas) {
