@@ -166,9 +166,9 @@ public abstract class AutoJs {
 
 
     private void addAccessibilityServiceDelegates() {
-        AccessibilityService.addDelegate(100, mAccessibilityInfoProvider);
-        AccessibilityService.addDelegate(200, mNotificationObserver);
-        AccessibilityService.addDelegate(300, mAccessibilityActionRecorder);
+        AccessibilityService.Companion.addDelegate(100, mAccessibilityInfoProvider);
+        AccessibilityService.Companion.addDelegate(200, mNotificationObserver);
+        AccessibilityService.Companion.addDelegate(300, mAccessibilityActionRecorder);
     }
 
     public AccessibilityActionRecorder getAccessibilityActionRecorder() {
@@ -225,7 +225,7 @@ public abstract class AutoJs {
         @Nullable
         @Override
         public AccessibilityService getService() {
-            return AccessibilityService.getInstance();
+            return AccessibilityService.Companion.getInstance();
         }
 
         @Override

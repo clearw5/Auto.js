@@ -232,7 +232,7 @@ public class LayoutHierarchyView extends MultiLevelListView {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            viewHolder.nameView.setText(simplifyClassName(nodeInfo.className));
+            viewHolder.nameView.setText(simplifyClassName(nodeInfo.getClassName()));
             viewHolder.nodeInfo = nodeInfo;
             if (viewHolder.infoView.getVisibility() == VISIBLE)
                 viewHolder.infoView.setText(getItemInfoDsc(itemInfo));

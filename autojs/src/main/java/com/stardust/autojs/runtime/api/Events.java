@@ -204,13 +204,13 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
         mListeningNotification = true;
         ensureHandler();
         mLoopers.waitWhenIdle(true);
-        if (NotificationListenerService.getInstance() == null) {
+        if (NotificationListenerService.Companion.getInstance() == null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                 mContext.startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
             }
             throw new ScriptException(mContext.getString(R.string.exception_notification_service_disabled));
         }
-        NotificationListenerService.getInstance().addListener(this);
+        NotificationListenerService.Companion.getInstance().addListener(this);
     }
 
     public void observeToast() {
@@ -250,8 +250,8 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
             mAccessibilityBridge.getNotificationObserver().removeNotificationListener(this);
             mAccessibilityBridge.getNotificationObserver().removeToastListener(this);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
-                    && NotificationListenerService.getInstance() != null) {
-                NotificationListenerService.getInstance().removeListener(this);
+                    && NotificationListenerService.Companion.getInstance() != null) {
+                NotificationListenerService.Companion.getInstance().removeListener(this);
             }
         }
         if (mKeyInterceptor != null) {

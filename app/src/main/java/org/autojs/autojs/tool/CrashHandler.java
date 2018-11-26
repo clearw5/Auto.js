@@ -47,7 +47,7 @@ public class CrashHandler extends CrashReport.CrashHandleCallback implements Unc
             }
             return;
         }
-        AccessibilityService service = AccessibilityService.getInstance();
+        AccessibilityService service = AccessibilityService.Companion.getInstance();
         if (service != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Log.d(TAG, "disable service: " + service);
             service.disableSelf();

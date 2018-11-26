@@ -206,7 +206,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         if (checked && !isAccessibilityServiceEnabled) {
             enableAccessibilityService();
         } else if (!checked && isAccessibilityServiceEnabled) {
-            if (!AccessibilityService.disable()) {
+            if (!AccessibilityService.Companion.disable()) {
                 AccessibilityServiceTool.goToAccessibilitySetting();
             }
         }
@@ -216,7 +216,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
             return;
         }
-        boolean enabled = NotificationListenerService.getInstance() != null;
+        boolean enabled = NotificationListenerService.Companion.getInstance() != null;
         boolean checked = holder.getSwitchCompat().isChecked();
         if ((checked && !enabled) || (!checked && enabled)) {
             startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
@@ -390,7 +390,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     private void syncSwitchState() {
         setChecked(mAccessibilityServiceItem, AccessibilityServiceTool.isAccessibilityServiceEnabled(getActivity()));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            setChecked(mNotificationPermissionItem, NotificationListenerService.getInstance() != null);
+            setChecked(mNotificationPermissionItem, NotificationListenerService.Companion.getInstance() != null);
         }
 
     }

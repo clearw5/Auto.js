@@ -39,7 +39,7 @@ public class AccessibilityServiceTool {
 
     public static boolean enableAccessibilityServiceByRootAndWaitFor(Context context, long timeOut) {
         if (enableAccessibilityServiceByRoot(context, com.stardust.view.accessibility.AccessibilityService.class)) {
-            com.stardust.view.accessibility.AccessibilityService.waitForEnabled(timeOut);
+            com.stardust.view.accessibility.AccessibilityService.Companion.waitForEnabled(timeOut);
             return true;
         }
         return false;

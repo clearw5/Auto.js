@@ -50,7 +50,7 @@ public abstract class LayoutInspectTileService extends TileService implements La
         super.onClick();
         Log.d(getClass().getName(), "onClick");
         sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
-        if (AccessibilityService.getInstance() == null) {
+        if (AccessibilityService.Companion.getInstance() == null) {
             Toast.makeText(this, R.string.text_no_accessibility_permission_to_capture, Toast.LENGTH_SHORT).show();
             AccessibilityServiceTool.goToAccessibilitySetting();
             inactive();

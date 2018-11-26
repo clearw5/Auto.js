@@ -90,13 +90,13 @@ public class UiSelector extends UiGlobalSelector {
         if (BuildConfig.DEBUG)
             Log.d(TAG, "find: root = " + root);
         if (root == null) {
-            return UiObjectCollection.EMPTY;
+            return UiObjectCollection.Companion.getEMPTY();
         }
         if (root.getPackageName() != null && mAccessibilityBridge.getConfig().whiteListContains(root.getPackageName().toString())) {
             Log.d(TAG, "package in white list, return null");
-            return UiObjectCollection.EMPTY;
+            return UiObjectCollection.Companion.getEMPTY();
         }
-        return findOf(UiObject.createRoot(root, mAllocator));
+        return findOf(UiObject.Companion.createRoot(root, mAllocator));
     }
 
     @Override

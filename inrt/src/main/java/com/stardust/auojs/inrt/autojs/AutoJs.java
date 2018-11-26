@@ -46,11 +46,11 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
 
     @Override
     public void ensureAccessibilityServiceEnabled() {
-        if (AccessibilityService.getInstance() != null) {
+        if (AccessibilityService.Companion.getInstance() != null) {
             return;
         }
         String errorMessage = null;
-        if (AccessibilityServiceUtils.isAccessibilityServiceEnabled(getApplication(), AccessibilityService.class)) {
+        if (AccessibilityServiceUtils.INSTANCE.isAccessibilityServiceEnabled(getApplication(), AccessibilityService.class)) {
             errorMessage = GlobalAppContext.getString(R.string.text_auto_operate_service_enabled_but_not_running);
         } else {
             if (Pref.shouldEnableAccessibilityServiceByRoot()) {
@@ -69,11 +69,11 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
 
     @Override
     public void waitForAccessibilityServiceEnabled() {
-        if (AccessibilityService.getInstance() != null) {
+        if (AccessibilityService.Companion.getInstance() != null) {
             return;
         }
         String errorMessage = null;
-        if (AccessibilityServiceUtils.isAccessibilityServiceEnabled(getApplication(), AccessibilityService.class)) {
+        if (AccessibilityServiceUtils.INSTANCE.isAccessibilityServiceEnabled(getApplication(), AccessibilityService.class)) {
             errorMessage = GlobalAppContext.getString(R.string.text_auto_operate_service_enabled_but_not_running);
         } else {
             if (Pref.shouldEnableAccessibilityServiceByRoot()) {
@@ -86,7 +86,7 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         }
         if (errorMessage != null) {
             AccessibilityServiceTool.goToAccessibilitySetting();
-            if (!AccessibilityService.waitForEnabled(-1)) {
+            if (!AccessibilityService.Companion.waitForEnabled(-1)) {
                 throw new ScriptInterruptedException();
             }
         }

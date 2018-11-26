@@ -34,7 +34,7 @@ public class GlobalKeyObserver implements OnKeyListener, ShellKeyObserver.KeyLis
     private boolean mVolumeUpFromShell, mVolumeUpFromAccessibility;
 
     GlobalKeyObserver() {
-        AccessibilityService.getStickOnKeyObserver()
+        AccessibilityService.Companion.getStickOnKeyObserver()
                 .addListener(this);
         ShellKeyObserver observer = new ShellKeyObserver();
         observer.setKeyListener(this);

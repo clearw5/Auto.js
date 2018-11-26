@@ -218,7 +218,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
             mLayoutInspectDialog.dismiss();
             mLayoutInspectDialog = null;
         }
-        if (AccessibilityService.getInstance() == null) {
+        if (AccessibilityService.Companion.getInstance() == null) {
             Toast.makeText(mContext, R.string.text_no_accessibility_permission_to_capture, Toast.LENGTH_SHORT).show();
             AccessibilityServiceTool.goToAccessibilitySetting();
             return;
