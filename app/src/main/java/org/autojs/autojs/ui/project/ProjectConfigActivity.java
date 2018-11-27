@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.pio.PFiles;
 
@@ -26,7 +27,6 @@ import org.autojs.autojs.model.explorer.ExplorerDirPage;
 import org.autojs.autojs.model.explorer.ExplorerFileItem;
 import org.autojs.autojs.model.explorer.Explorers;
 import org.autojs.autojs.model.project.ProjectTemplate;
-import org.autojs.autojs.network.GlideApp;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.shortcut.ShortcutIconSelectActivity;
@@ -35,7 +35,6 @@ import org.autojs.autojs.ui.widget.SimpleTextWatcher;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.regex.Pattern;
 
 import io.reactivex.Observable;
@@ -131,7 +130,7 @@ public class ProjectConfigActivity extends BaseActivity {
             mProjectLocation.setVisibility(View.GONE);
             String icon = mProjectConfig.getIcon();
             if (icon != null) {
-                GlideApp.with(this)
+                Glide.with(this)
                         .load(new File(mDirectory, icon))
                         .into(mIcon);
             }

@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.stardust.app.GlobalAppContext;
@@ -24,7 +28,6 @@ import com.stardust.notification.NotificationListenerService;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.external.foreground.ForegroundService;
-import org.autojs.autojs.network.GlideApp;
 import org.autojs.autojs.network.UserService;
 import org.autojs.autojs.tool.Observers;
 import org.autojs.autojs.ui.BaseActivity;
@@ -62,6 +65,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.autojs.autojs.ui.widget.BackgroundTarget;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -373,17 +377,12 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         } else {
             mDefaultCover.setVisibility(View.GONE);
             mShadow.setVisibility(View.VISIBLE);
-            GlideApp.with(getContext())
+            Glide.with(this)
                     .load(NodeBB.BASE_URL + user.getCoverUrl())
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .into(new SimpleTarget<Drawable>() {
-                        @Override
-                        public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                            if (mHeaderView != null) {
-                                mHeaderView.setBackground(resource);
-                            }
-                        }
-                    });
+                    .apply(new RequestOptions()
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    )
+                    .into(new BackgroundTarget(mHeaderView));
         }
     }
 

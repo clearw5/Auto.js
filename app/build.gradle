@@ -139,7 +139,7 @@ dependencies {
     implementation('com.github.bumptech.glide:glide:4.8.0', {
         exclude group: 'com.android.support'
     })
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+    kapt 'com.github.bumptech.glide:compiler:4.8.0'
     //joda time
     implementation 'joda-time:joda-time:2.9.9'
     // Tasker Plugin

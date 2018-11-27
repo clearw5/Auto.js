@@ -367,7 +367,8 @@ open class UiObject(info: Any?, private val allocator: AccessibilityNodeInfoAllo
     }
 
     override fun findAccessibilityNodeInfosByText(text: String): List<AccessibilityNodeInfoCompat> {
-        return if (allocator == null) super.findAccessibilityNodeInfosByText(text) else allocator.findAccessibilityNodeInfosByText(this, text)
+        return allocator?.findAccessibilityNodeInfosByText(this, text)
+                ?: super.findAccessibilityNodeInfosByText(text)
     }
 
     fun findByText(text: String): List<UiObject> {
@@ -375,7 +376,7 @@ open class UiObject(info: Any?, private val allocator: AccessibilityNodeInfoAllo
     }
 
     override fun findAccessibilityNodeInfosByViewId(viewId: String): List<AccessibilityNodeInfoCompat> {
-        return if (allocator == null) super.findAccessibilityNodeInfosByViewId(viewId) else allocator.findAccessibilityNodeInfosByViewId(this, viewId)
+        return allocator?.findAccessibilityNodeInfosByViewId(this, viewId) ?: super.findAccessibilityNodeInfosByViewId(viewId)
     }
 
     fun findByViewId(viewId: String): List<UiObject> {
