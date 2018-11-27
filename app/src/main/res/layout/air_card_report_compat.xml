@@ -47,7 +47,7 @@
             android:layout_marginTop="@dimen/air_baseline"
             android:hint="@string/air_label_issue_title">
 
-            <android.support.design.widget.TextInputEditText
+            <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/air_inputTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
             android:layout_marginTop="@dimen/air_baseline_half"
             android:hint="@string/air_label_issue_description">
 
-            <android.support.design.widget.TextInputEditText
+            <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/air_inputDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -68,7 +68,7 @@
                                 android:layout_weight="1"
                                 android:hint="@string/text_source_file_path">
 
-                                <android.support.design.widget.TextInputEditText
+                                <android.support.v7.widget.AppCompatEditText
                                     android:id="@+id/source_path"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
                                 android:layout_weight="1"
                                 android:hint="@string/text_output_apk_path">
 
-                                <android.support.design.widget.TextInputEditText
+                                <android.support.v7.widget.AppCompatEditText
                                     android:id="@+id/output_path"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -147,7 +147,7 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/text_app_name">
 
-                            <android.support.design.widget.TextInputEditText
+                            <android.support.v7.widget.AppCompatEditText
                                 android:id="@+id/app_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"/>
@@ -159,7 +159,7 @@
                             android:layout_marginTop="12dp"
                             android:hint="@string/text_package_name">
 
-                            <android.support.design.widget.TextInputEditText
+                            <android.support.v7.widget.AppCompatEditText
                                 android:id="@+id/package_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -183,7 +183,7 @@
                                     android:layout_marginTop="12dp"
                                     android:hint="@string/text_version_name">
 
-                                    <android.support.design.widget.TextInputEditText
+                                    <android.support.v7.widget.AppCompatEditText
                                         android:id="@+id/version_name"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
@@ -197,7 +197,7 @@
                                     android:layout_marginTop="12dp"
                                     android:hint="@string/text_version_code">
 
-                                    <android.support.design.widget.TextInputEditText
+                                    <android.support.v7.widget.AppCompatEditText
                                         android:id="@+id/version_code"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"

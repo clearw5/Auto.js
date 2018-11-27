@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -58,16 +57,16 @@ public class ProjectConfigActivity extends BaseActivity {
     EditText mProjectLocation;
 
     @ViewById(R.id.app_name)
-    TextInputEditText mAppName;
+    EditText mAppName;
 
     @ViewById(R.id.package_name)
-    TextInputEditText mPackageName;
+    EditText mPackageName;
 
     @ViewById(R.id.version_name)
-    TextInputEditText mVersionName;
+    EditText mVersionName;
 
     @ViewById(R.id.version_code)
-    TextInputEditText mVersionCode;
+    EditText mVersionCode;
 
     @ViewById(R.id.main_file_name)
     EditText mMainFileName;
@@ -215,7 +214,7 @@ public class ProjectConfigActivity extends BaseActivity {
         return inputValid;
     }
 
-    private boolean checkPackageNameValid(TextInputEditText editText) {
+    private boolean checkPackageNameValid(EditText editText) {
         Editable text = editText.getText();
         String hint = ((TextInputLayout) editText.getParent().getParent()).getHint().toString();
         if(TextUtils.isEmpty(text)){
@@ -230,7 +229,7 @@ public class ProjectConfigActivity extends BaseActivity {
 
     }
 
-    private boolean checkNotEmpty(TextInputEditText editText) {
+    private boolean checkNotEmpty(EditText editText) {
         if (!TextUtils.isEmpty(editText.getText()))
             return true;
         // TODO: 2017/12/8 more beautiful ways?
