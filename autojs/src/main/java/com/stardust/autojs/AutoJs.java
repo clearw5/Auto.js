@@ -11,8 +11,8 @@ import android.support.annotation.RequiresApi;
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
-import com.stardust.autojs.core.console.GlobalStardustConsole;
-import com.stardust.autojs.core.console.StardustConsole;
+import com.stardust.autojs.core.console.GlobalConsole;
+import com.stardust.autojs.core.console.ConsoleImpl;
 import com.stardust.autojs.core.image.capture.ScreenCaptureRequestActivity;
 import com.stardust.autojs.core.image.capture.ScreenCaptureRequester;
 import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;
@@ -35,11 +35,7 @@ import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.LayoutInspector;
 
 import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.RhinoException;
-import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.WrappedException;
-import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.OpenCVLoader;
 
 import java.io.File;
 
@@ -60,7 +56,7 @@ public abstract class AutoJs {
     private final AccessibilityInfoProvider mAccessibilityInfoProvider;
     private final ScreenCaptureRequester mScreenCaptureRequester = new ScreenCaptureRequesterImpl();
     private final ScriptEngineService mScriptEngineService;
-    private final GlobalStardustConsole mGlobalConsole;
+    private final GlobalConsole mGlobalConsole;
 
 
     protected AutoJs(final Application application) {
@@ -81,8 +77,8 @@ public abstract class AutoJs {
         return new AppUtils(mContext);
     }
 
-    protected GlobalStardustConsole createGlobalConsole() {
-        return new GlobalStardustConsole(mUiHandler);
+    protected GlobalConsole createGlobalConsole() {
+        return new GlobalConsole(mUiHandler);
     }
 
     protected void init() {
@@ -134,7 +130,7 @@ public abstract class AutoJs {
 
     protected ScriptRuntime createRuntime() {
         return new ScriptRuntime.Builder()
-                .setConsole(new StardustConsole(mUiHandler, mGlobalConsole))
+                .setConsole(new ConsoleImpl(mUiHandler, mGlobalConsole))
                 .setScreenCaptureRequester(mScreenCaptureRequester)
                 .setAccessibilityBridge(new AccessibilityBridgeImpl(mUiHandler))
                 .setUiHandler(mUiHandler)
@@ -187,7 +183,7 @@ public abstract class AutoJs {
         return mLayoutInspector;
     }
 
-    public GlobalStardustConsole getGlobalConsole() {
+    public GlobalConsole getGlobalConsole() {
         return mGlobalConsole;
     }
 

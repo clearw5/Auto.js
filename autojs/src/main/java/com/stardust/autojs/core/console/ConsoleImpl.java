@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.WindowManager;
 
 import com.stardust.autojs.R;
@@ -14,42 +13,37 @@ import com.stardust.autojs.runtime.api.AbstractConsole;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.util.FloatingPermission;
-import com.stardust.concurrent.ConcurrentArrayList;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.util.UiHandler;
 import com.stardust.util.ViewUtil;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ezy.assist.compat.SettingsCompat;
-
 /**
  * Created by Stardust on 2017/5/2.
  */
 
-public class StardustConsole extends AbstractConsole {
+public class ConsoleImpl extends AbstractConsole {
 
-    public static class Log implements Comparable<Log> {
+    public static class LogEntry implements Comparable<LogEntry> {
 
         public int id;
         public int level;
         public CharSequence content;
         public boolean newLine = false;
 
-        public Log(int id, int level, CharSequence content) {
+        public LogEntry(int id, int level, CharSequence content) {
             this.id = id;
             this.level = level;
             this.content = content;
         }
 
-        public Log(int id, int level, CharSequence content, boolean newLine) {
+        public LogEntry(int id, int level, CharSequence content, boolean newLine) {
             this.id = id;
             this.level = level;
             this.content = content;
@@ -57,20 +51,20 @@ public class StardustConsole extends AbstractConsole {
         }
 
         @Override
-        public int compareTo(@NonNull Log o) {
+        public int compareTo(@NonNull LogEntry o) {
             return 0;
         }
     }
 
     public interface LogListener {
-        void onNewLog(Log log);
+        void onNewLog(LogEntry logEntry);
 
         void onLogClear();
     }
 
     private final Object WINDOW_SHOW_LOCK = new Object();
     private final Console mGlobalConsole;
-    private final ArrayList<Log> mLogs = new ArrayList<>();
+    private final ArrayList<LogEntry> mLogEntries = new ArrayList<>();
     private AtomicInteger mIdCounter = new AtomicInteger(0);
     private ResizableExpandableFloatyWindow mFloatyWindow;
     private ConsoleFloaty mConsoleFloaty;
@@ -81,11 +75,11 @@ public class StardustConsole extends AbstractConsole {
     private volatile boolean mShown = false;
     private int mX, mY;
 
-    public StardustConsole(UiHandler uiHandler) {
+    public ConsoleImpl(UiHandler uiHandler) {
         this(uiHandler, null);
     }
 
-    public StardustConsole(UiHandler uiHandler, Console globalConsole) {
+    public ConsoleImpl(UiHandler uiHandler, Console globalConsole) {
         mUiHandler = uiHandler;
         mConsoleFloaty = new ConsoleFloaty(this);
         mGlobalConsole = globalConsole;
@@ -116,8 +110,8 @@ public class StardustConsole extends AbstractConsole {
         mLogListener = new WeakReference<>(logListener);
     }
 
-    public ArrayList<Log> getAllLogs() {
-        return mLogs;
+    public ArrayList<LogEntry> getAllLogs() {
+        return mLogEntries;
     }
 
     public void printAllStackTrace(Throwable t) {
@@ -130,15 +124,15 @@ public class StardustConsole extends AbstractConsole {
 
     @Override
     public String println(int level, CharSequence charSequence) {
-        Log log = new Log(mIdCounter.getAndIncrement(), level, charSequence, true);
-        synchronized (mLogs) {
-            mLogs.add(log);
+        LogEntry logEntry = new LogEntry(mIdCounter.getAndIncrement(), level, charSequence, true);
+        synchronized (mLogEntries) {
+            mLogEntries.add(logEntry);
         }
         if (mGlobalConsole != null) {
             mGlobalConsole.println(level, charSequence);
         }
         if (mLogListener != null && mLogListener.get() != null) {
-            mLogListener.get().onNewLog(log);
+            mLogListener.get().onNewLog(logEntry);
         }
         return null;
     }
@@ -152,8 +146,8 @@ public class StardustConsole extends AbstractConsole {
 
     @Override
     public void clear() {
-        synchronized (mLogs) {
-            mLogs.clear();
+        synchronized (mLogEntries) {
+            mLogEntries.clear();
         }
         if (mLogListener != null && mLogListener.get() != null) {
             mLogListener.get().onLogClear();

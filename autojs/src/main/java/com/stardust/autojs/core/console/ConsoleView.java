@@ -30,7 +30,7 @@ import java.util.Map;
  * <p>
  * TODO: 优化为无锁形式
  */
-public class ConsoleView extends FrameLayout implements StardustConsole.LogListener {
+public class ConsoleView extends FrameLayout implements ConsoleImpl.LogListener {
 
     private static final Map<Integer, Integer> ATTRS = new MapBuilder<Integer, Integer>()
             .put(R.styleable.ConsoleView_color_verbose, Log.VERBOSE)
@@ -52,13 +52,13 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
 
     private static final int REFRESH_INTERVAL = 100;
     private SparseArray<Integer> mColors = COLORS.clone();
-    private StardustConsole mConsole;
+    private ConsoleImpl mConsole;
     private RecyclerView mLogListRecyclerView;
     private EditText mEditText;
     private ResizableExpandableFloatyWindow mWindow;
     private LinearLayout mInputContainer;
     private boolean mShouldStopRefresh = false;
-    private ArrayList<StardustConsole.Log> mLogs = new ArrayList<>();
+    private ArrayList<ConsoleImpl.LogEntry> mLogEntries = new ArrayList<>();
 
     public ConsoleView(Context context) {
         super(context);
@@ -128,13 +128,13 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
         mInputContainer.setOnClickListener(listener);
     }
 
-    public void setConsole(StardustConsole console) {
+    public void setConsole(ConsoleImpl console) {
         mConsole = console;
         mConsole.setConsoleView(this);
     }
 
     @Override
-    public void onNewLog(StardustConsole.Log log) {
+    public void onNewLog(ConsoleImpl.LogEntry logEntry) {
 
     }
 
@@ -163,7 +163,7 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
     @Override
     public void onLogClear() {
         post(() -> {
-            mLogs.clear();
+            mLogEntries.clear();
             mLogListRecyclerView.getAdapter().notifyDataSetChanged();
         });
     }
@@ -171,10 +171,10 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
     private void refreshLog() {
         if (mConsole == null)
             return;
-        int oldSize = mLogs.size();
-        ArrayList<StardustConsole.Log> logs = mConsole.getAllLogs();
+        int oldSize = mLogEntries.size();
+        ArrayList<ConsoleImpl.LogEntry> logEntries = mConsole.getAllLogs();
         synchronized (mConsole.getAllLogs()) {
-            final int size = logs.size();
+            final int size = logEntries.size();
             if (size == 0) {
                 return;
             }
@@ -182,10 +182,10 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
                 return;
             }
             if (oldSize == 0) {
-                mLogs.addAll(logs);
+                mLogEntries.addAll(logEntries);
             } else {
                 for (int i = oldSize; i < size; i++) {
-                    mLogs.add(logs.get(i));
+                    mLogEntries.add(logEntries.get(i));
                 }
             }
             mLogListRecyclerView.getAdapter().notifyItemRangeInserted(oldSize, size - 1);
@@ -224,14 +224,14 @@ public class ConsoleView extends FrameLayout implements StardustConsole.LogListe
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            StardustConsole.Log log = mLogs.get(position);
-            holder.textView.setText(log.content);
-            holder.textView.setTextColor(mColors.get(log.level));
+            ConsoleImpl.LogEntry logEntry = mLogEntries.get(position);
+            holder.textView.setText(logEntry.content);
+            holder.textView.setTextColor(mColors.get(logEntry.level));
         }
 
         @Override
         public int getItemCount() {
-            return mLogs.size();
+            return mLogEntries.size();
         }
     }
 }

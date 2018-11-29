@@ -18,7 +18,7 @@ module.exports = function(__runtime__, scope){
     }
 
     engines.myEngine = function(){
-        var engine = Object.create(rtEngines.myEngine());
+        var engine = rtEngines.myEngine();
         if(!execArgv){
             execArgv = {};
             var iter = engine.getTag("execution.config").getArguments().entrySet().iterator();
@@ -26,8 +26,8 @@ module.exports = function(__runtime__, scope){
                 var entry = iter.next();
                 execArgv[entry.getKey()] = entry.getValue();
             }
+            engine.execArgv = execArgv;
         }
-        engine.execArgv = execArgv;
         return engine;
     }
 

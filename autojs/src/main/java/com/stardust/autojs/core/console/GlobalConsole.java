@@ -15,11 +15,12 @@ import java.util.Locale;
  * Created by Stardust on 2017/10/22.
  */
 
-public class GlobalStardustConsole extends StardustConsole {
+public class GlobalConsole extends ConsoleImpl {
+    private static final String LOG_tAG = "GlobalConsole";
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault());
-    private static final Logger LOGGER = Logger.getLogger(GlobalStardustConsole.class);
+    private static final Logger LOGGER = Logger.getLogger(GlobalConsole.class);
 
-    public GlobalStardustConsole(UiHandler uiHandler) {
+    public GlobalConsole(UiHandler uiHandler) {
         super(uiHandler);
     }
 
@@ -28,6 +29,7 @@ public class GlobalStardustConsole extends StardustConsole {
         String log = String.format(Locale.getDefault(), "%s/%s: %s",
                 DATE_FORMAT.format(new Date()), getLevelChar(level), charSequence.toString());
         LOGGER.log(toLog4jLevel(level), log);
+        android.util.Log.d(LOG_tAG, log);
         super.println(level, log);
         return log;
     }

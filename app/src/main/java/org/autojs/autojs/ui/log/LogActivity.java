@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.stardust.autojs.core.console.ConsoleView;
-import com.stardust.autojs.core.console.StardustConsole;
+import com.stardust.autojs.core.console.ConsoleImpl;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -21,7 +21,7 @@ public class LogActivity extends BaseActivity {
     @ViewById(R.id.console)
     ConsoleView mConsoleView;
 
-    private StardustConsole mStardustConsole;
+    private ConsoleImpl mConsoleImpl;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,13 +32,13 @@ public class LogActivity extends BaseActivity {
     @AfterViews
     void setupViews() {
         setToolbarAsBack(getString(R.string.text_log));
-        mStardustConsole = AutoJs.getInstance().getGlobalConsole();
-        mConsoleView.setConsole(mStardustConsole);
+        mConsoleImpl = AutoJs.getInstance().getGlobalConsole();
+        mConsoleView.setConsole(mConsoleImpl);
         mConsoleView.findViewById(R.id.input_container).setVisibility(View.GONE);
     }
 
     @Click(R.id.fab)
     void clearConsole() {
-        mStardustConsole.clear();
+        mConsoleImpl.clear();
     }
 }

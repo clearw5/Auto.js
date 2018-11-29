@@ -11,7 +11,7 @@ import android.view.View;
 import com.stardust.auojs.inrt.autojs.AutoJs;
 import com.stardust.auojs.inrt.launch.GlobalProjectLauncher;
 import com.stardust.autojs.core.console.ConsoleView;
-import com.stardust.autojs.core.console.StardustConsole;
+import com.stardust.autojs.core.console.ConsoleImpl;
 
 public class LogActivity extends AppCompatActivity {
 
@@ -32,7 +32,7 @@ public class LogActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ConsoleView consoleView = findViewById(R.id.console);
-        consoleView.setConsole((StardustConsole) AutoJs.getInstance().getGlobalConsole());
+        consoleView.setConsole((ConsoleImpl) AutoJs.getInstance().getGlobalConsole());
         consoleView.findViewById(R.id.input_container).setVisibility(View.GONE);
     }
 
