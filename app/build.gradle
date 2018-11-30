@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.jakewharton.butterknife'
 
 def AAVersion = '4.5.2'
 def SupportLibVersion = '28.0.0'
@@ -21,7 +22,7 @@ android {
         targetSdkVersion versions.target
         versionCode versions.appVersionCode
         versionName versions.appVersionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
             abiFilters 'armeabi-v7a', 'x86'
@@ -82,7 +83,7 @@ repositories {
 }
 
 dependencies {
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.1-alpha01', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation 'junit:junit:4.12'
@@ -90,15 +91,15 @@ dependencies {
     annotationProcessor "org.androidannotations:androidannotations:$AAVersion"
     implementation "org.androidannotations:androidannotations-api:$AAVersion"
     // ButterKnife
-    implementation('com.jakewharton:butterknife:8.8.1', {
+    implementation('com.jakewharton:butterknife:9.0.0-rc2', {
         exclude group: 'com.android.support'
     })
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc2'
     // Android supports
-    implementation "com.android.support:appcompat-v7:${SupportLibVersion}"
-    implementation "com.android.support:cardview-v7:${SupportLibVersion}"
-    implementation "com.android.support:design:${SupportLibVersion}"
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0-alpha01'
+    implementation 'androidx.multidex:multidex:2.0.0'
     // Personal libraries
     implementation 'com.github.hyb1996:MutableTheme:0.2.2'
     // Material Dialogs

@@ -8,7 +8,7 @@
               android:paddingRight="16dp">
 
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/text_loop_times">
@@ -21,7 +21,7 @@
             android:text="0"
             tools:ignore="HardcodedText"/>
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -32,7 +32,7 @@
         android:textColor="#77000000"
         android:textSize="12sp"/>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/text_loop_interval">
@@ -45,9 +45,9 @@
             android:text="1.0"
             tools:ignore="HardcodedText"/>
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/text_loop_delay">
@@ -60,7 +60,7 @@
             android:text="0.0"
             tools:ignore="HardcodedText"/>
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:layout_width="match_parent"

@@ -1,7 +1,7 @@
 package org.autojs.autojs.ui.user;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.stardust.app.OnActivityResultDelegate;
 import org.autojs.autojs.R;

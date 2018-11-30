@@ -14,6 +14,6 @@
         android:imeOptions="actionSearch"
         android:inputType="text"
         android:title="@string/text_search"
-        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always|collapseActionView"/>
 </menu>

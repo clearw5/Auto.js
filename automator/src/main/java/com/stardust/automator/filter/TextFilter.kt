@@ -8,7 +8,6 @@ import com.stardust.automator.UiObject
 
 class TextFilter private constructor(private val mText: String) : ListFilter.Default() {
 
-
     override fun filter(node: UiObject): List<UiObject> {
         return node.findByText(mText)
     }

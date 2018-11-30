@@ -1,6 +1,6 @@
 package org.autojs.autojs.model.explorer;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.LruCache;
 
 import com.stardust.pio.PFile;

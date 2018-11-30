@@ -4,7 +4,7 @@ import android.app.Notification
 import android.os.Build
 import android.os.Parcel
 import android.service.notification.StatusBarNotification
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 
 import com.stardust.view.accessibility.NotificationListener
 import java.util.concurrent.CopyOnWriteArrayList

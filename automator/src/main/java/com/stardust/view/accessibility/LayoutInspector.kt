@@ -2,7 +2,7 @@ package com.stardust.view.accessibility
 
 import android.content.Context
 import android.os.Build
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
 
@@ -82,6 +82,6 @@ class LayoutInspector(private val mContext: Context) {
 
     companion object {
 
-        private val LOG_TAG = LayoutInspector::class.java!!.getSimpleName()
+        private val LOG_TAG = LayoutInspector::class.java.simpleName
     }
 }

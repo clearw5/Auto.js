@@ -19,7 +19,6 @@ public class RootTool {
     }
 
     private static final String cmd = "enabled=$(settings get system pointer_location)\n" +
-            "pkg=%s\n" +
             "if [[ $enabled == 1 ]]\n" +
             "then\n" +
             "settings put system pointer_location 0\n" +

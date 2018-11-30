@@ -1,7 +1,7 @@
 package org.autojs.autojs.external.tile;
 
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 
 import com.stardust.view.accessibility.NodeInfo;
 

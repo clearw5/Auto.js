@@ -1,20 +1,17 @@
 package com.stardust.autojs.core.floaty;
 
 import android.content.Context;
-import android.graphics.PixelFormat;
-import android.os.Build;
-import android.support.annotation.Nullable;
-import android.view.Gravity;
+
+import androidx.annotation.Nullable;
+
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.ui.inflater.inflaters.Exceptions;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
-import com.stardust.concurrent.VolatileBox;
 import com.stardust.concurrent.VolatileDispose;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableFloaty;

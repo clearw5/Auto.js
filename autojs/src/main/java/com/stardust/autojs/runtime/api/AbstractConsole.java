@@ -1,11 +1,9 @@
 package com.stardust.autojs.runtime.api;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.stardust.autojs.runtime.exception.ScriptException;
-
-import java.util.Formatter;
 
 /**
  * Created by Stardust on 2017/5/1.

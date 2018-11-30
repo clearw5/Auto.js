@@ -1,6 +1,6 @@
 package com.stardust.autojs.script;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;

@@ -3,7 +3,7 @@ package com.stardust.notification
 import android.app.PendingIntent
 import android.os.Build
 import android.os.Parcel
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 
 /**
  * Created by Stardust on 2017/10/30.

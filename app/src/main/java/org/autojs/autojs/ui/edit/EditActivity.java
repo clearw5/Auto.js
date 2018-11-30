@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -158,14 +158,14 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     @Override
-    public void onSupportActionModeStarted(@NonNull android.support.v7.view.ActionMode mode) {
+    public void onSupportActionModeStarted(@NonNull androidx.appcompat.view.ActionMode mode) {
         Log.d(LOG_TAG, "onSupportActionModeStarted: mode = " + mode);
         super.onSupportActionModeStarted(mode);
     }
 
     @Nullable
     @Override
-    public android.support.v7.view.ActionMode onWindowStartingSupportActionMode(@NonNull android.support.v7.view.ActionMode.Callback callback) {
+    public androidx.appcompat.view.ActionMode onWindowStartingSupportActionMode(@NonNull androidx.appcompat.view.ActionMode.Callback callback) {
         Log.d(LOG_TAG, "onWindowStartingSupportActionMode: callback = " + callback);
         return super.onWindowStartingSupportActionMode(callback);
     }

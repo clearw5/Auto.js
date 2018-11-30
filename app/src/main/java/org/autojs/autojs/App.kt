@@ -6,10 +6,10 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.support.multidex.MultiDexApplication
-import android.support.v4.content.LocalBroadcastManager
+import androidx.multidex.MultiDexApplication
 import android.view.View
 import android.widget.ImageView
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition

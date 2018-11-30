@@ -2,7 +2,7 @@ package com.stardust.autojs.core.inputevent;
 
 import android.content.Context;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.ViewConfiguration;

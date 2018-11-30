@@ -3,7 +3,7 @@ package com.stardust.autojs.core.ui.nativeview;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Looper;
-import android.support.v4.view.ViewCompat;
+import androidx.core.view.ViewCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -18,7 +18,6 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 

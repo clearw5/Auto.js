@@ -3,12 +3,11 @@ package org.autojs.autojs.theme;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.stardust.app.GlobalAppContext;
 
-import org.autojs.autojs.*;
 import org.autojs.autojs.R;
 
 import com.stardust.theme.ThemeColor;

@@ -3,7 +3,7 @@ package com.stardust.automator.simple_action
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import android.view.accessibility.AccessibilityNodeInfo
 
 import com.stardust.automator.UiObject

@@ -6,7 +6,7 @@ import android.graphics.Path
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import android.view.ViewConfiguration
 
 import com.stardust.concurrent.VolatileBox

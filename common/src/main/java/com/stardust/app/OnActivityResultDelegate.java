@@ -1,7 +1,7 @@
 package com.stardust.app;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.SparseArray;
 
 import java.util.ArrayList;

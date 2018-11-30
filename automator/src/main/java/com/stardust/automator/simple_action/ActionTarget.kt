@@ -2,7 +2,7 @@ package com.stardust.automator.simple_action
 
 import android.graphics.Rect
 import android.os.Build
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 
 /**
  * Created by Stardust on 2017/1/27.

@@ -1,9 +1,11 @@
 package com.stardust.autojs.core.ui.widget;
 
 import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
 
 import com.stardust.autojs.runtime.ScriptRuntime;
+
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by Stardust on 2018/3/30.
@@ -20,7 +22,7 @@ public class JsGridView extends JsListView {
         super.init();
         setLayoutManager(new GridLayoutManager(getContext(), 1){
             @Override
-            public void onLayoutChildren(Recycler recycler, State state) {
+            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
                 try {
                     super.onLayoutChildren(recycler, state);
                 } catch (IndexOutOfBoundsException e) {

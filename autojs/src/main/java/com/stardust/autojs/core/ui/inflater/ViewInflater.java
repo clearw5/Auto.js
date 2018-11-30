@@ -1,6 +1,6 @@
 package com.stardust.autojs.core.ui.inflater;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 

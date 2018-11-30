@@ -1,10 +1,9 @@
 package com.stardust.autojs.core.ui.attribute;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.os.Build;
-import android.support.v4.widget.ImageViewCompat;
+
+import androidx.core.widget.ImageViewCompat;
 import android.view.View;
 import android.widget.ImageView;
 

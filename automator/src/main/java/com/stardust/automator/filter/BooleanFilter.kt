@@ -1,7 +1,7 @@
 package com.stardust.automator.filter
 
 import android.os.Build
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 
 import com.stardust.automator.UiObject
 

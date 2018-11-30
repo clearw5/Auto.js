@@ -8,7 +8,7 @@ import java.util.ArrayList
  * Created by Stardust on 2017/3/9.
  */
 
-abstract class DfsFilter : ListFilter, Filter {
+abstract class DfsFilter : ListFilter(), Filter {
 
     override fun filter(nodes: List<UiObject>): List<UiObject> {
         val list = ArrayList<UiObject>()

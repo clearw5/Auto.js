@@ -1,10 +1,9 @@
 package com.stardust.autojs.core.ui.attribute;
 
 import android.graphics.Color;
-import android.support.design.widget.FloatingActionButton;
 import android.view.View;
-import android.widget.ImageView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.stardust.autojs.core.ui.inflater.ResourceParser;
 
 public class FabViewAttributes extends ImageViewAttributes {

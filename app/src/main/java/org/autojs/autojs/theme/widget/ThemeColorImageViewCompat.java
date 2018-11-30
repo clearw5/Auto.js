@@ -2,7 +2,7 @@ package org.autojs.autojs.theme.widget;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.support.v7.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
 import com.stardust.theme.ThemeColor;

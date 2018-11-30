@@ -12,7 +12,7 @@ import org.autojs.autojs.model.explorer.ExplorerPage;
 import org.autojs.autojs.model.explorer.ExplorerProjectPage;
 import org.autojs.autojs.model.explorer.ExplorerSamplePage;
 
-import static android.support.v4.content.ContextCompat.getColor;
+import static androidx.core.content.ContextCompat.getColor;
 import static org.autojs.autojs.model.explorer.ExplorerItem.TYPE_AUTO_FILE;
 import static org.autojs.autojs.model.explorer.ExplorerItem.TYPE_JAVASCRIPT;
 import static org.autojs.autojs.model.explorer.ExplorerItem.TYPE_UNKNOWN;

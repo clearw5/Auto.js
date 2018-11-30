@@ -10,12 +10,17 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.DrawerLayout;
+
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
@@ -32,7 +37,6 @@ import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.pio.PFiles;
 import com.stardust.util.BackPressedHandler;
 import com.stardust.util.Callback;
-import com.stardust.util.IntentUtil;
 import com.stardust.util.ViewUtils;
 
 import org.androidannotations.annotations.AfterViews;
@@ -349,11 +353,11 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     public boolean onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             if (mDocsWebView.getWebView().canGoBack()) {
                 mDocsWebView.getWebView().goBack();
             } else {
-                mDrawerLayout.closeDrawer(Gravity.START);
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             }
             return true;
         }
@@ -625,7 +629,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
                 .url(absUrl)
                 .pinToLeft(v -> {
                     mDocsWebView.getWebView().loadUrl(absUrl);
-                    mDrawerLayout.openDrawer(Gravity.START);
+                    mDrawerLayout.openDrawer(GravityCompat.START);
                 })
                 .show();
     }

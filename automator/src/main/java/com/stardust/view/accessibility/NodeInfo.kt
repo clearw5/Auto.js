@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Rect
-import android.support.annotation.Keep
+import androidx.annotation.Keep
 import android.view.accessibility.AccessibilityNodeInfo
 
 import com.stardust.automator.UiObject

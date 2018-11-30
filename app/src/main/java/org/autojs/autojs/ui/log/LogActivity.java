@@ -1,7 +1,7 @@
 package org.autojs.autojs.ui.log;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 
 import com.stardust.autojs.core.console.ConsoleView;

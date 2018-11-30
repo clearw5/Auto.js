@@ -8,16 +8,21 @@ import java.util.ArrayList
  * Created by Stardust on 2017/3/9.
  */
 
-interface ListFilter {
+abstract class ListFilter {
 
-    fun filter(nodes: List<UiObject>): List<UiObject>
+    var maxCount: Int = Integer.MAX_VALUE
 
-    abstract class Default : Filter, ListFilter {
+    abstract fun filter(nodes: List<UiObject>): List<UiObject>
+
+    abstract class Default : Filter, ListFilter() {
 
         override fun filter(nodes: List<UiObject>): List<UiObject> {
             val list = ArrayList<UiObject>()
             for (node in nodes) {
                 list.addAll(filter(node))
+                if (list.size > maxCount) {
+                    break
+                }
             }
             return list
         }

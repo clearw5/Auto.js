@@ -3,7 +3,7 @@ package org.autojs.autojs.external.open;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -14,9 +14,6 @@ import org.autojs.autojs.R;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
 
 /**
  * Created by Stardust on 2017/2/2.

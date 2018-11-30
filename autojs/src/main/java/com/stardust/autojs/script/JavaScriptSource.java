@@ -1,12 +1,9 @@
 package com.stardust.autojs.script;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.stardust.autojs.rhino.TokenStream;
 import com.stardust.util.MapBuilder;
-
-import org.mozilla.javascript.Token;
 
 import java.io.Reader;
 import java.io.StringReader;

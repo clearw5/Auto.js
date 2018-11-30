@@ -1,6 +1,6 @@
 package com.stardust.autojs.codegeneration;
 
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 
 import com.stardust.automator.UiGlobalSelector;
 import com.stardust.automator.UiObject;

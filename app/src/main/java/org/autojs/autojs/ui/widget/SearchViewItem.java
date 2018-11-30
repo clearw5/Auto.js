@@ -3,11 +3,9 @@ package org.autojs.autojs.ui.widget;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
+import androidx.appcompat.widget.SearchView;
 import android.view.MenuItem;
-
-import org.autojs.autojs.ui.main.MainActivity;
 
 /**
  * Created by Stardust on 2017/10/25.

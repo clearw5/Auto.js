@@ -1,10 +1,9 @@
 package org.autojs.autojs.model.script;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.widget.Toast;
 
 import com.stardust.app.GlobalAppContext;

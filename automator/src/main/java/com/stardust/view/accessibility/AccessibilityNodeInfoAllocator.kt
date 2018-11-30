@@ -1,8 +1,8 @@
 package com.stardust.view.accessibility
 
 import android.os.Build
-import android.support.annotation.RequiresApi
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat
+import androidx.annotation.RequiresApi
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
 

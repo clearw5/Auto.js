@@ -2,7 +2,7 @@ package com.stardust.autojs.core.image;
 
 import android.graphics.Color;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 
 import com.stardust.autojs.core.opencv.MatOfPoint;
 import com.stardust.autojs.core.opencv.OpenCVHelper;

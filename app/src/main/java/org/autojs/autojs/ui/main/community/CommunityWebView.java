@@ -3,8 +3,9 @@ package org.autojs.autojs.ui.main.community;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.Snackbar;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import android.util.AttributeSet;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
@@ -78,7 +79,7 @@ public class CommunityWebView extends EWebView {
                                         .show(),
                         error -> {
                             error.printStackTrace();
-                            Snackbar.make(CommunityWebView.this, R.string.text_download_failed, Toast.LENGTH_SHORT).show();
+                            Snackbar.make(CommunityWebView.this, R.string.text_download_failed, Snackbar.LENGTH_SHORT).show();
                         });
     }
 

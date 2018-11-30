@@ -2,9 +2,10 @@ package com.stardust.autojs.core.console;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
@@ -17,8 +18,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.stardust.autojs.R;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
+import com.stardust.autojs.R;
 import com.stardust.util.MapBuilder;
 import com.stardust.util.SparseArrayEntries;
 
