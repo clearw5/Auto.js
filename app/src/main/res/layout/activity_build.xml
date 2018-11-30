@@ -76,7 +76,7 @@
 
                             </com.google.android.material.textfield.TextInputLayout>
 
-                            <android.support.v7.widget.AppCompatButton
+                            <androidx.appcompat.widget.AppCompatButton
                                 android:id="@+id/select_source"
                                 style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
                                 android:layout_width="60dp"
@@ -106,7 +106,7 @@
 
                             </com.google.android.material.textfield.TextInputLayout>
 
-                            <android.support.v7.widget.AppCompatButton
+                            <androidx.appcompat.widget.AppCompatButton
                                 android:id="@+id/select_output"
                                 style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
                                 android:layout_width="60dp"

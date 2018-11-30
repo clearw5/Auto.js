@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -43,6 +44,10 @@ public class ScriptCanvas {
 
     public ScriptCanvas() {
 
+    }
+
+    public Canvas getAndroidCanvas() {
+        return mCanvas;
     }
 
     void setCanvas(Canvas canvas) {

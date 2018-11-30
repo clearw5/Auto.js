@@ -105,7 +105,7 @@
             app:ael_interpolator="fastOutSlowIn"
             app:ael_orientation="vertical">
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/air_textDeviceInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

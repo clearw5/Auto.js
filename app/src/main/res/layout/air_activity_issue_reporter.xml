@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/air_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/air_card_margin_top"/>
 
-                <androidx.core.widget.Space
+                <android.widget.Space
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_margin="@dimen/air_baseline"/>

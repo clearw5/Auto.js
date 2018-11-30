@@ -2,6 +2,7 @@ package org.autojs.autojs.ui.main.drawer;
 
 import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -238,7 +239,17 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
         }
         boolean enabled = AppOpsKt.isOpPermissionGranted(getContext(), AppOpsManager.OPSTR_GET_USAGE_STATS);
         boolean checked = holder.getSwitchCompat().isChecked();
-        if ((checked && !enabled) || (!checked && enabled)) {
+        if(checked && !enabled){
+            if(new NotAskAgainDialog.Builder(getContext(), "DrawerFragment.usage_stats")
+                    .title(R.string.text_usage_stats_permission)
+                    .content(R.string.description_usage_stats_permission)
+                    .positiveText(R.string.ok)
+                    .dismissListener(dialog -> IntentUtil.requestAppUsagePermission(getContext()))
+                    .show() == null){
+                IntentUtil.requestAppUsagePermission(getContext());
+            }
+        }
+        if (!checked && enabled) {
             IntentUtil.requestAppUsagePermission(getContext());
         }
     }
