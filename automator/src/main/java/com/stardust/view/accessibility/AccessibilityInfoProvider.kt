@@ -1,32 +1,40 @@
 package com.stardust.view.accessibility
 
 import android.accessibilityservice.AccessibilityService
+import android.app.AppOpsManager
+import android.app.usage.UsageStatsManager
 import android.content.ComponentName
 import android.content.Context
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
+import android.os.Build
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityNodeInfo
-
-import com.stardust.view.accessibility.AccessibilityDelegate
-
-import java.util.Arrays
-import java.util.Collections
-import java.util.HashSet
+import androidx.annotation.RequiresApi
+import com.stardust.app.isOpPermissionGranted
 
 /**
  * Created by Stardust on 2017/3/9.
  */
 
-class AccessibilityInfoProvider(private val mPackageManager: PackageManager) : AccessibilityDelegate {
+class AccessibilityInfoProvider(private val context: Context) : AccessibilityDelegate {
 
+    private val mPackageManager: PackageManager = context.packageManager
 
     @Volatile
-    var latestPackage = ""
-        private set
+    private var mLatestPackage: String = ""
+
+    val latestPackage: String
+        get() {
+            if (useUsageStats && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                mLatestPackage = getLatestPackageByUsageStats()
+            }
+            return mLatestPackage
+        }
+
     @Volatile
     var latestActivity = ""
         private set
+
+    var useUsageStats: Boolean = true
 
     override val eventTypes: Set<Int>?
         get() = AccessibilityDelegate.ALL_EVENT_TYPES
@@ -36,6 +44,29 @@ class AccessibilityInfoProvider(private val mPackageManager: PackageManager) : A
             setLatestComponent(event.packageName, event.className)
         }
         return false
+    }
+
+    fun getLatestPackageByUsageStatsIfGranted(): String {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 && context.isOpPermissionGranted(AppOpsManager.OPSTR_GET_USAGE_STATS)) {
+            return getLatestPackageByUsageStats()
+        }
+        return mLatestPackage
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
+    fun getLatestPackageByUsageStats(): String {
+        val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        val current = System.currentTimeMillis()
+        val usageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, current - 60 * 60 * 1000, current)
+        return if (usageStats.isEmpty()) {
+            ""
+        } else {
+            usageStats.sortBy {
+                it.lastTimeStamp
+            }
+            usageStats.last().packageName
+        }
+
     }
 
     private fun setLatestComponent(latestPackage: CharSequence?, latestClass: CharSequence?) {
@@ -51,7 +82,6 @@ class AccessibilityInfoProvider(private val mPackageManager: PackageManager) : A
         } catch (ignored: PackageManager.NameNotFoundException) {
             return
         }
-
-        this.latestPackage = latestPackage.toString()
+        mLatestPackage = latestPackage.toString()
     }
 }

@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
@@ -67,7 +68,7 @@ public abstract class AutoJs {
         mAppUtils = createAppUtils(mContext);
         mGlobalConsole = createGlobalConsole();
         mNotificationObserver = new AccessibilityNotificationObserver(mContext);
-        mAccessibilityInfoProvider = new AccessibilityInfoProvider(mContext.getPackageManager());
+        mAccessibilityInfoProvider = new AccessibilityInfoProvider(mContext);
         mScriptEngineService = buildScriptEngineService();
         ScriptEngineService.setInstance(mScriptEngineService);
         init();
@@ -205,7 +206,7 @@ public abstract class AutoJs {
     private class AccessibilityBridgeImpl extends AccessibilityBridge {
 
         public AccessibilityBridgeImpl(UiHandler uiHandler) {
-            super(createAccessibilityConfig(), uiHandler);
+            super(mContext, createAccessibilityConfig(), uiHandler);
         }
 
         @Override

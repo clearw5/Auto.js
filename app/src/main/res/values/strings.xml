@@ -273,7 +273,7 @@
     <string name="text_reset_succeed">重置成功</string>
     <string name="text_cannot_read_file">无法读取文件</string>
     <string name="text_service">服务</string>
-    <string name="text_notification_permission">通知权限</string>
+    <string name="text_notification_permission">通知读取权限</string>
 
 
     <string name="text_open_main_activity">打开主界面</string>
@@ -429,4 +429,5 @@
     <string name="text_night_mode">夜间模式</string>
     <string name="key_night_mode">key_night_mode</string>
     <string name="text_run_on_startup">Auto.js启动时</string>
+    <string name="text_usage_stats_permission">查看使用统计权限</string>
 </resources>

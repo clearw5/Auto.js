@@ -31,6 +31,7 @@ import org.autojs.autojs.ui.floating.layoutinspector.LayoutHierarchyFloatyWindow
 import org.autojs.autojs.ui.main.MainActivity_;
 import org.autojs.autojs.ui.explorer.ExplorerView;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
+
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.Func1;
 import com.stardust.view.accessibility.LayoutInspector;
@@ -214,7 +215,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     }
 
     private void inspectLayout(Func1<NodeInfo, FloatyWindow> windowCreator) {
-        if(mLayoutInspectDialog != null){
+        if (mLayoutInspectDialog != null) {
             mLayoutInspectDialog.dismiss();
             mLayoutInspectDialog = null;
         }
@@ -260,7 +261,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     @OnClick(R.id.settings)
     void settings() {
         mWindow.collapse();
-        mRunningPackage = AutoJs.getInstance().getInfoProvider().getLatestPackage();
+        mRunningPackage = AutoJs.getInstance().getInfoProvider().getLatestPackageByUsageStatsIfGranted();
         mRunningActivity = AutoJs.getInstance().getInfoProvider().getLatestActivity();
         mSettingsDialog = new OperationDialogBuilder(mContext)
                 .item(R.id.accessibility_service, R.drawable.ic_service_green, R.string.text_accessibility_settings)

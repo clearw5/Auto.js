@@ -1,14 +1,17 @@
 package org.autojs.autojs.ui.main.drawer;
 
 import android.annotation.SuppressLint;
+import android.app.AppOpsManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -21,6 +24,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.stardust.app.AppOpsKt;
 import com.stardust.app.GlobalAppContext;
 import com.stardust.notification.NotificationListenerService;
 
@@ -113,6 +117,7 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
     };
 
     private DrawerMenuItem mNotificationPermissionItem = new DrawerMenuItem(R.drawable.ic_ali_notification, R.string.text_notification_permission, 0, this::goToNotificationServiceSettings);
+    private DrawerMenuItem mUsageStatsPermissionItem = new DrawerMenuItem(R.drawable.ic_ali_notification, R.string.text_usage_stats_permission, 0, this::goToUsageStatsSettings);
     private DrawerMenuItem mForegroundServiceItem = new DrawerMenuItem(R.drawable.ic_service_green, R.string.text_foreground_service, R.string.key_foreground_servie, this::toggleForegroundService);
 
     private DrawerMenuItem mFloatingWindowItem = new DrawerMenuItem(R.drawable.ic_robot_64, R.string.text_floating_window, 0, this::showOrDismissFloatingWindow);
@@ -163,6 +168,7 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
                 mStableModeItem,
                 mNotificationPermissionItem,
                 mForegroundServiceItem,
+                mUsageStatsPermissionItem,
 
                 new DrawerMenuGroup(R.string.text_script_record),
                 mFloatingWindowItem,
@@ -223,6 +229,17 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
         boolean checked = holder.getSwitchCompat().isChecked();
         if ((checked && !enabled) || (!checked && enabled)) {
             startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
+        }
+    }
+
+    void goToUsageStatsSettings(DrawerMenuItemViewHolder holder) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return;
+        }
+        boolean enabled = AppOpsKt.isOpPermissionGranted(getContext(), AppOpsManager.OPSTR_GET_USAGE_STATS);
+        boolean checked = holder.getSwitchCompat().isChecked();
+        if ((checked && !enabled) || (!checked && enabled)) {
+            IntentUtil.requestAppUsagePermission(getContext());
         }
     }
 
@@ -390,7 +407,9 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             setChecked(mNotificationPermissionItem, NotificationListenerService.Companion.getInstance() != null);
         }
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setChecked(mUsageStatsPermissionItem, AppOpsKt.isOpPermissionGranted(getContext(), AppOpsManager.OPSTR_GET_USAGE_STATS));
+        }
     }
 
     private void enableAccessibilityService() {

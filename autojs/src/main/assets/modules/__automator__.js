@@ -110,7 +110,8 @@ module.exports = function(runtime, global){
     }
 
     const flagsMap = {
-        "findOnUiThread": 1
+        "findOnUiThread": 1,
+        "useUsageStats": 2
     };
 
     var auto = function(mode){
