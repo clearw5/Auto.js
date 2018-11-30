@@ -20,7 +20,7 @@ abstract class ListFilter {
             val list = ArrayList<UiObject>()
             for (node in nodes) {
                 list.addAll(filter(node))
-                if (list.size > maxCount) {
+                if (list.size >= maxCount) {
                     break
                 }
             }

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/text_find">
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/keywords"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/text_replace">
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/replacement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

@@ -16,6 +16,9 @@ abstract class DfsFilter : ListFilter(), Filter {
             if (isIncluded(node)) {
                 list.add(node)
             }
+            if (list.size >= maxCount) {
+                break
+            }
             filterChildren(node, list)
         }
         return list
@@ -25,6 +28,9 @@ abstract class DfsFilter : ListFilter(), Filter {
         val list = ArrayList<UiObject>()
         if (isIncluded(node)) {
             list.add(node)
+        }
+        if (list.size >= maxCount) {
+            return list
         }
         filterChildren(node, list)
         return list
@@ -36,6 +42,9 @@ abstract class DfsFilter : ListFilter(), Filter {
             val included = isIncluded(child)
             if (included) {
                 list.add(child)
+            }
+            if (list.size >= maxCount) {
+                break
             }
             filterChildren(child, list)
             if (!included) {

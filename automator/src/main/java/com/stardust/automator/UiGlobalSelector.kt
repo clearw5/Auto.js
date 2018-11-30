@@ -186,172 +186,172 @@ open class UiGlobalSelector {
     //// 第二类筛选条件 -able
 
     fun checkable(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.CHECKABLE, b))
+        mFilters.add(BooleanFilter[BooleanFilter.CHECKABLE, b])
         return this
     }
 
     fun checked(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.CHECKED, b))
+        mFilters.add(BooleanFilter[BooleanFilter.CHECKED, b])
         return this
     }
 
     fun focusable(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.FOCUSABLE, b))
+        mFilters.add(BooleanFilter[BooleanFilter.FOCUSABLE, b])
         return this
     }
 
     fun focused(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.FOCUSED, b))
+        mFilters.add(BooleanFilter[BooleanFilter.FOCUSED, b])
         return this
     }
 
     fun visibleToUser(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.VISIBLE_TO_USER, b))
+        mFilters.add(BooleanFilter[BooleanFilter.VISIBLE_TO_USER, b])
         return this
     }
 
     fun accessibilityFocused(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.ACCESSIBILITY_FOCUSED, b))
+        mFilters.add(BooleanFilter[BooleanFilter.ACCESSIBILITY_FOCUSED, b])
         return this
     }
 
     fun selected(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.SELECTED, b))
+        mFilters.add(BooleanFilter[BooleanFilter.SELECTED, b])
         return this
     }
 
     fun clickable(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.CLICKABLE, b))
+        mFilters.add(BooleanFilter[BooleanFilter.CLICKABLE, b])
         return this
     }
 
     fun longClickable(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.LONG_CLICKABLE, b))
+        mFilters.add(BooleanFilter[BooleanFilter.LONG_CLICKABLE, b])
         return this
     }
 
     fun enabled(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.ENABLED, b))
+        mFilters.add(BooleanFilter[BooleanFilter.ENABLED, b])
         return this
     }
 
     fun password(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.PASSWORD, b))
+        mFilters.add(BooleanFilter[BooleanFilter.PASSWORD, b])
         return this
     }
 
     fun scrollable(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.SCROLLABLE, b))
+        mFilters.add(BooleanFilter[BooleanFilter.SCROLLABLE, b])
         return this
     }
 
     fun editable(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.EDITABLE, b))
+        mFilters.add(BooleanFilter[BooleanFilter.EDITABLE, b])
         return this
     }
 
     fun contentInvalid(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.CONTENT_INVALID, b))
+        mFilters.add(BooleanFilter[BooleanFilter.CONTENT_INVALID, b])
         return this
     }
 
     fun contextClickable(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.CONTEXT_CLICKABLE, b))
+        mFilters.add(BooleanFilter[BooleanFilter.CONTEXT_CLICKABLE, b])
         return this
     }
 
     fun multiLine(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.MULTI_LINE, b))
+        mFilters.add(BooleanFilter[BooleanFilter.MULTI_LINE, b])
         return this
     }
 
     fun dismissable(b: Boolean): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.DISMISSABLE, b))
+        mFilters.add(BooleanFilter[BooleanFilter.DISMISSABLE, b])
         return this
     }
 
     fun checkable(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.CHECKABLE, true))
+        mFilters.add(BooleanFilter[BooleanFilter.CHECKABLE, true])
         return this
     }
 
     fun checked(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.CHECKED, true))
+        mFilters.add(BooleanFilter[BooleanFilter.CHECKED, true])
         return this
     }
 
     fun focusable(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.FOCUSABLE, true))
+        mFilters.add(BooleanFilter[BooleanFilter.FOCUSABLE, true])
         return this
     }
 
     fun focused(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.FOCUSED, true))
+        mFilters.add(BooleanFilter[BooleanFilter.FOCUSED, true])
         return this
     }
 
     fun visibleToUser(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.VISIBLE_TO_USER, true))
+        mFilters.add(BooleanFilter[BooleanFilter.VISIBLE_TO_USER, true])
         return this
     }
 
     fun accessibilityFocused(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.ACCESSIBILITY_FOCUSED, true))
+        mFilters.add(BooleanFilter[BooleanFilter.ACCESSIBILITY_FOCUSED, true])
         return this
     }
 
     fun selected(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.SELECTED, true))
+        mFilters.add(BooleanFilter[BooleanFilter.SELECTED, true])
         return this
     }
 
     fun clickable(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.CLICKABLE, true))
+        mFilters.add(BooleanFilter[BooleanFilter.CLICKABLE, true])
         return this
     }
 
     fun longClickable(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.LONG_CLICKABLE, true))
+        mFilters.add(BooleanFilter[BooleanFilter.LONG_CLICKABLE, true])
         return this
     }
 
     fun enabled(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.ENABLED, true))
+        mFilters.add(BooleanFilter[BooleanFilter.ENABLED, true])
         return this
     }
 
     fun password(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.PASSWORD, true))
+        mFilters.add(BooleanFilter[BooleanFilter.PASSWORD, true])
         return this
     }
 
     fun scrollable(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.SCROLLABLE, true))
+        mFilters.add(BooleanFilter[BooleanFilter.SCROLLABLE, true])
         return this
     }
 
     fun editable(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.EDITABLE, true))
+        mFilters.add(BooleanFilter[BooleanFilter.EDITABLE, true])
         return this
     }
 
     fun contentInvalid(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.CONTENT_INVALID, true))
+        mFilters.add(BooleanFilter[BooleanFilter.CONTENT_INVALID, true])
         return this
     }
 
     fun contextClickable(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.CONTEXT_CLICKABLE, true))
+        mFilters.add(BooleanFilter[BooleanFilter.CONTEXT_CLICKABLE, true])
         return this
     }
 
     fun multiLine(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.MULTI_LINE, true))
+        mFilters.add(BooleanFilter[BooleanFilter.MULTI_LINE, true])
         return this
     }
 
     fun dismissable(): UiGlobalSelector {
-        mFilters.add(BooleanFilter.get(BooleanFilter.DISMISSABLE, true))
+        mFilters.add(BooleanFilter[BooleanFilter.DISMISSABLE, true])
         return this
     }
 
@@ -401,30 +401,36 @@ open class UiGlobalSelector {
     fun filter(filter: BooleanFilter.BooleanSupplier): UiGlobalSelector {
         mFilters.add(object : DfsFilter() {
             override fun isIncluded(nodeInfo: UiObject): Boolean {
-                return filter.get(nodeInfo)
+                return filter[nodeInfo]
             }
         })
         return this
     }
 
-    fun findOf(node: UiObject): UiObjectCollection {
-        return UiObjectCollection.of(findAndReturnList(node))
+    fun findOf(node: UiObject, max: Int): UiObjectCollection {
+        return UiObjectCollection.of(findAndReturnList(node, max))
     }
 
-    fun findAndReturnList(node: UiObject): List<UiObject> {
+    fun findOf(node: UiObject): UiObjectCollection {
+        return findOf(node, Int.MAX_VALUE)
+    }
+
+    fun findAndReturnList(node: UiObject, max: Int = Int.MAX_VALUE): List<UiObject> {
         var list: List<UiObject> = listOf(node)
         for (filter in mFilters) {
+            val oldMax = filter.maxCount
+            filter.maxCount = max
             list = filter.filter(list)
+            filter.maxCount = oldMax
         }
         return list
     }
 
     fun findOneOf(node: UiObject): UiObject? {
-        // TODO: 2017/3/9 优化
-        val collection = findOf(node)
+        val collection = findOf(node, 1)
         return if (collection.size() == 0) {
             null
-        } else collection.get(0)
+        } else collection[0]
     }
 
     fun addFilter(filter: ListFilter): UiGlobalSelector {

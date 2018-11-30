@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/text_loop_times">
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/loop_times"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/text_loop_interval">
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/loop_interval"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/text_loop_delay">
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/loop_delay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

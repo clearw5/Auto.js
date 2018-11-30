@@ -2,7 +2,9 @@ package com.stardust.autojs.core.accessibility;
 
 import android.os.Looper;
 import android.os.SystemClock;
+
 import androidx.annotation.NonNull;
+
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -70,22 +72,26 @@ public class UiSelector extends UiGlobalSelector {
         mAllocator = allocator;
     }
 
-    @NonNull
-    @ScriptInterface
-    public UiObjectCollection find() {
+    protected UiObjectCollection find(int max) {
         ensureAccessibilityServiceEnabled();
-        if((mAccessibilityBridge.getFlags() & AccessibilityBridge.FLAG_FIND_ON_UI_THREAD)!=0
-            && Looper.myLooper() != Looper.getMainLooper()){
+        if ((mAccessibilityBridge.getFlags() & AccessibilityBridge.FLAG_FIND_ON_UI_THREAD) != 0
+                && Looper.myLooper() != Looper.getMainLooper()) {
             VolatileBox<UiObjectCollection> result = new VolatileBox<>();
-            mAccessibilityBridge.post(() -> result.setAndNotify(findImpl()));
+            mAccessibilityBridge.post(() -> result.setAndNotify(findImpl(max)));
             return result.blockedGet();
         }
-        return findImpl();
+        return findImpl(max);
     }
 
     @NonNull
     @ScriptInterface
-    protected UiObjectCollection findImpl() {
+    public UiObjectCollection find() {
+        return find(Integer.MAX_VALUE);
+    }
+
+    @NonNull
+    @ScriptInterface
+    protected UiObjectCollection findImpl(int max) {
         AccessibilityNodeInfo root = mAccessibilityBridge.getRootInCurrentWindow();
         if (BuildConfig.DEBUG)
             Log.d(TAG, "find: root = " + root);
@@ -96,7 +102,7 @@ public class UiSelector extends UiGlobalSelector {
             Log.d(TAG, "package in white list, return null");
             return UiObjectCollection.Companion.getEMPTY();
         }
-        return findOf(UiObject.Companion.createRoot(root, mAllocator));
+        return findOf(UiObject.Companion.createRoot(root, mAllocator), max);
     }
 
     @Override
@@ -157,7 +163,7 @@ public class UiSelector extends UiGlobalSelector {
     }
 
     private void ensureNonUiThread() {
-        if(Looper.myLooper() == Looper.getMainLooper()){
+        if (Looper.myLooper() == Looper.getMainLooper()) {
             // TODO: 2018/11/1 配置字符串
             throw new IllegalThreadStateException("不能在ui线程执行阻塞操作, 请在子线程或子脚本执行findOne()或untilFind()");
         }
@@ -165,16 +171,13 @@ public class UiSelector extends UiGlobalSelector {
 
     @ScriptInterface
     public UiObject findOne(long timeout) {
-        if (timeout == -1) {
-            return untilFindOne();
-        }
-        UiObjectCollection uiObjectCollection = find();
+        UiObjectCollection uiObjectCollection = find(1);
         long start = SystemClock.uptimeMillis();
         while (uiObjectCollection.empty()) {
             if (Thread.currentThread().isInterrupted()) {
                 throw new ScriptInterruptedException();
             }
-            if (SystemClock.uptimeMillis() - start > timeout) {
+            if (timeout > 0 && SystemClock.uptimeMillis() - start > timeout) {
                 return null;
             }
             try {
@@ -182,7 +185,7 @@ public class UiSelector extends UiGlobalSelector {
             } catch (InterruptedException e) {
                 throw new ScriptInterruptedException();
             }
-            uiObjectCollection = find();
+            uiObjectCollection = find(1);
         }
         return uiObjectCollection.get(0);
     }
@@ -192,7 +195,7 @@ public class UiSelector extends UiGlobalSelector {
     }
 
     public UiObject findOnce(int index) {
-        UiObjectCollection uiObjectCollection = find();
+        UiObjectCollection uiObjectCollection = find(index + 1);
         if (index >= uiObjectCollection.size()) {
             return null;
         }
@@ -212,8 +215,7 @@ public class UiSelector extends UiGlobalSelector {
 
     @NonNull
     public UiObject untilFindOne() {
-        UiObjectCollection collection = untilFind();
-        return collection.get(0);
+        return findOne(-1);
     }
 
     @ScriptInterface
