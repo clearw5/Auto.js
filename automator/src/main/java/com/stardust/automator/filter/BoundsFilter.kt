@@ -22,9 +22,11 @@ class BoundsFilter(private val mBounds: Rect, private val mType: Int) : DfsFilte
     }
 
     override fun toString(): String {
-        return String.format(Locale.getDefault(), "bounds%s(%d, %d, %d, %d)", if (mType == TYPE_EQUALS)
-            ""
-        else if (mType == TYPE_INSIDE) "Inside" else "Contains",
+        return String.format(Locale.getDefault(), "bounds%s(%d, %d, %d, %d)", when (mType) {
+            TYPE_EQUALS -> ""
+            TYPE_INSIDE -> "Inside"
+            else -> "Contains"
+        },
                 mBounds.left, mBounds.top, mBounds.right, mBounds.bottom)
     }
 

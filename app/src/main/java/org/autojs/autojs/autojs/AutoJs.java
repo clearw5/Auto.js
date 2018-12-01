@@ -162,7 +162,7 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         }
         if (errorMessage != null) {
             AccessibilityServiceTool.goToAccessibilitySetting();
-            if (!org.autojs.autojs.accessibility.AccessibilityService.Companion.waitForEnabled(-1)) {
+            if (!AccessibilityService.Companion.waitForEnabled(-1)) {
                 throw new ScriptInterruptedException();
             }
         }

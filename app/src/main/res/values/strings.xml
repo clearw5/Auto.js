@@ -431,6 +431,8 @@
     <string name="text_run_on_startup">Auto.js启动时</string>
     <string name="text_usage_stats_permission">查看使用统计权限</string>
     <string name="description_usage_stats_permission">通过\"查看使用统计\"权限可以获取本设备过去使用应用的情况，从而使获取当前应用(currentPackage)时更准确。</string>
+    <string name="text_gesture_observing">手势监听</string>
+    <string name="summary_gesture_observing">开启后将支持events手势事件，但Auto.js崩溃时可能会导致屏幕失灵</string>
     <plurals name="air_error_short_description" key="air_error_short_description">
         <item quantity="one">描述至少要 %d 个字.</item>
         <item quantity="other">描述至少要 %d 个字.</item>

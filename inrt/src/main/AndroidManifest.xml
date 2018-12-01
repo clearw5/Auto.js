@@ -46,19 +46,6 @@
         <activity android:name=".SettingsActivity"/>
 
         <service
-            android:name=".autojs.AccessibilityService"
-            android:label="inrt"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService"/>
-            </intent-filter>
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_service_config"/>
-
-        </service>
-
-        <service
             android:name="com.stardust.notification.NotificationListenerService"
             android:label="inrt"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">

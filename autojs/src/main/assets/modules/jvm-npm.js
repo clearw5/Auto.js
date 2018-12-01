@@ -58,15 +58,6 @@ module = (typeof module === 'undefined') ? {} : module;
 
   Module._load = function _load(file, parent, core, main) {
     return NativeRequire.require(file);
-    var module = new Module(file, parent, core);
-    var body = readFile(module.filename, module.core);
-    var dir = new File(module.filename).getParent();
-    var func = new Function('exports', 'module', 'require', '__filename', '__dirname', body);
-    func.apply(module,
-      [module.exports, module, module.require, module.filename, dir]);
-    module.loaded = true;
-    module.main = main;
-    return module.exports;
   };
 
   Module.runMain = function runMain(main) {

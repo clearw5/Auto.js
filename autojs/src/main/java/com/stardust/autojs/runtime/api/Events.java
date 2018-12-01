@@ -7,7 +7,9 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
+
 import androidx.annotation.RequiresApi;
+
 import android.view.KeyEvent;
 
 import com.stardust.autojs.R;
@@ -23,6 +25,7 @@ import com.stardust.notification.NotificationListenerService;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.core.inputevent.InputEventObserver;
 import com.stardust.autojs.core.inputevent.TouchObserver;
+import com.stardust.util.MapBuilder;
 import com.stardust.view.accessibility.AccessibilityNotificationObserver;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.KeyInterceptor;
@@ -30,16 +33,35 @@ import com.stardust.view.accessibility.NotificationListener;
 import com.stardust.view.accessibility.OnKeyListener;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * Created by Stardust on 2017/7/18.
  */
 
-public class Events extends EventEmitter implements OnKeyListener, TouchObserver.OnTouchEventListener, NotificationListener, AccessibilityNotificationObserver.ToastListener {
+public class Events extends EventEmitter implements OnKeyListener, TouchObserver.OnTouchEventListener, NotificationListener, AccessibilityNotificationObserver.ToastListener, AccessibilityService.GestureListener {
 
     private static final String PREFIX_KEY_DOWN = "__key_down__#";
     private static final String PREFIX_KEY_UP = "__key_up__#";
+    private static final Map<Integer, String> GESTURES = new MapBuilder<Integer, String>()
+            .put(AccessibilityService.GESTURE_SWIPE_UP, "up")
+            .put(AccessibilityService.GESTURE_SWIPE_DOWN, "down")
+            .put(AccessibilityService.GESTURE_SWIPE_LEFT, "left")
+            .put(AccessibilityService.GESTURE_SWIPE_RIGHT, "right")
+            .put(AccessibilityService.GESTURE_SWIPE_LEFT_AND_RIGHT, "left_right")
+            .put(AccessibilityService.GESTURE_SWIPE_RIGHT_AND_LEFT, "right_left")
+            .put(AccessibilityService.GESTURE_SWIPE_UP_AND_DOWN, "up_down")
+            .put(AccessibilityService.GESTURE_SWIPE_DOWN_AND_UP, "down_up")
+            .put(AccessibilityService.GESTURE_SWIPE_LEFT_AND_UP, "left_up")
+            .put(AccessibilityService.GESTURE_SWIPE_LEFT_AND_DOWN, "left_down")
+            .put(AccessibilityService.GESTURE_SWIPE_RIGHT_AND_UP, "right_up")
+            .put(AccessibilityService.GESTURE_SWIPE_RIGHT_AND_DOWN, "right_down")
+            .put(AccessibilityService.GESTURE_SWIPE_UP_AND_LEFT, "up_left")
+            .put(AccessibilityService.GESTURE_SWIPE_UP_AND_RIGHT, "up_right")
+            .put(AccessibilityService.GESTURE_SWIPE_DOWN_AND_LEFT, "down_left")
+            .put(AccessibilityService.GESTURE_SWIPE_DOWN_AND_RIGHT, "down_right")
+            .build();
 
     private AccessibilityBridge mAccessibilityBridge;
     private Context mContext;
@@ -50,6 +72,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     private Loopers mLoopers;
     private Handler mHandler;
     private boolean mListeningNotification = false;
+    private boolean mListeningGesture = false;
     private boolean mListeningToast = false;
     private ScriptRuntime mScriptRuntime;
     private volatile boolean mInterceptsAllKey = false;
@@ -222,6 +245,21 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
         mAccessibilityBridge.getNotificationObserver().addToastListener(this);
     }
 
+    public void observeGesture() {
+        ScriptRuntime.requiresApi(Build.VERSION_CODES.O);
+        if (mListeningGesture) {
+            return;
+        }
+        AccessibilityService service = getAccessibilityService();
+        if ((service.getServiceInfo().flags & AccessibilityServiceInfo.FLAG_REQUEST_TOUCH_EXPLORATION_MODE) == 0) {
+            throw new ScriptException(mContext.getString(R.string.text_should_enable_gesture_observing));
+        }
+        service.getGestureEventDispatcher().addListener(this);
+        ensureHandler();
+        mLoopers.waitWhenIdle(true);
+        mListeningGesture = true;
+    }
+
     public Events onNotification(Object listener) {
         on("notification", listener);
         return this;
@@ -260,6 +298,12 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
             }
             mKeyInterceptor = null;
         }
+        if (mListeningGesture) {
+            AccessibilityService service = mAccessibilityBridge.getService();
+            if (service != null) {
+                service.getGestureEventDispatcher().removeListener(this);
+            }
+        }
     }
 
     @Override
@@ -297,4 +341,13 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
         mHandler.post(() -> emit("toast", toast));
     }
 
+    @Override
+    public void onGesture(int gestureId) {
+        mHandler.post(() -> {
+            String gesture = GESTURES.get(gestureId);
+            if (gesture != null) {
+                emit("gesture", gesture);
+            }
+        });
+    }
 }

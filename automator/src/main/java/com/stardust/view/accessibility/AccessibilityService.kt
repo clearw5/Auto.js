@@ -5,25 +5,39 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import com.stardust.event.EventDispatcher
 
 import java.util.HashSet
-import java.util.SortedMap
 import java.util.TreeMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.locks.Condition
 import java.util.concurrent.locks.ReentrantLock
 
 /**
  * Created by Stardust on 2017/5/2.
  */
 
+
 open class AccessibilityService : android.accessibilityservice.AccessibilityService() {
+
+    interface GestureListener {
+        fun onGesture(gestureId: Int)
+    }
+
     val onKeyObserver = OnKeyListener.Observer()
     val keyInterrupterObserver = KeyInterceptor.Observer()
-    private var mKeyEventExecutor: ExecutorService? = null
+    val gestureEventDispatcher = EventDispatcher<GestureListener>()
+    private var mEventExecutor: ExecutorService? = null
     private var mFastRootInActiveWindow: AccessibilityNodeInfo? = null
+    private val eventExecutor: ExecutorService
+        get() {
+            return mEventExecutor ?: {
+                val executor = Executors.newSingleThreadExecutor()
+                mEventExecutor = executor
+                executor
+            }()
+        }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         instance = this
@@ -55,29 +69,34 @@ open class AccessibilityService : android.accessibilityservice.AccessibilityServ
     }
 
     override fun onKeyEvent(event: KeyEvent): Boolean {
-        if (mKeyEventExecutor == null) {
-            mKeyEventExecutor = Executors.newSingleThreadExecutor()
-        }
-        mKeyEventExecutor!!.execute {
+        eventExecutor.execute {
             stickOnKeyObserver.onKeyEvent(event.keyCode, event)
             onKeyObserver.onKeyEvent(event.keyCode, event)
         }
         return keyInterrupterObserver.onInterceptKeyEvent(event)
     }
 
+    override fun onGesture(gestureId: Int): Boolean {
+        eventExecutor.execute {
+            gestureEventDispatcher.dispatchEvent {
+                onGesture(gestureId)
+            }
+        }
+        return false
+    }
+
     override fun getRootInActiveWindow(): AccessibilityNodeInfo? {
-        try {
-            return super.getRootInActiveWindow()
+        return try {
+            super.getRootInActiveWindow()
         } catch (e: Exception) {
-            return null
+            null
         }
 
     }
 
     override fun onDestroy() {
         instance = null
-        if (mKeyEventExecutor != null)
-            mKeyEventExecutor!!.shutdownNow()
+        mEventExecutor?.shutdownNow()
         super.onDestroy()
     }
 

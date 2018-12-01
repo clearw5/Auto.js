@@ -8,8 +8,9 @@ import com.stardust.app.GlobalAppContext;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.App;
 import org.autojs.autojs.R;
+
+import com.stardust.autojs.core.accessibility.AccessibilityService;
 import com.stardust.autojs.core.util.ProcessShell;
-import org.autojs.autojs.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
 import java.util.Locale;

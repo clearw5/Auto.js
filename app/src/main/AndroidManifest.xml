@@ -277,7 +277,7 @@
         </activity>
 
         <service
-            android:name=".accessibility.AccessibilityService"
+            android:name="com.stardust.autojs.core.accessibility.AccessibilityService"
             android:label="@string/_app_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>

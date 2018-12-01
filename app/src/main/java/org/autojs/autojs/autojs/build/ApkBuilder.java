@@ -57,7 +57,6 @@ public class ApkBuilder {
         String packageName;
         ArrayList<File> ignoredDirs = new ArrayList<>();
         Callable<Bitmap> icon;
-        ProjectConfig projectConfig;
 
         public static AppConfig fromProjectConfig(String projectDir, ProjectConfig projectConfig) {
             String icon = projectConfig.getIcon();
@@ -68,7 +67,6 @@ public class ApkBuilder {
                     .setVersionCode(projectConfig.getVersionCode())
                     .setVersionName(projectConfig.getVersionName())
                     .setSourcePath(projectDir);
-            appConfig.projectConfig = projectConfig;
             if (icon != null) {
                 appConfig.setIcon(new File(projectDir, icon).getPath());
             }
@@ -243,16 +241,25 @@ public class ApkBuilder {
         return new File(mWorkspacePath, "AndroidManifest.xml");
     }
 
-    private void updateProjectConfig(AppConfig config) {
-        if (!PFiles.isDir(config.sourcePath)) {
-            return;
+    private void updateProjectConfig(AppConfig appConfig) {
+        ProjectConfig config;
+        if (!PFiles.isDir(appConfig.sourcePath)) {
+            config = new ProjectConfig()
+                    .setMainScriptFile("main.js")
+                    .setName(appConfig.appName)
+                    .setPackageName(appConfig.packageName)
+                    .setVersionName(appConfig.versionName)
+                    .setVersionCode(appConfig.versionCode);
+            config.setBuildInfo(BuildInfo.generate(appConfig.versionCode));
+            PFiles.write(new File(mWorkspacePath, "assets/project/project.json").getPath(), config.toJson());
+        } else {
+            config = ProjectConfig.fromProjectDir(appConfig.sourcePath);
+            long buildNumber = config.getBuildInfo().getBuildNumber();
+            config.setBuildInfo(BuildInfo.generate(buildNumber + 1));
+            PFiles.write(ProjectConfig.configFileOfDir(appConfig.sourcePath), config.toJson());
         }
-        ProjectConfig projectConfig = ProjectConfig.fromProjectDir(config.sourcePath);
-        long buildNumber = projectConfig.getBuildInfo().getBuildNumber();
-        projectConfig.setBuildInfo(BuildInfo.generate(buildNumber + 1));
-        mKey = MD5.md5(mAppConfig.projectConfig.getPackageName() + mAppConfig.projectConfig.getVersionName() + mAppConfig.projectConfig.getMainScriptFile());
-        mInitVector = MD5.md5(mAppConfig.projectConfig.getBuildInfo().getBuildId() + mAppConfig.projectConfig.getName()).substring(0, 16);
-        PFiles.write(ProjectConfig.configFileOfDir(config.sourcePath), projectConfig.toJson());
+        mKey = MD5.md5(config.getPackageName() + config.getVersionName() + config.getMainScriptFile());
+        mInitVector = MD5.md5(config.getBuildInfo().getBuildId() + config.getName()).substring(0, 16);
     }
 
     public ApkBuilder build() throws IOException {

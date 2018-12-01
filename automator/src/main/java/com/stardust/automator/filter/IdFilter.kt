@@ -10,7 +10,7 @@ object IdFilter {
 
     private val ID_GETTER = object : KeyGetter {
 
-        override fun getKey(nodeInfo: UiObject): String {
+        override fun getKey(nodeInfo: UiObject): String? {
             return nodeInfo.viewIdResourceName
         }
 

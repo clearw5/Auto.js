@@ -126,7 +126,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
                 Collections.singletonList(new File("/").toURI()));
         new RequireBuilder()
                 .setModuleScriptProvider(new SoftCachingModuleScriptProvider(provider))
-                .setSandboxed(false)
+                .setSandboxed(true)
                 .createRequire(context, scope)
                 .install(scope);
 

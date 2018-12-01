@@ -9,11 +9,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.stardust.app.GlobalAppContext;
+import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.LayoutInspector;
 import com.stardust.view.accessibility.NodeInfo;
 
 import org.autojs.autojs.R;
-import org.autojs.autojs.accessibility.AccessibilityService;
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.tool.AccessibilityServiceTool;
 import org.autojs.autojs.ui.floating.FloatyWindowManger;

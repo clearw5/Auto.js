@@ -17,7 +17,6 @@ import com.stardust.enhancedfloaty.FloatyWindow;
 
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
-import org.autojs.autojs.accessibility.AccessibilityService;
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.autojs.record.GlobalActionRecorder;
 import org.autojs.autojs.model.explorer.ExplorerDirPage;
@@ -34,6 +33,7 @@ import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.Func1;
+import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.LayoutInspector;
 import com.stardust.view.accessibility.NodeInfo;
 

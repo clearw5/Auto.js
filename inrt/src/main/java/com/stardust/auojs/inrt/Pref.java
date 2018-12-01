@@ -20,10 +20,6 @@ public class Pref {
         return sPreferences;
     }
 
-    public static boolean isStableModeEnabled() {
-        return getPreferences().getBoolean(getString(R.string.key_stable_mode), false);
-    }
-
     private static String getString(int res) {
         return GlobalAppContext.getString(res);
     }
