@@ -34,7 +34,7 @@ class AccessibilityInfoProvider(private val context: Context) : AccessibilityDel
     var latestActivity = ""
         private set
 
-    var useUsageStats: Boolean = true
+    var useUsageStats: Boolean = false
 
     override val eventTypes: Set<Int>?
         get() = AccessibilityDelegate.ALL_EVENT_TYPES
@@ -59,7 +59,7 @@ class AccessibilityInfoProvider(private val context: Context) : AccessibilityDel
         val current = System.currentTimeMillis()
         val usageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, current - 60 * 60 * 1000, current)
         return if (usageStats.isEmpty()) {
-            ""
+            mLatestPackage
         } else {
             usageStats.sortBy {
                 it.lastTimeStamp

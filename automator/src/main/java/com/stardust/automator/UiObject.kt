@@ -105,7 +105,7 @@ open class UiObject(info: Any?, private val allocator: AccessibilityNodeInfoAllo
         return drawingOrder
     }
 
-    open fun id(): String {
+    open fun id(): String? {
         return viewIdResourceName
     }
 
@@ -145,21 +145,21 @@ open class UiObject(info: Any?, private val allocator: AccessibilityNodeInfoAllo
     }
 
     override fun performAction(action: Int, bundle: Bundle): Boolean {
-        try {
-            return super.performAction(action, bundle)
+        return try {
+            super.performAction(action, bundle)
         } catch (e: IllegalStateException) {
             // FIXME: 2017/5/5
-            return false
+            false
         }
 
     }
 
     override fun performAction(action: Int): Boolean {
-        try {
-            return super.performAction(action)
+        return try {
+            super.performAction(action)
         } catch (e: IllegalStateException) {
             // FIXME: 2017/5/5
-            return false
+            false
         }
 
 
@@ -374,7 +374,8 @@ open class UiObject(info: Any?, private val allocator: AccessibilityNodeInfoAllo
     }
 
     override fun findAccessibilityNodeInfosByViewId(viewId: String): List<AccessibilityNodeInfoCompat> {
-        return allocator?.findAccessibilityNodeInfosByViewId(this, viewId) ?: super.findAccessibilityNodeInfosByViewId(viewId)
+        return allocator?.findAccessibilityNodeInfosByViewId(this, viewId)
+                ?: super.findAccessibilityNodeInfosByViewId(viewId)
     }
 
     fun findByViewId(viewId: String): List<UiObject> {

@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.stardust.autojs.BuildConfig;
 import com.stardust.autojs.core.ui.ViewExtras;
+import com.stardust.autojs.rhino.NativeJavaObjectWithPrototype;
 import com.stardust.autojs.rhino.RhinoAndroidHelper;
 import com.stardust.autojs.rhino.TopLevelScope;
 import com.stardust.autojs.runtime.ScriptRuntime;

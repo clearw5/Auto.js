@@ -5,7 +5,6 @@ import android.graphics.drawable.GradientDrawable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.appcompat.widget.ThemeColorRecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +33,7 @@ import org.autojs.autojs.ui.timing.TimedTaskSettingActivity_;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.recyclerview.widget.ThemeColorRecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
