@@ -10,6 +10,8 @@ import com.stardust.autojs.apkbuilder.util.StreamUtils;
 import com.stardust.autojs.project.BuildInfo;
 import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.pio.PFiles;
+import com.stardust.util.AdvancedEncryptionStandard;
+import com.stardust.util.MD5;
 
 import org.autojs.autojs.build.TinySign;
 
@@ -55,6 +57,7 @@ public class ApkBuilder {
         String packageName;
         ArrayList<File> ignoredDirs = new ArrayList<>();
         Callable<Bitmap> icon;
+        ProjectConfig projectConfig;
 
         public static AppConfig fromProjectConfig(String projectDir, ProjectConfig projectConfig) {
             String icon = projectConfig.getIcon();
@@ -65,6 +68,7 @@ public class ApkBuilder {
                     .setVersionCode(projectConfig.getVersionCode())
                     .setVersionName(projectConfig.getVersionName())
                     .setSourcePath(projectDir);
+            appConfig.projectConfig = projectConfig;
             if (icon != null) {
                 appConfig.setIcon(new File(projectDir, icon).getPath());
             }
@@ -141,6 +145,8 @@ public class ApkBuilder {
     private String mWorkspacePath;
     private AppConfig mAppConfig;
     private final File mOutApkFile;
+    private String mInitVector;
+    private String mKey;
 
 
     public ApkBuilder(InputStream apkInputStream, File outApkFile, String workspacePath) {
@@ -179,8 +185,12 @@ public class ApkBuilder {
         toDir.mkdir();
         for (File child : fromDir.listFiles()) {
             if (child.isFile()) {
-                StreamUtils.write(new FileInputStream(child),
-                        new FileOutputStream(new File(toDir, child.getName())));
+                if (child.getName().endsWith(".js")) {
+                    encrypt(toDir, child);
+                } else {
+                    StreamUtils.write(new FileInputStream(child),
+                            new FileOutputStream(new File(toDir, child.getName())));
+                }
             } else {
                 if (!mAppConfig.ignoredDirs.contains(child)) {
                     copyDir(PFiles.join(relativePath, child.getName() + "/"), child.getPath());
@@ -189,8 +199,25 @@ public class ApkBuilder {
         }
     }
 
+    private void encrypt(File toDir, File file) throws IOException {
+        PFiles.writeBytes(new File(toDir, file.getName()).getPath(), encrypt(file));
+    }
+
+    private byte[] encrypt(File file) throws IOException {
+        try {
+            return new AdvancedEncryptionStandard(mKey.getBytes(), mInitVector).encrypt(PFiles.readBytes(file.getPath()));
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+    }
+
+
     public ApkBuilder replaceFile(String relativePath, String newFilePath) throws IOException {
-        StreamUtils.write(new FileInputStream(newFilePath), new FileOutputStream(new File(mWorkspacePath, relativePath)));
+        if (newFilePath.endsWith(".js")) {
+            PFiles.writeBytes(new File(mWorkspacePath, relativePath).getPath(), encrypt(new File(newFilePath)));
+        } else {
+            StreamUtils.write(new FileInputStream(newFilePath), new FileOutputStream(new File(mWorkspacePath, relativePath)));
+        }
         return this;
     }
 
@@ -223,6 +250,8 @@ public class ApkBuilder {
         ProjectConfig projectConfig = ProjectConfig.fromProjectDir(config.sourcePath);
         long buildNumber = projectConfig.getBuildInfo().getBuildNumber();
         projectConfig.setBuildInfo(BuildInfo.generate(buildNumber + 1));
+        mKey = MD5.md5(mAppConfig.projectConfig.getPackageName() + mAppConfig.projectConfig.getVersionName() + mAppConfig.projectConfig.getMainScriptFile());
+        mInitVector = MD5.md5(mAppConfig.projectConfig.getBuildInfo().getBuildId() + mAppConfig.projectConfig.getName()).substring(0, 16);
         PFiles.write(ProjectConfig.configFileOfDir(config.sourcePath), projectConfig.toJson());
     }
 

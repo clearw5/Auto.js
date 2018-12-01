@@ -9,10 +9,12 @@ import com.stardust.auojs.inrt.LogActivity;
 import com.stardust.auojs.inrt.Pref;
 import com.stardust.auojs.inrt.R;
 import com.stardust.auojs.inrt.SettingsActivity;
+import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
+import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
@@ -24,6 +26,8 @@ import com.stardust.view.accessibility.AccessibilityServiceUtils;
 public class AutoJs extends com.stardust.autojs.AutoJs {
 
     private static AutoJs instance;
+    private String mKey = "";
+    private String mInitVector = "";
 
     public static AutoJs getInstance() {
         return instance;
@@ -93,10 +97,26 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
     }
 
     @Override
+    protected void initScriptEngineManager() {
+        super.initScriptEngineManager();
+        getScriptEngineManager().registerEngine(JavaScriptSource.ENGINE, () -> {
+            XJavaScriptEngine engine = new XJavaScriptEngine(getApplication());
+            engine.setKey(mKey, mInitVector);
+            engine.setRuntime(createRuntime());
+            return engine;
+        });
+    }
+
+    @Override
     protected ScriptRuntime createRuntime() {
         ScriptRuntime runtime = super.createRuntime();
         runtime.putProperty("class.settings", SettingsActivity.class);
         runtime.putProperty("class.console", LogActivity.class);
         return runtime;
+    }
+
+    public void setKey(String key, String vet) {
+        mKey = key;
+        mInitVector = vet;
     }
 }

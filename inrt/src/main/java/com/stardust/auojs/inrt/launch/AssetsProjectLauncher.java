@@ -19,9 +19,11 @@ import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
+import com.stardust.util.MD5;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 /**
  * Created by Stardust on 2018/1/24.
@@ -92,6 +94,7 @@ public class AssetsProjectLauncher {
     private void prepare() {
         String projectConfigPath = PFiles.join(mProjectDir, ProjectConfig.CONFIG_FILE_NAME);
         ProjectConfig projectConfig = ProjectConfig.fromFile(projectConfigPath);
+        initKey(projectConfig);
         if (!BuildConfig.DEBUG && projectConfig != null &&
                 TextUtils.equals(projectConfig.getBuildInfo().getBuildId(), mProjectConfig.getBuildInfo().getBuildId())) {
             return;
@@ -102,6 +105,25 @@ public class AssetsProjectLauncher {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    private void initKey(ProjectConfig projectConfig) {
+        if (projectConfig == null) {
+            return;
+        }
+        String key = MD5.md5(projectConfig.getPackageName() + projectConfig.getVersionName() + projectConfig.getMainScriptFile());
+        String vec = MD5.md5(projectConfig.getBuildInfo().getBuildId() + projectConfig.getName()).substring(0, 16);
+        try {
+            Field fieldKey = AutoJs.class.getDeclaredField("mKey");
+            fieldKey.setAccessible(true);
+            fieldKey.set(AutoJs.getInstance(), key);
+            Field fieldVector = AutoJs.class.getDeclaredField("mInitVector");
+            fieldVector.setAccessible(true);
+            fieldVector.set(AutoJs.getInstance(), vec);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

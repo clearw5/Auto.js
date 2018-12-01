@@ -104,6 +104,10 @@ public abstract class AutoJs {
         return mApplication;
     }
 
+    public ScriptEngineManager getScriptEngineManager() {
+        return mScriptEngineManager;
+    }
+
     protected ScriptEngineService buildScriptEngineService() {
         initScriptEngineManager();
         return new ScriptEngineServiceBuilder()
@@ -122,7 +126,6 @@ public abstract class AutoJs {
         });
         initContextFactory();
         mScriptEngineManager.registerEngine(AutoFileSource.ENGINE, () -> new RootAutomatorEngine(mContext));
-
     }
 
     protected void initContextFactory() {
