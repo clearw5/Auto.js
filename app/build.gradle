@@ -101,7 +101,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0-alpha01'
     implementation 'androidx.multidex:multidex:2.0.0'
     // Personal libraries
-    implementation 'com.github.hyb1996:MutableTheme:0.2.2'
+    implementation 'com.github.hyb1996:MutableTheme:1.0.0'
     // Material Dialogs
     implementation('com.afollestad.material-dialogs:core:0.9.2.3', {
         exclude group: 'com.android.support'

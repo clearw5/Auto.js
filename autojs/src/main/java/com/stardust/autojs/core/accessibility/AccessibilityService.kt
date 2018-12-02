@@ -23,6 +23,5 @@ class AccessibilityService : AccessibilityService() {
         }
         setServiceInfo(serviceInfo)
         super.onServiceConnected()
-
     }
 }
