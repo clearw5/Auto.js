@@ -6,7 +6,6 @@
                        android:canPerformGestures="true"
                        android:canRequestEnhancedWebAccessibility="true"
                        android:canRequestFilterKeyEvents="true"
-                       android:canRequestTouchExplorationMode="true"
                        android:canRetrieveWindowContent="true"
                        android:description="@string/text_accessibility_service_description"
                        android:notificationTimeout="0"/>

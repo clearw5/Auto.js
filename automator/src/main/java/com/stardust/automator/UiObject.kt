@@ -161,8 +161,6 @@ open class UiObject(info: Any?, private val allocator: AccessibilityNodeInfoAllo
             // FIXME: 2017/5/5
             false
         }
-
-
     }
 
     fun click(): Boolean {
