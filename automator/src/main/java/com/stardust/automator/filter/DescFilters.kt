@@ -6,7 +6,7 @@ import com.stardust.automator.UiObject
  * Created by Stardust on 2017/3/9.
  */
 
-object DescFilter {
+object DescFilters {
 
     private val DESC_GETTER = object : KeyGetter {
         override fun getKey(nodeInfo: UiObject): String? {
@@ -19,23 +19,23 @@ object DescFilter {
         }
     }
 
-    fun equals(text: String): ListFilter {
+    fun equals(text: String): Filter {
         return StringEqualsFilter(text, DESC_GETTER)
     }
 
-    fun contains(str: String): ListFilter {
+    fun contains(str: String): Filter {
         return StringContainsFilter(str, DESC_GETTER)
     }
 
-    fun startsWith(prefix: String): ListFilter {
+    fun startsWith(prefix: String): Filter {
         return StringStartsWithFilter(prefix, DESC_GETTER)
     }
 
-    fun endsWith(suffix: String): ListFilter {
+    fun endsWith(suffix: String): Filter {
         return StringEndsWithFilter(suffix, DESC_GETTER)
     }
 
-    fun matches(regex: String): ListFilter {
+    fun matches(regex: String): Filter {
         return StringMatchesFilter(regex, DESC_GETTER)
     }
 }

@@ -13,11 +13,11 @@ import org.junit.Assert.*
  */
 class DfsFilterTest {
 
-    private class RandomDfsFilter : DfsFilter() {
+    private class RandomFilter : Filter {
 
         private val mRandom = Random()
 
-        override fun isIncluded(nodeInfo: UiObject): Boolean {
+        override fun filter(node: UiObject): Boolean {
             return mRandom.nextBoolean()
         }
     }
@@ -25,9 +25,9 @@ class DfsFilterTest {
     @Test
     @Throws(Exception::class)
     fun filter() {
-        val filter = RandomDfsFilter()
+        val filter = RandomFilter()
         val root = TestUiObject(10)
-        val list = filter.filter(root)
+        val list = DFS(filter).search(root)
         for (uiObject in list) {
             if (root !== uiObject)
                 uiObject.recycle()

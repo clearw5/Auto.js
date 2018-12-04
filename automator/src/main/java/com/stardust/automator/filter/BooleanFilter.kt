@@ -11,7 +11,7 @@ import java.util.HashMap
  * Created by Stardust on 2017/3/9.
  */
 
-class BooleanFilter(private val mBooleanSupplier: BooleanSupplier, private val mExceptedValue: Boolean) : DfsFilter() {
+class BooleanFilter(private val mBooleanSupplier: BooleanSupplier, private val mExceptedValue: Boolean) : Filter {
 
     interface BooleanSupplier {
 
@@ -19,8 +19,8 @@ class BooleanFilter(private val mBooleanSupplier: BooleanSupplier, private val m
 
     }
 
-    override fun isIncluded(nodeInfo: UiObject): Boolean {
-        return mBooleanSupplier[nodeInfo] == mExceptedValue
+    override fun filter(node: UiObject): Boolean {
+        return mBooleanSupplier[node] == mExceptedValue
     }
 
     override fun toString(): String {

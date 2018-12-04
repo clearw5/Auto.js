@@ -6,36 +6,36 @@ import com.stardust.automator.UiObject
  * Created by Stardust on 2017/3/9.
  */
 
-object PackageNameFilter {
+object TextFilters {
 
-    private val PACKAGE_NAME_GETTER = object : KeyGetter {
+    private val TEXT_GETTER = object : KeyGetter {
         override fun getKey(nodeInfo: UiObject): String? {
-            val charSequence = nodeInfo.packageName
+            val charSequence = nodeInfo.text
             return charSequence?.toString()
         }
 
         override fun toString(): String {
-            return "packageName"
+            return "text"
         }
     }
 
     fun equals(text: String): Filter {
-        return StringEqualsFilter(text, PACKAGE_NAME_GETTER)
+        return StringEqualsFilter(text, TEXT_GETTER)
     }
 
     fun contains(str: String): Filter {
-        return StringContainsFilter(str, PACKAGE_NAME_GETTER)
+        return StringContainsFilter(str, TEXT_GETTER)
     }
 
     fun startsWith(prefix: String): Filter {
-        return StringStartsWithFilter(prefix, PACKAGE_NAME_GETTER)
+        return StringStartsWithFilter(prefix, TEXT_GETTER)
     }
 
     fun endsWith(suffix: String): Filter {
-        return StringEndsWithFilter(suffix, PACKAGE_NAME_GETTER)
+        return StringEndsWithFilter(suffix, TEXT_GETTER)
     }
 
     fun matches(regex: String): Filter {
-        return StringMatchesFilter(regex, PACKAGE_NAME_GETTER)
+        return StringMatchesFilter(regex, TEXT_GETTER)
     }
 }

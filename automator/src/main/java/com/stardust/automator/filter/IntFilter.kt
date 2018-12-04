@@ -6,14 +6,14 @@ import com.stardust.automator.UiObject
  * Created by Stardust on 2017/11/5.
  */
 
-class IntFilter(private val mIntProperty: IntProperty, private val mValue: Int) : DfsFilter() {
+class IntFilter(private val mIntProperty: IntProperty, private val mValue: Int) : Filter {
 
     interface IntProperty {
         operator fun get(`object`: UiObject): Int
     }
 
-    override fun isIncluded(nodeInfo: UiObject): Boolean {
-        return mIntProperty[nodeInfo] == mValue
+    override fun filter(node: UiObject): Boolean {
+        return mIntProperty[node] == mValue
     }
 
     override fun toString(): String {

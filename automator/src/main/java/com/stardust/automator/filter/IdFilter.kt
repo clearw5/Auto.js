@@ -19,10 +19,6 @@ object IdFilter {
         }
     }
 
-    interface FullIdGetter {
-        fun getFullId(id: String): String
-    }
-
     fun equals(id: String): StringEqualsFilter {
         return StringEqualsFilter(id, ID_GETTER)
     }
@@ -31,7 +27,7 @@ object IdFilter {
         return StringStartsWithFilter(prefix, ID_GETTER)
     }
 
-    fun endsWith(suffix: String): ListFilter {
+    fun endsWith(suffix: String): StringEndsWithFilter {
         return StringEndsWithFilter(suffix, ID_GETTER)
     }
 

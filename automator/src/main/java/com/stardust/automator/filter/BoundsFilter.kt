@@ -11,13 +11,13 @@ import java.util.Locale
  * Created by Stardust on 2017/3/9.
  */
 
-class BoundsFilter(private val mBounds: Rect, private val mType: Int) : DfsFilter() {
+class BoundsFilter(private val mBounds: Rect, private val mType: Int) : Filter {
 
-    override fun isIncluded(nodeInfo: UiObject): Boolean {
+    override fun filter(node: UiObject): Boolean {
         if (mType == TYPE_CONTAINS) {
-            return AccessibilityNodeInfoHelper.getBoundsInScreen(nodeInfo).contains(mBounds)
+            return AccessibilityNodeInfoHelper.getBoundsInScreen(node).contains(mBounds)
         }
-        val boundsInScreen = AccessibilityNodeInfoHelper.getBoundsInScreen(nodeInfo)
+        val boundsInScreen = AccessibilityNodeInfoHelper.getBoundsInScreen(node)
         return if (mType == TYPE_EQUALS) boundsInScreen == mBounds else mBounds.contains(boundsInScreen)
     }
 

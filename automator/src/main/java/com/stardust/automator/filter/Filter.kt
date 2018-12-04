@@ -8,6 +8,6 @@ import com.stardust.automator.UiObject
 
 interface Filter {
 
-    fun filter(node: UiObject): List<UiObject>
+    fun filter(node: UiObject): Boolean
 
 }

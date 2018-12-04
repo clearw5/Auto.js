@@ -15,9 +15,11 @@ import com.stardust.automator.ActionArgument;
 import com.stardust.automator.UiGlobalSelector;
 import com.stardust.automator.UiObject;
 import com.stardust.automator.UiObjectCollection;
-import com.stardust.automator.filter.DfsFilter;
+import com.stardust.automator.filter.Filter;
 import com.stardust.concurrent.VolatileBox;
 import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
+
+import org.jetbrains.annotations.NotNull;
 
 import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
 import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_COLUMN_INT;
@@ -106,7 +108,7 @@ public class UiSelector extends UiGlobalSelector {
     }
 
     @Override
-    public UiGlobalSelector textMatches(String regex) {
+    public UiGlobalSelector textMatches(@NotNull String regex) {
         return super.textMatches(convertRegex(regex));
     }
 
@@ -120,22 +122,22 @@ public class UiSelector extends UiGlobalSelector {
 
 
     @Override
-    public UiGlobalSelector classNameMatches(String regex) {
+    public UiGlobalSelector classNameMatches(@NotNull String regex) {
         return super.classNameMatches(convertRegex(regex));
     }
 
     @Override
-    public UiGlobalSelector idMatches(String regex) {
+    public UiGlobalSelector idMatches(@NotNull String regex) {
         return super.idMatches(convertRegex(regex));
     }
 
     @Override
-    public UiGlobalSelector packageNameMatches(String regex) {
+    public UiGlobalSelector packageNameMatches(@NotNull String regex) {
         return super.packageNameMatches(convertRegex(regex));
     }
 
     @Override
-    public UiGlobalSelector descMatches(String regex) {
+    public UiGlobalSelector descMatches(@NotNull String regex) {
         return super.descMatches(convertRegex(regex));
     }
 
@@ -224,13 +226,13 @@ public class UiSelector extends UiGlobalSelector {
     }
 
     @ScriptInterface
-    public UiSelector id(final String id) {
+    public UiSelector id(@NotNull final String id) {
         if (!id.contains(":")) {
-            addFilter(new DfsFilter() {
+            addFilter(new Filter() {
                 @Override
-                protected boolean isIncluded(UiObject nodeInfo) {
+                public boolean filter(@NotNull UiObject node) {
                     String fullId = mAccessibilityBridge.getInfoProvider().getLatestPackage() + ":id/" + id;
-                    return fullId.equals(nodeInfo.getViewIdResourceName());
+                    return fullId.equals(node.getViewIdResourceName());
                 }
 
                 @Override
@@ -245,11 +247,11 @@ public class UiSelector extends UiGlobalSelector {
     }
 
     @Override
-    public UiGlobalSelector idStartsWith(String prefix) {
+    public UiGlobalSelector idStartsWith(@NotNull String prefix) {
         if (!prefix.contains(":")) {
-            addFilter(new DfsFilter() {
+            addFilter(new Filter() {
                 @Override
-                protected boolean isIncluded(UiObject nodeInfo) {
+                public boolean filter(@NotNull UiObject nodeInfo) {
                     String fullIdPrefix = mAccessibilityBridge.getInfoProvider().getLatestPackage() + ":id/" + prefix;
                     String id = nodeInfo.getViewIdResourceName();
                     return id != null && id.startsWith(fullIdPrefix);
