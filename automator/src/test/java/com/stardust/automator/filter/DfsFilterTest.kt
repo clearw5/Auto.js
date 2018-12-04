@@ -2,6 +2,7 @@ package com.stardust.automator.filter
 
 import com.stardust.automator.test.TestUiObject
 import com.stardust.automator.UiObject
+import com.stardust.automator.search.DFS
 
 import org.junit.Test
 import java.util.Random

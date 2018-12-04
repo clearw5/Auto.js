@@ -3,6 +3,10 @@ package com.stardust.automator
 import android.graphics.Rect
 import android.os.Build
 import com.stardust.automator.filter.*
+import com.stardust.automator.search.BFS
+import com.stardust.automator.search.DFS
+import com.stardust.automator.search.SearchAlgorithm
+import java.lang.IllegalArgumentException
 
 /**
  * Created by Stardust on 2017/3/8.
@@ -11,6 +15,7 @@ import com.stardust.automator.filter.*
 open class UiGlobalSelector {
 
     private val mSelector = Selector()
+    private var mSearchAlgorithm: SearchAlgorithm = DFS
 
     //// 第一类筛选条件
 
@@ -399,9 +404,6 @@ open class UiGlobalSelector {
         return findOf(node, Int.MAX_VALUE)
     }
 
-    fun findAndReturnList(node: UiObject, max: Int = Int.MAX_VALUE): List<UiObject> {
-        return DFS(mSelector, max).search(node)
-    }
 
     fun findOneOf(node: UiObject): UiObject? {
         val collection = findOf(node, 1)
@@ -414,6 +416,23 @@ open class UiGlobalSelector {
         mSelector.add(filter)
         return this
     }
+
+    fun algorithm(algorithm: String): UiGlobalSelector {
+        if (algorithm.equals("BFS", true)) {
+            mSearchAlgorithm = BFS
+            return this
+        }
+        if (algorithm.equals("DFS", true)) {
+            mSearchAlgorithm = DFS
+            return this
+        }
+        throw IllegalArgumentException("unknown algorithm: $algorithm")
+    }
+
+    fun findAndReturnList(node: UiObject, max: Int = Int.MAX_VALUE): List<UiObject> {
+        return mSearchAlgorithm.search(node, mSelector, max)
+    }
+
 
     override fun toString(): String {
         return mSelector.toString()
