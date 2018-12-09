@@ -40,7 +40,7 @@ public class EventEmitter {
         }
 
         private void ensureListenersNotAtLimit() {
-            if (mMaxListeners != 0 && mListenersMap.size() >= mMaxListeners) {
+            if (mMaxListeners != 0 && mListenerWrappers.size() >= mMaxListeners) {
                 throw new ScriptException(new TooManyListenersException("max = " + mMaxListeners));
             }
         }

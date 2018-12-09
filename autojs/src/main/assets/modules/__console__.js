@@ -1,6 +1,6 @@
 
-module.exports = function (__runtime__, scope) {
-    var rtConsole = __runtime__.console;
+module.exports = function (runtime, scope) {
+    var rtConsole = runtime.console;
     var console = {};
 
     console.assert = function (value, message) {
