@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -22,6 +24,8 @@ import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.script.ScriptSource;
+
+import org.mozilla.javascript.ContinuationPending;
 
 /**
  * Created by Stardust on 2017/2/5.
@@ -84,6 +88,8 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         try {
             prepare();
             doExecution();
+        } catch (ContinuationPending pending) {
+            pending.printStackTrace();
         } catch (Exception e) {
             onException(e);
         }

@@ -12,6 +12,8 @@ import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.util.Callback;
 
+import org.mozilla.javascript.ContinuationPending;
+
 /**
  * Created by Stardust on 2017/7/28.
  */
@@ -44,8 +46,9 @@ public class LoopBasedJavaScriptEngine extends RhinoJavaScriptEngine {
                 Object o = LoopBasedJavaScriptEngine.super.execute((JavaScriptSource) source);
                 if (callback != null)
                     callback.onResult(o);
+            } catch (ContinuationPending pending) {
+                pending.printStackTrace();
             } catch (Exception e) {
-                Log.d("DDDDD", "execute: "  + e.getMessage());
                 if (callback == null) {
                     throw e;
                 } else {

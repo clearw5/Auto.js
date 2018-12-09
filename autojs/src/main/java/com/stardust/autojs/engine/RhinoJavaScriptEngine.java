@@ -16,6 +16,7 @@ import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.RequireBuilder;
@@ -23,6 +24,7 @@ import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptPr
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collections;
 import java.util.Locale;
@@ -39,7 +41,7 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
     private static final String LOG_TAG = "RhinoJavaScriptEngine";
 
     private static final String MODULES_PATH = "modules";
-    private static StringScriptSource sInitScript;
+    private static Script sInitScript;
     private static final ConcurrentHashMap<Context, RhinoJavaScriptEngine> sContextEngineMap = new ConcurrentHashMap<>();
 
     private Context mContext;
@@ -69,7 +71,8 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         Reader reader = source.getNonNullScriptReader();
         try {
             reader = preprocess(reader);
-            return mContext.evaluateReader(mScriptable, reader, source.toString(), 1, null);
+            Script script = mContext.compileReader(reader, source.toString(), 1, null);
+            return mContext.executeScriptWithContinuations(script, mScriptable);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -104,21 +107,19 @@ public class RhinoJavaScriptEngine extends JavaScriptEngine {
         mThread = Thread.currentThread();
         ScriptableObject.putProperty(mScriptable, "__engine__", this);
         initRequireBuilder(mContext, mScriptable);
-        mContext.evaluateString(mScriptable, getInitScript().getScript(), SOURCE_NAME_INIT, 1, null);
+        mContext.executeScriptWithContinuations(getInitScript(), mScriptable);
     }
 
-    private JavaScriptSource getInitScript() {
-        if (sInitScript == null || BuildConfig.DEBUG)
-            sInitScript = new StringScriptSource(readInitScript());
-        return sInitScript;
-    }
-
-    private String readInitScript() {
-        try {
-            return PFiles.read(mAndroidContext.getAssets().open("init.js"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    private Script getInitScript() {
+        if (sInitScript == null || BuildConfig.DEBUG) {
+            try {
+                Reader reader = new InputStreamReader(mAndroidContext.getAssets().open("init.js"));
+                sInitScript = mContext.compileReader(reader, SOURCE_NAME_INIT, 1, null);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
         }
+        return sInitScript;
     }
 
     void initRequireBuilder(Context context, Scriptable scope) {

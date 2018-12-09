@@ -32,7 +32,10 @@ import java.util.concurrent.atomic.AtomicReference;
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 public class ScreenCapturer {
 
-    public static final int ORIENTATION_AUTO = -1;
+    public static final int ORIENTATION_AUTO = Configuration.ORIENTATION_UNDEFINED;
+    public static final int ORIENTATION_LANDSCAPE = Configuration.ORIENTATION_LANDSCAPE ;
+    public static final int ORIENTATION_PORTRAIT = Configuration.ORIENTATION_PORTRAIT ;
+
 
     private static final String LOG_TAG = "ScreenCapturer";
     private final MediaProjectionManager mProjectionManager;

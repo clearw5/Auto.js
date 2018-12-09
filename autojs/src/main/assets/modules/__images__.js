@@ -1,9 +1,10 @@
 
 module.exports = function (runtime, scope) {
+    const ResultAdapter = require("result_adapter");
     function images(){
     }
     if(android.os.Build.VERSION.SDK_INT >= 21){
-        util.__assignFunctions__(runtime.images, images, ['requestScreenCapture', 'captureScreen', 'read', 'copy', 'load', 'clip', 'pixel'])
+        util.__assignFunctions__(runtime.images, images, ['captureScreen', 'read', 'copy', 'load', 'clip', 'pixel'])
     }
     images.opencvImporter =  JavaImporter(
          org.opencv.core.Point,
@@ -54,6 +55,18 @@ module.exports = function (runtime, scope) {
         var javaImages = runtime.getImages();
 
         var colorFinder = javaImages.colorFinder;
+
+        images.requestScreenCapture = function(landscape) {
+            let ScreenCapturer = com.stardust.autojs.core.image.capture.ScreenCapturer;
+            var orientation = ScreenCapturer.ORIENTATION_AUTO;
+            if(landscape === true){
+                orientation = ScreenCapturer.ORIENTATION_LANDSCAPE;
+            }
+            if(landscape === false){
+                orientation = ScreenCapturer.ORIENTATION_PORTRAIT;
+            }
+            return ResultAdapter.promise(javaImages.requestScreenCapture(orientation)).await();
+        }
 
         images.save = function (img, path, format, quality) {
             format = format || "png";

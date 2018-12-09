@@ -33,7 +33,7 @@ public class InterruptibleAndroidContextFactory extends AndroidContextFactory {
 
     @Override
     protected Context makeContext() {
-        Context cx = super.makeContext();
+        Context cx = new AutoJsContext(this);
         cx.setInstructionObserverThreshold(10000);
         return cx;
     }

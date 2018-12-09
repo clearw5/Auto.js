@@ -132,7 +132,7 @@ public class Dialogs {
         if (context == null || ((Activity) context).isFinishing()) {
             context = getContext();
         }
-        return (BlockedMaterialDialog.Builder) new BlockedMaterialDialog.Builder(context, mRuntime.uiHandler, mRuntime.bridges, callback)
+        return (BlockedMaterialDialog.Builder) new BlockedMaterialDialog.Builder(context, mRuntime, callback)
                 .theme(Theme.LIGHT);
     }
 

@@ -2,7 +2,6 @@ package com.stardust.autojs.runtime.api;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -12,7 +11,9 @@ import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+
 import androidx.annotation.RequiresApi;
+
 import android.util.Base64;
 import android.view.Gravity;
 
@@ -25,8 +26,8 @@ import com.stardust.autojs.core.image.capture.ScreenCapturer;
 import com.stardust.autojs.core.opencv.Mat;
 import com.stardust.autojs.core.opencv.OpenCVHelper;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
+import com.stardust.autojs.core.util.ScriptPromiseAdapter;
 import com.stardust.autojs.runtime.ScriptRuntime;
-import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.concurrent.VolatileDispose;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
@@ -70,34 +71,26 @@ public class Images {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public boolean requestScreenCapture(int orientation) {
+    public ScriptPromiseAdapter requestScreenCapture(int orientation) {
         ScriptRuntime.requiresApi(21);
+        ScriptPromiseAdapter promiseAdapter = new ScriptPromiseAdapter();
         if (mScreenCapturer != null) {
             mScreenCapturer.setOrientation(orientation);
-            return true;
+            promiseAdapter.resolve(true);
+            return promiseAdapter;
         }
-        final VolatileDispose<Boolean> requestResult = new VolatileDispose<>();
+        Looper servantLooper = mScriptRuntime.loopers.getServantLooper();
         mScreenCaptureRequester.setOnActivityResultCallback((result, data) -> {
             if (result == Activity.RESULT_OK) {
                 mScreenCapturer = new ScreenCapturer(mContext, data, orientation, ScreenMetrics.getDeviceScreenDensity(),
-                        new Handler(mScriptRuntime.loopers.getServantLooper()));
-                requestResult.setAndNotify(true);
+                        new Handler(servantLooper));
+                promiseAdapter.resolve(true);
             } else {
-                requestResult.setAndNotify(false);
+                promiseAdapter.resolve(false);
             }
         });
         mScreenCaptureRequester.request();
-        return requestResult.blockedGetOrThrow(ScriptInterruptedException.class);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public boolean requestScreenCapture(boolean landscape) {
-        return requestScreenCapture(landscape ? Configuration.ORIENTATION_LANDSCAPE : Configuration.ORIENTATION_PORTRAIT);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public boolean requestScreenCapture() {
-        return requestScreenCapture(ScreenCapturer.ORIENTATION_AUTO);
+        return promiseAdapter;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

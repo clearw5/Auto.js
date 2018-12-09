@@ -1,7 +1,5 @@
 package com.stardust.autojs.runtime;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
@@ -13,10 +11,10 @@ import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.image.Colors;
-import com.stardust.autojs.core.permission.PermissionRequestProxyActivity;
 import com.stardust.autojs.core.permission.Permissions;
 import com.stardust.autojs.rhino.AndroidClassLoader;
 import com.stardust.autojs.rhino.TopLevelScope;
+import com.stardust.autojs.rhino.continuation.Continuation;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
@@ -54,6 +52,7 @@ import com.stardust.view.accessibility.AccessibilityInfoProvider;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.ScriptStackElement;
+import org.mozilla.javascript.Scriptable;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -62,12 +61,8 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static android.content.pm.PackageManager.PERMISSION_DENIED;
 
 
 /**
@@ -407,8 +402,8 @@ public class ScriptRuntime {
         ignoresException(floaty::closeAll);
         try {
             events.emit("exit");
-        } catch (Throwable ignored) {
-            console.error("exception on exit: ", ignored);
+        } catch (Throwable e) {
+            console.error("exception on exit: ", e);
         }
         ignoresException(threads::shutDownAll);
         ignoresException(events::recycle);
@@ -450,6 +445,15 @@ public class ScriptRuntime {
     public Object removeProperty(String key) {
         return mProperties.remove(key);
     }
+
+    public Continuation createContinuation() {
+        return Continuation.Companion.create(this, mTopLevelScope);
+    }
+
+    public Continuation createContinuation(Scriptable scope) {
+        return Continuation.Companion.create(this, scope);
+    }
+
 
     public static String getStackTrace(Throwable e, boolean printJavaStackTrace) {
         String message = e.getMessage();

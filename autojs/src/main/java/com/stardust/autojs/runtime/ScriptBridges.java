@@ -7,7 +7,6 @@ package com.stardust.autojs.runtime;
 public class ScriptBridges {
 
 
-
     public interface Bridges {
 
         Object[] NO_ARGUMENTS = new Object[0];

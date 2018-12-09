@@ -5,11 +5,14 @@ import android.os.Looper;
 import android.os.MessageQueue;
 import android.util.Log;
 
+import com.stardust.autojs.rhino.AutoJsContext;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.Threads;
 import com.stardust.autojs.runtime.api.Timers;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.lang.ThreadCompat;
+
+import org.mozilla.javascript.Context;
 
 import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -79,6 +82,9 @@ public class Loopers implements MessageQueue.IdleHandler {
             return false;
         }
         if (waitWhenIdle.get() || !waitIds.get().isEmpty()) {
+            return false;
+        }
+        if (((AutoJsContext) Context.getCurrentContext()).hasPendingContinuation()) {
             return false;
         }
         CopyOnWriteArrayList<LooperQuitHandler> handlers = looperQuitHandlers.get();
