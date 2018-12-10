@@ -19,9 +19,9 @@ public class ProjectLauncher {
     }
 
     public void launch(ScriptEngineService service){
-        service.execute(new JavaScriptFileSource(mMainScriptFile), new ExecutionConfig()
-                .executePath(mProjectDir)
-                .requirePath(mProjectDir));
+        ExecutionConfig config = new ExecutionConfig();
+        config.setWorkingDirectory(mProjectDir);
+        service.execute(new JavaScriptFileSource(mMainScriptFile), config);
     }
 
 }

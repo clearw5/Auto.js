@@ -38,7 +38,7 @@ public class RunIntentActivity extends Activity {
         Uri uri = intent.getData();
         if (uri != null && "content".equals(uri.getScheme())) {
             InputStream stream = getContentResolver().openInputStream(uri);
-            Scripts.run(new StringScriptSource(PFiles.read(stream)));
+            Scripts.INSTANCE.run(new StringScriptSource(PFiles.read(stream)));
         } else {
             ScriptIntents.handleIntent(this, intent);
         }

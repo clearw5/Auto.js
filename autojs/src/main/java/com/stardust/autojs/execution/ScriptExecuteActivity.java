@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.util.Log;
 import android.view.KeyEvent;
@@ -120,8 +118,8 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     private void prepare() {
         mScriptEngine.put("activity", this);
         mScriptEngine.setTag("activity", this);
-        mScriptEngine.setTag(ScriptEngine.TAG_ENV_PATH, mScriptExecution.getConfig().getRequirePath());
-        mScriptEngine.setTag(ScriptEngine.TAG_EXECUTE_PATH, mScriptExecution.getConfig().getExecutePath());
+        mScriptEngine.setTag(ScriptEngine.TAG_ENV_PATH, mScriptExecution.getConfig().getWorkingDirectory());
+        mScriptEngine.setTag(ScriptEngine.TAG_WORKING_DIRECTORY, mScriptExecution.getConfig().getPath());
         mScriptEngine.init();
     }
 
@@ -250,7 +248,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
                 mScriptEngine.forceStop();
             }
             mScriptEngine = mScriptEngineManager.createEngineOfSourceOrThrow(getSource(), getId());
-            mScriptEngine.setTag(ExecutionConfig.TAG, getConfig());
+            mScriptEngine.setTag(ExecutionConfig.getTag(), getConfig());
             return mScriptEngine;
         }
 

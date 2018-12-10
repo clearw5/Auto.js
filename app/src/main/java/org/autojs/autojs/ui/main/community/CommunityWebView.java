@@ -75,7 +75,7 @@ public class CommunityWebView extends EWebView {
                 .subscribe(file ->
                                 Snackbar.make(CommunityWebView.this, getResources().getString(R.string.format_file_downloaded, file.getPath())
                                         , Snackbar.LENGTH_LONG)
-                                        .setAction(R.string.text_open, v -> Scripts.edit(file))
+                                        .setAction(R.string.text_open, v -> Scripts.INSTANCE.edit(file))
                                         .show(),
                         error -> {
                             error.printStackTrace();
@@ -93,7 +93,7 @@ public class CommunityWebView extends EWebView {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(file -> {
                     Snackbar.make(CommunityWebView.this, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
-                    Scripts.run(file);
+                    Scripts.INSTANCE.run(file);
                 }, error -> {
                     error.printStackTrace();
                     Snackbar.make(CommunityWebView.this, R.string.text_download_failed, Toast.LENGTH_SHORT).show();

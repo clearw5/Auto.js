@@ -75,7 +75,7 @@ public class FileChooserDialogBuilder extends ThemeColorMaterialDialogBuilder {
     }
 
     public FileChooserDialogBuilder justScriptFile() {
-        mFileFilter = Scripts.FILE_FILTER;
+        mFileFilter = Scripts.INSTANCE.getFILE_FILTER();
         return this;
     }
 

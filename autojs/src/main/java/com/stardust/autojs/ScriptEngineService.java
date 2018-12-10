@@ -160,11 +160,7 @@ public class ScriptEngineService {
         } else {
             r = new RunnableScriptExecution(mScriptEngineManager, task);
         }
-        if (task.getConfig().runInNewThread) {
-            new ThreadCompat(r).start();
-        } else {
-            r.run();
-        }
+        new ThreadCompat(r).start();
         return r;
     }
 

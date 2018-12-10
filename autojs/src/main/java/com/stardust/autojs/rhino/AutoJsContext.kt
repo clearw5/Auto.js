@@ -24,8 +24,4 @@ class AutoJsContext(factory: ContextFactory?) : Context(factory) {
         return mContinuations.isNotEmpty()
     }
 
-    companion object {
-        private val EMPTY_RUNNABLE = Runnable { }
-    }
-
 }

@@ -80,6 +80,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 import static org.autojs.autojs.model.script.Scripts.ACTION_ON_EXECUTION_FINISHED;
+import static org.autojs.autojs.model.script.Scripts.EXTRA_EXCEPTION_COLUMN_NUMBER;
+import static org.autojs.autojs.model.script.Scripts.EXTRA_EXCEPTION_LINE_NUMBER;
+import static org.autojs.autojs.model.script.Scripts.EXTRA_EXCEPTION_MESSAGE;
 
 /**
  * Created by Stardust on 2017/9/28.
@@ -137,9 +140,9 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
                     exitDebugging();
                 }
                 setMenuItemStatus(R.id.run, true);
-                String msg = intent.getStringExtra(Scripts.EXTRA_EXCEPTION_MESSAGE);
-                int line = intent.getIntExtra(Scripts.EXTRA_EXCEPTION_LINE_NUMBER, -1);
-                int col = intent.getIntExtra(Scripts.EXTRA_EXCEPTION_COLUMN_NUMBER, 0);
+                String msg = intent.getStringExtra(EXTRA_EXCEPTION_MESSAGE);
+                int line = intent.getIntExtra(EXTRA_EXCEPTION_LINE_NUMBER, -1);
+                int col = intent.getIntExtra(EXTRA_EXCEPTION_COLUMN_NUMBER, 0);
                 if (line >= 1) {
                     mEditor.jumpTo(line - 1, col);
                 }
@@ -405,7 +408,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
             Snackbar.make(this, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         }
         // TODO: 2018/10/24
-        ScriptExecution execution = Scripts.runWithBroadcastSender(new File(mUri.getPath()));
+        ScriptExecution execution = Scripts.INSTANCE.runWithBroadcastSender(new File(mUri.getPath()));
         if (execution == null) {
             return null;
         }
@@ -502,7 +505,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     public void openByOtherApps() {
         if (mUri != null) {
-            Scripts.openByOtherApps(mUri);
+            Scripts.INSTANCE.openByOtherApps(mUri);
         }
     }
 

@@ -1,5 +1,6 @@
 package org.autojs.autojs.ui.timing;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ActivityNotFoundException;
@@ -344,6 +345,7 @@ public class TimedTaskSettingActivity extends BaseActivity {
         return true;
     }
 
+    @SuppressLint("BatteryLife")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_done) {

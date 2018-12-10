@@ -114,7 +114,7 @@ public class ScriptOperations {
             }
             notifyFileCreated(mCurrentDirectory, new ScriptFile(path));
             if (edit)
-                Scripts.edit(path);
+                Scripts.INSTANCE.edit(path);
         } else {
             showMessage(R.string.text_create_fail);
         }

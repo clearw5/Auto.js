@@ -40,7 +40,7 @@ public class BaseBroadcastReceiver extends BroadcastReceiver {
         ScriptFile file = new ScriptFile(task.getScriptPath());
         ExecutionConfig config = new ExecutionConfig();
         config.setArgument("intent", intent.clone());
-        config.executePath(file.getParent());
+        config.setWorkingDirectory(file.getParent());
         try {
             AutoJs.getInstance().getScriptEngineService().execute(file.toSource(), config);
         } catch (Exception e) {

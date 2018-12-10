@@ -54,7 +54,7 @@ public class ScriptLoopDialog {
             int loopTimes = Integer.parseInt(mLoopTimes.getText().toString());
             float loopInterval = Float.parseFloat(mLoopInterval.getText().toString());
             float loopDelay = Float.parseFloat(mLoopDelay.getText().toString());
-            Scripts.runRepeatedly(mScriptFile, loopTimes, (long) (1000L * loopDelay), (long) (loopInterval * 1000L));
+            Scripts.INSTANCE.runRepeatedly(mScriptFile, loopTimes, (long) (1000L * loopDelay), (long) (loopInterval * 1000L));
         } catch (NumberFormatException e) {
             GlobalAppContext.toast(R.string.text_number_format_error);
         }

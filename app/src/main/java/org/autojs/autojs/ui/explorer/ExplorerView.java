@@ -339,11 +339,11 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
                         .createShortcut(mSelectedItem.toScriptFile());
                 break;
             case R.id.open_by_other_apps:
-                Scripts.openByOtherApps(mSelectedItem.toScriptFile());
+                Scripts.INSTANCE.openByOtherApps(mSelectedItem.toScriptFile());
                 notifyOperated();
                 break;
             case R.id.send:
-                Scripts.send(mSelectedItem.toScriptFile());
+                Scripts.INSTANCE.send(mSelectedItem.toScriptFile());
                 notifyOperated();
                 break;
             case R.id.timed_task:
@@ -551,13 +551,13 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
         @OnClick(R.id.run)
         void run() {
-            Scripts.run(new ScriptFile(mExplorerItem.getPath()));
+            Scripts.INSTANCE.run(new ScriptFile(mExplorerItem.getPath()));
             notifyOperated();
         }
 
         @OnClick(R.id.edit)
         void edit() {
-            Scripts.edit(new ScriptFile(mExplorerItem.getPath()));
+            Scripts.INSTANCE.edit(new ScriptFile(mExplorerItem.getPath()));
             notifyOperated();
         }
 

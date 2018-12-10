@@ -67,10 +67,9 @@ open class AssetsProjectLauncher(private val mAssetsProjectDir: String, private 
         }
         try {
             val source = JavaScriptFileSource("main", mMainScriptFile)
-            val config = ExecutionConfig()
-                    .executePath(mProjectDir)
+            val config = ExecutionConfig(workingDirectory = mProjectDir)
             if (source.executionMode and JavaScriptSource.EXECUTION_MODE_UI != 0) {
-                config.intentFlags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+                config.intentFlags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY
             } else {
                 activity?.finish()
             }

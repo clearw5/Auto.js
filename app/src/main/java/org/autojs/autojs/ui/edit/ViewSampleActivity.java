@@ -70,7 +70,6 @@ public class ViewSampleActivity extends AppCompatActivity implements OnActivityR
         setContentView(mView);
         handleIntent(getIntent());
         setUpUI();
-        setUpEditor();
         registerReceiver(mOnRunFinishedReceiver, new IntentFilter(ACTION_ON_EXECUTION_FINISHED));
     }
 
@@ -83,10 +82,6 @@ public class ViewSampleActivity extends AppCompatActivity implements OnActivityR
         setUpToolbar();
         initMenuItem();
         ButterKnife.bind(this);
-    }
-
-    private void setUpEditor() {
-
     }
 
     private void setUpToolbar() {

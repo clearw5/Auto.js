@@ -118,7 +118,7 @@ public class DevPluginResponseHandler implements Handler {
         } else {
             name = PFiles.getNameWithoutExtension(name);
         }
-        mScriptExecutions.put(viewId, Scripts.run(new StringScriptSource("[remote]" + name, script)));
+        mScriptExecutions.put(viewId, Scripts.INSTANCE.run(new StringScriptSource("[remote]" + name, script)));
     }
 
 

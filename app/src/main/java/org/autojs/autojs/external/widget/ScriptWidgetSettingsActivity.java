@@ -42,7 +42,7 @@ public class ScriptWidgetSettingsActivity extends BaseActivity {
 
 
     private void initScriptListRecyclerView() {
-        mExplorer = new Explorer(new ExplorerFileProvider(Scripts.FILE_FILTER), 0);
+        mExplorer = new Explorer(new ExplorerFileProvider(Scripts.INSTANCE.getFILE_FILTER()), 0);
         ExplorerView explorerView = findViewById(R.id.script_list);
         explorerView.setExplorer(mExplorer, ExplorerDirPage.createRoot(Environment.getExternalStorageDirectory()));
         explorerView.setOnItemClickListener((view, file) -> {

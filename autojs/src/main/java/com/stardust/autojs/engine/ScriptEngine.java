@@ -25,7 +25,7 @@ public interface ScriptEngine<S extends ScriptSource> {
 
     String TAG_ENV_PATH = "env_path";
     String TAG_SOURCE = "source";
-    String TAG_EXECUTE_PATH = "execute_path";
+    String TAG_WORKING_DIRECTORY = "execute_path";
 
     void put(String name, Object value);
 
@@ -103,7 +103,7 @@ public interface ScriptEngine<S extends ScriptSource> {
         }
 
         public String cwd() {
-            return (String) getTag(TAG_EXECUTE_PATH);
+            return (String) getTag(TAG_WORKING_DIRECTORY);
         }
 
         public void setOnDestroyListener(OnDestroyListener onDestroyListener) {
