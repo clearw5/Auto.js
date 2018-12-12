@@ -1,20 +1,21 @@
-package com.stardust.autojs.engine;
+package com.stardust.autojs.engine.module;
 
 import android.content.res.AssetManager;
-import android.net.Uri;
 
-import org.mozilla.javascript.Scriptable;
+import com.stardust.autojs.engine.encryption.ScriptEncryption;
+import com.stardust.autojs.script.EncryptedScriptFileHeader;
+
 import org.mozilla.javascript.commonjs.module.provider.ModuleSource;
-import org.mozilla.javascript.commonjs.module.provider.UrlModuleSourceProvider;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Collections;
+import java.net.URLConnection;
 import java.util.List;
 
 /**
@@ -48,5 +49,18 @@ public class AssetAndUrlModuleSourceProvider extends UrlModuleSourceProvider {
         } catch (FileNotFoundException e) {
             return super.loadFromPrivilegedLocations(moduleId, validator);
         }
+    }
+
+    @Override
+    protected Reader getReader(URLConnection urlConnection) throws IOException {
+        InputStream stream = urlConnection.getInputStream();
+        byte[] bytes = new byte[stream.available()];
+        stream.read(bytes);
+        stream.close();
+        if (EncryptedScriptFileHeader.INSTANCE.isValidFile(bytes)) {
+            byte[] clearText = ScriptEncryption.INSTANCE.decrypt(bytes, EncryptedScriptFileHeader.BLOCK_SIZE, bytes.length);
+            return new InputStreamReader(new ByteArrayInputStream(clearText));
+        }
+        return new InputStreamReader(new ByteArrayInputStream(bytes));
     }
 }

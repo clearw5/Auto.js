@@ -158,7 +158,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private void setUpToolbar() {
         Toolbar toolbar = $(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string._app_name);
+        toolbar.setTitle(R.string.app_name);
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.text_drawer_open,
                 R.string.text_drawer_close);
         drawerToggle.syncState();

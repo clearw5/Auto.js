@@ -1,10 +1,9 @@
 package com.stardust.autojs.script;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 
-import com.stardust.autojs.engine.AssetAndUrlModuleSourceProvider;
+import com.stardust.autojs.engine.module.AssetAndUrlModuleSourceProvider;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 
@@ -18,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 

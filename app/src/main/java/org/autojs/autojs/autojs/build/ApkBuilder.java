@@ -9,6 +9,8 @@ import com.stardust.autojs.apkbuilder.ManifestEditor;
 import com.stardust.autojs.apkbuilder.util.StreamUtils;
 import com.stardust.autojs.project.BuildInfo;
 import com.stardust.autojs.project.ProjectConfig;
+import com.stardust.autojs.script.EncryptedScriptFileHeader;
+import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.pio.PFiles;
 import com.stardust.util.AdvancedEncryptionStandard;
 import com.stardust.util.MD5;
@@ -198,12 +200,16 @@ public class ApkBuilder {
     }
 
     private void encrypt(File toDir, File file) throws IOException {
-        PFiles.writeBytes(new File(toDir, file.getName()).getPath(), encrypt(file));
+        FileOutputStream fos = new FileOutputStream(new File(toDir, file.getName()));
+        EncryptedScriptFileHeader.INSTANCE.writeHeader(fos, (short) new JavaScriptFileSource(file).getExecutionMode());
+        encrypt(fos, file);
     }
 
-    private byte[] encrypt(File file) throws IOException {
+    private void encrypt(FileOutputStream fos, File file) throws IOException {
         try {
-            return new AdvancedEncryptionStandard(mKey.getBytes(), mInitVector).encrypt(PFiles.readBytes(file.getPath()));
+            byte[] bytes = new AdvancedEncryptionStandard(mKey.getBytes(), mInitVector).encrypt(PFiles.readBytes(file.getPath()));
+            fos.write(bytes);
+            fos.close();
         } catch (Exception e) {
             throw new IOException(e);
         }
@@ -212,7 +218,7 @@ public class ApkBuilder {
 
     public ApkBuilder replaceFile(String relativePath, String newFilePath) throws IOException {
         if (newFilePath.endsWith(".js")) {
-            PFiles.writeBytes(new File(mWorkspacePath, relativePath).getPath(), encrypt(new File(newFilePath)));
+            encrypt(new FileOutputStream(new File(mWorkspacePath, relativePath)), new File(newFilePath));
         } else {
             StreamUtils.write(new FileInputStream(newFilePath), new FileOutputStream(new File(mWorkspacePath, relativePath)));
         }

@@ -28,7 +28,6 @@ public class ScriptIntents {
     public static final String EXTRA_KEY_LOOP_INTERVAL = "interval";
     public static final String EXTRA_KEY_DELAY = "delay";
 
-
     public static boolean isTaskerBundleValid(Bundle bundle) {
         return bundle.containsKey(ScriptIntents.EXTRA_KEY_PATH) || bundle.containsKey(EXTRA_KEY_PRE_EXECUTE_SCRIPT);
     }

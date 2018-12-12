@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:theme="@style/ToolBarStyle"
             android:layout_height="?attr/actionBarSize"
-            android:title="@string/_app_name"
+            android:title="@string/app_name"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
 

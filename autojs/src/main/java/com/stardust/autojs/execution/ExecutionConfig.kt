@@ -12,7 +12,9 @@ data class ExecutionConfig(var workingDirectory: String = "",
                            var intentFlags: Int = 0,
                            var delay: Long = 0,
                            var interval: Long = 0,
-                           var loopTimes: Int = 1) : Parcelable {
+                           var loopTimes: Int = 1,
+                           var uiMode: Boolean = false,
+                           var features: Int = 0) : Parcelable {
 
 
     private val mArguments = HashMap<String, Any>()
@@ -79,12 +81,15 @@ data class ExecutionConfig(var workingDirectory: String = "",
 
     companion object CREATOR : Parcelable.Creator<ExecutionConfig> {
 
-         @JvmStatic
-         val tag = "execution.config"
+        @JvmStatic
+        val tag = "execution.config"
 
         @JvmStatic
         val default: ExecutionConfig
             get() = ExecutionConfig()
+
+        @JvmStatic
+        val featureContinuation = 1
 
         override fun createFromParcel(parcel: Parcel): ExecutionConfig {
             return ExecutionConfig(parcel)

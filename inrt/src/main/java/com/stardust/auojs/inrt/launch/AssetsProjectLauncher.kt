@@ -11,6 +11,7 @@ import com.stardust.auojs.inrt.BuildConfig
 import com.stardust.auojs.inrt.LogActivity
 import com.stardust.auojs.inrt.Pref
 import com.stardust.auojs.inrt.autojs.AutoJs
+import com.stardust.autojs.engine.encryption.ScriptEncryption
 import com.stardust.autojs.execution.ExecutionConfig
 import com.stardust.autojs.execution.ScriptExecution
 import com.stardust.autojs.project.ProjectConfig
@@ -101,12 +102,12 @@ open class AssetsProjectLauncher(private val mAssetsProjectDir: String, private 
         val key = MD5.md5(projectConfig.packageName + projectConfig.versionName + projectConfig.mainScriptFile)
         val vec = MD5.md5(projectConfig.buildInfo.buildId + projectConfig.name).substring(0, 16)
         try {
-            val fieldKey = AutoJs::class.java.getDeclaredField("mKey")
+            val fieldKey = ScriptEncryption::class.java.getDeclaredField("mKey")
             fieldKey.isAccessible = true
-            fieldKey.set(AutoJs.instance, key)
-            val fieldVector = AutoJs::class.java.getDeclaredField("mInitVector")
+            fieldKey.set(null, key)
+            val fieldVector = ScriptEncryption::class.java.getDeclaredField("mInitVector")
             fieldVector.isAccessible = true
-            fieldVector.set(AutoJs.instance, vec)
+            fieldVector.set(null, vec)
         } catch (e: Exception) {
             e.printStackTrace()
         }

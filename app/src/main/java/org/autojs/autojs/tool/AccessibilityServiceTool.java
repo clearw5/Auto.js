@@ -6,7 +6,6 @@ import android.text.TextUtils;
 
 import com.stardust.app.GlobalAppContext;
 import org.autojs.autojs.Pref;
-import org.autojs.autojs.App;
 import org.autojs.autojs.R;
 
 import com.stardust.autojs.core.accessibility.AccessibilityService;
@@ -36,12 +35,12 @@ public class AccessibilityServiceTool {
     public static void goToAccessibilitySetting() {
         Context context = GlobalAppContext.get();
         if (Pref.isFirstGoToAccessibilitySetting()) {
-            GlobalAppContext.toast(context.getString(R.string.text_please_choose) + context.getString(R.string._app_name));
+            GlobalAppContext.toast(context.getString(R.string.text_please_choose) + context.getString(R.string.app_name));
         }
         try {
             AccessibilityServiceUtils.INSTANCE.goToAccessibilitySetting(context);
         } catch (ActivityNotFoundException e) {
-            GlobalAppContext.toast(context.getString(R.string.go_to_accessibility_settings) + context.getString(R.string._app_name));
+            GlobalAppContext.toast(context.getString(R.string.go_to_accessibility_settings) + context.getString(R.string.app_name));
         }
     }
 

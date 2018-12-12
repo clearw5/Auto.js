@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AutoJs</string>
+    <string name="app_name">Auto.js</string>
     <string name="text_error">Error:</string>
     <string name="text_start_running">Script Running</string>
     <string name="text_path_is_empty">Path is empty</string>
@@ -13,7 +13,6 @@
     <string name="text_console">Console</string>
     <string name="text_no_floating_window_permission">No drawing overlay permission</string>
     <string name="text_accessibility_service_description">Auto.js</string>
-    <string name="_app_name">AutoJs</string>
     <string name="text_should_enable_key_observing">Key observing is disabled, please enable in settings</string>
     <string name="no_write_settings_permissin">No writing settings permission</string>
     <string name="exception_notification_service_disabled">通知服务未运行，请重新启用通知权限</string>

@@ -44,6 +44,15 @@ public class JavaScriptFileSource extends JavaScriptSource {
     }
 
     @Override
+    protected int parseExecutionMode() {
+        short flags = EncryptedScriptFileHeader.INSTANCE.getHeaderFlags(mFile);
+        if (flags == EncryptedScriptFileHeader.FLAG_INVALID_FILE) {
+            return super.parseExecutionMode();
+        }
+        return flags;
+    }
+
+    @Override
     public Reader getScriptReader() {
         try {
             return new FileReader(mFile);

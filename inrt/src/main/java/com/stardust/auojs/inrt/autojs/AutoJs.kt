@@ -23,8 +23,6 @@ import java.lang.IllegalStateException
  */
 
 class AutoJs private constructor(application: Application) : com.stardust.autojs.AutoJs(application) {
-    private var mKey = ""
-    private var mInitVector = ""
 
     init {
         scriptEngineService.registerGlobalScriptExecutionListener(ScriptExecutionGlobalListener())
@@ -85,7 +83,6 @@ class AutoJs private constructor(application: Application) : com.stardust.autojs
         super.initScriptEngineManager()
         scriptEngineManager.registerEngine(JavaScriptSource.ENGINE) {
             val engine = XJavaScriptEngine(application)
-            engine.setKey(mKey, mInitVector)
             engine.runtime = createRuntime()
             engine
         }
@@ -96,11 +93,6 @@ class AutoJs private constructor(application: Application) : com.stardust.autojs
         runtime.putProperty("class.settings", SettingsActivity::class.java)
         runtime.putProperty("class.console", LogActivity::class.java)
         return runtime
-    }
-
-    fun setKey(key: String, vet: String) {
-        mKey = key
-        mInitVector = vet
     }
 
     companion object {

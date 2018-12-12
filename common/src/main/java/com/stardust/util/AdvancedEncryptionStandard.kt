@@ -31,7 +31,7 @@ class AdvancedEncryptionStandard(private val key: ByteArray, private val initVec
         val ivParameterSpec = IvParameterSpec(initVector.toByteArray())
         val cipher = Cipher.getInstance(FULL_ALGORITHM)
         cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec)
-        return cipher.doFinal(cipherText, start, end)
+        return cipher.doFinal(cipherText, start, end - start)
     }
 
     companion object {
