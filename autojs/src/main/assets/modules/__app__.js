@@ -62,11 +62,16 @@ module.exports = function (runtime, global) {
                 throw new Error("class " + i + " not found");
             }
         }
+        if(i instanceof android.content.Intent){
+            context.startActivity(i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            return;
+        }
         if(i && i.root) {
             shell("am start " + app.intentToShell(i), true);
         }else{
             context.startActivity(app.intent(i).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
+
     }
 
     app.sendBroadcast = function (i) {

@@ -3,7 +3,6 @@
                        android:accessibilityEventTypes="typeAllMask"
                        android:accessibilityFeedbackType="feedbackAllMask"
                        android:accessibilityFlags="flagIncludeNotImportantViews|flagReportViewIds|flagRetrieveInteractiveWindows|flagRequestEnhancedWebAccessibility|flagRequestFilterKeyEvents"
-                       android:canPerformGestures="true"
                        android:canRequestEnhancedWebAccessibility="true"
                        android:canRequestFilterKeyEvents="true"
                        android:canRetrieveWindowContent="true"

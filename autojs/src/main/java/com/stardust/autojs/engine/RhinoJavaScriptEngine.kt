@@ -2,8 +2,6 @@ package com.stardust.autojs.engine
 
 import android.util.Log
 import android.view.View
-
-import com.stardust.autojs.BuildConfig
 import com.stardust.autojs.core.ui.ViewExtras
 import com.stardust.autojs.engine.module.AssetAndUrlModuleSourceProvider
 import com.stardust.autojs.execution.ExecutionConfig
@@ -14,20 +12,18 @@ import com.stardust.autojs.runtime.ScriptRuntime
 import com.stardust.autojs.script.JavaScriptSource
 import com.stardust.automator.UiObjectCollection
 import com.stardust.pio.UncheckedIOException
-
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.Script
 import org.mozilla.javascript.Scriptable
 import org.mozilla.javascript.ScriptableObject
 import org.mozilla.javascript.commonjs.module.RequireBuilder
 import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider
-
 import java.io.File
 import java.io.IOException
 import java.io.InputStreamReader
 import java.io.Reader
 import java.net.URI
-import java.util.Locale
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 /**

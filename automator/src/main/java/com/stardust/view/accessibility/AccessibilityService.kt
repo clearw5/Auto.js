@@ -95,6 +95,7 @@ open class AccessibilityService : android.accessibilityservice.AccessibilityServ
     }
 
     override fun onDestroy() {
+        Log.v(TAG, "onDestroy: $instance")
         instance = null
         mEventExecutor?.shutdownNow()
         super.onDestroy()

@@ -50,7 +50,7 @@ public class ScreenCapturer {
     private Handler mHandler;
     private Intent mData;
     private Context mContext;
-    private int mOrientation = Configuration.ORIENTATION_UNDEFINED;
+    private int mOrientation = -1;
     private int mDetectedOrientation;
     private OrientationEventListener mOrientationEventListener;
 

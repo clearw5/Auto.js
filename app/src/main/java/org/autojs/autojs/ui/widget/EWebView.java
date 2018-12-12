@@ -5,10 +5,13 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+
 import androidx.annotation.RequiresApi;
+
 import android.util.AttributeSet;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -19,6 +22,7 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.stardust.app.OnActivityResultDelegate;
 
 import org.autojs.autojs.R;
@@ -205,8 +209,13 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
             if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file://")) {
                 view.loadUrl(url);
             } else {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                List<ResolveInfo> intentActivities = getContext().getPackageManager().queryIntentActivities(intent, 0);
+                if (intentActivities.isEmpty()) {
+                    return false;
+                }
                 try {
-                    getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    getContext().startActivity(Intent.createChooser(intent, getResources().getString(R.string.text_open_with)));
                 } catch (ActivityNotFoundException e) {
                     e.printStackTrace();
                     return false;

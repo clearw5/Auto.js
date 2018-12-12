@@ -10,12 +10,12 @@ module.exports = function (__runtime__, scope) {
 
     global.Promise.prototype.wait = function () {
         var disposable = threads.disposable();
-        promise.then(result => {
+        this.then(result => {
             disposable.setAndNotify({ result: result });
         }).catch(error => {
-            cont.resumeError({ error: error });
+            disposable.setAndNotify({ error: error });
         });
-        var r = cont.blockedGet();
+        var r = disposable.blockedGet();
         if (r.error) {
             throw r.error;
         }
