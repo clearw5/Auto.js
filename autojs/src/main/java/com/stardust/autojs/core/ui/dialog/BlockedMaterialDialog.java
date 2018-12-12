@@ -63,7 +63,6 @@ public class BlockedMaterialDialog extends MaterialDialog {
         private VolatileDispose<Object> mResultBox;
         private UiHandler mUiHandler;
         private Object mCallback;
-        private Continuation mContinuation;
         private ScriptBridges mScriptBridges;
         private boolean mNotified = false;
 
@@ -75,10 +74,6 @@ public class BlockedMaterialDialog extends MaterialDialog {
             mCallback = callback;
             if (Looper.getMainLooper() != Looper.myLooper()) {
                 mResultBox = new VolatileDispose<>();
-            } else {
-                if (mCallback == null) {
-                    mContinuation = runtime.createContinuation();
-                }
             }
         }
 
@@ -95,9 +90,6 @@ public class BlockedMaterialDialog extends MaterialDialog {
             mNotified = true;
             if (mCallback != null) {
                 mScriptBridges.callFunction(mCallback, null, new Object[]{r});
-            }
-            if (mContinuation != null) {
-                mContinuation.resumeWith(Continuation.Result.Companion.success(r));
             }
             if (mResultBox != null) {
                 mResultBox.setAndNotify(r);
@@ -178,9 +170,6 @@ public class BlockedMaterialDialog extends MaterialDialog {
                 super.show();
             } else {
                 mUiHandler.post(Builder.super::show);
-            }
-            if (mContinuation != null) {
-                mContinuation.suspend();
             }
             if (mResultBox != null) {
                 return mResultBox.blockedGetOrThrow(ScriptInterruptedException.class);

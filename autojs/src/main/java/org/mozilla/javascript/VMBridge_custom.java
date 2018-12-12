@@ -23,7 +23,7 @@ public class VMBridge_custom extends VMBridge_jdk15 {
     protected Object newInterfaceProxy(Object proxyHelper, ContextFactory cf, InterfaceAdapter adapter, Object target, Scriptable topScope) {
         Context context = Context.getCurrentContext();
         InterfaceAdapterWrapper adapterWrapper = new InterfaceAdapterWrapper(adapter, context);
-        RhinoJavaScriptEngine engine = RhinoJavaScriptEngine.getEngineOfContext(context);
+        RhinoJavaScriptEngine engine = RhinoJavaScriptEngine.Companion.getEngineOfContext(context);
         // --- The following code is copied from super class --
         Constructor<?> c = (Constructor) proxyHelper;
         InvocationHandler handler = (proxy, method, args) -> {
@@ -50,6 +50,8 @@ public class VMBridge_custom extends VMBridge_jdk15 {
                 try {
                     Object result = adapterWrapper.invoke(cf, target, topScope, proxy, method, args);
                     return castReturnValue(method, result);
+                } catch (ContinuationPending pending) {
+                    return defaultValue(method.getReturnType());
                 } catch (Throwable e) {
                     e.printStackTrace();
                     // notify the script thread to exit
@@ -143,6 +145,7 @@ public class VMBridge_custom extends VMBridge_jdk15 {
 
 
         public Object invokeImpl(Context cx, Object target, Scriptable topScope, Object thisObject, Method method, Object[] args) {
+            cx.isContinuationsTopCall = true;
             return mInterfaceAdapter.invokeImpl(cx, target, topScope, thisObject, method, args);
         }
     }

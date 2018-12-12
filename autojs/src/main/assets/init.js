@@ -16,16 +16,7 @@ runtime.init();
             }
         })();
 
-
-    //初始化不依赖环境的模块
-    global.JSON = require('__json2__.js');
-    global.util = require('__util__.js');
-    global.device = runtime.device;
-
-    //设置JavaScriptBridges用于与Java层的交互和数据转换
-    runtime.bridges.setBridges(require('__bridges__.js'));
-
-    //一些内部函数
+    //内部函数
     global.__asGlobal__ = function (obj, functions) {
         var len = functions.length;
         for (var i = 0; i < len; i++) {
@@ -50,7 +41,6 @@ runtime.init();
                 exit(err);
             } else if (err instanceof Error) {
                 exit(new org.mozilla.javascript.EvaluatorException(err.name + ": " + err.message, err.fileName, err.lineNumber));
-                //new java.lang.RuntimeException(err.name + ": " + err.message + "\n" + err.stack));
             } else {
                 exit();
             }
@@ -58,12 +48,24 @@ runtime.init();
         }
     };
 
+     // 初始化基础模块
+     global.timers = require('__timers__.js')(runtime, global);
+
+     //初始化不依赖环境的模块
+     global.JSON = require('__json2__.js');
+     global.util = require('__util__.js');
+     global.device = runtime.device;
+     global.Promise = require('promise.js');
+ 
+     //设置JavaScriptBridges用于与Java层的交互和数据转换
+     runtime.bridges.setBridges(require('__bridges__.js'));
+
     //初始化全局函数
     require("__globals__")(runtime, global);
     //初始化一般模块
     (function (scope) {
         var modules = ['app', 'automator', 'console', 'dialogs', 'io', 'selector', 'shell', 'web', 'ui',
-            "images", "timers", "threads", "events", "engines", "RootAutomator", "http", "storages", "floaty",
+            "images", "threads", "events", "engines", "RootAutomator", "http", "storages", "floaty",
             "sensors", "media", "plugins", "continuation"];
         var len = modules.length;
         for (var i = 0; i < len; i++) {
@@ -71,11 +73,6 @@ runtime.init();
             scope[m] = require('__' + m + '__')(scope.runtime, scope);
         }
     })(global);
-
-    global.Promise = require('promise.js');
-    global.Promise.prototype.await = function () {
-        return continuation.await(this);
-    }
 
     importClass(android.view.KeyEvent);
     importClass(com.stardust.autojs.core.util.Shell);

@@ -41,7 +41,7 @@ module.exports = function (runtime, scope) {
 
     http.request = function (url, options, callback) {
         var cont = null;
-        if (!callback && ui.isUiThread()) {
+        if (!callback && ui.isUiThread() && continuation.enabled) {
             cont = continuation.create();
         }
         var call = http.client().newCall(http.buildRequest(url, options));
@@ -59,7 +59,7 @@ module.exports = function (runtime, scope) {
                 callback && callback(null, ex);
             }
         }));
-        if(cont) {
+        if (cont) {
             return cont.await();
         }
     }

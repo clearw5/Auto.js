@@ -65,7 +65,7 @@ public class Dialogs {
             builder.content(content);
         }
         return ((BlockedMaterialDialog.Builder) builder).showAndGet();
-    }
+}
 
     private Context getContext() {
         if (mThemeWrapper != null)

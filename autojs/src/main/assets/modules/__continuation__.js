@@ -44,5 +44,21 @@ module.exports = function (runtime, global) {
         throw new TypeError('cannot await ' + any);
     }
 
+    continuation.delay = function (millis) {
+         var cont = continuation.create();
+         setTimeout(()=>{
+             cont.resume();
+         }, millis);
+         cont.await();
+     }
+
+    continuation.__defineGetter__('enabled', function () {
+        return engines.myEngine().hasFeature("continuation");
+    });
+
+    global.Promise.prototype.await = function () {
+        return continuation.await(this);
+    }
+
     return continuation;
 }

@@ -1,7 +1,6 @@
 package com.stardust.autojs.project;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -12,7 +11,9 @@ import com.stardust.pio.PFiles;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Stardust on 2018/1/24.
@@ -51,31 +52,38 @@ public class ProjectConfig {
     @SerializedName("icon")
     private String mIcon;
 
+    @SerializedName("scripts")
+    private Map<String, ScriptConfig> mScriptConfigs = new HashMap<>();
+
+    @SerializedName("useFeatures")
+    private List<String> mFeatures = new ArrayList<>();
+
+
     public static ProjectConfig fromJson(String json) {
         if (json == null) {
             return null;
         }
         ProjectConfig config = GSON.fromJson(json, ProjectConfig.class);
-        if(!isValid(config)){
+        if (!isValid(config)) {
             return null;
         }
         return config;
     }
 
     private static boolean isValid(ProjectConfig config) {
-        if(TextUtils.isEmpty(config.getName())){
+        if (TextUtils.isEmpty(config.getName())) {
             return false;
         }
-        if(TextUtils.isEmpty(config.getPackageName())){
+        if (TextUtils.isEmpty(config.getPackageName())) {
             return false;
         }
-        if(TextUtils.isEmpty(config.getVersionName())){
+        if (TextUtils.isEmpty(config.getVersionName())) {
             return false;
         }
-        if(TextUtils.isEmpty(config.getMainScriptFile())){
+        if (TextUtils.isEmpty(config.getMainScriptFile())) {
             return false;
         }
-        if(config.getVersionCode() == -1){
+        if (config.getVersionCode() == -1) {
             return false;
         }
         return true;
@@ -160,6 +168,10 @@ public class ProjectConfig {
         return this;
     }
 
+    public Map<String, ScriptConfig> getScriptConfigs() {
+        return mScriptConfigs;
+    }
+
     public List<String> getAssets() {
         if (mAssets == null) {
             mAssets = Collections.emptyList();
@@ -209,5 +221,31 @@ public class ProjectConfig {
 
     public String getBuildDir() {
         return "build";
+    }
+
+    public List<String> getFeatures() {
+        return mFeatures;
+    }
+
+    public void setFeatures(List<String> features) {
+        mFeatures = features;
+    }
+
+    public ScriptConfig getScriptConfig(String path) {
+        ScriptConfig config = mScriptConfigs.get(path);
+        if (config == null) {
+            config = new ScriptConfig();
+        }
+        if(mFeatures.isEmpty()){
+            return config;
+        }
+        ArrayList<String> features = new ArrayList<>(config.getFeatures());
+        for (String feature : mFeatures) {
+            if (!features.contains(feature)) {
+                features.add(feature);
+            }
+        }
+        config.setFeatures(features);
+        return config;
     }
 }

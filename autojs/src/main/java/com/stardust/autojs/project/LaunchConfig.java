@@ -18,4 +18,5 @@ public class LaunchConfig {
     public void setHideLogs(boolean hideLogs) {
         mHideLogs = hideLogs;
     }
+
 }

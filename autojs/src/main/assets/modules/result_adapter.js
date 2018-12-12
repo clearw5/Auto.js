@@ -47,7 +47,7 @@ ResultAdapter.prototype.setError = function (error) {
 ResultAdapter.prototype.callback = function () {
     var that = this;
     return function (result, error) {
-        if(that.result !== undefined){
+        if (that.result !== undefined) {
             that.result = {
                 result: result,
                 error: error
@@ -63,21 +63,33 @@ ResultAdapter.prototype.callback = function () {
 }
 
 ResultAdapter.prototype.get = function () {
-    if(this.result){
+    if (this.result) {
         return getOrThrow(this.result);
     }
     this.result = null;
     return this.impl.get();
 }
 
-ResultAdapter.promise = function(promiseAdapter) {
-    return new Promise(function(resolve, reject){
-        promiseAdapter.onResolve(function(result) {
+ResultAdapter.promise = function (promiseAdapter) {
+    return new Promise(function (resolve, reject) {
+        promiseAdapter.onResolve(function (result) {
             resolve(result);
-        }).onReject(function(error){
+        }).onReject(function (error) {
             reject(error);
         });
     })
+}
+
+ResultAdapter.wait = function (promise) {
+    var proto = Object.getPrototypeOf(promise);
+    if (!proto || proto.constructor !== Promise) {
+        promise = ResultAdapter.promise(promise);
+    }
+    if (continuation.enabled) {
+        return promise.await();
+    } else {
+        return promise.wait();
+    }
 }
 
 module.exports = ResultAdapter;
