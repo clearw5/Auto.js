@@ -28,7 +28,8 @@
         android:theme="@style/ScriptTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
-        tools:replace="android:label, android:allowBackup">
+        tools:replace="android:label, android:allowBackup"
+        tools:targetApi="m">
         <activity android:name=".LogActivity">
 
         </activity>
