@@ -18,17 +18,7 @@ module.exports = function(__runtime__, scope){
     }
 
     engines.myEngine = function(){
-        var engine = Object.create(rtEngines.myEngine());
-        if(!execArgv){
-            execArgv = {};
-            var iterator = engine.getTag("execution.config").arguments.entrySet().iterator();
-            while(iterator.hasNext()){
-                var entry = iterator.next();
-                execArgv[entry.getKey()] = entry.getValue();
-            }
-        }
-        engine.execArgv = execArgv;
-        return engine;
+        return rtEngines.myEngine();
     }
 
     engines.all = function(){
@@ -58,6 +48,15 @@ module.exports = function(__runtime__, scope){
         }
         return config;
     }
+
+    var engine = engines.myEngine();
+    var execArgv = {};
+    var iterator = engine.getTag("execution.config").arguments.entrySet().iterator();
+    while(iterator.hasNext()){
+        var entry = iterator.next();
+        execArgv[entry.getKey()] = entry.getValue();
+    }
+    engine.execArgv = execArgv;
 
     return engines;
 }

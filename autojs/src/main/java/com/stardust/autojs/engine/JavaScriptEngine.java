@@ -1,7 +1,5 @@
 package com.stardust.autojs.engine;
 
-import androidx.annotation.CallSuper;
-
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
@@ -12,6 +10,7 @@ import com.stardust.autojs.script.ScriptSource;
 
 public abstract class JavaScriptEngine extends ScriptEngine.AbstractScriptEngine<JavaScriptSource> {
     private ScriptRuntime mRuntime;
+    private Object mExecArgv;
 
     @Override
     public Object execute(JavaScriptSource scriptSource) {
@@ -44,6 +43,17 @@ public abstract class JavaScriptEngine extends ScriptEngine.AbstractScriptEngine
         return (ScriptSource) getTag(TAG_SOURCE);
     }
 
+    public void setExecArgv(Object execArgv) {
+        if (mExecArgv != null) {
+            return;
+        }
+        mExecArgv = execArgv;
+    }
+
+    public Object getExecArgv() {
+        return mExecArgv;
+    }
+
     @Override
     public synchronized void destroy() {
         mRuntime.onExit();
@@ -53,6 +63,7 @@ public abstract class JavaScriptEngine extends ScriptEngine.AbstractScriptEngine
     @Override
     public String toString() {
         return "ScriptEngine@" + Integer.toHexString(hashCode()) + "{" +
+                "id=" + getId() + "," +
                 "source='" + getTag(TAG_SOURCE) + "'," +
                 "cwd='" + cwd() + "'" +
                 "}";
