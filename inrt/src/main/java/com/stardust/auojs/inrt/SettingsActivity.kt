@@ -30,7 +30,7 @@ class SettingsActivity : AppCompatActivity() {
 
     class PreferenceFragment : android.preference.PreferenceFragment() {
 
-        override fun onCreate(@Nullable savedInstanceState: Bundle) {
+        override fun onCreate(@Nullable savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.preference)
         }
