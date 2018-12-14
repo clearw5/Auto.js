@@ -207,6 +207,7 @@ public class ApkBuilder {
 
     private void encrypt(FileOutputStream fos, File file) throws IOException {
         try {
+            EncryptedScriptFileHeader.INSTANCE.writeHeader(fos, (short) new JavaScriptFileSource(file).getExecutionMode());
             byte[] bytes = new AdvancedEncryptionStandard(mKey.getBytes(), mInitVector).encrypt(PFiles.readBytes(file.getPath()));
             fos.write(bytes);
             fos.close();
