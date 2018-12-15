@@ -300,13 +300,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".timing.TimedTaskScheduler">
-            <intent-filter>
-                <action android:name="com.stardust.autojs.action.check_task"/>
-                <action android:name="com.android.deskclock.ALARM_ALERT"/>
-            </intent-filter>
-        </receiver>
-
     </application>
 
 </manifest>

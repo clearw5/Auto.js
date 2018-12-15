@@ -13,6 +13,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import com.evernote.android.job.JobRequest
 import com.flurry.android.FlurryAgent
 import com.squareup.leakcanary.LeakCanary
 import com.stardust.app.GlobalAppContext
@@ -84,7 +85,7 @@ class App : MultiDexApplication() {
             GlobalKeyObserver.init()
         }
         setupDrawableImageLoader()
-        TimedTaskScheduler.checkTasksRepeatedlyIfNeeded(this)
+        TimedTaskScheduler.init(this)
         initDynamicBroadcastReceivers()
     }
 

@@ -153,6 +153,8 @@ dependencies {
     implementation('com.afollestad.material-dialogs:commons:0.9.2.3', {
         exclude group: 'com.android.support'
     })
+    // Android job
+    implementation 'com.evernote:android-job:1.2.6'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
     // Optional, if you use support library fragments:
