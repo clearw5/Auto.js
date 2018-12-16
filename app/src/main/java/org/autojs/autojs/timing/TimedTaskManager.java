@@ -17,7 +17,6 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.functions.Consumer;
 
 /**
  * Created by Stardust on 2017/11/27.
@@ -61,7 +60,7 @@ public class TimedTaskManager {
 
     @SuppressLint("CheckResult")
     public void removeTask(TimedTask timedTask) {
-        TimedTaskScheduler.cancel(mContext, timedTask);
+        TimedTaskScheduler.cancel(timedTask);
         mTimedTaskDatabase.delete(timedTask)
                 .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
     }
@@ -71,7 +70,7 @@ public class TimedTaskManager {
         mTimedTaskDatabase.insert(timedTask)
                 .subscribe(id -> {
                     timedTask.setId(id);
-                    TimedTaskScheduler.scheduleTaskIfNeeded(mContext, timedTask);
+                    TimedTaskScheduler.scheduleTaskIfNeeded(mContext, timedTask, false);
                 }, Throwable::printStackTrace);
     }
 
@@ -130,8 +129,8 @@ public class TimedTaskManager {
     public void updateTask(TimedTask task) {
         mTimedTaskDatabase.update(task)
                 .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
-        TimedTaskScheduler.cancel(mContext, task);
-        TimedTaskScheduler.scheduleTaskIfNeeded(mContext, task);
+        TimedTaskScheduler.cancel(task);
+        TimedTaskScheduler.scheduleTaskIfNeeded(mContext, task, false);
     }
 
     @SuppressLint("CheckResult")

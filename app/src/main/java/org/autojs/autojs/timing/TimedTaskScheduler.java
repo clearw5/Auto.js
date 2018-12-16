@@ -1,33 +1,20 @@
 package org.autojs.autojs.timing;
 
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.provider.AlarmClock;
 import android.util.Log;
 
 import com.evernote.android.job.Job;
-import com.evernote.android.job.JobCreator;
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
-import com.evernote.android.job.util.support.PersistableBundleCompat;
 
-import org.autojs.autojs.App;
 import org.autojs.autojs.external.ScriptIntents;
-import org.autojs.autojs.storage.database.TimedTaskDatabase;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -39,51 +26,52 @@ import io.reactivex.schedulers.Schedulers;
 public class TimedTaskScheduler {
 
     private static final String LOG_TAG = "TimedTaskScheduler";
-    private static final long ONE_HOUR = TimeUnit.HOURS.toMillis(1);
+    private static final long SCHEDULE_TASK_MIN_TIME = TimeUnit.DAYS.toMillis(2);
 
     private static final String JOB_TAG_CHECK_TASKS = "checkTasks";
 
 
     @SuppressLint("CheckResult")
-    public static void checkTasks(Context context) {
-        Log.d(LOG_TAG, "check tasks");
+    public static void checkTasks(Context context, boolean force) {
+        Log.d(LOG_TAG, "check tasks: force = " + force);
         TimedTaskManager.getInstance().getAllTasks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(timedTask -> scheduleTaskIfNeeded(context, timedTask));
+                .subscribe(timedTask -> scheduleTaskIfNeeded(context, timedTask, force));
     }
 
-    public static void scheduleTaskIfNeeded(Context context, TimedTask timedTask) {
+    public static void scheduleTaskIfNeeded(Context context, TimedTask timedTask, boolean force) {
         long millis = timedTask.getNextTime();
-        if (timedTask.isScheduled() || millis - System.currentTimeMillis() > ONE_HOUR) {
+        if ((!force && timedTask.isScheduled()) || millis - System.currentTimeMillis() > SCHEDULE_TASK_MIN_TIME) {
             return;
         }
-        scheduleTask(context, timedTask, millis);
+        scheduleTask(context, timedTask, millis, force);
         TimedTaskManager.getInstance()
                 .notifyTaskScheduled(timedTask);
     }
 
-    private synchronized static void scheduleTask(Context context, TimedTask timedTask, long millis) {
-        if (timedTask.isScheduled()) {
+    private synchronized static void scheduleTask(Context context, TimedTask timedTask, long millis, boolean force) {
+        if (!force && timedTask.isScheduled()) {
             return;
         }
         long timeWindow = millis - System.currentTimeMillis();
-        Log.d(LOG_TAG, "schedule task: task = " + timedTask + ", millis = " + millis + ", timeWindow = " + timeWindow);
         timedTask.setScheduled(true);
         TimedTaskManager.getInstance().updateTaskWithoutReScheduling(timedTask);
         if (timeWindow <= 0) {
             runTask(context, timedTask);
             return;
         }
+        cancel(timedTask);
+        Log.d(LOG_TAG, "schedule task: task = " + timedTask + ", millis = " + millis + ", timeWindow = " + timeWindow);
         new JobRequest.Builder(String.valueOf(timedTask.getId()))
                 .setExact(timeWindow)
                 .build()
                 .schedule();
     }
 
-    public static void cancel(Context context, TimedTask timedTask) {
-        Log.d(LOG_TAG, "cancel task: task = " + timedTask);
-        JobManager.instance().cancelAllForTag(String.valueOf(timedTask.getId()));
+    public static void cancel(TimedTask timedTask) {
+        int cancelCount = JobManager.instance().cancelAllForTag(String.valueOf(timedTask.getId()));
+        Log.d(LOG_TAG, "cancel task: task = " + timedTask + ", cancel = " + cancelCount);
     }
 
     public static void init(@NotNull Context context) {
@@ -98,7 +86,7 @@ public class TimedTaskScheduler {
                 .setPeriodic(TimeUnit.MINUTES.toMillis(20))
                 .build()
                 .scheduleAsync();
-        checkTasks(context);
+        checkTasks(context, true);
     }
 
     private static void runTask(Context context, TimedTask task) {
@@ -140,7 +128,7 @@ public class TimedTaskScheduler {
         @NonNull
         @Override
         protected Result onRunJob(@NonNull Params params) {
-            checkTasks(mContext);
+            checkTasks(mContext, false);
             return Result.SUCCESS;
         }
     }
