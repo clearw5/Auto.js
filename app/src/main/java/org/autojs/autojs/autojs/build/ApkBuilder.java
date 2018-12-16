@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
+import java.util.regex.Pattern;
 
 import pxb.android.StringItem;
 import pxb.android.axml.AxmlWriter;
@@ -201,7 +202,6 @@ public class ApkBuilder {
 
     private void encrypt(File toDir, File file) throws IOException {
         FileOutputStream fos = new FileOutputStream(new File(toDir, file.getName()));
-        EncryptedScriptFileHeader.INSTANCE.writeHeader(fos, (short) new JavaScriptFileSource(file).getExecutionMode());
         encrypt(fos, file);
     }
 

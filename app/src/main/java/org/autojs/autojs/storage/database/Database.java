@@ -58,6 +58,7 @@ public abstract class Database<M extends BaseModel> {
     public Observable<Integer> update(M model) {
         return exec(() -> {
             ContentValues values = asContentValues(model);
+            values.put("id", model.getId());
             int update = mWritableSQLiteDatabase.update(mTable, values, "id = ?", arg(model.getId()));
             if (update >= 1) {
                 mModelChange.onNext(new ModelChange<>(model, ModelChange.UPDATE));

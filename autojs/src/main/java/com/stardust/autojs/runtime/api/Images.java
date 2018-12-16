@@ -43,6 +43,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by Stardust on 2017/5/20.
@@ -301,6 +304,34 @@ public class Images {
             OpenCVHelper.release(src);
         }
         return point;
+    }
+
+    public List<TemplateMatching.Match> matchTemplate(ImageWrapper image, ImageWrapper template, float weakThreshold, float threshold, Rect rect, int maxLevel, int limit) {
+        initOpenCvIfNeeded();
+        if (image == null)
+            throw new NullPointerException("image = null");
+        if (template == null)
+            throw new NullPointerException("template = null");
+        Mat src = image.getMat();
+        if (rect != null) {
+            src = new Mat(src, rect);
+        }
+        List<TemplateMatching.Match> result = TemplateMatching.fastTemplateMatching(src, template.getMat(), TemplateMatching.MATCHING_METHOD_DEFAULT,
+                weakThreshold, threshold, maxLevel, limit);
+        for (TemplateMatching.Match match : result) {
+            Point point = match.point;
+            if (rect != null) {
+                point.x += rect.x;
+                point.y += rect.y;
+            }
+            point.x = mScreenMetrics.scaleX((int) point.x);
+            point.y = mScreenMetrics.scaleX((int) point.y);
+        }
+        if (src != image.getMat()) {
+            OpenCVHelper.release(src);
+        }
+        Collections.sort(result, (l, r) -> Double.compare(r.similarity, l.similarity));
+        return result;
     }
 
     public Mat newMat() {

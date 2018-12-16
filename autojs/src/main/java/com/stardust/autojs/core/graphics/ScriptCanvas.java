@@ -316,6 +316,7 @@ public class ScriptCanvas {
         mCanvas.drawOval(oval, paint);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void drawOval(float left, float top, float right, float bottom, @NonNull Paint paint) {
         mCanvas.drawOval(left, top, right, bottom, paint);
     }

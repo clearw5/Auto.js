@@ -56,6 +56,7 @@ public class ColorFinder {
     }
 
     public Point[] findAllPointsForColor(ImageWrapper image, int color, int threshold, Rect rect) {
+
         MatOfPoint matOfPoint = findColorInner(image, color, threshold, rect);
         if (matOfPoint == null) {
             return new Point[0];

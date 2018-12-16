@@ -1,26 +1,123 @@
 
 module.exports = function (runtime, scope) {
     const ResultAdapter = require("result_adapter");
-    function images(){
+
+    var MatchingResult = (function () {
+        var comparators = {
+            "left": (l, r) => l.point.x - r.point.x,
+            "top": (l, r) => l.point.y - r.point.y,
+            "right": (l, r) => r.point.x - l.point.x,
+            "bottom": (l, r) => r.point.y - l.point.y
+        }
+        function MatchingResult(list) {
+            if (Array.isArray(list)) {
+                this.matches = list;
+            } else {
+                this.matches = runtime.bridges.bridges.toArray(list);
+            }
+            this.__defineGetter__("points", () => {
+                if (typeof (this.__points__) == 'undefined') {
+                    this.__points__ = this.matches.map(m => m.point);
+                }
+                return this.__points__;
+            });
+        }
+        MatchingResult.prototype.first = function () {
+            if (this.matches.length == 0) {
+                return null;
+            }
+            return this.matches[0];
+        }
+        MatchingResult.prototype.last = function () {
+            if (this.matches.length == 0) {
+                return null;
+            }
+            return this.matches[this.matches.length - 1];
+        }
+        MatchingResult.prototype.findMax = function (cmp) {
+            if (this.matches.length == 0) {
+                return null;
+            }
+            var target = this.matches[0];
+            this.matches.forEach(m => {
+                if (cmp(target, m) > 0) {
+                    target = m;
+                }
+            });
+            return target;
+        }
+        MatchingResult.prototype.leftmost = function () {
+            return this.findMax(comparators.left);
+        }
+        MatchingResult.prototype.topmost = function () {
+            return this.findMax(comparators.top);
+        }
+        MatchingResult.prototype.rightmost = function () {
+            return this.findMax(comparators.right);
+        }
+        MatchingResult.prototype.bottommost = function () {
+            return this.findMax(comparators.bottom);
+        }
+        MatchingResult.prototype.worst = function () {
+            return this.findMax((l, r) => l.similarity - r.similarity);
+        }
+        MatchingResult.prototype.best = function () {
+            return this.findMax((l, r) => r.similarity - l.similarity);
+        }
+        MatchingResult.prototype.sortBy = function(cmp) {
+            var comparatorFn = null;
+            if(typeof(cmp) == 'string'){
+                cmp.split("-").forEach(direction => {
+                    var buildInFn = comparators[direction];
+                    if(!buildInFn){
+                        throw new Error("unknown direction '" + direction + "' in '" + cmp +"'");
+                    }
+                    (function(fn){
+                        if(comparatorFn == null){
+                            comparatorFn = fn;
+                        }else{
+                            comparatorFn = (function(comparatorFn, fn){
+                                return function(l, r){
+                                    var cmpValue = comparatorFn(l, r);
+                                    if(cmpValue == 0){
+                                        return fn(l, r);
+                                    }
+                                    return cmpValue;
+                                }
+                            })(comparatorFn, fn);
+                        }
+                    })(buildInFn);
+                });
+            }else{
+                comparatorFn = cmp;
+            }
+            var clone = this.matches.slice();
+            clone.sort(comparatorFn);
+            return new MatchingResult(clone);
+        }
+        return MatchingResult;
+    })();
+
+    function images() {
     }
-    if(android.os.Build.VERSION.SDK_INT >= 21){
+    if (android.os.Build.VERSION.SDK_INT >= 21) {
         util.__assignFunctions__(runtime.images, images, ['captureScreen', 'read', 'copy', 'load', 'clip', 'pixel'])
     }
-    images.opencvImporter =  JavaImporter(
-         org.opencv.core.Point,
-         org.opencv.core.Point3,
-         org.opencv.core.Rect,
-         org.opencv.core.Algorithm,
-         org.opencv.core.Scalar,
-         org.opencv.core.Size,
-         org.opencv.core.Core,
-         org.opencv.core.CvException,
-         org.opencv.core.CvType,
-         org.opencv.core.TermCriteria,
-         org.opencv.core.RotatedRect,
-         org.opencv.core.Range,
-         org.opencv.imgproc.Imgproc,
-         com.stardust.autojs.core.opencv
+    images.opencvImporter = JavaImporter(
+        org.opencv.core.Point,
+        org.opencv.core.Point3,
+        org.opencv.core.Rect,
+        org.opencv.core.Algorithm,
+        org.opencv.core.Scalar,
+        org.opencv.core.Size,
+        org.opencv.core.Core,
+        org.opencv.core.CvException,
+        org.opencv.core.CvType,
+        org.opencv.core.TermCriteria,
+        org.opencv.core.RotatedRect,
+        org.opencv.core.Range,
+        org.opencv.imgproc.Imgproc,
+        com.stardust.autojs.core.opencv
     );
     with (images.opencvImporter) {
         const defaultColorThreshold = 4;
@@ -56,13 +153,13 @@ module.exports = function (runtime, scope) {
 
         var colorFinder = javaImages.colorFinder;
 
-        images.requestScreenCapture = function(landscape) {
+        images.requestScreenCapture = function (landscape) {
             let ScreenCapturer = com.stardust.autojs.core.image.capture.ScreenCapturer;
             var orientation = ScreenCapturer.ORIENTATION_AUTO;
-            if(landscape === true){
+            if (landscape === true) {
                 orientation = ScreenCapturer.ORIENTATION_LANDSCAPE;
             }
-            if(landscape === false){
+            if (landscape === false) {
                 orientation = ScreenCapturer.ORIENTATION_PORTRAIT;
             }
             return ResultAdapter.wait(javaImages.requestScreenCapture(orientation));
@@ -105,7 +202,7 @@ module.exports = function (runtime, scope) {
                         colors.blue(color) - threshold, colors.alpha(color));
                     ub = new Scalar(colors.red(color) + threshold, colors.green(color) + threshold,
                         colors.blue(color) + threshold, colors.alpha(color));
-                }else{
+                } else {
                     throw new TypeError('lowerBound = ' + lowerBound, + 'upperBound = ' + upperBound);
                 }
             }
@@ -115,7 +212,7 @@ module.exports = function (runtime, scope) {
         }
 
 
-        images.adaptiveThreshold = function(img, maxValue, adaptiveMethod, thresholdType, blockSize, C){
+        images.adaptiveThreshold = function (img, maxValue, adaptiveMethod, thresholdType, blockSize, C) {
             initIfNeeded();
             var mat = new Mat();
             adaptiveMethod = Imgproc["ADAPTIVE_THRESH_" + adaptiveMethod];
@@ -168,13 +265,13 @@ module.exports = function (runtime, scope) {
             return images.matToImage(mat);
         }
 
-        images.findCircles = function(grayImg, options) {
+        images.findCircles = function (grayImg, options) {
             initIfNeeded();
             options = options || {};
             var mat = options.region == undefined ? grayImg.mat : new Mat(grayImg.mat, buildRegion(options.region, grayImg));
             var resultMat = new Mat()
             var dp = options.dp == undefined ? 1 : options.dp;
-            var minDst =  options.minDst == undefined ? grayImg.height / 8 : options.minDst;
+            var minDst = options.minDst == undefined ? grayImg.height / 8 : options.minDst;
             var param1 = options.param1 == undefined ? 100 : options.param1;
             var param2 = options.param2 == undefined ? 100 : options.param2;
             var minRadius = options.minRadius == undefined ? 0 : options.minRadius;
@@ -191,14 +288,14 @@ module.exports = function (runtime, scope) {
                     });
                 }
             }
-            if(options.region != undefined){
+            if (options.region != undefined) {
                 mat.release();
             }
             resultMat.release();
             return result;
         }
 
-        images.resize = function(img, size, interpolation) {
+        images.resize = function (img, size, interpolation) {
             initIfNeeded();
             var mat = new Mat();
             interpolation = Imgproc["INTER_" + (interpolation || "LINEAR")];
@@ -206,7 +303,7 @@ module.exports = function (runtime, scope) {
             return images.matToImage(mat);
         }
 
-        images.scale = function(img, fx, fy, interpolation) {
+        images.scale = function (img, fx, fy, interpolation) {
             initIfNeeded();
             var mat = new Mat();
             interpolation = Imgproc["INTER_" + (interpolation || "LINEAR")];
@@ -214,18 +311,18 @@ module.exports = function (runtime, scope) {
             return images.matToImage(mat);
         }
 
-        images.rotate = function(img, degree, x, y) {
+        images.rotate = function (img, degree, x, y) {
             initIfNeeded();
-            if(x == undefined){
+            if (x == undefined) {
                 x = img.width / 2;
             }
-            if(y == undefined){
+            if (y == undefined) {
                 y = img.height / 2;
             }
             return javaImages.rotate(img, x, y, degree);
         }
 
-        images.concat = function(img1, img2, direction, rect1, rect2) {
+        images.concat = function (img1, img2, direction, rect1, rect2) {
             initIfNeeded();
             direction = direction || "right";
             rect1 = buildRegion(rect1, img1);
@@ -314,13 +411,34 @@ module.exports = function (runtime, scope) {
             if (typeof (options.level) == 'number') {
                 maxLevel = options.level;
             }
-            var weakThreshold = options.weakThreshold || 0.7;
+            var weakThreshold = options.weakThreshold || 0.6;
             if (options.region) {
                 return javaImages.findImage(img, template, weakThreshold, threshold, buildRegion(options.region, img), maxLevel);
             } else {
                 return javaImages.findImage(img, template, weakThreshold, threshold, null, maxLevel);
             }
         }
+
+        images.matchTemplate = function (img, template, options) {
+            initIfNeeded();
+            options = options || {};
+            var threshold = options.threshold || 0.9;
+            var maxLevel = -1;
+            if (typeof (options.level) == 'number') {
+                maxLevel = options.level;
+            }
+            var max = options.max || 5;
+            var weakThreshold = options.weakThreshold || 0.6;
+            var result;
+            if (options.region) {
+                result = javaImages.matchTemplate(img, template, weakThreshold, threshold, buildRegion(options.region, img), maxLevel, max);
+            } else {
+                result = javaImages.matchTemplate(img, template, weakThreshold, threshold, null, maxLevel, max);
+            }
+            return new MatchingResult(result);
+        }
+
+
 
         images.findImageInRegion = function (img, template, x, y, width, height, threshold) {
             return images.findImage(img, template, {
@@ -364,10 +482,14 @@ module.exports = function (runtime, scope) {
             };
         }
 
-        images.matToImage = function(img){
+        images.matToImage = function (img) {
             initIfNeeded();
             return Image.ofMat(img);
         }
+
+
+
+
 
         function getColorDetector(color, algorithm, threshold) {
             switch (algorithm) {
@@ -395,7 +517,7 @@ module.exports = function (runtime, scope) {
         }
 
         function buildRegion(region, img) {
-            if(region == undefined){
+            if (region == undefined) {
                 region = [];
             }
             var x = region[0] === undefined ? 0 : region[0];
@@ -403,6 +525,9 @@ module.exports = function (runtime, scope) {
             var width = region[2] === undefined ? img.getWidth() - x : region[2];
             var height = region[3] === undefined ? (img.getHeight() - y) : region[3];
             var r = new org.opencv.core.Rect(x, y, width, height);
+            if(x < 0 || y < 0 || x + width > img.width || y + height > img.height) {
+                throw new Error("out of region: region = [" + [x, y, width, height] + "], image.size = [" + [img.width, img.height] + "]");
+            }
             return r;
         }
 
@@ -412,7 +537,7 @@ module.exports = function (runtime, scope) {
             }
             return color;
         }
-    
+
         function newSize(size) {
             if (!Array.isArray(size)) {
                 size = [size, size];
@@ -423,14 +548,14 @@ module.exports = function (runtime, scope) {
             return new Size(size[0], size[1]);
         }
 
-        function initIfNeeded(){
+        function initIfNeeded() {
             javaImages.initOpenCvIfNeeded();
         }
-    
+
         scope.__asGlobal__(images, ['requestScreenCapture', 'captureScreen', 'findImage', 'findImageInRegion', 'findColor', 'findColorInRegion', 'findColorEquals', 'findMultiColors']);
-    
+
         scope.colors = colors;
-    
+
         return images;
     }
 }

@@ -92,15 +92,12 @@ public class InjectableWebClient extends WebViewClient {
         @JavascriptInterface
         public String eval(final String script) {
             result = null;
-            mWebView.post(new Runnable() {
-                @Override
-                public void run() {
-                    Log.v(TAG, "ScriptBridge.eval: " + script);
-                    result = mContext.evaluateString(mScriptable, script, "<eval-local>", 1, null);
-                    Log.v(TAG, "ScriptBridge.eval = " + result);
-                    synchronized (ScriptBridge.this) {
-                        ScriptBridge.this.notify();
-                    }
+            mWebView.post(() -> {
+                Log.v(TAG, "ScriptBridge.eval: " + script);
+                result = mContext.evaluateString(mScriptable, script, "<eval-local>", 1, null);
+                Log.v(TAG, "ScriptBridge.eval = " + result);
+                synchronized (ScriptBridge.this) {
+                    ScriptBridge.this.notify();
                 }
             });
             synchronized (ScriptBridge.this) {

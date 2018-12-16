@@ -26,6 +26,10 @@ public class ScriptBridges {
         mBridges = bridges;
     }
 
+    public Bridges getBridges() {
+        return mBridges;
+    }
+
     public Object callFunction(Object func, Object target, Object args) {
         checkBridges();
         return mBridges.call(func, target, args);
