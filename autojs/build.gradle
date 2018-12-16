@@ -49,11 +49,12 @@ dependencies {
     })
     api 'com.google.android.material:material:1.1.0-alpha01'
     api 'com.github.hyb1996:EnhancedFloaty:0.31'
-    api 'com.github.hyb1996:OpenCvLib:2.4.13.4-imgproc'
     api 'com.makeramen:roundedimageview:2.3.0'
+    // OpenCv
+    api(name: 'opencv-3.4.3', ext: 'aar')
     // OkHttp
     api 'com.squareup.okhttp3:okhttp:3.10.0'
-    //JDeferred
+    // JDeferred
     api 'org.jdeferred:jdeferred-android-aar:1.2.6'
     //RootShell
     api 'com.github.Stericson:RootShell:1.6'

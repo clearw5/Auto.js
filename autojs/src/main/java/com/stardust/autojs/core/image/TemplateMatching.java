@@ -214,7 +214,7 @@ public class TemplateMatching {
                 break;
             }
             outResult.add(bestMatched);
-            Core.rectangle(tmResult, bestMatched.point,
+            Imgproc.rectangle(tmResult, bestMatched.point,
                     new Point(bestMatched.point.x + template.cols(), bestMatched.point.y + template.rows()),
                     new Scalar(0, 255, 0), -1);
         }
