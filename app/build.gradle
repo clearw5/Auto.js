@@ -64,9 +64,18 @@ android {
     productFlavors {
         common {
             buildConfigField "String", "CHANNEL", '"common"'
+            ndk {
+                abiFilters "armeabi-v7a"
+            }
         }
         coolapk {
             buildConfigField "String", "CHANNEL", '"coolapk"'
+        }
+        x86 {
+            buildConfigField "String", "CHANNEL", '"common"'
+            ndk {
+                abiFilters "x86"
+            }
         }
     }
 

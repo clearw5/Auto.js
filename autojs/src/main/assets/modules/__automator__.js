@@ -111,7 +111,8 @@ module.exports = function(runtime, global){
 
     const flagsMap = {
         "findOnUiThread": 1,
-        "useUsageStats": 2
+        "useUsageStats": 2,
+        "useShell": 4
     };
 
     var auto = function(mode){
@@ -163,7 +164,10 @@ module.exports = function(runtime, global){
 
     auto.getRoot = function(){
         var root = runtime.accessibilityBridge.getRootInCurrentWindow();
-        return com.stardust.automator.UiObject.createRoot(root);
+        if(root == null){
+            return null;
+        }
+        return com.stardust.automator.UiObject.Companion.createRoot(root);
     }
 
     auto.setWindowFilter = function(filter){

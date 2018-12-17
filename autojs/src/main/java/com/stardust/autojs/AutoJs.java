@@ -30,7 +30,7 @@ import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.util.ResourceMonitor;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.UiHandler;
-import com.stardust.view.accessibility.AccessibilityInfoProvider;
+import com.stardust.autojs.core.activity.ActivityInfoProvider;
 import com.stardust.view.accessibility.AccessibilityNotificationObserver;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.LayoutInspector;
@@ -54,7 +54,7 @@ public abstract class AutoJs {
     private final Application mApplication;
     private final UiHandler mUiHandler;
     private final AppUtils mAppUtils;
-    private final AccessibilityInfoProvider mAccessibilityInfoProvider;
+    private final ActivityInfoProvider mActivityInfoProvider;
     private final ScreenCaptureRequester mScreenCaptureRequester = new ScreenCaptureRequesterImpl();
     private final ScriptEngineService mScriptEngineService;
     private final GlobalConsole mGlobalConsole;
@@ -68,7 +68,7 @@ public abstract class AutoJs {
         mAppUtils = createAppUtils(mContext);
         mGlobalConsole = createGlobalConsole();
         mNotificationObserver = new AccessibilityNotificationObserver(mContext);
-        mAccessibilityInfoProvider = new AccessibilityInfoProvider(mContext);
+        mActivityInfoProvider = new ActivityInfoProvider(mContext);
         mScriptEngineService = buildScriptEngineService();
         ScriptEngineService.setInstance(mScriptEngineService);
         init();
@@ -166,7 +166,7 @@ public abstract class AutoJs {
 
 
     private void addAccessibilityServiceDelegates() {
-        AccessibilityService.Companion.addDelegate(100, mAccessibilityInfoProvider);
+        AccessibilityService.Companion.addDelegate(100, mActivityInfoProvider);
         AccessibilityService.Companion.addDelegate(200, mNotificationObserver);
         AccessibilityService.Companion.addDelegate(300, mAccessibilityActionRecorder);
     }
@@ -195,8 +195,8 @@ public abstract class AutoJs {
         return mScriptEngineService;
     }
 
-    public AccessibilityInfoProvider getInfoProvider() {
-        return mAccessibilityInfoProvider;
+    public ActivityInfoProvider getInfoProvider() {
+        return mActivityInfoProvider;
     }
 
 
@@ -229,8 +229,8 @@ public abstract class AutoJs {
         }
 
         @Override
-        public AccessibilityInfoProvider getInfoProvider() {
-            return mAccessibilityInfoProvider;
+        public ActivityInfoProvider getInfoProvider() {
+            return mActivityInfoProvider;
         }
 
         @Override

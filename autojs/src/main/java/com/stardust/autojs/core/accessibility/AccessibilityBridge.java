@@ -1,5 +1,6 @@
 package com.stardust.autojs.core.accessibility;
 
+import android.app.ActivityManager;
 import android.app.AppOpsManager;
 import android.content.Context;
 import android.os.Build;
@@ -14,7 +15,7 @@ import com.stardust.app.AppOpsKt;
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 import com.stardust.util.IntentUtil;
 import com.stardust.util.UiHandler;
-import com.stardust.view.accessibility.AccessibilityInfoProvider;
+import com.stardust.autojs.core.activity.ActivityInfoProvider;
 import com.stardust.view.accessibility.AccessibilityNotificationObserver;
 import com.stardust.view.accessibility.AccessibilityService;
 
@@ -34,6 +35,7 @@ public abstract class AccessibilityBridge {
 
     public static final int FLAG_FIND_ON_UI_THREAD = 1;
     public static final int FLAG_USE_USAGE_STATS = 2;
+    public static final int FLAG_USE_SHELL = 4;
 
     private int mMode = MODE_NORMAL;
     private int mFlags = 0;
@@ -63,6 +65,7 @@ public abstract class AccessibilityBridge {
     @Nullable
     public AccessibilityNodeInfo getRootInCurrentWindow() {
         AccessibilityService service = getService();
+
         if (service == null)
             return null;
         if (mWindowFilter != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -89,7 +92,7 @@ public abstract class AccessibilityBridge {
         mWindowFilter = windowFilter;
     }
 
-    public abstract AccessibilityInfoProvider getInfoProvider();
+    public abstract ActivityInfoProvider getInfoProvider();
 
     public void setMode(int mode) {
         mMode = mode;
@@ -108,6 +111,7 @@ public abstract class AccessibilityBridge {
             }
         }
         getInfoProvider().setUseUsageStats((mFlags & FLAG_USE_USAGE_STATS) != 0);
+        getInfoProvider().setUseShell((mFlags & FLAG_USE_SHELL) != 0);
     }
 
     @NonNull

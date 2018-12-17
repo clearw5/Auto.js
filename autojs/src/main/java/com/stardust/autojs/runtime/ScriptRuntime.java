@@ -47,7 +47,7 @@ import com.stardust.util.ScreenMetrics;
 import com.stardust.util.SdkVersionUtil;
 import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
-import com.stardust.view.accessibility.AccessibilityInfoProvider;
+import com.stardust.autojs.core.activity.ActivityInfoProvider;
 
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.RhinoException;
@@ -140,7 +140,7 @@ public class ScriptRuntime {
     public final SimpleActionAutomator automator;
 
     @ScriptVariable
-    public final AccessibilityInfoProvider info;
+    public final ActivityInfoProvider info;
 
     @ScriptVariable
     public final UI ui;
