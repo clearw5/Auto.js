@@ -146,7 +146,7 @@ module.exports = function (runtime, global) {
         if (app.fileProviderAuthority == null) {
             return android.net.Uri.fromFile(file);
         }
-        return android.support.v4.content.FileProvider.getUriForFile(context,
+        return androidx.core.content.FileProvider.getUriForFile(context,
             app.fileProviderAuthority, file);
     };
 
@@ -166,7 +166,7 @@ module.exports = function (runtime, global) {
             return "'" + str.replace("'", "\\'") + "'";
         }
         function isInt(value) {
-            return Bumber.isInteger(value) && value <= java.lang.Integer.MAX_VALUE && value >= java.lang.Integer.MIN_VALUE;
+            return Number.isInteger(value) && value <= java.lang.Integer.MAX_VALUE && value >= java.lang.Integer.MIN_VALUE;
         }
         function typeChar(value){
             if(typeof(value) == 'boolean'){

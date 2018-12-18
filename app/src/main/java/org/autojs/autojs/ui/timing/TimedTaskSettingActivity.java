@@ -11,8 +11,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -192,6 +195,8 @@ public class TimedTaskSettingActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mToolbar.setSubtitle(mScriptFile.getName());
         }
+        mDailyTaskTimePicker.setIs24HourView(true);
+        mWeeklyTaskTimePicker.setIs24HourView(true);
         findDayOfWeekCheckBoxes(mWeeklyTaskContainer);
         setUpTaskSettings();
     }

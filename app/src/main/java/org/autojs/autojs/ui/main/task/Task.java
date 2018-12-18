@@ -74,7 +74,7 @@ public abstract class Task {
             if (mTimedTask != null) {
                 long nextTime = mTimedTask.getNextTime();
                 return GlobalAppContext.getString(R.string.text_next_run_time) + ": " +
-                        DateTimeFormat.shortDateTime().print(nextTime);
+                        DateTimeFormat.forPattern("yyyy/MM/dd HH:mm").print(nextTime);
             } else {
                 assert mIntentTask != null;
                 Integer desc = ACTION_DESC_MAP.get(mIntentTask.getAction());
