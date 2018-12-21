@@ -21,6 +21,9 @@ import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
 import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_COLUMN_INT;
 import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_PROGRESS_VALUE;
@@ -94,17 +97,24 @@ public class UiSelector extends UiGlobalSelector {
     @NonNull
     @ScriptInterface
     protected UiObjectCollection findImpl(int max) {
-        AccessibilityNodeInfo root = mAccessibilityBridge.getRootInCurrentWindow();
+        List<AccessibilityNodeInfo> roots = mAccessibilityBridge.windowRoots();
         if (BuildConfig.DEBUG)
-            Log.d(TAG, "find: root = " + root);
-        if (root == null) {
+            Log.d(TAG, "find: roots = " + roots);
+        if (roots.isEmpty()) {
             return UiObjectCollection.Companion.getEMPTY();
         }
-        if (root.getPackageName() != null && mAccessibilityBridge.getConfig().whiteListContains(root.getPackageName().toString())) {
-            Log.d(TAG, "package in white list, return null");
-            return UiObjectCollection.Companion.getEMPTY();
+        List<UiObject> result = new ArrayList<>();
+        for (AccessibilityNodeInfo root : roots) {
+            if (root.getPackageName() != null && mAccessibilityBridge.getConfig().whiteListContains(root.getPackageName().toString())) {
+                Log.d(TAG, "package in white list, return null");
+                return UiObjectCollection.Companion.getEMPTY();
+            }
+            result.addAll(findAndReturnList(UiObject.Companion.createRoot(root, mAllocator), max - result.size()));
+            if (result.size() >= max) {
+                break;
+            }
         }
-        return findOf(UiObject.Companion.createRoot(root, mAllocator), max);
+        return UiObjectCollection.Companion.of(result);
     }
 
     @Override

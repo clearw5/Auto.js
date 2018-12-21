@@ -64,22 +64,22 @@ module.exports = function (runtime, scope) {
         MatchingResult.prototype.best = function () {
             return this.findMax((l, r) => r.similarity - l.similarity);
         }
-        MatchingResult.prototype.sortBy = function(cmp) {
+        MatchingResult.prototype.sortBy = function (cmp) {
             var comparatorFn = null;
-            if(typeof(cmp) == 'string'){
+            if (typeof (cmp) == 'string') {
                 cmp.split("-").forEach(direction => {
                     var buildInFn = comparators[direction];
-                    if(!buildInFn){
-                        throw new Error("unknown direction '" + direction + "' in '" + cmp +"'");
+                    if (!buildInFn) {
+                        throw new Error("unknown direction '" + direction + "' in '" + cmp + "'");
                     }
-                    (function(fn){
-                        if(comparatorFn == null){
+                    (function (fn) {
+                        if (comparatorFn == null) {
                             comparatorFn = fn;
-                        }else{
-                            comparatorFn = (function(comparatorFn, fn){
-                                return function(l, r){
+                        } else {
+                            comparatorFn = (function (comparatorFn, fn) {
+                                return function (l, r) {
                                     var cmpValue = comparatorFn(l, r);
-                                    if(cmpValue == 0){
+                                    if (cmpValue == 0) {
                                         return fn(l, r);
                                     }
                                     return cmpValue;
@@ -88,7 +88,7 @@ module.exports = function (runtime, scope) {
                         }
                     })(buildInFn);
                 });
-            }else{
+            } else {
                 comparatorFn = cmp;
             }
             var clone = this.matches.slice();
@@ -188,29 +188,32 @@ module.exports = function (runtime, scope) {
 
         images.inRange = function (img, lowerBound, upperBound) {
             initIfNeeded();
-            var lb, ub;
-            if (typeof (lowerBound) == 'string') {
-                if (typeof (upperBound) == 'string') {
-                    lb = new Scalar(colors.red(lowerBound), colors.green(lowerBound),
-                        colors.blue(lowerBound), colors.alpha(lowerBound));
-                    ub = new Scalar(colors.red(upperBound), colors.green(upperBound),
-                        colors.blue(upperBound), colors.alpha(lowerBound));
-                } else if (typeof (upperBound) == 'number') {
-                    var color = lowerBound;
-                    var threshold = upperBound;
-                    lb = new Scalar(colors.red(color) - threshold, colors.green(color) - threshold,
-                        colors.blue(color) - threshold, colors.alpha(color));
-                    ub = new Scalar(colors.red(color) + threshold, colors.green(color) + threshold,
-                        colors.blue(color) + threshold, colors.alpha(color));
-                } else {
-                    throw new TypeError('lowerBound = ' + lowerBound, + 'upperBound = ' + upperBound);
-                }
+            var lb = new Scalar(colors.red(lowerBound), colors.green(lowerBound),
+                colors.blue(lowerBound), colors.alpha(lowerBound));
+            var ub = new Scalar(colors.red(upperBound), colors.green(upperBound),
+                colors.blue(upperBound), colors.alpha(lowerBound))
+            if (typeof (upperBound) == 'number') {
+                var color = lowerBound;
+                var threshold = upperBound;
+
+            } else {
+                throw new TypeError('lowerBound = ' + lowerBound, + 'upperBound = ' + upperBound);
             }
             var bi = new Mat();
             Core.inRange(img.mat, lb, ub, bi);
             return images.matToImage(bi);
         }
 
+        images.interval = function (img, color, threshold) {
+            initIfNeeded();
+            var lb = new Scalar(colors.red(color) - threshold, colors.green(color) - threshold,
+                colors.blue(color) - threshold, colors.alpha(color));
+            var ub = new Scalar(colors.red(color) + threshold, colors.green(color) + threshold,
+                colors.blue(color) + threshold, colors.alpha(color));
+            var bi = new Mat();
+            Core.inRange(img.mat, lb, ub, bi);
+            return images.matToImage(bi);
+        }
 
         images.adaptiveThreshold = function (img, maxValue, adaptiveMethod, thresholdType, blockSize, C) {
             initIfNeeded();
@@ -225,7 +228,7 @@ module.exports = function (runtime, scope) {
             initIfNeeded();
             var mat = new Mat();
             size = newSize(size);
-            type = Imgproc["BORDER_" + (type || "CONSTANT")];
+            type = Imgproc["BORDER_" + (type || "DEFAULT")];
             if (point == undefined) {
                 Imgproc.blur(img.mat, mat, size);
             } else {
@@ -322,12 +325,10 @@ module.exports = function (runtime, scope) {
             return javaImages.rotate(img, x, y, degree);
         }
 
-        images.concat = function (img1, img2, direction, rect1, rect2) {
+        images.concat = function (img1, img2, direction) {
             initIfNeeded();
             direction = direction || "right";
-            rect1 = buildRegion(rect1, img1);
-            rect2 = buildRegion(rect2, img1);
-            return javaImages.concat(img1, rect1, img2, rect2, android.view.Gravity[direction.toUpperCase()]);
+            return javaImages.concat(img1, img2, android.view.Gravity[direction.toUpperCase()]);
         }
 
         images.detectsColor = function (img, color, x, y, threshold, algorithm) {
@@ -525,7 +526,7 @@ module.exports = function (runtime, scope) {
             var width = region[2] === undefined ? img.getWidth() - x : region[2];
             var height = region[3] === undefined ? (img.getHeight() - y) : region[3];
             var r = new org.opencv.core.Rect(x, y, width, height);
-            if(x < 0 || y < 0 || x + width > img.width || y + height > img.height) {
+            if (x < 0 || y < 0 || x + width > img.width || y + height > img.height) {
                 throw new Error("out of region: region = [" + [x, y, width, height] + "], image.size = [" + [img.width, img.height] + "]");
             }
             return r;

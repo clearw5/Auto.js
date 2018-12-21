@@ -14,18 +14,20 @@ object Pref {
     private const val KEY_FIRST_USING = "key_first_using"
     private var sPreferences: SharedPreferences? = null
 
-    val preferences: SharedPreferences?
+    val preferences: SharedPreferences
         get() {
-            if (sPreferences == null)
-                sPreferences = PreferenceManager.getDefaultSharedPreferences(GlobalAppContext.get())
-            return sPreferences
+            return sPreferences ?: {
+                val pref = PreferenceManager.getDefaultSharedPreferences(GlobalAppContext.get())
+                sPreferences = pref
+                pref
+            }()
         }
 
     val isFirstUsing: Boolean
         get() {
-            val firstUsing = preferences!!.getBoolean(KEY_FIRST_USING, true)
+            val firstUsing = preferences.getBoolean(KEY_FIRST_USING, true)
             if (firstUsing) {
-                preferences!!.edit().putBoolean(KEY_FIRST_USING, false).apply()
+                preferences.edit().putBoolean(KEY_FIRST_USING, false).apply()
             }
             return firstUsing
         }
@@ -35,14 +37,14 @@ object Pref {
     }
 
     fun shouldEnableAccessibilityServiceByRoot(): Boolean {
-        return preferences!!.getBoolean(getString(R.string.key_enable_accessibility_service_by_root), false)
+        return preferences.getBoolean(getString(R.string.key_enable_accessibility_service_by_root), false)
     }
 
     fun shouldHideLogs(): Boolean {
-        return preferences!!.getBoolean(getString(R.string.key_dont_show_main_activity), false)
+        return preferences.getBoolean(getString(R.string.key_dont_show_main_activity), false)
     }
 
     fun shouldStopAllScriptsWhenVolumeUp(): Boolean {
-        return preferences!!.getBoolean(getString(R.string.key_use_volume_control_running), true)
+        return preferences.getBoolean(getString(R.string.key_use_volume_control_running), true)
     }
 }

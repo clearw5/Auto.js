@@ -7,8 +7,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.SystemClock
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityWindowInfo
 import androidx.annotation.RequiresApi
 import com.stardust.app.isOpPermissionGranted
 import com.stardust.autojs.core.util.Shell
@@ -76,7 +78,13 @@ class ActivityInfoProvider(private val context: Context) : AccessibilityDelegate
 
     override fun onAccessibilityEvent(service: AccessibilityService, event: AccessibilityEvent): Boolean {
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            setLatestComponent(event.packageName, event.className)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val window = service.getWindow(event.windowId)
+                if (window?.isFocused != false) {
+                    setLatestComponent(event.packageName, event.className)
+                    return false
+                }
+            }
         }
         return false
     }
@@ -146,19 +154,24 @@ class ActivityInfoProvider(private val context: Context) : AccessibilityDelegate
     }
 
     private fun setLatestComponent(latestPackage: CharSequence?, latestClass: CharSequence?) {
-        if (latestPackage == null || latestClass == null)
+        if (latestPackage == null)
             return
         val latestPackageStr = latestPackage.toString()
-        val latestClassStr = latestClass.toString()
-        if (latestClassStr.startsWith("android.view.") || latestClassStr.startsWith("android.widget."))
-            return
-        try {
-            val componentName = ComponentName(latestPackageStr, latestClassStr)
-            mLatestActivity = mPackageManager.getActivityInfo(componentName, PackageManager.MATCH_DEFAULT_ONLY).name
-        } catch (ignored: PackageManager.NameNotFoundException) {
-            return
+        val latestClassStr = (latestClass ?: "").toString()
+        if (isPackageExists(latestPackageStr)) {
+            mLatestPackage = latestPackage.toString()
+            mLatestActivity = latestClassStr
         }
-        mLatestPackage = latestPackage.toString()
+        Log.d(LOG_TAG, "setLatestComponent: $latestPackage/$latestClassStr $mLatestPackage/$mLatestActivity")
+    }
+
+    private fun isPackageExists(packageName: String): Boolean {
+        return try {
+            mPackageManager.getPackageInfo(packageName, 0)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
     }
 
     companion object {
@@ -178,4 +191,14 @@ class ActivityInfoProvider(private val context: Context) : AccessibilityDelegate
 
         private const val LOG_TAG = "ActivityInfoProvider"
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+private fun AccessibilityService.getWindow(windowId: Int): AccessibilityWindowInfo? {
+    windows.forEach {
+        if (it.id == windowId) {
+            return it
+        }
+    }
+    return null
 }

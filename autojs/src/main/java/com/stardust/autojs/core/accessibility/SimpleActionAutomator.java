@@ -5,7 +5,9 @@ import android.accessibilityservice.GestureDescription;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
+
 import androidx.annotation.RequiresApi;
+
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -19,6 +21,8 @@ import com.stardust.automator.simple_action.ActionTarget;
 import com.stardust.automator.simple_action.SimpleAction;
 import com.stardust.util.DeveloperUtils;
 import com.stardust.util.ScreenMetrics;
+
+import java.util.List;
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -253,11 +257,15 @@ public class SimpleActionAutomator {
             Log.d(TAG, "performAction: running package is self. return false");
             return false;
         }
-        AccessibilityNodeInfo root = mAccessibilityBridge.getRootInCurrentWindow();
-        if (root == null)
+        List<AccessibilityNodeInfo> roots = mAccessibilityBridge.windowRoots();
+        if (roots.isEmpty())
             return false;
-        Log.v(TAG, "performAction: " + simpleAction + " root = " + root);
-        return simpleAction.perform(UiObject.Companion.createRoot(root));
+        Log.v(TAG, "performAction: " + simpleAction + " windowRoots = " + roots);
+        boolean succeed = true;
+        for (AccessibilityNodeInfo root : roots) {
+            succeed &= simpleAction.perform(UiObject.Companion.createRoot(root));
+        }
+        return succeed;
     }
 
     private boolean isRunningPackageSelf() {

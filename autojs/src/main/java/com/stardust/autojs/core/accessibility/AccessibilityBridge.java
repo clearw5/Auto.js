@@ -19,6 +19,10 @@ import com.stardust.autojs.core.activity.ActivityInfoProvider;
 import com.stardust.view.accessibility.AccessibilityNotificationObserver;
 import com.stardust.view.accessibility.AccessibilityService;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -62,26 +66,51 @@ public abstract class AccessibilityBridge {
     @Nullable
     public abstract AccessibilityService getService();
 
+    public List<AccessibilityNodeInfo> windowRoots() {
+        AccessibilityService service = getService();
+        if (service == null)
+            return Collections.emptyList();
+        ArrayList<AccessibilityNodeInfo> roots = new ArrayList<>();
+        if (mWindowFilter != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            for (AccessibilityWindowInfo window : service.getWindows()) {
+                if (mWindowFilter.filter(window)) {
+                    AccessibilityNodeInfo root = window.getRoot();
+                    if (root != null) {
+                        roots.add(root);
+                    }
+                }
+            }
+            return roots;
+        }
+        if ((mMode & MODE_FAST) != 0) {
+            return Collections.singletonList(service.fastRootInActiveWindow());
+        }
+        return Collections.singletonList(service.getRootInActiveWindow());
+    }
+
     @Nullable
     public AccessibilityNodeInfo getRootInCurrentWindow() {
         AccessibilityService service = getService();
-
         if (service == null)
             return null;
         if (mWindowFilter != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AccessibilityWindowInfo activeWindow = null;
             for (AccessibilityWindowInfo window : service.getWindows()) {
                 if (mWindowFilter.filter(window)) {
                     return window.getRoot();
                 }
-                if (window.isActive()) {
-                    activeWindow = window;
-                }
             }
-            if (activeWindow != null) {
-                return activeWindow.getRoot();
-            }
+            return null;
         }
+        if ((mMode & MODE_FAST) != 0) {
+            return service.fastRootInActiveWindow();
+        }
+        return service.getRootInActiveWindow();
+    }
+
+    public AccessibilityNodeInfo getRootInActiveWindow() {
+        AccessibilityService service = getService();
+        if (service == null)
+            return null;
         if ((mMode & MODE_FAST) != 0) {
             return service.fastRootInActiveWindow();
         }

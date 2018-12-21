@@ -41,7 +41,7 @@ open class AccessibilityService : android.accessibilityservice.AccessibilityServ
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         instance = this
-        //Log.v(TAG, "onAccessibilityEvent: " + event);
+        // Log.v(TAG, "onAccessibilityEvent: $event");
         if (!containsAllEventTypes && !eventTypes.contains(event.eventType))
             return
         val type = event.eventType

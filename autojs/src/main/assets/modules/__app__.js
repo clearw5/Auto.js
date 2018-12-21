@@ -42,7 +42,7 @@ module.exports = function (runtime, global) {
         }
         if (i.type) {
             if (i.data) {
-                intent.setDataAndType(android.net.Uri.parse(i.data), i.type);
+                intent.setDataAndType(app.parseUri(i.data), i.type);
             } else {
                 intent.setType(i.type);
             }

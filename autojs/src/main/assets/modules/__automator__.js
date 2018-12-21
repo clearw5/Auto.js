@@ -138,11 +138,15 @@ module.exports = function(runtime, global){
     }
 
     auto.setFlags = function(flags){
-        if(typeof(flags) !== "string"){
-            throw new TypeError("flags should be a string");
+        let flagStrings;
+        if(Array.isArray(flags)){
+            flagStrings = flags;
+        } else if(typeof(flags) == "string"){
+            flagStrings = [flags];
+        } else {
+            throw new TypeError("flags = " + flags);
         }
         let flagsInt = 0;
-        let flagStrings = flags.split("|");
         for(let i = 0; i < flagStrings.length; i++){
             let flag = flagsMap[flagStrings[i]];
             if(flag == undefined){
@@ -153,22 +157,36 @@ module.exports = function(runtime, global){
         runtime.accessibilityBridge.setFlags(flagsInt);
     }
 
-    auto.getService = function(){
+    auto.__defineGetter__("service", function() {
         return runtime.accessibilityBridge.getService();
-    }
+    });
 
-    auto.getWindows = function(){
+    auto.__defineGetter__("windows", function() {
         var service = auto.getService();
         return service == null ? [] : util.java.toJsArray(service.getWindows(), true);
-    }
+    });
 
-    auto.getRoot = function(){
+    auto.__defineGetter__("root", function() {
         var root = runtime.accessibilityBridge.getRootInCurrentWindow();
         if(root == null){
             return null;
         }
         return com.stardust.automator.UiObject.Companion.createRoot(root);
-    }
+    });
+
+    auto.__defineGetter__("rootInActiveWindow", function() {
+        var root = runtime.accessibilityBridge.getRootInActiveWindow();
+        if(root == null){
+            return null;
+        }
+        return com.stardust.automator.UiObject.Companion.createRoot(root);
+    });
+
+    auto.__defineGetter__("windowRoots", function() {
+        return util.java.toJsArray(runtime.accessibilityBridge.windowRoots(), false)
+            .map(root => com.stardust.automator.UiObject.Companion.createRoot(root));
+    });
+
 
     auto.setWindowFilter = function(filter){
         runtime.accessibilityBridge.setWindowFilter(new com.stardust.autojs.core.accessibility.AccessibilityBridge.WindowFilter(filter));
