@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Console | Auto.js 3.0.0 文档</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <title>Console | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="https://nodejs.org/api/console.html">
@@ -61,7 +61,7 @@
 
     <div id="column1" data-id="console" class="interior">
       <header>
-        <h1>Auto.js 3.0.0 文档</h1>
+        <h1>Auto.js 4.1.0 文档</h1>
         <div id="gtoc">
           <p>
             <a href="index.html" name="toc">索引</a> |
@@ -84,10 +84,14 @@
 <li><span class="stability_undefined"><a href="#console_console_warn_data_args">console.warn([data][, ...args])</a></span></li>
 <li><span class="stability_undefined"><a href="#console_console_error_data_args">console.error([data][, ...args])</a></span></li>
 <li><span class="stability_undefined"><a href="#console_console_assert_value_message">console.assert(value, message)</a></span></li>
+<li><span class="stability_undefined"><a href="#console_console_time_label">console.time([label])</a></span></li>
+<li><span class="stability_undefined"><a href="#console_console_timeend_label">console.timeEnd(label)</a></span></li>
+<li><span class="stability_undefined"><a href="#console_console_trace_data_args">console.trace([data][, ...args])</a></span></li>
 <li><span class="stability_undefined"><a href="#console_console_input_data_args">console.input(data[, ...args])</a></span></li>
 <li><span class="stability_undefined"><a href="#console_console_rawinput_data_args">console.rawInput(data[, ...args])</a></span></li>
 <li><span class="stability_undefined"><a href="#console_console_setsize_w_h">console.setSize(w, h)</a></span></li>
 <li><span class="stability_undefined"><a href="#console_console_setposition_x_y">console.setPosition(x, y)</a></span></li>
+<li><span class="stability_undefined"><a href="#console_console_setgloballogconfig_config">console.setGlobalLogConfig(config)</a></span></li>
 <li><span class="stability_undefined"><a href="#console_print_text">print(text)</a></span></li>
 </ul>
 </li>
@@ -107,8 +111,8 @@ console模块中的一些函数也可以直接作为全局函数使用，例如l
 <p>清空控制台。</p>
 <h2>console.log([data][, ...args])<span><a class="mark" href="#console_console_log_data_args" id="console_console_log_data_args">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>data</code> <any></li>
-<li><code>...args</code> <any></li>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
 </ul>
 </div><p>打印到控制台，并带上换行符。 可以传入多个参数，第一个参数作为主要信息，其他参数作为类似于 <a href="http://man7.org/linux/man-pages/man3/printf.3.html">printf(3)</a> 中的代替值（参数都会传给 util.format()）。</p>
 <pre><code>const count = 5;
@@ -120,26 +124,26 @@ console.log(&#39;count:&#39;, count);
 <p>该函数也可以作为全局函数使用。</p>
 <h2>console.verbose([data][, ...args])<span><a class="mark" href="#console_console_verbose_data_args" id="console_console_verbose_data_args">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>data</code> <any></li>
-<li><code>...args</code> <any></li>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
 </ul>
 </div><p>与console.log类似，但输出结果以灰色字体显示。输出优先级低于log，用于输出观察性质的信息。</p>
 <h2>console.info([data][, ...args])<span><a class="mark" href="#console_console_info_data_args" id="console_console_info_data_args">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>data</code> <any></li>
-<li><code>...args</code> <any></li>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
 </ul>
 </div><p>与console.log类似，但输出结果以绿色字体显示。输出优先级高于log, 用于输出重要信息。</p>
 <h2>console.warn([data][, ...args])<span><a class="mark" href="#console_console_warn_data_args" id="console_console_warn_data_args">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>data</code> <any></li>
-<li><code>...args</code> <any></li>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
 </ul>
 </div><p>与console.log类似，但输出结果以蓝色字体显示。输出优先级高于info, 用于输出警告信息。</p>
 <h2>console.error([data][, ...args])<span><a class="mark" href="#console_console_error_data_args" id="console_console_error_data_args">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>data</code> <any></li>
-<li><code>...args</code> <any></li>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
 </ul>
 </div><p>与console.log类似，但输出结果以红色字体显示。输出优先级高于warn, 用于输出错误信息。</p>
 <h2>console.assert(value, message)<span><a class="mark" href="#console_console_assert_value_message" id="console_console_assert_value_message">#</a></span></h2>
@@ -150,10 +154,46 @@ console.log(&#39;count:&#39;, count);
 </div><p>断言。如果value为false则输出错误信息message并停止脚本运行。</p>
 <pre><code>var a = 1 + 1;
 console.assert(a == 2, &quot;加法出错啦&quot;);
-</code></pre><h2>console.input(data[, ...args])<span><a class="mark" href="#console_console_input_data_args" id="console_console_input_data_args">#</a></span></h2>
+</code></pre><h2>console.time([label])<span><a class="mark" href="#console_console_time_label" id="console_console_time_label">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;String&gt;</a> 计时器标签，可省略</li>
+</ul>
+<p>启动一个定时器，用以计算一个操作的持续时间。
+定时器由一个唯一的 <code>label</code> 标识。
+当调用 <code>console.timeEnd()</code> 时，可以使用相同的 <code>label</code> 来停止定时器，并以毫秒为单位将持续时间输出到控制台。
+重复启动同一个标签的定时器会覆盖之前启动同一标签的定时器。</p>
+<h2>console.timeEnd(label)<span><a class="mark" href="#console_console_timeend_label" id="console_console_timeend_label">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;String&gt;</a> 计时器标签</li>
+</ul>
+<p>停止之前通过调用 <code>console.time()</code> 启动的定时器，并打印结果到控制台。
+调用 <code>console.timeEnd()</code> 后定时器会被删除。如果不存在标签指定的定时器则会打印 <code>NaNms</code>。</p>
+<pre><code class="lang-js">console.time(&#39;求和&#39;);
+var sum = 0;
+for(let i = 0; i &lt; 100000; i++){
+    sum += i;
+}
+console.timeEnd(&#39;求和&#39;);
+// 打印 求和: xxx ms
+</code></pre>
+<h2>console.trace([data][, ...args])<span><a class="mark" href="#console_console_trace_data_args" id="console_console_trace_data_args">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+<p>与console.log类似，同时会打印出调用这个函数所在的调用栈信息（即当前运行的文件、行数等信息）。</p>
+<pre><code class="lang-js">console.trace(&#39;Show me&#39;);
+// 打印: (堆栈跟踪会根据被调用的跟踪的位置而变化)
+// Show me
+//  at &lt;test&gt;:7
+</code></pre>
+<h2>console.input(data[, ...args])<span><a class="mark" href="#console_console_input_data_args" id="console_console_input_data_args">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>data</code> <any></li>
-<li><code>...args</code> <any></li>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
 </ul>
 </div><p>与console.log一样输出信息，并在控制台显示输入框等待输入。按控制台的确认按钮后会将输入的字符串用eval计算后返回。</p>
 <p><strong>部分机型可能会有控制台不显示输入框的情况，属于bug。</strong></p>
@@ -164,8 +204,8 @@ toast(n + 1);
 //显示124
 </code></pre><h2>console.rawInput(data[, ...args])<span><a class="mark" href="#console_console_rawinput_data_args" id="console_console_rawinput_data_args">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>data</code> <any></li>
-<li><code>...args</code> <any></li>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
 </ul>
 </div><p>与console.log一样输出信息，并在控制台显示输入框等待输入。按控制台的确认按钮后会将输入的字符串直接返回。</p>
 <p>部分机型可能会有控制台不显示输入框的情况，属于bug。</p>
@@ -191,7 +231,24 @@ console.setSize(device.width / 2, device.height / 2);
 </div><p>设置控制台的位置，单位像素。</p>
 <pre><code>console.show();
 console.setPosition(100, 100);
-</code></pre><h2>print(text)<span><a class="mark" href="#console_print_text" id="console_print_text">#</a></span></h2>
+</code></pre><h2>console.setGlobalLogConfig(config)<span><a class="mark" href="#console_console_setgloballogconfig_config" id="console_console_setgloballogconfig_config">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>config</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 日志配置，可选的项有：<ul>
+<li><code>file</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 日志文件路径，将会把日志写入该文件中</li>
+<li><code>maxFileSize</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 最大文件大小，单位字节，默认为512 * 1024 (512KB)</li>
+<li><code>rootLevel</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 写入的日志级别，默认为&quot;ALL&quot;（所有日志），可以为&quot;OFF&quot;(关闭), &quot;DEBUG&quot;, &quot;INFO&quot;, &quot;WARN&quot;, &quot;ERROR&quot;, &quot;FATAL&quot;等。</li>
+<li><code>maxBackupSize</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 日志备份文件最大数量，默认为5</li>
+<li><code>filePattern</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 日志写入格式，参见<a href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/PatternLayout.html">PatternLayout</a></li>
+</ul>
+</li>
+</ul>
+<p>设置日志保存的路径和配置。例如把日志保存到&quot;/sdcard/1.txt&quot;:</p>
+<pre><code>console.setGlobalLogConfig({
+    &quot;file&quot;: &quot;/sdcard/1.txt&quot;
+});
+</code></pre><p>注意该函数会影响所有脚本的日志记录。</p>
+<h2>print(text)<span><a class="mark" href="#console_print_text" id="console_print_text">#</a></span></h2>
 <div class="signature"><ul>
 <li>text <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 要打印到控制台的信息</li>
 </ul>
