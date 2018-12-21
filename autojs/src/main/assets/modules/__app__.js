@@ -146,7 +146,7 @@ module.exports = function (runtime, global) {
         if (app.fileProviderAuthority == null) {
             return android.net.Uri.fromFile(file);
         }
-        return androidx.core.content.FileProvider.getUriForFile(context,
+        return Packages["androidx"].core.content.FileProvider.getUriForFile(context,
             app.fileProviderAuthority, file);
     };
 

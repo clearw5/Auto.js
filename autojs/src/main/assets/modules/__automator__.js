@@ -162,7 +162,7 @@ module.exports = function(runtime, global){
     });
 
     auto.__defineGetter__("windows", function() {
-        var service = auto.getService();
+        var service = auto.service;
         return service == null ? [] : util.java.toJsArray(service.getWindows(), true);
     });
 

@@ -317,7 +317,7 @@ public class Images {
         if (rect != null) {
             src = new Mat(src, rect);
         }
-        List<TemplateMatching.Match> result = TemplateMatching.fastTemplateMatching(src, template.getMat(), TemplateMatching.MATCHING_METHOD_DEFAULT,
+        List<TemplateMatching.Match> result = TemplateMatching.fastTemplateMatching(src, template.getMat(), Imgproc.TM_CCOEFF_NORMED,
                 weakThreshold, threshold, maxLevel, limit);
         for (TemplateMatching.Match match : result) {
             Point point = match.point;
@@ -331,7 +331,6 @@ public class Images {
         if (src != image.getMat()) {
             OpenCVHelper.release(src);
         }
-        Collections.sort(result, (l, r) -> Double.compare(r.similarity, l.similarity));
         return result;
     }
 

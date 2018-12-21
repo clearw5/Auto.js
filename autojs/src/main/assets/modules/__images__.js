@@ -192,13 +192,6 @@ module.exports = function (runtime, scope) {
                 colors.blue(lowerBound), colors.alpha(lowerBound));
             var ub = new Scalar(colors.red(upperBound), colors.green(upperBound),
                 colors.blue(upperBound), colors.alpha(lowerBound))
-            if (typeof (upperBound) == 'number') {
-                var color = lowerBound;
-                var threshold = upperBound;
-
-            } else {
-                throw new TypeError('lowerBound = ' + lowerBound, + 'upperBound = ' + upperBound);
-            }
             var bi = new Mat();
             Core.inRange(img.mat, lb, ub, bi);
             return images.matToImage(bi);
@@ -228,7 +221,7 @@ module.exports = function (runtime, scope) {
             initIfNeeded();
             var mat = new Mat();
             size = newSize(size);
-            type = Imgproc["BORDER_" + (type || "DEFAULT")];
+            type = Core["BORDER_" + (type || "DEFAULT")];
             if (point == undefined) {
                 Imgproc.blur(img.mat, mat, size);
             } else {
@@ -251,7 +244,7 @@ module.exports = function (runtime, scope) {
             size = newSize(size);
             sigmaX = sigmaX == undefined ? 0 : sigmaX;
             sigmaY = sigmaY == undefined ? 0 : sigmaY;
-            type = Imgproc["BORDER_" + (type || "DEFAULT")];
+            type = Core["BORDER_" + (type || "DEFAULT")];
             Imgproc.GaussianBlur(img.mat, mat, size, sigmaX, sigmaY, type);
             return images.matToImage(mat);
         }

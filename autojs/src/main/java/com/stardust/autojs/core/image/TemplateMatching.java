@@ -214,9 +214,11 @@ public class TemplateMatching {
                 break;
             }
             outResult.add(bestMatched);
-            Imgproc.rectangle(tmResult, bestMatched.point,
-                    new Point(bestMatched.point.x + template.cols(), bestMatched.point.y + template.rows()),
-                    new Scalar(0, 255, 0), -1);
+            Point start = new Point(Math.max(0, bestMatched.point.x - template.width() + 1),
+                    Math.max(0, bestMatched.point.y - template.height() + 1));
+            Point end = new Point(Math.min(tmResult.width(), bestMatched.point.x + template.width()),
+                    Math.min(tmResult.height(), bestMatched.point.y + template.height()));
+            Imgproc.rectangle(tmResult, start, end, new Scalar(0, 255, 0), -1);
         }
     }
 
