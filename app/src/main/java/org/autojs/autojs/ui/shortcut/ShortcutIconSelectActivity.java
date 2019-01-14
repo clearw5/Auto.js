@@ -95,7 +95,7 @@ public class ShortcutIconSelectActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT)
-                .setType("image/*"), 11209);
+                .setType("image/*"), 11234);
         return true;
     }
 
