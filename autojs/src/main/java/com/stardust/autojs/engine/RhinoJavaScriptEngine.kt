@@ -68,7 +68,7 @@ open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Co
         runtime.topLevelScope = mScriptable
     }
 
-    public override fun doExecution(source: JavaScriptSource): Any {
+    public override fun doExecution(source: JavaScriptSource): Any? {
         var reader = source.nonNullScriptReader
         try {
             reader = preprocess(reader)
