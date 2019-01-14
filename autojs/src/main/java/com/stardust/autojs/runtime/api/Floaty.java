@@ -36,7 +36,7 @@ public class Floaty {
     public Floaty(UiHandler uiHandler, UI ui, ScriptRuntime runtime) {
         mUiHandler = uiHandler;
         mRuntime = runtime;
-        mContext = new ContextThemeWrapper(mUiHandler.getContext(), R.style.AppTheme);
+        mContext = new ContextThemeWrapper(mUiHandler.getContext(), R.style.ScriptTheme);
         mLayoutInflater = ui.getLayoutInflater();
     }
 

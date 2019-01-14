@@ -18,10 +18,11 @@ public class ProjectLauncher {
         mMainScriptFile = new File(mProjectDir, mProjectConfig.getMainScriptFile());
     }
 
-    public void launch(ScriptEngineService service){
-        service.execute(new JavaScriptFileSource(mMainScriptFile), new ExecutionConfig()
-                .executePath(mProjectDir)
-                .requirePath(mProjectDir));
+    public void launch(ScriptEngineService service) {
+        ExecutionConfig config = new ExecutionConfig();
+        config.setWorkingDirectory(mProjectDir);
+        config.getScriptConfig().setFeatures(mProjectConfig.getFeatures());
+        service.execute(new JavaScriptFileSource(mMainScriptFile), config);
     }
 
 }

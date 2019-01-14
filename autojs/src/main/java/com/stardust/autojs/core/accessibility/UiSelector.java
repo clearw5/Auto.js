@@ -2,7 +2,9 @@ package com.stardust.autojs.core.accessibility;
 
 import android.os.Looper;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
+
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -13,41 +15,43 @@ import com.stardust.automator.ActionArgument;
 import com.stardust.automator.UiGlobalSelector;
 import com.stardust.automator.UiObject;
 import com.stardust.automator.UiObjectCollection;
-import com.stardust.automator.filter.DfsFilter;
+import com.stardust.automator.filter.Filter;
 import com.stardust.concurrent.VolatileBox;
 import com.stardust.view.accessibility.AccessibilityNodeInfoAllocator;
 
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_COLUMN_INT;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_PROGRESS_VALUE;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_ROW_INT;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_SELECTION_END_INT;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_SELECTION_START_INT;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_CLEAR_ACCESSIBILITY_FOCUS;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_CLEAR_FOCUS;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_CLICK;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_COLLAPSE;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_COPY;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_CUT;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_DISMISS;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_EXPAND;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_FOCUS;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_LONG_CLICK;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_PASTE;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_SELECT;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_SET_SELECTION;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.ACTION_SET_TEXT;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CONTEXT_CLICK;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_DOWN;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_LEFT;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_RIGHT;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_TO_POSITION;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_UP;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SET_PROGRESS;
-import static android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SHOW_ON_SCREEN;
+import org.jetbrains.annotations.NotNull;
+
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_COLUMN_INT;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_PROGRESS_VALUE;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_ROW_INT;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_SELECTION_END_INT;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_SELECTION_START_INT;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_CLEAR_ACCESSIBILITY_FOCUS;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_CLEAR_FOCUS;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_CLICK;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_COLLAPSE;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_COPY;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_CUT;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_DISMISS;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_EXPAND;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_FOCUS;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_LONG_CLICK;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_PASTE;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_SELECT;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_SET_SELECTION;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_SET_TEXT;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CONTEXT_CLICK;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_DOWN;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_LEFT;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_RIGHT;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_TO_POSITION;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_UP;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SET_PROGRESS;
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SHOW_ON_SCREEN;
 
 /**
  * Created by Stardust on 2017/3/9.
@@ -70,37 +74,41 @@ public class UiSelector extends UiGlobalSelector {
         mAllocator = allocator;
     }
 
-    @NonNull
-    @ScriptInterface
-    public UiObjectCollection find() {
+    protected UiObjectCollection find(int max) {
         ensureAccessibilityServiceEnabled();
-        if((mAccessibilityBridge.getFlags() & AccessibilityBridge.FLAG_FIND_ON_UI_THREAD)!=0
-            && Looper.myLooper() != Looper.getMainLooper()){
+        if ((mAccessibilityBridge.getFlags() & AccessibilityBridge.FLAG_FIND_ON_UI_THREAD) != 0
+                && Looper.myLooper() != Looper.getMainLooper()) {
             VolatileBox<UiObjectCollection> result = new VolatileBox<>();
-            mAccessibilityBridge.post(() -> result.setAndNotify(findImpl()));
+            mAccessibilityBridge.post(() -> result.setAndNotify(findImpl(max)));
             return result.blockedGet();
         }
-        return findImpl();
+        return findImpl(max);
     }
 
     @NonNull
     @ScriptInterface
-    protected UiObjectCollection findImpl() {
+    public UiObjectCollection find() {
+        return find(Integer.MAX_VALUE);
+    }
+
+    @NonNull
+    @ScriptInterface
+    protected UiObjectCollection findImpl(int max) {
         AccessibilityNodeInfo root = mAccessibilityBridge.getRootInCurrentWindow();
         if (BuildConfig.DEBUG)
             Log.d(TAG, "find: root = " + root);
         if (root == null) {
-            return UiObjectCollection.EMPTY;
+            return UiObjectCollection.Companion.getEMPTY();
         }
         if (root.getPackageName() != null && mAccessibilityBridge.getConfig().whiteListContains(root.getPackageName().toString())) {
             Log.d(TAG, "package in white list, return null");
-            return UiObjectCollection.EMPTY;
+            return UiObjectCollection.Companion.getEMPTY();
         }
-        return findOf(UiObject.createRoot(root, mAllocator));
+        return findOf(UiObject.Companion.createRoot(root, mAllocator), max);
     }
 
     @Override
-    public UiGlobalSelector textMatches(String regex) {
+    public UiGlobalSelector textMatches(@NotNull String regex) {
         return super.textMatches(convertRegex(regex));
     }
 
@@ -114,22 +122,22 @@ public class UiSelector extends UiGlobalSelector {
 
 
     @Override
-    public UiGlobalSelector classNameMatches(String regex) {
+    public UiGlobalSelector classNameMatches(@NotNull String regex) {
         return super.classNameMatches(convertRegex(regex));
     }
 
     @Override
-    public UiGlobalSelector idMatches(String regex) {
+    public UiGlobalSelector idMatches(@NotNull String regex) {
         return super.idMatches(convertRegex(regex));
     }
 
     @Override
-    public UiGlobalSelector packageNameMatches(String regex) {
+    public UiGlobalSelector packageNameMatches(@NotNull String regex) {
         return super.packageNameMatches(convertRegex(regex));
     }
 
     @Override
-    public UiGlobalSelector descMatches(String regex) {
+    public UiGlobalSelector descMatches(@NotNull String regex) {
         return super.descMatches(convertRegex(regex));
     }
 
@@ -140,6 +148,7 @@ public class UiSelector extends UiGlobalSelector {
     @ScriptInterface
     @NonNull
     public UiObjectCollection untilFind() {
+        ensureNonUiThread();
         UiObjectCollection uiObjectCollection = find();
         while (uiObjectCollection.empty()) {
             if (Thread.currentThread().isInterrupted()) {
@@ -155,18 +164,22 @@ public class UiSelector extends UiGlobalSelector {
         return uiObjectCollection;
     }
 
+    private void ensureNonUiThread() {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            // TODO: 2018/11/1 配置字符串
+            throw new IllegalThreadStateException("不能在ui线程执行阻塞操作, 请在子线程或子脚本执行findOne()或untilFind()");
+        }
+    }
+
     @ScriptInterface
     public UiObject findOne(long timeout) {
-        if (timeout == -1) {
-            return untilFindOne();
-        }
-        UiObjectCollection uiObjectCollection = find();
+        UiObjectCollection uiObjectCollection = find(1);
         long start = SystemClock.uptimeMillis();
         while (uiObjectCollection.empty()) {
             if (Thread.currentThread().isInterrupted()) {
                 throw new ScriptInterruptedException();
             }
-            if (SystemClock.uptimeMillis() - start > timeout) {
+            if (timeout > 0 && SystemClock.uptimeMillis() - start > timeout) {
                 return null;
             }
             try {
@@ -174,7 +187,7 @@ public class UiSelector extends UiGlobalSelector {
             } catch (InterruptedException e) {
                 throw new ScriptInterruptedException();
             }
-            uiObjectCollection = find();
+            uiObjectCollection = find(1);
         }
         return uiObjectCollection.get(0);
     }
@@ -184,7 +197,7 @@ public class UiSelector extends UiGlobalSelector {
     }
 
     public UiObject findOnce(int index) {
-        UiObjectCollection uiObjectCollection = find();
+        UiObjectCollection uiObjectCollection = find(index + 1);
         if (index >= uiObjectCollection.size()) {
             return null;
         }
@@ -204,8 +217,7 @@ public class UiSelector extends UiGlobalSelector {
 
     @NonNull
     public UiObject untilFindOne() {
-        UiObjectCollection collection = untilFind();
-        return collection.get(0);
+        return findOne(-1);
     }
 
     @ScriptInterface
@@ -214,13 +226,13 @@ public class UiSelector extends UiGlobalSelector {
     }
 
     @ScriptInterface
-    public UiSelector id(final String id) {
+    public UiSelector id(@NotNull final String id) {
         if (!id.contains(":")) {
-            addFilter(new DfsFilter() {
+            addFilter(new Filter() {
                 @Override
-                protected boolean isIncluded(UiObject nodeInfo) {
+                public boolean filter(@NotNull UiObject node) {
                     String fullId = mAccessibilityBridge.getInfoProvider().getLatestPackage() + ":id/" + id;
-                    return fullId.equals(nodeInfo.getViewIdResourceName());
+                    return fullId.equals(node.getViewIdResourceName());
                 }
 
                 @Override
@@ -235,11 +247,11 @@ public class UiSelector extends UiGlobalSelector {
     }
 
     @Override
-    public UiGlobalSelector idStartsWith(String prefix) {
+    public UiGlobalSelector idStartsWith(@NotNull String prefix) {
         if (!prefix.contains(":")) {
-            addFilter(new DfsFilter() {
+            addFilter(new Filter() {
                 @Override
-                protected boolean isIncluded(UiObject nodeInfo) {
+                public boolean filter(@NotNull UiObject nodeInfo) {
                     String fullIdPrefix = mAccessibilityBridge.getInfoProvider().getLatestPackage() + ":id/" + prefix;
                     String id = nodeInfo.getViewIdResourceName();
                     return id != null && id.startsWith(fullIdPrefix);

@@ -4,22 +4,22 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:hint="@string/text_class_or_package_name"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.TextInputEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/keywords"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/result_list"
             android:layout_width="match_parent"
             android:layout_height="400dp"/>

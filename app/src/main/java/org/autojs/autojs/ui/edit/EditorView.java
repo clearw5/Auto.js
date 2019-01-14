@@ -7,14 +7,20 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.DrawerLayout;
+
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
@@ -74,6 +80,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 import static org.autojs.autojs.model.script.Scripts.ACTION_ON_EXECUTION_FINISHED;
+import static org.autojs.autojs.model.script.Scripts.EXTRA_EXCEPTION_COLUMN_NUMBER;
+import static org.autojs.autojs.model.script.Scripts.EXTRA_EXCEPTION_LINE_NUMBER;
+import static org.autojs.autojs.model.script.Scripts.EXTRA_EXCEPTION_MESSAGE;
 
 /**
  * Created by Stardust on 2017/9/28.
@@ -116,7 +125,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     DrawerLayout mDrawerLayout;
 
     private String mName;
-    private File mFile;
+    private Uri mUri;
     private boolean mReadOnly = false;
     private int mScriptExecutionId;
     private AutoCompletion mAutoCompletion;
@@ -131,9 +140,9 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
                     exitDebugging();
                 }
                 setMenuItemStatus(R.id.run, true);
-                String msg = intent.getStringExtra(Scripts.EXTRA_EXCEPTION_MESSAGE);
-                int line = intent.getIntExtra(Scripts.EXTRA_EXCEPTION_LINE_NUMBER, -1);
-                int col = intent.getIntExtra(Scripts.EXTRA_EXCEPTION_COLUMN_NUMBER, 0);
+                String msg = intent.getStringExtra(EXTRA_EXCEPTION_MESSAGE);
+                int line = intent.getIntExtra(EXTRA_EXCEPTION_LINE_NUMBER, -1);
+                int col = intent.getIntExtra(EXTRA_EXCEPTION_COLUMN_NUMBER, 0);
                 if (line >= 1) {
                     mEditor.jumpTo(line - 1, col);
                 }
@@ -179,8 +188,8 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         }
     }
 
-    public File getFile() {
-        return mFile;
+    public Uri getUri() {
+        return mUri;
     }
 
     public Observable<String> handleIntent(Intent intent) {
@@ -215,21 +224,26 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
             return Observable.just(content);
         } else {
             if (path == null) {
-                return Observable.error(new IllegalArgumentException("path and content is empty"));
+                if (intent.getData() == null) {
+                    return Observable.error(new IllegalArgumentException("path and content is empty"));
+                } else {
+                    mUri = intent.getData();
+                }
+            } else {
+                mUri = Uri.fromFile(new File(path));
             }
-            mFile = new File(path);
             if (mName == null) {
-                mName = mFile.getName();
+                mName = PFiles.getNameWithoutExtension(mUri.getPath());
             }
-            return loadFile(mFile);
+            return loadUri(mUri);
         }
     }
 
 
     @SuppressLint("CheckResult")
-    private Observable<String> loadFile(final File file) {
+    private Observable<String> loadUri(final Uri uri) {
         mEditor.setProgress(true);
-        return Observable.fromCallable(() -> PFiles.read(file))
+        return Observable.fromCallable(() -> PFiles.read(getContext().getContentResolver().openInputStream(uri)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(s -> {
@@ -265,7 +279,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     @AfterViews
     void init() {
-        setTheme(Theme.getDefault(getContext()));
+        //setTheme(Theme.getDefault(getContext()));
         setUpEditor();
         setUpInputMethodEnhancedBar();
         setUpFunctionsKeyboard();
@@ -342,11 +356,11 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     public boolean onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             if (mDocsWebView.getWebView().canGoBack()) {
                 mDocsWebView.getWebView().goBack();
             } else {
-                mDrawerLayout.closeDrawer(Gravity.START);
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             }
             return true;
         }
@@ -393,7 +407,8 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         if (showMessage) {
             Snackbar.make(this, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
         }
-        ScriptExecution execution = Scripts.runWithBroadcastSender(mFile);
+        // TODO: 2018/10/24
+        ScriptExecution execution = Scripts.INSTANCE.runWithBroadcastSender(new File(mUri.getPath()));
         if (execution == null) {
             return null;
         }
@@ -414,7 +429,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     public Observable<String> save() {
         return Observable.just(mEditor.getText())
                 .observeOn(Schedulers.io())
-                .doOnNext(s -> PFiles.write(mFile, s))
+                .doOnNext(s -> PFiles.write(getContext().getContentResolver().openOutputStream(mUri), s))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(s -> {
                     mEditor.markTextAsSaved();
@@ -489,8 +504,9 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     public void openByOtherApps() {
-        if (mFile != null)
-            Scripts.openByOtherApps(mFile);
+        if (mUri != null) {
+            Scripts.INSTANCE.openByOtherApps(mUri);
+        }
     }
 
     public void beautifyCode() {
@@ -616,7 +632,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
                 .url(absUrl)
                 .pinToLeft(v -> {
                     mDocsWebView.getWebView().loadUrl(absUrl);
-                    mDrawerLayout.openDrawer(Gravity.START);
+                    mDrawerLayout.openDrawer(GravityCompat.START);
                 })
                 .show();
     }

@@ -2,6 +2,7 @@ package org.autojs.autojs.ui.viewmodel;
 
 import android.content.SharedPreferences;
 
+import org.autojs.autojs.model.explorer.ExplorerDirPage;
 import org.autojs.autojs.model.explorer.ExplorerItem;
 import org.autojs.autojs.model.explorer.ExplorerPage;
 import org.autojs.autojs.model.explorer.ExplorerSorter;
@@ -143,6 +144,47 @@ public class ExplorerItemList {
         } else {
             mItems.add(item);
         }
+    }
+
+    public void insertAtFront(ExplorerItem item) {
+        if (item instanceof ExplorerPage) {
+            mItemGroups.add(0, (ExplorerPage) item);
+        } else {
+            mItems.add(0, item);
+        }
+    }
+
+
+    public int remove(ExplorerItem item) {
+        if (item instanceof ExplorerPage) {
+            return remove(mItemGroups, item);
+        } else {
+            return remove(mItems, item);
+        }
+    }
+
+    public int update(ExplorerItem oldItem, ExplorerItem newItem) {
+        if (oldItem instanceof ExplorerPage) {
+            return update(mItemGroups, (ExplorerPage) oldItem, (ExplorerPage) newItem);
+        } else {
+            return update(mItems, oldItem, newItem);
+        }
+    }
+
+    private <T> int update(ArrayList<T> list, T oldItem, T newItem) {
+        int i = list.indexOf(oldItem);
+        if (i >= 0) {
+            list.set(i, newItem);
+        }
+        return i;
+    }
+
+    private <T> int remove(ArrayList<?> list, T o) {
+        int i = list.indexOf(o);
+        if (i >= 0) {
+            list.remove(i);
+        }
+        return i;
     }
 
     public ExplorerPage getItemGroup(int i) {

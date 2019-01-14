@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="304dp"
               android:layout_height="match_parent"
-              android:background="@android:color/white"
+              android:background="?android:windowBackground"
               android:clickable="true"
               android:fitsSystemWindows="false"
               android:importantForAccessibility="no"
@@ -63,7 +62,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/drawer_menu"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -73,7 +72,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#f2f3f5"/>
+            android:background="?android:divider"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -104,6 +103,7 @@
                     android:layout_gravity="center_vertical"
                     android:gravity="center"
                     android:text="@string/text_setting"
+                    android:textColor="?android:textColorPrimary"
                     android:textSize="15sp"/>
             </LinearLayout>
 
@@ -128,6 +128,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:textColor="?android:textColorPrimary"
                     android:gravity="center"
                     android:text="@string/text_exit"
                     android:textSize="15sp"/>

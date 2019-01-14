@@ -1,15 +1,8 @@
 package com.stardust.autojs.core.ui.dialog;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.res.ColorStateList;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.CompoundButton;
+
+
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -20,14 +13,8 @@ import com.afollestad.materialdialogs.Theme;
 import com.stardust.autojs.core.eventloop.EventEmitter;
 import com.stardust.autojs.core.looper.Loopers;
 import com.stardust.autojs.core.looper.Timer;
-import com.stardust.autojs.core.looper.TimerThread;
-import com.stardust.autojs.runtime.ScriptBridges;
 import com.stardust.autojs.runtime.ScriptRuntime;
-import com.stardust.util.ArrayUtils;
 import com.stardust.util.UiHandler;
-
-import java.text.NumberFormat;
-import java.util.Collection;
 
 /**
  * Created by Stardust on 2018/4/17.

@@ -1,13 +1,12 @@
 package com.stardust.autojs.engine;
 
-import android.support.annotation.CallSuper;
+import androidx.annotation.CallSuper;
 
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.ScriptSource;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -26,7 +25,7 @@ public interface ScriptEngine<S extends ScriptSource> {
 
     String TAG_ENV_PATH = "env_path";
     String TAG_SOURCE = "source";
-    String TAG_EXECUTE_PATH = "execute_path";
+    String TAG_WORKING_DIRECTORY = "execute_path";
 
     void put(String name, Object value);
 
@@ -44,9 +43,9 @@ public interface ScriptEngine<S extends ScriptSource> {
 
     String cwd();
 
-    void uncaughtException(Exception throwable);
+    void uncaughtException(Throwable throwable);
 
-    Exception getUncaughtException();
+    Throwable getUncaughtException();
 
     void setId(int id);
 
@@ -72,7 +71,7 @@ public interface ScriptEngine<S extends ScriptSource> {
         private Map<String, Object> mTags = new HashMap<>();
         private OnDestroyListener mOnDestroyListener;
         private boolean mDestroyed = false;
-        private Exception mUncaughtException;
+        private Throwable mUncaughtException;
         private volatile AtomicInteger mId = new AtomicInteger(ScriptExecution.NO_ID);
 
         @Override
@@ -104,7 +103,7 @@ public interface ScriptEngine<S extends ScriptSource> {
         }
 
         public String cwd() {
-            return (String) getTag(TAG_EXECUTE_PATH);
+            return (String) getTag(TAG_WORKING_DIRECTORY);
         }
 
         public void setOnDestroyListener(OnDestroyListener onDestroyListener) {
@@ -114,13 +113,13 @@ public interface ScriptEngine<S extends ScriptSource> {
         }
 
         @Override
-        public void uncaughtException(Exception throwable) {
+        public void uncaughtException(Throwable throwable) {
             mUncaughtException = throwable;
             forceStop();
         }
 
         @Override
-        public Exception getUncaughtException() {
+        public Throwable getUncaughtException() {
             return mUncaughtException;
         }
 

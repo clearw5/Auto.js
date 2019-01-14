@@ -2,9 +2,9 @@ package org.autojs.autojs.ui.main.task;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.ThemeColorRecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.bignerdranch.expandablerecyclerview.ChildViewHolder;
 import com.bignerdranch.expandablerecyclerview.ExpandableRecyclerAdapter;
 import com.bignerdranch.expandablerecyclerview.ParentViewHolder;
-import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.execution.ScriptExecutionListener;
 import com.stardust.autojs.execution.SimpleScriptExecutionListener;
@@ -26,11 +25,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
-import org.autojs.autojs.external.tasker.TaskerScriptEditActivity;
 import org.autojs.autojs.storage.database.ModelChange;
-import org.autojs.autojs.timing.IntentTask;
-import org.autojs.autojs.timing.TaskReceiver;
-import org.autojs.autojs.timing.TimedTask;
 import org.autojs.autojs.timing.TimedTaskManager;
 import org.autojs.autojs.ui.timing.TimedTaskSettingActivity;
 import org.autojs.autojs.ui.timing.TimedTaskSettingActivity_;
@@ -38,6 +33,7 @@ import org.autojs.autojs.ui.timing.TimedTaskSettingActivity_;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.recyclerview.widget.ThemeColorRecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -62,7 +58,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
     private ScriptExecutionListener mScriptExecutionListener = new SimpleScriptExecutionListener() {
         @Override
         public void onStart(final ScriptExecution execution) {
-            post(()-> mAdapter.notifyChildInserted(0, mRunningTaskGroup.addTask(execution)));
+            post(() -> mAdapter.notifyChildInserted(0, mRunningTaskGroup.addTask(execution)));
         }
 
         @Override
@@ -71,12 +67,12 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
         }
 
         @Override
-        public void onException(ScriptExecution execution, Exception e) {
+        public void onException(ScriptExecution execution, Throwable e) {
             onFinish(execution);
         }
 
-        private void onFinish(ScriptExecution execution){
-            post(()->{
+        private void onFinish(ScriptExecution execution) {
+            post(() -> {
                 final int i = mRunningTaskGroup.removeTask(execution);
                 if (i >= 0) {
                     mAdapter.notifyChildRemoved(0, i);
@@ -105,7 +101,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
     private void init() {
         setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
         addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext())
-                .color(0xffEDEEEF)
+                .color(ContextCompat.getColor(getContext(), R.color.divider))
                 .size(2)
                 .marginResId(R.dimen.script_and_folder_list_divider_left_margin, R.dimen.script_and_folder_list_divider_right_margin)
                 .showLastDivider()

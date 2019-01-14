@@ -2,7 +2,7 @@ package org.autojs.autojs.ui.edit.editor;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.design.widget.Snackbar;
+import com.google.android.material.snackbar.Snackbar;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.widget.Toast;
@@ -85,7 +85,6 @@ public class CodeEditor extends HVScrollView {
         mCodeEditText.addTextChangedListener(new AutoIndent(mCodeEditText));
         mTextViewRedoUndo = new TextViewUndoRedo(mCodeEditText);
         mJavaScriptHighlighter = new JavaScriptHighlighter(mTheme, mCodeEditText);
-        setTheme(Theme.getDefault(getContext()));
         mJsBeautifier = new JsBeautifier(this, "js/js-beautify");
 
     }

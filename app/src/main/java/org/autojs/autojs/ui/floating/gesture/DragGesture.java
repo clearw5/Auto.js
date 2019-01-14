@@ -1,6 +1,6 @@
 package org.autojs.autojs.ui.floating.gesture;
 
-import android.support.v4.view.GestureDetectorCompat;
+import androidx.core.view.GestureDetectorCompat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;

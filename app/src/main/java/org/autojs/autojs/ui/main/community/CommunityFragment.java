@@ -2,8 +2,8 @@ package org.autojs.autojs.ui.main.community;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
+import androidx.annotation.Nullable;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.webkit.WebView;
 
 import org.autojs.autojs.R;
@@ -117,7 +117,7 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
 
     private boolean isInPostsPage() {
         String url = mWebView.getUrl();
-        return url.matches(POSTS_PAGE_PATTERN);
+        return url != null &&  url.matches(POSTS_PAGE_PATTERN);
     }
 
     @Override

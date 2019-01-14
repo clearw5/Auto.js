@@ -3,9 +3,10 @@ package org.autojs.autojs.ui.edit;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -44,8 +45,7 @@ import static org.autojs.autojs.ui.edit.EditorView.EXTRA_READ_ONLY;
  * Created by Stardust on 2017/1/29.
  */
 @EActivity(R.layout.activity_edit)
-public class
-EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, PermissionRequestProxyActivity {
+public class EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, PermissionRequestProxyActivity {
 
     private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
     private static final String LOG_TAG = "EditActivity";
@@ -59,6 +59,12 @@ EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHo
 
     public static void editFile(Context context, String path) {
         editFile(context, null, path);
+    }
+
+    public static void editFile(Context context, Uri uri) {
+        context.startActivity(new Intent(context, EditActivity_.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .setData(uri));
     }
 
     public static void editFile(Context context, String name, String path) {
@@ -152,27 +158,27 @@ EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHo
     }
 
     @Override
-    public void onSupportActionModeStarted(@NonNull android.support.v7.view.ActionMode mode) {
+    public void onSupportActionModeStarted(@NonNull androidx.appcompat.view.ActionMode mode) {
         Log.d(LOG_TAG, "onSupportActionModeStarted: mode = " + mode);
         super.onSupportActionModeStarted(mode);
     }
 
     @Nullable
     @Override
-    public android.support.v7.view.ActionMode onWindowStartingSupportActionMode(@NonNull android.support.v7.view.ActionMode.Callback callback) {
+    public androidx.appcompat.view.ActionMode onWindowStartingSupportActionMode(@NonNull androidx.appcompat.view.ActionMode.Callback callback) {
         Log.d(LOG_TAG, "onWindowStartingSupportActionMode: callback = " + callback);
         return super.onWindowStartingSupportActionMode(callback);
     }
 
     @Override
     public ActionMode startActionMode(ActionMode.Callback callback, int type) {
-        Log.d(LOG_TAG, "startActionMode: callback = " + callback + ", type = " +  type);
+        Log.d(LOG_TAG, "startActionMode: callback = " + callback + ", type = " + type);
         return super.startActionMode(callback, type);
     }
 
     @Override
     public ActionMode startActionMode(ActionMode.Callback callback) {
-        Log.d(LOG_TAG, "startActionMode: callback = " + callback );
+        Log.d(LOG_TAG, "startActionMode: callback = " + callback);
         return super.startActionMode(callback);
     }
 

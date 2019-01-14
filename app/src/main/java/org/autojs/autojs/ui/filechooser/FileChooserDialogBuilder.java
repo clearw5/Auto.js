@@ -1,8 +1,8 @@
 package org.autojs.autojs.ui.filechooser;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.pio.PFile;
@@ -75,7 +75,7 @@ public class FileChooserDialogBuilder extends ThemeColorMaterialDialogBuilder {
     }
 
     public FileChooserDialogBuilder justScriptFile() {
-        mFileFilter = Scripts.FILE_FILTER;
+        mFileFilter = Scripts.INSTANCE.getFILE_FILTER();
         return this;
     }
 

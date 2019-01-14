@@ -1,9 +1,7 @@
 package com.stardust.util;
 
 import android.app.Activity;
-import android.support.v4.widget.DrawerLayout;
-
-import com.stardust.util.BackPressedHandler;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 /**
  * Created by Stardust on 2017/6/19.

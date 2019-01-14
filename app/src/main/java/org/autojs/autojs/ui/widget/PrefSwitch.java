@@ -6,13 +6,18 @@ import android.content.res.TypedArray;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 
+import com.stardust.theme.ThemeColor;
+import com.stardust.theme.ThemeColorHelper;
+import com.stardust.theme.ThemeColorManager;
+import com.stardust.theme.ThemeColorMutable;
+
 import org.autojs.autojs.R;
 
 /**
  * Created by Stardust on 2017/8/6.
  */
 
-public class PrefSwitch extends SwitchCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class PrefSwitch extends SwitchCompat implements SharedPreferences.OnSharedPreferenceChangeListener, ThemeColorMutable {
 
     private String mPrefKey;
     private SharedPreferences mSharedPreferences;
@@ -47,6 +52,11 @@ public class PrefSwitch extends SwitchCompat implements SharedPreferences.OnShar
             setChecked(mDefaultChecked, false);
         }
         a.recycle();
+        ThemeColorManager.add(this);
+    }
+
+    public void setThemeColor(ThemeColor color) {
+        ThemeColorHelper.setColorPrimary(this, color.colorPrimary);
     }
 
     private void readInitialState() {
@@ -99,6 +109,7 @@ public class PrefSwitch extends SwitchCompat implements SharedPreferences.OnShar
         if (visibility == VISIBLE) {
             readInitialState();
         }
+
     }
 }
 

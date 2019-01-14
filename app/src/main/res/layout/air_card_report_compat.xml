@@ -22,7 +22,7 @@
   ~ SOFTWARE.
   -->
 
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                                     xmlns:app="http://schemas.android.com/apk/res-auto"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
@@ -41,36 +41,36 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="?android:textColorSecondary"/>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/air_baseline">
+            android:layout_marginTop="@dimen/air_baseline"
+            android:hint="@string/air_label_issue_title">
 
-            <android.support.design.widget.TextInputEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/air_inputTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/air_label_issue_title"
                 android:inputType="textCapSentences"
                 android:maxLines="1"/>
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/air_baseline_half">
+            android:layout_marginTop="@dimen/air_baseline_half"
+            android:hint="@string/air_label_issue_description">
 
-            <android.support.design.widget.TextInputEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/air_inputDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/air_label_issue_description"
                 android:inputType="textMultiLine|textCapSentences"
                 android:lines="2"
                 android:scrollbars="vertical"/>
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -85,7 +85,7 @@
                 android:text="@string/air_label_device_info"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
-            <android.support.v7.widget.AppCompatImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/air_buttonDeviceInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
             app:ael_interpolator="fastOutSlowIn"
             app:ael_orientation="vertical">
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/air_textDeviceInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -117,4 +117,4 @@
 
     </LinearLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

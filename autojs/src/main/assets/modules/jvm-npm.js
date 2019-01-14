@@ -30,7 +30,7 @@ module = (typeof module === 'undefined') ? {} : module;
     NativeRequire.require = require;
   }
 
-  function Module (id, parent, core) {
+  function Module(id, parent, core) {
     this.id = id;
     this.core = core;
     this.parent = parent;
@@ -56,33 +56,25 @@ module = (typeof module === 'undefined') ? {} : module;
     }.bind(this);
   }
 
-  Module._load = function _load (file, parent, core, main) {
-    var module = new Module(file, parent, core);
-    var body = readFile(module.filename, module.core);
-    var dir = new File(module.filename).getParent();
-    var func = new Function('exports', 'module', 'require', '__filename', '__dirname', body);
-    func.apply(module,
-      [module.exports, module, module.require, module.filename, dir]);
-    module.loaded = true;
-    module.main = main;
-    return module.exports;
+  Module._load = function _load(file, parent, core, main) {
+    return NativeRequire.require(file);
   };
 
-  Module.runMain = function runMain (main) {
+  Module.runMain = function runMain(main) {
     var file = Require.resolve(main);
     Module._load(file, undefined, false, true);
   };
 
-  function Require (id, parent) {
+  function Require(id, parent) {
     var normalizePath = normalizeName(id);
-    if(builtInModules.indexOf(normalizePath) >= 0 && !files.exists(normalizePath)){
-        return NativeRequire.require(normalizePath);
+    if (builtInModules.indexOf(normalizePath) >= 0 && !files.exists(normalizePath)) {
+      return NativeRequire.require(normalizePath);
     }
-    if(id === "events"){
-        return events;
+    if (id === "events") {
+      return events;
     }
-    if(id.startsWith("http://") || id.startsWith("https://")){
-        return NativeRequire.require(id);
+    if (id.startsWith("http://") || id.startsWith("https://")) {
+      return NativeRequire.require(id);
     }
 
     var core;
@@ -105,21 +97,12 @@ module = (typeof module === 'undefined') ? {} : module;
       file = file.path;
       core = true;
     }
-    try {
-      if (Require.cache[file]) {
-        return Require.cache[file];
-      } else if (file.endsWith('.js')) {
-        return Module._load(file, parent, core);
-      } else if (file.endsWith('.json')) {
-        return loadJSON(file);
-      }
-    } catch (ex) {
-      if (ex instanceof java.lang.Exception) {
-        throw new ModuleError('Cannot load module ' + id, 'LOAD_ERROR', ex);
-      } else {
-        System.out.println('Cannot load module ' + id + ' LOAD_ERROR');
-        throw ex;
-      }
+    if (Require.cache[file]) {
+      return Require.cache[file];
+    } else if (file.endsWith('.js')) {
+      return Module._load(file, parent, core);
+    } else if (file.endsWith('.json')) {
+      return loadJSON(file);
     }
   }
 
@@ -128,10 +111,10 @@ module = (typeof module === 'undefined') ? {} : module;
     for (var i = 0; i < roots.length; ++i) {
       var root = roots[i];
       var result = resolveCoreModule(id, root) ||
-      resolveAsFile(id, root, '.js') ||
-      resolveAsFile(id, root, '.json') ||
-      resolveAsDirectory(id, root) ||
-      resolveAsNodeModule(id, root);
+        resolveAsFile(id, root, '.js') ||
+        resolveAsFile(id, root, '.json') ||
+        resolveAsDirectory(id, root) ||
+        resolveAsNodeModule(id, root);
       if (result) {
         return result;
       }
@@ -142,13 +125,13 @@ module = (typeof module === 'undefined') ? {} : module;
   Require.root = files.cwd();//System.getProperty('user.dir');
   Require.NODE_PATH = undefined;
 
-  function findRoots (parent) {
+  function findRoots(parent) {
     var r = [];
     r.push(findRoot(parent));
     return r.concat(Require.paths());
   }
 
-  function parsePaths (paths) {
+  function parsePaths(paths) {
     if (!paths) {
       return [];
     }
@@ -184,7 +167,7 @@ module = (typeof module === 'undefined') ? {} : module;
     return r;
   };
 
-  function findRoot (parent) {
+  function findRoot(parent) {
     if (!parent || !parent.id) { return Require.root; }
     var pathParts = parent.id.split(/[\/|\\,]+/g);
     pathParts.pop();
@@ -199,20 +182,20 @@ module = (typeof module === 'undefined') ? {} : module;
   Module.require = require;
   module.exports = Module;
 
-  function loadJSON (file) {
+  function loadJSON(file) {
     var json = JSON.parse(readFile(file));
     Require.cache[file] = json;
     return json;
   }
 
-  function resolveAsNodeModule (id, root) {
+  function resolveAsNodeModule(id, root) {
     var base = [root, 'node_modules'].join('/');
     return resolveAsFile(id, base) ||
       resolveAsDirectory(id, base) ||
       (root ? resolveAsNodeModule(id, new File(root).getParent()) : false);
   }
 
-  function resolveAsDirectory (id, root) {
+  function resolveAsDirectory(id, root) {
     var base = [root, id].join('/');
     var file = new File([base, 'package.json'].join('/'));
     if (file.exists()) {
@@ -232,7 +215,7 @@ module = (typeof module === 'undefined') ? {} : module;
     return resolveAsFile('index.js', base);
   }
 
-  function resolveAsFile (id, root, ext) {
+  function resolveAsFile(id, root, ext) {
     var file;
     if (id.length > 0 && id[0] === '/') {
       file = new File(normalizeName(id, ext));
@@ -247,7 +230,7 @@ module = (typeof module === 'undefined') ? {} : module;
     }
   }
 
-  function resolveCoreModule (id, root) {
+  function resolveCoreModule(id, root) {
     var name = normalizeName(id);
     var classloader = java.lang.Thread.currentThread().getContextClassLoader();
     if (classloader.getResource(name)) {
@@ -255,9 +238,9 @@ module = (typeof module === 'undefined') ? {} : module;
     }
   }
 
-  function normalizeName (fileName, ext) {
-    if(fileName.endsWith('.json')){
-        return fileName;
+  function normalizeName(fileName, ext) {
+    if (fileName.endsWith('.json')) {
+      return fileName;
     }
     var extension = ext || '.js';
     if (fileName.endsWith(extension)) {
@@ -266,7 +249,7 @@ module = (typeof module === 'undefined') ? {} : module;
     return fileName + extension;
   }
 
-  function readFile (filename, core) {
+  function readFile(filename, core) {
     var input;
     try {
       if (core) {
@@ -282,7 +265,7 @@ module = (typeof module === 'undefined') ? {} : module;
     }
   }
 
-  function ModuleError (message, code, cause) {
+  function ModuleError(message, code, cause) {
     this.code = code || 'UNDEFINED';
     this.message = message || 'Error loading module';
     this.cause = cause;

@@ -1,16 +1,16 @@
 package org.autojs.autojs.ui.common;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputEditText;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.DialogUtils;
 import com.stardust.app.GlobalAppContext;
-import org.autojs.autojs.App;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.model.script.ScriptFile;
 import org.autojs.autojs.model.script.Scripts;
@@ -28,13 +28,13 @@ public class ScriptLoopDialog {
     private MaterialDialog mDialog;
 
     @BindView(R.id.loop_times)
-    TextInputEditText mLoopTimes;
+    EditText mLoopTimes;
 
     @BindView(R.id.loop_interval)
-    TextInputEditText mLoopInterval;
+    EditText mLoopInterval;
 
     @BindView(R.id.loop_delay)
-    TextInputEditText mLoopDelay;
+    EditText mLoopDelay;
 
 
     public ScriptLoopDialog(Context context, ScriptFile file) {
@@ -44,12 +44,7 @@ public class ScriptLoopDialog {
                 .title(R.string.text_run_repeatedly)
                 .customView(view, true)
                 .positiveText(R.string.ok)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        startScriptRunningLoop();
-                    }
-                })
+                .onPositive((dialog, which) -> startScriptRunningLoop())
                 .build();
         ButterKnife.bind(this, view);
     }
@@ -59,7 +54,7 @@ public class ScriptLoopDialog {
             int loopTimes = Integer.parseInt(mLoopTimes.getText().toString());
             float loopInterval = Float.parseFloat(mLoopInterval.getText().toString());
             float loopDelay = Float.parseFloat(mLoopDelay.getText().toString());
-            Scripts.runRepeatedly(mScriptFile, loopTimes, (long) (1000L * loopDelay), (long) (loopInterval * 1000L));
+            Scripts.INSTANCE.runRepeatedly(mScriptFile, loopTimes, (long) (1000L * loopDelay), (long) (loopInterval * 1000L));
         } catch (NumberFormatException e) {
             GlobalAppContext.toast(R.string.text_number_format_error);
         }

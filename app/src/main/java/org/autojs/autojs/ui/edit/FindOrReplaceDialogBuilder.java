@@ -2,7 +2,7 @@ package org.autojs.autojs.ui.edit;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
@@ -25,7 +25,7 @@ import butterknife.OnTextChanged;
 
 public class FindOrReplaceDialogBuilder extends ThemeColorMaterialDialogBuilder {
 
-    private static final String KEY_KEYWORDS = "你回来好不好...";
+    private static final String KEY_KEYWORDS = "...";
 
     @BindView(R.id.checkbox_regex)
     CheckBox mRegexCheckBox;
@@ -50,7 +50,7 @@ public class FindOrReplaceDialogBuilder extends ThemeColorMaterialDialogBuilder 
         setupViews();
         restoreState();
         autoDismiss(false);
-        onNegative((dialog, which)-> dialog.dismiss());
+        onNegative((dialog, which) -> dialog.dismiss());
         onPositive((dialog, which) -> {
             storeState();
             findOrReplace(dialog);

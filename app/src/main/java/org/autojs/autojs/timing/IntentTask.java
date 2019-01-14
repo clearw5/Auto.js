@@ -16,6 +16,8 @@ public class IntentTask extends BaseModel {
 
     private String mDataType;
 
+    private boolean mLocal;
+
     public IntentFilter getIntentFilter() {
         IntentFilter filter = new IntentFilter();
         if (mAction != null) {
@@ -64,5 +66,13 @@ public class IntentTask extends BaseModel {
 
     public void setDataType(String dataType) {
         mDataType = dataType;
+    }
+
+    public boolean isLocal() {
+        return mLocal;
+    }
+
+    public void setLocal(boolean local) {
+        mLocal = local;
     }
 }

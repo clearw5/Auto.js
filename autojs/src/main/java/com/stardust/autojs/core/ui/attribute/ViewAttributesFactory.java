@@ -1,16 +1,17 @@
 package com.stardust.autojs.core.ui.attribute;
 
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.stardust.autojs.core.ui.inflater.ResourceParser;
 
 import java.util.HashMap;
+
+import androidx.cardview.widget.CardView;
+
 
 public class ViewAttributesFactory {
 

@@ -11,6 +11,7 @@
         android:layout_width="40dp"
         android:layout_height="match_parent"
         app:icon="@drawable/ic_ali_replace"
+        app:icon_color="@color/toolbar"
         app:text="@string/text_replace"/>
 
     <org.autojs.autojs.ui.widget.ToolbarMenuItem
@@ -18,6 +19,7 @@
         android:layout_width="40dp"
         android:layout_height="match_parent"
         app:icon="@drawable/ic_ali_up"
+        app:icon_color="@color/toolbar"
         app:text="@string/text_find_prev"/>
 
     <org.autojs.autojs.ui.widget.ToolbarMenuItem
@@ -25,6 +27,7 @@
         android:layout_width="40dp"
         android:layout_height="match_parent"
         app:icon="@drawable/ic_ali_down"
+        app:icon_color="@color/toolbar"
         app:text="@string/text_find_next"/>
 
 
@@ -33,6 +36,7 @@
         android:layout_width="40dp"
         android:layout_height="match_parent"
         app:icon="@drawable/ic_close_white_48dp"
+        app:icon_color="@color/toolbar"
         app:text="@string/text_cancel"/>
 
 

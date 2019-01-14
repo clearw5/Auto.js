@@ -1,32 +1,40 @@
 package org.autojs.autojs.ui.main.drawer;
 
 import android.annotation.SuppressLint;
+import android.app.AppOpsManager;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.stardust.app.AppOpsKt;
 import com.stardust.app.GlobalAppContext;
 import com.stardust.notification.NotificationListenerService;
 
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.external.foreground.ForegroundService;
-import org.autojs.autojs.network.GlideApp;
 import org.autojs.autojs.network.UserService;
 import org.autojs.autojs.tool.Observers;
+import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.common.NotAskAgainDialog;
 import org.autojs.autojs.ui.floating.CircularMenu;
 import org.autojs.autojs.ui.floating.FloatyWindowManger;
@@ -61,6 +69,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.autojs.autojs.ui.widget.BackgroundTarget;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -79,7 +88,7 @@ import io.reactivex.schedulers.Schedulers;
  * TODO these codes are so ugly!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  */
 @EFragment(R.layout.fragment_drawer)
-public class DrawerFragment extends android.support.v4.app.Fragment {
+public class DrawerFragment extends androidx.fragment.app.Fragment {
 
     private static final String URL_DEV_PLUGIN = "https://www.autojs.org/topic/968/";
 
@@ -109,6 +118,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
     };
 
     private DrawerMenuItem mNotificationPermissionItem = new DrawerMenuItem(R.drawable.ic_ali_notification, R.string.text_notification_permission, 0, this::goToNotificationServiceSettings);
+    private DrawerMenuItem mUsageStatsPermissionItem = new DrawerMenuItem(R.drawable.ic_ali_notification, R.string.text_usage_stats_permission, 0, this::goToUsageStatsSettings);
     private DrawerMenuItem mForegroundServiceItem = new DrawerMenuItem(R.drawable.ic_service_green, R.string.text_foreground_service, R.string.key_foreground_servie, this::toggleForegroundService);
 
     private DrawerMenuItem mFloatingWindowItem = new DrawerMenuItem(R.drawable.ic_robot_64, R.string.text_floating_window, 0, this::showOrDismissFloatingWindow);
@@ -146,7 +156,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
             setChecked(mFloatingWindowItem, true);
         }
         setChecked(mConnectionItem, DevPluginService.getInstance().isConnected());
-        if(Pref.isForegroundServiceEnabled()){
+        if (Pref.isForegroundServiceEnabled()) {
             ForegroundService.start(GlobalAppContext.get());
             setChecked(mForegroundServiceItem, true);
         }
@@ -159,6 +169,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 mStableModeItem,
                 mNotificationPermissionItem,
                 mForegroundServiceItem,
+                mUsageStatsPermissionItem,
 
                 new DrawerMenuGroup(R.string.text_script_record),
                 mFloatingWindowItem,
@@ -167,6 +178,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
                 new DrawerMenuGroup(R.string.text_others),
                 mConnectionItem,
                 new DrawerMenuItem(R.drawable.ic_personalize, R.string.text_theme_color, this::openThemeColorSettings),
+                new DrawerMenuItem(R.drawable.ic_night_mode, R.string.text_night_mode, R.string.key_night_mode, this::toggleNightMode),
                 mCheckForUpdatesItem
         )));
         mDrawerMenu.setAdapter(mDrawerMenuAdapter);
@@ -204,7 +216,7 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         if (checked && !isAccessibilityServiceEnabled) {
             enableAccessibilityService();
         } else if (!checked && isAccessibilityServiceEnabled) {
-            if (!AccessibilityService.disable()) {
+            if (!AccessibilityService.Companion.disable()) {
                 AccessibilityServiceTool.goToAccessibilitySetting();
             }
         }
@@ -214,10 +226,31 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
             return;
         }
-        boolean enabled = NotificationListenerService.getInstance() != null;
+        boolean enabled = NotificationListenerService.Companion.getInstance() != null;
         boolean checked = holder.getSwitchCompat().isChecked();
         if ((checked && !enabled) || (!checked && enabled)) {
             startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
+        }
+    }
+
+    void goToUsageStatsSettings(DrawerMenuItemViewHolder holder) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return;
+        }
+        boolean enabled = AppOpsKt.isOpPermissionGranted(getContext(), AppOpsManager.OPSTR_GET_USAGE_STATS);
+        boolean checked = holder.getSwitchCompat().isChecked();
+        if(checked && !enabled){
+            if(new NotAskAgainDialog.Builder(getContext(), "DrawerFragment.usage_stats")
+                    .title(R.string.text_usage_stats_permission)
+                    .content(R.string.description_usage_stats_permission)
+                    .positiveText(R.string.ok)
+                    .dismissListener(dialog -> IntentUtil.requestAppUsagePermission(getContext()))
+                    .show() == null){
+                IntentUtil.requestAppUsagePermission(getContext());
+            }
+        }
+        if (!checked && enabled) {
+            IntentUtil.requestAppUsagePermission(getContext());
         }
     }
 
@@ -237,6 +270,10 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
 
     void openThemeColorSettings(DrawerMenuItemViewHolder holder) {
         SettingsActivity.selectThemeColor(getActivity());
+    }
+
+    void toggleNightMode(DrawerMenuItemViewHolder holder) {
+        ((BaseActivity) getActivity()).setNightModeEnabled(holder.getSwitchCompat().isChecked());
     }
 
     @SuppressLint("CheckResult")
@@ -264,9 +301,9 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
 
     private void toggleForegroundService(DrawerMenuItemViewHolder holder) {
         boolean checked = holder.getSwitchCompat().isChecked();
-        if(checked){
+        if (checked) {
             ForegroundService.start(GlobalAppContext.get());
-        }else {
+        } else {
             ForegroundService.stop(GlobalAppContext.get());
         }
     }
@@ -367,26 +404,23 @@ public class DrawerFragment extends android.support.v4.app.Fragment {
         } else {
             mDefaultCover.setVisibility(View.GONE);
             mShadow.setVisibility(View.VISIBLE);
-            GlideApp.with(getContext())
+            Glide.with(this)
                     .load(NodeBB.BASE_URL + user.getCoverUrl())
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .into(new SimpleTarget<Drawable>() {
-                        @Override
-                        public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                            if (mHeaderView != null) {
-                                mHeaderView.setBackground(resource);
-                            }
-                        }
-                    });
+                    .apply(new RequestOptions()
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    )
+                    .into(new BackgroundTarget(mHeaderView));
         }
     }
 
     private void syncSwitchState() {
         setChecked(mAccessibilityServiceItem, AccessibilityServiceTool.isAccessibilityServiceEnabled(getActivity()));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            setChecked(mNotificationPermissionItem, NotificationListenerService.getInstance() != null);
+            setChecked(mNotificationPermissionItem, NotificationListenerService.Companion.getInstance() != null);
         }
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setChecked(mUsageStatsPermissionItem, AppOpsKt.isOpPermissionGranted(getContext(), AppOpsManager.OPSTR_GET_USAGE_STATS));
+        }
     }
 
     private void enableAccessibilityService() {

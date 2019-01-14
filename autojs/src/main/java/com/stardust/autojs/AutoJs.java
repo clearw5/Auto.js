@@ -5,14 +5,15 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
-import com.stardust.autojs.core.console.GlobalStardustConsole;
-import com.stardust.autojs.core.console.StardustConsole;
+import com.stardust.autojs.core.console.GlobalConsole;
+import com.stardust.autojs.core.console.ConsoleImpl;
 import com.stardust.autojs.core.image.capture.ScreenCaptureRequestActivity;
 import com.stardust.autojs.core.image.capture.ScreenCaptureRequester;
 import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;
@@ -26,6 +27,7 @@ import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptSource;
+import com.stardust.util.ResourceMonitor;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
@@ -34,7 +36,7 @@ import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.LayoutInspector;
 
 import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.WrappedException;
 
 import java.io.File;
 
@@ -47,7 +49,7 @@ public abstract class AutoJs {
     private final AccessibilityActionRecorder mAccessibilityActionRecorder = new AccessibilityActionRecorder();
     private final AccessibilityNotificationObserver mNotificationObserver;
     private ScriptEngineManager mScriptEngineManager;
-    private final LayoutInspector mLayoutInspector = new LayoutInspector();
+    private final LayoutInspector mLayoutInspector;
     private final Context mContext;
     private final Application mApplication;
     private final UiHandler mUiHandler;
@@ -55,17 +57,18 @@ public abstract class AutoJs {
     private final AccessibilityInfoProvider mAccessibilityInfoProvider;
     private final ScreenCaptureRequester mScreenCaptureRequester = new ScreenCaptureRequesterImpl();
     private final ScriptEngineService mScriptEngineService;
-    private final GlobalStardustConsole mGlobalConsole;
+    private final GlobalConsole mGlobalConsole;
 
 
     protected AutoJs(final Application application) {
         mContext = application.getApplicationContext();
         mApplication = application;
+        mLayoutInspector = new LayoutInspector(mContext);
         mUiHandler = new UiHandler(mContext);
         mAppUtils = createAppUtils(mContext);
         mGlobalConsole = createGlobalConsole();
         mNotificationObserver = new AccessibilityNotificationObserver(mContext);
-        mAccessibilityInfoProvider = new AccessibilityInfoProvider(mContext.getPackageManager());
+        mAccessibilityInfoProvider = new AccessibilityInfoProvider(mContext);
         mScriptEngineService = buildScriptEngineService();
         ScriptEngineService.setInstance(mScriptEngineService);
         init();
@@ -75,19 +78,34 @@ public abstract class AutoJs {
         return new AppUtils(mContext);
     }
 
-    protected GlobalStardustConsole createGlobalConsole() {
-        return new GlobalStardustConsole(mUiHandler);
+    protected GlobalConsole createGlobalConsole() {
+        return new GlobalConsole(mUiHandler);
     }
 
     protected void init() {
         addAccessibilityServiceDelegates();
         registerActivityLifecycleCallbacks();
+        ResourceMonitor.setExceptionCreator(resource -> {
+            Exception exception;
+            if (org.mozilla.javascript.Context.getCurrentContext() != null) {
+                exception = new WrappedException(new ResourceMonitor.UnclosedResourceException(resource));
+            } else {
+                exception = new ResourceMonitor.UnclosedResourceException(resource);
+            }
+            exception.fillInStackTrace();
+            return exception;
+        });
+        ResourceMonitor.setUnclosedResourceDetectedHandler(detectedException -> mGlobalConsole.error(detectedException));
     }
 
     public abstract void ensureAccessibilityServiceEnabled();
 
     protected Application getApplication() {
         return mApplication;
+    }
+
+    public ScriptEngineManager getScriptEngineManager() {
+        return mScriptEngineManager;
     }
 
     protected ScriptEngineService buildScriptEngineService() {
@@ -108,7 +126,6 @@ public abstract class AutoJs {
         });
         initContextFactory();
         mScriptEngineManager.registerEngine(AutoFileSource.ENGINE, () -> new RootAutomatorEngine(mContext));
-
     }
 
     protected void initContextFactory() {
@@ -117,7 +134,7 @@ public abstract class AutoJs {
 
     protected ScriptRuntime createRuntime() {
         return new ScriptRuntime.Builder()
-                .setConsole(new StardustConsole(mUiHandler, mGlobalConsole))
+                .setConsole(new ConsoleImpl(mUiHandler, mGlobalConsole))
                 .setScreenCaptureRequester(mScreenCaptureRequester)
                 .setAccessibilityBridge(new AccessibilityBridgeImpl(mUiHandler))
                 .setUiHandler(mUiHandler)
@@ -149,9 +166,9 @@ public abstract class AutoJs {
 
 
     private void addAccessibilityServiceDelegates() {
-        AccessibilityService.addDelegate(100, mAccessibilityInfoProvider);
-        AccessibilityService.addDelegate(200, mNotificationObserver);
-        AccessibilityService.addDelegate(300, mAccessibilityActionRecorder);
+        AccessibilityService.Companion.addDelegate(100, mAccessibilityInfoProvider);
+        AccessibilityService.Companion.addDelegate(200, mNotificationObserver);
+        AccessibilityService.Companion.addDelegate(300, mAccessibilityActionRecorder);
     }
 
     public AccessibilityActionRecorder getAccessibilityActionRecorder() {
@@ -170,7 +187,7 @@ public abstract class AutoJs {
         return mLayoutInspector;
     }
 
-    public GlobalStardustConsole getGlobalConsole() {
+    public GlobalConsole getGlobalConsole() {
         return mGlobalConsole;
     }
 
@@ -192,7 +209,7 @@ public abstract class AutoJs {
     private class AccessibilityBridgeImpl extends AccessibilityBridge {
 
         public AccessibilityBridgeImpl(UiHandler uiHandler) {
-            super(createAccessibilityConfig(), uiHandler);
+            super(mContext, createAccessibilityConfig(), uiHandler);
         }
 
         @Override
@@ -208,7 +225,7 @@ public abstract class AutoJs {
         @Nullable
         @Override
         public AccessibilityService getService() {
-            return AccessibilityService.getInstance();
+            return AccessibilityService.Companion.getInstance();
         }
 
         @Override

@@ -1,12 +1,18 @@
 package com.stardust.autojs.core.accessibility;
 
+import android.app.AppOpsManager;
+import android.content.Context;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
+import com.stardust.app.AppOpsKt;
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
+import com.stardust.util.IntentUtil;
 import com.stardust.util.UiHandler;
 import com.stardust.view.accessibility.AccessibilityInfoProvider;
 import com.stardust.view.accessibility.AccessibilityNotificationObserver;
@@ -27,17 +33,20 @@ public abstract class AccessibilityBridge {
     public static final int MODE_FAST = 1;
 
     public static final int FLAG_FIND_ON_UI_THREAD = 1;
+    public static final int FLAG_USE_USAGE_STATS = 2;
 
     private int mMode = MODE_NORMAL;
     private int mFlags = 0;
     private final AccessibilityConfig mConfig;
     private WindowFilter mWindowFilter;
     private final UiHandler mUiHandler;
+    private final Context mContext;
 
-    public AccessibilityBridge(AccessibilityConfig config, UiHandler uiHandler) {
+    public AccessibilityBridge(Context context, AccessibilityConfig config, UiHandler uiHandler) {
         mConfig = config;
         mUiHandler = uiHandler;
         mConfig.seal();
+        mContext = context;
     }
 
     public abstract void ensureServiceEnabled();
@@ -80,7 +89,6 @@ public abstract class AccessibilityBridge {
         mWindowFilter = windowFilter;
     }
 
-    @NonNull
     public abstract AccessibilityInfoProvider getInfoProvider();
 
     public void setMode(int mode) {
@@ -93,6 +101,13 @@ public abstract class AccessibilityBridge {
 
     public void setFlags(int flags) {
         mFlags = flags;
+        if ((mFlags & FLAG_USE_USAGE_STATS) != 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (!AppOpsKt.isOpPermissionGranted(mContext, AppOpsManager.OPSTR_GET_USAGE_STATS)) {
+                IntentUtil.requestAppUsagePermission(mContext);
+                throw new SecurityException("没有\"查看使用情况\"权限");
+            }
+        }
+        getInfoProvider().setUseUsageStats((mFlags & FLAG_USE_USAGE_STATS) != 0);
     }
 
     @NonNull

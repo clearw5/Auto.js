@@ -2,7 +2,7 @@ package org.autojs.autojs.ui.edit;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.design.widget.Snackbar;
+import com.google.android.material.snackbar.Snackbar;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -190,7 +190,7 @@ public class EditorMenu {
 
     private void startBuildApkActivity() {
         BuildActivity_.intent(mContext)
-                .extra(BuildActivity.EXTRA_SOURCE, mEditorView.getFile().getPath())
+                .extra(BuildActivity.EXTRA_SOURCE, mEditorView.getUri().getPath())
                 .start();
     }
 

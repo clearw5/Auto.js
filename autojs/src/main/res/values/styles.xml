@@ -6,19 +6,19 @@
         <item name="colorButtonNormal">#cc181818</item>
     </style>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="ScriptTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:popupTheme" tools:ignore="NewApi">@style/AppTheme.PopupOverlay</item>
+        <item name="android:popupTheme" tools:ignore="NewApi">@style/ScriptTheme.PopupOverlay</item>
     </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="ScriptTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="ScriptTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
 
-    <style name="AppTheme.Transparent" parent="AppTheme">
+    <style name="ScriptTheme.Transparent" parent="ScriptTheme">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>

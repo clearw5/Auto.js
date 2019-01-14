@@ -1,20 +1,39 @@
 "ui";
 
-//音乐文件的后缀名
-var musicExts = [".mp3", ".wma", ".rm", ".wav", ".mid", ".ape", ".flac"];
-//扫描路径
-var path = files.getSdcardPath();
-//保存音乐文件列表的数组
-var musicFiles = [];
+var IconView = (function() {
+    //继承ui.Widget
+    util.extend(IconView, ui.Widget);
+
+    function IconView() {
+        //调用父类构造函数
+        ui.Widget.call(this);
+        //自定义属性color，定义按钮颜色
+        this.defineAttr("icon", (view, name, defaultGetter) => {
+            return this._icon;
+        }, (view, name, value, defaultSetter) => {
+            this._icon = value;
+            view.setImageResource(value);
+        });
+    }
+    IconView.prototype.render = function() {
+        return (
+            <img />
+        );
+    }
+    ui.registerWidget("icon", IconView);
+    return IconView;
+})();
+
+var apps = [];
 
 ui.layout(
     <vertical  bg="#ffffff">
         <list id="files" layout_weight="1">
             <linear bg="?selectableItemBackground">
-                <img src="@drawable/ic_music_note_black_48dp" tint="white" bg="#ff5722" w="50" h="70" margin="16" />
+                <icon icon="{{this.icon}}" w="50" h="70" margin="16" />
                 <vertical>
-                    <text id="name" textSize="16sp" textColor="#000000" text="{{this.name}}" marginTop="16" maxLines="1" ellipsize="end"/>
-                    <text id="path" textSize="13sp" textColor="#929292" text="{{this.path}}" marginTop="8" maxLines="1" ellipsize="end"/>
+                    <text id="name" textSize="16sp" textColor="#000000" text="{{this.appName}}" marginTop="16" maxLines="1" ellipsize="end"/>
+                    <text id="path" textSize="13sp" textColor="#929292" text="{{this.packageName}}" marginTop="8" maxLines="1" ellipsize="end"/>
                 </vertical>
             </linear>
         </list>
@@ -22,38 +41,31 @@ ui.layout(
     </vertical>
 );
 
-ui.files.setDataSource(musicFiles);
+ui.apps.setDataSource(musicFiles);
 
-ui.files.on("item_click", function(item, pos){
-    media.playMusic(item.path, 1);
+ui.apps.on("item_click", function(item, pos){
+    toast(item);
 });
 
 //启动线程来扫描音乐文件
 threads.start(function () {
-    listMuiscFiles(path, musicFiles);
+    listApps(apps);
     ui.run(()=> {
         ui.progressbar.setVisility(8);
     });
 });
 
-function listMuiscFiles(dir, list) {
-    //遍历该文件夹的文件
-    files.listDir(dir).forEach(fileName => {
-        var path = files.join(dir, fileName);
-        //如果是子文件夹则继续扫描子文件夹的文件
-        if (files.isDir(path)) {
-            listMuiscFiles(path, list);
-            return;
-        }
-        for (var i = 0; i < musicExts.length; i++) {
-            //如果文件名的后缀是音乐格式
-            if (fileName.endsWith(musicExts[i])) {
-                //则把它添加到列表中
-                list.push({
-                    name: fileName,
-                    path: path
-                });
-            }
-        }
-    });
+function listApps(apps) {
+    var pm = context.getPackageManager();
+    let list = pm.getInstalledPackages(0);
+    for(let i = 0; i < list.size(); i++){
+        let p = list.get(i);
+        apps.push({
+            appName: p.applicationInfo.loadLabel(pm).toString(),
+            packageName: p.packageName,
+            versionName: p.versionName,
+            versionCode: p.versionCode,
+            icon: p.applicationInfo.loadIcon(pm)
+        });
+    }
 }

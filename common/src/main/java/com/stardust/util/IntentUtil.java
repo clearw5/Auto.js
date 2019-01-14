@@ -4,8 +4,12 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.FileProvider;
+
+import android.os.Build;
 import android.widget.Toast;
 
 import com.stardust.R;
@@ -134,6 +138,24 @@ public class IntentUtil {
         return uri;
     }
 
+    public static boolean viewFile(Context context, Uri uri, String mimeType, String fileProviderAuthority) {
+        if (uri.getScheme().equals("file")) {
+            return viewFile(context, uri.getPath(), mimeType, fileProviderAuthority);
+        } else {
+            try {
+                context.startActivity(new Intent(Intent.ACTION_VIEW)
+                        .setDataAndType(uri, mimeType)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+    }
+
     public static boolean viewFile(Context context, String path, String mimeType, String fileProviderAuthority) {
         try {
             Uri uri = getUriOfFile(context, path, fileProviderAuthority);
@@ -162,6 +184,17 @@ public class IntentUtil {
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static void requestAppUsagePermission(Context context) {
+        Intent intent = new Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }

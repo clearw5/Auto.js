@@ -25,9 +25,5 @@
     <string name="air_dialog_description_failed_issues_not_available">Issues不可用，请联系软件开发者.</string>
     <string name="air_dialog_description_failed_unknown">未知错误</string>
     <string name="air_dialog_action_failed">OK</string>
-    <plurals name="air_error_short_description" key="air_error_short_description">
-        <item quantity="one">描述至少要 %d 个字.</item>
-        <item quantity="other">描述至少要 %d 个字.</item>
-    </plurals>
-    <string name="theme_color_red">R</string>
+
 </resources>

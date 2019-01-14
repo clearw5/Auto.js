@@ -9,7 +9,7 @@
         android:layout_height="1dp"
         android:background="@color/divider_functions_keyboard"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/properties"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -21,7 +21,7 @@
         android:layout_height="1dp"
         android:background="@color/divider_functions_keyboard"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/module_list"
         android:layout_width="match_parent"
         android:layout_height="50dp"/>

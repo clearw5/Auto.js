@@ -14,14 +14,17 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import android.util.Log;
 import android.view.OrientationEventListener;
 
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
+import com.stardust.lang.ThreadCompat;
 import com.stardust.util.ScreenMetrics;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by Stardust on 2017/5/17.
@@ -29,24 +32,25 @@ import com.stardust.util.ScreenMetrics;
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 public class ScreenCapturer {
 
-    public static final int ORIENTATION_AUTO = -1;
+    public static final int ORIENTATION_AUTO = Configuration.ORIENTATION_UNDEFINED;
+    public static final int ORIENTATION_LANDSCAPE = Configuration.ORIENTATION_LANDSCAPE ;
+    public static final int ORIENTATION_PORTRAIT = Configuration.ORIENTATION_PORTRAIT ;
+
 
     private static final String LOG_TAG = "ScreenCapturer";
-    private final Object mCachedImageLock = new Object();
     private final MediaProjectionManager mProjectionManager;
     private ImageReader mImageReader;
     private MediaProjection mMediaProjection;
     private VirtualDisplay mVirtualDisplay;
     private volatile Looper mImageAcquireLooper;
     private volatile Image mUnderUsingImage;
-    private volatile Image mCachedImage;
-    private volatile boolean mImageAvailable = false;
+    private volatile AtomicReference<Image> mCachedImage = new AtomicReference<>();
     private volatile Exception mException;
     private final int mScreenDensity;
     private Handler mHandler;
     private Intent mData;
     private Context mContext;
-    private int mOrientation = Configuration.ORIENTATION_UNDEFINED;
+    private int mOrientation = -1;
     private int mDetectedOrientation;
     private OrientationEventListener mOrientationEventListener;
 
@@ -69,7 +73,12 @@ public class ScreenCapturer {
                 int orientation = mContext.getResources().getConfiguration().orientation;
                 if (mOrientation == ORIENTATION_AUTO && mDetectedOrientation != orientation) {
                     mDetectedOrientation = orientation;
-                    refreshVirtualDisplay(orientation);
+                    try {
+                        refreshVirtualDisplay(orientation);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        mException = e;
+                    }
                 }
             }
 
@@ -98,7 +107,6 @@ public class ScreenCapturer {
         if (mVirtualDisplay != null) {
             mVirtualDisplay.release();
         }
-        mImageAvailable = false;
         if (mMediaProjection != null) {
             mMediaProjection.stop();
         }
@@ -110,7 +118,7 @@ public class ScreenCapturer {
     }
 
     private void initVirtualDisplay(int width, int height, int screenDensity) {
-        mImageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 2);
+        mImageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 3);
         mVirtualDisplay = mMediaProjection.createVirtualDisplay(LOG_TAG,
                 width, height, screenDensity, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
                 mImageReader.getSurface(), null, null);
@@ -134,18 +142,11 @@ public class ScreenCapturer {
     private void setImageListener(Handler handler) {
         mImageReader.setOnImageAvailableListener(reader -> {
             try {
-                if (mCachedImage != null) {
-                    synchronized (mCachedImageLock) {
-                        if (mCachedImage != null) {
-                            mCachedImage.close();
-                        }
-                        mCachedImage = reader.acquireLatestImage();
-                        mImageAvailable = true;
-                        mCachedImageLock.notify();
-                        return;
-                    }
+                Image oldCacheImage = mCachedImage.getAndSet(null);
+                if (oldCacheImage != null) {
+                    oldCacheImage.close();
                 }
-                mCachedImage = reader.acquireLatestImage();
+                mCachedImage.set(reader.acquireLatestImage());
             } catch (Exception e) {
                 mException = e;
             }
@@ -155,36 +156,23 @@ public class ScreenCapturer {
 
     @Nullable
     public Image capture() {
-        if (!mImageAvailable) {
-            waitForImageAvailable();
-        }
-        if (mException != null) {
-            Exception e = mException;
+        Exception e = mException;
+        if (e != null) {
             mException = null;
             throw new ScriptException(e);
         }
-        synchronized (mCachedImageLock) {
-            if (mCachedImage != null) {
-                if (mUnderUsingImage != null)
+        Thread thread = ThreadCompat.currentThread();
+        while (!thread.isInterrupted()) {
+            Image cachedImage = mCachedImage.getAndSet(null);
+            if (cachedImage != null) {
+                if (mUnderUsingImage != null) {
                     mUnderUsingImage.close();
-                mUnderUsingImage = mCachedImage;
-                mCachedImage = null;
+                }
+                mUnderUsingImage = cachedImage;
+                return cachedImage;
             }
         }
-        return mUnderUsingImage;
-    }
-
-    private void waitForImageAvailable() {
-        synchronized (mCachedImageLock) {
-            if (mImageAvailable) {
-                return;
-            }
-            try {
-                mCachedImageLock.wait();
-            } catch (InterruptedException e) {
-                throw new ScriptInterruptedException();
-            }
-        }
+        throw new ScriptInterruptedException();
     }
 
     public int getScreenDensity() {
@@ -209,8 +197,9 @@ public class ScreenCapturer {
         if (mUnderUsingImage != null) {
             mUnderUsingImage.close();
         }
-        if (mCachedImage != null) {
-            mCachedImage.close();
+        Image cachedImage = mCachedImage.getAndSet(null);
+        if (cachedImage != null) {
+            cachedImage.close();
         }
         if (mOrientationEventListener != null) {
             mOrientationEventListener.disable();

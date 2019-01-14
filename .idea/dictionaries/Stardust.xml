@@ -1,11 +1,15 @@
 <component name="ProjectDictionaryState">
   <dictionary name="Stardust">
     <words>
+      <w>autojs</w>
       <w>capturer</w>
       <w>dismissable</w>
+      <w>fileprovider</w>
       <w>flowable</w>
+      <w>imgproc</w>
       <w>interruptible</w>
       <w>loopers</w>
+      <w>opencv</w>
       <w>prefill</w>
       <w>scriptable</w>
       <w>storages</w>

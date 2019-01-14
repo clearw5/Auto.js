@@ -19,6 +19,10 @@ module.exports = function (runtime, global) {
         ui.setContentView(view);
     }
 
+    ui.layoutFile = function(file) {
+        ui.layout(files.read(file));
+    }
+
     ui.inflate = function(xml, parent, attachToParent){
         if(!activity){
             throw new Error("需要在ui模式下运行才能使用该函数");
@@ -94,8 +98,11 @@ module.exports = function (runtime, global) {
     }
 
     ui.post = function (action, delay) {
-        delay = delay || 0;
-        runtime.getUiHandler().postDelayed(wrapUiAction(action), delay);
+        if(delay == undefined){
+            runtime.getUiHandler().post(wrapUiAction(action));
+        }else{
+            runtime.getUiHandler().postDelayed(wrapUiAction(action), delay);
+        }
     }
 
     ui.statusBarColor = function (color) {

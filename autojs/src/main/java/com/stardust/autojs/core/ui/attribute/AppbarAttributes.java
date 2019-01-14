@@ -1,8 +1,8 @@
 package com.stardust.autojs.core.ui.attribute;
 
-import android.support.design.widget.AppBarLayout;
 import android.view.View;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.stardust.autojs.core.ui.inflater.ResourceParser;
 
 public class AppbarAttributes extends ViewAttributes {

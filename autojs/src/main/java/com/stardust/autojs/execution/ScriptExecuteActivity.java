@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -21,10 +21,9 @@ import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.runtime.ScriptRuntime;
-import com.stardust.autojs.runtime.api.UI;
 import com.stardust.autojs.script.ScriptSource;
 
-import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.ContinuationPending;
 
 /**
  * Created by Stardust on 2017/2/5.
@@ -49,7 +48,8 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         ActivityScriptExecution execution = new ActivityScriptExecution(manager, task);
         Intent i = new Intent(context, ScriptExecuteActivity.class)
                 .putExtra(EXTRA_EXECUTION_ID, execution.getId())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(task.getConfig().getIntentFlags());
         context.startActivity(i);
         return execution;
     }
@@ -86,12 +86,14 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         try {
             prepare();
             doExecution();
+        } catch (ContinuationPending pending) {
+            pending.printStackTrace();
         } catch (Exception e) {
             onException(e);
         }
     }
 
-    private void onException(Exception e) {
+    private void onException(Throwable e) {
         mExecutionListener.onException(mScriptExecution, e);
         super.finish();
     }
@@ -116,8 +118,8 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     private void prepare() {
         mScriptEngine.put("activity", this);
         mScriptEngine.setTag("activity", this);
-        mScriptEngine.setTag(ScriptEngine.TAG_ENV_PATH, mScriptExecution.getConfig().getRequirePath());
-        mScriptEngine.setTag(ScriptEngine.TAG_EXECUTE_PATH, mScriptExecution.getConfig().getExecutePath());
+        mScriptEngine.setTag(ScriptEngine.TAG_ENV_PATH, mScriptExecution.getConfig().getPath());
+        mScriptEngine.setTag(ScriptEngine.TAG_WORKING_DIRECTORY, mScriptExecution.getConfig().getWorkingDirectory());
         mScriptEngine.init();
     }
 
@@ -127,7 +129,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
             super.finish();
             return;
         }
-        Exception exception = mScriptEngine.getUncaughtException();
+        Throwable exception = mScriptEngine.getUncaughtException();
         if (exception != null) {
             onException(exception);
         } else {
@@ -140,7 +142,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(LOG_TAG, "onDestroy");
-        if(mScriptEngine != null){
+        if (mScriptEngine != null) {
             mScriptEngine.put("activity", null);
             mScriptEngine.setTag("activity", null);
             mScriptEngine.destroy();
@@ -246,7 +248,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
                 mScriptEngine.forceStop();
             }
             mScriptEngine = mScriptEngineManager.createEngineOfSourceOrThrow(getSource(), getId());
-            mScriptEngine.setTag(ExecutionConfig.TAG, getConfig());
+            mScriptEngine.setTag(ExecutionConfig.getTag(), getConfig());
             return mScriptEngine;
         }
 

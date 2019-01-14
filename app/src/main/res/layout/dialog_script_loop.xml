@@ -8,65 +8,65 @@
               android:paddingRight="16dp">
 
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:hint="@string/text_loop_times">
 
-        <android.support.design.widget.TextInputEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/loop_times"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/text_loop_times"
             android:inputType="number"
             android:text="0"
             tools:ignore="HardcodedText"/>
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginLeft="4dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/hint_loop_times"
         android:textColor="#77000000"
         android:textSize="12sp"/>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:hint="@string/text_loop_interval">
 
-        <android.support.design.widget.TextInputEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/loop_interval"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/text_loop_interval"
             android:inputType="numberDecimal"
             android:text="1.0"
             tools:ignore="HardcodedText"/>
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:hint="@string/text_loop_delay">
 
-        <android.support.design.widget.TextInputEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/loop_delay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/text_loop_delay"
             android:inputType="numberDecimal"
             android:text="0.0"
             tools:ignore="HardcodedText"/>
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginLeft="4dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/hint_loop_delay"
         android:textColor="#77000000"
         android:textSize="12sp"/>

@@ -4,19 +4,22 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.core.view.GravityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.tabs.TabLayout;
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.autojs.core.permission.OnRequestPermissionsResultCallback;
@@ -96,6 +99,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         mVersionGuard = new VersionGuard(this);
         showAnnunciationIfNeeded();
         EventBus.getDefault().register(this);
+        applyDayNightMode();
     }
 
     @AfterViews
@@ -154,7 +158,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private void setUpToolbar() {
         Toolbar toolbar = $(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string._app_name);
+        toolbar.setTitle(R.string.app_name);
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.text_drawer_open,
                 R.string.text_drawer_close);
         drawerToggle.syncState();
@@ -320,7 +324,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Subscribe
     public void onLoadUrl(CommunityFragment.LoadUrl loadUrl) {
-        mDrawerLayout.closeDrawer(Gravity.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
 

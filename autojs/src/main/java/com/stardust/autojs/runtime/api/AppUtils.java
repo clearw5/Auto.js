@@ -6,13 +6,13 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.util.Log;
 
 import com.stardust.autojs.annotation.ScriptInterface;
 import com.stardust.util.IntentUtil;
-import com.stardust.util.MimeTypes;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -51,7 +51,7 @@ public class AppUtils {
     }
 
     @ScriptInterface
-    public void sendLocalBroadcastSync(Intent intent){
+    public void sendLocalBroadcastSync(Intent intent) {
         LocalBroadcastManager.getInstance(mContext).sendBroadcastSync(intent);
     }
 
@@ -90,6 +90,11 @@ public class AppUtils {
     @ScriptInterface
     public boolean openAppSetting(String packageName) {
         return IntentUtil.goToAppDetailSettings(mContext, packageName);
+    }
+
+    @ScriptInterface
+    public String getFileProviderAuthority() {
+        return mFileProviderAuthority;
     }
 
     @Nullable

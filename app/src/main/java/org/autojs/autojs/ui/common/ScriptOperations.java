@@ -5,13 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -19,7 +18,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.DialogUtils;
 import com.stardust.app.GlobalAppContext;
-import com.stardust.pio.PFile;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
 import com.tencent.bugly.crashreport.BuglyLog;
@@ -30,7 +28,6 @@ import org.autojs.autojs.external.ScriptIntents;
 import org.autojs.autojs.model.explorer.Explorer;
 import org.autojs.autojs.model.explorer.ExplorerDirPage;
 import org.autojs.autojs.model.explorer.ExplorerFileItem;
-import org.autojs.autojs.model.explorer.ExplorerItem;
 import org.autojs.autojs.model.explorer.ExplorerPage;
 import org.autojs.autojs.model.explorer.Explorers;
 import org.autojs.autojs.storage.file.TmpScriptFiles;
@@ -117,7 +114,7 @@ public class ScriptOperations {
             }
             notifyFileCreated(mCurrentDirectory, new ScriptFile(path));
             if (edit)
-                Scripts.edit(path);
+                Scripts.INSTANCE.edit(path);
         } else {
             showMessage(R.string.text_create_fail);
         }
@@ -269,10 +266,8 @@ public class ScriptOperations {
     }
 
     public Observable<ExplorerFileItem> rename(final ExplorerFileItem item) {
-        final ScriptFile oldFile = new ScriptFile(item.getPath());
         String originalName = item.getName();
-        return showNameInputDialog(originalName, new InputCallback(oldFile.isDirectory() ? null : PFiles.getExtension(item.getName()),
-                originalName))
+        return showNameInputDialog(originalName, new InputCallback(null, originalName))
                 .map(newName -> {
                     ExplorerFileItem newItem = item.rename(newName);
                     if (ObjectHelper.equals(newItem.toScriptFile(), item.toScriptFile())) {
@@ -307,18 +302,23 @@ public class ScriptOperations {
 
     @SuppressLint("CheckResult")
     public void deleteWithoutConfirm(final ScriptFile scriptFile) {
+        boolean isDir = scriptFile.isDirectory();
         Observable.fromPublisher((Publisher<Boolean>) s -> s.onNext(PFiles.deleteRecursively(scriptFile)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deleted -> {
                     showMessage(deleted ? R.string.text_already_delete : R.string.text_delete_failed);
                     if (deleted)
-                        notifyFileRemoved(mCurrentDirectory, scriptFile);
+                        notifyFileRemoved(isDir, scriptFile);
                 });
     }
 
-    private void notifyFileRemoved(ScriptFile directory, ScriptFile scriptFile) {
-        mExplorer.notifyItemRemoved(new ExplorerFileItem(scriptFile, mExplorerPage));
+    private void notifyFileRemoved(boolean isDir, ScriptFile scriptFile) {
+        if (isDir) {
+            mExplorer.notifyItemRemoved(new ExplorerDirPage(scriptFile, mExplorerPage));
+        } else {
+            mExplorer.notifyItemRemoved(new ExplorerFileItem(scriptFile, mExplorerPage));
+        }
     }
 
 
@@ -380,7 +380,7 @@ public class ScriptOperations {
         private String mExtension;
 
         InputCallback(@Nullable String ext, String excluded) {
-            mExtension = "." + ext;
+            mExtension = ext == null ? null : "." + ext;
             mExcluded = excluded;
         }
 
@@ -401,7 +401,7 @@ public class ScriptOperations {
             EditText editText = dialog.getInputEditText();
             if (editText == null)
                 return;
-            if (mExcluded != null && input.equals(mExcluded)) {
+            if (input.equals(mExcluded)) {
                 editText.setError(null);
                 dialog.getActionButton(DialogAction.POSITIVE).setEnabled(true);
                 return;

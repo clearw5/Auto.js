@@ -3,27 +3,20 @@ package org.autojs.autojs.ui.error;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
-import android.support.annotation.StringRes;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringDef;
+import androidx.annotation.StringRes;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -36,6 +29,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
+import com.heinrichreimersoftware.androidissuereporter.R;
 import com.heinrichreimersoftware.androidissuereporter.model.DeviceInfo;
 import com.heinrichreimersoftware.androidissuereporter.model.Report;
 import com.heinrichreimersoftware.androidissuereporter.model.github.ExtraInfo;
@@ -43,7 +37,10 @@ import com.heinrichreimersoftware.androidissuereporter.model.github.GithubLogin;
 import com.heinrichreimersoftware.androidissuereporter.model.github.GithubTarget;
 import com.heinrichreimersoftware.androidissuereporter.util.ColorUtils;
 import com.heinrichreimersoftware.androidissuereporter.util.ThemeUtils;
+import com.stardust.theme.ThemeColorManager;
 
+import org.autojs.autojs.BuildConfig;
+import org.autojs.autojs.ui.BaseActivity;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.client.RequestException;
@@ -56,15 +53,11 @@ import java.lang.ref.WeakReference;
 
 import static android.util.Patterns.EMAIL_ADDRESS;
 
-import com.heinrichreimersoftware.androidissuereporter.R;
-import org.autojs.autojs.BuildConfig;
-import com.stardust.theme.ThemeColorManager;
-
 /**
  * Created by Stardust on 2017/4/3.
  */
 
-public abstract class AbstractIssueReporterActivity extends AppCompatActivity {
+public abstract class AbstractIssueReporterActivity extends BaseActivity {
 
     private static final String TAG = AbstractIssueReporterActivity.class.getSimpleName();
 
@@ -87,15 +80,15 @@ public abstract class AbstractIssueReporterActivity extends AppCompatActivity {
     private boolean emailRequired = false;
     private int bodyMinChar = 0;
     private Toolbar toolbar;
-    private TextInputEditText inputTitle;
-    private TextInputEditText inputDescription;
+    private EditText inputTitle;
+    private EditText inputDescription;
     private TextView textDeviceInfo;
     private ImageButton buttonDeviceInfo;
     private ExpandableRelativeLayout layoutDeviceInfo;
     private ExpandableRelativeLayout layoutAnonymous;
-    private TextInputEditText inputUsername;
-    private TextInputEditText inputPassword;
-    private TextInputEditText inputEmail;
+    private EditText inputUsername;
+    private EditText inputPassword;
+    private EditText inputEmail;
     private RadioButton optionUseAccount;
     private RadioButton optionAnonymous;
     private ExpandableRelativeLayout layoutLogin;
@@ -126,12 +119,7 @@ public abstract class AbstractIssueReporterActivity extends AppCompatActivity {
 
         handleIntent();
 
-        optionAnonymous.post(new Runnable() {
-            @Override
-            public void run() {
-                optionAnonymous.performClick();
-            }
-        });
+        optionAnonymous.post(() -> optionAnonymous.performClick());
     }
 
     private void handleIntent() {
@@ -152,23 +140,23 @@ public abstract class AbstractIssueReporterActivity extends AppCompatActivity {
     }
 
     private void findViews() {
-        toolbar = (Toolbar) findViewById(R.id.air_toolbar);
+        toolbar = findViewById(R.id.air_toolbar);
 
-        inputTitle = (TextInputEditText) findViewById(R.id.air_inputTitle);
-        inputDescription = (TextInputEditText) findViewById(R.id.air_inputDescription);
-        textDeviceInfo = (TextView) findViewById(R.id.air_textDeviceInfo);
-        buttonDeviceInfo = (ImageButton) findViewById(R.id.air_buttonDeviceInfo);
-        layoutDeviceInfo = (ExpandableRelativeLayout) findViewById(R.id.air_layoutDeviceInfo);
+        inputTitle = findViewById(R.id.air_inputTitle);
+        inputDescription = findViewById(R.id.air_inputDescription);
+        textDeviceInfo = findViewById(R.id.air_textDeviceInfo);
+        buttonDeviceInfo = findViewById(R.id.air_buttonDeviceInfo);
+        layoutDeviceInfo = findViewById(R.id.air_layoutDeviceInfo);
 
-        inputUsername = (TextInputEditText) findViewById(R.id.air_inputUsername);
-        inputPassword = (TextInputEditText) findViewById(R.id.air_inputPassword);
-        inputEmail = (TextInputEditText) findViewById(R.id.air_inputEmail);
-        optionUseAccount = (RadioButton) findViewById(R.id.air_optionUseAccount);
-        optionAnonymous = (RadioButton) findViewById(R.id.air_optionAnonymous);
-        layoutLogin = (ExpandableRelativeLayout) findViewById(R.id.air_layoutLogin);
-        layoutAnonymous = (ExpandableRelativeLayout) findViewById(R.id.air_layoutGuest);
+        inputUsername = findViewById(R.id.air_inputUsername);
+        inputPassword = findViewById(R.id.air_inputPassword);
+        inputEmail = findViewById(R.id.air_inputEmail);
+        optionUseAccount = findViewById(R.id.air_optionUseAccount);
+        optionAnonymous = findViewById(R.id.air_optionAnonymous);
+        layoutLogin = findViewById(R.id.air_layoutLogin);
+        layoutAnonymous = findViewById(R.id.air_layoutGuest);
 
-        buttonSend = (FloatingActionButton) findViewById(R.id.air_buttonSend);
+        buttonSend = findViewById(R.id.air_buttonSend);
     }
 
     private void initViews() {
@@ -185,46 +173,30 @@ public abstract class AbstractIssueReporterActivity extends AppCompatActivity {
         toolbar.setBackgroundColor(ThemeColorManager.getColorPrimary());
 
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
 
-        buttonDeviceInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                layoutDeviceInfo.toggle();
-            }
-        });
+        buttonDeviceInfo.setOnClickListener(v -> layoutDeviceInfo.toggle());
 
 
-        inputPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    reportIssue();
-                    return true;
-                }
-                return false;
+        inputPassword.setOnEditorActionListener((textView, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                reportIssue();
+                return true;
             }
+            return false;
         });
 
         updateGuestTokenViews();
 
         buttonSend.setImageResource(ColorUtils.isDark(ThemeUtils.getColorAccent(this)) ?
                 R.drawable.air_ic_send_dark : R.drawable.air_ic_send_light);
-        buttonSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    reportIssue();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    mReportFailed = true;
-                    finish();
-                }
+        buttonSend.setOnClickListener(v -> {
+            try {
+                reportIssue();
+            } catch (Exception e) {
+                e.printStackTrace();
+                mReportFailed = true;
+                finish();
             }
         });
 
@@ -250,24 +222,18 @@ public abstract class AbstractIssueReporterActivity extends AppCompatActivity {
         } else {
             setOptionUseAccountMarginStart(0);
             optionUseAccount.setEnabled(true);
-            optionUseAccount.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    layoutLogin.expand();
-                    layoutAnonymous.collapse();
-                    inputUsername.setEnabled(true);
-                    inputPassword.setEnabled(true);
-                }
+            optionUseAccount.setOnClickListener(v -> {
+                layoutLogin.expand();
+                layoutAnonymous.collapse();
+                inputUsername.setEnabled(true);
+                inputPassword.setEnabled(true);
             });
             optionAnonymous.setVisibility(View.VISIBLE);
-            optionAnonymous.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    layoutLogin.collapse();
-                    layoutAnonymous.expand();
-                    inputUsername.setEnabled(false);
-                    inputPassword.setEnabled(false);
-                }
+            optionAnonymous.setOnClickListener(v -> {
+                layoutLogin.collapse();
+                layoutAnonymous.expand();
+                inputUsername.setEnabled(false);
+                inputPassword.setEnabled(false);
             });
         }
     }
@@ -347,7 +313,7 @@ public abstract class AbstractIssueReporterActivity extends AppCompatActivity {
         return !hasErrors;
     }
 
-    private void setError(TextInputEditText editText, @StringRes int errorRes) {
+    private void setError(EditText editText, @StringRes int errorRes) {
         try {
             View layout = (View) editText.getParent();
             while (!layout.getClass().getSimpleName().equals(TextInputLayout.class.getSimpleName()))
@@ -359,7 +325,7 @@ public abstract class AbstractIssueReporterActivity extends AppCompatActivity {
         }
     }
 
-    private void setError(TextInputEditText editText, String error) {
+    private void setError(EditText editText, String error) {
         try {
             View layout = (View) editText.getParent();
             while (!layout.getClass().getSimpleName().equals(TextInputLayout.class.getSimpleName()))
@@ -371,7 +337,7 @@ public abstract class AbstractIssueReporterActivity extends AppCompatActivity {
         }
     }
 
-    private void removeError(TextInputEditText editText) {
+    private void removeError(EditText editText) {
         try {
             View layout = (View) editText.getParent();
             while (!layout.getClass().getSimpleName().equals(TextInputLayout.class.getSimpleName()))
@@ -543,19 +509,8 @@ public abstract class AbstractIssueReporterActivity extends AppCompatActivity {
                             .title(R.string.air_dialog_title_failed)
                             .content(R.string.air_dialog_description_failed_unknown)
                             .positiveText(R.string.air_dialog_action_failed)
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog,
-                                                    @NonNull DialogAction which) {
-                                    tryToFinishActivity();
-                                }
-                            })
-                            .cancelListener(new DialogInterface.OnCancelListener() {
-                                @Override
-                                public void onCancel(DialogInterface dialog) {
-                                    tryToFinishActivity();
-                                }
-                            })
+                            .onPositive((dialog, which) -> tryToFinishActivity())
+                            .cancelListener(dialog -> tryToFinishActivity())
                             .show();
                     break;
             }

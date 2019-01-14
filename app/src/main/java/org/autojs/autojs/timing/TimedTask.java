@@ -53,9 +53,9 @@ public class TimedTask extends BaseModel {
         mMillis = millis;
         mTimeFlag = timeFlag;
         mScriptPath = scriptPath;
-        mDelay = config.delay;
-        mLoopTimes = config.loopTimes;
-        mInterval = config.interval;
+        mDelay = config.getDelay();
+        mLoopTimes = config.getLoopTimes();
+        mInterval = config.getInterval();
     }
 
     public boolean isDisposable() {

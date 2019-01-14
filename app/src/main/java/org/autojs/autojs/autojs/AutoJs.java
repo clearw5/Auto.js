@@ -6,18 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Looper;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.stardust.app.GlobalAppContext;
-import com.stardust.autojs.core.console.GlobalStardustConsole;
+import com.stardust.autojs.core.console.GlobalConsole;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.exception.ScriptException;
-import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 
-import org.autojs.autojs.App;
 import org.autojs.autojs.BuildConfig;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
@@ -28,10 +26,8 @@ import org.autojs.autojs.ui.floating.FullScreenFloatyWindow;
 import org.autojs.autojs.ui.floating.layoutinspector.LayoutBoundsFloatyWindow;
 import org.autojs.autojs.ui.floating.layoutinspector.LayoutHierarchyFloatyWindow;
 import org.autojs.autojs.ui.log.LogActivity_;
-import org.autojs.autojs.ui.settings.SettingsActivity;
 import org.autojs.autojs.ui.settings.SettingsActivity_;
 
-import com.stardust.concurrent.VolatileBox;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.LayoutInspector;
 import com.stardust.view.accessibility.NodeInfo;
@@ -52,7 +48,10 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
     }
 
 
-    public static void initInstance(Application application) {
+    public synchronized static void initInstance(Application application) {
+        if (instance != null) {
+            return;
+        }
         instance = new AutoJs(application);
     }
 
@@ -111,8 +110,8 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
     }
 
     @Override
-    protected GlobalStardustConsole createGlobalConsole() {
-        return new GlobalStardustConsole(getUiHandler()) {
+    protected GlobalConsole createGlobalConsole() {
+        return new GlobalConsole(getUiHandler()) {
             @Override
             public String println(int level, CharSequence charSequence) {
                 String log = super.println(level, charSequence);
@@ -123,7 +122,7 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
     }
 
     public void ensureAccessibilityServiceEnabled() {
-        if (AccessibilityService.getInstance() != null) {
+        if (AccessibilityService.Companion.getInstance() != null) {
             return;
         }
         String errorMessage = null;
@@ -146,7 +145,7 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
 
     @Override
     public void waitForAccessibilityServiceEnabled() {
-        if (AccessibilityService.getInstance() != null) {
+        if (AccessibilityService.Companion.getInstance() != null) {
             return;
         }
         String errorMessage = null;
@@ -163,7 +162,7 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         }
         if (errorMessage != null) {
             AccessibilityServiceTool.goToAccessibilitySetting();
-            if (!org.autojs.autojs.accessibility.AccessibilityService.waitForEnabled(-1)) {
+            if (!AccessibilityService.Companion.waitForEnabled(-1)) {
                 throw new ScriptInterruptedException();
             }
         }

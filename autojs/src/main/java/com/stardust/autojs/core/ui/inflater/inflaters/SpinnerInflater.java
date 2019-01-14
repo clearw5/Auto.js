@@ -1,16 +1,11 @@
 package com.stardust.autojs.core.ui.inflater.inflaters;
 
-import android.content.Context;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.TypedValue;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 
-import com.stardust.autojs.R;
 import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.ViewCreator;
 import com.stardust.autojs.core.ui.inflater.util.Colors;
@@ -19,7 +14,6 @@ import com.stardust.autojs.core.ui.inflater.util.Strings;
 import com.stardust.autojs.core.ui.inflater.util.ValueMapper;
 import com.stardust.autojs.core.ui.widget.JsSpinner;
 
-import java.util.List;
 import java.util.Map;
 
 /**

@@ -12,5 +12,5 @@ public interface ScriptExecutionListener extends Serializable {
 
     void onSuccess(ScriptExecution execution, Object result);
 
-    void onException(ScriptExecution execution, Exception e);
+    void onException(ScriptExecution execution, Throwable e);
 }

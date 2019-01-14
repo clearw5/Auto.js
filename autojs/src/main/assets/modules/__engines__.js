@@ -18,17 +18,7 @@ module.exports = function(__runtime__, scope){
     }
 
     engines.myEngine = function(){
-        var engine = Object.create(rtEngines.myEngine());
-        if(!execArgv){
-            execArgv = {};
-            var iter = engine.getTag("execution.config").getArguments().entrySet().iterator();
-            while(iter.hasNext()){
-                var entry = iter.next();
-                execArgv[entry.getKey()] = entry.getValue();
-            }
-        }
-        engine.execArgv = execArgv;
-        return engine;
+        return rtEngines.myEngine();
     }
 
     engines.all = function(){
@@ -43,18 +33,11 @@ module.exports = function(__runtime__, scope){
         c = c || {};
         c.path = c.path || files.cwd();
         if(c.path){
-            if(Array.isArray(c.path)){
-                config.requirePath(c.path);
-                config.executePath(c.path[0]);
-            }else{
-                config.requirePath([c.path]);
-                config.executePath(c.path);
-            }
+           config.workingDirectory = c.path;
         }
-        c.delay = c.delay || 0;
-        c.interval = c.interval || 0;
-        c.loopTimes = c.loopTimes || 1;
-        config.loop(c.delay, c.loopTimes, c.interval);
+        config.delay = c.delay || 0;
+        config.interval = c.interval || 0;
+        config.loopTimes = c.loopTimes || 1;
         if(c.arguments){
             var arguments = c.arguments;
             for(var key in arguments){
@@ -65,6 +48,15 @@ module.exports = function(__runtime__, scope){
         }
         return config;
     }
+
+    var engine = engines.myEngine();
+    var execArgv = {};
+    var iterator = engine.getTag("execution.config").arguments.entrySet().iterator();
+    while(iterator.hasNext()){
+        var entry = iterator.next();
+        execArgv[entry.getKey()] = entry.getValue();
+    }
+    engine.execArgv = execArgv;
 
     return engines;
 }

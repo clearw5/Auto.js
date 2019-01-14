@@ -3,8 +3,8 @@ package org.autojs.autojs.ui.main.scripts;
 import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
+import androidx.annotation.Nullable;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.stardust.app.GlobalAppContext;
 import com.stardust.util.IntentUtil;
@@ -62,7 +62,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements FloatingA
         mExplorerView.setExplorer(Explorers.workspace(), ExplorerDirPage.createRoot(Pref.getScriptDirPath()));
         mExplorerView.setOnItemClickListener((view, item) -> {
             if (item.isEditable()) {
-                Scripts.edit(item.toScriptFile());
+                Scripts.INSTANCE.edit(item.toScriptFile());
             } else {
                 IntentUtil.viewFile(GlobalAppContext.get(), item.getPath(), AppFileProvider.AUTHORITY);
             }

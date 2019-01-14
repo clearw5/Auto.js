@@ -34,7 +34,7 @@ public class ScriptExecutionGlobalListener implements ScriptExecutionListener {
     }
 
     @Override
-    public void onException(ScriptExecution execution, Exception e) {
+    public void onException(ScriptExecution execution, Throwable e) {
         onFinish(execution);
     }
 

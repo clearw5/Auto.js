@@ -1,9 +1,6 @@
 package com.stardust.autojs.core.eventloop;
 
-import android.support.annotation.NonNull;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import androidx.annotation.NonNull;
 
 
 import com.stardust.autojs.core.looper.Timer;
@@ -43,7 +40,7 @@ public class EventEmitter {
         }
 
         private void ensureListenersNotAtLimit() {
-            if (mMaxListeners != 0 && mListenersMap.size() >= mMaxListeners) {
+            if (mMaxListeners != 0 && mListenerWrappers.size() >= mMaxListeners) {
                 throw new ScriptException(new TooManyListenersException("max = " + mMaxListeners));
             }
         }

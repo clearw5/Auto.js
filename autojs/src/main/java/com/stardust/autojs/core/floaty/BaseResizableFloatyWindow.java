@@ -1,20 +1,17 @@
 package com.stardust.autojs.core.floaty;
 
 import android.content.Context;
-import android.graphics.PixelFormat;
-import android.os.Build;
-import android.support.annotation.Nullable;
-import android.view.Gravity;
+
+import androidx.annotation.Nullable;
+
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.ui.inflater.inflaters.Exceptions;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
-import com.stardust.concurrent.VolatileBox;
 import com.stardust.concurrent.VolatileDispose;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableFloaty;
@@ -37,10 +34,12 @@ public class BaseResizableFloatyWindow extends ResizableFloatyWindow {
 
     private VolatileDispose<RuntimeException> mInflateException = new VolatileDispose<>();
     private View mCloseButton;
+    private int mOffset;
 
 
     public BaseResizableFloatyWindow(Context context, ViewSupplier viewSupplier) {
         this(new MyFloaty(context, viewSupplier));
+        mOffset = context.getResources().getDimensionPixelSize(R.dimen.floaty_window_offset);
     }
 
     private BaseResizableFloatyWindow(MyFloaty floaty) {
@@ -49,6 +48,26 @@ public class BaseResizableFloatyWindow extends ResizableFloatyWindow {
 
     public RuntimeException waitForCreation() {
         return mInflateException.blockedGetOrThrow(ScriptInterruptedException.class);
+    }
+
+    @Override
+    protected WindowBridge onCreateWindowBridge(WindowManager.LayoutParams params) {
+        return new WindowBridge.DefaultImpl(params, getWindowManager(), getWindowView()) {
+            @Override
+            public int getX() {
+                return super.getX() + mOffset;
+            }
+
+            @Override
+            public int getY() {
+                return super.getY() + mOffset;
+            }
+
+            @Override
+            public void updatePosition(int x, int y) {
+                super.updatePosition(x - mOffset, y - mOffset);
+            }
+        };
     }
 
     @Override
@@ -107,6 +126,7 @@ public class BaseResizableFloatyWindow extends ResizableFloatyWindow {
         private ViewSupplier mContentViewSupplier;
         private View mRootView;
         private Context mContext;
+
 
         public MyFloaty(Context context, ViewSupplier supplier) {
             mContentViewSupplier = supplier;

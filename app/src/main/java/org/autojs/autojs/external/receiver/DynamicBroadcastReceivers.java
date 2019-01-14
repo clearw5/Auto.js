@@ -4,12 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Build;
-import android.support.design.widget.TabLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
-import android.util.Pair;
+
+import org.autojs.autojs.timing.IntentTask;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -17,14 +17,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import static android.content.Intent.ACTION_BATTERY_CHANGED;
-import static android.content.Intent.ACTION_CONFIGURATION_CHANGED;
-import static android.content.Intent.ACTION_PACKAGES_SUSPENDED;
-import static android.content.Intent.ACTION_PACKAGES_UNSUSPENDED;
-import static android.content.Intent.ACTION_SCREEN_OFF;
-import static android.content.Intent.ACTION_SCREEN_ON;
-
 public class DynamicBroadcastReceivers {
+
+    public static final String ACTION_STARTUP = "org.autojs.autojs.action.startup";
 
     private static final String LOG_TAG = "DynBroadcastReceivers";
 
@@ -43,15 +38,13 @@ public class DynamicBroadcastReceivers {
             filter.addDataScheme("package");
             mContext.registerReceiver(mPackageActionReceiver, filter);
         }
-
-
     }
 
-    public void register(String action) {
-        register(Collections.singletonList(action));
+    public void register(IntentTask task) {
+        register(Collections.singletonList(task.getAction()), task.isLocal());
     }
 
-    public synchronized void register(List<String> actions) {
+    public synchronized void register(List<String> actions, boolean local) {
         LinkedHashSet<String> newActions = new LinkedHashSet<>();
         for (String action : actions) {
             if (!StaticBroadcastReceiver.ACTIONS.contains(action)
@@ -63,7 +56,7 @@ public class DynamicBroadcastReceivers {
         if (newActions.isEmpty()) {
             return;
         }
-        ReceiverRegistry receiverRegistry = new ReceiverRegistry(newActions);
+        ReceiverRegistry receiverRegistry = new ReceiverRegistry(newActions, local);
         receiverRegistry.register();
         mReceiverRegistries.add(receiverRegistry);
     }
@@ -110,21 +103,33 @@ public class DynamicBroadcastReceivers {
     private class ReceiverRegistry {
         BroadcastReceiver receiver;
         LinkedHashSet<String> actions;
+        boolean local;
 
-        ReceiverRegistry(LinkedHashSet<String> actions) {
+        ReceiverRegistry(LinkedHashSet<String> actions, boolean local) {
             this.actions = actions;
+            this.local = local;
             receiver = new BaseBroadcastReceiver();
         }
 
         void unregister() {
-            mContext.unregisterReceiver(receiver);
+            if (local) {
+                LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mContext);
+                broadcastManager.unregisterReceiver(receiver);
+            } else {
+                mContext.unregisterReceiver(receiver);
+            }
         }
 
         boolean register() {
             if (actions.isEmpty())
                 return false;
             IntentFilter intentFilter = createIntentFilter(actions);
-            mContext.registerReceiver(receiver, intentFilter);
+            if (local) {
+                LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mContext);
+                broadcastManager.registerReceiver(receiver, intentFilter);
+            } else {
+                mContext.registerReceiver(receiver, intentFilter);
+            }
             Log.d(LOG_TAG, "register: " + actions);
             return true;
         }

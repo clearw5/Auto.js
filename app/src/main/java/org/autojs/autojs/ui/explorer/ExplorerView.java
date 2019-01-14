@@ -3,13 +3,15 @@ package org.autojs.autojs.ui.explorer;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +26,7 @@ import com.stardust.pio.PFiles;
 import org.autojs.autojs.R;
 import org.autojs.autojs.model.explorer.Explorer;
 import org.autojs.autojs.model.explorer.ExplorerChangeEvent;
+import org.autojs.autojs.model.explorer.ExplorerDirPage;
 import org.autojs.autojs.model.explorer.ExplorerFileItem;
 import org.autojs.autojs.model.explorer.ExplorerItem;
 import org.autojs.autojs.model.explorer.ExplorerPage;
@@ -122,8 +125,8 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
         }
     }
 
-    public void enterChildPage(ExplorerPage childItemGroup) {
-        mCurrentPageState.position = ((LinearLayoutManager) mExplorerItemListView.getLayoutManager()).findFirstVisibleItemPosition();
+    protected void enterDirectChildPage(ExplorerPage childItemGroup) {
+        mCurrentPageState.scrollY = ((LinearLayoutManager) mExplorerItemListView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
         mPageStateHistory.push(mCurrentPageState);
         setCurrentPageState(new ExplorerPageState(childItemGroup));
         loadItemList();
@@ -159,6 +162,28 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
         enterChildPage(currentPage);
     }
 
+    public void enterChildPage(ExplorerPage childPage) {
+        ScriptFile root = mCurrentPageState.page.toScriptFile();
+        ScriptFile dir = childPage.toScriptFile();
+        Stack<ScriptFile> dirs = new Stack<>();
+        while (!dir.equals(root)) {
+            dir = dir.getParentFile();
+            if (dir == null) {
+                break;
+            }
+            dirs.push(dir);
+        }
+        ExplorerDirPage parent = null;
+        while (!dirs.empty()) {
+            dir = dirs.pop();
+            ExplorerDirPage dirPage = new ExplorerDirPage(dir, parent);
+            mPageStateHistory.push(new ExplorerPageState(dirPage));
+            parent = dirPage;
+        }
+        setCurrentPageState(new ExplorerPageState(childPage));
+        loadItemList();
+    }
+
     public void setOnItemOperatedListener(OnItemOperatedListener onItemOperatedListener) {
         mOnItemOperatedListener = onItemOperatedListener;
     }
@@ -186,6 +211,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
     }
 
     private void init() {
+        Log.d(LOG_TAG, "item bg = " + Integer.toHexString(ContextCompat.getColor(getContext(), R.color.item_background)));
         setOnRefreshListener(this);
         inflate(getContext(), R.layout.explorer_view, this);
         mExplorerItemListView = findViewById(R.id.explorer_item_list);
@@ -236,16 +262,47 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
                     mExplorerAdapter.notifyDataSetChanged();
                     setRefreshing(false);
                     post(() ->
-                            mExplorerItemListView.scrollToPosition(mCurrentPageState.position)
+                            mExplorerItemListView.scrollToPosition(mCurrentPageState.scrollY)
                     );
                 });
     }
 
     @Subscribe
     public void onExplorerChange(ExplorerChangeEvent event) {
-        if ((event.getAction() == ExplorerChangeEvent.ALL)
-                || mCurrentPageState.page.getPath().equals(event.getPage().getPath())) {
+        Log.d(LOG_TAG, "on explorer change: " + event);
+        if ((event.getAction() == ExplorerChangeEvent.ALL)) {
             loadItemList();
+            return;
+        }
+        String currentDirPath = mCurrentPageState.page.getPath();
+        String changedDirPath = event.getPage().getPath();
+        ExplorerItem item = event.getItem();
+        String changedItemPath = item == null ? null : item.getPath();
+        if (currentDirPath.equals(changedItemPath) || (currentDirPath.equals(changedDirPath) &&
+                event.getAction() == ExplorerChangeEvent.CHILDREN_CHANGE)) {
+            loadItemList();
+            return;
+        }
+        if (currentDirPath.equals(changedDirPath)) {
+            int i;
+            switch (event.getAction()) {
+                case ExplorerChangeEvent.CHANGE:
+                    i = mExplorerItemList.update(item, event.getNewItem());
+                    if (i >= 0) {
+                        mExplorerAdapter.notifyItemChanged(item, i);
+                    }
+                    break;
+                case ExplorerChangeEvent.CREATE:
+                    mExplorerItemList.insertAtFront(event.getNewItem());
+                    mExplorerAdapter.notifyItemInserted(event.getNewItem(), 0);
+                    break;
+                case ExplorerChangeEvent.REMOVE:
+                    i = mExplorerItemList.remove(item);
+                    if (i >= 0) {
+                        mExplorerAdapter.notifyItemRemoved(item, i);
+                    }
+                    break;
+            }
         }
     }
 
@@ -282,11 +339,11 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
                         .createShortcut(mSelectedItem.toScriptFile());
                 break;
             case R.id.open_by_other_apps:
-                Scripts.openByOtherApps(mSelectedItem.toScriptFile());
+                Scripts.INSTANCE.openByOtherApps(mSelectedItem.toScriptFile());
                 notifyOperated();
                 break;
             case R.id.send:
-                Scripts.send(mSelectedItem.toScriptFile());
+                Scripts.INSTANCE.send(mSelectedItem.toScriptFile());
                 notifyOperated();
                 break;
             case R.id.timed_task:
@@ -385,7 +442,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
         @Override
         public BindableViewHolder<?> onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            LayoutInflater inflater = LayoutInflater.from(getContext());
             return ExplorerView.this.onCreateViewHolder(inflater, parent, viewType);
         }
 
@@ -415,6 +472,25 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
             } else {
                 return VIEW_TYPE_ITEM;
             }
+        }
+
+        int getItemPosition(ExplorerItem item, int i) {
+            if (item instanceof ExplorerPage) {
+                return i + positionOfCategoryDir + 1;
+            }
+            return i + positionOfCategoryFile() + 1;
+        }
+
+        public void notifyItemChanged(ExplorerItem item, int i) {
+            notifyItemChanged(getItemPosition(item, i));
+        }
+
+        public void notifyItemRemoved(ExplorerItem item, int i) {
+            notifyItemRemoved(getItemPosition(item, i));
+        }
+
+        public void notifyItemInserted(ExplorerItem item, int i) {
+            notifyItemInserted(getItemPosition(item, i));
         }
 
         @Override
@@ -475,13 +551,13 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
         @OnClick(R.id.run)
         void run() {
-            Scripts.run(new ScriptFile(mExplorerItem.getPath()));
+            Scripts.INSTANCE.run(new ScriptFile(mExplorerItem.getPath()));
             notifyOperated();
         }
 
         @OnClick(R.id.edit)
         void edit() {
-            Scripts.edit(new ScriptFile(mExplorerItem.getPath()));
+            Scripts.INSTANCE.edit(new ScriptFile(mExplorerItem.getPath()));
             notifyOperated();
         }
 
@@ -538,7 +614,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
         @OnClick(R.id.item)
         void onItemClick() {
-            enterChildPage(mExplorerPage);
+            enterDirectChildPage(mExplorerPage);
         }
 
         @OnClick(R.id.more)
@@ -646,7 +722,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
         boolean filesCollapsed;
 
-        int position;
+        int scrollY;
 
         ExplorerPageState() {
         }

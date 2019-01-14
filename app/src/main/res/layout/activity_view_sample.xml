@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context="org.autojs.autojs.ui.edit.EditActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -16,9 +16,10 @@
         <com.stardust.theme.widget.ThemeColorToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
+            android:theme="@style/ToolBarStyle"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            android:title="@string/_app_name"
+            android:title="@string/app_name"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <LinearLayout
@@ -49,7 +50,7 @@
 
         </com.stardust.theme.widget.ThemeColorToolbar>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                    xmlns:tools="http://schemas.android.com/tools"

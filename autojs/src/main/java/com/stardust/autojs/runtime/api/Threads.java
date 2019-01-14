@@ -1,6 +1,6 @@
 package com.stardust.autojs.runtime.api;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.stardust.autojs.core.looper.MainThreadProxy;
 import com.stardust.autojs.core.looper.TimerThread;

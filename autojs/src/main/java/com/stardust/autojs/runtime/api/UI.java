@@ -2,8 +2,7 @@ package com.stardust.autojs.runtime.api;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
-import android.view.View;
+import androidx.annotation.Nullable;
 
 import com.stardust.autojs.core.graphics.ScriptCanvasView;
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
@@ -18,9 +17,7 @@ import com.stardust.autojs.core.ui.widget.JsListView;
 import com.stardust.autojs.rhino.ProxyObject;
 import com.stardust.autojs.runtime.ScriptRuntime;
 
-import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.UniqueTag;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

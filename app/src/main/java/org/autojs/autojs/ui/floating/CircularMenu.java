@@ -17,7 +17,6 @@ import com.stardust.enhancedfloaty.FloatyWindow;
 
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
-import org.autojs.autojs.accessibility.AccessibilityService;
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.autojs.record.GlobalActionRecorder;
 import org.autojs.autojs.model.explorer.ExplorerDirPage;
@@ -31,8 +30,10 @@ import org.autojs.autojs.ui.floating.layoutinspector.LayoutHierarchyFloatyWindow
 import org.autojs.autojs.ui.main.MainActivity_;
 import org.autojs.autojs.ui.explorer.ExplorerView;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
+
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.Func1;
+import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.LayoutInspector;
 import com.stardust.view.accessibility.NodeInfo;
 
@@ -143,8 +144,9 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
                 .positiveText(R.string.cancel)
                 .build();
         explorerView.setOnItemOperatedListener(file -> dialog.dismiss());
-        explorerView.setOnItemClickListener((view, item) -> Scripts.run(item.toScriptFile()));
+        explorerView.setOnItemClickListener((view, item) -> Scripts.INSTANCE.run(item.toScriptFile()));
         DialogUtils.showDialog(dialog);
+
     }
 
     @Optional
@@ -213,9 +215,11 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     }
 
     private void inspectLayout(Func1<NodeInfo, FloatyWindow> windowCreator) {
-        mLayoutInspectDialog.dismiss();
-        mLayoutInspectDialog = null;
-        if (AccessibilityService.getInstance() == null) {
+        if (mLayoutInspectDialog != null) {
+            mLayoutInspectDialog.dismiss();
+            mLayoutInspectDialog = null;
+        }
+        if (AccessibilityService.Companion.getInstance() == null) {
             Toast.makeText(mContext, R.string.text_no_accessibility_permission_to_capture, Toast.LENGTH_SHORT).show();
             AccessibilityServiceTool.goToAccessibilitySetting();
             return;
@@ -257,7 +261,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     @OnClick(R.id.settings)
     void settings() {
         mWindow.collapse();
-        mRunningPackage = AutoJs.getInstance().getInfoProvider().getLatestPackage();
+        mRunningPackage = AutoJs.getInstance().getInfoProvider().getLatestPackageByUsageStatsIfGranted();
         mRunningActivity = AutoJs.getInstance().getInfoProvider().getLatestActivity();
         mSettingsDialog = new OperationDialogBuilder(mContext)
                 .item(R.id.accessibility_service, R.drawable.ic_service_green, R.string.text_accessibility_settings)

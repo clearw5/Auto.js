@@ -1,18 +1,18 @@
 package org.autojs.autojs.ui.timing;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.graphics.ColorFilter;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -42,6 +42,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.R;
 import org.autojs.autojs.external.ScriptIntents;
+import org.autojs.autojs.external.receiver.DynamicBroadcastReceivers;
 import org.autojs.autojs.model.script.ScriptFile;
 import org.autojs.autojs.timing.IntentTask;
 import org.autojs.autojs.timing.TaskReceiver;
@@ -75,6 +76,7 @@ public class TimedTaskSettingActivity extends BaseActivity {
 
 
     public static final Map<String, Integer> ACTION_DESC_MAP = new MapBuilder<String, Integer>()
+            .put(DynamicBroadcastReceivers.ACTION_STARTUP, R.string.text_run_on_startup)
             .put(Intent.ACTION_BOOT_COMPLETED, R.string.text_run_on_boot)
             .put(Intent.ACTION_SCREEN_OFF, R.string.text_run_on_screen_off)
             .put(Intent.ACTION_SCREEN_ON, R.string.text_run_on_screen_on)
@@ -92,6 +94,7 @@ public class TimedTaskSettingActivity extends BaseActivity {
             .build();
 
     private static final BiMap<Integer, String> ACTIONS = BiMaps.<Integer, String>newBuilder()
+            .put(R.id.run_on_startup, DynamicBroadcastReceivers.ACTION_STARTUP)
             .put(R.id.run_on_boot, Intent.ACTION_BOOT_COMPLETED)
             .put(R.id.run_on_screen_off, Intent.ACTION_SCREEN_OFF)
             .put(R.id.run_on_screen_on, Intent.ACTION_SCREEN_ON)
@@ -107,7 +110,6 @@ public class TimedTaskSettingActivity extends BaseActivity {
             .put(R.id.run_on_config_change, Intent.ACTION_CONFIGURATION_CHANGED)
             .put(R.id.run_on_time_tick, Intent.ACTION_TIME_TICK)
             .build();
-
 
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
@@ -343,14 +345,15 @@ public class TimedTaskSettingActivity extends BaseActivity {
         return true;
     }
 
+    @SuppressLint("BatteryLife")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_done) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !((PowerManager) getSystemService(POWER_SERVICE)).isIgnoringBatteryOptimizations(getPackageName())) {
-                try{
+                try {
                     startActivityForResult(new Intent().setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
                             .setData(Uri.parse("package:" + getPackageName())), REQUEST_CODE_IGNORE_BATTERY);
-                }catch(ActivityNotFoundException e){
+                } catch (ActivityNotFoundException e) {
                     e.printStackTrace();
                     createOrUpdateTask();
                 }
@@ -412,6 +415,7 @@ public class TimedTaskSettingActivity extends BaseActivity {
         IntentTask task = new IntentTask();
         task.setAction(action);
         task.setScriptPath(mScriptFile.getPath());
+        task.setLocal(action.equals(DynamicBroadcastReceivers.ACTION_STARTUP));
         if (mIntentTask != null) {
             task.setId(mIntentTask.getId());
             TimedTaskManager.getInstance().updateTask(task);

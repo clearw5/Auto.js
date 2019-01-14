@@ -2,17 +2,16 @@ package com.stardust.autojs.core.ui.widget;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-public class JsSpinner extends android.support.v7.widget.AppCompatSpinner {
+public class JsSpinner extends androidx.appcompat.widget.AppCompatSpinner {
 
     private float mTextSize = -1;
     private int mTextStyle = -1;

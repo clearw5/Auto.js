@@ -30,6 +30,6 @@ public class ExplorerProjectPage extends ExplorerDirPage {
 
     @Override
     public ExplorerFileItem rename(String newName) {
-        return new ExplorerProjectPage(getFile().renameAndReturnNewFile(newName), getParent(), mProjectConfig);
+        return new ExplorerProjectPage(getFile().renameTo(newName), getParent(), mProjectConfig);
     }
 }

@@ -1,7 +1,5 @@
 package com.stardust.autojs.runtime;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
@@ -13,9 +11,10 @@ import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.image.Colors;
-import com.stardust.autojs.core.permission.PermissionRequestProxyActivity;
 import com.stardust.autojs.core.permission.Permissions;
 import com.stardust.autojs.rhino.AndroidClassLoader;
+import com.stardust.autojs.rhino.TopLevelScope;
+import com.stardust.autojs.rhino.continuation.Continuation;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
@@ -26,6 +25,7 @@ import com.stardust.autojs.runtime.api.Files;
 import com.stardust.autojs.runtime.api.Floaty;
 import com.stardust.autojs.core.looper.Loopers;
 import com.stardust.autojs.runtime.api.Media;
+import com.stardust.autojs.runtime.api.Plugins;
 import com.stardust.autojs.runtime.api.Sensors;
 import com.stardust.autojs.runtime.api.Threads;
 import com.stardust.autojs.runtime.api.Timers;
@@ -52,6 +52,7 @@ import com.stardust.view.accessibility.AccessibilityInfoProvider;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.ScriptStackElement;
+import org.mozilla.javascript.Scriptable;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -60,12 +61,8 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static android.content.pm.PackageManager.PERMISSION_DENIED;
 
 
 /**
@@ -193,6 +190,9 @@ public class ScriptRuntime {
     @ScriptVariable
     public final Media media;
 
+    @ScriptVariable
+    public final Plugins plugins;
+
     private Images images;
 
     private static WeakReference<Context> applicationContext;
@@ -201,6 +201,7 @@ public class ScriptRuntime {
     private Supplier<AbstractShell> mShellSupplier;
     private ScreenMetrics mScreenMetrics = new ScreenMetrics();
     private Thread mThread;
+    private TopLevelScope mTopLevelScope;
 
 
     protected ScriptRuntime(Builder builder) {
@@ -223,6 +224,7 @@ public class ScriptRuntime {
         floaty = new Floaty(uiHandler, ui, this);
         files = new Files(this);
         media = new Media(context, this);
+        plugins = new Plugins(context, this);
     }
 
     public void init() {
@@ -234,6 +236,17 @@ public class ScriptRuntime {
         events = new Events(uiHandler.getContext(), accessibilityBridge, this);
         mThread = Thread.currentThread();
         sensors = new Sensors(uiHandler.getContext(), this);
+    }
+
+    public TopLevelScope getTopLevelScope() {
+        return mTopLevelScope;
+    }
+
+    public void setTopLevelScope(TopLevelScope topLevelScope) {
+        if (mTopLevelScope != null) {
+            throw new IllegalStateException("top level has already exists");
+        }
+        mTopLevelScope = topLevelScope;
     }
 
     public static void setApplicationContext(Context context) {
@@ -358,7 +371,7 @@ public class ScriptRuntime {
         }
     }
 
-    public void exit(Exception e) {
+    public void exit(Throwable e) {
         engines.myEngine().uncaughtException(e);
         exit();
     }
@@ -389,8 +402,8 @@ public class ScriptRuntime {
         ignoresException(floaty::closeAll);
         try {
             events.emit("exit");
-        } catch (Exception ignored) {
-            console.error("exception on exit: ", ignored);
+        } catch (Throwable e) {
+            console.error("exception on exit: ", e);
         }
         ignoresException(threads::shutDownAll);
         ignoresException(events::recycle);
@@ -412,7 +425,7 @@ public class ScriptRuntime {
     private void ignoresException(Runnable r) {
         try {
             r.run();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
@@ -433,8 +446,18 @@ public class ScriptRuntime {
         return mProperties.remove(key);
     }
 
+    public Continuation createContinuation() {
+        return Continuation.Companion.create(this, mTopLevelScope);
+    }
+
+    public Continuation createContinuation(Scriptable scope) {
+        return Continuation.Companion.create(this, scope);
+    }
+
+
     public static String getStackTrace(Throwable e, boolean printJavaStackTrace) {
-        StringBuilder scriptTrace = new StringBuilder();
+        String message = e.getMessage();
+        StringBuilder scriptTrace = new StringBuilder(message == null ? "" : message + "\n");
         if (e instanceof RhinoException) {
             RhinoException rhinoException = (RhinoException) e;
             scriptTrace.append(rhinoException.details()).append("\n");
@@ -461,7 +484,7 @@ public class ScriptRuntime {
             return scriptTrace.toString();
         } catch (IOException e1) {
             e1.printStackTrace();
-            return e.getMessage();
+            return message;
         }
     }
 

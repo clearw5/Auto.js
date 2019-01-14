@@ -1,7 +1,7 @@
 "ui";
 
 var ColoredButton = (function() {
-    //继承至ui.Widget
+    //继承ui.Widget
     util.extend(ColoredButton, ui.Widget);
 
     function ColoredButton() {

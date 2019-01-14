@@ -25,9 +25,8 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.service.autofill.AutofillService;
-import android.support.annotation.RequiresApi;
-import android.support.v7.widget.AppCompatEditText;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.Layout;
 import android.util.AttributeSet;
@@ -35,12 +34,12 @@ import android.util.Log;
 import android.util.TimingLogger;
 import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.autofill.AutofillManager;
+import android.widget.TextView;
+import android.widget.TextViewHelper;
 
 import org.autojs.autojs.ui.edit.theme.Theme;
 import org.autojs.autojs.ui.edit.theme.TokenMapping;
 
-import com.stardust.util.ClipboardUtil;
 import com.stardust.util.TextUtils;
 
 import org.mozilla.javascript.Token;
@@ -188,14 +187,6 @@ public class CodeEditText extends AppCompatEditText {
         if (getPaddingLeft() != gutterWidth) {
             setPadding((int) gutterWidth, 0, 0, 0);
         }
-    }
-
-    @Override
-    public boolean onTextContextMenuItem(int id) {
-        if (id == android.R.id.paste) {
-            ClipboardUtil.setClip(getContext(), ClipboardUtil.getClip(getContext()).toString());
-        }
-        return super.onTextContextMenuItem(id);
     }
 
     //该方法中内联了很多函数来提高效率 但是 这是必要的吗？？？
@@ -450,8 +441,13 @@ public class CodeEditText extends AppCompatEditText {
     @Override
     public Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();
-        Parcelable superData = super.onSaveInstanceState();
-        bundle.putParcelable("super_data", superData);
+        Editable text = getText();
+        TextView.SavedState savedState = (SavedState) super.onSaveInstanceState();
+        if (text != null && text.length() > 50 * 1024) {
+            // avoid TransactionTooLargeException
+            TextViewHelper.setText(savedState, "");
+        }
+        bundle.putParcelable("super_data", savedState);
         bundle.putInt("debugging_line", mDebuggingLine);
         int[] breakpoints = new int[mBreakpoints.size()];
         int i = 0;

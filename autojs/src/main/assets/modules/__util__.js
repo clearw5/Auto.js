@@ -19,7 +19,6 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var formatRegExp = /%[sdj%]/g;
 exports.extend = (function () {
   var extendStatics = Object.setPrototypeOf ||
       ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -30,7 +29,16 @@ exports.extend = (function () {
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   };
 })();
+
 exports.java = require("__java_util__");
+
+exports.__assignFunctions__ = function(src, target, functions) {
+    for(let f of functions){
+        target[f] = src[f].bind(src);
+    }
+}
+
+var formatRegExp = /%[sdj%]/g;
 exports.format = function(f) {
   if (!isString(f)) {
     var objects = [];

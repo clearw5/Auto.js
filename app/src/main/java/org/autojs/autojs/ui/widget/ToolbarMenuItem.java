@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,24 +21,31 @@ import org.autojs.autojs.R;
 
 public class ToolbarMenuItem extends LinearLayout {
 
-    private static final int COLOR_DISABLED = 0X77e0e0e0;
+    private final int mColorDisabled;
+    private final int mColorEnabled;
     private ImageView mImageView;
     private TextView mTextView;
     private Drawable mEnabledDrawable, mDisabledDrawable;
 
     public ToolbarMenuItem(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mColorDisabled = ContextCompat.getColor(context, R.color.toolbar_disabled);
+        mColorEnabled = ContextCompat.getColor(context, R.color.toolbar);
         init(attrs);
     }
 
     public ToolbarMenuItem(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mColorDisabled = ContextCompat.getColor(context, R.color.toolbar_disabled);
+        mColorEnabled = ContextCompat.getColor(context, R.color.toolbar);
         init(attrs);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public ToolbarMenuItem(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        mColorDisabled = ContextCompat.getColor(context, R.color.toolbar_disabled);
+        mColorEnabled = ContextCompat.getColor(context, R.color.toolbar);
         init(attrs);
     }
 
@@ -48,12 +56,13 @@ public class ToolbarMenuItem extends LinearLayout {
         int iconResId = a.getResourceId(R.styleable.ToolbarMenuItem_icon, 0);
         int iconColor = a.getColor(R.styleable.ToolbarMenuItem_icon_color, Color.TRANSPARENT);
         a.recycle();
-        mImageView = (ImageView) findViewById(R.id.icon);
-        mTextView = (TextView) findViewById(R.id.text);
+        mImageView = findViewById(R.id.icon);
+        mTextView = findViewById(R.id.text);
         mTextView.setText(text);
+        mTextView.setTextColor(mColorEnabled);
         mImageView.setImageResource(iconResId);
         if (iconColor != Color.TRANSPARENT) {
-            mImageView.setImageDrawable(convertDrawableToGrayScale(mImageView.getDrawable(), iconColor));
+            mImageView.setImageDrawable(tintDrawable(mImageView.getDrawable(), iconColor));
         }
     }
 
@@ -65,12 +74,12 @@ public class ToolbarMenuItem extends LinearLayout {
         ensureEnabledDrawable();
         ensureDisabledDrawable();
         mImageView.setImageDrawable(enabled ? mEnabledDrawable : mDisabledDrawable);
-        mTextView.setTextColor(enabled ? Color.WHITE : COLOR_DISABLED);
+        mTextView.setTextColor(enabled ? mColorEnabled : mColorDisabled);
     }
 
     private void ensureDisabledDrawable() {
         if (mDisabledDrawable == null) {
-            mDisabledDrawable = convertDrawableToGrayScale(mEnabledDrawable, COLOR_DISABLED);
+            mDisabledDrawable = tintDrawable(mEnabledDrawable, mColorDisabled);
         }
     }
 
@@ -80,7 +89,7 @@ public class ToolbarMenuItem extends LinearLayout {
         }
     }
 
-    public static Drawable convertDrawableToGrayScale(Drawable drawable, int color) {
+    public static Drawable tintDrawable(Drawable drawable, int color) {
         if (drawable == null || drawable.getConstantState() == null)
             return null;
         Drawable res = drawable.getConstantState().newDrawable().mutate();

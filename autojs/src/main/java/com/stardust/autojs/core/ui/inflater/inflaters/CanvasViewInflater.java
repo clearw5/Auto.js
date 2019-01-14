@@ -1,6 +1,6 @@
 package com.stardust.autojs.core.ui.inflater.inflaters;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.stardust.autojs.core.graphics.ScriptCanvasView;
 import com.stardust.autojs.core.ui.inflater.ResourceParser;

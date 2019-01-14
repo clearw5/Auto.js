@@ -85,8 +85,8 @@ public class TimedTaskManager {
         mIntentTaskDatabase.insert(intentTask)
                 .subscribe(i -> {
                     if(!TextUtils.isEmpty(intentTask.getAction())){
-                        App.getApp().getDynamicBroadcastReceivers()
-                                .register(intentTask.getAction());
+                        App.Companion.getApp().getDynamicBroadcastReceivers()
+                                .register(intentTask);
                     }
                 }, Throwable::printStackTrace);
     }
@@ -96,7 +96,7 @@ public class TimedTaskManager {
         mIntentTaskDatabase.delete(intentTask)
                 .subscribe(i -> {
                     if(!TextUtils.isEmpty(intentTask.getAction())){
-                        App.getApp().getDynamicBroadcastReceivers()
+                        App.Companion.getApp().getDynamicBroadcastReceivers()
                                 .unregister(intentTask.getAction());
                     }
                 }, Throwable::printStackTrace);
@@ -144,8 +144,8 @@ public class TimedTaskManager {
         mIntentTaskDatabase.update(task)
                 .subscribe(i -> {
                     if(i > 0 && !TextUtils.isEmpty(task.getAction())){
-                        App.getApp().getDynamicBroadcastReceivers()
-                                .register(task.getAction());
+                        App.Companion.getApp().getDynamicBroadcastReceivers()
+                                .register(task);
                     }
                 }, Throwable::printStackTrace);
     }

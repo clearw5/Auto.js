@@ -350,6 +350,7 @@ public class TextViewInflater<V extends TextView> extends BaseViewInflater<V> {
             case "textColor":
                 view.setTextColor(Colors.parse(view.getContext(), value));
                 break;
+            case "size":
             case "textSize":
                 view.setTextSize(TypedValue.COMPLEX_UNIT_PX, Dimensions.parseToPixel(value, view));
                 break;

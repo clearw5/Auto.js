@@ -1,8 +1,6 @@
 package com.stardust.autojs.engine.preprocess;
 
-import android.support.annotation.VisibleForTesting;
-
-import com.stardust.autojs.engine.preprocess.AbstractProcessor;
+import androidx.annotation.VisibleForTesting;
 
 import java.io.Reader;
 import java.io.StringReader;

@@ -2,9 +2,8 @@ package com.stardust.autojs.core.console;
 
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.ContextThemeWrapper;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -25,11 +24,11 @@ public class ConsoleFloaty extends ResizableExpandableFloaty.AbstractResizableEx
     private ContextWrapper mContextWrapper;
     private View mResizer, mMoveCursor;
     private TextView mTitleView;
-    private StardustConsole mConsole;
+    private ConsoleImpl mConsole;
     private CharSequence mTitle;
     private View mExpandedView;
 
-    public ConsoleFloaty(StardustConsole console) {
+    public ConsoleFloaty(ConsoleImpl console) {
         mConsole = console;
         setShouldRequestFocusWhenExpand(false);
         setInitialX(100);

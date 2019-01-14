@@ -1,8 +1,8 @@
 package com.stardust.util;
 
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -113,6 +113,18 @@ public class BiMaps {
         @Override
         public Set<V> valueSet() {
             return mVKMap.keySet();
+        }
+
+        @Override
+        public V getOr(K key, V def) {
+            V v = get(key);
+            return v == null ? def : v;
+        }
+
+        @Override
+        public K getKeyOr(V value, K def) {
+            K key = getKey(value);
+            return key == null ? def : key;
         }
 
         @NonNull

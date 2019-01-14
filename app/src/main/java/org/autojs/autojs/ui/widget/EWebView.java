@@ -5,11 +5,13 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.v4.widget.SwipeRefreshLayout;
+
+import androidx.annotation.RequiresApi;
+
 import android.util.AttributeSet;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -20,20 +22,17 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.stardust.app.OnActivityResultDelegate;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.tool.ImageSelector;
-import com.stardust.util.IntentUtil;
 
-import org.androidannotations.annotations.OnActivityResult;
-import org.androidannotations.annotations.ViewById;
-
-import java.io.File;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
@@ -66,9 +65,9 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
 
     private void init() {
         inflate(getContext(), R.layout.ewebview, this);
-        mWebView = (WebView) findViewById(R.id.web_view);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        mWebView = findViewById(R.id.web_view);
+        mSwipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        mProgressBar = findViewById(R.id.progress_bar);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         setUpWebView();
     }
@@ -210,8 +209,13 @@ public class EWebView extends FrameLayout implements SwipeRefreshLayout.OnRefres
             if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file://")) {
                 view.loadUrl(url);
             } else {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                List<ResolveInfo> intentActivities = getContext().getPackageManager().queryIntentActivities(intent, 0);
+                if (intentActivities.isEmpty()) {
+                    return false;
+                }
                 try {
-                    getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    getContext().startActivity(Intent.createChooser(intent, getResources().getString(R.string.text_open_with)));
                 } catch (ActivityNotFoundException e) {
                     e.printStackTrace();
                     return false;

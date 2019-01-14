@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.stardust.util.Func1;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -135,6 +136,8 @@ public class PFiles {
             return new String(bytes, encoding);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        } finally {
+            closeSilently(is);
         }
     }
 
@@ -174,18 +177,26 @@ public class PFiles {
         }
     }
 
-    public static void write(InputStream is, OutputStream os) {
+    public static void write(InputStream is, OutputStream os, boolean close) {
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         try {
             while (is.available() > 0) {
                 int n = is.read(buffer);
-                os.write(buffer, 0, n);
+                if (n > 0) {
+                    os.write(buffer, 0, n);
+                }
             }
-            is.close();
-            os.close();
+            if (close) {
+                is.close();
+                os.close();
+            }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    public static void write(InputStream is, OutputStream os) {
+        write(is, os, true);
     }
 
 
@@ -209,7 +220,7 @@ public class PFiles {
         }
     }
 
-    public static void write(FileOutputStream fileOutputStream, String text) {
+    public static void write(OutputStream fileOutputStream, String text) {
         write(fileOutputStream, text, "utf-8");
     }
 
@@ -217,9 +228,10 @@ public class PFiles {
     public static void write(OutputStream outputStream, String text, String encoding) {
         try {
             outputStream.write(text.getBytes(encoding));
-            outputStream.close();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        } finally {
+            closeSilently(outputStream);
         }
     }
 
@@ -287,16 +299,15 @@ public class PFiles {
     }
 
 
-    public static void copyAssetDir(Context context, String assetsDir, String toDir, String[] list) throws IOException {
+    public static void copyAssetDir(AssetManager manager, String assetsDir, String toDir, String[] list) throws IOException {
         new File(toDir).mkdirs();
-        AssetManager manager = context.getAssets();
         if (list == null) {
             list = manager.list(assetsDir);
         }
         if (list == null)
             throw new IOException("not a directory: " + assetsDir);
         for (String file : list) {
-            if(TextUtils.isEmpty(file)){
+            if (TextUtils.isEmpty(file)) {
                 continue;
             }
             String fullAssetsPath = join(assetsDir, file);
@@ -314,7 +325,7 @@ public class PFiles {
                     }
                 }
             } else {
-                copyAssetDir(context, fullAssetsPath, join(toDir, file), children);
+                copyAssetDir(manager, fullAssetsPath, join(toDir, file), children);
             }
         }
     }
@@ -498,6 +509,17 @@ public class PFiles {
             return readBytes(new FileInputStream(path));
         } catch (FileNotFoundException e) {
             throw new UncheckedIOException(e);
+        }
+    }
+
+    public static void closeSilently(Closeable closeable) {
+        if (closeable == null) {
+            return;
+        }
+        try {
+            closeable.close();
+        } catch (IOException ignored) {
+
         }
     }
 }

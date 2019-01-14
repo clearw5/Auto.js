@@ -5,14 +5,17 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.os.Build;
 import android.os.Looper;
-import android.support.annotation.Nullable;
-import android.view.Window;
+
+import androidx.annotation.Nullable;
+
 import android.view.WindowManager;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.stardust.autojs.rhino.continuation.Continuation;
 import com.stardust.autojs.runtime.ScriptBridges;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.concurrent.VolatileDispose;
 import com.stardust.util.ArrayUtils;
@@ -63,11 +66,11 @@ public class BlockedMaterialDialog extends MaterialDialog {
         private ScriptBridges mScriptBridges;
         private boolean mNotified = false;
 
-        public Builder(Context context, UiHandler uiHandler, ScriptBridges scriptBridges, Object callback) {
+        public Builder(Context context, ScriptRuntime runtime, Object callback) {
             super(context);
             super.theme(Theme.LIGHT);
-            mUiHandler = uiHandler;
-            mScriptBridges = scriptBridges;
+            mUiHandler = runtime.uiHandler;
+            mScriptBridges = runtime.bridges;
             mCallback = callback;
             if (Looper.getMainLooper() != Looper.myLooper()) {
                 mResultBox = new VolatileDispose<>();

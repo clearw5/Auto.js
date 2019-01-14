@@ -5,7 +5,7 @@ import android.accessibilityservice.GestureDescription;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -82,22 +82,22 @@ public class SimpleActionAutomator {
 
     @ScriptInterface
     public boolean scrollBackward(int i) {
-        return performAction(ActionFactory.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, i));
+        return performAction(ActionFactory.INSTANCE.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, i));
     }
 
     @ScriptInterface
     public boolean scrollForward(int i) {
-        return performAction(ActionFactory.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, i));
+        return performAction(ActionFactory.INSTANCE.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, i));
     }
 
     @ScriptInterface
     public boolean scrollMaxBackward() {
-        return performAction(ActionFactory.createScrollMaxAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD));
+        return performAction(ActionFactory.INSTANCE.createScrollMaxAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD));
     }
 
     @ScriptInterface
     public boolean scrollMaxForward() {
-        return performAction(ActionFactory.createScrollMaxAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD));
+        return performAction(ActionFactory.INSTANCE.createScrollMaxAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD));
     }
 
     @ScriptInterface
@@ -121,7 +121,7 @@ public class SimpleActionAutomator {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean appendText(ActionTarget target, String text) {
         ScriptRuntime.requiresApi(Build.VERSION_CODES.LOLLIPOP);
-        return performAction(target.createAction(UiObject.ACTION_APPEND_TEXT, text));
+        return performAction(target.createAction(UiObject.Companion.getACTION_APPEND_TEXT(), text));
     }
 
     @ScriptInterface
@@ -257,7 +257,7 @@ public class SimpleActionAutomator {
         if (root == null)
             return false;
         Log.v(TAG, "performAction: " + simpleAction + " root = " + root);
-        return simpleAction.perform(UiObject.createRoot(root));
+        return simpleAction.perform(UiObject.Companion.createRoot(root));
     }
 
     private boolean isRunningPackageSelf() {

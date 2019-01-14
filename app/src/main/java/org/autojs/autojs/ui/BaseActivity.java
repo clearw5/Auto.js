@@ -1,21 +1,25 @@
 package org.autojs.autojs.ui;
 
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
-import android.widget.SeekBar;
 
-import org.autojs.autojs.R;
-import org.autojs.autojs.network.VersionService;
-
+import com.stardust.app.GlobalAppContext;
 import com.stardust.theme.ThemeColorManager;
-import com.stardust.util.BackPressedHandler;
+
+import org.autojs.autojs.Pref;
+import org.autojs.autojs.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,12 +34,31 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-
     protected static final int PERMISSION_REQUEST_CODE = 11186;
+    private boolean mShouldApplyDayNightModeForOptionsMenu = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    protected void applyDayNightMode() {
+        GlobalAppContext.post(() -> {
+            if (Pref.isNightModeEnabled()) {
+                setNightModeEnabled(Pref.isNightModeEnabled());
+            }
+        });
+    }
+
+    public void setNightModeEnabled(boolean enabled) {
+        if (enabled) {
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        if (getDelegate().applyDayNight()) {
+            recreate();
+        }
     }
 
     @Override
@@ -85,7 +108,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public static void setToolbarAsBack(final AppCompatActivity activity, int id, String title) {
-        Toolbar toolbar = (Toolbar) activity.findViewById(id);
+        Toolbar toolbar = activity.findViewById(id);
         toolbar.setTitle(title);
         activity.setSupportActionBar(toolbar);
         if (activity.getSupportActionBar() != null) {
@@ -100,4 +123,24 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (mShouldApplyDayNightModeForOptionsMenu && Pref.isNightModeEnabled()) {
+            for (int i = 0; i < menu.size(); i++) {
+                Drawable drawable = menu.getItem(i).getIcon();
+                if (drawable != null) {
+                    drawable.mutate();
+                    drawable.setColorFilter(ContextCompat.getColor(this, R.color.toolbar), PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+            mShouldApplyDayNightModeForOptionsMenu = false;
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        return super.onCreateOptionsMenu(menu);
+    }
 }

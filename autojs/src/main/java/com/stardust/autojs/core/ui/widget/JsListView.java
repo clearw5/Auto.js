@@ -1,7 +1,6 @@
 package com.stardust.autojs.core.ui.widget;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,6 +14,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.stardust.autojs.workground.WrapContentLinearLayoutManager;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by Stardust on 2018/3/28.

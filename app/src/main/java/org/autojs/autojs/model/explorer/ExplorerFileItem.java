@@ -2,6 +2,7 @@ package org.autojs.autojs.model.explorer;
 
 import com.stardust.pio.PFile;
 import com.stardust.util.ObjectHelper;
+import com.stardust.util.Objects;
 
 import org.autojs.autojs.model.script.ScriptFile;
 
@@ -71,7 +72,7 @@ public class ExplorerFileItem implements ExplorerItem {
     }
 
     public ExplorerFileItem rename(String newName) {
-        return new ExplorerFileItem(mFile.renameAndReturnNewFile(newName), getParent());
+        return new ExplorerFileItem(mFile.renameTo(newName), getParent());
     }
 
     @Override
@@ -102,4 +103,24 @@ public class ExplorerFileItem implements ExplorerItem {
         String type = getType();
         return type.equals("js") || type.equals("auto");
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" +
+                "mFile=" + mFile + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ExplorerFileItem that = (ExplorerFileItem) o;
+        return Objects.equals(mFile, that.mFile);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(mFile);
+    }
 }
+

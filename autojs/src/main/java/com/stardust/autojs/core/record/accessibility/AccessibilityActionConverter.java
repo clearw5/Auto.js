@@ -78,7 +78,7 @@ public class AccessibilityActionConverter {
             AccessibilityNodeInfo source = event.getSource();
             if (source == null)
                 return;
-            String bounds = NodeInfo.boundsToString(AccessibilityNodeInfoHelper.getBoundsInScreen(source));
+            String bounds = NodeInfo.Companion.boundsToString(AccessibilityNodeInfoHelper.INSTANCE.getBoundsInScreen(source));
             source.recycle();
             onAccessibilityEvent(event, bounds, sb);
         }
@@ -122,8 +122,8 @@ public class AccessibilityActionConverter {
             AccessibilityNodeInfo source = event.getSource();
             if (source == null)
                 return;
-            UiObject uiObject = UiObject.createRoot(service.getRootInActiveWindow());
-            List<UiObject> editableList = FilterAction.EditableFilter.findEditable(uiObject);
+            UiObject uiObject = UiObject.Companion.createRoot(service.getRootInActiveWindow());
+            List<UiObject> editableList = FilterAction.EditableFilter.Companion.findEditable(uiObject);
             int i = findInEditableList(editableList, source);
             sb.append("while(!input(").append(i).append(", \"").append(source.getText()).append("\"));");
             source.recycle();
@@ -132,7 +132,7 @@ public class AccessibilityActionConverter {
         private static int findInEditableList(List<UiObject> editableList, AccessibilityNodeInfo editable) {
             int i = 0;
             for (UiObject nodeInfo : editableList) {
-                if (AccessibilityNodeInfoHelper.getBoundsInScreen(nodeInfo).equals(AccessibilityNodeInfoHelper.getBoundsInScreen(editable))) {
+                if (AccessibilityNodeInfoHelper.INSTANCE.getBoundsInScreen(nodeInfo).equals(AccessibilityNodeInfoHelper.INSTANCE.getBoundsInScreen(editable))) {
                     return i;
                 }
                 i++;

@@ -5,18 +5,18 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.widget.CardView;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.material.textfield.TextInputLayout;
 import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.util.IntentUtil;
 
@@ -26,7 +26,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
-import org.autojs.autojs.autojs.build.AutoJsApkBuilder;
+import org.autojs.autojs.autojs.build.ApkBuilder;
 import org.autojs.autojs.build.ApkBuilderPluginHelper;
 import org.autojs.autojs.external.fileprovider.AppFileProvider;
 import org.autojs.autojs.model.script.ScriptFile;
@@ -43,6 +43,7 @@ import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
+import androidx.cardview.widget.CardView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -51,7 +52,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Stardust on 2017/10/22.
  */
 @EActivity(R.layout.activity_build)
-public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.ProgressCallback {
+public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCallback {
 
     private static final int REQUEST_CODE = 44401;
 
@@ -61,25 +62,25 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     private static final Pattern REGEX_PACKAGE_NAME = Pattern.compile("^([A-Za-z][A-Za-z\\d_]*\\.)+([A-Za-z][A-Za-z\\d_]*)$");
 
     @ViewById(R.id.source_path)
-    TextInputEditText mSourcePath;
+    EditText mSourcePath;
 
     @ViewById(R.id.source_path_container)
     View mSourcePathContainer;
 
     @ViewById(R.id.output_path)
-    TextInputEditText mOutputPath;
+    EditText mOutputPath;
 
     @ViewById(R.id.app_name)
-    TextInputEditText mAppName;
+    EditText mAppName;
 
     @ViewById(R.id.package_name)
-    TextInputEditText mPackageName;
+    EditText mPackageName;
 
     @ViewById(R.id.version_name)
-    TextInputEditText mVersionName;
+    EditText mVersionName;
 
     @ViewById(R.id.version_code)
-    TextInputEditText mVersionCode;
+    EditText mVersionCode;
 
     @ViewById(R.id.icon)
     ImageView mIcon;
@@ -224,14 +225,14 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
         return inputValid;
     }
 
-    private boolean checkPackageNameValid(TextInputEditText editText) {
+    private boolean checkPackageNameValid(EditText editText) {
         Editable text = editText.getText();
         String hint = ((TextInputLayout) editText.getParent().getParent()).getHint().toString();
-        if(TextUtils.isEmpty(text)){
+        if (TextUtils.isEmpty(text)) {
             editText.setError(hint + getString(R.string.text_should_not_be_empty));
             return false;
         }
-        if(!REGEX_PACKAGE_NAME.matcher(text).matches()){
+        if (!REGEX_PACKAGE_NAME.matcher(text).matches()) {
             editText.setError(getString(R.string.text_invalid_package_name));
             return false;
         }
@@ -239,7 +240,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
 
     }
 
-    private boolean checkNotEmpty(TextInputEditText editText) {
+    private boolean checkNotEmpty(EditText editText) {
         if (!TextUtils.isEmpty(editText.getText()) || !editText.isShown())
             return true;
         // TODO: 2017/12/8 more beautiful ways?
@@ -250,7 +251,7 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
 
     @SuppressLint("CheckResult")
     private void doBuildingApk() {
-        AutoJsApkBuilder.AppConfig appConfig = createAppConfig();
+        ApkBuilder.AppConfig appConfig = createAppConfig();
         File tmpDir = new File(getCacheDir(), "build/");
         File outApk = new File(mOutputPath.getText().toString(),
                 String.format("%s_v%s.apk", appConfig.getAppName(), appConfig.getVersionName()));
@@ -262,16 +263,16 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
                         this::onBuildFailed);
     }
 
-    private AutoJsApkBuilder.AppConfig createAppConfig() {
+    private ApkBuilder.AppConfig createAppConfig() {
         if (mProjectConfig != null) {
-            return AutoJsApkBuilder.AppConfig.fromProjectConfig(mSource, mProjectConfig);
+            return ApkBuilder.AppConfig.fromProjectConfig(mSource, mProjectConfig);
         }
         String jsPath = mSourcePath.getText().toString();
         String versionName = mVersionName.getText().toString();
         int versionCode = Integer.parseInt(mVersionCode.getText().toString());
         String appName = mAppName.getText().toString();
         String packageName = mPackageName.getText().toString();
-        return new AutoJsApkBuilder.AppConfig()
+        return new ApkBuilder.AppConfig()
                 .setAppName(appName)
                 .setSourcePath(jsPath)
                 .setPackageName(packageName)
@@ -282,9 +283,9 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
                 );
     }
 
-    private AutoJsApkBuilder callApkBuilder(File tmpDir, File outApk, AutoJsApkBuilder.AppConfig appConfig) throws Exception {
+    private ApkBuilder callApkBuilder(File tmpDir, File outApk, ApkBuilder.AppConfig appConfig) throws Exception {
         InputStream templateApk = ApkBuilderPluginHelper.openTemplateApk(BuildActivity.this);
-        return new AutoJsApkBuilder(templateApk, outApk, tmpDir.getPath())
+        return new ApkBuilder(templateApk, outApk, tmpDir.getPath())
                 .setProgressCallback(BuildActivity.this)
                 .prepare()
                 .withConfig(appConfig)
@@ -302,8 +303,10 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     }
 
     private void onBuildFailed(Throwable error) {
-        mProgressDialog.dismiss();
-        mProgressDialog = null;
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
         Toast.makeText(this, getString(R.string.text_build_failed) + error.getMessage(), Toast.LENGTH_SHORT).show();
         Log.e(LOG_TAG, "Build failed", error);
     }
@@ -324,24 +327,24 @@ public class BuildActivity extends BaseActivity implements AutoJsApkBuilder.Prog
     }
 
     @Override
-    public void onPrepare(AutoJsApkBuilder builder) {
+    public void onPrepare(ApkBuilder builder) {
         mProgressDialog.setContent(R.string.apk_builder_prepare);
     }
 
     @Override
-    public void onBuild(AutoJsApkBuilder builder) {
+    public void onBuild(ApkBuilder builder) {
         mProgressDialog.setContent(R.string.apk_builder_build);
 
     }
 
     @Override
-    public void onSign(AutoJsApkBuilder builder) {
+    public void onSign(ApkBuilder builder) {
         mProgressDialog.setContent(R.string.apk_builder_package);
 
     }
 
     @Override
-    public void onClean(AutoJsApkBuilder builder) {
+    public void onClean(ApkBuilder builder) {
         mProgressDialog.setContent(R.string.apk_builder_clean);
     }
 

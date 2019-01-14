@@ -1,6 +1,6 @@
 package com.stardust.autojs.runtime.api;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.stardust.autojs.annotation.ScriptInterface;
 
@@ -43,4 +43,5 @@ public interface Console {
     String println(int level, CharSequence charSequence);
 
     void setTitle(CharSequence title);
+
 }
