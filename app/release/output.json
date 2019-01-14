@@ -1,1 +1,1 @@
-[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":203},"path":"inrt-release.apk","properties":{"packageId":"com.stardust.auojs.inrt","split":"","minSdkVersion":"17"}}]
+[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":253,"versionName":"4.1.0 Alpha3","enabled":true,"outputFile":"inrt-release.apk","fullName":"release","baseName":"release"},"path":"inrt-release.apk","properties":{}}]
