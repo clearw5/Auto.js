@@ -75,7 +75,7 @@ public class CommunityWebView extends EWebView {
                 .subscribe(file ->
                                 Snackbar.make(CommunityWebView.this, getResources().getString(R.string.format_file_downloaded, file.getPath())
                                         , Snackbar.LENGTH_LONG)
-                                        .setAction(R.string.text_open, v -> Scripts.INSTANCE.edit(file))
+                                        .setAction(R.string.text_open, v -> Scripts.INSTANCE.edit(getContext(), file))
                                         .show(),
                         error -> {
                             error.printStackTrace();

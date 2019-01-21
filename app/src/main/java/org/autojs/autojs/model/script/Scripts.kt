@@ -91,22 +91,22 @@ object Scripts {
     }
 
 
-    fun edit(file: ScriptFile) {
-        EditActivity.editFile(GlobalAppContext.get(), file.simplifiedName, file.path)
+    fun edit(context: Context, file: ScriptFile) {
+        EditActivity.editFile(context, file.simplifiedName, file.path)
     }
 
-    fun edit(path: String) {
-        edit(ScriptFile(path))
+    fun edit(context: Context, path: String) {
+        edit(context, ScriptFile(path))
     }
 
     fun run(file: ScriptFile): ScriptExecution? {
-        try {
-            return AutoJs.getInstance().scriptEngineService.execute(file.toSource(),
+        return try {
+            AutoJs.getInstance().scriptEngineService.execute(file.toSource(),
                     ExecutionConfig(workingDirectory = file.parent))
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(GlobalAppContext.get(), e.message, Toast.LENGTH_LONG).show()
-            return null
+            null
         }
 
     }
