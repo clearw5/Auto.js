@@ -155,7 +155,7 @@ module.exports = function(__runtime__, scope){
             builder.input(wrapNonNullString(properties.inputHint), wrapNonNullString(properties.inputPrefill), 
                 function(dialog, input){
                     input = input.toString();
-                    builder.emit("input_change", dialog, input);
+                    dialog.emit("input_change", dialog, input);
                 })
                    .alwaysCallInputCallback();
         }
@@ -191,7 +191,7 @@ module.exports = function(__runtime__, scope){
         if(properties.checkBoxPrompt != undefined || properties.checkBoxChecked != undefined){
             builder.checkBoxPrompt(wrapNonNullString(properties.checkBoxPrompt),  !!properties.checkBoxChecked, 
                 function(view, checked){
-                    builder.emit("check", checked, builder.getDialog());
+                    builder.getDialog().emit("check", checked, builder.getDialog());
                 });
         }
     }
