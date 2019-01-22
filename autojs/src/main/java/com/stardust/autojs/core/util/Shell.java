@@ -8,16 +8,10 @@ import android.util.Log;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
-import com.stardust.io.ByteBufferBackedInputStream;
-import com.stardust.io.ByteBufferBackedOutputStream;
-import com.stardust.lang.ThreadCompat;
 import com.stardust.pio.UncheckedIOException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import jackpal.androidterm.ShellTermSession;
 import jackpal.androidterm.emulatorview.TermSession;
@@ -69,9 +63,11 @@ public class Shell extends AbstractShell {
     private volatile TermSession mTermSession;
     private final Object mInitLock = new Object();
     private final Object mExitLock = new Object();
+    private final Object mCommandOutputLock = new Object();
     private volatile RuntimeException mInitException;
     private volatile boolean mInitialized = false;
     private volatile boolean mWaitingExit = false;
+    private volatile String mCommandOutput = null;
     private final boolean mShouldReadOutput;
     private Callback mCallback;
 
@@ -113,6 +109,18 @@ public class Shell extends AbstractShell {
     public void exec(String command) {
         ensureInitialized();
         mTermSession.write(command + "\n");
+    }
+
+    public String execAndWaitFor(String command) {
+        exec(command);
+        synchronized (mCommandOutputLock) {
+            try {
+                mCommandOutputLock.wait();
+                return mCommandOutput;
+            } catch (InterruptedException e) {
+                throw new ScriptInterruptedException();
+            }
+        }
     }
 
     public void setCallback(Callback callback) {
@@ -205,43 +213,11 @@ public class Shell extends AbstractShell {
 
     private class MyShellTermSession extends ShellTermSession {
 
-        private final ByteBuffer mByteBuffer = ByteBuffer.allocate(8192);
-        private BufferedReader mBufferedReader;
-        private OutputStream mOutputStream;
-        private Thread mReadingThread;
-        private volatile boolean mReading = false;
+        private StringBuilder mStringBuffer = new StringBuilder();
+        private ArrayList<String> mCommandOutputs = new ArrayList<>();
 
         public MyShellTermSession(TermSettings settings, String initialCommand) throws IOException {
             super(settings, initialCommand);
-            mBufferedReader = new BufferedReader(new InputStreamReader(new ByteBufferBackedInputStream(mByteBuffer)));
-            mOutputStream = new ByteBufferBackedOutputStream(mByteBuffer);
-            if (mShouldReadOutput) {
-                startReadingThread();
-            }
-        }
-
-        private void startReadingThread() {
-            mReadingThread = new ThreadCompat(() -> {
-                String line;
-                try {
-                    while (true) {
-                        if (!mReading) {
-                            break;
-                        }
-                        synchronized (mByteBuffer) {
-                            line = mBufferedReader.readLine();
-                        }
-                        if (line == null) {
-                            break;
-                        }
-                        onNewLine(line);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            mReading = true;
-            mReadingThread.start();
         }
 
         private void onNewLine(String line) {
@@ -250,12 +226,29 @@ public class Shell extends AbstractShell {
                 if (!isRoot() && line.endsWith(" $ sh")) {
                     notifyInitialized();
                 }
+            } else {
+                mCommandOutputs.add(line);
             }
             if (mCallback != null) {
                 mCallback.onNewLine(line);
             }
             if (mWaitingExit && line.endsWith(" exit")) {
                 notifyExit();
+            }
+        }
+
+        private void onCommandOutput(ArrayList<String> output) {
+            StringBuilder result = new StringBuilder();
+            for (int i = 1; i < output.size(); i++) {
+                result.append(output.get(i));
+                if (i < output.size() - 1) {
+                    result.append("\n");
+                }
+            }
+            logDebug("onCommandOutput: lines = " + output + ", output = " + result);
+            synchronized (mCommandOutputLock) {
+                mCommandOutput = result.toString();
+                mCommandOutputLock.notifyAll();
             }
         }
 
@@ -266,23 +259,34 @@ public class Shell extends AbstractShell {
                     notifyInitialized();
                 }
             }
+            int start = 0;
+            int i;
+            while (true) {
+                i = str.indexOf("\n", start);
+                if (i > 0) {
+                    onNewLine((mStringBuffer.toString() + str.substring(0, i - 1)).trim());
+                    mStringBuffer.delete(0, mStringBuffer.length());
+                } else {
+                    if (start <= str.length() - 1) {
+                        mStringBuffer.append(str.substring(start));
+                    }
+                    break;
+                }
+                start = i + 1;
+            }
+            if (str.endsWith(" # ") || str.endsWith(" $ ")) {
+                onCommandOutput(mCommandOutputs);
+                mCommandOutputs.clear();
+            }
             if (mCallback != null) {
-                mCallback.onOutput(str);
+                mCallback.onOutput(str.replace("\r", ""));
             }
         }
 
 
         @Override
         protected void processInput(byte[] data, int offset, int count) {
-            try {
-                onOutput(new String(data, offset, count));
-                synchronized (mByteBuffer) {
-                    mOutputStream.write(data, offset, count);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                finish();
-            }
+            onOutput(new String(data, offset, count));
         }
 
         private void notifyExit() {
@@ -312,23 +316,6 @@ public class Shell extends AbstractShell {
             }
         }
 
-        @Override
-        public void finish() {
-            super.finish();
-            if (!mShouldReadOutput)
-                return;
-            mReading = false;
-            if (mReadingThread != null) {
-                mReadingThread.interrupt();
-                mReadingThread = null;
-            }
-            try {
-                mBufferedReader.close();
-                mOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 }
