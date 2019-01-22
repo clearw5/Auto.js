@@ -1,1 +1,1 @@
-YÎ?ãÄüMºz«±
+toast("Hello, Auto.js");

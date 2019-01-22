@@ -17,22 +17,28 @@ class XJavaScriptEngine(context: Context) : LoopBasedJavaScriptEngine(context) {
     override fun execute(source: ScriptSource, callback: ExecuteCallback?) {
         if (source is JavaScriptFileSource) {
             try {
-                execute(source.file)
+                if (execute(source.file)) {
+                    return
+                }
             } catch (e: Throwable) {
                 e.printStackTrace()
+                return
             }
-        } else {
-            super.execute(source, callback)
         }
+        super.execute(source, callback)
     }
 
-    private fun execute(file: File) {
+    private fun execute(file: File): Boolean {
         val bytes = PFiles.readBytes(file.path)
+        if (!EncryptedScriptFileHeader.isValidFile(bytes)) {
+            return false
+        }
         try {
             super.execute(StringScriptSource(file.name, String(ScriptEncryption.decrypt(bytes, EncryptedScriptFileHeader.BLOCK_SIZE))))
         } catch (e: GeneralSecurityException) {
             e.printStackTrace()
         }
+        return true
     }
 
 }

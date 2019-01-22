@@ -4,9 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -195,7 +198,15 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
             showExitConfirmDialog();
             return;
         }
-        super.finish();
+        finishAndRemoveFromRecents();
+    }
+
+    private void finishAndRemoveFromRecents() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAndRemoveTask();
+        } else {
+            finish();
+        }
     }
 
     private void showExitConfirmDialog() {
@@ -207,9 +218,9 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
                 .neutralText(R.string.text_exit_directly)
                 .onNegative((dialog, which) -> {
                     mEditorView.saveFile();
-                    EditActivity.super.finish();
+                    finishAndRemoveFromRecents();
                 })
-                .onNeutral((dialog, which) -> EditActivity.super.finish())
+                .onNeutral((dialog, which) -> finishAndRemoveFromRecents())
                 .show();
     }
 
@@ -294,4 +305,5 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         mRequestPermissionCallbacks.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
 }

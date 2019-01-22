@@ -62,7 +62,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements FloatingA
         mExplorerView.setExplorer(Explorers.workspace(), ExplorerDirPage.createRoot(Pref.getScriptDirPath()));
         mExplorerView.setOnItemClickListener((view, item) -> {
             if (item.isEditable()) {
-                Scripts.INSTANCE.edit(item.toScriptFile());
+                Scripts.INSTANCE.edit(getActivity(), item.toScriptFile());
             } else {
                 IntentUtil.viewFile(GlobalAppContext.get(), item.getPath(), AppFileProvider.AUTHORITY);
             }

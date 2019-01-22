@@ -144,7 +144,6 @@ public class Dialogs {
         }
         return new JsDialogBuilder(context, mRuntime)
                 .theme(Theme.LIGHT);
-
     }
 
     public class NonUiDialogs {

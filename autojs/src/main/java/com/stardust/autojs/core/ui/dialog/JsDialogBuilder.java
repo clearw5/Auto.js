@@ -34,7 +34,7 @@ public class JsDialogBuilder extends MaterialDialog.Builder {
         super(context);
         mTimer = runtime.timers.getTimerForCurrentThread();
         mLoopers = runtime.loopers;
-        mEmitter = new EventEmitter(runtime.bridges, mTimer);
+        mEmitter = new EventEmitter(runtime.bridges);
         mUiHandler = runtime.uiHandler;
         setUpEvents();
     }
@@ -70,7 +70,6 @@ public class JsDialogBuilder extends MaterialDialog.Builder {
 
     public void onShowCalled() {
         mTimer.postDelayed(() -> mWaitId = mLoopers.waitWhenIdle(), 0);
-
     }
 
     public JsDialog getDialog() {

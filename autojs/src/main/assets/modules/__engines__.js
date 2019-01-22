@@ -37,7 +37,7 @@ module.exports = function(__runtime__, scope){
         }
         config.delay = c.delay || 0;
         config.interval = c.interval || 0;
-        config.loopTimes = c.loopTimes || 1;
+        config.loopTimes = (c.loopTimes === undefined)? 1 : c.loopTimes;
         if(c.arguments){
             var arguments = c.arguments;
             for(var key in arguments){
