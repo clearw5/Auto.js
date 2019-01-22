@@ -2,6 +2,7 @@ package com.stardust.automator.search
 
 import com.stardust.automator.UiObject
 import com.stardust.automator.filter.Filter
+import java.util.*
 
 import kotlin.collections.ArrayList
 
@@ -12,32 +13,26 @@ import kotlin.collections.ArrayList
 object DFS : SearchAlgorithm {
 
     override fun search(root: UiObject, filter: Filter, limit: Int): ArrayList<UiObject> {
-        val list = ArrayList<UiObject>()
-        if (filter.filter(root)) {
-            list.add(root)
-            if (list.size >= limit) {
-                return list
+        val result = ArrayList<UiObject>()
+        val stack = LinkedList<UiObject>()
+        stack.push(root)
+        while (stack.isNotEmpty()) {
+            val parent = stack.pop()
+            for (i in parent.childCount - 1 downTo 0) {
+                val child = parent.child(i) ?: continue
+                stack.push(child)
             }
-        }
-        searchChildren(root, list, filter, limit)
-        return list
-    }
-
-    private fun searchChildren(parent: UiObject, list: MutableList<UiObject>, filter: Filter, limit: Int) {
-        for (i in 0 until parent.childCount) {
-            val child = parent.child(i) ?: continue
-            val isTarget = filter.filter(child)
-            if (isTarget) {
-                list.add(child)
-                if (list.size >= limit) {
+            if (filter.filter(parent)) {
+                result.add(parent)
+                if (result.size >= limit) {
                     break
                 }
-            }
-            searchChildren(child, list, filter, limit)
-            if (!isTarget) {
-                child.recycle()
+            } else {
+                if (parent !== root) {
+                    parent.recycle()
+                }
             }
         }
+        return result
     }
-
 }
