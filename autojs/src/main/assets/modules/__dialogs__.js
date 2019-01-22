@@ -194,6 +194,14 @@ module.exports = function(__runtime__, scope){
                     builder.getDialog().emit("check", checked, builder.getDialog());
                 });
         }
+        if(properties.customView != undefined) {
+            let customView = properties.customView;
+            if(typeof(customView) == 'xml' || typeof(customView) == 'string') {
+                customView = ui.run(() => ui.inflate(customView));
+            }
+            let wrapInScrollView = (properties.wrapInScrollView === undefined) ? true : properties.wrapInScrollView;
+            builder.customView(customView, wrapInScrollView);
+        }
     }
 
     function wrapNonNullString(str){

@@ -89,6 +89,10 @@ public class Timer {
         }
     }
 
+    public void post(Runnable r) {
+
+    }
+
     public boolean clearInterval(int id) {
         return clearCallback(id);
     }

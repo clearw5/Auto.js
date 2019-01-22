@@ -11,7 +11,7 @@ module.exports = function (runtime, global) {
     ui.__defineGetter__("emitter", ()=>  activity ? activity.getEventEmitter() : null);
 
     ui.layout = function (xml) {
-        if(!activity){
+        if(typeof(activity) == 'undefined'){
             throw new Error("需要在ui模式下运行才能使用该函数");
         }
         runtime.ui.layoutInflater.setContext(activity);
@@ -24,15 +24,18 @@ module.exports = function (runtime, global) {
     }
 
     ui.inflate = function(xml, parent, attachToParent){
-        if(!activity){
-            throw new Error("需要在ui模式下运行才能使用该函数");
-        }
         if(typeof(xml) == 'xml'){
             xml = xml.toXMLString();
         }
         parent = parent || null;
         attachToParent = !!attachToParent;
-        runtime.ui.layoutInflater.setContext(activity);
+        let ctx;
+        if(typeof(activity) == 'undefined') {
+            ctx = new android.view.ContextThemeWrapper(context, com.stardust.autojs.R.style.ScriptTheme);
+        } else {
+            ctx = activity;
+        }
+        runtime.ui.layoutInflater.setContext(ctx);
         return runtime.ui.layoutInflater.inflate(xml.toString(), parent, attachToParent);
     }
 
