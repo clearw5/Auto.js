@@ -5,8 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,13 +18,16 @@ import android.view.View;
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.model.sample.SampleFile;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.common.ScriptOperations;
+
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.SparseArrayEntries;
+
 import org.autojs.autojs.ui.widget.ToolbarMenuItem;
 
 import butterknife.ButterKnife;
@@ -99,12 +105,9 @@ public class ViewSampleActivity extends AppCompatActivity implements OnActivityR
         new ScriptOperations(this, mView)
                 .importSample(mSample)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(@NonNull String path) throws Exception {
-                        EditActivity.editFile(ViewSampleActivity.this, path);
-                        finish();
-                    }
+                .subscribe(path -> {
+                    EditActivity.editFile(ViewSampleActivity.this, path, false);
+                    finish();
                 });
     }
 

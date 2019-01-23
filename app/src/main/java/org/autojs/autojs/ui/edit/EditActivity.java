@@ -1,6 +1,7 @@
 package org.autojs.autojs.ui.edit;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -31,6 +32,7 @@ import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.autojs.autojs.ui.main.MainActivity_;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,33 +58,44 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
     @ViewById(R.id.editor_view)
     EditorView mEditorView;
 
-
     private EditorMenu mEditorMenu;
     private RequestPermissionCallbacks mRequestPermissionCallbacks = new RequestPermissionCallbacks();
+    private boolean mNewTask;
 
-    public static void editFile(Context context, String path) {
-        editFile(context, null, path);
+    public static void editFile(Context context, String path, boolean newTask) {
+        editFile(context, null, path, newTask);
     }
 
-    public static void editFile(Context context, Uri uri) {
-        context.startActivity(new Intent(context, EditActivity_.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    public static void editFile(Context context, Uri uri, boolean newTask) {
+        context.startActivity(newIntent(context, newTask)
                 .setData(uri));
     }
 
-    public static void editFile(Context context, String name, String path) {
-        context.startActivity(new Intent(context, EditActivity_.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    public static void editFile(Context context, String name, String path, boolean newTask) {
+        context.startActivity(newIntent(context, newTask)
                 .putExtra(EXTRA_PATH, path)
                 .putExtra(EXTRA_NAME, name));
     }
 
-    public static void viewContent(Context context, String name, String content) {
-        context.startActivity(new Intent(context, EditActivity_.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    public static void viewContent(Context context, String name, String content, boolean newTask) {
+        context.startActivity(newIntent(context, newTask)
                 .putExtra(EXTRA_CONTENT, content)
                 .putExtra(EXTRA_NAME, name)
                 .putExtra(EXTRA_READ_ONLY, true));
+    }
+
+    private static Intent newIntent(Context context, boolean newTask) {
+        Intent intent = new Intent(context, EditActivity_.class);
+        if (newTask || !(context instanceof Activity)) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        return intent;
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mNewTask = (getIntent().getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0;
     }
 
     @SuppressLint("CheckResult")
@@ -136,14 +149,6 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         Log.d(LOG_TAG, "onPrepareOptionsMenu: " + menu);
-        boolean isScriptRunning = mEditorView.getScriptExecutionId() != ScriptExecution.NO_ID;
-        MenuItem forceStopItem = menu.findItem(R.id.action_force_stop);
-        forceStopItem.setEnabled(isScriptRunning);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    public boolean onPrepareActionMode(Menu menu) {
-        Log.d(LOG_TAG, "onPrepareActionMode: " + menu);
         boolean isScriptRunning = mEditorView.getScriptExecutionId() != ScriptExecution.NO_ID;
         MenuItem forceStopItem = menu.findItem(R.id.action_force_stop);
         forceStopItem.setEnabled(isScriptRunning);
@@ -206,6 +211,9 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
             finishAndRemoveTask();
         } else {
             finish();
+        }
+        if (mNewTask) {
+            startActivity(new Intent(this, MainActivity_.class));
         }
     }
 

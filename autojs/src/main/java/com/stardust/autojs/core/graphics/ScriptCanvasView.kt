@@ -56,7 +56,6 @@ class ScriptCanvasView(context: Context, private val mScriptRuntime: ScriptRunti
                     while (mDrawing) {
                         canvas = lockCanvas()
                         scriptCanvas.setCanvas(canvas)
-                        // scriptCanvas.drawColor(Color.WHITE);
                         emit("draw", scriptCanvas, this@ScriptCanvasView)
                         unlockCanvasAndPost(canvas)
                         canvas = null

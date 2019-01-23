@@ -4,7 +4,9 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.core.view.GravityCompat;
@@ -64,7 +66,6 @@ import java.util.Arrays;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, BackPressedHandler.HostActivity, PermissionRequestProxyActivity {
-
 
     public static class DrawerOpenEvent {
         static DrawerOpenEvent SINGLETON = new DrawerOpenEvent();
@@ -138,7 +139,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     private void checkPermissions() {
-        checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     private void showAccessibilitySettingPromptIfDisabled() {
@@ -180,8 +181,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     private void setUpViewPagerFragmentBehaviors() {
-
-
         mPagerAdapter.setOnFragmentInstantiateListener((pos, fragment) -> {
             ((ViewPagerFragment) fragment).setFab(mFab);
             if (pos == mViewPager.getCurrentItem()) {

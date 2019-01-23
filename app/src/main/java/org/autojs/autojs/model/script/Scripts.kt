@@ -92,7 +92,7 @@ object Scripts {
 
 
     fun edit(context: Context, file: ScriptFile) {
-        EditActivity.editFile(context, file.simplifiedName, file.path)
+        EditActivity.editFile(context, file.simplifiedName, file.path, true)
     }
 
     fun edit(context: Context, path: String) {
