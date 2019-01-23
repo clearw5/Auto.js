@@ -105,6 +105,9 @@ public class UiSelector extends UiGlobalSelector {
         }
         List<UiObject> result = new ArrayList<>();
         for (AccessibilityNodeInfo root : roots) {
+            if (root == null) {
+                continue;
+            }
             if (root.getPackageName() != null && mAccessibilityBridge.getConfig().whiteListContains(root.getPackageName().toString())) {
                 Log.d(TAG, "package in white list, return null");
                 return UiObjectCollection.Companion.getEMPTY();

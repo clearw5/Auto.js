@@ -17,16 +17,14 @@ import com.stardust.util.ScreenMetrics
  * Created by Stardust on 2017/5/16.
  */
 
-class GlobalActionAutomator(private val mHandler: Handler?) {
+class GlobalActionAutomator(private val mHandler: Handler?, private val serviceProvider: () -> AccessibilityService) {
 
-    private var mService: AccessibilityService? = null
+    private val service: AccessibilityService
+        get() = serviceProvider()
+
     private var mScreenMetrics: ScreenMetrics? = null
 
-    fun setService(service: AccessibilityService) {
-        mService = service
-    }
-
-    fun setScreenMetrics(screenMetrics: ScreenMetrics) {
+    fun setScreenMetrics(screenMetrics: ScreenMetrics?) {
         mScreenMetrics = screenMetrics
     }
 
@@ -44,7 +42,7 @@ class GlobalActionAutomator(private val mHandler: Handler?) {
     }
 
     private fun performGlobalAction(globalAction: Int): Boolean {
-        return if (mService == null) false else mService!!.performGlobalAction(globalAction)
+        return service.performGlobalAction(globalAction)
     }
 
     fun notifications(): Boolean {
@@ -88,23 +86,22 @@ class GlobalActionAutomator(private val mHandler: Handler?) {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     fun gestures(vararg strokes: GestureDescription.StrokeDescription): Boolean {
-        if (mService == null)
-            return false
         val builder = GestureDescription.Builder()
         for (stroke in strokes) {
             builder.addStroke(stroke)
         }
-        return if (mHandler == null) {
+        val handler = mHandler
+        return if (handler == null) {
             gesturesWithoutHandler(builder.build())
         } else {
-            gesturesWithHandler(builder.build())
+            gesturesWithHandler(handler, builder.build())
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private fun gesturesWithHandler(description: GestureDescription): Boolean {
+    private fun gesturesWithHandler(handler: Handler, description: GestureDescription): Boolean {
         val result = VolatileDispose<Boolean>()
-        mService!!.dispatchGesture(description, object : AccessibilityService.GestureResultCallback() {
+        service.dispatchGesture(description, object : AccessibilityService.GestureResultCallback() {
             override fun onCompleted(gestureDescription: GestureDescription) {
                 result.setAndNotify(true)
             }
@@ -112,7 +109,7 @@ class GlobalActionAutomator(private val mHandler: Handler?) {
             override fun onCancelled(gestureDescription: GestureDescription) {
                 result.setAndNotify(false)
             }
-        }, mHandler)
+        }, handler)
         return result.blockedGet()
     }
 
@@ -121,7 +118,7 @@ class GlobalActionAutomator(private val mHandler: Handler?) {
         prepareLooperIfNeeded()
         val result = VolatileBox(false)
         val handler = Handler(Looper.myLooper())
-        mService!!.dispatchGesture(description, object : AccessibilityService.GestureResultCallback() {
+        service.dispatchGesture(description, object : AccessibilityService.GestureResultCallback() {
             override fun onCompleted(gestureDescription: GestureDescription) {
                 result.set(true)
                 quitLoop()
@@ -138,13 +135,11 @@ class GlobalActionAutomator(private val mHandler: Handler?) {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     fun gesturesAsync(vararg strokes: GestureDescription.StrokeDescription) {
-        if (mService == null)
-            return
         val builder = GestureDescription.Builder()
         for (stroke in strokes) {
             builder.addStroke(stroke)
         }
-        mService!!.dispatchGesture(builder.build(), null, null)
+        service.dispatchGesture(builder.build(), null, null)
     }
 
     private fun quitLoop() {
@@ -174,11 +169,11 @@ class GlobalActionAutomator(private val mHandler: Handler?) {
     }
 
     private fun scaleX(x: Int): Int {
-        return if (mScreenMetrics == null) x else mScreenMetrics!!.scaleX(x)
+        return mScreenMetrics?.scaleX(x) ?: x
     }
 
     private fun scaleY(y: Int): Int {
-        return if (mScreenMetrics == null) y else mScreenMetrics!!.scaleY(y)
+        return mScreenMetrics?.scaleX(y) ?: y
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
