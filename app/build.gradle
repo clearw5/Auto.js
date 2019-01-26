@@ -99,6 +99,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation 'junit:junit:4.12'
+    // Kotlin
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1"
     // Android Annotations
     annotationProcessor "org.androidannotations:androidannotations:$AAVersion"
     implementation "org.androidannotations:androidannotations-api:$AAVersion"
@@ -148,6 +150,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
     //Glide
     implementation('com.github.bumptech.glide:glide:4.8.0', {
         exclude group: 'com.android.support'

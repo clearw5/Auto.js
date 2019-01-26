@@ -4,6 +4,7 @@
       <w>autojs</w>
       <w>capturer</w>
       <w>dismissable</w>
+      <w>downvote</w>
       <w>fileprovider</w>
       <w>flowable</w>
       <w>imgproc</w>
@@ -16,6 +17,7 @@
       <w>storages</w>
       <w>tasker</w>
       <w>uncheck</w>
+      <w>upvote</w>
     </words>
   </dictionary>
 </component>
