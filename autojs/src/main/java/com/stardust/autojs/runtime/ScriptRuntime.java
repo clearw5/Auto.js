@@ -410,7 +410,7 @@ public class ScriptRuntime {
         ignoresException(media::recycle);
         ignoresException(loopers::recycle);
         ignoresException(() -> {
-            if (mRootShell != null) mRootShell.exitAndWaitFor();
+            if (mRootShell != null) mRootShell.exit();
             mRootShell = null;
             mShellSupplier = null;
         });
