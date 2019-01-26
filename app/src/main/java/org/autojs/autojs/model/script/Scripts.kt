@@ -137,8 +137,8 @@ object Scripts {
     }
 
     @Nullable
-    fun getRhinoException(e: Throwable?): RhinoException? {
-        var e = e
+    fun getRhinoException(throwable: Throwable?): RhinoException? {
+        var e = throwable
         while (e != null) {
             if (e is RhinoException) {
                 return e

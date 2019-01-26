@@ -7,6 +7,7 @@ import com.stardust.autojs.script.ScriptSource;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -68,14 +69,14 @@ public interface ScriptEngine<S extends ScriptSource> {
     abstract class AbstractScriptEngine<S extends ScriptSource> implements ScriptEngine<S> {
 
 
-        private Map<String, Object> mTags = new HashMap<>();
+        private Map<String, Object> mTags = new ConcurrentHashMap<>();
         private OnDestroyListener mOnDestroyListener;
-        private boolean mDestroyed = false;
+        private volatile boolean mDestroyed = false;
         private Throwable mUncaughtException;
         private volatile AtomicInteger mId = new AtomicInteger(ScriptExecution.NO_ID);
 
         @Override
-        public synchronized void setTag(String key, Object value) {
+        public void setTag(String key, Object value) {
             if (value == null) {
                 mTags.remove(key);
             } else {
@@ -84,22 +85,22 @@ public interface ScriptEngine<S extends ScriptSource> {
         }
 
         @Override
-        public synchronized Object getTag(String key) {
+        public Object getTag(String key) {
             return mTags.get(key);
         }
 
         @Override
-        public synchronized boolean isDestroyed() {
+        public boolean isDestroyed() {
             return mDestroyed;
         }
 
         @CallSuper
         @Override
-        public synchronized void destroy() {
-            mDestroyed = true;
+        public void destroy() {
             if (mOnDestroyListener != null) {
                 mOnDestroyListener.onDestroy(this);
             }
+            mDestroyed = true;
         }
 
         public String cwd() {
