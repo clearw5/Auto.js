@@ -14,10 +14,6 @@ android {
         versionName versions.appVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-        ndk {
-            abiFilters 'armeabi-v7a'
-        }
-
     }
     lintOptions {
         disable 'MissingTranslation'
@@ -26,6 +22,27 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    splits {
+
+        // Configures multiple APKs based on ABI.
+        abi {
+
+            // Enables building multiple APKs per ABI.
+            enable true
+
+            // By default all ABIs are included, so use reset() and include to specify that we only
+            // want APKs for x86 and x86_64.
+
+            // Resets the list of ABIs that Gradle should create APKs for to none.
+            reset()
+
+            // Specifies a list of ABIs that Gradle should create APKs for.
+            include "x86", "armeabi-v7a"
+
+            // Specifies that we do not want to also generate a universal APK that includes all ABIs.
+            universalApk false
+        }
     }
     buildTypes {
         debug {
@@ -39,30 +56,37 @@ android {
     }
 }
 
+def buildApkPluginForAbi(File pluginProjectDir, String abi) {
+    copy {
+        from file('..\\app\\release\\')
+        into new File(pluginProjectDir, 'app\\src\\main\\assets')
+        def fileName = "inrt-" + abi + "-release.apk"
+        include fileName
+        rename fileName, 'template.apk'
+    }
+    exec {
+        workingDir pluginProjectDir
+        commandLine 'gradlew.bat', 'assembleRelease'
+    }
+    copy {
+        from new File(pluginProjectDir, 'app\\build\\outputs\\apk\\release')
+        into file('..\\common\\release')
+        def fileName = '打包插件-' + versions.appVersionName + '-release.apk'
+        include fileName
+        rename fileName, '打包插件-' + abi + '-' + versions.appVersionName + '-release.apk'
+    }
+}
 
 task buildApkPlugin {
     doLast {
         def pluginProjectDirPath = '..\\..\\AutoJsApkBuilderPlugin'
         def pluginProjectDir = file(pluginProjectDirPath)
-        if(!pluginProjectDir.exists() || !pluginProjectDir.isDirectory()){
+        if (!pluginProjectDir.exists() || !pluginProjectDir.isDirectory()) {
             println 'pluginProjectDir not exists'
             return
         }
-        copy {
-            from file('build\\outputs\\apk\\release\\')
-            into new File(pluginProjectDir, 'app\\src\\main\\assets')
-            include "inrt-release-unsigned.apk"
-            rename "inrt-release-unsigned.apk", 'template.apk'
-        }
-        exec {
-            workingDir pluginProjectDir
-            commandLine 'gradlew.bat', 'assembleRelease'
-        }
-        copy {
-            from new File(pluginProjectDir, 'app\\build\\outputs\\apk\\release')
-            into file('..\\common\\release')
-            include '*-release.apk'
-        }
+        buildApkPluginForAbi(pluginProjectDir, 'armeabi-v7a')
+        buildApkPluginForAbi(pluginProjectDir, 'x86')
     }
 }
 

@@ -24,9 +24,6 @@ android {
         versionName versions.appVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-        ndk {
-            abiFilters 'armeabi-v7a', 'x86'
-        }
     }
     buildTypes {
         debug {
@@ -49,33 +46,39 @@ android {
         disable 'MissingTranslation'
         disable 'ExtraTranslation'
     }
-    android.applicationVariants.all { variant ->
-        variant.outputs.all {
-            outputFileName = "${variant.name}-${variant.versionName}.apk"
-        }
-    }
 
     configurations.all {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
     }
 
     flavorDimensions "channel"
+    splits {
 
+        // Configures multiple APKs based on ABI.
+        abi {
+
+            // Enables building multiple APKs per ABI.
+            enable true
+
+            // By default all ABIs are included, so use reset() and include to specify that we only
+            // want APKs for x86 and x86_64.
+
+            // Resets the list of ABIs that Gradle should create APKs for to none.
+            reset()
+
+            // Specifies a list of ABIs that Gradle should create APKs for.
+            include "x86", "armeabi-v7a"
+
+            // Specifies that we do not want to also generate a universal APK that includes all ABIs.
+            universalApk false
+        }
+    }
     productFlavors {
         common {
             buildConfigField "String", "CHANNEL", '"common"'
-            ndk {
-                abiFilters "armeabi-v7a"
-            }
         }
         coolapk {
             buildConfigField "String", "CHANNEL", '"coolapk"'
-        }
-        x86 {
-            buildConfigField "String", "CHANNEL", '"common"'
-            ndk {
-                abiFilters "x86"
-            }
         }
     }
 

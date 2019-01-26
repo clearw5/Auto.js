@@ -210,7 +210,7 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             finishAndRemoveTask();
         } else {
-            finish();
+            super.finish();
         }
         if (mNewTask) {
             startActivity(new Intent(this, MainActivity_.class));
