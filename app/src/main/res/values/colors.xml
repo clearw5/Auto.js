@@ -10,14 +10,11 @@
     <color name="prefTextColorSecondary">#9DA0A2</color>
     <color name="prefTextColorPrimary">#282C2F</color>
     <color name="divider_functions_keyboard">#f0f0f0</color>
-    <color name="color_red">#ef5350</color>
-    <color name="project_toolbar_color">#777777</color>
     <color name="theme_color_black">#111214</color>
 
     <color name="window_background">#FFFFFF</color>
     <color name="item_background">#FFFFFF</color>
     <color name="item_background_dark">#FFFFFF</color>
-    <color name="text_color_primary">@android:color/primary_text_light</color>
     <color name="text_color_secondary">#484C4F</color>
     <color name="text_color_thirdly">#9DA0A2</color>
     <color name="divider">#f2f3f5</color>
