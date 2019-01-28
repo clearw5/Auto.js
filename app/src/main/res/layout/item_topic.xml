@@ -93,37 +93,44 @@
             android:paddingTop="3dp"
             android:paddingBottom="3dp">
 
-            <ImageView
+            <org.autojs.autojs.ui.main.market.ImageText
                 android:id="@+id/download"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/download"
-                android:tint="#939393"/>
+                android:background="?selectableItemBackgroundBorderless"
+                android:tint="#939393"
+                app:image_width="30dp"
+                app:src="@drawable/download"
+                app:text="@string/text_download"/>
 
-            <ImageView
+            <org.autojs.autojs.ui.main.market.ImageText
                 android:id="@+id/upvote"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/upvote"
-                android:tint="#939393"/>
+                android:background="?selectableItemBackgroundBorderless"
+                app:image_width="30dp"
+                app:src="@drawable/upvote"/>
 
-            <ImageView
+            <org.autojs.autojs.ui.main.market.ImageText
                 android:id="@+id/downvote"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/downvote"
-                android:tint="#939393"/>
+                android:background="?selectableItemBackgroundBorderless"
+                app:image_width="30dp"
+                app:src="@drawable/downvote"/>
 
-            <ImageView
+            <org.autojs.autojs.ui.main.market.ImageText
                 android:id="@+id/star"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/star"
-                android:tint="#939393"/>
+                android:background="?selectableItemBackgroundBorderless"
+                app:image_width="30dp"
+                app:src="@drawable/star"
+                app:text="@string/text_star"/>
 
         </LinearLayout>
 

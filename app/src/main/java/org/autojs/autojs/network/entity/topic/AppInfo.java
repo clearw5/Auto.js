@@ -8,6 +8,8 @@ import com.google.gson.annotations.SerializedName;
 @SuppressWarnings("unused")
 public class AppInfo {
 
+    public static final String PERMISSION_ROOT = "root";
+
     @SerializedName("details")
     private String mDetails;
     @SerializedName("email")

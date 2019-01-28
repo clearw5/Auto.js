@@ -35,4 +35,10 @@
         <attr name="cam_angle" format="integer"/>
     </declare-styleable>
 
+    <declare-styleable name="ImageText">
+        <attr name="text"/>
+        <attr name="src"/>
+        <attr name="image_width" format="dimension|reference"/>
+    </declare-styleable>
+
 </resources>

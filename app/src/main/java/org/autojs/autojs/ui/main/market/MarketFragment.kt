@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.stardust.autojs.workground.WrapContentLinearLayoutManager
@@ -15,6 +16,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.autojs.autojs.R
 import org.autojs.autojs.network.TopicService
+import org.autojs.autojs.network.entity.topic.AppInfo
+import org.autojs.autojs.network.entity.topic.Post
 import org.autojs.autojs.network.entity.topic.Topic
 import org.autojs.autojs.ui.main.ViewPagerFragment
 import org.autojs.autojs.ui.widget.AvatarView
@@ -59,11 +62,89 @@ class MarketFragment : ViewPagerFragment(0) {
 
     inner class TopicViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val rootView: TextView = itemView.findViewById(R.id.root)
-        val titleView: TextView = itemView.findViewById(R.id.title)
-        val avatarView: AvatarView = itemView.findViewById(R.id.avatar)
-        val usernameView: TextView = itemView.findViewById(R.id.username)
-        val dateView: TextView = itemView.findViewById(R.id.date)
+        private lateinit var topic: Topic
+
+        private val rootView: TextView = itemView.findViewById(R.id.root)
+        private val titleView: TextView = itemView.findViewById(R.id.title)
+        private val avatarView: AvatarView = itemView.findViewById(R.id.avatar)
+        private val usernameView: TextView = itemView.findViewById(R.id.username)
+        private val dateView: TextView = itemView.findViewById(R.id.date)
+        private val upvoteView: ImageText = itemView.findViewById(R.id.upvote)
+        private val downvoteView: ImageText = itemView.findViewById(R.id.downvote)
+        private val downloadView: ImageText = itemView.findViewById(R.id.download)
+        private val starView: ImageText = itemView.findViewById(R.id.star)
+
+        init {
+            upvoteView.setOnClickListener {
+
+            }
+            downvoteView.setOnClickListener {
+
+            }
+            starView.setOnClickListener {
+
+            }
+            downloadView.setOnClickListener {
+
+            }
+        }
+
+        fun bind(topic: Topic) {
+            this.topic = topic
+            rootView.setText(if (topic.appInfo.permissions.contains(AppInfo.PERMISSION_ROOT)) {
+                R.string.text_root
+            } else {
+                R.string.text_no_root
+            })
+            titleView.text = topic.title
+            avatarView.setUser(topic.user)
+            usernameView.text = topic.user.username
+            dateView.text = DateTimeFormat.mediumDateTime().print(topic.timestamp.toLong())
+            if (topic.mainPost != null) {
+                bindMainPost(topic.mainPost)
+            } else {
+                fetchMainPost(topic)
+            }
+        }
+
+        private fun fetchMainPost(topic: Topic) {
+            GlobalScope.launch(Dispatchers.Main) {
+                try {
+                    val mainPost = TopicService.getMainPost(topic)
+                    if (topic === this@TopicViewHolder.topic) {
+                        bindMainPost(mainPost)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+
+        private fun bindMainPost(mainPost: Post) {
+            context?.let { context ->
+                upvoteView.text = if (mainPost.upvotes == 0L) {
+                    context.getString(R.string.text_upvote)
+                } else {
+                    mainPost.upvotes.toString()
+                }
+                upvoteView.setColor(if (mainPost.upvoted) {
+                    ContextCompat.getColor(context, R.color.market_button_selected)
+                } else {
+                    ContextCompat.getColor(context, R.color.market_button_unselected)
+                })
+                downvoteView.text = if (mainPost.downvotes == 0L) {
+                    context.getString(R.string.text_downvote)
+                } else {
+                    mainPost.downvotes.toString()
+                }
+                downvoteView.setColor(if (mainPost.downvoted) {
+                    ContextCompat.getColor(context, R.color.market_button_selected)
+                } else {
+                    ContextCompat.getColor(context, R.color.market_button_unselected)
+                })
+            }
+
+        }
 
     }
 
@@ -77,21 +158,8 @@ class MarketFragment : ViewPagerFragment(0) {
         }
 
         override fun onBindViewHolder(holder: TopicViewHolder, position: Int) {
-
             val topic = mTopics[position]
-            holder.run {
-                val root = topic.appInfo.permissions.contains("root")
-                rootView.text = if (root) {
-                    "Root"
-                } else {
-                    "免Root"
-                }
-                titleView.text = topic.title
-                avatarView.setUser(topic.user)
-                usernameView.text = topic.user.username
-
-                dateView.text = DateTimeFormat.mediumDateTime().print(topic.timestamp.toLong())
-            }
+            holder.bind(topic)
         }
 
     }

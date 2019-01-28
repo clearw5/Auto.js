@@ -26,7 +26,8 @@
     <color name="toolbar_disabled">#77e0e0e0</color>
     <color name="console_debug">#cc000000</color>
     <color name="console_verbose">#dfc0c0c0</color>
-
+    <color name="market_button_selected">#e14123</color>
+    <color name="market_button_unselected">#939393</color>
 
 
 </resources>

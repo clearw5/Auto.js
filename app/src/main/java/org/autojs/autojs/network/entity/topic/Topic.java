@@ -80,6 +80,7 @@ public class Topic {
     private Post mTeaser;
 
     private AppInfo mAppInfo;
+    private Post mMainPost;
 
     public Category getCategory() {
         return mCategory;
@@ -337,6 +338,22 @@ public class Topic {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public Post getTeaser() {
+        return mTeaser;
+    }
+
+    public void setTeaser(Post teaser) {
+        mTeaser = teaser;
+    }
+
+    public Post getMainPost() {
+        return mMainPost;
+    }
+
+    public void setMainPost(Post mainPost) {
+        mMainPost = mainPost;
     }
 
     @Override

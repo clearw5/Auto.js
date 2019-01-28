@@ -1,6 +1,7 @@
 package org.autojs.autojs.network
 
 import org.autojs.autojs.network.api.TopicApi
+import org.autojs.autojs.network.entity.topic.Post
 import org.autojs.autojs.network.entity.topic.Topic
 
 object TopicService {
@@ -14,6 +15,12 @@ object TopicService {
         return category.topics.filter {
             it.appInfo != null
         }
+    }
+
+    suspend fun getMainPost(topic: Topic): Post {
+        val fullTopic = mTopicApi.getTopic(topic.tid.toLong()).await()
+        topic.mainPost = fullTopic.posts.first { post -> post.pid == topic.mainPid }
+        return topic.mainPost
     }
 
     suspend fun getScriptsTopics(): List<Topic> {
