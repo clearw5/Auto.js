@@ -12,10 +12,7 @@ import com.stardust.autojs.runtime.ScriptRuntime
 import com.stardust.autojs.script.JavaScriptSource
 import com.stardust.automator.UiObjectCollection
 import com.stardust.pio.UncheckedIOException
-import org.mozilla.javascript.Context
-import org.mozilla.javascript.Script
-import org.mozilla.javascript.Scriptable
-import org.mozilla.javascript.ScriptableObject
+import org.mozilla.javascript.*
 import org.mozilla.javascript.commonjs.module.RequireBuilder
 import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider
 import java.io.File
@@ -112,7 +109,15 @@ open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Co
         thread = Thread.currentThread()
         ScriptableObject.putProperty(mScriptable, "__engine__", this)
         initRequireBuilder(context, mScriptable)
-        context.executeScriptWithContinuations(initScript, mScriptable)
+        try {
+            context.executeScriptWithContinuations(initScript, mScriptable)
+        } catch (e: IllegalArgumentException) {
+            if ("Script argument was not a script or was not created by interpreted mode " == e.message) {
+                initScript.exec(context, mScriptable)
+            } else {
+                throw e
+            }
+        }
     }
 
     internal fun initRequireBuilder(context: Context, scope: Scriptable) {

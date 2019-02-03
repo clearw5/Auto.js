@@ -129,12 +129,12 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
     @Override
     public void onPageShow() {
         super.onPageShow();
-        //EventBus.getDefault().post(new VisibilityChange(true));
+        EventBus.getDefault().post(new VisibilityChange(true));
     }
 
     @Override
     public void onPageHide() {
         super.onPageHide();
-        //EventBus.getDefault().post(new VisibilityChange(false));
+        EventBus.getDefault().post(new VisibilityChange(false));
     }
 }
