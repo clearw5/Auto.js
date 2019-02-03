@@ -44,11 +44,15 @@ class MarketFragment : ViewPagerFragment(0) {
     private fun refresh() {
         GlobalScope.launch(Dispatchers.Main) {
             swipeRefreshLayout.isRefreshing = true
-            val topics = TopicService.getScriptsTopics()
-            mTopics.clear()
-            mTopics.addAll(topics)
-            topicsView.adapter!!.notifyDataSetChanged()
-            swipeRefreshLayout.isRefreshing = false
+            try {
+                val topics = TopicService.getScriptsTopics()
+                mTopics.clear()
+                mTopics.addAll(topics)
+                topicsView.adapter!!.notifyDataSetChanged()
+                swipeRefreshLayout.isRefreshing = false
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

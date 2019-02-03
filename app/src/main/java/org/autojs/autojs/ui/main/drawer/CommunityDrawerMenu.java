@@ -68,7 +68,7 @@ public class CommunityDrawerMenu {
                     if (online) {
                         refreshNotificationCount(adapter);
                     }
-                });
+                }, Throwable::printStackTrace);
 
     }
 

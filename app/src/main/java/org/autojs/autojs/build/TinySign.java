@@ -131,7 +131,7 @@ public class TinySign {
         zipAndSha1(dir, zos, dos, manifest);
         Attributes main = manifest.getMainAttributes();
         main.putValue("Manifest-Version", "1.0");
-        main.putValue("Created-By", "tiny-sign-" + TinySign.class.getPackage().getImplementationVersion());
+        main.putValue("Created-By", "Auto.js");
         zos.putNextEntry(new ZipEntry("META-INF/MANIFEST.MF"));
         manifest.write(dos);
         zos.closeEntry();
