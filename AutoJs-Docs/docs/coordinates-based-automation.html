@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>基于坐标的触摸模拟 | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/coordinates-based-automation.html">
+</head>
+<body class="alt apidoc" id="api-section-coordinates-based-automation">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation active" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="coordinates-based-automation" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#coordinates_based_automation">基于坐标的触摸模拟</a></span><ul>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_setscreenmetrics_width_height">setScreenMetrics(width, height)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_2"><a href="#coordinates_based_automation_7_0">安卓7.0以上的触摸和手势模拟</a></span><ul>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_click_x_y">click(x, y)</a></span></li>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_longclick_x_y">longClick(x, y)</a></span></li>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_press_x_y_duration">press(x, y, duration)</a></span></li>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_swipe_x1_y1_x2_y2_duration">swipe(x1, y1, x2, y2, duration)</a></span></li>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_gesture_duration_x1_y1_x2_y2">gesture(duration, [x1, y1], [x2, y2], ...)</a></span></li>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_gestures_delay1_duration1_x1_y1_x2_y2_delay2_duration2_x3_y3_x4_y4">gestures([delay1, duration1, [x1, y1], [x2, y2], ...], [delay2, duration2, [x3, y3], [x4, y4], ...], ...)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_2"><a href="#coordinates_based_automation_rootautomator">RootAutomator</a></span><ul>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_rootautomator_tap_x_y_id">RootAutomator.tap(x, y[, id])</a></span></li>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_rootautomator_swipe_x1_x2_y1_y2_duration_id">RootAutomator.swipe(x1, x2, y1, y2[, duration, id])</a></span></li>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_rootautomator_press_x_y_duration_id">RootAutomator.press(x, y, duration[, id])</a></span></li>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_rootautomator_longpress_x_y_id">RootAutomator.longPress(x, y[\, id])</a></span></li>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_rootautomator_touchdown_x_y_id">RootAutomator.touchDown(x, y[, id])</a></span></li>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_rootautomator_touchmove_x_y_id">RootAutomator.touchMove(x, y[, id])</a></span></li>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_rootautomator_touchup_id">RootAutomator.touchUp([id])</a></span></li>
+</ul>
+</li>
+<li><span class="stability_1"><a href="#coordinates_based_automation_root">使用root权限点击和滑动的简单命令</a></span><ul>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_tap_x_y">Tap(x, y)</a></span></li>
+<li><span class="stability_undefined"><a href="#coordinates_based_automation_swipe_x1_y1_x2_y2_duration_1">Swipe(x1, y1, x2, y2, [duration])</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>基于坐标的触摸模拟<span><a class="mark" href="#coordinates_based_automation" id="coordinates_based_automation">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>本章节介绍了一些使用坐标进行点击、滑动的函数。这些函数有的需要安卓7.0以上，有的需要root权限。</p>
+<p>要获取要点击的位置的坐标，可以在开发者选项中开启&quot;指针位置&quot;。</p>
+<p>基于坐标的脚本通常会有分辨率的问题，这时可以通过<code>setScreenMetrics()</code>函数来进行自动坐标放缩。这个函数会影响本章节的所有点击、长按、滑动等函数。通过设定脚本设计时的分辨率，使得脚本在其他分辨率下自动放缩坐标。</p>
+<p>控件和坐标也可以相互结合。一些控件是无法点击的(clickable为false), 无法通过<code>.click()</code>函数来点击，这时如果安卓版本在7.0以上或者有root权限，就可以通过以下方式来点击：</p>
+<pre><code>//获取这个控件
+var widget = id(&quot;xxx&quot;).findOne();
+//获取其中心位置并点击
+click(widget.bounds().centerX(), widget.bounds().centerY());
+//如果用root权限则用Tap
+</code></pre><h2>setScreenMetrics(width, height)<span><a class="mark" href="#coordinates_based_automation_setscreenmetrics_width_height" id="coordinates_based_automation_setscreenmetrics_width_height">#</a></span></h2>
+<div class="signature"><ul>
+<li>width <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 屏幕宽度，单位像素</li>
+<li>height <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 屏幕高度，单位像素</li>
+</ul>
+</div><p>设置脚本坐标点击所适合的屏幕宽高。如果脚本运行时，屏幕宽度不一致会自动放缩坐标。</p>
+<p>例如在1920*1080的设备中，某个操作的代码为</p>
+<pre><code>setScreenMetrics(1080, 1920);
+click(800, 200);
+longClick(300, 500);
+</code></pre><p>那么在其他设备上AutoJs会自动放缩坐标以便脚本仍然有效。例如在540 * 960的屏幕中<code>click(800, 200)</code>实际上会点击位置(400, 100)。</p>
+<h1>安卓7.0以上的触摸和手势模拟<span><a class="mark" href="#coordinates_based_automation_7_0" id="coordinates_based_automation_7_0">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p><strong>注意以下命令只有Android7.0及以上才有效</strong></p>
+<h2>click(x, y)<span><a class="mark" href="#coordinates_based_automation_click_x_y" id="coordinates_based_automation_click_x_y">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要点击的坐标的x值</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要点击的坐标的y值</li>
+</ul>
+</div><p>模拟点击坐标(x, y)，并返回是否点击成功。只有在点击执行完成后脚本才继续执行。</p>
+<p>一般而言，只有点击过程(大约150毫秒)中被其他事件中断(例如用户自行点击)才会点击失败。</p>
+<p>使用该函数模拟连续点击时可能有点击速度过慢的问题，这时可以用<code>press()</code>函数代替。</p>
+<h2>longClick(x, y)<span><a class="mark" href="#coordinates_based_automation_longclick_x_y" id="coordinates_based_automation_longclick_x_y">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要长按的坐标的x值</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要长按的坐标的y值</li>
+</ul>
+</div><p>模拟长按坐标(x, y), 并返回是否成功。只有在长按执行完成（大约600毫秒）时脚本才会继续执行。</p>
+<p>一般而言，只有长按过程中被其他事件中断(例如用户自行点击)才会长按失败。</p>
+<h2>press(x, y, duration)<span><a class="mark" href="#coordinates_based_automation_press_x_y_duration" id="coordinates_based_automation_press_x_y_duration">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要按住的坐标的x值</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要按住的坐标的y值</li>
+<li><code>duration</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 按住时长，单位毫秒</li>
+</ul>
+</div><p>模拟按住坐标(x, y), 并返回是否成功。只有按住操作执行完成时脚本才会继续执行。</p>
+<p>如果按住时间过短，那么会被系统认为是点击；如果时长超过500毫秒，则认为是长按。</p>
+<p>一般而言，只有按住过程中被其他事件中断才会操作失败。</p>
+<p>一个连点器的例子如下：</p>
+<pre><code>//循环100次
+for(var i = 0; i &lt; 100; i++){
+  //点击位置(500, 1000), 每次用时1毫秒
+  press(500, 1000, 1);
+}
+</code></pre><h2>swipe(x1, y1, x2, y2, duration)<span><a class="mark" href="#coordinates_based_automation_swipe_x1_y1_x2_y2_duration" id="coordinates_based_automation_swipe_x1_y1_x2_y2_duration">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>x1</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 滑动的起始坐标的x值</li>
+<li><code>y1</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 滑动的起始坐标的y值</li>
+<li><code>x2</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 滑动的结束坐标的x值</li>
+<li><code>y2</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 滑动的结束坐标的y值</li>
+<li><code>duration</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 滑动时长，单位毫秒</li>
+</ul>
+</div><p>模拟从坐标(x1, y1)滑动到坐标(x2, y2)，并返回是否成功。只有滑动操作执行完成时脚本才会继续执行。</p>
+<p>一般而言，只有滑动过程中被其他事件中断才会滑动失败。</p>
+<h2>gesture(duration, [x1, y1], [x2, y2], ...)<span><a class="mark" href="#coordinates_based_automation_gesture_duration_x1_y1_x2_y2" id="coordinates_based_automation_gesture_duration_x1_y1_x2_y2">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>duration</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 手势的时长</li>
+<li>[x, y] ... 手势滑动路径的一系列坐标</li>
+</ul>
+</div><p>模拟手势操作。例如<code>gesture(1000, [0, 0], [500, 500], [500, 1000])</code>为模拟一个从(0, 0)到(500, 500)到(500, 100)的手势操作，时长为2秒。</p>
+<h2>gestures([delay1, duration1, [x1, y1], [x2, y2], ...], [delay2, duration2, [x3, y3], [x4, y4], ...], ...)<span><a class="mark" href="#coordinates_based_automation_gestures_delay1_duration1_x1_y1_x2_y2_delay2_duration2_x3_y3_x4_y4" id="coordinates_based_automation_gestures_delay1_duration1_x1_y1_x2_y2_delay2_duration2_x3_y3_x4_y4">#</a></span></h2>
+<p>同时模拟多个手势。每个手势的参数为[delay, duration, 坐标], delay为延迟多久(毫秒)才执行该手势；duration为手势执行时长；坐标为手势经过的点的坐标。其中delay参数可以省略，默认为0。</p>
+<p>例如手指捏合：</p>
+<pre><code>gestures([0, 500, [800, 300], [500, 1000]],
+         [0, 500, [300, 1500], [500, 1000]]);
+</code></pre><h1>RootAutomator<span><a class="mark" href="#coordinates_based_automation_rootautomator" id="coordinates_based_automation_rootautomator">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>RootAutomator是一个使用root权限来模拟触摸的对象，用它可以完成触摸与多点触摸，并且这些动作的执行没有延迟。</p>
+<p>一个脚本中最好只存在一个RootAutomator，并且保证脚本结束退出他。可以在exit事件中退出RootAutomator，例如：</p>
+<pre><code>var ra = new RootAutomator();
+events.on(&#39;exit&#39;, function(){
+  ra.exit();
+});
+//执行一些点击操作
+...
+</code></pre><p><strong>注意以下命令需要root权限</strong></p>
+<h2>RootAutomator.tap(x, y[, id])<span><a class="mark" href="#coordinates_based_automation_rootautomator_tap_x_y_id" id="coordinates_based_automation_rootautomator_tap_x_y_id">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 纵坐标</li>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 多点触摸id，可选，默认为1，可以通过setDefaultId指定。</li>
+</ul>
+</div><p>点击位置(x, y)。其中id是一个整数值，用于区分多点触摸，不同的id表示不同的&quot;手指&quot;，例如：</p>
+<pre><code>var ra = new RootAutomator();
+//让&quot;手指1&quot;点击位置(100, 100)
+ra.tap(100, 100, 1);
+//让&quot;手指2&quot;点击位置(200, 200);
+ra.tap(200, 200, 2);
+ra.exit();
+</code></pre><p>如果不需要多点触摸，则不需要id这个参数。
+多点触摸通常用于手势或游戏操作，例如模拟双指捏合、双指上滑等。</p>
+<p>某些情况下可能存在tap点击无反应的情况，这时可以用<code>RootAutomator.press()</code>函数代替。</p>
+<h2>RootAutomator.swipe(x1, x2, y1, y2[, duration, id])<span><a class="mark" href="#coordinates_based_automation_rootautomator_swipe_x1_x2_y1_y2_duration_id" id="coordinates_based_automation_rootautomator_swipe_x1_x2_y1_y2_duration_id">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>x1</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 滑动起点横坐标</li>
+<li><code>y1</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 滑动起点纵坐标</li>
+<li><code>x2</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 滑动终点横坐标</li>
+<li><code>y2</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 滑动终点纵坐标</li>
+<li><code>duration</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 滑动时长，单位毫秒，默认值为300</li>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 多点触摸id，可选，默认为1</li>
+</ul>
+</div><p>模拟一次从(x1, y1)到(x2, y2)的时间为duration毫秒的滑动。</p>
+<h2>RootAutomator.press(x, y, duration[, id])<span><a class="mark" href="#coordinates_based_automation_rootautomator_press_x_y_duration_id" id="coordinates_based_automation_rootautomator_press_x_y_duration_id">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 纵坐标</li>
+<li><code>duration</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 按下时长</li>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 多点触摸id，可选，默认为1</li>
+</ul>
+</div><p>模拟按下位置(x, y)，时长为duration毫秒。</p>
+<h2>RootAutomator.longPress(x, y[\, id])<span><a class="mark" href="#coordinates_based_automation_rootautomator_longpress_x_y_id" id="coordinates_based_automation_rootautomator_longpress_x_y_id">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 纵坐标</li>
+<li><code>duration</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 按下时长</li>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 多点触摸id，可选，默认为1</li>
+</ul>
+</div><p>模拟长按位置(x, y)。</p>
+<p>以上为简单模拟触摸操作的函数。如果要模拟一些复杂的手势，需要更底层的函数。</p>
+<h2>RootAutomator.touchDown(x, y[, id])<span><a class="mark" href="#coordinates_based_automation_rootautomator_touchdown_x_y_id" id="coordinates_based_automation_rootautomator_touchdown_x_y_id">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 纵坐标</li>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 多点触摸id，可选，默认为1</li>
+</ul>
+</div><p>模拟手指按下位置(x, y)。</p>
+<h2>RootAutomator.touchMove(x, y[, id])<span><a class="mark" href="#coordinates_based_automation_rootautomator_touchmove_x_y_id" id="coordinates_based_automation_rootautomator_touchmove_x_y_id">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 纵坐标</li>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 多点触摸id，可选，默认为1</li>
+</ul>
+</div><p>模拟移动手指到位置(x, y)。</p>
+<h2>RootAutomator.touchUp([id])<span><a class="mark" href="#coordinates_based_automation_rootautomator_touchup_id" id="coordinates_based_automation_rootautomator_touchup_id">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 多点触摸id，可选，默认为1</li>
+</ul>
+</div><p>模拟手指弹起。</p>
+<h1>使用root权限点击和滑动的简单命令<span><a class="mark" href="#coordinates_based_automation_root" id="coordinates_based_automation_root">#</a></span></h1>
+<div class="api_stability api_stability_1"><a href="documentation.html#documentation_stability_index">Stability: 1</a> - Experimental </div><p>注意：本章节的函数在后续版本很可能有改动！请勿过分依赖本章节函数的副作用。推荐使用<code>RootAutomator</code>代替本章节的触摸函数。</p>
+<p>以下函数均需要root权限，可以实现任意位置的点击、滑动等。</p>
+<ul>
+<li>这些函数通常首字母大写以表示其特殊的权限。  </li>
+<li>这些函数均不返回任何值。  </li>
+<li>并且，这些函数的执行是异步的、非阻塞的，在不同机型上所用的时间不同。脚本不会等待动作执行完成才继续执行。因此最好在每个函数之后加上适当的sleep来达到期望的效果。</li>
+</ul>
+<p>例如:</p>
+<pre><code>Tap(100, 100);
+sleep(500);
+</code></pre><p>注意，动作的执行可能无法被停止，例如：</p>
+<pre><code>for(var i = 0; i &lt; 100; i++){
+  Tap(100, 100);
+}
+</code></pre><p>这段代码执行后可能会出现在任务管理中停止脚本后点击仍然继续的情况。
+因此，强烈建议在每个动作后加上延时：</p>
+<pre><code>for(var i = 0; i &lt; 100; i++){
+  Tap(100, 100);
+  sleep(500);
+}
+</code></pre><h2>Tap(x, y)<span><a class="mark" href="#coordinates_based_automation_tap_x_y" id="coordinates_based_automation_tap_x_y">#</a></span></h2>
+<div class="signature"><ul>
+<li>x, y <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要点击的坐标。</li>
+</ul>
+</div><p>点击位置(x, y), 您可以通过&quot;开发者选项&quot;开启指针位置来确定点击坐标。</p>
+<h2>Swipe(x1, y1, x2, y2, [duration])<span><a class="mark" href="#coordinates_based_automation_swipe_x1_y1_x2_y2_duration_1" id="coordinates_based_automation_swipe_x1_y1_x2_y2_duration_1">#</a></span></h2>
+<div class="signature"><ul>
+<li>x1, y1 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 滑动起点的坐标</li>
+<li>x2, y2 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 滑动终点的坐标</li>
+<li>duration <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 滑动动作所用的时间</li>
+</ul>
+</div><p>滑动。从(x1, y1)位置滑动到(x2, y2)位置。</p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

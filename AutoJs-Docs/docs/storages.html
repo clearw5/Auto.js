@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Storages | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/storages.html">
+</head>
+<body class="alt apidoc" id="api-section-storages">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages active" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="storages" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#storages_storages">Storages</a></span><ul>
+<li><span class="stability_undefined"><a href="#storages_storages_create_name">storages.create(name)</a></span></li>
+<li><span class="stability_undefined"><a href="#storages_storages_remove_name">storages.remove(name)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#storages_storages_1">Storages</a></span><ul>
+<li><span class="stability_undefined"><a href="#storages_storage_get_key_defaultvalue">Storage.get(key[, defaultValue])</a></span></li>
+<li><span class="stability_undefined"><a href="#storages_storage_put_key_value">Storage.put(key, value)</a></span></li>
+<li><span class="stability_undefined"><a href="#storages_storage_remove_key">Storage.remove(key)</a></span></li>
+<li><span class="stability_undefined"><a href="#storages_storage_contains_key">Storage.contains(key)</a></span></li>
+<li><span class="stability_undefined"><a href="#storages_storage_clear">Storage.clear()</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>Storages<span><a class="mark" href="#storages_storages" id="storages_storages">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>storages模块提供了保存简单数据、用户配置等的支持。保存的数据除非应用被卸载或者被主动删除，否则会一直保留。</p>
+<p>storages支持<code>number</code>, <code>boolean</code>, <code>string</code>等数据类型以及把<code>Object</code>, <code>Array</code>用<code>JSON.stringify</code>序列化存取。</p>
+<p>storages保存的数据在脚本之间是共享的，任何脚本只要知道storage名称便可以获取到相应的数据，因此它不能用于敏感数据的储存。
+storages无法像Web开发中LocalStorage一样提供根据域名独立的存储，因为脚本的路径随时可能改变。</p>
+<h2>storages.create(name)<span><a class="mark" href="#storages_storages_create_name" id="storages_storages_create_name">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 本地存储名称</li>
+</ul>
+</div><p>创建一个本地存储并返回一个<code>Storage</code>对象。不同名称的本地存储的数据是隔开的，而相同名称的本地存储的数据是共享的。</p>
+<p>例如在一个脚本中，创建名称为ABC的存储并存入a=123:</p>
+<pre><code>var storage = storages.create(&quot;ABC&quot;);
+storage.put(&quot;a&quot;, 123);
+</code></pre><p>而在另一个脚本中是可以获取到ABC以及a的值的：</p>
+<pre><code>var storage = storages.create(&quot;ABC&quot;);
+log(&quot;a = &quot; + storage.get(&quot;a&quot;));
+</code></pre><p>因此，本地存储的名称比较重要，尽量使用含有域名、作者邮箱等唯一信息的名称来避免冲突，例如：</p>
+<pre><code>var storage = storages.create(&quot;2732014414@qq.com:ABC&quot;);
+</code></pre><h2>storages.remove(name)<span><a class="mark" href="#storages_storages_remove_name" id="storages_storages_remove_name">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 本地存储名称</li>
+</ul>
+</div><p>删除一个本地存储以及他的全部数据。如果该存储不存在，返回false；否则返回true。</p>
+<h1>Storages<span><a class="mark" href="#storages_storages_1" id="storages_storages_1">#</a></span></h1>
+<h2>Storage.get(key[, defaultValue])<span><a class="mark" href="#storages_storage_get_key_defaultvalue" id="storages_storage_get_key_defaultvalue">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>key</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 键值</li>
+<li><code>defaultValue</code> <span class="type">&lt;any&gt;</span> 可选，默认值</li>
+</ul>
+</div><p>从本地存储中取出键值为key的数据并返回。</p>
+<p>如果该存储中不包含该数据，这时若指定了默认值参数则返回默认值，否则返回undefined。</p>
+<p>返回的数据可能是任意数据类型，这取决于使用<code>Storage.put</code>保存该键值的数据时的数据类型。</p>
+<h2>Storage.put(key, value)<span><a class="mark" href="#storages_storage_put_key_value" id="storages_storage_put_key_value">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>key</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 键值</li>
+<li><code>value</code> <span class="type">&lt;any&gt;</span> 值</li>
+</ul>
+</div><p>把值value保存到本地存储中。value可以是undefined以外的任意数据类型。如果value为undefined则抛出TypeError。</p>
+<p>存储的过程实际上是使用JSON.stringify把value转换为字符串再保存，因此value必须是可JSON化的才能被接受。</p>
+<h2>Storage.remove(key)<span><a class="mark" href="#storages_storage_remove_key" id="storages_storage_remove_key">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>key</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 键值</li>
+</ul>
+</div><p>移除键值为key的数据。不返回任何值。</p>
+<h2>Storage.contains(key)<span><a class="mark" href="#storages_storage_contains_key" id="storages_storage_contains_key">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>key</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 键值</li>
+</ul>
+</div><p>返回该本地存储是否包含键值为key的数据。是则返回true，否则返回false。</p>
+<h2>Storage.clear()<span><a class="mark" href="#storages_storage_clear" id="storages_storage_clear">#</a></span></h2>
+<p>移除该本地存储的所有数据。不返回任何值。</p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Floaty | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/floaty.html">
+</head>
+<body class="alt apidoc" id="api-section-floaty">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty active" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="floaty" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_undefined"><a href="#floaty_floaty">Floaty</a></span><ul>
+<li><span class="stability_undefined"><a href="#floaty_floaty_window_layout">floaty.window(layout)</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_floaty_rawwindow_layout">floaty.rawWindow(layout)</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_floaty_closeall">floaty.closeAll()</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#floaty_floatywindow">FloatyWindow</a></span><ul>
+<li><span class="stability_undefined"><a href="#floaty_window_setadjustenabled_enabled">window.setAdjustEnabled(enabled)</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_setposition_x_y">window.setPosition(x, y)</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_getx">window.getX()</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_gety">window.getY()</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_setsize_width_height">window.setSize(width, height)</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_getwidht">window.getWidht()</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_getheight">window.getHeight()</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_close">window.close()</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_exitonclose">window.exitOnClose()</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#floaty_floatyrawwindow">FloatyRawWindow</a></span><ul>
+<li><span class="stability_undefined"><a href="#floaty_window_settouchable_touchable">window.setTouchable(touchable)</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_setposition_x_y_1">window.setPosition(x, y)</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_getx_1">window.getX()</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_gety_1">window.getY()</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_setsize_width_height_1">window.setSize(width, height)</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_getwidht_1">window.getWidht()</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_getheight_1">window.getHeight()</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_close_1">window.close()</a></span></li>
+<li><span class="stability_undefined"><a href="#floaty_window_exitonclose_1">window.exitOnClose()</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>Floaty<span><a class="mark" href="#floaty_floaty" id="floaty_floaty">#</a></span></h1>
+<p>floaty模块提供了悬浮窗的相关函数，可以在屏幕上显示自定义悬浮窗，控制悬浮窗大小、位置等。</p>
+<p>悬浮窗在脚本停止运行时会自动关闭，因此，要保持悬浮窗不被关闭，可以用一个空的setInterval来实现，例如：</p>
+<pre><code>setInterval(()=&gt;{}, 1000);
+</code></pre><h2>floaty.window(layout)<span><a class="mark" href="#floaty_floaty_window_layout" id="floaty_floaty_window_layout">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>layout</code> <span class="type">&lt;xml&gt;</span> | <span class="type">&lt;View&gt;</span> 悬浮窗界面的XML或者View</li>
+</ul>
+</div><p>指定悬浮窗的布局，创建并<strong>显示</strong>一个悬浮窗，返回一个<code>FloatyWindow</code>对象。</p>
+<p>该悬浮窗自带关闭、调整大小、调整位置按键，可根据需要调用<code>setAdjustEnabled()</code>函数来显示或隐藏。</p>
+<p>其中layout参数可以是xml布局或者一个View，更多信息参见ui模块的说明。</p>
+<p>例子：</p>
+<pre><code>var w = floaty.window(
+    &lt;frame gravity=&quot;center&quot;&gt;
+        &lt;text id=&quot;text&quot;&gt;悬浮文字&lt;/text&gt;
+    &lt;/frame&gt;
+);
+setTimeout(()=&gt;{
+    w.close();
+}, 2000);
+</code></pre><p>这段代码运行后将会在屏幕上显示悬浮文字，并在两秒后消失。</p>
+<p>另外，因为脚本运行的线程不是UI线程，而所有对控件的修改操作需要在UI线程执行，此时需要用<code>ui.run</code>，例如:</p>
+<pre><code>ui.run(function(){
+    w.text.setText(&quot;文本&quot;);
+});
+</code></pre><p>有关返回的<code>FloatyWindow</code>对象的说明，参见下面的<code>FloatyWindow</code>章节。</p>
+<h2>floaty.rawWindow(layout)<span><a class="mark" href="#floaty_floaty_rawwindow_layout" id="floaty_floaty_rawwindow_layout">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>layout</code> <span class="type">&lt;xml&gt;</span> | <span class="type">&lt;View&gt;</span> 悬浮窗界面的XML或者View</li>
+</ul>
+</div><p>指定悬浮窗的布局，创建并<strong>显示</strong>一个原始悬浮窗，返回一个<code>FloatyRawWindow</code>对象。</p>
+<p>与<code>floaty.window()</code>函数不同的是，该悬浮窗不会增加任何额外设施（例如调整大小、位置按钮），您可以根据自己需要编写任何布局。</p>
+<p>而且，该悬浮窗支持完全全屏，可以覆盖状态栏，因此可以做护眼模式之类的应用。</p>
+<pre><code>var w = floaty.rawWindow(
+    &lt;frame gravity=&quot;center&quot;&gt;
+        &lt;text id=&quot;text&quot;&gt;悬浮文字&lt;/text&gt;
+    &lt;/frame&gt;
+);
+
+w.setPosition(500, 500);
+
+setTimeout(()=&gt;{
+    w.close();
+}, 2000);
+</code></pre><p>这段代码运行后将会在屏幕上显示悬浮文字，并在两秒后消失。</p>
+<p>有关返回的<code>FloatyRawWindow</code>对象的说明，参见下面的<code>FloatyRawWindow</code>章节。</p>
+<h2>floaty.closeAll()<span><a class="mark" href="#floaty_floaty_closeall" id="floaty_floaty_closeall">#</a></span></h2>
+<p>关闭所有本脚本的悬浮窗。</p>
+<h1>FloatyWindow<span><a class="mark" href="#floaty_floatywindow" id="floaty_floatywindow">#</a></span></h1>
+<p>悬浮窗对象，可通过<code>FloatyWindow.{id}</code>获取悬浮窗界面上的元素。例如, 悬浮窗window上一个控件的id为aaa, 那么<code>window.aaa</code>即可获取到该控件，类似于ui。</p>
+<h2>window.setAdjustEnabled(enabled)<span><a class="mark" href="#floaty_window_setadjustenabled_enabled" id="floaty_window_setadjustenabled_enabled">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>enabled</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a> 是否启用悬浮窗调整(大小、位置)</li>
+</ul>
+</div><p>如果enabled为true，则在悬浮窗左上角、右上角显示可供位置、大小调整的标示，就像控制台一样；
+如果enabled为false，则隐藏上述标示。</p>
+<h2>window.setPosition(x, y)<span><a class="mark" href="#floaty_window_setposition_x_y" id="floaty_window_setposition_x_y">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> x</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> y</li>
+</ul>
+</div><p>设置悬浮窗位置。</p>
+<h2>window.getX()<span><a class="mark" href="#floaty_window_getx" id="floaty_window_getx">#</a></span></h2>
+<p>返回悬浮窗位置的X坐标。</p>
+<h2>window.getY()<span><a class="mark" href="#floaty_window_gety" id="floaty_window_gety">#</a></span></h2>
+<p>返回悬浮窗位置的Y坐标。</p>
+<h2>window.setSize(width, height)<span><a class="mark" href="#floaty_window_setsize_width_height" id="floaty_window_setsize_width_height">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>width</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 宽度</li>
+<li><code>height</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 高度</li>
+</ul>
+</div><p>设置悬浮窗宽高。</p>
+<h2>window.getWidht()<span><a class="mark" href="#floaty_window_getwidht" id="floaty_window_getwidht">#</a></span></h2>
+<p>返回悬浮窗宽度。</p>
+<h2>window.getHeight()<span><a class="mark" href="#floaty_window_getheight" id="floaty_window_getheight">#</a></span></h2>
+<p>返回悬浮窗高度。</p>
+<h2>window.close()<span><a class="mark" href="#floaty_window_close" id="floaty_window_close">#</a></span></h2>
+<p>关闭悬浮窗。如果悬浮窗已经是关闭状态，则此函数将不执行任何操作。</p>
+<p>被关闭后的悬浮窗不能再显示。</p>
+<h2>window.exitOnClose()<span><a class="mark" href="#floaty_window_exitonclose" id="floaty_window_exitonclose">#</a></span></h2>
+<p>使悬浮窗被关闭时自动结束脚本运行。</p>
+<h1>FloatyRawWindow<span><a class="mark" href="#floaty_floatyrawwindow" id="floaty_floatyrawwindow">#</a></span></h1>
+<p>原始悬浮窗对象，可通过<code>window.{id}</code>获取悬浮窗界面上的元素。例如, 悬浮窗window上一个控件的id为aaa, 那么<code>window.aaa</code>即可获取到该控件，类似于ui。</p>
+<h2>window.setTouchable(touchable)<span><a class="mark" href="#floaty_window_settouchable_touchable" id="floaty_window_settouchable_touchable">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>touchable</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 是否可触摸</li>
+</ul>
+</div><p>设置悬浮窗是否可触摸，如果为true, 则悬浮窗将接收到触摸、点击等事件并且无法继续传递到悬浮窗下面；如果为false, 悬浮窗上的触摸、点击等事件将被直接传递到悬浮窗下面。处于安全考虑，被悬浮窗接收的触摸事情无法再继续传递到下层。</p>
+<p>可以用此特性来制作护眼模式脚本。</p>
+<pre><code>var w = floaty.rawWindow(
+    &lt;frame gravity=&quot;center&quot; bg=&quot;#44ffcc00&quot;/&gt;
+);
+
+w.setSize(-1, -1);
+w.setTouchable(false);
+
+setTimeout(()=&gt;{
+    w.close();
+}, 4000);
+</code></pre><h2>window.setPosition(x, y)<span><a class="mark" href="#floaty_window_setposition_x_y_1" id="floaty_window_setposition_x_y_1">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> x</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> y</li>
+</ul>
+</div><p>设置悬浮窗位置。</p>
+<h2>window.getX()<span><a class="mark" href="#floaty_window_getx_1" id="floaty_window_getx_1">#</a></span></h2>
+<p>返回悬浮窗位置的X坐标。</p>
+<h2>window.getY()<span><a class="mark" href="#floaty_window_gety_1" id="floaty_window_gety_1">#</a></span></h2>
+<p>返回悬浮窗位置的Y坐标。</p>
+<h2>window.setSize(width, height)<span><a class="mark" href="#floaty_window_setsize_width_height_1" id="floaty_window_setsize_width_height_1">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>width</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 宽度</li>
+<li><code>height</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 高度</li>
+</ul>
+</div><p>设置悬浮窗宽高。</p>
+<p>特别地，如果设置为-1，则为占满全屏；设置为-2则为根据悬浮窗内容大小而定。例如：</p>
+<pre><code>var w = floaty.rawWindow(
+    &lt;frame gravity=&quot;center&quot; bg=&quot;#77ff0000&quot;&gt;
+        &lt;text id=&quot;text&quot;&gt;悬浮文字&lt;/text&gt;
+    &lt;/frame&gt;
+);
+
+w.setSize(-1, -1);
+
+setTimeout(()=&gt;{
+    w.close();
+}, 2000);
+</code></pre><h2>window.getWidht()<span><a class="mark" href="#floaty_window_getwidht_1" id="floaty_window_getwidht_1">#</a></span></h2>
+<p>返回悬浮窗宽度。</p>
+<h2>window.getHeight()<span><a class="mark" href="#floaty_window_getheight_1" id="floaty_window_getheight_1">#</a></span></h2>
+<p>返回悬浮窗高度。</p>
+<h2>window.close()<span><a class="mark" href="#floaty_window_close_1" id="floaty_window_close_1">#</a></span></h2>
+<p>关闭悬浮窗。如果悬浮窗已经是关闭状态，则此函数将不执行任何操作。</p>
+<p>被关闭后的悬浮窗不能再显示。</p>
+<h2>window.exitOnClose()<span><a class="mark" href="#floaty_window_exitonclose_1" id="floaty_window_exitonclose_1">#</a></span></h2>
+<p>使悬浮窗被关闭时自动结束脚本运行。</p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

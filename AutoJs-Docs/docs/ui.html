@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>用户界面: UI | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/ui.html">
+</head>
+<body class="alt apidoc" id="api-section-ui">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui active" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="ui" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_undefined"><a href="#ui_ui">用户界面: UI</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_view">视图: View</a></span><ul>
+<li><span class="stability_undefined"><a href="#ui_w">w</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_h">h</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_id">id</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_gravity">gravity</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_layout_gravity">layout_gravity</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_margin">margin</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_marginleft">marginLeft</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_marginright">marginRight</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_margintop">marginTop</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_marginbottom">marginBottom</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_padding">padding</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_paddingleft">paddingLeft</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_paddingright">paddingRight</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_paddingtop">paddingTop</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_paddingbottom">paddingBottom</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_bg">bg</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_alpha">alpha</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_foreground">foreground</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_minheight">minHeight</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_minwidth">minWidth</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_visibility">visibility</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_rotation">rotation</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_transformpivotx">transformPivotX</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_transformpivoty">transformPivotY</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_style">style</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#ui_text">文本控件: text</a></span><ul>
+<li><span class="stability_undefined"><a href="#ui_text_1">text</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_textcolor">textColor</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_textsize">textSize</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_textstyle">textStyle</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_lines">lines</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_maxlines">maxLines</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_typeface">typeface</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_ellipsize">ellipsize</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_ems">ems</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_autolink">autoLink</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#ui_button">按钮控件: button</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_input">输入框控件: input</a></span><ul>
+<li><span class="stability_undefined"><a href="#ui_hint">hint</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_textcolorhint">textColorHint</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_textsizehint">textSizeHint</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_inputtype">inputType</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_password">password</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_numeric">numeric</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_phonenumber">phoneNumber</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_digits">digits</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_singleline">singleLine</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#ui_img">图片控件: img</a></span><ul>
+<li><span class="stability_undefined"><a href="#ui_src">src</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_tint">tint</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_scaletype">scaleType</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_radius">radius</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_radiustopleft">radiusTopLeft</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_radiustopright">radiusTopRight</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_radiusbottomleft">radiusBottomLeft</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_radiusbottomright">radiusBottomRight</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_borderwidth">borderWidth</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_bordercolor">borderColor</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_circle">circle</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#ui_vertical">垂直布局: vertical</a></span><ul>
+<li><span class="stability_undefined"><a href="#ui_layout_weight">layout_weight</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#ui_horizontal">水平布局: horizontal</a></span><ul>
+<li><span class="stability_undefined"><a href="#ui_layout_weight_1">layout_weight</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#ui_linear">线性布局: linear</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_frame">帧布局: frame</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_relative">相对布局: relative</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_checkbox">勾选框控件: checkbox</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_radio">选择框控件: radio</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_radiogroup">选择框布局: radiogroup</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_switch">开关控件: switch</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_progressbar">进度条控件: progressbar</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_seekbar">拖动条控件: seekbar</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_spinner">下来菜单控件: spinner</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_timepicker">时间选择控件: timepicker</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_datepicker">日期选择控件: datepicker</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_fab">浮动按钮控件: fab</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_toolbar">标题栏控件: toolbar</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_card">卡片: card</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_drawer">抽屉布局: drawer</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_list">列表: list</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_tab_tab">Tab: tab</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_ui_1">ui</a></span><ul>
+<li><span class="stability_undefined"><a href="#ui_ui_layout_xml">ui.layout(xml)</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_ui_inflate_xml_parent">ui.inflate(xml[, parent])</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_ui_findview_id">ui.findView(id)</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_ui_finish">ui.finish()</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_ui_setcontentview_view">ui.setContentView(view)</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_ui_run_callback">ui.run(callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_ui_post_callback_daley">ui.post(callback[, daley])</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_ui_statusbarcolor_color">ui.statusBarColor(color)</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_ui_showpopupmenu_view_menu">ui.showPopupMenu(view, menu)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#ui_dimension">尺寸的单位: Dimension</a></span></li>
+<li><span class="stability_undefined"><a href="#ui_drawables">Drawables</a></span></li>
+<li><span class="stability_undefined"><a href="#ui">颜色</a></span></li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>用户界面: UI<span><a class="mark" href="#ui_ui" id="ui_ui">#</a></span></h1>
+<p>ui模块提供了编写用户界面的支持。</p>
+<p>带有ui的脚本的的最前面必须使用<code>&quot;ui&quot;;</code>指定ui模式，否则脚本将不会以ui模式运行。正确示范:</p>
+<pre><code>&quot;ui&quot;;
+
+//脚本的其他代码
+</code></pre><p>字符串&quot;ui&quot;的前面可以有注释、空行和空格<strong>[v4.1.0新增]</strong>，但是不能有其他代码。</p>
+<p>界面是由视图(View)组成的。View分成两种，控件(Widget)和布局(Layout)。控件(Widget)用来具体显示文字、图片、网页等，比如文本控件(text)用来显示文字，按钮控件(button)则可以显示一个按钮并提供点击效果，图片控件(img)则用来显示来自网络或者文件的图片，除此之外还有输入框控件(input)、进度条控件(progressbar)、单选复选框控件(checkbox)等；布局(Layout)则是装着一个或多个控件的&quot;容器&quot;，用于控制在他里面的控件的位置，比如垂直布局(vertical)会把他里面的控件从上往下依次显示(即纵向排列)，水平布局(horizontal)则会把他里面的控件从左往右依次显示(即横向排列)，以及帧布局(frame)，他会把他里面的控件直接在左上角显示，如果有多个控件，后面的控件会重叠在前面的控件上。</p>
+<p>我们使用xml来编写界面，并通过<code>ui.layout()</code>函数指定界面的布局xml。举个例子：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;vertical&gt;
+        &lt;button text=&quot;第一个按钮&quot;/&gt;
+        &lt;button text=&quot;第二个按钮&quot;/&gt;
+    &lt;/vertical&gt;
+);
+</code></pre><p>在这个例子中，第3~6行的部分就是xml，指定了界面的具体内容。代码的第3行的标签<code>&lt;vertical&gt; ... &lt;/vertical&gt;</code>表示垂直布局，布局的标签通常以<code>&lt;...&gt;</code>开始，以<code>&lt;/...&gt;</code>结束，两个标签之间的内容就是布局里面的内容，例如<code>&lt;frame&gt; ... &lt;/frame&gt;</code>。在这个例子中第4, 5行的内容就是垂直布局(vertical)里面的内容。代码的第4行是一个按钮控件(button)，控件的标签通常以<code>&lt;...</code>开始，以<code>/&gt;</code>结束，他们之间是控件的具体属性，例如<code>&lt;text ... /&gt;</code>。在这个例子中<code>text=&quot;第一个按钮&quot;</code>的部分就是按钮控件(button)的属性，这个属性指定了这个按钮控件的文本内容(text)为&quot;第一个按钮&quot;。</p>
+<p>代码的第5行和第4行一样，也是一个按钮控件，只不过他的文本内容为&quot;第二个按钮&quot;。这两个控件在垂直布局中，因此会纵向排列，效果如图：</p>
+<p><img src="images/ex1.png" alt="ex1"></p>
+<p>如果我们把这个例子的垂直布局(vertical)改成水平布局(horizontal)，也即：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;horizontal&gt;
+        &lt;button text=&quot;第一个按钮&quot;/&gt;
+        &lt;button text=&quot;第二个按钮&quot;/&gt;
+    &lt;/horizontal&gt;
+);
+</code></pre><p>则这两个按钮会横向排列，效果如图：</p>
+<p><img src="images/ex1-horizontal.png" alt="ex1-horizontal"></p>
+<p>一个控件可以指定多个属性(甚至可以不指定任何属性)，用空格隔开即可；布局同样也可以指定属性，例如:</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;vertical bg=&quot;#ff0000&quot;&gt;
+        &lt;button text=&quot;第一个按钮&quot; textSize=&quot;20sp&quot;/&gt;
+        &lt;button text=&quot;第二个按钮&quot;/&gt;
+    &lt;/vertical&gt;
+);
+</code></pre><p>第三行<code>bg=&quot;#ff0000&quot;</code>指定了垂直布局的背景色(bg)为&quot;#ff0000&quot;，这是一个RGB颜色，表示红色(有关RGB的相关知识参见<a href="http://tool.oschina.net/commons?type=3">RGB颜色对照表</a>)。第四行的<code>textSize=&quot;20sp&quot;</code>则指定了按钮控件的字体大小(textSize)为&quot;20sp&quot;，sp是一个字体单位，暂时不用深入理会。上述代码的效果如图：</p>
+<p><img src="images/ex1-properties.png" alt="ex-properties"></p>
+<p>一个界面便由一些布局和控件组成。为了便于文档阅读，我们再说明一下以下术语：</p>
+<ul>
+<li>子视图, 子控件: 布局里面的控件是这个布局的子控件/子视图。实际上布局里面不仅仅只能有控件，还可以是嵌套的布局。因此用子视图(Child View)更准确一些。在上面的例子中，按钮便是垂直布局的子控件。</li>
+<li>父视图，父布局：直接包含一个控件的布局是这个控件的父布局/父视图(Parent View)。在上面的例子中，垂直布局便是按钮的父布局。</li>
+</ul>
+<h1>视图: View<span><a class="mark" href="#ui_view" id="ui_view">#</a></span></h1>
+<p>控件和布局都属于视图(View)。在这个章节中将介绍所有控件和布局的共有的属性和函数。例如属性背景，宽高等(所有控件和布局都能设置背景和宽高)，函数<code>click()</code>设置视图(View)被点击时执行的动作。</p>
+<h2>w<span><a class="mark" href="#ui_w" id="ui_w">#</a></span></h2>
+<p>View的宽度，是属性<code>width</code>的缩写形式。可以设置的值为<code>*</code>, <code>auto</code>和具体数值。其中<code>*</code>表示宽度<strong>尽量</strong>填满父布局，而<code>auto</code>表示宽度将根据View的内容自动调整(自适应宽度)。例如：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;horizontal&gt;
+        &lt;button w=&quot;auto&quot; text=&quot;自适应宽度&quot;/&gt;
+        &lt;button w=&quot;*&quot; text=&quot;填满父布局&quot;/&gt;
+    &lt;/horizontal&gt;
+);
+</code></pre><p>在这个例子中，第一个按钮为自适应宽度，第二个按钮为填满父布局，显示效果为：</p>
+<p><img src="images/ex-w.png" alt="ex-w"></p>
+<p>如果不设置该属性，则不同的控件和布局有不同的默认宽度，大多数为<code>auto</code>。</p>
+<p>宽度属性也可以指定一个具体数值。例如<code>w=&quot;20&quot;</code>，<code>w=&quot;20px&quot;</code>等。不加单位的情况下默认单位为dp，其他单位包括px(像素), mm(毫米), in(英寸)。有关尺寸单位的更多内容，参见<a href="#ui_尺寸的单位_Dimension">尺寸的单位: Dimension</a>。</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;horizontal&gt;
+        &lt;button w=&quot;200&quot; text=&quot;宽度200dp&quot;/&gt;
+        &lt;button w=&quot;100&quot; text=&quot;宽度100dp&quot;/&gt;
+    &lt;/horizontal&gt;
+);
+</code></pre><h2>h<span><a class="mark" href="#ui_h" id="ui_h">#</a></span></h2>
+<p>View的高度，是属性<code>height</code>的缩写形式。可以设置的值为<code>*</code>, <code>auto</code>和具体数值。其中<code>*</code>表示宽度<strong>尽量</strong>填满父布局，而<code>auto</code>表示宽度将根据View的内容自动调整(自适应宽度)。</p>
+<p>如果不设置该属性，则不同的控件和布局有不同的默认高度，大多数为<code>auto</code>。</p>
+<p>宽度属性也可以指定一个具体数值。例如<code>h=&quot;20&quot;</code>，<code>h=&quot;20px&quot;</code>等。不加单位的情况下默认单位为dp，其他单位包括px(像素), mm(毫米), in(英寸)。有关尺寸单位的更多内容，参见<a href="#ui_尺寸的单位_Dimension">尺寸的单位: Dimension</a>。</p>
+<h2>id<span><a class="mark" href="#ui_id" id="ui_id">#</a></span></h2>
+<p>View的id，用来区分一个界面下的不同控件和布局，一个界面的id在同一个界面下通常是唯一的，也就是一般不存在两个View有相同的id。id属性也是连接xml布局和JavaScript代码的桥梁，在代码中可以通过一个View的id来获取到这个View，并对他进行操作(设置点击动作、设置属性、获取属性等)。例如：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;frame&gt;
+        &lt;button id=&quot;ok&quot; text=&quot;确定&quot;/&gt;
+    &lt;/frame&gt;
+);
+//通过ui.ok获取到按钮控件
+toast(ui.ok.getText());
+</code></pre><p>这个例子中有一个按钮控件&quot;确定&quot;，id属性为&quot;ok&quot;，那么我们可以在代码中使用<code>ui.ok</code>来获取他，再通过<code>getText()</code>函数获取到这个按钮控件的文本内容。
+另外这个例子中使用帧布局(frame)是因为，我们只有一个控件，因此用于最简单的布局帧布局。</p>
+<h2>gravity<span><a class="mark" href="#ui_gravity" id="ui_gravity">#</a></span></h2>
+<p>View的&quot;重力&quot;。用于决定View的内容相对于View的位置，可以设置的值为:</p>
+<ul>
+<li><code>left</code> 靠左</li>
+<li><code>right</code> 靠右</li>
+<li><code>top</code> 靠顶部</li>
+<li><code>bottom</code> 靠底部</li>
+<li><code>center</code> 居中</li>
+<li><code>center_vertical</code> 垂直居中</li>
+<li><code>center_horizontal</code> 水平居中</li>
+</ul>
+<p>例如对于一个按钮控件，<code>gravity=&quot;right&quot;</code>会使其中的文本内容靠右显示。例如：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;frame&gt;
+        &lt;button gravity=&quot;right&quot; w=&quot;*&quot; h=&quot;auto&quot; text=&quot;靠右的文字&quot;/&gt;
+    &lt;/frame&gt;
+);
+</code></pre><p>显示效果为:</p>
+<p><img src="images/ex-gravity.png" alt="ex-gravity"></p>
+<p>这些属性是可以组合的，例如<code>gravity=&quot;right|bottom&quot;</code>的View他的内容会在右下角。</p>
+<h2>layout_gravity<span><a class="mark" href="#ui_layout_gravity" id="ui_layout_gravity">#</a></span></h2>
+<p>View在布局中的&quot;重力&quot;，用于决定View本身在他的<strong>父布局</strong>的位置，可以设置的值和gravity属性相同。注意把这个属性和gravity属性区分开来。</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;frame w=&quot;*&quot; h=&quot;*&quot;&gt;
+        &lt;button layout_gravity=&quot;center&quot; w=&quot;auto&quot; h=&quot;auto&quot; text=&quot;居中的按钮&quot;/&gt;
+        &lt;button layout_gravity=&quot;right|bottom&quot; w=&quot;auto&quot; h=&quot;auto&quot; text=&quot;右下角的按钮&quot;/&gt;
+    &lt;/frame&gt;
+);
+</code></pre><p>在这个例子中，我们让帧布局(frame)的大小占满整个屏幕，通过给第一个按钮设置属性<code>layout_gravity=&quot;center&quot;</code>来使得按钮在帧布局中居中，通过给第二个按钮设置属性<code>layout_gravity=&quot;right|bottom&quot;</code>使得他在帧布局中位于右下角。效果如图：</p>
+<p><img src="images/ex-layout-gravity.png" alt="ex-layout-gravity"></p>
+<p>要注意的是，layout_gravity的属性不一定总是生效的，具体取决于布局的类别。例如不能让水平布局中的第一个子控件靠底部显示(否则和水平布局本身相违背)。</p>
+<h2>margin<span><a class="mark" href="#ui_margin" id="ui_margin">#</a></span></h2>
+<p>margin为View和其他View的间距，即外边距。margin属性包括四个值:</p>
+<ul>
+<li><code>marginLeft</code> 左外边距</li>
+<li><code>marginRight</code> 右外边距</li>
+<li><code>marginTop</code> 上外边距</li>
+<li><code>marginBottom</code> 下外边距</li>
+</ul>
+<p>而margin属性本身的值可以有三种格式:</p>
+<ul>
+<li><code>margin=&quot;marginAll&quot;</code> 指定各个外边距都是该值。例如<code>margin=&quot;10&quot;</code>表示左右上下边距都是10dp。</li>
+<li><code>margin=&quot;marginLeft marginTop marginRight marginBottom&quot;</code> 分别指定各个外边距。例如<code>margin=&quot;10 20 30 40&quot;</code>表示左边距为10dp, 上边距为20dp, 右边距为30dp, 下边距为40dp</li>
+<li><code>margin=&quot;marginHorizontal marginVertical&quot;</code> 指定水平外边距和垂直外边距。例如<code>margin=&quot;10 20&quot;</code>表示左右边距为10dp, 上下边距为20dp。</li>
+</ul>
+<p>用一个例子来具体理解外边距的含义：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;horizontal&gt;
+        &lt;button margin=&quot;30&quot; text=&quot;距离四周30&quot;/&gt;
+        &lt;button text=&quot;普通的按钮&quot;/&gt;
+    &lt;/horizontal&gt;
+);
+</code></pre><p>第一个按钮的margin属性指定了他的边距为30dp, 也就是他与水平布局以及第二个按钮的间距都是30dp, 其显示效果如图:</p>
+<p><img src="images/ex1-margin.png" alt="ex1-margin"></p>
+<p>如果把<code>margin=&quot;30&quot;</code>改成<code>margin=&quot;10 40&quot;</code>那么第一个按钮的左右间距为10dp, 上下间距为40dp, 效果如图:</p>
+<p><img src="images/ex2-margin.png" alt="ex2-margin"></p>
+<p>有关margin属性的单位，参见<a href="#ui_尺寸的单位_Dimension">尺寸的单位: Dimension</a>。</p>
+<h2>marginLeft<span><a class="mark" href="#ui_marginleft" id="ui_marginleft">#</a></span></h2>
+<p>View的左外边距。如果该属性和margin属性指定的值冲突，则在后面的属性生效，前面的属性无效，例如<code>margin=&quot;20&quot; marginLeft=&quot;10&quot;</code>的左外边距为10dp，其他外边距为20dp。</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;horizontal&gt;
+        &lt;button marginLeft=&quot;50&quot; text=&quot;距离左边50&quot;/&gt;
+        &lt;button text=&quot;普通的按钮&quot;/&gt;
+    &lt;/horizontal&gt;
+);
+</code></pre><p>第一个按钮指定了左外边距为50dp，则他和他的父布局水平布局(horizontal)的左边的间距为50dp, 效果如图：</p>
+<p><img src="images/ex-marginLeft.png" alt="ex-marginLeft"></p>
+<h2>marginRight<span><a class="mark" href="#ui_marginright" id="ui_marginright">#</a></span></h2>
+<p>View的右外边距。如果该属性和margin属性指定的值冲突，则在后面的属性生效，前面的属性无效。</p>
+<h2>marginTop<span><a class="mark" href="#ui_margintop" id="ui_margintop">#</a></span></h2>
+<p>View的上外边距。如果该属性和margin属性指定的值冲突，则在后面的属性生效，前面的属性无效。</p>
+<h2>marginBottom<span><a class="mark" href="#ui_marginbottom" id="ui_marginbottom">#</a></span></h2>
+<p>View的下外边距。如果该属性和margin属性指定的值冲突，则在后面的属性生效，前面的属性无效。</p>
+<h2>padding<span><a class="mark" href="#ui_padding" id="ui_padding">#</a></span></h2>
+<p>View和他的自身内容的间距，也就是内边距。注意和margin属性区分开来，margin属性是View之间的间距，而padding是View和他自身内容的间距。举个例子，一个文本控件的padding也即文本控件的边缘和他的文本内容的间距，paddingLeft即文本控件的左边和他的文本内容的间距。</p>
+<p>paddding属性的值同样有三种格式：</p>
+<ul>
+<li><code>padding=&quot;paddingAll&quot;</code> 指定各个内边距都是该值。例如<code>padding=&quot;10&quot;</code>表示左右上下内边距都是10dp。</li>
+<li><code>padding=&quot;paddingLeft paddingTop paddingRight paddingBottom&quot;</code> 分别指定各个内边距。例如<code>padding=&quot;10 20 30 40&quot;</code>表示左内边距为10dp, 上内边距为20dp, 右内边距为30dp, 下内边距为40dp</li>
+<li><code>padding=&quot;paddingHorizontal paddingVertical&quot;</code> 指定水平内边距和垂直内边距。例如<code>padding=&quot;10 20&quot;</code>表示左右内边距为10dp, 上下内边距为20dp。</li>
+</ul>
+<p>用一个例子来具体理解内边距的含义：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;frame w=&quot;*&quot; h=&quot;*&quot; gravity=&quot;center&quot;&gt;
+        &lt;text padding=&quot;10 20 30 40&quot; bg=&quot;#ff0000&quot; w=&quot;auto&quot; h=&quot;auto&quot; text=&quot;HelloWorld&quot;/&gt;
+    &lt;/frame&gt;
+);
+</code></pre><p>这个例子是一个居中的按钮(通过父布局的<code>gravity=&quot;center&quot;</code>属性设置)，背景色为红色(<code>bg=&quot;#ff0000&quot;</code>)，文本内容为&quot;HelloWorld&quot;，左边距为10dp，上边距为20dp，下边距为30dp，右边距为40dp，其显示效果如图：</p>
+<p><img src="images/ex-padding.png" alt="ex-padding"></p>
+<h2>paddingLeft<span><a class="mark" href="#ui_paddingleft" id="ui_paddingleft">#</a></span></h2>
+<p>View的左内边距。如果该属性和padding属性指定的值冲突，则在后面的属性生效，前面的属性无效。</p>
+<h2>paddingRight<span><a class="mark" href="#ui_paddingright" id="ui_paddingright">#</a></span></h2>
+<p>View的右内边距。如果该属性和padding属性指定的值冲突，则在后面的属性生效，前面的属性无效。</p>
+<h2>paddingTop<span><a class="mark" href="#ui_paddingtop" id="ui_paddingtop">#</a></span></h2>
+<p>View的上内边距。如果该属性和padding属性指定的值冲突，则在后面的属性生效，前面的属性无效。</p>
+<h2>paddingBottom<span><a class="mark" href="#ui_paddingbottom" id="ui_paddingbottom">#</a></span></h2>
+<p>View的下内边距。如果该属性和padding属性指定的值冲突，则在后面的属性生效，前面的属性无效。</p>
+<h2>bg<span><a class="mark" href="#ui_bg" id="ui_bg">#</a></span></h2>
+<p>View的背景。其值可以是一个链接或路径指向的图片，或者RGB格式的颜色，或者其他背景。具体参见<a href="#draw">Drawables</a>。</p>
+<p>例如，<code>bg=&quot;#00ff00&quot;</code>设置背景为绿色，<code>bg=&quot;file:///sdcard/1.png&quot;</code>设置背景为图片&quot;1.png&quot;，<code>bg=&quot;?attr/selectableItemBackground&quot;</code>设置背景为点击时出现的波纹效果(可能需要同时设置<code>clickable=&quot;true&quot;</code>才生效)。</p>
+<h2>alpha<span><a class="mark" href="#ui_alpha" id="ui_alpha">#</a></span></h2>
+<p>View的透明度，其值是一个0~1之间的小数，0表示完全透明，1表示完全不透明。例如<code>alpha=&quot;0.5&quot;</code>表示半透明。</p>
+<h2>foreground<span><a class="mark" href="#ui_foreground" id="ui_foreground">#</a></span></h2>
+<p>View的前景。前景即在一个View的内容上显示的内容，可能会覆盖掉View本身的内容。其值和属性bg的值类似。</p>
+<h2>minHeight<span><a class="mark" href="#ui_minheight" id="ui_minheight">#</a></span></h2>
+<p>View的最小高度。该值不总是生效的，取决于其父布局是否有足够的空间容纳。</p>
+<p>例：<code>&lt;text height=&quot;auto&quot; minHeight=&quot;50&quot;/&gt;</code></p>
+<p>有关该属性的单位，参见<a href="#ui_尺寸的单位_Dimension">尺寸的单位: Dimension</a>。</p>
+<h2>minWidth<span><a class="mark" href="#ui_minwidth" id="ui_minwidth">#</a></span></h2>
+<p>View的最小宽度。该值不总是生效的，取决于其父布局是否有足够的空间容纳。</p>
+<p>例：<code>&lt;input width=&quot;auto&quot; minWidth=&quot;50&quot;/&gt;</code></p>
+<p>有关该属性的单位，参见<a href="#ui_尺寸的单位_Dimension">尺寸的单位: Dimension</a>。</p>
+<h2>visibility<span><a class="mark" href="#ui_visibility" id="ui_visibility">#</a></span></h2>
+<p>View的可见性，该属性可以决定View是否显示出来。其值可以为：</p>
+<ul>
+<li><code>gone</code> 不可见。</li>
+<li><code>visible</code> 可见。默认情况下View都是可见的。</li>
+<li><code>invisible</code> 不可见，但仍然占用位置。</li>
+</ul>
+<h2>rotation<span><a class="mark" href="#ui_rotation" id="ui_rotation">#</a></span></h2>
+<p>View的旋转角度。通过该属性可以让这个View顺时针旋转一定的角度。例如<code>rotation=&quot;90&quot;</code>可以让他顺时针旋转90度。</p>
+<p>如果要设置旋转中心，可以通过<code>transformPivotX</code>, <code>transformPivotY</code>属性设置。默认的旋转中心为View的中心。</p>
+<h2>transformPivotX<span><a class="mark" href="#ui_transformpivotx" id="ui_transformpivotx">#</a></span></h2>
+<p>View的变换中心坐标x。用于View的旋转、放缩等变换的中心坐标。例如<code>transformPivotX=&quot;10&quot;</code>。</p>
+<p>该坐标的坐标系以View的左上角为原点。也就是x值为变换中心到View的左边的距离。</p>
+<p>有关该属性的单位，参见<a href="#ui_尺寸的单位_Dimension">尺寸的单位: Dimension</a>。</p>
+<h2>transformPivotY<span><a class="mark" href="#ui_transformpivoty" id="ui_transformpivoty">#</a></span></h2>
+<p>View的变换中心坐标y。用于View的旋转、放缩等变换的中心坐标。例如<code>transformPivotY=&quot;10&quot;</code>。</p>
+<p>该坐标的坐标系以View的左上角为原点。也就是y值为变换中心到View的上边的距离。</p>
+<p>有关该属性的单位，参见<a href="#ui_尺寸的单位_Dimension">尺寸的单位: Dimension</a>。</p>
+<h2>style<span><a class="mark" href="#ui_style" id="ui_style">#</a></span></h2>
+<p>设置View的样式。不同控件有不同的可选的内置样式。具体参见各个控件的说明。</p>
+<p>需要注意的是，style属性只支持安卓5.1及其以上。</p>
+<h1>文本控件: text<span><a class="mark" href="#ui_text" id="ui_text">#</a></span></h1>
+<p>文本控件用于显示文本，可以控制文本的字体大小，字体颜色，字体等。</p>
+<p>以下介绍该控件的主要属性和方法，如果要查看他的所有属性和方法，请阅读<a href="http://www.zhdoc.net/android/reference/android/widget/TextView.html">TextView</a>。</p>
+<h2>text<span><a class="mark" href="#ui_text_1" id="ui_text_1">#</a></span></h2>
+<p>设置文本的内容。例如<code>text=&quot;一段文本&quot;</code>。</p>
+<h2>textColor<span><a class="mark" href="#ui_textcolor" id="ui_textcolor">#</a></span></h2>
+<p>设置字体的颜色，可以是RGB格式的颜色(例如#ff00ff)，或者颜色名称(例如red, green等)，具体参见<a href="#ui_颜色">颜色</a>。</p>
+<p>示例, 红色字体：<code>&lt;text text=&quot;红色字体&quot; textColor=&quot;red&quot;/&gt;</code></p>
+<h2>textSize<span><a class="mark" href="#ui_textsize" id="ui_textsize">#</a></span></h2>
+<p>设置字体的大小，单位一般是sp。按照Material Design的规范，正文字体大小为14sp，标题字体大小为18sp，次标题为16sp。</p>
+<p>示例，超大字体: <code>&lt;text text=&quot;超大字体&quot; textSize=&quot;40sp&quot;/&gt;</code></p>
+<h2>textStyle<span><a class="mark" href="#ui_textstyle" id="ui_textstyle">#</a></span></h2>
+<p>设置字体的样式，比如斜体、粗体等。可选的值为：</p>
+<ul>
+<li>bold  加粗字体</li>
+<li>italic  斜体    </li>
+<li>normal  正常字体</li>
+</ul>
+<p>可以用或(&quot;|&quot;)把他们组合起来，比如粗斜体为&quot;bold|italic&quot;。</p>
+<p>例如，粗体：`<text textStyle="bold" textSize="18sp" text="这是粗体"/></p>
+<h2>lines<span><a class="mark" href="#ui_lines" id="ui_lines">#</a></span></h2>
+<p>设置文本控件的行数。即使文本内容没有达到设置的行数，控件也会留出相应的宽度来显示空白行；如果文本内容超出了设置的行数，则超出的部分不会显示。</p>
+<p>另外在xml中是不能设置多行文本的，要在代码中设置。例如:</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;vertical&gt;
+        &lt;text id=&quot;myText&quot; line=&quot;3&quot;&gt;
+    &lt;/vertical&gt;
+)
+//通过\n换行
+ui.myText.setText(&quot;第一行\n第二行\n第三行\n第四行&quot;);
+</code></pre><h2>maxLines<span><a class="mark" href="#ui_maxlines" id="ui_maxlines">#</a></span></h2>
+<p>设置文本控件的最大行数。</p>
+<h2>typeface<span><a class="mark" href="#ui_typeface" id="ui_typeface">#</a></span></h2>
+<p>设置字体。可选的值为：</p>
+<ul>
+<li><code>normal</code> 正常字体</li>
+<li><code>sans</code> 衬线字体</li>
+<li><code>serif</code> 非衬线字体</li>
+<li><code>monospace</code> 等宽字体</li>
+</ul>
+<p>示例，等宽字体: <code>&lt;text text=&quot;等宽字体&quot; typeface=&quot;monospace&quot;/&gt;</code></p>
+<h2>ellipsize<span><a class="mark" href="#ui_ellipsize" id="ui_ellipsize">#</a></span></h2>
+<p>设置文本的省略号位置。文本的省略号会在文本内容超出文本控件时显示。可选的值为：</p>
+<ul>
+<li><code>end</code>   在文本末尾显示省略号</li>
+<li><code>marquee</code>   跑马灯效果，文本将滚动显示</li>
+<li><code>middle</code>    在文本中间显示省略号</li>
+<li><code>none</code>    不显示省略号</li>
+<li><code>start</code>    在文本开头显示省略号</li>
+</ul>
+<h2>ems<span><a class="mark" href="#ui_ems" id="ui_ems">#</a></span></h2>
+<p>当设置该属性后,TextView显示的字符长度（单位是em）,超出的部分将不显示，或者根据ellipsize属性的设置显示省略号。</p>
+<p>例如，限制文本最长为5em: `<text ems="5" ellipsize="end" text="很长很长很长很长很长很长很长的文本"/></p>
+<h2>autoLink<span><a class="mark" href="#ui_autolink" id="ui_autolink">#</a></span></h2>
+<p>控制是否自动找到url和电子邮件地址等链接，并转换为可点击的链接。默认值为“none”。</p>
+<p>设置该值可以让文本中的链接、电话等变成可点击状态。</p>
+<p>可选的值为以下的值以其通过或(&quot;|&quot;)的组合：</p>
+<ul>
+<li><code>all</code>    匹配所有连接、邮件、地址、电话</li>
+<li><code>email</code>    匹配电子邮件地址</li>
+<li><code>map</code>    匹配地图地址</li>
+<li><code>none</code>    不匹配 (默认)</li>
+<li><code>phone</code>    匹配电话号码</li>
+<li><code>web</code>    匹配URL地址</li>
+</ul>
+<p>示例：<code>&lt;text autoLink=&quot;web|phone&quot; text=&quot;百度: http://www.baidu.com 电信电话: 10000&quot;/&gt;</code></p>
+<h1>按钮控件: button<span><a class="mark" href="#ui_button" id="ui_button">#</a></span></h1>
+<p>按钮控件是一个特殊的文本控件，因此所有文本控件的函数的属性都适用于按钮控件。</p>
+<p>除此之外，按钮控件有一些内置的样式，通过<code>style</code>属性设置，包括：</p>
+<ul>
+<li>Widget.AppCompat.Button.Colored 带颜色的按钮</li>
+<li>Widget.AppCompat.Button.Borderless 无边框按钮</li>
+<li>Widget.AppCompat.Button.Borderless.Colored 带颜色的无边框按钮</li>
+</ul>
+<p>这些样式的具体效果参见&quot;示例/界面控件/按钮控件.js&quot;。</p>
+<p>例如：<code>&lt;button style=&quot;Widget.AppCompat.Button.Colored&quot; text=&quot;漂亮的按钮&quot;/&gt;</code></p>
+<h1>输入框控件: input<span><a class="mark" href="#ui_input" id="ui_input">#</a></span></h1>
+<p>输入框控件也是一个特殊的文本控件，因此所有文本控件的函数的属性和函数都适用于按钮控件。输入框控件有自己的属性和函数，要查看所有这些内容，阅读<a href="http://www.zhdoc.net/android/reference/android/widget/EditText.html">EditText</a>。</p>
+<p>对于一个输入框控件，我们可以通过text属性设置他的内容，通过lines属性指定输入框的行数；在代码中通过<code>getText()</code>函数获取输入的内容。例如：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;vertical padding=&quot;16&quot;&gt;
+        &lt;text textSize=&quot;16sp&quot; textColor=&quot;black&quot; text=&quot;请输入姓名&quot;/&gt;
+        &lt;input id=&quot;name&quot; text=&quot;小明&quot;/&gt;
+        &lt;button id=&quot;ok&quot; text=&quot;确定&quot;/&gt;
+    &lt;/vertical&gt;
+);
+//指定确定按钮点击时要执行的动作
+ui.ok.click(function(){
+    //通过getText()获取输入的内容
+    var name = ui.name.getText();
+    toast(name + &quot;您好!&quot;);
+});
+</code></pre><p>效果如图：</p>
+<p><img src="ex-input.png" alt="ex-input"></p>
+<p>除此之外，输入框控件有另外一些主要属性(虽然这些属性对于文本控件也是可用的但一般只用于输入框控件)：</p>
+<h2>hint<span><a class="mark" href="#ui_hint" id="ui_hint">#</a></span></h2>
+<p>输入提示。这个提示会在输入框为空的时候显示出来。如图所示:</p>
+<p><img src="images/ex-hint.png" alt="ex-hint"></p>
+<p>上面图片效果的代码为：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;vertical&gt;
+        &lt;input hint=&quot;请输入姓名&quot;/&gt;
+    &lt;/vertical&gt;
+)
+</code></pre><h2>textColorHint<span><a class="mark" href="#ui_textcolorhint" id="ui_textcolorhint">#</a></span></h2>
+<p>指定输入提示的字体颜色。</p>
+<h2>textSizeHint<span><a class="mark" href="#ui_textsizehint" id="ui_textsizehint">#</a></span></h2>
+<p>指定输入提示的字体大小。</p>
+<h2>inputType<span><a class="mark" href="#ui_inputtype" id="ui_inputtype">#</a></span></h2>
+<p>指定输入框可以输入的文本类型。可选的值为以下值及其用&quot;|&quot;的组合:</p>
+<ul>
+<li><code>date</code>    用于输入日期。</li>
+<li><code>datetime</code>    用于输入日期和时间。</li>
+<li><code>none</code>    没有内容类型。此输入框不可编辑。</li>
+<li><code>number</code>    仅可输入数字。</li>
+<li><code>numberDecimal</code>    可以与number和它的其他选项组合，以允许输入十进制数(包括小数)。</li>
+<li><code>numberPassword</code>    仅可输入数字密码。</li>
+<li><code>numberSigned</code>    可以与number和它的其他选项组合，以允许输入有符号的数。</li>
+<li><code>phone</code>    用于输入一个电话号码。</li>
+<li><code>text</code>    只是普通文本。</li>
+<li><code>textAutoComplete</code>    可以与text和它的其他选项结合, 以指定此字段将做自己的自动完成, 并适当地与输入法交互。</li>
+<li><code>textAutoCorrect</code>    可以与text和它的其他选项结合, 以请求自动文本输入纠错。</li>
+<li><code>textCapCharacters</code>    可以与text和它的其他选项结合, 以请求大写所有字符。</li>
+<li><code>textCapSentences</code>    可以与text和它的其他选项结合, 以请求大写每个句子里面的第一个字符。</li>
+<li><code>textCapWords</code>    可以与text和它的其他选项结合, 以请求大写每个单词里面的第一个字符。</li>
+<li><code>textEmailAddress</code>    用于输入一个电子邮件地址。</li>
+<li><code>textEmailSubject</code>    用于输入电子邮件的主题。</li>
+<li><code>textImeMultiLine</code>    可以与text和它的其他选项结合，以指示虽然常规文本视图不应为多行, 但如果可以, 则IME应提供多行支持。</li>
+<li><code>textLongMessage</code>    用于输入长消息的内容。</li>
+<li><code>textMultiLine</code>    可以与text和它的其他选项结合, 以便在该字段中允许多行文本。如果未设置此标志, 则文本字段将被限制为单行。</li>
+<li><code>textNoSuggestions</code>    可以与text及它的其他选项结合, 以指示输入法不应显示任何基于字典的单词建议。</li>
+<li><code>textPassword</code>    用于输入密码。</li>
+<li><code>textPersonName</code>    用于输入人名。</li>
+<li><code>textPhonetic</code>    用于输入拼音发音的文本, 如联系人条目中的拼音名称字段。</li>
+<li><code>textPostalAddress</code>    用于输入邮寄地址。</li>
+<li><code>textShortMessage</code>    用于输入短的消息内容。</li>
+<li><code>textUri</code>    用于输入一个URI。</li>
+<li><code>textVisiblePassword</code>    用于输入可见的密码。</li>
+<li><code>textWebEditText</code>    用于输入在web表单中的文本。</li>
+<li><code>textWebEmailAddress</code>    用于在web表单里输入一个电子邮件地址。</li>
+<li><code>textWebPassword</code>    用于在web表单里输入一个密码。</li>
+<li><code>time</code>    用于输入时间。</li>
+</ul>
+<p>例如，想指定一个输入框的输入类型为小数数字，为: <code>&lt;input inputType=&quot;number|numberDecimal&quot;/&gt;</code></p>
+<h2>password<span><a class="mark" href="#ui_password" id="ui_password">#</a></span></h2>
+<p>指定输入框输入框是否为密码输入框。默认为<code>false</code>。</p>
+<p>例如：<code>&lt;input password=&quot;true&quot;/&gt;</code></p>
+<h2>numeric<span><a class="mark" href="#ui_numeric" id="ui_numeric">#</a></span></h2>
+<p>指定输入框输入框是否为数字输入框。默认为<code>false</code>。</p>
+<p>例如：<code>&lt;input numeric=&quot;true&quot;/&gt;</code></p>
+<h2>phoneNumber<span><a class="mark" href="#ui_phonenumber" id="ui_phonenumber">#</a></span></h2>
+<p>指定输入框输入框是否为电话号码输入框。默认为<code>false</code>。</p>
+<p>例如：<code>&lt;input phoneNumber=&quot;true&quot;/&gt;</code></p>
+<h2>digits<span><a class="mark" href="#ui_digits" id="ui_digits">#</a></span></h2>
+<p>指定输入框可以输入的字符。例如，要指定输入框只能输入&quot;1234567890+-&quot;，为<code>&lt;input digits=&quot;1234567890+-&quot;/&gt;</code>。</p>
+<h2>singleLine<span><a class="mark" href="#ui_singleline" id="ui_singleline">#</a></span></h2>
+<p>指定输入框是否为单行输入框。默认为<code>false</code>。您也可以通过<code>lines=&quot;1&quot;</code>来指定单行输入框。</p>
+<p>例如：<code>&lt;input singleLine=&quot;true&quot;/&gt;</code></p>
+<h1>图片控件: img<span><a class="mark" href="#ui_img" id="ui_img">#</a></span></h1>
+<p>图片控件用于显示来自网络、本地或者内嵌数据的图片，并可以指定图片以圆角矩形、圆形等显示。但是不能用于显示gif动态图。</p>
+<p>这里只介绍他的主要方法和属性，如果要查看他的所有方法和属性，阅读<a href="http://www.zhdoc.net/android/reference/android/widget/ImageView.html">ImageView</a>。</p>
+<h2>src<span><a class="mark" href="#ui_src" id="ui_src">#</a></span></h2>
+<p>使用一个Uri指定图片的来源。可以是图片的地址(<a href="http://....)，本地路径(file://....)或者base64数据(&quot;data:image/png;base64,...&quot;)。">http://....)，本地路径(file://....)或者base64数据(&quot;data:image/png;base64,...&quot;)。</a></p>
+<p>如果使用图片地址或本地路径，Auto.js会自动使用适当的缓存来储存这些图片，减少下次加载的时间。</p>
+<p>例如，显示百度的logo:</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;frame&gt;
+        &lt;img src=&quot;https://www.baidu.com/img/bd_logo1.png&quot;/&gt;
+    &lt;/frame&gt;
+);
+</code></pre><p>再例如，显示文件/sdcard/1.png的图片为 <code>&lt;img src=&quot;file:///sdcard/1.png&quot;/&gt;</code>。
+再例如，使base64显示一张钱包小图片为：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;frame&gt;
+        &lt;img w=&quot;40&quot; h=&quot;40&quot; src=&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAEu0lEQVRoge3bW4iVVRQH8N+ZnDKxvJUGCSWUlXYle/ChiKAkIiu7UXQjonwNIopM8cHoAhkRGQXdfIiE0Ep8KalQoptRTiFFZiRlOo6TPuSk4zk97G9w5vidc77LPjNi84f1MN+391rrf9a+rL32N4xiFMcUjouo5zyciYPYH0FnBadiNiZiD2oR9JbGRdgiOFPDIXRhCWYU0Dcj6duV6BrQuyWxNaLowBcOO1Uv+7EKc4WINUIlabMq6dNI35eJzRHDWOzS2MEB6cd6XI/OQf07k2frkzat9HQnNkcUG7R2dECq2I53EtmePMvaf+MwcWqKu+RzuqhUcfcwcWqKTvmiXFQ2GDodRhQz0aN9ZHsSG0cVrkGf+GT7MG8YeeTCHeKS7sOdMR1stjcWxY2YH0nXh1gdSdf/E+2I8KVYigkl9ewVUsxNpT1qMzaKN4ejJxrtyEt7IuraE1EX2jOkp+JBnFxSzz68KuTqoyiK2BHuxDO4NpK+j/GoOAWF6BiH98Q/SHyCycPIIxMm4FPZCPTj30SynIFr+A7ThotMK4wXopA1Ym9gSiKv5Oj3bdKnFMpuS514E1fm6NMnbF098s3NS4QS0Ik5+hyBsoSXYkGO9jvxy6C/t+IPIYJZcBWW57AXFfMNrSo2kqqw2l4hvSzcIRTw1sm24FVxb5s4NcR0/JXBuUNYJttI6sDjsi1kvTgrGpsMjq3O4FQNa+SbNhWsyKj7I4wpzSYDbpFtKB/EOSn9ZwpRfx5Xp7yfhN0Z9FdxXxxKjTEe2zI4U8NnKf3PNrT2VcWTKe1eyGjjT+Eapm14IqMjNTyd0n9JSrsDwhmaEN2H8GMOO8viUjyMSfJVJh9O0bGoQdt1eFm2oVwve7UpC1ssX568KEXH6fghp54s8lRkrk7CjpxOrGqg6wQ8IKSKWXPpVtIt8ly+v4ATf2t+yqlgDl5SbCjXy8JIXFXweQEHqngxo43JeEw54l+JVLKaJeypRZzoFxavrIWG6cKPW2SO9+PCMkQHsLiA8fpIv5/DmUn4qaCtpWWIEiLzdUHj9XJA2H5uFRbBZriuoI1NSpatpio+nJtFvFvYd2c1sDsGvxfQ3a/knrwgMtm0qD8rPSprCuq8uRmhVqvanBbvm+EQfsNKIcnvTmnTiUdwQcq73oJ2L2v2stXx6vyCRr8RDuk/C8OMUK24J6VtBaekPG81zxuh0TTJhC7FhtUOHF+n61whGalvu8uRWVJFvgPEYOkqQzhLVSPPXLoYa4Xh3Stcls1NaTdb8Xx7ZxnCvSUIfy/kzWno0Pyzx3dL2C0695Hto7NGUhXy5Lzp3kLZKiqNpNTl2+YShgdIvyXbVck44TB/oKTNzWUIv13S+IDsFmpY84QvZAcwTbh4e04o18SwtbIM4dsiOTFYVgzSv7wN+m9vRqjV/PrA0JuCox1bhYNKQ7Qi3CcU1fpiedRG9AkLXhRfbxCnKlET0s21ifwaSWcPbopBdDDOwGtClTD2vCsq+/C68K8HmVDk7DhFyIsvFzKnGThN+689+oU9dptwQb5B+LB8dx4lMb7xqAhkJwo/xljhFFSfSdUc3mPrcbwj15P+pP0/QiR7hYSkGsHnUYziWMF/mXV4JVcZ8G0AAAAASUVORK5CYII=&quot;/&gt;
+    &lt;/frame&gt;
+);
+</code></pre><h2>tint<span><a class="mark" href="#ui_tint" id="ui_tint">#</a></span></h2>
+<p>图片着色，其值是一个颜色名称或RGB颜色值。使用该属性会将图片中的非透明区域都涂上同一颜色。可以用于改变图片的颜色。</p>
+<p>例如，对于上面的base64的图片: <code>&lt;img w=&quot;40&quot; h=&quot;40&quot; tint=&quot;red&quot; src=&quot;data:image/png;base64,...&quot;/&gt;</code>，则钱包图标颜色会变成红色。</p>
+<h2>scaleType<span><a class="mark" href="#ui_scaletype" id="ui_scaletype">#</a></span></h2>
+<p>控制图片根据图片控件的宽高放缩时的模式。可选的值为：</p>
+<ul>
+<li><code>center</code>    在控件中居中显示图像, 但不执行缩放。</li>
+<li><code>centerCrop</code>    保持图像的长宽比缩放图片, 使图像的尺寸 (宽度和高度) 等于或大于控件的相应尺寸 (不包括内边距padding)并且使图像在控件中居中显示。</li>
+<li><code>centerInside</code>    保持图像的长宽比缩放图片, 使图像的尺寸 (宽度和高度) 小于视图的相应尺寸 (不包括内边距padding)并且图像在控件中居中显示。</li>
+<li><code>fitCenter</code>    保持图像的长宽比缩放图片, 使图片的宽<strong>或</strong>高和控件的宽高相同并使图片在控件中居中显示</li>
+<li><code>fitEnd</code>    保持图像的长宽比缩放图片, 使图片的宽<strong>或</strong>高和控件的宽高相同并使图片在控件中靠右下角显示</li>
+<li><code>fitStart</code>    保持图像的长宽比缩放图片, 使图片的宽<strong>或</strong>高和控件的宽高相同并使图片在控件靠左上角显示</li>
+<li><code>fitXY</code>    使图片和宽高和控件的宽高完全匹配，但图片的长宽比可能不能保持一致</li>
+<li><code>matrix</code>    绘制时使用图像矩阵进行缩放。需要在代码中使用<code>setImageMatrix(Matrix)</code>函数才能生效。</li>
+</ul>
+<p>默认的scaleType为<code>fitCenter</code>；除此之外最常用的是<code>fitXY</code>， 他能使图片放缩到控件一样的大小，但图片可能会变形。</p>
+<h2>radius<span><a class="mark" href="#ui_radius" id="ui_radius">#</a></span></h2>
+<p>图片控件的半径。如果设置为控件宽高的一半并且控件的宽高相同则图片将剪切为圆形显示；否则图片为圆角矩形显示，半径即为四个圆角的半径，也可以通过<code>radiusTopLeft</code>, <code>radiusTopRight</code>, <code>radiusBottomLeft</code>, <code>radiusBottomRight</code>等属性分别设置四个圆角的半径。</p>
+<p>例如，圆角矩形的Auto.js图标：<code>&lt;img w=&quot;100&quot; h=&quot;100&quot; radius=&quot;20&quot; bg=&quot;white&quot; src=&quot;http://www.autojs.org/assets/uploads/profile/3-profileavatar.png&quot; /&gt;</code></p>
+<p>有关该属性的单位，参见<a href="#ui_尺寸的单位_Dimension">尺寸的单位: Dimension</a>。</p>
+<h2>radiusTopLeft<span><a class="mark" href="#ui_radiustopleft" id="ui_radiustopleft">#</a></span></h2>
+<p>图片控件的左上角圆角的半径。有关该属性的单位，参见<a href="#ui_尺寸的单位_Dimension">尺寸的单位: Dimension</a>。</p>
+<h2>radiusTopRight<span><a class="mark" href="#ui_radiustopright" id="ui_radiustopright">#</a></span></h2>
+<p>图片控件的右上角圆角的半径。有关该属性的单位，参见<a href="#ui_尺寸的单位_Dimension">尺寸的单位: Dimension</a>。</p>
+<h2>radiusBottomLeft<span><a class="mark" href="#ui_radiusbottomleft" id="ui_radiusbottomleft">#</a></span></h2>
+<p>图片控件的左下角圆角的半径。有关该属性的单位，参见<a href="#ui_尺寸的单位_Dimension">尺寸的单位: Dimension</a>。</p>
+<h2>radiusBottomRight<span><a class="mark" href="#ui_radiusbottomright" id="ui_radiusbottomright">#</a></span></h2>
+<p>图片控件的右下角圆角的半径。有关该属性的单位，参见<a href="#ui_尺寸的单位_Dimension">尺寸的单位: Dimension</a>。</p>
+<h2>borderWidth<span><a class="mark" href="#ui_borderwidth" id="ui_borderwidth">#</a></span></h2>
+<p>图片控件的边框宽度。用于在图片外面显示一个边框，边框会随着图片控件的外形(圆角等)改变而相应变化。
+例如, 圆角矩形带灰色边框的Auto.js图标：<code>&lt;img w=&quot;100&quot; h=&quot;100&quot; radius=&quot;20&quot; borderWidth=&quot;5&quot; borderColor=&quot;gray&quot; bg=&quot;white&quot; src=&quot;http://www.autojs.org/assets/uploads/profile/3-profileavatar.png&quot; /&gt;</code></p>
+<h2>borderColor<span><a class="mark" href="#ui_bordercolor" id="ui_bordercolor">#</a></span></h2>
+<p>图片控件的边框颜色。</p>
+<h2>circle<span><a class="mark" href="#ui_circle" id="ui_circle">#</a></span></h2>
+<p>指定该图片控件的图片是否剪切为圆形显示。如果为<code>true</code>，则图片控件会使其宽高保持一致(如果宽高不一致，则保持高度等于宽度)并使圆形的半径为宽度的一半。</p>
+<p>例如，圆形的Auto.js图标：<code>&lt;img w=&quot;100&quot; h=&quot;100&quot; circle=&quot;true&quot; bg=&quot;white&quot; src=&quot;http://www.autojs.org/assets/uploads/profile/3-profileavatar.png&quot; /&gt;</code></p>
+<h1>垂直布局: vertical<span><a class="mark" href="#ui_vertical" id="ui_vertical">#</a></span></h1>
+<p>垂直布局是一种比较简单的布局，会把在它里面的控件按照垂直方向依次摆放，如下图所示：</p>
+<p>垂直布局:</p>
+<p> —————</p>
+<p>| 控件1 |</p>
+<p>| 控件2 |</p>
+<p>| 控件3 |</p>
+<p>| ............ |</p>
+<p> ——————</p>
+<h2>layout_weight<span><a class="mark" href="#ui_layout_weight" id="ui_layout_weight">#</a></span></h2>
+<p>垂直布局中的控件可以通过<code>layout_weight</code>属性来控制控件高度占垂直布局高度的比例。如果为一个控件指定<code>layout_weight</code>, 则这个控件的高度=垂直布局剩余高度 * layout_weight / weightSum；如果不指定weightSum, 则weightSum为所有子控件的layout_weight之和。所谓&quot;剩余高度&quot;，指的是垂直布局中减去没有指定layout_weight的控件的剩余高度。
+例如:</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;vertical h=&quot;100dp&quot;&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件1&quot; bg=&quot;#ff0000&quot;/&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件2&quot; bg=&quot;#00ff00&quot;/&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件3&quot; bg=&quot;#0000ff&quot;/&gt;
+    &lt;/vertical&gt;
+);
+</code></pre><p>在这个布局中，三个控件的layout_weight都是1，也就是他们的高度都会占垂直布局高度的1/3，都是33.3dp.
+再例如：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;vertical h=&quot;100dp&quot;&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件1&quot; bg=&quot;#ff0000&quot;/&gt;
+        &lt;text layout_weight=&quot;2&quot; text=&quot;控件2&quot; bg=&quot;#00ff00&quot;/&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件3&quot; bg=&quot;#0000ff&quot;/&gt;
+    &lt;/vertical&gt;
+);
+</code></pre><p>在这个布局中，第一个控件高度为1/4, 第二个控件为2/4, 第三个控件为1/4.
+再例如：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;vertical h=&quot;100dp&quot; weightSum=&quot;5&quot;&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件1&quot; bg=&quot;#ff0000&quot;/&gt;
+        &lt;text layout_weight=&quot;2&quot; text=&quot;控件2&quot; bg=&quot;#00ff00&quot;/&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件3&quot; bg=&quot;#0000ff&quot;/&gt;
+    &lt;/vertical&gt;
+);
+</code></pre><p>在这个布局中，因为指定了weightSum为5, 因此第一个控件高度为1/5, 第二个控件为2/5, 第三个控件为1/5.
+再例如：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;vertical h=&quot;100dp&quot;&gt;
+        &lt;text h=&quot;40dp&quot; text=&quot;控件1&quot; bg=&quot;#ff0000&quot;/&gt;
+        &lt;text layout_weight=&quot;2&quot; text=&quot;控件2&quot; bg=&quot;#00ff00&quot;/&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件3&quot; bg=&quot;#0000ff&quot;/&gt;
+    &lt;/vertical&gt;
+);
+</code></pre><p>在这个布局中，第一个控件并没有指定layout_weight, 而是指定高度为40dp, 因此不加入比例计算，此时布局剩余高度为60dp。第二个控件高度为剩余高度的2/3，也就是40dp，第三个控件高度为剩余高度的1/3，也就是20dp。</p>
+<p>垂直布局的layout_weight属性还可以用于控制他的子控件高度占满剩余空间，例如：</p>
+<pre><code>&quot;ui&quot;;
+ui.layout(
+    &lt;vertical h=&quot;100dp&quot;&gt;
+        &lt;text h=&quot;40dp&quot; text=&quot;控件1&quot; bg=&quot;#ff0000&quot;/&gt;
+        &lt;text h=&quot;40dp&quot; text=&quot;控件2&quot; bg=&quot;#00ff00&quot;/&gt;
+        &lt;text layout_weight=&quot;1&quot; text=&quot;控件3&quot; bg=&quot;#0000ff&quot;/&gt;
+    &lt;/vertical&gt;
+);
+</code></pre><p>在这个布局中，第三个控件的高度会占满除去控件1和控件2的剩余空间。</p>
+<h1>水平布局: horizontal<span><a class="mark" href="#ui_horizontal" id="ui_horizontal">#</a></span></h1>
+<p>水平布局是一种比较简单的布局，会把在它里面的控件按照水平方向依次摆放，如下图所示：
+水平布局:
+ ————————————————————————————</p>
+<p>| 控件1 | 控件2 | 控件3 | ... |</p>
+<p> ————————————————————————————</p>
+<h2>layout_weight<span><a class="mark" href="#ui_layout_weight_1" id="ui_layout_weight_1">#</a></span></h2>
+<p>水平布局中也可以使用layout_weight属性来控制子控件的<strong>宽度</strong>占父布局的比例。和垂直布局中类似，不再赘述。</p>
+<h1>线性布局: linear<span><a class="mark" href="#ui_linear" id="ui_linear">#</a></span></h1>
+<p>实际上，垂直布局和水平布局都属于线性布局。线性布局有一个orientation的属性，用于指定布局的方向，可选的值为<code>vertical</code>和<code>horizontal</code>。</p>
+<p>例如<code>&lt;linear orientation=&quot;vertical&quot;&gt;&lt;/linear&gt;</code>相当于<code>&lt;vertical&gt;&lt;/vertical&gt;</code>。</p>
+<p>线性布局的默认方向是横向的，因此，一个没有指定orientation属性的线性布局就是横向布局。</p>
+<h1>帧布局: frame<span><a class="mark" href="#ui_frame" id="ui_frame">#</a></span></h1>
+<p>帧布局</p>
+<h1>相对布局: relative<span><a class="mark" href="#ui_relative" id="ui_relative">#</a></span></h1>
+<h1>勾选框控件: checkbox<span><a class="mark" href="#ui_checkbox" id="ui_checkbox">#</a></span></h1>
+<h1>选择框控件: radio<span><a class="mark" href="#ui_radio" id="ui_radio">#</a></span></h1>
+<h1>选择框布局: radiogroup<span><a class="mark" href="#ui_radiogroup" id="ui_radiogroup">#</a></span></h1>
+<h1>开关控件: switch<span><a class="mark" href="#ui_switch" id="ui_switch">#</a></span></h1>
+<h1>进度条控件: progressbar<span><a class="mark" href="#ui_progressbar" id="ui_progressbar">#</a></span></h1>
+<h1>拖动条控件: seekbar<span><a class="mark" href="#ui_seekbar" id="ui_seekbar">#</a></span></h1>
+<h1>下来菜单控件: spinner<span><a class="mark" href="#ui_spinner" id="ui_spinner">#</a></span></h1>
+<h1>时间选择控件: timepicker<span><a class="mark" href="#ui_timepicker" id="ui_timepicker">#</a></span></h1>
+<h1>日期选择控件: datepicker<span><a class="mark" href="#ui_datepicker" id="ui_datepicker">#</a></span></h1>
+<h1>浮动按钮控件: fab<span><a class="mark" href="#ui_fab" id="ui_fab">#</a></span></h1>
+<h1>标题栏控件: toolbar<span><a class="mark" href="#ui_toolbar" id="ui_toolbar">#</a></span></h1>
+<h1>卡片: card<span><a class="mark" href="#ui_card" id="ui_card">#</a></span></h1>
+<h1>抽屉布局: drawer<span><a class="mark" href="#ui_drawer" id="ui_drawer">#</a></span></h1>
+<h1>列表: list<span><a class="mark" href="#ui_list" id="ui_list">#</a></span></h1>
+<h1>Tab: tab<span><a class="mark" href="#ui_tab_tab" id="ui_tab_tab">#</a></span></h1>
+<h1>ui<span><a class="mark" href="#ui_ui_1" id="ui_ui_1">#</a></span></h1>
+<h2>ui.layout(xml)<span><a class="mark" href="#ui_ui_layout_xml" id="ui_ui_layout_xml">#</a></span></h2>
+<h2>ui.inflate(xml[, parent])<span><a class="mark" href="#ui_ui_inflate_xml_parent" id="ui_ui_inflate_xml_parent">#</a></span></h2>
+<h2>ui.findView(id)<span><a class="mark" href="#ui_ui_findview_id" id="ui_ui_findview_id">#</a></span></h2>
+<h2>ui.finish()<span><a class="mark" href="#ui_ui_finish" id="ui_ui_finish">#</a></span></h2>
+<h2>ui.setContentView(view)<span><a class="mark" href="#ui_ui_setcontentview_view" id="ui_ui_setcontentview_view">#</a></span></h2>
+<h2>ui.run(callback)<span><a class="mark" href="#ui_ui_run_callback" id="ui_ui_run_callback">#</a></span></h2>
+<h2>ui.post(callback[, daley])<span><a class="mark" href="#ui_ui_post_callback_daley" id="ui_ui_post_callback_daley">#</a></span></h2>
+<h2>ui.statusBarColor(color)<span><a class="mark" href="#ui_ui_statusbarcolor_color" id="ui_ui_statusbarcolor_color">#</a></span></h2>
+<h2>ui.showPopupMenu(view, menu)<span><a class="mark" href="#ui_ui_showpopupmenu_view_menu" id="ui_ui_showpopupmenu_view_menu">#</a></span></h2>
+<h1>尺寸的单位: Dimension<span><a class="mark" href="#ui_dimension" id="ui_dimension">#</a></span></h1>
+<h1>Drawables<span><a class="mark" href="#ui_drawables" id="ui_drawables">#</a></span></h1>
+<h1>颜色<span><a class="mark" href="#ui" id="ui">#</a></span></h1>
+<p><strong>(完善中...)</strong></p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

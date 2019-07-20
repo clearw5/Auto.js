@@ -1,0 +1,381 @@
+{
+  "source": "..\\api\\threads.md",
+  "modules": [
+    {
+      "textRaw": "Threads",
+      "name": "threads",
+      "stability": 1,
+      "stabilityText": "Experiment",
+      "desc": "<p>threads模块提供了多线程支持，可以启动新线程来运行脚本。</p>\n<p>脚本主线程会等待所有子线程执行完成后才停止执行，因此如果子线程中有死循环，请在必要的时候调用<code>exit()</code>来直接停止脚本或<code>threads.shutDownAll()</code>来停止所有子线程。</p>\n<p>通过<code>threads.start()</code>启动的所有线程会在脚本被强制停止时自动停止。</p>\n<p>由于JavaScript自身没有多线程的支持，因此您可能会遇到意料之外的问题。</p>\n",
+      "methods": [
+        {
+          "textRaw": "threads.start(action)",
+          "type": "method",
+          "name": "start",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`action` {Function} 要在新线程执行的函数 ",
+                  "name": "action",
+                  "type": "Function",
+                  "desc": "要在新线程执行的函数"
+                },
+                {
+                  "textRaw": "返回 [Thread](#threads_thread) ",
+                  "name": "返回",
+                  "desc": "[Thread](#threads_thread)"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "action"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>启动一个新线程并执行action。</p>\n<p>例如:</p>\n<pre><code>threads.start(function(){\n    //在新线程执行的代码\n    while(true){\n        log(&quot;子线程&quot;);\n    }\n});\nwhile(true){\n    log(&quot;脚本主线程&quot;);\n}\n</code></pre><p>通过该函数返回的<a href=\"#threads_thread\">Thread</a>对象可以获取该线程的状态，控制该线程的运行中。例如:</p>\n<pre><code>var thread = threads.start(function(){\n    while(true){\n        log(&quot;子线程&quot;);\n    }\n});\n//停止线程执行\nthread.interrupt();\n</code></pre><p>更多信息参见<a href=\"#threads_thread\">Thread</a>。</p>\n"
+        },
+        {
+          "textRaw": "threads.shutDownAll()",
+          "type": "method",
+          "name": "shutDownAll",
+          "desc": "<p>停止所有通过<code>threads.start()</code>启动的子线程。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "threads.currentThread()",
+          "type": "method",
+          "name": "currentThread",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 [Thread](#threads_thread) ",
+                  "name": "返回",
+                  "desc": "[Thread](#threads_thread)"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回当前线程。</p>\n"
+        },
+        {
+          "textRaw": "threads.disposable()",
+          "type": "method",
+          "name": "disposable",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 [Disposable](#threads_disposable) ",
+                  "name": "返回",
+                  "desc": "[Disposable](#threads_disposable)"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>新建一个Disposable对象，用于等待另一个线程的某个一次性结果。更多信息参见<a href=\"#threads_线程通信\">线程通信</a>以及<a href=\"#threads_disposable\">Disposable</a>。</p>\n"
+        },
+        {
+          "textRaw": "threads.atomic([initialValue])",
+          "type": "method",
+          "name": "atomic",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`initialValue` {number} 初始整数值，默认为0 ",
+                  "name": "initialValue",
+                  "type": "number",
+                  "desc": "初始整数值，默认为0",
+                  "optional": true
+                },
+                {
+                  "textRaw": "返回[AtomicLong](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/atomic/AtomicLong.html) ",
+                  "name": "返回[AtomicLong](https",
+                  "desc": "//docs.oracle.com/javase/7/docs/api/java/util/concurrent/atomic/AtomicLong.html)"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "initialValue",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>新建一个整数原子变量。更多信息参见<a href=\"#threads_线程安全\">线程安全</a>以及<a href=\"https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/atomic/AtomicLong.html\">AtomicLong</a>。</p>\n"
+        },
+        {
+          "textRaw": "threads.lock()",
+          "type": "method",
+          "name": "lock",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回[ReentrantLock](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReentrantLock.html) ",
+                  "name": "返回[ReentrantLock](https",
+                  "desc": "//docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReentrantLock.html)"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>新建一个可重入锁。更多信息参见<a href=\"#threads_线程安全\">线程安全</a>以及<a href=\"https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReentrantLock.html\">ReentrantLock</a>。</p>\n"
+        }
+      ],
+      "type": "module",
+      "displayName": "Threads"
+    },
+    {
+      "textRaw": "Thread",
+      "name": "thread",
+      "desc": "<p>线程对象，<code>threads.start()</code>返回的对象，用于获取和控制线程的状态，与其他线程交互等。</p>\n<p>Thread对象提供了和timers模块一样的API，例如<code>setTimeout()</code>, <code>setInterval()</code>等，用于在该线程执行相应的定时回调，从而使线程之间可以直接交互。例如：</p>\n<pre><code>var thread = threads.start(function(){\n    //在子线程执行的定时器\n    setInterval(function(){\n        log(&quot;子线程:&quot; + threads.currentThread());\n    }, 1000);\n});\n\nlog(&quot;当前线程为主线程:&quot; + threads.currentThread());\n\n//等待子线程启动\nthread.waitFor();\n//在子线程执行的定时器\nthread.setTimeout(function(){\n    //这段代码会在子线程执行\n    log(&quot;当前线程为子线程:&quot; + threads.currentThread());\n}, 2000);\n\nsleep(30 * 1000);\nthread.interrupt();\n</code></pre>",
+      "methods": [
+        {
+          "textRaw": "Thread.interrupt()",
+          "type": "method",
+          "name": "interrupt",
+          "desc": "<p>中断线程运行。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "Thread.join([timeout])",
+          "type": "method",
+          "name": "join",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`timeout` {number} 等待时间，单位毫秒 ",
+                  "name": "timeout",
+                  "type": "number",
+                  "desc": "等待时间，单位毫秒",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "timeout",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>等待线程执行完成。如果timeout为0，则会一直等待直至该线程执行完成；否则最多等待timeout毫秒的时间。</p>\n<p>例如:</p>\n<pre><code>var sum = 0;\n//启动子线程计算1加到10000\nvar thread = threads.start(function(){\n    for(var i = 0; i &lt; 10000; i++){\n        sum += i;\n    }\n});\n//等待该线程完成\nthread.join();\ntoast(&quot;sum = &quot; + sum);\n</code></pre>"
+        },
+        {
+          "textRaw": "isAlive()",
+          "type": "method",
+          "name": "isAlive",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回线程是否存活。如果线程仍未开始或已经结束，返回<code>false</code>; 如果线程已经开始或者正在运行中，返回<code>true</code>。</p>\n"
+        },
+        {
+          "textRaw": "waitFor()",
+          "type": "method",
+          "name": "waitFor",
+          "desc": "<p>等待线程开始执行。调用<code>threads.start()</code>以后线程仍然需要一定时间才能开始执行，因此调用此函数会等待线程开始执行；如果线程已经处于执行状态则立即返回。</p>\n<pre><code>var thread = threads.start(function(){\n    //do something\n});\nthread.waitFor();\nthread.setTimeout(function(){\n    //do something\n}, 1000);\n</code></pre>",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "Thread.setTimeout(callback, delay\\[, ...args\\])",
+          "type": "method",
+          "name": "setTimeout",
+          "desc": "<p>参见<a href=\"timers.html#timers_settimeout_callback_delay_args\">timers.setTimeout()</a>。</p>\n<p>区别在于, 该定时器会在该线程执行。如果当前线程仍未开始执行或已经执行结束，则抛出<code>IllegalStateException</code>。</p>\n<pre><code>log(&quot;当前线程(主线程):&quot; + threads.currentThread());\n\nvar thread = threads.start(function(){\n    //设置一个空的定时来保持线程的运行状态\n    setInterval(function(){}, 1000);\n});\n\nsleep(1000);\nthread.setTimeout(function(){\n    log(&quot;当前线程(子线程):&quot; + threads.currentThread());\n    exit();\n}, 1000);\n</code></pre>",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "callback"
+                },
+                {
+                  "name": "delay\\"
+                },
+                {
+                  "name": "...args\\",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "Thread.setInterval(callback, delay\\[, ...args\\])",
+          "type": "method",
+          "name": "setInterval",
+          "desc": "<p>参见<a href=\"timers.html#timers_setinterval_callback_delay_args\">timers.setInterval()</a>。</p>\n<p>区别在于, 该定时器会在该线程执行。如果当前线程仍未开始执行或已经执行结束，则抛出<code>IllegalStateException</code>。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "callback"
+                },
+                {
+                  "name": "delay\\"
+                },
+                {
+                  "name": "...args\\",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "Thread.setImmediate(callback[, ...args])",
+          "type": "method",
+          "name": "setImmediate",
+          "desc": "<p>参见<a href=\"timers.html#timers_setimmediate_callback_delay_args\">timers.setImmediate()</a>。</p>\n<p>区别在于, 该定时器会在该线程执行。如果当前线程仍未开始执行或已经执行结束，则抛出<code>IllegalStateException</code>。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "callback"
+                },
+                {
+                  "name": "...args",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "Thread.clearInterval(id)",
+          "type": "method",
+          "name": "clearInterval",
+          "desc": "<p>参见<a href=\"timers.html#timers_clearinterval_id\">timers.clearInterval()</a>。</p>\n<p>区别在于, 该定时器会在该线程执行。如果当前线程仍未开始执行或已经执行结束，则抛出<code>IllegalStateException</code>。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "id"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "Thread.clearTimeout(id)",
+          "type": "method",
+          "name": "clearTimeout",
+          "desc": "<p>参见<a href=\"timers.html#timers_cleartimeout_id\">timers.clearTimeout()</a>。</p>\n<p>区别在于, 该定时器会在该线程执行。如果当前线程仍未开始执行或已经执行结束，则抛出<code>IllegalStateException</code>。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "id"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "Thread.clearImmediate(id)",
+          "type": "method",
+          "name": "clearImmediate",
+          "desc": "<p>参见<a href=\"timers.html#timers_clearimmediate_id\">timers.clearImmediate()</a>。</p>\n<p>区别在于, 该定时器会在该线程执行。如果当前线程仍未开始执行或已经执行结束，则抛出<code>IllegalStateException</code>。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "id"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "type": "module",
+      "displayName": "Thread"
+    },
+    {
+      "textRaw": "线程安全",
+      "name": "线程安全",
+      "desc": "<p>线程安全问题是一个相对专业的编程问题，本章节只提供给有需要的用户。</p>\n<p>引用维基百科的解释：</p>\n<blockquote>\n<p>线程安全是编程中的术语，指某个函数、函数库在多线程环境中被调用时，能够正确地处理多个线程之间的共享变量，使程序功能正确完成。</p>\n</blockquote>\n<p>在Auto.js中，线程间变量在符合JavaScript变量作用域规则的前提下是共享的，例如全局变量在所有线程都能访问，并且保证他们在所有线程的可见性。但是，不保证任何操作的原子性。例如经典的自增&quot;i++&quot;将不是原子性操作。</p>\n<p>Rhino和Auto.js提供了一些简单的设施来解决简单的线程安全问题，如锁<code>threads.lock()</code>, 函数同步锁<code>sync()</code>, 整数原子变量<code>threads.atomic()</code>等。</p>\n<p>例如，对于多线程共享下的整数的自增操作(自增操作会导致问题，是因为自增操作实际上为<code>i = i + 1</code>，也就是先读取i的值, 把他加1, 再赋值给i, 如果两个线程同时进行自增操作，可能出现i的值只增加了1的情况)，应该使用<code>threads.atomic()</code>函数来新建一个整数原子变量，或者使用锁<code>threads.lock()</code>来保证操作的原子性，或者用<code>sync()</code>来增加同步锁。</p>\n<p>线程不安全的代码如下：</p>\n<pre><code>var i = 0;\nthreads.start(function(){\n    while(true){\n        log(i++);\n    }\n});\nwhile(true){\n    log(i++);\n}\n</code></pre><p>此段代码运行后打开日志，可以看到日志中有重复的值出现。</p>\n<p>使用<code>threads.atomic()</code>的线程安全的代码如下:</p>\n<pre><code>//atomic返回的对象保证了自增的原子性\nvar i = threads.atomic();\nthreads.start(function(){\n    while(true){\n        log(i.getAndIncrement());\n    }\n});\nwhile(true){\n    log(i.getAndIncrement());\n}\n</code></pre><p>或者:</p>\n<pre><code>//锁保证了操作的原子性\nvar lock = threads.lock();\nvar i = 0;\nthreads.start(function(){\n    while(true){\n        lock.lock();\n        log(i++);\n        lock.unlock();\n    }\n});\nwhile(true){\n    lock.lock();\n    log(i++);\n    lock.unlock();\n}\n</code></pre><p>或者:</p>\n<pre><code>//sync函数会把里面的函数加上同步锁，使得在同一时刻最多只能有一个线程执行这个函数\nvar i = 0;\nvar getAndIncrement = sync(function(){\n    return i++;\n});\nthreads.start(function(){\n    while(true){\n        log(getAndIncrement());\n    }\n});\nwhile(true){\n    log(getAndIncrement());\n}\n</code></pre><p>另外，数组Array不是线程安全的，如果有这种复杂的需求，请用Android和Java相关API来实现。例如<code>CopyOnWriteList</code>, <code>Vector</code>等都是代替数组的线程安全的类，用于不同的场景。例如:</p>\n<pre><code>var nums = new java.util.Vector();\nnums.add(123);\nnums.add(456);\ntoast(&quot;长度为&quot; + nums.size());\ntoast(&quot;第一个元素为&quot; + nums.get(0));\n</code></pre><p>但很明显的是，这些类不像数组那样简便易用，也不能使用诸如<code>slice()</code>之类的方便的函数。在未来可能会加入线程安全的数组来解决这个问题。当然您也可以为每个数组的操作加锁来解决线程安全问题：</p>\n<pre><code>var nums = [];\nvar numsLock = threads.lock();\nthreads.start(function(){\n    //向数组添加元素123\n    numsLock.lock();\n    nums.push(123);\n    log(&quot;线程: %s, 数组: %s&quot;, threads.currentThread(), nums);\n    numsLock.unlock();\n});\n\nthreads.start(function(){\n    //向数组添加元素456\n    numsLock.lock();\n    nums.push(456);\n    log(&quot;线程: %s, 数组: %s&quot;, threads.currentThread(), nums);\n    numsLock.unlock();\n});\n\n//删除数组最后一个元素\nnumsLock.lock();\nnums.pop();\nlog(&quot;线程: %s, 数组: %s&quot;, threads.currentThread(), nums);\nnumsLock.unlock();\n</code></pre>",
+      "methods": [
+        {
+          "textRaw": "sync(func)",
+          "type": "method",
+          "name": "sync",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`func` {Function} 函数 ",
+                  "name": "func",
+                  "type": "Function",
+                  "desc": "函数"
+                },
+                {
+                  "textRaw": "返回 {Function} ",
+                  "name": "返回",
+                  "type": "Function"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "func"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>给函数func加上同步锁并作为一个新函数返回。</p>\n<pre><code>var i = 0;\nfunction add(x){\n    i += x;\n}\n\nvar syncAdd = sync(add);\nsyncAdd(10);\ntoast(i);\n</code></pre>"
+        }
+      ],
+      "type": "module",
+      "displayName": "线程安全"
+    },
+    {
+      "textRaw": "线程通信",
+      "name": "线程通信",
+      "desc": "<p>Auto.js提供了一些简单的设施来支持简单的线程通信。<code>threads.disposable()</code>用于一个线程等待另一个线程的(一次性)结果，同时<code>Lock.newCondition()</code>提供了Condition对象用于一般的线程通信(await, signal)。另外，<code>events</code>模块也可以用于线程通信，通过指定<code>EventEmiiter</code>的回调执行的线程来实现。</p>\n<p>使用<code>threads.disposable()</code>可以简单地等待和获取某个线程的执行结果。例如要等待某个线程计算&quot;1+.....+10000&quot;:</p>\n<pre><code>var sum = threads.disposable();\n//启动子线程计算\nthreads.start(function(){\n    var s = 0;\n    //从1加到10000\n    for(var i = 1; i &lt;= 10000; i++){\n        s += i;\n    }\n    //通知主线程接收结果\n    sum.setAndNotify(s);\n});\n//blockedGet()用于等待结果\ntoast(&quot;sum = &quot; + sum.blockedGet());\n</code></pre><p>如果上述代码用<code>Condition</code>实现：</p>\n<pre><code>//新建一个锁\nvar lock = threads.lock();\n//新建一个条件，即&quot;计算完成&quot;\nvar complete = lock.newCondition();\nvar sum = 0;\nthreads.start(function(){\n    //从1加到10000\n    for(var i = 1; i &lt;= 10000; i++){\n        sum += i;\n    }\n    //通知主线程接收结果\n    lock.lock();\n    complete.signal();\n    lock.unlock();\n});\n//等待计算完成\nlock.lock();\ncomplete.await();\nlock.unlock();\n//打印结果\ntoast(&quot;sum = &quot; + sum);\n</code></pre><p>如果上诉代码用<code>events</code>模块实现：</p>\n<pre><code>//新建一个emitter, 并指定回调执行的线程为当前线程\nvar sum = events.emitter(threads.currentThread());\nthreads.start(function(){\n    var s = 0;\n    //从1加到10000\n    for(var i = 1; i &lt;= 10000; i++){\n        s += i;\n    }\n    //发送事件result通知主线程接收结果\n    sum.emit(&#39;result&#39;, s);\n});\nsum.on(&#39;result&#39;, function(s){\n    toastLog(&quot;sum = &quot; + s + &quot;, 当前线程: &quot; + threads.currentThread());\n});\n</code></pre><p>有关线程的其他问题，例如生产者消费者等问题，请用Java相关方法解决，例如<code>java.util.concurrent.BlockingQueue</code>。</p>\n",
+      "type": "module",
+      "displayName": "线程通信"
+    }
+  ]
+}

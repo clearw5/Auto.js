@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Files | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/files.html">
+</head>
+<body class="alt apidoc" id="api-section-files">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files active" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="files" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#files_files">Files</a></span><ul>
+<li><span class="stability_undefined"><a href="#files_files_isfile_path">files.isFile(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_isdir_path">files.isDir(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_isemptydir_path">files.isEmptyDir(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_join_parent_child">files.join(parent, child)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_create_path">files.create(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_createwithdirs_path">files.createWithDirs(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_exists_path">files.exists(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_ensuredir_path">files.ensureDir(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_read_path_encoding_utf_8">files.read(path[, encoding = &quot;utf-8&quot;])</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_readbytes_path">files.readBytes(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_write_path_text_encoding_utf_8">files.write(path, text[, encoding = &quot;utf-8&quot;])</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_writebytes_path_bytes">files.writeBytes(path, bytes)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_append_path_text_encoding_utf_8">files.append(path, text[, encoding = &#39;utf-8&#39;])</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_appendbytes_path_text_encoding_utf_8">files.appendBytes(path, text[, encoding = &#39;utf-8&#39;])</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_copy_frompath_topath">files.copy(fromPath, toPath)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_move_frompath_topath">files.move(fromPath, toPath)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_rename_path_newname">files.rename(path, newName)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_renamewithoutextension_path_newname">files.renameWithoutExtension(path, newName)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_getname_path">files.getName(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_getnamewithoutextension_path">files.getNameWithoutExtension(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_getextension_path">files.getExtension(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_remove_path">files.remove(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_removedir_path">files.removeDir(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_getsdcardpath">files.getSdcardPath()</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_cwd">files.cwd()</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_path_relativepath">files.path(relativePath)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_files_listdir_path_filter">files.listDir(path[, filter])</a></span></li>
+<li><span class="stability_undefined"><a href="#files_open_path_mode_r_encoding_utf_8_buffersize_8192">open(path[, mode = &quot;r&quot;, encoding = &quot;utf-8&quot;, bufferSize = 8192])</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#files_readabletextfile">ReadableTextFile</a></span><ul>
+<li><span class="stability_undefined"><a href="#files_readabletextfile_read">ReadableTextFile.read()</a></span></li>
+<li><span class="stability_undefined"><a href="#files_readabletextfile_read_maxcount">ReadableTextFile.read(maxCount)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_readabletextfile_readline">ReadableTextFile.readline()</a></span></li>
+<li><span class="stability_undefined"><a href="#files_readabletextfile_readlines">ReadableTextFile.readlines()</a></span></li>
+<li><span class="stability_undefined"><a href="#files_close">close()</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#files_pwritabletextfile">PWritableTextFile</a></span><ul>
+<li><span class="stability_undefined"><a href="#files_pwritabletextfile_write_text">PWritableTextFile.write(text)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_pwritabletextfile_writeline_line">PWritableTextFile.writeline(line)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_pwritabletextfile_writelines_lines">PWritableTextFile.writelines(lines)</a></span></li>
+<li><span class="stability_undefined"><a href="#files_pwritabletextfile_flush">PWritableTextFile.flush()</a></span></li>
+<li><span class="stability_undefined"><a href="#files_pwritabletextfile_close">PWritableTextFile.close()</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>Files<span><a class="mark" href="#files_files" id="files_files">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>files模块提供了一些常见的文件处理，包括文件读写、移动、复制、删掉等。</p>
+<p>一次性的文件读写可以直接使用<code>files.read()</code>, <code>files.write()</code>, <code>files.append()</code>等方便的函数，但如果需要频繁读写或随机读写，则使用<code>open()</code>函数打开一个文件对象来操作文件，并在操作完毕后调用<code>close()</code>函数关闭文件。</p>
+<h2>files.isFile(path)<span><a class="mark" href="#files_files_isfile_path" id="files_files_isfile_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>返回路径path是否是文件。</p>
+<pre><code>log(files.isDir(&quot;/sdcard/文件夹/&quot;)); //返回false
+log(files.isDir(&quot;/sdcard/文件.txt&quot;)); //返回true
+</code></pre><h2>files.isDir(path)<span><a class="mark" href="#files_files_isdir_path" id="files_files_isdir_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>返回路径path是否是文件夹。</p>
+<pre><code>log(files.isDir(&quot;/sdcard/文件夹/&quot;)); //返回true
+log(files.isDir(&quot;/sdcard/文件.txt&quot;)); //返回false
+</code></pre><h2>files.isEmptyDir(path)<span><a class="mark" href="#files_files_isemptydir_path" id="files_files_isemptydir_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>返回文件夹path是否为空文件夹。如果该路径并非文件夹，则直接返回<code>false</code>。</p>
+<h2>files.join(parent, child)<span><a class="mark" href="#files_files_join_parent_child" id="files_files_join_parent_child">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>parent</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 父目录路径</li>
+<li><code>child</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 子路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>连接两个路径并返回，例如<code>files.join(&quot;/sdcard/&quot;, &quot;1.txt&quot;)</code>返回&quot;/sdcard/1.txt&quot;。</p>
+<h2>files.create(path)<span><a class="mark" href="#files_files_create_path" id="files_files_create_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>创建一个文件或文件夹并返回是否创建成功。如果文件已经存在，则直接返回<code>false</code>。</p>
+<pre><code>files.create(&quot;/sdcard/新文件夹/&quot;);
+</code></pre><h2>files.createWithDirs(path)<span><a class="mark" href="#files_files_createwithdirs_path" id="files_files_createwithdirs_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>创建一个文件或文件夹并返回是否创建成功。如果文件所在文件夹不存在，则先创建他所在的一系列文件夹。如果文件已经存在，则直接返回<code>false</code>。</p>
+<pre><code>files.createWithDirs(&quot;/sdcard/新文件夹/新文件夹/新文件夹/1.txt&quot;);
+</code></pre><h2>files.exists(path)<span><a class="mark" href="#files_files_exists_path" id="files_files_exists_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>返回在路径path处的文件是否存在。</p>
+<h2>files.ensureDir(path)<span><a class="mark" href="#files_files_ensuredir_path" id="files_files_ensuredir_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+</ul>
+</div><p>确保路径path所在的文件夹存在。如果该路径所在文件夹不存在，则创建该文件夹。</p>
+<p>例如对于路径&quot;/sdcard/Download/ABC/1.txt&quot;，如果/Download/文件夹不存在，则会先创建Download，再创建ABC文件夹。</p>
+<h2>files.read(path[, encoding = &quot;utf-8&quot;])<span><a class="mark" href="#files_files_read_path_encoding_utf_8" id="files_files_read_path_encoding_utf_8">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li><code>encoding</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 字符编码，可选，默认为utf-8</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>读取文本文件path的所有内容并返回。如果文件不存在，则抛出<code>FileNotFoundException</code>。</p>
+<pre><code>log(files.read(&quot;/sdcard/1.txt&quot;));
+</code></pre><h2>files.readBytes(path)<span><a class="mark" href="#files_files_readbytes_path" id="files_files_readbytes_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li>返回 <span class="type">&lt;byte[]&gt;</span></li>
+</ul>
+</div><p>读取文件path的所有内容并返回一个字节数组。如果文件不存在，则抛出<code>FileNotFoundException</code>。</p>
+<p>注意，该数组是Java的数组，不具有JavaScript数组的forEach, slice等函数。</p>
+<p>一个以16进制形式打印文件的例子如下:</p>
+<pre><code>var data = files.readBytes(&quot;/sdcard/1.png&quot;);
+var sb = new java.lang.StringBuilder();
+for(var i = 0; i &lt; data.length; i++){
+    sb.append(data[i].toString(16));
+}
+log(sb.toString());
+</code></pre><h2>files.write(path, text[, encoding = &quot;utf-8&quot;])<span><a class="mark" href="#files_files_write_path_text_encoding_utf_8" id="files_files_write_path_text_encoding_utf_8">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li><code>text</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要写入的文本内容</li>
+<li><code>encoding</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 字符编码</li>
+</ul>
+</div><p>把text写入到文件path中。如果文件存在则覆盖，不存在则创建。</p>
+<pre><code>var text = &quot;文件内容&quot;;
+//写入文件
+files.write(&quot;/sdcard/1.txt&quot;, text);
+//用其他应用查看文件
+app.viewFile(&quot;/sdcard/1.txt&quot;);
+</code></pre><h2>files.writeBytes(path, bytes)<span><a class="mark" href="#files_files_writebytes_path_bytes" id="files_files_writebytes_path_bytes">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li><code>bytes</code> <span class="type">&lt;byte[]&gt;</span> 字节数组，要写入的二进制数据</li>
+</ul>
+</div><p>把bytes写入到文件path中。如果文件存在则覆盖，不存在则创建。</p>
+<h2>files.append(path, text[, encoding = &#39;utf-8&#39;])<span><a class="mark" href="#files_files_append_path_text_encoding_utf_8" id="files_files_append_path_text_encoding_utf_8">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li><code>text</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要写入的文本内容</li>
+<li><code>encoding</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 字符编码</li>
+</ul>
+</div><p>把text追加到文件path的末尾。如果文件不存在则创建。</p>
+<pre><code>var text = &quot;追加的文件内容&quot;;
+files.append(&quot;/sdcard/1.txt&quot;, text);
+files.append(&quot;/sdcard/1.txt&quot;, text);
+//用其他应用查看文件
+app.viewFile(&quot;/sdcard/1.txt&quot;);
+</code></pre><h2>files.appendBytes(path, text[, encoding = &#39;utf-8&#39;])<span><a class="mark" href="#files_files_appendbytes_path_text_encoding_utf_8" id="files_files_appendbytes_path_text_encoding_utf_8">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li><code>bytes</code> <span class="type">&lt;byte[]&gt;</span> 字节数组，要写入的二进制数据</li>
+</ul>
+</div><p>把bytes追加到文件path的末尾。如果文件不存在则创建。</p>
+<h2>files.copy(fromPath, toPath)<span><a class="mark" href="#files_files_copy_frompath_topath" id="files_files_copy_frompath_topath">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>fromPath</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要复制的原文件路径</li>
+<li><code>toPath</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 复制到的文件路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>复制文件，返回是否复制成功。例如<code>files.copy(&quot;/sdcard/1.txt&quot;, &quot;/sdcard/Download/1.txt&quot;)</code>。</p>
+<h2>files.move(fromPath, toPath)<span><a class="mark" href="#files_files_move_frompath_topath" id="files_files_move_frompath_topath">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>fromPath</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要移动的原文件路径</li>
+<li><code>toPath</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 移动到的文件路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>移动文件，返回是否移动成功。例如<code>files.move(&quot;/sdcard/1.txt&quot;, &quot;/sdcard/Download/1.txt&quot;)</code>会把1.txt文件从sd卡根目录移动到Download文件夹。</p>
+<h2>files.rename(path, newName)<span><a class="mark" href="#files_files_rename_path_newname" id="files_files_rename_path_newname">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要重命名的原文件路径</li>
+<li><code>newName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要重命名的新文件名</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>重命名文件，并返回是否重命名成功。例如<code>files.rename(&quot;/sdcard/1.txt&quot;, &quot;2.txt&quot;)</code>。</p>
+<h2>files.renameWithoutExtension(path, newName)<span><a class="mark" href="#files_files_renamewithoutextension_path_newname" id="files_files_renamewithoutextension_path_newname">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要重命名的原文件路径</li>
+<li><code>newName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要重命名的新文件名</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>重命名文件，不包含拓展名，并返回是否重命名成功。例如<code>files.rename(&quot;/sdcard/1.txt&quot;, &quot;2&quot;)</code>会把&quot;1.txt&quot;重命名为&quot;2.txt&quot;。</p>
+<h2>files.getName(path)<span><a class="mark" href="#files_files_getname_path" id="files_files_getname_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回文件的文件名。例如<code>files.getName(&quot;/sdcard/1.txt&quot;)</code>返回&quot;1.txt&quot;。</p>
+<h2>files.getNameWithoutExtension(path)<span><a class="mark" href="#files_files_getnamewithoutextension_path" id="files_files_getnamewithoutextension_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回不含拓展名的文件的文件名。例如<code>files.getName(&quot;/sdcard/1.txt&quot;)</code>返回&quot;1&quot;。</p>
+<h2>files.getExtension(path)<span><a class="mark" href="#files_files_getextension_path" id="files_files_getextension_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回文件的拓展名。例如<code>files.getExtension(&quot;/sdcard/1.txt&quot;)</code>返回&quot;txt&quot;。</p>
+<h2>files.remove(path)<span><a class="mark" href="#files_files_remove_path" id="files_files_remove_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>删除文件或<strong>空文件夹</strong>，返回是否删除成功。</p>
+<h2>files.removeDir(path)<span><a class="mark" href="#files_files_removedir_path" id="files_files_removedir_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>删除文件夹，如果文件夹不为空，则删除该文件夹的所有内容再删除该文件夹，返回是否全部删除成功。</p>
+<h2>files.getSdcardPath()<span><a class="mark" href="#files_files_getsdcardpath" id="files_files_getsdcardpath">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回SD卡路径。所谓SD卡，即外部存储器。</p>
+<h2>files.cwd()<span><a class="mark" href="#files_files_cwd" id="files_files_cwd">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回脚本的&quot;当前工作文件夹路径&quot;。该路径指的是，如果脚本本身为脚本文件，则返回这个脚本文件所在目录；否则返回<code>null</code>获取其他设定路径。</p>
+<p>例如，对于脚本文件&quot;/sdcard/脚本/1.js&quot;运行<code>files.cwd()</code>返回&quot;/sdcard/脚本/&quot;。</p>
+<h2>files.path(relativePath)<span><a class="mark" href="#files_files_path_relativepath" id="files_files_path_relativepath">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>relativePath</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 相对路径</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回相对路径对应的绝对路径。例如<code>files.path(&quot;./1.png&quot;)</code>，如果运行这个语句的脚本位于文件夹&quot;/sdcard/脚本/&quot;中，则返回<code>&quot;/sdcard/脚本/1.png&quot;</code>。</p>
+<h2>files.listDir(path[, filter])<span><a class="mark" href="#files_files_listdir_path_filter" id="files_files_listdir_path_filter">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li><code>filter</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 过滤函数，可选。接收一个<code>string</code>参数（文件名），返回一个<code>boolean</code>值。</li>
+</ul>
+</div><p>列出文件夹path下的满足条件的文件和文件夹的名称的数组。如果不加filter参数，则返回所有文件和文件夹。</p>
+<p>列出sdcard目录下所有文件和文件夹为:</p>
+<pre><code>var arr = files.listDir(&quot;/sdcard/&quot;);
+log(arr);
+</code></pre><p>列出脚本目录下所有js脚本文件为:</p>
+<pre><code>var dir = &quot;/sdcard/脚本/&quot;;
+var jsFiles = files.listDir(dir, function(name){
+    return name.endsWith(&quot;.js&quot;) &amp;&amp; files.isFile(files.join(dir, name));
+});
+log(jsFiles);
+</code></pre><h2>open(path[, mode = &quot;r&quot;, encoding = &quot;utf-8&quot;, bufferSize = 8192])<span><a class="mark" href="#files_open_path_mode_r_encoding_utf_8_buffersize_8192" id="files_open_path_mode_r_encoding_utf_8_buffersize_8192">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文件路径，例如&quot;/sdcard/1.txt&quot;。</li>
+<li><code>mode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文件打开模式，包括:<ul>
+<li>&quot;r&quot;: 只读文本模式。该模式下只能对文件执行<strong>文本</strong>读取操作。</li>
+<li>&quot;w&quot;: 只写文本模式。该模式下只能对文件执行<strong>文本</strong>覆盖写入操作。</li>
+<li>&quot;a&quot;: 附加文本模式。该模式下将会把写入的文本附加到文件末尾。  </li>
+<li>&quot;rw&quot;: 随机读写文本模式。该模式下将会把写入的文本附加到文件末尾。<br>目前暂不支持二进制模式，随机读写模式。</li>
+</ul>
+</li>
+<li><code>encoding</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 字符编码。</li>
+<li><code>bufferSize</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 文件读写的缓冲区大小。</li>
+</ul>
+</div><p>打开一个文件。根据打开模式返回不同的文件对象。包括：</p>
+<ul>
+<li>&quot;r&quot;: 返回一个ReadableTextFile对象。</li>
+<li>&quot;w&quot;, &quot;a&quot;: 返回一个WritableTextFile对象。</li>
+</ul>
+<p>对于&quot;w&quot;模式，如果文件并不存在，则会创建一个，已存在则会清空该文件内容；其他模式文件不存在会抛出FileNotFoundException。</p>
+<h1>ReadableTextFile<span><a class="mark" href="#files_readabletextfile" id="files_readabletextfile">#</a></span></h1>
+<p>可读文件对象。</p>
+<h2>ReadableTextFile.read()<span><a class="mark" href="#files_readabletextfile_read" id="files_readabletextfile_read">#</a></span></h2>
+<p>返回该文件剩余的所有内容的字符串。</p>
+<h2>ReadableTextFile.read(maxCount)<span><a class="mark" href="#files_readabletextfile_read_maxcount" id="files_readabletextfile_read_maxcount">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>maxCount</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;Number&gt;</a> 最大读取的字符数量</li>
+</ul>
+</div><p>读取该文件接下来最长为maxCount的字符串并返回。即使文件剩余内容不足maxCount也不会出错。</p>
+<h2>ReadableTextFile.readline()<span><a class="mark" href="#files_readabletextfile_readline" id="files_readabletextfile_readline">#</a></span></h2>
+<p>读取一行并返回（不包含换行符）。</p>
+<h2>ReadableTextFile.readlines()<span><a class="mark" href="#files_readabletextfile_readlines" id="files_readabletextfile_readlines">#</a></span></h2>
+<p>读取剩余的所有行，并返回它们按顺序组成的字符串数组。</p>
+<h2>close()<span><a class="mark" href="#files_close" id="files_close">#</a></span></h2>
+<p>关闭该文件。</p>
+<p><strong>打开一个文件不再使用时务必关闭</strong></p>
+<h1>PWritableTextFile<span><a class="mark" href="#files_pwritabletextfile" id="files_pwritabletextfile">#</a></span></h1>
+<p>可写文件对象。</p>
+<h2>PWritableTextFile.write(text)<span><a class="mark" href="#files_pwritabletextfile_write_text" id="files_pwritabletextfile_write_text">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>text</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文本</li>
+</ul>
+</div><p>把文本内容text写入到文件中。</p>
+<h2>PWritableTextFile.writeline(line)<span><a class="mark" href="#files_pwritabletextfile_writeline_line" id="files_pwritabletextfile_writeline_line">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>text</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文本</li>
+</ul>
+</div><p>把文本line写入到文件中并写入一个换行符。</p>
+<h2>PWritableTextFile.writelines(lines)<span><a class="mark" href="#files_pwritabletextfile_writelines_lines" id="files_pwritabletextfile_writelines_lines">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>lines</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 字符串数组</li>
+</ul>
+</div><p>把很多行写入到文件中....</p>
+<h2>PWritableTextFile.flush()<span><a class="mark" href="#files_pwritabletextfile_flush" id="files_pwritabletextfile_flush">#</a></span></h2>
+<p>把缓冲区内容输出到文件中。</p>
+<h2>PWritableTextFile.close()<span><a class="mark" href="#files_pwritabletextfile_close" id="files_pwritabletextfile_close">#</a></span></h2>
+<p>关闭文件。同时会被缓冲区内容输出到文件。</p>
+<p><strong>打开一个文件写入后，不再使用时务必关闭，否则文件可能会丢失</strong></p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

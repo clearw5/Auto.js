@@ -1,0 +1,977 @@
+{
+  "source": "..\\api\\events.md",
+  "modules": [
+    {
+      "textRaw": "Events",
+      "name": "events",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>events模块提供了监听手机通知、按键、触摸的接口。您可以用他配合自动操作函数完成自动化工作。</p>\n<p>events本身是一个<a href=\"#events_eventemitter\">EventEmiiter</a>, 但内置了一些事件、包括按键事件、通知事件、Toast事件等。</p>\n<p>需要注意的是，事件的处理是单线程的，并且仍然在原线程执行，如果脚本主体或者其他事件处理中有耗时操作、轮询等，则事件将无法得到及时处理（会进入事件队列等待脚本主体或其他事件处理完成才执行）。例如:</p>\n<pre><code>auto();\nevents.observeNotification();\nevents.on(&#39;toast&#39;, function(t){\n    //这段代码将得不到执行\n    log(t);\n});\nwhile(true){\n    //死循环\n}\n</code></pre>",
+      "methods": [
+        {
+          "textRaw": "events.emitter()",
+          "type": "method",
+          "name": "emitter",
+          "desc": "<p>返回一个新的<a href=\"#events_eventemitter\">EventEmitter</a>。这个EventEmitter没有内置任何事件。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "events.observeKey()",
+          "type": "method",
+          "name": "observeKey",
+          "desc": "<p>启用按键监听，例如音量键、Home键。按键监听使用无障碍服务实现，如果无障碍服务未启用会抛出异常并提示开启。</p>\n<p>只有这个函数成功执行后, <code>onKeyDown</code>, <code>onKeyUp</code>等按键事件的监听才有效。</p>\n<p>该函数在安卓4.3以上才能使用。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "events.onKeyDown(keyName, listener)",
+          "type": "method",
+          "name": "onKeyDown",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`keyName` {string} 要监听的按键名称 ",
+                  "name": "keyName",
+                  "type": "string",
+                  "desc": "要监听的按键名称"
+                },
+                {
+                  "textRaw": "`listener` {Function} 按键监听器。参数为一个[KeyEvent](#events_keyevent)。 ",
+                  "name": "listener",
+                  "type": "Function",
+                  "desc": "按键监听器。参数为一个[KeyEvent](#events_keyevent)。"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "keyName"
+                },
+                {
+                  "name": "listener"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>注册一个按键监听函数，当有keyName对应的按键被按下会调用该函数。可用的按键名称参见<a href=\"#events_keys\">Keys</a>。</p>\n<p>例如:</p>\n<pre><code>//启用按键监听\nevents.observeKey();\n//监听音量上键按下\nevents.onKeyDown(&quot;volume_up&quot;, function(event){\n    toast(&quot;音量上键被按下了&quot;);\n});\n//监听菜单键按下\nevents.onKeyDown(&quot;menu&quot;, function(event){\n    toast(&quot;菜单键被按下了&quot;);\n    exit();\n});\n</code></pre>"
+        },
+        {
+          "textRaw": "events.onKeyUp(keyName, listener)",
+          "type": "method",
+          "name": "onKeyUp",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`keyName` {string} 要监听的按键名称 ",
+                  "name": "keyName",
+                  "type": "string",
+                  "desc": "要监听的按键名称"
+                },
+                {
+                  "textRaw": "`listener` {Function} 按键监听器。参数为一个[KeyEvent](#events_keyevent)。 ",
+                  "name": "listener",
+                  "type": "Function",
+                  "desc": "按键监听器。参数为一个[KeyEvent](#events_keyevent)。"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "keyName"
+                },
+                {
+                  "name": "listener"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>注册一个按键监听函数，当有keyName对应的按键弹起会调用该函数。可用的按键名称参见<a href=\"#events_keys\">Keys</a>。</p>\n<p>一次完整的按键动作包括了按键按下和弹起。按下事件会在手指按下一个按键的&quot;瞬间&quot;触发, 弹起事件则在手指放开这个按键时触发。</p>\n<p>例如:</p>\n<pre><code>//启用按键监听\nevents.observeKey();\n//监听音量下键弹起\nevents.onKeyDown(&quot;volume_down&quot;, function(event){\n    toast(&quot;音量上键弹起&quot;);\n});\n//监听Home键弹起\nevents.onKeyDown(&quot;home&quot;, function(event){\n    toast(&quot;Home键弹起&quot;);\n    exit();\n});\n</code></pre>"
+        },
+        {
+          "textRaw": "events.onceKeyDown(keyName, listener)",
+          "type": "method",
+          "name": "onceKeyDown",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`keyName` {string} 要监听的按键名称 ",
+                  "name": "keyName",
+                  "type": "string",
+                  "desc": "要监听的按键名称"
+                },
+                {
+                  "textRaw": "`listener` {Function} 按键监听器。参数为一个[KeyEvent](#events_keyevent) ",
+                  "name": "listener",
+                  "type": "Function",
+                  "desc": "按键监听器。参数为一个[KeyEvent](#events_keyevent)"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "keyName"
+                },
+                {
+                  "name": "listener"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>注册一个按键监听函数，当有keyName对应的按键被按下时会调用该函数，之后会注销该按键监听器。</p>\n<p>也就是listener只有在onceKeyDown调用后的第一次按键事件被调用一次。</p>\n"
+        },
+        {
+          "textRaw": "events.onceKeyUp(keyName, listener)",
+          "type": "method",
+          "name": "onceKeyUp",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`keyName` {string} 要监听的按键名称 ",
+                  "name": "keyName",
+                  "type": "string",
+                  "desc": "要监听的按键名称"
+                },
+                {
+                  "textRaw": "`listener` {Function} 按键监听器。参数为一个[KeyEvent](#events_keyevent) ",
+                  "name": "listener",
+                  "type": "Function",
+                  "desc": "按键监听器。参数为一个[KeyEvent](#events_keyevent)"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "keyName"
+                },
+                {
+                  "name": "listener"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>注册一个按键监听函数，当有keyName对应的按键弹起时会调用该函数，之后会注销该按键监听器。</p>\n<p>也就是listener只有在onceKeyUp调用后的第一次按键事件被调用一次。</p>\n"
+        },
+        {
+          "textRaw": "events.removeAllKeyDownListeners(keyName)",
+          "type": "method",
+          "name": "removeAllKeyDownListeners",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`keyName` {string} 按键名称 ",
+                  "name": "keyName",
+                  "type": "string",
+                  "desc": "按键名称"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "keyName"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>删除该按键的KeyDown(按下)事件的所有监听。</p>\n"
+        },
+        {
+          "textRaw": "events.removeAllKeyUpListeners(keyName)",
+          "type": "method",
+          "name": "removeAllKeyUpListeners",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`keyName` {string} 按键名称 ",
+                  "name": "keyName",
+                  "type": "string",
+                  "desc": "按键名称"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "keyName"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>删除该按键的KeyUp(弹起)事件的所有监听。</p>\n"
+        },
+        {
+          "textRaw": "events.setKeyInterceptionEnabled([key, ]enabled)",
+          "type": "method",
+          "name": "setKeyInterceptionEnabled",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`enabled` {boolean} ",
+                  "name": "enabled",
+                  "type": "boolean",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`key` {string} 要屏蔽的按键 ",
+                  "name": "key",
+                  "type": "string",
+                  "desc": "要屏蔽的按键"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "key",
+                  "optional": true
+                },
+                {
+                  "name": "enabled"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>设置按键屏蔽是否启用。所谓按键屏蔽指的是，屏蔽原有按键的功能，例如使得音量键不再能调节音量，但此时仍然能通过按键事件监听按键。</p>\n<p>如果不加参数key则会屏蔽所有按键。</p>\n<p>例如，调用<code>events.setKeyInterceptionEnabled(true)</code>会使系统的音量、Home、返回等键不再具有调节音量、回到主页、返回的作用，但此时仍然能通过按键事件监听按键。</p>\n<p>该函数通常于按键监听结合，例如想监听音量键并使音量键按下时不弹出音量调节框则为：</p>\n<pre><code>events.setKeyInterceptionEnabled(&quot;volume_up&quot;, true);\nevents.observeKey();\nevents.onKeyDown(&quot;volume_up&quot;, ()=&gt;{\n    log(&quot;音量上键被按下&quot;);\n});\n</code></pre><p>只要有一个脚本屏蔽了某个按键，该按键便会被屏蔽；当脚本退出时，会自动解除所有按键屏蔽。</p>\n"
+        },
+        {
+          "textRaw": "events.observeTouch()",
+          "type": "method",
+          "name": "observeTouch",
+          "desc": "<p>启用屏幕触摸监听。（需要root权限）</p>\n<p>只有这个函数被成功执行后, 触摸事件的监听才有效。</p>\n<p>没有root权限调用该函数则什么也不会发生。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "events.setTouchEventTimeout(timeout)",
+          "type": "method",
+          "name": "setTouchEventTimeout",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`timeout` {number} 两个触摸事件的最小间隔。单位毫秒。默认为10毫秒。如果number小于0，视为0处理。 ",
+                  "name": "timeout",
+                  "type": "number",
+                  "desc": "两个触摸事件的最小间隔。单位毫秒。默认为10毫秒。如果number小于0，视为0处理。"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "timeout"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>设置两个触摸事件分发的最小时间间隔。</p>\n<p>例如间隔为10毫秒的话，前一个触摸事件发生并被注册的监听器处理后，至少要过10毫秒才能分发和处理下一个触摸事件，这10毫秒之间的触摸将会被忽略。</p>\n<p>建议在满足需要的情况下尽量提高这个间隔。一个简单滑动动作可能会连续触发上百个触摸事件，如果timeout设置过低可能造成事件拥堵。强烈建议不要设置timeout为0。</p>\n"
+        },
+        {
+          "textRaw": "events.getTouchEventTimeout()",
+          "type": "method",
+          "name": "getTouchEventTimeout",
+          "desc": "<p>返回触摸事件的最小时间间隔。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "events.onTouch(listener)",
+          "type": "method",
+          "name": "onTouch",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`listener` {Function} 参数为[Point](images.html#images_point)的函数 ",
+                  "name": "listener",
+                  "type": "Function",
+                  "desc": "参数为[Point](images.html#images_point)的函数"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "listener"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>注册一个触摸监听函数。相当于<code>on(&quot;touch&quot;, listener)</code>。</p>\n<p>例如:</p>\n<pre><code>//启用触摸监听\nevents.observeTouch();\n//注册触摸监听器\nevents.onTouch(function(p){\n    //触摸事件发生时, 打印出触摸的点的坐标\n    log(p.x + &quot;, &quot; + p.y);\n});\n</code></pre>"
+        },
+        {
+          "textRaw": "events.removeAllTouchListeners()",
+          "type": "method",
+          "name": "removeAllTouchListeners",
+          "desc": "<p>删除所有事件监听函数。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "events.observeNotification()",
+          "type": "method",
+          "name": "observeNotification",
+          "desc": "<p>开启通知监听。例如QQ消息、微信消息、推送等通知。</p>\n<p>通知监听依赖于通知服务，如果通知服务没有运行，会抛出异常并跳转到通知权限开启界面。（有时即使通知权限已经开启通知服务也没有运行，这时需要关闭权限再重新开启一次）</p>\n<p>例如：</p>\n<pre><code>events.obverseNotification();\nevents.onNotification(function(notification){\n    log(notification.getText());\n});\n</code></pre>",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "events.observeToast()",
+          "type": "method",
+          "name": "observeToast",
+          "desc": "<p>开启Toast监听。</p>\n<p>Toast监听依赖于无障碍服务，因此此函数会确保无障碍服务运行。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        }
+      ],
+      "modules": [
+        {
+          "textRaw": "事件: 'key'",
+          "name": "事件:_'key'",
+          "desc": "<ul>\n<li><code>keyCode</code> {number} 键值</li>\n<li><code>event</code> {KeyEvent} 事件</li>\n</ul>\n<p>当有按键被按下或弹起时会触发该事件。\n例如：</p>\n<pre><code>auto();\nevents.observeKey();\nevents.on(&quot;key&quot;, function(keyCode, event){\n    //处理按键事件\n});\n</code></pre><p>其中监听器的参数KeyCode包括：</p>\n<ul>\n<li><code>keys.home</code> 主页键</li>\n<li><code>keys.back</code> 返回键</li>\n<li><code>keys.menu</code> 菜单键</li>\n<li><code>keys.volume_up</code> 音量上键</li>\n<li><code>keys.volume_down</code> 音量下键</li>\n</ul>\n<p>例如：</p>\n<pre><code>auto();\nevents.observeKey();\nevents.on(&quot;key&quot;, function(keyCode, event){\n    if(keyCode == keys.menu &amp;&amp; event.getAction() == event.ACTION_UP){\n        toast(&quot;菜单键按下&quot;);\n    }\n});\n</code></pre>",
+          "type": "module",
+          "displayName": "事件: 'key'"
+        },
+        {
+          "textRaw": "事件: 'key_down'",
+          "name": "事件:_'key_down'",
+          "desc": "<ul>\n<li><code>keyCode</code> {number} 键值</li>\n<li><code>event</code> {KeyEvent} 事件</li>\n</ul>\n<p>当有按键被按下时会触发该事件。</p>\n<pre><code>auto();\nevents.observeKey();\nevents.on(&quot;key_down&quot;, function(keyCode, event){\n    //处理按键按下事件\n});\n</code></pre>",
+          "type": "module",
+          "displayName": "事件: 'key_down'"
+        },
+        {
+          "textRaw": "事件: 'key_up'",
+          "name": "事件:_'key_up'",
+          "desc": "<ul>\n<li><code>keyCode</code> {number} 键值</li>\n<li><code>event</code> {KeyEvent} 事件</li>\n</ul>\n<p>当有按键弹起时会触发该事件。</p>\n<pre><code>auto();\nevents.observeKey();\nevents.on(&quot;key_up&quot;, function(keyCode, event){\n    //处理按键弹起事件\n});\n</code></pre>",
+          "type": "module",
+          "displayName": "事件: 'key_up'"
+        },
+        {
+          "textRaw": "事件: 'exit`",
+          "name": "事件:_'exit`",
+          "desc": "<p>当脚本正常或者异常退出时会触发该事件。事件处理中如果有异常抛出，则立即中止exit事件的处理（即使exit事件有多个处理函数）并在控制台和日志中打印该异常。</p>\n<p>一个脚本停止运行时，会关闭该脚本的所有悬浮窗，触发exit事件，之后再回收资源。如果exit事件的处理中有死循环，则后续资源无法得到及时回收。\n此时脚本会停留在任务列表，如果在任务列表中关闭，则会强制结束exit事件的处理并回收后续资源。</p>\n<pre><code>log(&quot;开始运行&quot;)\nevents.on(&quot;exit&quot;, function(){\n    log(&quot;结束运行&quot;);\n});\nlog(&quot;即将结束运行&quot;);\n</code></pre>",
+          "type": "module",
+          "displayName": "事件: 'exit`"
+        },
+        {
+          "textRaw": "事件: 'toast'",
+          "name": "事件:_'toast'",
+          "desc": "<ul>\n<li><code>toast</code> {Object}<ul>\n<li><code>getText()</code> 获取Toast的文本内容</li>\n<li><code>getPackageName()</code> 获取发出Toast的应用包名</li>\n</ul>\n</li>\n</ul>\n<p>当有应用发出toast(气泡消息)时会触发该事件。但Auto.js软件本身的toast除外。</p>\n<p>例如，要记录发出所有toast的应用：</p>\n<pre><code>events.observeToast();\nevents.onToast(function(toast){\n    log(&quot;Toast内容: &quot; + toast.getText() + &quot; 包名: &quot; + toast.getPackageName());\n});\n</code></pre>",
+          "type": "module",
+          "displayName": "事件: 'toast'"
+        },
+        {
+          "textRaw": "事件: 'notification'",
+          "name": "事件:_'notification'",
+          "desc": "<ul>\n<li><code>notification</code> <a href=\"#events_notification\">Notification</a> 通知对象</li>\n</ul>\n<p>当有应用发出通知时会触发该事件，参数为<a href=\"#events_notification\">Notification</a>。</p>\n<p>例如：</p>\n<pre><code>events.observeNotification();\nevents.on(&quot;notification&quot;, function(n){\n    log(&quot;收到新通知:\\n 标题: %s, 内容: %s, \\n包名: %s&quot;, n.getTitle(), n.getText(), n.getPackageName());\n});\n</code></pre>",
+          "type": "module",
+          "displayName": "事件: 'notification'"
+        }
+      ],
+      "type": "module",
+      "displayName": "Events"
+    },
+    {
+      "textRaw": "Notification",
+      "name": "notification",
+      "desc": "<p>通知对象，可以获取通知详情，包括通知标题、内容、发出通知的包名、时间等，也可以对通知进行操作，比如点击、删除。</p>\n",
+      "properties": [
+        {
+          "textRaw": "`number` {number} ",
+          "type": "number",
+          "name": "number",
+          "desc": "<p>通知数量。例如QQ连续收到两条消息时number为2。</p>\n"
+        },
+        {
+          "textRaw": "`when` {number} ",
+          "type": "number",
+          "name": "when",
+          "desc": "<p>通知发出时间的时间戳，可以用于构造<code>Date</code>对象。例如：</p>\n<pre><code>events.observeNotification();\nevents.on(&quot;notification&quot;, function(n){\n    log(&quot;通知时间为}&quot; + new Date(n.when));\n});\n</code></pre>"
+        }
+      ],
+      "methods": [
+        {
+          "textRaw": "Notification.getPackageName()",
+          "type": "method",
+          "name": "getPackageName",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>获取发出通知的应用包名。</p>\n"
+        },
+        {
+          "textRaw": "Notification.getTitle()",
+          "type": "method",
+          "name": "getTitle",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>获取通知的标题。</p>\n"
+        },
+        {
+          "textRaw": "Notification.getText()",
+          "type": "method",
+          "name": "getText",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>获取通知的内容。</p>\n"
+        },
+        {
+          "textRaw": "Notification.click()",
+          "type": "method",
+          "name": "click",
+          "desc": "<p>点击该通知。例如对于一条QQ消息，点击会进入具体的聊天界面。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "Notification.delete()",
+          "type": "method",
+          "name": "delete",
+          "desc": "<p>删除该通知。该通知将从通知栏中消失。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        }
+      ],
+      "type": "module",
+      "displayName": "Notification"
+    },
+    {
+      "textRaw": "KeyEvent",
+      "name": "keyevent",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "methods": [
+        {
+          "textRaw": "KeyEvent.getAction()",
+          "type": "method",
+          "name": "getAction",
+          "desc": "<p>返回事件的动作。包括：</p>\n<ul>\n<li><code>KeyEvent.ACTION_DOWN</code> 按下事件</li>\n<li><code>KeyEvent.ACTION_UP</code> 弹起事件</li>\n</ul>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "KeyEvent.getKeyCode()",
+          "type": "method",
+          "name": "getKeyCode",
+          "desc": "<p>返回按键的键值。包括：</p>\n<ul>\n<li><code>KeyEvent.KEYCODE_HOME</code> 主页键</li>\n<li><code>KeyEvent.KEYCODE_BACK</code> 返回键</li>\n<li><code>KeyEvent.KEYCODE_MENU</code> 菜单键</li>\n<li><code>KeyEvent.KEYCODE_VOLUME_UP</code> 音量上键</li>\n<li><code>KeyEvent.KEYCODE_VOLUME_DOWN</code> 音量下键</li>\n</ul>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "KeyEvent.getEventTime()",
+          "type": "method",
+          "name": "getEventTime",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {number} ",
+                  "name": "返回",
+                  "type": "number"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回事件发生的时间戳。</p>\n"
+        },
+        {
+          "textRaw": "KeyEvent.getDownTime()",
+          "type": "method",
+          "name": "getDownTime",
+          "desc": "<p>返回最近一次按下事件的时间戳。如果本身是按下事件，则与<code>getEventTime()</code>相同。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "KeyEvent.keyCodeToString(keyCode)",
+          "type": "method",
+          "name": "keyCodeToString",
+          "desc": "<p>把键值转换为字符串。例如KEYCODE_HOME转换为&quot;KEYCODE_HOME&quot;。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "keyCode"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "type": "module",
+      "displayName": "KeyEvent"
+    },
+    {
+      "textRaw": "keys",
+      "name": "keys",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>按键事件中所有可用的按键名称为：</p>\n<ul>\n<li><code>volume_up</code>  音量上键</li>\n<li><code>volume_down</code> 音量下键</li>\n<li><code>home</code> 主屏幕键</li>\n<li><code>back</code> 返回键</li>\n<li><code>menu</code> 菜单键</li>\n</ul>\n",
+      "type": "module",
+      "displayName": "keys"
+    },
+    {
+      "textRaw": "EventEmitter",
+      "name": "eventemitter",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "properties": [
+        {
+          "textRaw": "EventEmitter.defaultMaxListeners",
+          "name": "defaultMaxListeners",
+          "desc": "<p>每个事件默认可以注册最多 10 个监听器。 单个 EventEmitter 实例的限制可以使用 emitter.setMaxListeners(n) 方法改变。 所有 EventEmitter 实例的默认值可以使用 EventEmitter.defaultMaxListeners 属性改变。 </p>\n<p>设置 EventEmitter.defaultMaxListeners 要谨慎，因为会影响所有 EventEmitter 实例，包括之前创建的。 因而，调用 emitter.setMaxListeners(n) 优先于 EventEmitter.defaultMaxListeners。</p>\n<p>注意，与Node.js不同，<strong>这是一个硬性限制</strong>。 EventEmitter 实例不允许添加更多的监听器，监听器超过最大数量时会抛出TooManyListenersException。</p>\n<pre><code>emitter.setMaxListeners(emitter.getMaxListeners() + 1);\nemitter.once(&#39;event&#39;, () =&gt; {\n  // 做些操作\n  emitter.setMaxListeners(Math.max(emitter.getMaxListeners() - 1, 0));\n});\n</code></pre>"
+        }
+      ],
+      "methods": [
+        {
+          "textRaw": "EventEmitter.addListener(eventName, listener)",
+          "type": "method",
+          "name": "addListener",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`eventName` {any} ",
+                  "name": "eventName",
+                  "type": "any"
+                },
+                {
+                  "textRaw": "`listener` {Function} ",
+                  "name": "listener",
+                  "type": "Function"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "eventName"
+                },
+                {
+                  "name": "listener"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>emitter.on(eventName, listener) 的别名。</p>\n"
+        },
+        {
+          "textRaw": "EventEmitter.emit(eventName[, ...args])",
+          "type": "method",
+          "name": "emit",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`eventName` {any} ",
+                  "name": "eventName",
+                  "type": "any"
+                },
+                {
+                  "textRaw": "`args` {any} ",
+                  "name": "args",
+                  "type": "any",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "eventName"
+                },
+                {
+                  "name": "...args",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>按监听器的注册顺序，同步地调用每个注册到名为 eventName 事件的监听器，并传入提供的参数。</p>\n<p>如果事件有监听器，则返回 true ，否则返回 false。</p>\n"
+        },
+        {
+          "textRaw": "EventEmitter.eventNames()",
+          "type": "method",
+          "name": "eventNames",
+          "desc": "<p>返回一个列出触发器已注册监听器的事件的数组。 数组中的值为字符串或符号。</p>\n<pre><code>const myEE = events.emitter();\nmyEE.on(&#39;foo&#39;, () =&gt; {});\nmyEE.on(&#39;bar&#39;, () =&gt; {});\n\nconst sym = Symbol(&#39;symbol&#39;);\nmyEE.on(sym, () =&gt; {});\n\nconsole.log(myEE.eventNames());\n// 打印: [ &#39;foo&#39;, &#39;bar&#39;, Symbol(symbol) ]\n</code></pre>",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "EventEmitter.getMaxListeners()",
+          "type": "method",
+          "name": "getMaxListeners",
+          "desc": "<p>返回 EventEmitter 当前的最大监听器限制值，该值可以通过 emitter.setMaxListeners(n) 设置或默认为 EventEmitter.defaultMaxListeners。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "EventEmitter.listenerCount(eventName)",
+          "type": "method",
+          "name": "listenerCount",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`eventName` {string} 正在被监听的事件名 ",
+                  "name": "eventName",
+                  "type": "string",
+                  "desc": "正在被监听的事件名"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "eventName"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回正在监听名为 eventName 的事件的监听器的数量。</p>\n"
+        },
+        {
+          "textRaw": "EventEmitter.listeners(eventName)",
+          "type": "method",
+          "name": "listeners",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`eventName` {string} ",
+                  "name": "eventName",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "eventName"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回名为 eventName 的事件的监听器数组的副本。</p>\n<pre><code>server.on(&#39;connection&#39;, (stream) =&gt; {\n  console.log(&#39;someone connected!&#39;);\n});\nconsole.log(util.inspect(server.listeners(&#39;connection&#39;)));\n// 打印: [ [Function] ]\n</code></pre>"
+        },
+        {
+          "textRaw": "EventEmitter.on(eventName, listener)",
+          "type": "method",
+          "name": "on",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`eventName` {any} 事件名 ",
+                  "name": "eventName",
+                  "type": "any",
+                  "desc": "事件名"
+                },
+                {
+                  "textRaw": "`listener` {Function} 回调函数 ",
+                  "name": "listener",
+                  "type": "Function",
+                  "desc": "回调函数"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "eventName"
+                },
+                {
+                  "name": "listener"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>添加 listener 函数到名为 eventName 的事件的监听器数组的末尾。 不会检查 listener 是否已被添加。 多次调用并传入相同的 eventName 和 listener 会导致 listener 被添加与调用多次。</p>\n<pre><code>server.on(&#39;connection&#39;, (stream) =&gt; {\n  console.log(&#39;有连接！&#39;);\n});\n</code></pre><p>返回一个 EventEmitter 引用，可以链式调用。</p>\n<p>默认情况下，事件监听器会按照添加的顺序依次调用。 emitter.prependListener() 方法可用于将事件监听器添加到监听器数组的开头。</p>\n<pre><code>const myEE = events.emitter();\nmyEE.on(&#39;foo&#39;, () =&gt; console.log(&#39;a&#39;));\nmyEE.prependListener(&#39;foo&#39;, () =&gt; console.log(&#39;b&#39;));\nmyEE.emit(&#39;foo&#39;);\n// 打印:\n//   b\n//   a\n</code></pre>"
+        },
+        {
+          "textRaw": "EventEmitter.once(eventName, listener)",
+          "type": "method",
+          "name": "once",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`eventName` {any} 事件名 ",
+                  "name": "eventName",
+                  "type": "any",
+                  "desc": "事件名"
+                },
+                {
+                  "textRaw": "`listener` {Function} 回调函数 ",
+                  "name": "listener",
+                  "type": "Function",
+                  "desc": "回调函数"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "eventName"
+                },
+                {
+                  "name": "listener"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>添加一个单次 listener 函数到名为 eventName 的事件。 下次触发 eventName 事件时，监听器会被移除，然后调用。</p>\n<pre><code>server.once(&#39;connection&#39;, (stream) =&gt; {\n  console.log(&#39;首次调用！&#39;);\n});\n</code></pre><p>返回一个 EventEmitter 引用，可以链式调用。</p>\n<p>默认情况下，事件监听器会按照添加的顺序依次调用。 emitter.prependOnceListener() 方法可用于将事件监听器添加到监听器数组的开头。</p>\n<pre><code>const myEE = events.emitter();\nmyEE.once(&#39;foo&#39;, () =&gt; console.log(&#39;a&#39;));\nmyEE.prependOnceListener(&#39;foo&#39;, () =&gt; console.log(&#39;b&#39;));\nmyEE.emit(&#39;foo&#39;);\n// 打印:\n//   b\n//   a\n</code></pre>"
+        },
+        {
+          "textRaw": "EventEmitter.prependListener(eventName, listener)",
+          "type": "method",
+          "name": "prependListener",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`eventName` {any} 事件名 ",
+                  "name": "eventName",
+                  "type": "any",
+                  "desc": "事件名"
+                },
+                {
+                  "textRaw": "`listener` {Function} 回调函数 ",
+                  "name": "listener",
+                  "type": "Function",
+                  "desc": "回调函数"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "eventName"
+                },
+                {
+                  "name": "listener"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>添加 listener 函数到名为 eventName 的事件的监听器数组的开头。 不会检查 listener 是否已被添加。 多次调用并传入相同的 eventName 和 listener 会导致 listener 被添加与调用多次。</p>\n<pre><code>server.prependListener(&#39;connection&#39;, (stream) =&gt; {\n  console.log(&#39;有连接！&#39;);\n});\n</code></pre><p>返回一个 EventEmitter 引用，可以链式调用。</p>\n"
+        },
+        {
+          "textRaw": "EventEmitter.prependOnceListener(eventName, listener)",
+          "type": "method",
+          "name": "prependOnceListener",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`eventName` {any} 事件名 ",
+                  "name": "eventName",
+                  "type": "any",
+                  "desc": "事件名"
+                },
+                {
+                  "textRaw": "`listener` {Function} 回调函数 ",
+                  "name": "listener",
+                  "type": "Function",
+                  "desc": "回调函数"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "eventName"
+                },
+                {
+                  "name": "listener"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>添加一个单次 listener 函数到名为 eventName 的事件的监听器数组的开头。 下次触发 eventName 事件时，监听器会被移除，然后调用。</p>\n<pre><code>server.prependOnceListener(&#39;connection&#39;, (stream) =&gt; {\n  console.log(&#39;首次调用！&#39;);\n});\n</code></pre><p>返回一个 EventEmitter 引用，可以链式调用。</p>\n"
+        },
+        {
+          "textRaw": "EventEmitter.removeAllListeners(\\[eventName\\])",
+          "type": "method",
+          "name": "removeAllListeners",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`eventName` {any} ",
+                  "name": "eventName",
+                  "type": "any"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "\\[eventName\\"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>移除全部或指定 eventName 的监听器。</p>\n<p>注意，在代码中移除其他地方添加的监听器是一个不好的做法，尤其是当 EventEmitter 实例是其他组件或模块创建的。</p>\n<p>返回一个 EventEmitter 引用，可以链式调用。</p>\n"
+        },
+        {
+          "textRaw": "EventEmitter.removeListener(eventName, listener)",
+          "type": "method",
+          "name": "removeListener",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`eventName` {any} ",
+                  "name": "eventName",
+                  "type": "any"
+                },
+                {
+                  "textRaw": "`listener` {Function} ",
+                  "name": "listener",
+                  "type": "Function"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "eventName"
+                },
+                {
+                  "name": "listener"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>从名为 eventName 的事件的监听器数组中移除指定的 listener。</p>\n<pre><code>const callback = (stream) =&gt; {\n  console.log(&#39;有连接！&#39;);\n};\nserver.on(&#39;connection&#39;, callback);\n// ...\nserver.removeListener(&#39;connection&#39;, callback);\n</code></pre><p>removeListener 最多只会从监听器数组里移除一个监听器实例。 如果任何单一的监听器被多次添加到指定 eventName 的监听器数组中，则必须多次调用 removeListener 才能移除每个实例。</p>\n<p>注意，一旦一个事件被触发，所有绑定到它的监听器都会按顺序依次触发。 这意味着，在事件触发后、最后一个监听器完成执行前，任何 removeListener() 或 removeAllListeners() 调用都不会从 emit() 中移除它们。 随后的事件会像预期的那样发生。</p>\n<pre><code>const myEmitter = events.emitter();\n\nconst callbackA = () =&gt; {\n  console.log(&#39;A&#39;);\n  myEmitter.removeListener(&#39;event&#39;, callbackB);\n};\n\nconst callbackB = () =&gt; {\n  console.log(&#39;B&#39;);\n};\n\nmyEmitter.on(&#39;event&#39;, callbackA);\n\nmyEmitter.on(&#39;event&#39;, callbackB);\n\n// callbackA 移除了监听器 callbackB，但它依然会被调用。\n// 触发是内部的监听器数组为 [callbackA, callbackB]\nmyEmitter.emit(&#39;event&#39;);\n// 打印:\n//   A\n//   B\n\n// callbackB 被移除了。\n// 内部监听器数组为 [callbackA]\nmyEmitter.emit(&#39;event&#39;);\n// 打印:\n//   A\n</code></pre><p>因为监听器是使用内部数组进行管理的，所以调用它会改变在监听器被移除后注册的任何监听器的位置索引。 虽然这不会影响监听器的调用顺序，但意味着由 emitter.listeners() 方法返回的监听器数组副本需要被重新创建。</p>\n<p>返回一个 EventEmitter 引用，可以链式调用。</p>\n"
+        },
+        {
+          "textRaw": "EventEmitter.setMaxListeners(n)",
+          "type": "method",
+          "name": "setMaxListeners",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`n` {number} ",
+                  "name": "n",
+                  "type": "number"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "n"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>默认情况下，如果为特定事件添加了超过 10 个监听器，则 EventEmitter 会打印一个警告。 此限制有助于寻找内存泄露。 但是，并不是所有的事件都要被限为 10 个。 emitter.setMaxListeners() 方法允许修改指定的 EventEmitter 实例的限制。 值设为 Infinity（或 0）表明不限制监听器的数量。</p>\n<p>返回一个 EventEmitter 引用，可以链式调用。</p>\n"
+        }
+      ],
+      "type": "module",
+      "displayName": "EventEmitter"
+    },
+    {
+      "textRaw": "events.broadcast: 脚本间广播",
+      "name": "events.broadcast:_脚本间广播",
+      "desc": "<p>脚本间通信除了使用engines模块提供的<code>ScriptEngine.emit()</code>方法以外，也可以使用events模块提供的broadcast广播。</p>\n<p>events.broadcast本身是一个EventEmitter，但它的事件是在脚本间共享的，所有脚本都能发送和监听这些事件；事件处理会在脚本主线程执行（后续可能加入函数<code>onThisThread(eventName, ...args)</code>来提供在其他线程执行的能力）。</p>\n<p>例如在一个脚本发送一个广播hello:</p>\n<pre><code>events.broadcast.emit(&quot;hello&quot;, &quot;小明&quot;);\n</code></pre><p>在其他脚本中监听并处理：</p>\n<pre><code>events.broadcast.on(&quot;hello&quot;, function(name){\n    toast(&quot;你好, &quot; + name);\n});\n//保持脚本运行\nsetInterval(()=&gt;{}, 1000);\n</code></pre>",
+      "type": "module",
+      "displayName": "events.broadcast: 脚本间广播"
+    }
+  ]
+}

@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Keys | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/keys.html">
+</head>
+<body class="alt apidoc" id="api-section-keys">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys active" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="keys" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_undefined"><a href="#keys_keys">Keys</a></span><ul>
+<li><span class="stability_undefined"><a href="#keys_back">back()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_home">home()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_powerdialog">powerDialog()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_notifications">notifications()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_quicksettings">quickSettings()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_recents">recents()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_splitscreen">splitScreen()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_home_1">Home()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_back_1">Back()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_power">Power()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_menu">Menu()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_volumeup">VolumeUp()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_volumedown">VolumeDown()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_camera">Camera()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_up">Up()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_down">Down()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_left">Left()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_right">Right()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_ok">OK()</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_text_text">Text(text)</a></span></li>
+<li><span class="stability_undefined"><a href="#keys_keycode_code">KeyCode(code)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#keys_keycode">附录: KeyCode对照表</a></span></li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>Keys<span><a class="mark" href="#keys_keys" id="keys_keys">#</a></span></h1>
+<p>按键模拟部分提供了一些模拟物理按键的全局函数，包括Home、音量键、照相键等，有的函数依赖于无障碍服务，有的函数依赖于root权限。</p>
+<p>一般来说，以大写字母开头的函数都依赖于root权限。执行此类函数时，如果没有root权限，则函数执行后没有效果，并会在控制台输出一个警告。</p>
+<h2>back()<span><a class="mark" href="#keys_back" id="keys_back">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>模拟按下返回键。返回是否执行成功。
+此函数依赖于无障碍服务。</p>
+<h2>home()<span><a class="mark" href="#keys_home" id="keys_home">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>模拟按下Home键。返回是否执行成功。
+此函数依赖于无障碍服务。</p>
+<h2>powerDialog()<span><a class="mark" href="#keys_powerdialog" id="keys_powerdialog">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>弹出电源键菜单。返回是否执行成功。
+此函数依赖于无障碍服务。</p>
+<h2>notifications()<span><a class="mark" href="#keys_notifications" id="keys_notifications">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>拉出通知栏。返回是否执行成功。
+此函数依赖于无障碍服务。</p>
+<h2>quickSettings()<span><a class="mark" href="#keys_quicksettings" id="keys_quicksettings">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>显示快速设置(下拉通知栏到底)。返回是否执行成功。
+此函数依赖于无障碍服务。</p>
+<h2>recents()<span><a class="mark" href="#keys_recents" id="keys_recents">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>显示最近任务。返回是否执行成功。
+此函数依赖于无障碍服务。</p>
+<h2>splitScreen()<span><a class="mark" href="#keys_splitscreen" id="keys_splitscreen">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>分屏。返回是否执行成功。
+此函数依赖于无障碍服务, 并且需要系统自身功能的支持。</p>
+<h2>Home()<span><a class="mark" href="#keys_home_1" id="keys_home_1">#</a></span></h2>
+<p>模拟按下Home键。
+此函数依赖于root权限。</p>
+<h2>Back()<span><a class="mark" href="#keys_back_1" id="keys_back_1">#</a></span></h2>
+<p>模拟按下返回键。
+此函数依赖于root权限。</p>
+<h2>Power()<span><a class="mark" href="#keys_power" id="keys_power">#</a></span></h2>
+<p>模拟按下电源键。
+此函数依赖于root权限。</p>
+<h2>Menu()<span><a class="mark" href="#keys_menu" id="keys_menu">#</a></span></h2>
+<p>模拟按下菜单键。
+此函数依赖于root权限。</p>
+<h2>VolumeUp()<span><a class="mark" href="#keys_volumeup" id="keys_volumeup">#</a></span></h2>
+<p>按下音量上键。
+此函数依赖于root权限。</p>
+<h2>VolumeDown()<span><a class="mark" href="#keys_volumedown" id="keys_volumedown">#</a></span></h2>
+<p>按键音量上键。
+此函数依赖于root权限。</p>
+<h2>Camera()<span><a class="mark" href="#keys_camera" id="keys_camera">#</a></span></h2>
+<p>模拟按下照相键。</p>
+<h2>Up()<span><a class="mark" href="#keys_up" id="keys_up">#</a></span></h2>
+<p>模拟按下物理按键上。
+此函数依赖于root权限。</p>
+<h2>Down()<span><a class="mark" href="#keys_down" id="keys_down">#</a></span></h2>
+<p>模拟按下物理按键下。
+此函数依赖于root权限。</p>
+<h2>Left()<span><a class="mark" href="#keys_left" id="keys_left">#</a></span></h2>
+<p>模拟按下物理按键左。
+此函数依赖于root权限。</p>
+<h2>Right()<span><a class="mark" href="#keys_right" id="keys_right">#</a></span></h2>
+<p>模拟按下物理按键右。
+此函数依赖于root权限。</p>
+<h2>OK()<span><a class="mark" href="#keys_ok" id="keys_ok">#</a></span></h2>
+<p>模拟按下物理按键确定。
+此函数依赖于root权限。</p>
+<h2>Text(text)<span><a class="mark" href="#keys_text_text" id="keys_text_text">#</a></span></h2>
+<div class="signature"><ul>
+<li>text <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要输入的文字，只能为英文或英文符号
+输入文字text。例如<code>Text(&quot;aaa&quot;);</code></li>
+</ul>
+</div><h2>KeyCode(code)<span><a class="mark" href="#keys_keycode_code" id="keys_keycode_code">#</a></span></h2>
+<div class="signature"><ul>
+<li>code <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <String> 要按下的按键的数字代码或名称。参见下表。
+模拟物理按键。例如<code>KeyCode(29)</code>和<code>KeyCode(&quot;KEYCODE_A&quot;)</code>是按下A键。</li>
+</ul>
+</div><h1>附录: KeyCode对照表<span><a class="mark" href="#keys_keycode" id="keys_keycode">#</a></span></h1>
+<p>KeyCode             KeyEvent Value  </p>
+<ul>
+<li>KEYCODE_MENU 1  </li>
+<li>KEYCODE_SOFT_RIGHT 2  </li>
+<li>KEYCODE_HOME 3  </li>
+<li>KEYCODE_BACK 4  </li>
+<li>KEYCODE_CALL 5  </li>
+<li>KEYCODE_ENDCALL 6  </li>
+<li>KEYCODE_0 7  </li>
+<li>KEYCODE_1 8  </li>
+<li>KEYCODE_2 9  </li>
+<li>KEYCODE_3 10  </li>
+<li>KEYCODE_4 11  </li>
+<li>KEYCODE_5 12  </li>
+<li>KEYCODE_6 13  </li>
+<li>KEYCODE_7 14  </li>
+<li>KEYCODE_8 15  </li>
+<li>KEYCODE_9 16  </li>
+<li>KEYCODE_STAR 17  </li>
+<li>KEYCODE_POUND 18  </li>
+<li>KEYCODE_DPAD_UP 19  </li>
+<li>KEYCODE_DPAD_DOWN 20  </li>
+<li>KEYCODE_DPAD_LEFT 21  </li>
+<li>KEYCODE_DPAD_RIGHT 22  </li>
+<li>KEYCODE_DPAD_CENTER 23  </li>
+<li>KEYCODE_VOLUME_UP 24  </li>
+<li>KEYCODE_VOLUME_DOWN 25  </li>
+<li>KEYCODE_POWER 26  </li>
+<li>KEYCODE_CAMERA 27  </li>
+<li>KEYCODE_CLEAR 28  </li>
+<li>KEYCODE_A 29  </li>
+<li>KEYCODE_B 30  </li>
+<li>KEYCODE_C 31  </li>
+<li>KEYCODE_D 32  </li>
+<li>KEYCODE_E 33  </li>
+<li>KEYCODE_F 34  </li>
+<li>KEYCODE_G 35  </li>
+<li>KEYCODE_H 36  </li>
+<li>KEYCODE_I 37  </li>
+<li>KEYCODE_J 38  </li>
+<li>KEYCODE_K 39  </li>
+<li>KEYCODE_L 40  </li>
+<li>KEYCODE_M 41  </li>
+<li>KEYCODE_N 42  </li>
+<li>KEYCODE_O 43  </li>
+<li>KEYCODE_P 44  </li>
+<li>KEYCODE_Q 45  </li>
+<li>KEYCODE_R 46  </li>
+<li>KEYCODE_S 47  </li>
+<li>KEYCODE_T 48  </li>
+<li>KEYCODE_U 49  </li>
+<li>KEYCODE_V 50  </li>
+<li>KEYCODE_W 51  </li>
+<li>KEYCODE_X 52  </li>
+<li>KEYCODE_Y 53  </li>
+<li>KEYCODE_Z 54  </li>
+<li>KEYCODE_COMMA 55  </li>
+<li>KEYCODE_PERIOD 56  </li>
+<li>KEYCODE_ALT_LEFT 57  </li>
+<li>KEYCODE_ALT_RIGHT 58  </li>
+<li>KEYCODE_SHIFT_LEFT 59  </li>
+<li>KEYCODE_SHIFT_RIGHT 60  </li>
+<li>KEYCODE_TAB 61  </li>
+<li>KEYCODE_SPACE 62  </li>
+<li>KEYCODE_SYM 63  </li>
+<li>KEYCODE_EXPLORER 64  </li>
+<li>KEYCODE_ENVELOPE 65  </li>
+<li>KEYCODE_ENTER 66  </li>
+<li>KEYCODE_DEL 67  </li>
+<li>KEYCODE_GRAVE 68  </li>
+<li>KEYCODE_MINUS 69  </li>
+<li>KEYCODE_EQUALS 70  </li>
+<li>KEYCODE_LEFT_BRACKET 71  </li>
+<li>KEYCODE_RIGHT_BRACKET 72  </li>
+<li>KEYCODE_BACKSLASH 73  </li>
+<li>KEYCODE_SEMICOLON 74  </li>
+<li>KEYCODE_APOSTROPHE 75  </li>
+<li>KEYCODE_SLASH 76  </li>
+<li>KEYCODE_AT 77  </li>
+<li>KEYCODE_NUM 78  </li>
+<li>KEYCODE_HEADSETHOOK 79  </li>
+<li>KEYCODE_FOCUS 80  </li>
+<li>KEYCODE_PLUS 81  </li>
+<li>KEYCODE_MENU 82  </li>
+<li>KEYCODE_NOTIFICATION 83  </li>
+<li>KEYCODE_SEARCH 84  </li>
+<li>TAG<em>LAST</em> KEYCODE 85  </li>
+</ul>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

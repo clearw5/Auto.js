@@ -1,0 +1,112 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   '=g',
+1 verbose cli   'lunr' ]
+2 info using npm@3.10.10
+3 info using node@v6.11.0
+4 silly loadCurrentTree Starting
+5 silly install loadCurrentTree
+6 silly install readLocalPackageData
+7 silly fetchPackageMetaData =g
+8 silly fetchPackageMetaData lunr
+9 silly fetchOtherPackageData =g
+10 silly cache add args [ '=g', null ]
+11 verbose cache add spec =g
+12 silly fetchNamedPackageData lunr
+13 silly mapToRegistry name lunr
+14 silly mapToRegistry using default registry
+15 silly mapToRegistry registry https://registry.npmjs.org/
+16 silly mapToRegistry data Result {
+16 silly mapToRegistry   raw: 'lunr',
+16 silly mapToRegistry   scope: null,
+16 silly mapToRegistry   escapedName: 'lunr',
+16 silly mapToRegistry   name: 'lunr',
+16 silly mapToRegistry   rawSpec: '',
+16 silly mapToRegistry   spec: 'latest',
+16 silly mapToRegistry   type: 'tag' }
+17 silly mapToRegistry uri https://registry.npmjs.org/lunr
+18 silly cache add parsed spec Result {
+18 silly cache add   raw: '=g',
+18 silly cache add   scope: null,
+18 silly cache add   escapedName: null,
+18 silly cache add   name: null,
+18 silly cache add   rawSpec: '=g',
+18 silly cache add   spec: 'F:\\JavaScriptProjects\\AutoJs-Documentation\\generator\\=g',
+18 silly cache add   type: 'local' }
+19 verbose request uri https://registry.npmjs.org/lunr
+20 verbose request no auth needed
+21 info attempt registry request try #1 at 17:44:10
+22 verbose request using bearer token for auth
+23 verbose request id 9b83259671a1ea20
+24 http request GET https://registry.npmjs.org/lunr
+25 error addLocal Could not install F:\JavaScriptProjects\AutoJs-Documentation\generator\=g
+26 silly fetchPackageMetaData Error: ENOENT: no such file or directory, open 'F:\JavaScriptProjects\AutoJs-Documentation\generator\=g'
+26 silly fetchPackageMetaData     at Error (native)
+26 silly fetchPackageMetaData  error for =g { Error: ENOENT: no such file or directory, open 'F:\JavaScriptProjects\AutoJs-Documentation\generator\=g'
+26 silly fetchPackageMetaData     at Error (native)
+26 silly fetchPackageMetaData   errno: -4058,
+26 silly fetchPackageMetaData   code: 'ENOENT',
+26 silly fetchPackageMetaData   syscall: 'open',
+26 silly fetchPackageMetaData   path: 'F:\\JavaScriptProjects\\AutoJs-Documentation\\generator\\=g' }
+27 http 200 https://registry.npmjs.org/lunr
+28 verbose headers { 'content-type': 'application/json; charset=UTF-8',
+28 verbose headers   server: 'UploadServer',
+28 verbose headers   'cache-control': 'max-age=300',
+28 verbose headers   'last-modified': 'Mon, 5 Mar 2018 19:33:17 GMT',
+28 verbose headers   etag: '"5a9d9b7d-de2f"',
+28 verbose headers   'x-npm-region': 'US-West',
+28 verbose headers   'content-encoding': 'gzip',
+28 verbose headers   'content-length': '7739',
+28 verbose headers   'accept-ranges': 'bytes',
+28 verbose headers   date: 'Wed, 11 Apr 2018 09:44:12 GMT',
+28 verbose headers   via: '1.1 varnish',
+28 verbose headers   age: '8213',
+28 verbose headers   connection: 'keep-alive',
+28 verbose headers   'x-served-by': 'cache-sjc3145-SJC',
+28 verbose headers   'x-cache': 'HIT',
+28 verbose headers   'x-cache-hits': '2',
+28 verbose headers   'x-timer': 'S1523439852.494837,VS0,VE0',
+28 verbose headers   vary: 'Accept-Encoding, Accept' }
+29 silly get cb [ 200,
+29 silly get   { 'content-type': 'application/json; charset=UTF-8',
+29 silly get     server: 'UploadServer',
+29 silly get     'cache-control': 'max-age=300',
+29 silly get     'last-modified': 'Mon, 5 Mar 2018 19:33:17 GMT',
+29 silly get     etag: '"5a9d9b7d-de2f"',
+29 silly get     'x-npm-region': 'US-West',
+29 silly get     'content-encoding': 'gzip',
+29 silly get     'content-length': '7739',
+29 silly get     'accept-ranges': 'bytes',
+29 silly get     date: 'Wed, 11 Apr 2018 09:44:12 GMT',
+29 silly get     via: '1.1 varnish',
+29 silly get     age: '8213',
+29 silly get     connection: 'keep-alive',
+29 silly get     'x-served-by': 'cache-sjc3145-SJC',
+29 silly get     'x-cache': 'HIT',
+29 silly get     'x-cache-hits': '2',
+29 silly get     'x-timer': 'S1523439852.494837,VS0,VE0',
+29 silly get     vary: 'Accept-Encoding, Accept' } ]
+30 verbose get saving lunr to C:\Users\Stardust\AppData\Roaming\npm-cache\registry.npmjs.org\lunr\.cache.json
+31 verbose correctMkdir C:\Users\Stardust\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+32 silly rollbackFailedOptional Starting
+33 silly rollbackFailedOptional Finishing
+34 silly runTopLevelLifecycles Finishing
+35 silly install printInstalled
+36 verbose stack Error: ENOENT: no such file or directory, open 'F:\JavaScriptProjects\AutoJs-Documentation\generator\=g'
+36 verbose stack     at Error (native)
+37 verbose cwd F:\JavaScriptProjects\AutoJs-Documentation\generator
+38 error Windows_NT 10.0.16299
+39 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "=g" "lunr"
+40 error node v6.11.0
+41 error npm  v3.10.10
+42 error path F:\JavaScriptProjects\AutoJs-Documentation\generator\=g
+43 error code ENOENT
+44 error errno -4058
+45 error syscall open
+46 error enoent ENOENT: no such file or directory, open 'F:\JavaScriptProjects\AutoJs-Documentation\generator\=g'
+47 error enoent ENOENT: no such file or directory, open 'F:\JavaScriptProjects\AutoJs-Documentation\generator\=g'
+47 error enoent This is most likely not a problem with npm itself
+47 error enoent and is related to npm not being able to find a file.
+48 verbose exit [ -4058, true ]

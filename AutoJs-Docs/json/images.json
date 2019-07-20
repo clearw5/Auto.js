@@ -1,0 +1,2184 @@
+{
+  "source": "..\\api\\images.md",
+  "modules": [
+    {
+      "textRaw": "colors",
+      "name": "colors",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>在Auto.js有两种方式表示一个颜色。</p>\n<p>一种是使用一个字符串&quot;#AARRGGBB&quot;或&quot;#RRGGBB&quot;，其中 AA 是Alpha通道(透明度)的值，RR 是R通道(红色)的值，GG 是G通道(绿色)的值，BB是B通道(蓝色)的值。例如&quot;#ffffff&quot;表示白色, &quot;#7F000000&quot;表示半透明的黑色。</p>\n<p>另一种是使用一个16进制的&quot;32位整数&quot; 0xAARRGGBB 来表示一个颜色，例如 <code>0xFF112233</code>表示颜色&quot;#112233&quot;, <code>0x11223344</code>表示颜色&quot;#11223344&quot;。</p>\n<p>可以通过<code>colors.toString()</code>把颜色整数转换为字符串，通过<code>colors.parseColor()</code>把颜色字符串解析为颜色整数。</p>\n",
+      "methods": [
+        {
+          "textRaw": "colors.toString(color)",
+          "type": "method",
+          "name": "toString",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`color` {number} 整数RGB颜色值 ",
+                  "name": "color",
+                  "type": "number",
+                  "desc": "整数RGB颜色值"
+                },
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "color"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回颜色值的字符串，格式为 &quot;#AARRGGBB&quot;。</p>\n"
+        },
+        {
+          "textRaw": "colors.red(color)",
+          "type": "method",
+          "name": "red",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`color` {number} | {string} 颜色值 ",
+                  "name": "color",
+                  "type": "number",
+                  "desc": "| {string} 颜色值"
+                },
+                {
+                  "textRaw": "返回 {number} ",
+                  "name": "返回",
+                  "type": "number"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "color"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回颜色color的R通道的值，范围0~255.</p>\n"
+        },
+        {
+          "textRaw": "colors.green(color)",
+          "type": "method",
+          "name": "green",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`color` {number} | {string} 颜色值 ",
+                  "name": "color",
+                  "type": "number",
+                  "desc": "| {string} 颜色值"
+                },
+                {
+                  "textRaw": "返回 {number} ",
+                  "name": "返回",
+                  "type": "number"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "color"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回颜色color的G通道的值，范围0~255.</p>\n"
+        },
+        {
+          "textRaw": "colors.blue(color)",
+          "type": "method",
+          "name": "blue",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`color` {number} | {string} 颜色值 ",
+                  "name": "color",
+                  "type": "number",
+                  "desc": "| {string} 颜色值"
+                },
+                {
+                  "textRaw": "返回 {number} ",
+                  "name": "返回",
+                  "type": "number"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "color"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回颜色color的B通道的值，范围0~255.</p>\n"
+        },
+        {
+          "textRaw": "colors.alpha(color)",
+          "type": "method",
+          "name": "alpha",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`color` {number} | {string} 颜色值 ",
+                  "name": "color",
+                  "type": "number",
+                  "desc": "| {string} 颜色值"
+                },
+                {
+                  "textRaw": "返回 {number} ",
+                  "name": "返回",
+                  "type": "number"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "color"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回颜色color的Alpha通道的值，范围0~255.</p>\n"
+        },
+        {
+          "textRaw": "colors.rgb(red, green, blue)",
+          "type": "method",
+          "name": "rgb",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "red {number} 颜色的R通道的值 ",
+                  "name": "red",
+                  "type": "number",
+                  "desc": "颜色的R通道的值"
+                },
+                {
+                  "textRaw": "blue {number} 颜色的G通道的值 ",
+                  "name": "blue",
+                  "type": "number",
+                  "desc": "颜色的G通道的值"
+                },
+                {
+                  "textRaw": "green {number} 颜色的B通道的值 ",
+                  "name": "green",
+                  "type": "number",
+                  "desc": "颜色的B通道的值"
+                },
+                {
+                  "textRaw": "返回 {number} ",
+                  "name": "返回",
+                  "type": "number"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "red"
+                },
+                {
+                  "name": "green"
+                },
+                {
+                  "name": "blue"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回这些颜色通道构成的整数颜色值。Alpha通道将是255（不透明）。</p>\n"
+        },
+        {
+          "textRaw": "colors.argb(alpha, red, green, blue)",
+          "type": "method",
+          "name": "argb",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`alpha` {number} 颜色的Alpha通道的值 ",
+                  "name": "alpha",
+                  "type": "number",
+                  "desc": "颜色的Alpha通道的值"
+                },
+                {
+                  "textRaw": "`red` {number}  颜色的R通道的值 ",
+                  "name": "red",
+                  "type": "number",
+                  "desc": "颜色的R通道的值"
+                },
+                {
+                  "textRaw": "`green` {number} 颜色的G通道的值 ",
+                  "name": "green",
+                  "type": "number",
+                  "desc": "颜色的G通道的值"
+                },
+                {
+                  "textRaw": "`blue` {number} 颜色的B通道的值 ",
+                  "name": "blue",
+                  "type": "number",
+                  "desc": "颜色的B通道的值"
+                },
+                {
+                  "textRaw": "返回 {number} ",
+                  "name": "返回",
+                  "type": "number"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "alpha"
+                },
+                {
+                  "name": "red"
+                },
+                {
+                  "name": "green"
+                },
+                {
+                  "name": "blue"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回这些颜色通道构成的整数颜色值。</p>\n"
+        },
+        {
+          "textRaw": "colors.parseColor(colorStr)",
+          "type": "method",
+          "name": "parseColor",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`colorStr` {string} 表示颜色的字符串，例如\"#112233\" ",
+                  "name": "colorStr",
+                  "type": "string",
+                  "desc": "表示颜色的字符串，例如\"#112233\""
+                },
+                {
+                  "textRaw": "返回 {number} ",
+                  "name": "返回",
+                  "type": "number"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "colorStr"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回颜色的整数值。</p>\n"
+        },
+        {
+          "textRaw": "colors.isSimilar(color2, color2[, threshold, algorithm])",
+          "type": "method",
+          "name": "isSimilar",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`color1` {number} | {string} 颜色值1 ",
+                  "name": "color1",
+                  "type": "number",
+                  "desc": "| {string} 颜色值1"
+                },
+                {
+                  "textRaw": "`color1` {number} | {string} 颜色值2 ",
+                  "name": "color1",
+                  "type": "number",
+                  "desc": "| {string} 颜色值2"
+                },
+                {
+                  "textRaw": "`threshold` {number} 颜色相似度临界值，默认为4。取值范围为0~255。这个值越大表示允许的相似程度越小，如果这个值为0，则两个颜色相等时该函数才会返回true。 ",
+                  "name": "threshold",
+                  "type": "number",
+                  "desc": "颜色相似度临界值，默认为4。取值范围为0~255。这个值越大表示允许的相似程度越小，如果这个值为0，则两个颜色相等时该函数才会返回true。",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`algorithm` {string} 颜色匹配算法，默认为\"diff\", 包括: ",
+                  "options": [
+                    {
+                      "textRaw": "\"diff\": 差值匹配。与给定颜色的R、G、B差的绝对值之和小于threshold时匹配。 ",
+                      "name": "diff",
+                      "desc": "差值匹配。与给定颜色的R、G、B差的绝对值之和小于threshold时匹配。"
+                    },
+                    {
+                      "textRaw": "\"rgb\": rgb欧拉距离相似度。与给定颜色color的rgb欧拉距离小于等于threshold时匹配。 ",
+                      "name": "rgb",
+                      "desc": "rgb欧拉距离相似度。与给定颜色color的rgb欧拉距离小于等于threshold时匹配。"
+                    },
+                    {
+                      "textRaw": "\"rgb+\": 加权rgb欧拉距离匹配([LAB Delta E](https://en.wikipedia.org/wiki/Color_difference))。 ",
+                      "name": "rgb+",
+                      "desc": "加权rgb欧拉距离匹配([LAB Delta E](https://en.wikipedia.org/wiki/Color_difference))。"
+                    },
+                    {
+                      "textRaw": "\"hs\": hs欧拉距离匹配。hs为HSV空间的色调值。 ",
+                      "name": "hs",
+                      "desc": "hs欧拉距离匹配。hs为HSV空间的色调值。"
+                    }
+                  ],
+                  "name": "algorithm",
+                  "type": "string",
+                  "desc": "颜色匹配算法，默认为\"diff\", 包括:",
+                  "optional": true
+                },
+                {
+                  "textRaw": "返回 {Boolean} ",
+                  "name": "返回",
+                  "type": "Boolean"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "color2"
+                },
+                {
+                  "name": "color2"
+                },
+                {
+                  "name": "threshold",
+                  "optional": true
+                },
+                {
+                  "name": "algorithm",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回两个颜色是否相似。</p>\n"
+        },
+        {
+          "textRaw": "colors.equals(color1, color2)",
+          "type": "method",
+          "name": "equals",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`color1` {number} | {string} 颜色值1 ",
+                  "name": "color1",
+                  "type": "number",
+                  "desc": "| {string} 颜色值1"
+                },
+                {
+                  "textRaw": "`color1` {number} | {string} 颜色值2 ",
+                  "name": "color1",
+                  "type": "number",
+                  "desc": "| {string} 颜色值2"
+                },
+                {
+                  "textRaw": "返回 {Boolean} ",
+                  "name": "返回",
+                  "type": "Boolean"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "color1"
+                },
+                {
+                  "name": "color2"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回两个颜色是否相等。<em>*注意该函数会忽略Alpha通道的值进行比较</em>。</p>\n<pre><code>log(colors.equals(&quot;#112233&quot;, &quot;#112234&quot;));\nlog(colors.equals(0xFF112233, 0xFF223344));\n</code></pre>"
+        }
+      ],
+      "type": "module",
+      "displayName": "colors"
+    },
+    {
+      "textRaw": "Images",
+      "name": "images",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>images模块提供了一些手机设备中常见的图片处理函数，包括截图、读写图片、图片剪裁、旋转、二值化、找色找图等。</p>\n<p>该模块分为两个部分，找图找色部分和图片处理部分。</p>\n<p>需要注意的是，image对象创建后尽量在不使用时进行回收，同时避免循环创建大量图片。因为图片是一种占用内存比较大的资源，尽管Auto.js通过各种方式（比如图片缓存机制、垃圾回收时回收图片、脚本结束时回收所有图片）尽量降低图片资源的泄漏和内存占用，但是糟糕的代码仍然可以占用大量内存。</p>\n<p>Image对象通过调用<code>recycle()</code>函数来回收。例如：</p>\n<pre><code>// 读取图片\nvar img = images.read(&quot;./1.png&quot;);\n//对图片进行操作\n... \n// 回收图片\nimg.recycle();\n</code></pre><p>例外的是，<code>caputerScreen()</code>返回的图片不需要回收。</p>\n",
+      "methods": [
+        {
+          "textRaw": "图片处理",
+          "name": "图片处理",
+          "type": "method",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 图片路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "图片路径"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>读取在路径path的图片文件并返回一个Image对象。如果文件不存在或者文件无法解码则返回null。</p>\n"
+        },
+        {
+          "textRaw": "images.read(path)",
+          "type": "method",
+          "name": "read",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 图片路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "图片路径"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>读取在路径path的图片文件并返回一个Image对象。如果文件不存在或者文件无法解码则返回null。</p>\n"
+        },
+        {
+          "textRaw": "images.load(url)",
+          "type": "method",
+          "name": "load",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`url` {string} 图片URL地址 ",
+                  "name": "url",
+                  "type": "string",
+                  "desc": "图片URL地址"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "url"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>加载在地址URL的网络图片并返回一个Image对象。如果地址不存在或者图片无法解码则返回null。</p>\n"
+        },
+        {
+          "textRaw": "images.copy(img)",
+          "type": "method",
+          "name": "copy",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`img` {Image} 图片 ",
+                  "name": "img",
+                  "type": "Image",
+                  "desc": "图片"
+                },
+                {
+                  "textRaw": "返回 {Image} ",
+                  "name": "返回",
+                  "type": "Image"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "img"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>复制一张图片并返回新的副本。该函数会完全复制img对象的数据。</p>\n"
+        },
+        {
+          "textRaw": "images.save(image, path[, format = \"png\", quality = 100])",
+          "type": "method",
+          "name": "save",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`image` {Image} 图片 ",
+                  "name": "image",
+                  "type": "Image",
+                  "desc": "图片"
+                },
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "`format` {string} 图片格式，可选的值为: ",
+                  "options": [
+                    {
+                      "textRaw": "`png` ",
+                      "name": "png"
+                    },
+                    {
+                      "textRaw": "`jpeg`/`jpg` ",
+                      "name": "jpeg",
+                      "desc": "/`jpg`"
+                    },
+                    {
+                      "textRaw": "`webp` ",
+                      "name": "webp"
+                    }
+                  ],
+                  "name": "format",
+                  "type": "string",
+                  "desc": "图片格式，可选的值为:",
+                  "optional": true,
+                  "default": " \"png\""
+                },
+                {
+                  "textRaw": "`quality` {number} 图片质量，为0~100的整数值 ",
+                  "name": "quality",
+                  "type": "number",
+                  "desc": "图片质量，为0~100的整数值",
+                  "optional": true,
+                  "default": " 100"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "image"
+                },
+                {
+                  "name": "path"
+                },
+                {
+                  "name": "format ",
+                  "optional": true,
+                  "default": " \"png\""
+                },
+                {
+                  "name": "quality ",
+                  "optional": true,
+                  "default": " 100"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>把图片image以PNG格式保存到path中。如果文件不存在会被创建；文件存在会被覆盖。</p>\n<pre><code>//把图片压缩为原来的一半质量并保存\nvar img = images.read(&quot;/sdcard/1.png&quot;);\nimages.save(img, &quot;/sdcard/1.jpg&quot;, &quot;jpg&quot;, 50);\napp.viewFile(&quot;/sdcard/1.jpg&quot;);\n</code></pre>"
+        },
+        {
+          "textRaw": "images.fromBase64(base64)",
+          "type": "method",
+          "name": "fromBase64",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`base64` {string} 图片的Base64数据 ",
+                  "name": "base64",
+                  "type": "string",
+                  "desc": "图片的Base64数据"
+                },
+                {
+                  "textRaw": "返回 {Image} ",
+                  "name": "返回",
+                  "type": "Image"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "base64"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>解码Base64数据并返回解码后的图片Image对象。如果base64无法解码则返回<code>null</code>。</p>\n"
+        },
+        {
+          "textRaw": "images.toBase64(img[, format = \"png\", quality = 100])",
+          "type": "method",
+          "name": "toBase64",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`image` {image} 图片 ",
+                  "name": "image",
+                  "type": "image",
+                  "desc": "图片"
+                },
+                {
+                  "textRaw": "`format` {string} 图片格式，可选的值为: ",
+                  "options": [
+                    {
+                      "textRaw": "`png` ",
+                      "name": "png"
+                    },
+                    {
+                      "textRaw": "`jpeg`/`jpg` ",
+                      "name": "jpeg",
+                      "desc": "/`jpg`"
+                    },
+                    {
+                      "textRaw": "`webp` ",
+                      "name": "webp"
+                    }
+                  ],
+                  "name": "format",
+                  "type": "string",
+                  "desc": "图片格式，可选的值为:",
+                  "optional": true,
+                  "default": " \"png\""
+                },
+                {
+                  "textRaw": "`quality` {number} 图片质量，为0~100的整数值 ",
+                  "name": "quality",
+                  "type": "number",
+                  "desc": "图片质量，为0~100的整数值",
+                  "optional": true,
+                  "default": " 100"
+                },
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "format ",
+                  "optional": true,
+                  "default": " \"png\""
+                },
+                {
+                  "name": "quality ",
+                  "optional": true,
+                  "default": " 100"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>把图片编码为base64数据并返回。</p>\n"
+        },
+        {
+          "textRaw": "images.fromBytes(bytes)",
+          "type": "method",
+          "name": "fromBytes",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`bytes` {byte[]} 字节数组 ",
+                  "name": "bytes",
+                  "type": "byte[]",
+                  "desc": "字节数组"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "bytes"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>解码字节数组bytes并返回解码后的图片Image对象。如果bytes无法解码则返回<code>null</code>。</p>\n"
+        },
+        {
+          "textRaw": "images.toBytes(img[, format = \"png\", quality = 100])",
+          "type": "method",
+          "name": "toBytes",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`image` {image} 图片 ",
+                  "name": "image",
+                  "type": "image",
+                  "desc": "图片"
+                },
+                {
+                  "textRaw": "`format` {string} 图片格式，可选的值为: ",
+                  "options": [
+                    {
+                      "textRaw": "`png` ",
+                      "name": "png"
+                    },
+                    {
+                      "textRaw": "`jpeg`/`jpg` ",
+                      "name": "jpeg",
+                      "desc": "/`jpg`"
+                    },
+                    {
+                      "textRaw": "`webp` ",
+                      "name": "webp"
+                    }
+                  ],
+                  "name": "format",
+                  "type": "string",
+                  "desc": "图片格式，可选的值为:",
+                  "optional": true,
+                  "default": " \"png\""
+                },
+                {
+                  "textRaw": "`quality` {number} 图片质量，为0~100的整数值 ",
+                  "name": "quality",
+                  "type": "number",
+                  "desc": "图片质量，为0~100的整数值",
+                  "optional": true,
+                  "default": " 100"
+                },
+                {
+                  "textRaw": "返回 {byte[]} ",
+                  "name": "返回",
+                  "type": "byte[]"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "format ",
+                  "optional": true,
+                  "default": " \"png\""
+                },
+                {
+                  "name": "quality ",
+                  "optional": true,
+                  "default": " 100"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>把图片编码为字节数组并返回。</p>\n"
+        },
+        {
+          "textRaw": "images.clip(img, x, y, w, h)",
+          "type": "method",
+          "name": "clip",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`img` {Image} 图片 ",
+                  "name": "img",
+                  "type": "Image",
+                  "desc": "图片"
+                },
+                {
+                  "textRaw": "`x` {number} 剪切区域的左上角横坐标 ",
+                  "name": "x",
+                  "type": "number",
+                  "desc": "剪切区域的左上角横坐标"
+                },
+                {
+                  "textRaw": "`y` {number} 剪切区域的左上角纵坐标 ",
+                  "name": "y",
+                  "type": "number",
+                  "desc": "剪切区域的左上角纵坐标"
+                },
+                {
+                  "textRaw": "`w` {number} 剪切区域的宽度 ",
+                  "name": "w",
+                  "type": "number",
+                  "desc": "剪切区域的宽度"
+                },
+                {
+                  "textRaw": "`h` {number} 剪切区域的高度 ",
+                  "name": "h",
+                  "type": "number",
+                  "desc": "剪切区域的高度"
+                },
+                {
+                  "textRaw": "返回 {Image} ",
+                  "name": "返回",
+                  "type": "Image"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "x"
+                },
+                {
+                  "name": "y"
+                },
+                {
+                  "name": "w"
+                },
+                {
+                  "name": "h"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>从图片img的位置(x, y)处剪切大小为w * h的区域，并返回该剪切区域的新图片。</p>\n<pre><code>var src = images.read(&quot;/sdcard/1.png&quot;);\nvar clip = images.clip(src, 100, 100, 400, 400);\nimages.save(clip, &quot;/sdcard/clip.png&quot;);\n</code></pre>"
+        },
+        {
+          "textRaw": "images.resize(img, size[, interpolation])",
+          "type": "method",
+          "name": "resize",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>img</code> {Image} 图片</li>\n<li><code>size</code> {Array} 两个元素的数组[w, h]，分别表示宽度和高度；如果只有一个元素，则宽度和高度相等</li>\n<li><p><code>interpolation</code> {string} 插值方法，可选，默认为&quot;LINEAR&quot;（线性插值），可选的值有：</p>\n<ul>\n<li><code>NEAREST</code> 最近邻插值</li>\n<li><code>LINEAR</code> 线性插值（默认）</li>\n<li><code>AREA</code> 区域插值</li>\n<li><code>CUBIC</code> 三次样条插值</li>\n<li><code>LANCZOS4</code> Lanczos插值\n参见<a href=\"https://docs.opencv.org/3.4.4/da/d54/group__imgproc__transform.html#ga5bb5a1fea74ea38e1a5445ca803ff121\">InterpolationFlags</a></li>\n</ul>\n</li>\n<li><p>返回 {Image}</p>\n</li>\n</ul>\n<p>调整图片大小，并返回调整后的图片。例如把图片放缩为200*300：<code>images.resize(img, [200, 300])</code>。</p>\n<p>参见<a href=\"https://docs.opencv.org/3.4.4/da/d54/group__imgproc__transform.html#ga47a974309e9102f5f08231edc7e7529d\">Imgproc.resize</a>。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "size"
+                },
+                {
+                  "name": "interpolation",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "images.scale(img, fx, fy[, interpolation])",
+          "type": "method",
+          "name": "scale",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>img</code> {Image} 图片</li>\n<li><code>fx</code> {number} 宽度放缩倍数</li>\n<li><code>fy</code> {number} 高度放缩倍数</li>\n<li><p><code>interpolation</code> {string} 插值方法，可选，默认为&quot;LINEAR&quot;（线性插值），可选的值有：</p>\n<ul>\n<li><code>NEAREST</code> 最近邻插值</li>\n<li><code>LINEAR</code> 线性插值（默认）</li>\n<li><code>AREA</code> 区域插值</li>\n<li><code>CUBIC</code> 三次样条插值</li>\n<li><code>LANCZOS4</code> Lanczos插值\n参见<a href=\"https://docs.opencv.org/3.4.4/da/d54/group__imgproc__transform.html#ga5bb5a1fea74ea38e1a5445ca803ff121\">InterpolationFlags</a></li>\n</ul>\n</li>\n<li><p>返回 {Image}</p>\n</li>\n</ul>\n<p>放缩图片，并返回放缩后的图片。例如把图片变成原来的一半：<code>images.scale(img, 0.5, 0.5)</code>。</p>\n<p>参见<a href=\"https://docs.opencv.org/3.4.4/da/d54/group__imgproc__transform.html#ga47a974309e9102f5f08231edc7e7529d\">Imgproc.resize</a>。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "fx"
+                },
+                {
+                  "name": "fy"
+                },
+                {
+                  "name": "interpolation",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "images.rotate(img, degress[, x, y])",
+          "type": "method",
+          "name": "rotate",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>img</code> {Image} 图片</li>\n<li><code>degress</code> {number} 旋转角度。</li>\n<li><code>x</code> {number} 旋转中心x坐标，默认为图片中点</li>\n<li><code>y</code> {number} 旋转中心y坐标，默认为图片中点</li>\n<li>返回 {Image}</li>\n</ul>\n<p>将图片逆时针旋转degress度，返回旋转后的图片对象。</p>\n<p>例如逆时针旋转90度为<code>images.rotate(img, 90)</code>。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "degress"
+                },
+                {
+                  "name": "x",
+                  "optional": true
+                },
+                {
+                  "name": "y",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "images.concat(img1, image2[, direction])",
+          "type": "method",
+          "name": "concat",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>img1</code> {Image} 图片1</li>\n<li><code>img2</code> {Image} 图片2</li>\n<li>direction {string} 连接方向，默认为&quot;RIGHT&quot;，可选的值有：<ul>\n<li><code>LEFT</code> 将图片2接到图片1左边</li>\n<li><code>RIGHT</code> 将图片2接到图片1右边</li>\n<li><code>TOP</code> 将图片2接到图片1上边</li>\n<li><code>BOTTOM</code> 将图片2接到图片1下边</li>\n</ul>\n</li>\n<li>返回 {Image}</li>\n</ul>\n<p>连接两张图片，并返回连接后的图像。如果两张图片大小不一致，小的那张将适当居中。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img1"
+                },
+                {
+                  "name": "image2"
+                },
+                {
+                  "name": "direction",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "images.grayscale(img)",
+          "type": "method",
+          "name": "grayscale",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>img</code> {Image} 图片</li>\n<li>返回 {Image}</li>\n</ul>\n<p>灰度化图片，并返回灰度化后的图片。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "image.threshold(img, threshold, maxVal[, type])",
+          "type": "method",
+          "name": "threshold",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>img</code> {Image} 图片</li>\n<li><code>threshold</code> {number} 阈值</li>\n<li><code>maxVal</code> {number} 最大值</li>\n<li><p><code>type</code> {string} 阈值化类型，默认为&quot;BINARY&quot;，参见<a href=\"https://docs.opencv.org/3.4.4/d7/d1b/group__imgproc__misc.html#gaa9e58d2860d4afa658ef70a9b1115576\">ThresholdTypes</a>, 可选的值:</p>\n<ul>\n<li><code>BINARY</code> </li>\n<li><code>BINARY_INV</code> </li>\n<li><code>TRUNC</code></li>\n<li><code>TOZERO</code></li>\n<li><code>TOZERO_INV</code></li>\n<li><code>OTSU</code></li>\n<li><code>TRIANGLE</code> </li>\n</ul>\n</li>\n<li><p>返回 {Image}</p>\n</li>\n</ul>\n<p>将图片阈值化，并返回处理后的图像。可以用这个函数进行图片二值化。例如：<code>images.threshold(img, 100, 255, &quot;BINARY&quot;)</code>，这个代码将图片中大于100的值全部变成255，其余变成0，从而达到二值化的效果。如果img是一张灰度化图片，这个代码将会得到一张黑白图片。</p>\n<p>可以参考有关博客（比如<a href=\"https://blog.csdn.net/u012566751/article/details/77046445\">threshold函数的使用</a>）或者OpenCV文档<a href=\"https://docs.opencv.org/3.4.4/d7/d1b/group__imgproc__misc.html#gae8a4a146d1ca78c626a53577199e9c57\">threshold</a>。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "threshold"
+                },
+                {
+                  "name": "maxVal"
+                },
+                {
+                  "name": "type",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "images.adaptiveThreshold(img, maxValue, adaptiveMethod, thresholdType, blockSize, C)",
+          "type": "method",
+          "name": "adaptiveThreshold",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>img</code> {Image} 图片</li>\n<li><code>maxValue</code> {number} 最大值</li>\n<li><code>adaptiveMethod</code> {string} 在一个邻域内计算阈值所采用的算法，可选的值有：<ul>\n<li><code>MEAN_C</code> 计算出领域的平均值再减去参数C的值</li>\n<li><code>GAUSSIAN_C</code> 计算出领域的高斯均值再减去参数C的值</li>\n</ul>\n</li>\n<li><code>thresholdType</code> {string} 阈值化类型，可选的值有：<ul>\n<li><code>BINARY</code></li>\n<li><code>BINARY_INV</code> </li>\n</ul>\n</li>\n<li><code>blockSize</code> {number} 邻域块大小</li>\n<li><code>C</code> {number} 偏移值调整量</li>\n<li>返回 {Image}</li>\n</ul>\n<p>对图片进行自适应阈值化处理，并返回处理后的图像。</p>\n<p>可以参考有关博客（比如<a href=\"https://blog.csdn.net/guduruyu/article/details/68059450\">threshold与adaptiveThreshold</a>）或者OpenCV文档<a href=\"https://docs.opencv.org/3.4.4/d7/d1b/group__imgproc__misc.html#ga72b913f352e4a1b1b397736707afcde3\">adaptiveThreshold</a>。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "maxValue"
+                },
+                {
+                  "name": "adaptiveMethod"
+                },
+                {
+                  "name": "thresholdType"
+                },
+                {
+                  "name": "blockSize"
+                },
+                {
+                  "name": "C"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "images.cvtColor(img, code[, dstCn])",
+          "type": "method",
+          "name": "cvtColor",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>img</code> {Image} 图片</li>\n<li><code>code</code> {string} 颜色空间转换的类型，可选的值有一共有205个（参见<a href=\"https://docs.opencv.org/3.4.4/d8/d01/group__imgproc__color__conversions.html#ga4e0972be5de079fed4e3a10e24ef5ef0\">ColorConversionCodes</a>），这里只列出几个：<ul>\n<li><code>BGR2GRAY</code> BGR转换为灰度</li>\n<li><code>BGR2HSV</code> BGR转换为HSV </li>\n<li>``</li>\n</ul>\n</li>\n<li><code>dstCn</code> {number} 目标图像的颜色通道数量，如果不填写则根据其他参数自动决定。</li>\n<li>返回 {Image}</li>\n</ul>\n<p>对图像进行颜色空间转换，并返回转换后的图像。</p>\n<p>可以参考有关博客（比如<a href=\"https://blog.csdn.net/u011574296/article/details/70896811?locationNum=14&amp;fps=1\">颜色空间转换</a>）或者OpenCV文档<a href=\"https://docs.opencv.org/3.4.4/d8/d01/group__imgproc__color__conversions.html#ga397ae87e1288a81d2363b61574eb8cab\">cvtColor</a>。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "code"
+                },
+                {
+                  "name": "dstCn",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "images.inRange(img, lowerBound, upperBound)",
+          "type": "method",
+          "name": "inRange",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>img</code> {Image} 图片</li>\n<li><code>lowerBound</code> {string} | {number} 颜色下界</li>\n<li><code>upperBound</code> {string} | {number} 颜色下界</li>\n<li>返回 {Image}</li>\n</ul>\n<p>将图片二值化，在lowerBound~upperBound范围以外的颜色都变成0，在范围以内的颜色都变成255。</p>\n<p>例如<code>images.inRange(img, &quot;#000000&quot;, &quot;#222222&quot;)</code>。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "lowerBound"
+                },
+                {
+                  "name": "upperBound"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "images.interval(img, color, interval)",
+          "type": "method",
+          "name": "interval",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>img</code> {Image} 图片</li>\n<li><code>color</code> {string} | {number} 颜色值</li>\n<li><code>interval</code> {number} 每个通道的范围间隔</li>\n<li>返回 {Image}</li>\n</ul>\n<p>将图片二值化，在color-interval ~ color+interval范围以外的颜色都变成0，在范围以内的颜色都变成255。这里对color的加减是对每个通道而言的。</p>\n<p>例如<code>images.interval(img, &quot;#888888&quot;, 16)</code>，每个通道的颜色值均为0x88，加减16后的范围是[0x78, 0x98]，因此这个代码将把#787878~#989898的颜色变成#FFFFFF，而把这个范围以外的变成#000000。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "color"
+                },
+                {
+                  "name": "interval"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "images.blur(img, size[, anchor, type])",
+          "type": "method",
+          "name": "blur",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>img</code> {Image} 图片</li>\n<li><code>size</code> {Array} 定义滤波器的大小，如[3, 3]</li>\n<li><code>anchor</code> {Array} 指定锚点位置(被平滑点)，默认为图像中心</li>\n<li><code>type</code> {string} 推断边缘像素类型，默认为&quot;DEFAULT&quot;，可选的值有：<ul>\n<li><code>CONSTANT</code> iiiiii|abcdefgh|iiiiiii with some specified i</li>\n<li><code>REPLICATE</code> aaaaaa|abcdefgh|hhhhhhh</li>\n<li><code>REFLECT</code> fedcba|abcdefgh|hgfedcb</li>\n<li><code>WRAP</code> cdefgh|abcdefgh|abcdefg</li>\n<li><code>REFLECT_101</code> gfedcb|abcdefgh|gfedcba</li>\n<li><code>TRANSPARENT</code> uvwxyz|abcdefgh|ijklmno</li>\n<li><code>REFLECT101</code> same as BORDER_REFLECT_101</li>\n<li><code>DEFAULT</code> same as BORDER_REFLECT_101</li>\n<li><code>ISOLATED</code> do not look outside of ROI</li>\n</ul>\n</li>\n<li>返回 {Image}</li>\n</ul>\n<p>对图像进行模糊（平滑处理），返回处理后的图像。</p>\n<p>可以参考有关博客（比如<a href=\"https://www.cnblogs.com/denny402/p/3848316.html\">实现图像平滑处理</a>）或者OpenCV文档<a href=\"https://docs.opencv.org/3.4.4/d4/d86/group__imgproc__filter.html#ga8c45db9afe636703801b0b2e440fce37\">blur</a>。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "size"
+                },
+                {
+                  "name": "anchor",
+                  "optional": true
+                },
+                {
+                  "name": "type",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "images.medianBlur(img, size)",
+          "type": "method",
+          "name": "medianBlur",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>img</code> {Image} 图片</li>\n<li><code>size</code> {Array} 定义滤波器的大小，如[3, 3]</li>\n<li>返回 {Image}</li>\n</ul>\n<p>对图像进行中值滤波，返回处理后的图像。</p>\n<p>可以参考有关博客（比如<a href=\"https://www.cnblogs.com/denny402/p/3848316.html\">实现图像平滑处理</a>）或者OpenCV文档<a href=\"https://docs.opencv.org/3.4.4/d4/d86/group__imgproc__filter.html#ga564869aa33e58769b4469101aac458f9\">blur</a>。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "size"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "images.gaussianBlur(img, size[, sigmaX, sigmaY, type])",
+          "type": "method",
+          "name": "gaussianBlur",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>img</code> {Image} 图片</li>\n<li><code>size</code> {Array} 定义滤波器的大小，如[3, 3]</li>\n<li><code>sigmaX</code> {number} x方向的标准方差，不填写则自动计算</li>\n<li><code>sigmaY</code> {number} y方向的标准方差，不填写则自动计算</li>\n<li><code>type</code> {string} 推断边缘像素类型，默认为&quot;DEFAULT&quot;，参见<code>images.blur</code></li>\n<li>返回 {Image}</li>\n</ul>\n<p>对图像进行高斯模糊，返回处理后的图像。</p>\n<p>可以参考有关博客（比如<a href=\"https://www.cnblogs.com/denny402/p/3848316.html\">实现图像平滑处理</a>）或者OpenCV文档<a href=\"https://docs.opencv.org/3.4.4/d4/d86/group__imgproc__filter.html#gaabe8c836e97159a9193fb0b11ac52cf1\">GaussianBlur</a>。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "size"
+                },
+                {
+                  "name": "sigmaX",
+                  "optional": true
+                },
+                {
+                  "name": "sigmaY",
+                  "optional": true
+                },
+                {
+                  "name": "type",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "images.matToImage(mat)",
+          "type": "method",
+          "name": "matToImage",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>mat</code> {Mat} OpenCV的Mat对象</li>\n<li>返回 {Image}</li>\n</ul>\n<p>把Mat对象转换为Image对象。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "mat"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "找图找色",
+          "name": "找图找色",
+          "type": "method",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`landscape` {boolean} 布尔值， 表示将要执行的截屏是否为横屏。如果landscape为false, 则表示竖屏截图; true为横屏截图。 ",
+                  "name": "landscape",
+                  "type": "boolean",
+                  "desc": "布尔值， 表示将要执行的截屏是否为横屏。如果landscape为false, 则表示竖屏截图; true为横屏截图。",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "landscape",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>向系统申请屏幕截图权限，返回是否请求成功。</p>\n<p>第一次使用该函数会弹出截图权限请求，建议选择“总是允许”。</p>\n<p>这个函数只是申请截图权限，并不会真正执行截图，真正的截图函数是<code>captureScreen()</code>。</p>\n<p>该函数在截图脚本中只需执行一次，而无需每次调用<code>captureScreen()</code>都调用一次。</p>\n<p><strong>如果不指定landscape值，则截图方向由当前设备屏幕方向决定</strong>，因此务必注意执行该函数时的屏幕方向。</p>\n<p>建议在本软件界面运行该函数，在其他软件界面运行时容易出现一闪而过的黑屏现象。  </p>\n<p>示例:</p>\n<pre><code>//请求截图\nif(!requestScreenCapture()){\n    toast(&quot;请求截图失败&quot;);\n    exit();\n}\n//连续截图10张图片(间隔1秒)并保存到存储卡目录\nfor(var i = 0; i &lt; 10; i++){\n    captureScreen(&quot;/sdcard/screencapture&quot; + i + &quot;.png&quot;);\n    sleep(1000);\n}\n</code></pre><p>该函数也可以作为全局函数使用。</p>\n"
+        },
+        {
+          "textRaw": "images.requestScreenCapture([landscape])",
+          "type": "method",
+          "name": "requestScreenCapture",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`landscape` {boolean} 布尔值， 表示将要执行的截屏是否为横屏。如果landscape为false, 则表示竖屏截图; true为横屏截图。 ",
+                  "name": "landscape",
+                  "type": "boolean",
+                  "desc": "布尔值， 表示将要执行的截屏是否为横屏。如果landscape为false, 则表示竖屏截图; true为横屏截图。",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "landscape",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>向系统申请屏幕截图权限，返回是否请求成功。</p>\n<p>第一次使用该函数会弹出截图权限请求，建议选择“总是允许”。</p>\n<p>这个函数只是申请截图权限，并不会真正执行截图，真正的截图函数是<code>captureScreen()</code>。</p>\n<p>该函数在截图脚本中只需执行一次，而无需每次调用<code>captureScreen()</code>都调用一次。</p>\n<p><strong>如果不指定landscape值，则截图方向由当前设备屏幕方向决定</strong>，因此务必注意执行该函数时的屏幕方向。</p>\n<p>建议在本软件界面运行该函数，在其他软件界面运行时容易出现一闪而过的黑屏现象。  </p>\n<p>示例:</p>\n<pre><code>//请求截图\nif(!requestScreenCapture()){\n    toast(&quot;请求截图失败&quot;);\n    exit();\n}\n//连续截图10张图片(间隔1秒)并保存到存储卡目录\nfor(var i = 0; i &lt; 10; i++){\n    captureScreen(&quot;/sdcard/screencapture&quot; + i + &quot;.png&quot;);\n    sleep(1000);\n}\n</code></pre><p>该函数也可以作为全局函数使用。</p>\n"
+        },
+        {
+          "textRaw": "images.captureScreen()",
+          "type": "method",
+          "name": "captureScreen",
+          "desc": "<p>截取当前屏幕并返回一个Image对象。</p>\n<p>没有截图权限时执行该函数会抛出SecurityException。</p>\n<p>该函数不会返回null，两次调用可能返回相同的Image对象。这是因为设备截图的更新需要一定的时间，短时间内（一般来说是16ms）连续调用则会返回同一张截图。</p>\n<p>截图需要转换为Bitmap格式，从而该函数执行需要一定的时间(0~20ms)。</p>\n<p>另外在requestScreenCapture()执行成功后需要一定时间后才有截图可用，因此如果立即调用captureScreen()，会等待一定时间后(一般为几百ms)才返回截图。</p>\n<p>例子:</p>\n<pre><code>//请求横屏截图\nrequestScreenCapture(true);\n//截图\nvar img = captureScreen();\n//获取在点(100, 100)的颜色值\nvar color = images.pixel(img, 100, 100);\n//显示该颜色值\ntoast(colors.toString(color));\n</code></pre><p>该函数也可以作为全局函数使用。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "images.captureScreen(path)",
+          "type": "method",
+          "name": "captureScreen",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 截图保存路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "截图保存路径"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>截取当前屏幕并以PNG格式保存到path中。如果文件不存在会被创建；文件存在会被覆盖。</p>\n<p>该函数不会返回任何值。该函数也可以作为全局函数使用。</p>\n"
+        },
+        {
+          "textRaw": "images.pixel(image, x, y)",
+          "type": "method",
+          "name": "pixel",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`image` {Image} 图片 ",
+                  "name": "image",
+                  "type": "Image",
+                  "desc": "图片"
+                },
+                {
+                  "textRaw": "`x` {number} 要获取的像素的横坐标。 ",
+                  "name": "x",
+                  "type": "number",
+                  "desc": "要获取的像素的横坐标。"
+                },
+                {
+                  "textRaw": "`y` {number} 要获取的像素的纵坐标。 ",
+                  "name": "y",
+                  "type": "number",
+                  "desc": "要获取的像素的纵坐标。"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "image"
+                },
+                {
+                  "name": "x"
+                },
+                {
+                  "name": "y"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回图片image在点(x, y)处的像素的ARGB值。  </p>\n<p>该值的格式为0xAARRGGBB，是一个&quot;32位整数&quot;(虽然JavaScript中并不区分整数类型和其他数值类型)。</p>\n<p>坐标系以图片左上角为原点。以图片左侧边为y轴，上侧边为x轴。</p>\n"
+        },
+        {
+          "textRaw": "images.findColor(image, color, options)",
+          "type": "method",
+          "name": "findColor",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`image` {Image} 图片 ",
+                  "name": "image",
+                  "type": "Image",
+                  "desc": "图片"
+                },
+                {
+                  "textRaw": "`color` {number} | {string} 要寻找的颜色的RGB值。如果是一个整数，则以0xRRGGBB的形式代表RGB值（A通道会被忽略）；如果是字符串，则以\"#RRGGBB\"代表其RGB值。 ",
+                  "name": "color",
+                  "type": "number",
+                  "desc": "| {string} 要寻找的颜色的RGB值。如果是一个整数，则以0xRRGGBB的形式代表RGB值（A通道会被忽略）；如果是字符串，则以\"#RRGGBB\"代表其RGB值。"
+                },
+                {
+                  "textRaw": "`options` {Object} 选项 ",
+                  "name": "options",
+                  "type": "Object",
+                  "desc": "选项"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "image"
+                },
+                {
+                  "name": "color"
+                },
+                {
+                  "name": "options"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>在图片中寻找颜色color。找到时返回找到的点Point，找不到时返回null。</p>\n<p>选项包括：</p>\n<ul>\n<li><code>region</code> {Array} 找色区域。是一个两个或四个元素的数组。(region[0], region[1])表示找色区域的左上角；region[2]*region[3]表示找色区域的宽高。如果只有region只有两个元素，则找色区域为(region[0], region[1])到屏幕右下角。如果不指定region选项，则找色区域为整张图片。</li>\n<li><code>threshold</code> {number} 找色时颜色相似度的临界值，范围为0~255（越小越相似，0为颜色相等，255为任何颜色都能匹配）。默认为4。threshold和浮点数相似度(0.0~1.0)的换算为 similarity = (255 - threshold) / 255.</li>\n</ul>\n<p>该函数也可以作为全局函数使用。</p>\n<p>一个循环找色的例子如下：</p>\n<pre><code>requestScreenCapture();\n\n//循环找色，找到红色(#ff0000)时停止并报告坐标\nwhile(true){\n    var img = captureScreen();\n    var point = findColor(img, &quot;#ff0000&quot;);\n    if(point){\n        toast(&quot;找到红色，坐标为(&quot; + point.x + &quot;, &quot; + point.y + &quot;)&quot;);\n    }\n}\n</code></pre><p>一个区域找色的例子如下：</p>\n<pre><code>//读取本地图片/sdcard/1.png\nvar img = images.read(&quot;/sdcard/1.png&quot;);\n//判断图片是否加载成功\nif(!img){\n    toast(&quot;没有该图片&quot;);\n    exit();\n}\n//在该图片中找色，指定找色区域为在位置(400, 500)的宽为300长为200的区域，指定找色临界值为4\nvar point = findColor(img, &quot;#00ff00&quot;, {\n     region: [400, 500, 300, 200],\n     threshold: 4\n });\nif(point){\n    toast(&quot;找到啦:&quot; + point);\n}else{\n    toast(&quot;没找到&quot;);\n}\n</code></pre>"
+        },
+        {
+          "textRaw": "images.findColorInRegion(img, color, x, y[, width, height, threshold])",
+          "type": "method",
+          "name": "findColorInRegion",
+          "desc": "<p>区域找色的简便方法。</p>\n<p>相当于</p>\n<pre><code>images.findColor(img, color, {\n     region: [x, y, width, height],\n     threshold: threshold\n});\n</code></pre><p>该函数也可以作为全局函数使用。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "color"
+                },
+                {
+                  "name": "x"
+                },
+                {
+                  "name": "y"
+                },
+                {
+                  "name": "width",
+                  "optional": true
+                },
+                {
+                  "name": "height",
+                  "optional": true
+                },
+                {
+                  "name": "threshold",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "images.findColorEquals(img, color[, x, y, width, height])",
+          "type": "method",
+          "name": "findColorEquals",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`img` {Image} 图片 ",
+                  "name": "img",
+                  "type": "Image",
+                  "desc": "图片"
+                },
+                {
+                  "textRaw": "`color` {number} | {string} 要寻找的颜色 ",
+                  "name": "color",
+                  "type": "number",
+                  "desc": "| {string} 要寻找的颜色"
+                },
+                {
+                  "textRaw": "`x` {number} 找色区域的左上角横坐标 ",
+                  "name": "x",
+                  "type": "number",
+                  "desc": "找色区域的左上角横坐标",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`y` {number} 找色区域的左上角纵坐标 ",
+                  "name": "y",
+                  "type": "number",
+                  "desc": "找色区域的左上角纵坐标",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`width` {number} 找色区域的宽度 ",
+                  "name": "width",
+                  "type": "number",
+                  "desc": "找色区域的宽度",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`height` {number} 找色区域的高度 ",
+                  "name": "height",
+                  "type": "number",
+                  "desc": "找色区域的高度",
+                  "optional": true
+                },
+                {
+                  "textRaw": "返回 {Point} ",
+                  "name": "返回",
+                  "type": "Point"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "color"
+                },
+                {
+                  "name": "x",
+                  "optional": true
+                },
+                {
+                  "name": "y",
+                  "optional": true
+                },
+                {
+                  "name": "width",
+                  "optional": true
+                },
+                {
+                  "name": "height",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>在图片img指定区域中找到颜色和color完全相等的某个点，并返回该点的左边；如果没有找到，则返回<code>null</code>。</p>\n<p>找色区域通过<code>x</code>, <code>y</code>, <code>width</code>, <code>height</code>指定，如果不指定找色区域，则在整张图片中寻找。</p>\n<p>该函数也可以作为全局函数使用。</p>\n<p>示例：\n(通过找QQ红点的颜色来判断是否有未读消息)</p>\n<pre><code>requestScreenCapture();\nlaunchApp(&quot;QQ&quot;);\nsleep(1200);\nvar p = findColorEquals(captureScreen(), &quot;#f64d30&quot;);\nif(p){\n    toast(&quot;有未读消息&quot;);\n}else{\n    toast(&quot;没有未读消息&quot;);\n}\n</code></pre>"
+        },
+        {
+          "textRaw": "images.findMultiColors(img, firstColor, colors[, options])",
+          "type": "method",
+          "name": "findMultiColors",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`img` {Image} 要找色的图片 ",
+                  "name": "img",
+                  "type": "Image",
+                  "desc": "要找色的图片"
+                },
+                {
+                  "textRaw": "`firstColor` {number} | {string} 第一个点的颜色 ",
+                  "name": "firstColor",
+                  "type": "number",
+                  "desc": "| {string} 第一个点的颜色"
+                },
+                {
+                  "textRaw": "`colors` {Array} 表示剩下的点相对于第一个点的位置和颜色的数组，数组的每个元素为[x, y, color] ",
+                  "name": "colors",
+                  "type": "Array",
+                  "desc": "表示剩下的点相对于第一个点的位置和颜色的数组，数组的每个元素为[x, y, color]"
+                },
+                {
+                  "textRaw": "`options` {Object} 选项，包括： ",
+                  "options": [
+                    {
+                      "textRaw": "`region` {Array} 找色区域。是一个两个或四个元素的数组。(region[0], region[1])表示找色区域的左上角；region[2]*region[3]表示找色区域的宽高。如果只有region只有两个元素，则找色区域为(region[0], region[1])到屏幕右下角。如果不指定region选项，则找色区域为整张图片。 ",
+                      "name": "region",
+                      "type": "Array",
+                      "desc": "找色区域。是一个两个或四个元素的数组。(region[0], region[1])表示找色区域的左上角；region[2]*region[3]表示找色区域的宽高。如果只有region只有两个元素，则找色区域为(region[0], region[1])到屏幕右下角。如果不指定region选项，则找色区域为整张图片。"
+                    },
+                    {
+                      "textRaw": "`threshold` {number} 找色时颜色相似度的临界值，范围为0~255（越小越相似，0为颜色相等，255为任何颜色都能匹配）。默认为4。threshold和浮点数相似度(0.0~1.0)的换算为 similarity = (255 - threshold) / 255. ",
+                      "name": "threshold",
+                      "type": "number",
+                      "desc": "找色时颜色相似度的临界值，范围为0~255（越小越相似，0为颜色相等，255为任何颜色都能匹配）。默认为4。threshold和浮点数相似度(0.0~1.0)的换算为 similarity = (255 - threshold) / 255."
+                    }
+                  ],
+                  "name": "options",
+                  "type": "Object",
+                  "desc": "选项，包括：",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "firstColor"
+                },
+                {
+                  "name": "colors"
+                },
+                {
+                  "name": "options",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>多点找色，类似于按键精灵的多点找色，其过程如下：</p>\n<ol>\n<li>在图片img中找到颜色firstColor的位置(x0, y0)</li>\n<li>对于数组colors的每个元素[x, y, color]，检查图片img在位置(x + x0, y + y0)上的像素是否是颜色color，是的话返回(x0, y0)，否则继续寻找firstColor的位置，重新执行第1步</li>\n<li>整张图片都找不到时返回<code>null</code></li>\n</ol>\n<p>例如，对于代码<code>images.findMultiColors(img, &quot;#123456&quot;, [[10, 20, &quot;#ffffff&quot;], [30, 40, &quot;#000000&quot;]])</code>，假设图片在(100, 200)的位置的颜色为#123456, 这时如果(110, 220)的位置的颜色为#fffff且(130, 240)的位置的颜色为#000000，则函数返回点(100, 200)。</p>\n<p>如果要指定找色区域，则在options中指定，例如:</p>\n<pre><code>var p = images.findMultiColors(img, &quot;#123456&quot;, [[10, 20, &quot;#ffffff&quot;], [30, 40, &quot;#000000&quot;]], {\n    region: [0, 960, 1080, 960]\n});\n</code></pre>"
+        },
+        {
+          "textRaw": "images.detectsColor(image, color, x, y[, threshold = 16, algorithm = \"diff\"])",
+          "type": "method",
+          "name": "detectsColor",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`image` {Image} 图片 ",
+                  "name": "image",
+                  "type": "Image",
+                  "desc": "图片"
+                },
+                {
+                  "textRaw": "`color` {number} | {string} 要检测的颜色 ",
+                  "name": "color",
+                  "type": "number",
+                  "desc": "| {string} 要检测的颜色"
+                },
+                {
+                  "textRaw": "`x` {number} 要检测的位置横坐标 ",
+                  "name": "x",
+                  "type": "number",
+                  "desc": "要检测的位置横坐标"
+                },
+                {
+                  "textRaw": "`y` {number} 要检测的位置纵坐标 ",
+                  "name": "y",
+                  "type": "number",
+                  "desc": "要检测的位置纵坐标"
+                },
+                {
+                  "textRaw": "`threshold` {number} 颜色相似度临界值，默认为16。取值范围为0~255。 ",
+                  "name": "threshold",
+                  "type": "number",
+                  "desc": "颜色相似度临界值，默认为16。取值范围为0~255。",
+                  "optional": true,
+                  "default": " 16"
+                },
+                {
+                  "textRaw": "`algorithm` {string} 颜色匹配算法，包括: ",
+                  "options": [
+                    {
+                      "textRaw": "\"equal\": 相等匹配，只有与给定颜色color完全相等时才匹配。 ",
+                      "name": "equal",
+                      "desc": "相等匹配，只有与给定颜色color完全相等时才匹配。"
+                    },
+                    {
+                      "textRaw": "\"diff\": 差值匹配。与给定颜色的R、G、B差的绝对值之和小于threshold时匹配。 ",
+                      "name": "diff",
+                      "desc": "差值匹配。与给定颜色的R、G、B差的绝对值之和小于threshold时匹配。"
+                    },
+                    {
+                      "textRaw": "\"rgb\": rgb欧拉距离相似度。与给定颜色color的rgb欧拉距离小于等于threshold时匹配。 ",
+                      "name": "rgb",
+                      "desc": "rgb欧拉距离相似度。与给定颜色color的rgb欧拉距离小于等于threshold时匹配。"
+                    },
+                    {
+                      "textRaw": "\"rgb+\": 加权rgb欧拉距离匹配([LAB Delta E](https://en.wikipedia.org/wiki/Color_difference))。 ",
+                      "name": "rgb+",
+                      "desc": "加权rgb欧拉距离匹配([LAB Delta E](https://en.wikipedia.org/wiki/Color_difference))。"
+                    },
+                    {
+                      "textRaw": "\"hs\": hs欧拉距离匹配。hs为HSV空间的色调值。 ",
+                      "name": "hs",
+                      "desc": "hs欧拉距离匹配。hs为HSV空间的色调值。"
+                    }
+                  ],
+                  "name": "algorithm",
+                  "type": "string",
+                  "desc": "颜色匹配算法，包括:",
+                  "optional": true,
+                  "default": " \"diff\""
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "image"
+                },
+                {
+                  "name": "color"
+                },
+                {
+                  "name": "x"
+                },
+                {
+                  "name": "y"
+                },
+                {
+                  "name": "threshold ",
+                  "optional": true,
+                  "default": " 16"
+                },
+                {
+                  "name": "algorithm ",
+                  "optional": true,
+                  "default": " \"diff\""
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回图片image在位置(x, y)处是否匹配到颜色color。用于检测图片中某个位置是否是特定颜色。</p>\n<p>一个判断微博客户端的某个微博是否被点赞过的例子：</p>\n<pre><code>requestScreenCapture();\n//找到点赞控件\nvar like = id(&quot;ly_feed_like_icon&quot;).findOne();\n//获取该控件中点坐标\nvar x = like.bounds().centerX();\nvar y = like.bounds().centerY();\n//截图\nvar img = captureScreen();\n//判断在该坐标的颜色是否为橙红色\nif(images.detectsColor(img, &quot;#fed9a8&quot;, x, y)){\n    //是的话则已经是点赞过的了，不做任何动作\n}else{\n    //否则点击点赞按钮\n    like.click();\n}\n</code></pre>"
+        },
+        {
+          "textRaw": "images.findImage(img, template[, options])",
+          "type": "method",
+          "name": "findImage",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`img` {Image} 大图片 ",
+                  "name": "img",
+                  "type": "Image",
+                  "desc": "大图片"
+                },
+                {
+                  "textRaw": "`template` {Image} 小图片（模板） ",
+                  "name": "template",
+                  "type": "Image",
+                  "desc": "小图片（模板）"
+                },
+                {
+                  "textRaw": "`options` {Object} 找图选项 ",
+                  "name": "options",
+                  "type": "Object",
+                  "desc": "找图选项",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "template"
+                },
+                {
+                  "name": "options",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>找图。在大图片img中查找小图片template的位置（模块匹配），找到时返回位置坐标(Point)，找不到时返回null。</p>\n<p>选项包括：</p>\n<ul>\n<li><code>threshold</code> {number} 图片相似度。取值范围为0~1的浮点数。默认值为0.9。</li>\n<li><code>region</code> {Array} 找图区域。参见findColor函数关于region的说明。</li>\n<li><code>level</code> {number} <strong>一般而言不必修改此参数</strong>。不加此参数时该参数会根据图片大小自动调整。找图算法是采用图像金字塔进行的, level参数表示金字塔的层次, level越大可能带来越高的找图效率，但也可能造成找图失败（图片因过度缩小而无法分辨）或返回错误位置。因此，除非您清楚该参数的意义并需要进行性能调优，否则不需要用到该参数。</li>\n</ul>\n<p>该函数也可以作为全局函数使用。</p>\n<p>一个最简单的找图例子如下：</p>\n<pre><code>var img = images.read(&quot;/sdcard/大图.png&quot;);\nvar templ = images.read(&quot;/sdcard/小图.png&quot;);\nvar p = findImage(img, templ);\nif(p){\n    toast(&quot;找到啦:&quot; + p);\n}else{\n    toast(&quot;没找到&quot;);\n}\n</code></pre><p>稍微复杂点的区域找图例子如下：</p>\n<pre><code>auto();\nrequestScreenCapture();\nvar wx = images.read(&quot;/sdcard/微信图标.png&quot;);\n//返回桌面\nhome();\n//截图并找图\nvar p = findImage(captureScreen(), wx, {\n    region: [0, 50],\n    threshold: 0.8\n});\nif(p){\n    toast(&quot;在桌面找到了微信图标啦: &quot; + p);\n}else{\n    toast(&quot;在桌面没有找到微信图标&quot;);\n}\n</code></pre>"
+        },
+        {
+          "textRaw": "images.findImageInRegion(img, template, x, y[, width, height, threshold])",
+          "type": "method",
+          "name": "findImageInRegion",
+          "desc": "<p>区域找图的简便方法。相当于：</p>\n<pre><code>images.findImage(img, template, {\n    region: [x, y, width, height],\n    threshold: threshold\n})\n</code></pre><p>该函数也可以作为全局函数使用。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "template"
+                },
+                {
+                  "name": "x"
+                },
+                {
+                  "name": "y"
+                },
+                {
+                  "name": "width",
+                  "optional": true
+                },
+                {
+                  "name": "height",
+                  "optional": true
+                },
+                {
+                  "name": "threshold",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "images.matchTemplate(img, template, options)",
+          "type": "method",
+          "name": "matchTemplate",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>img</code> {Image} 大图片</li>\n<li><code>template</code> {Image} 小图片（模板）</li>\n<li><code>options</code> {Object} 找图选项：<ul>\n<li><code>threshold</code> {number} 图片相似度。取值范围为0~1的浮点数。默认值为0.9。</li>\n<li><code>region</code> {Array} 找图区域。参见findColor函数关于region的说明。</li>\n<li><code>max</code> {number} 找图结果最大数量，默认为5</li>\n<li><code>level</code> {number} <strong>一般而言不必修改此参数</strong>。不加此参数时该参数会根据图片大小自动调整。找图算法是采用图像金字塔进行的, level参数表示金字塔的层次, level越大可能带来越高的找图效率，但也可能造成找图失败（图片因过度缩小而无法分辨）或返回错误位置。因此，除非您清楚该参数的意义并需要进行性能调优，否则不需要用到该参数。</li>\n</ul>\n</li>\n<li>返回 {MatchingResult}</li>\n</ul>\n<p>在大图片中搜索小图片，并返回搜索结果MatchingResult。该函数可以用于找图时找出多个位置，可以通过max参数控制最大的结果数量。也可以对匹配结果进行排序、求最值等操作。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "img"
+                },
+                {
+                  "name": "template"
+                },
+                {
+                  "name": "options"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "type": "module",
+      "displayName": "Images"
+    },
+    {
+      "textRaw": "MatchingResult",
+      "name": "matchingresult",
+      "desc": "<p><strong>[v4.1.0新增]</strong></p>\n",
+      "modules": [
+        {
+          "textRaw": "matches",
+          "name": "matches",
+          "desc": "<ul>\n<li>{Array} 匹配结果的数组。</li>\n</ul>\n<p>数组的元素是一个Match对象：</p>\n<ul>\n<li><code>point</code> {Point} 匹配位置</li>\n<li><code>similarity</code> {number} 相似度</li>\n</ul>\n<p>例如: </p>\n<pre><code>var result = images.matchTemplate(img, template, {\n    max: 100\n});\nresult.matches.forEach(match =&gt; {\n    log(&quot;point = &quot; + match.point + &quot;, similarity = &quot; + match.similarity);\n});\n</code></pre>",
+          "type": "module",
+          "displayName": "matches"
+        }
+      ],
+      "methods": [
+        {
+          "textRaw": "points",
+          "name": "points",
+          "desc": "<ul>\n<li>{Array} 匹配位置的数组。</li>\n</ul>\n",
+          "type": "method",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {Match} ",
+                  "name": "返回",
+                  "type": "Match"
+                }
+              ]
+            },
+            {
+              "params": []
+            },
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "first()",
+          "type": "method",
+          "name": "first",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {Match} ",
+                  "name": "返回",
+                  "type": "Match"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>第一个匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>\n"
+        },
+        {
+          "textRaw": "last()",
+          "type": "method",
+          "name": "last",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {Match} ",
+                  "name": "返回",
+                  "type": "Match"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>最后一个匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>\n"
+        },
+        {
+          "textRaw": "leftmost()",
+          "type": "method",
+          "name": "leftmost",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {Match} ",
+                  "name": "返回",
+                  "type": "Match"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>位于大图片最左边的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>\n"
+        },
+        {
+          "textRaw": "topmost()",
+          "type": "method",
+          "name": "topmost",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {Match} ",
+                  "name": "返回",
+                  "type": "Match"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>位于大图片最上边的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>\n"
+        },
+        {
+          "textRaw": "rightmost()",
+          "type": "method",
+          "name": "rightmost",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {Match} ",
+                  "name": "返回",
+                  "type": "Match"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>位于大图片最右边的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>\n"
+        },
+        {
+          "textRaw": "bottommost()",
+          "type": "method",
+          "name": "bottommost",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {Match} ",
+                  "name": "返回",
+                  "type": "Match"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>位于大图片最下边的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>\n"
+        },
+        {
+          "textRaw": "best()",
+          "type": "method",
+          "name": "best",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {Match} ",
+                  "name": "返回",
+                  "type": "Match"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>相似度最高的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>\n"
+        },
+        {
+          "textRaw": "worst()",
+          "type": "method",
+          "name": "worst",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {Match} ",
+                  "name": "返回",
+                  "type": "Match"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>相似度最低的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>\n"
+        },
+        {
+          "textRaw": "sortBy(cmp)",
+          "type": "method",
+          "name": "sortBy",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "cmp {Function}|{string} 比较函数，或者是一个字符串表示排序方向。例如\"left\"表示将匹配结果按匹配位置从左往右排序、\"top\"表示将匹配结果按匹配位置从上往下排序，\"left-top\"表示将匹配结果按匹配位置从左往右、从上往下排序。方向包括`left`（左）, `top` （上）, `right` （右）, `bottom`（下）。 ",
+                  "name": "cmp",
+                  "type": "Function",
+                  "desc": "|{string} 比较函数，或者是一个字符串表示排序方向。例如\"left\"表示将匹配结果按匹配位置从左往右排序、\"top\"表示将匹配结果按匹配位置从上往下排序，\"left-top\"表示将匹配结果按匹配位置从左往右、从上往下排序。方向包括`left`（左）, `top` （上）, `right` （右）, `bottom`（下）。"
+                },
+                {
+                  "textRaw": "{MatchingResult} ",
+                  "type": "MatchingResult"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "cmp"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>对匹配结果进行排序，并返回排序后的结果。</p>\n<pre><code>var result = images.matchTemplate(img, template, {\n    max: 100\n});\nlog(result.sortBy(&quot;top-right&quot;));\n</code></pre>"
+        }
+      ],
+      "type": "module",
+      "displayName": "MatchingResult"
+    },
+    {
+      "textRaw": "Image",
+      "name": "image",
+      "desc": "<p>表示一张图片，可以是截图的图片，或者本地读取的图片，或者从网络获取的图片。</p>\n",
+      "methods": [
+        {
+          "textRaw": "Image.getWidth()",
+          "type": "method",
+          "name": "getWidth",
+          "desc": "<p>返回以像素为单位图片宽度。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "Image.getHeight()",
+          "type": "method",
+          "name": "getHeight",
+          "desc": "<p>返回以像素为单位的图片高度。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "Image.saveTo(path)",
+          "type": "method",
+          "name": "saveTo",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>把图片保存到路径path。（如果文件存在则覆盖）</p>\n"
+        },
+        {
+          "textRaw": "Image.pixel(x, y)",
+          "type": "method",
+          "name": "pixel",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`x` {number} 横坐标 ",
+                  "name": "x",
+                  "type": "number",
+                  "desc": "横坐标"
+                },
+                {
+                  "textRaw": "`y` {number} 纵坐标 ",
+                  "name": "y",
+                  "type": "number",
+                  "desc": "纵坐标"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "x"
+                },
+                {
+                  "name": "y"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回图片image在点(x, y)处的像素的ARGB值。  </p>\n<p>该值的格式为0xAARRGGBB，是一个&quot;32位整数&quot;(虽然JavaScript中并不区分整数类型和其他数值类型)。</p>\n<p>坐标系以图片左上角为原点。以图片左侧边为y轴，上侧边为x轴。</p>\n<p>##</p>\n"
+        }
+      ],
+      "type": "module",
+      "displayName": "Image"
+    },
+    {
+      "textRaw": "Point",
+      "name": "point",
+      "desc": "<p>findColor, findImage返回的对象。表示一个点（坐标）。</p>\n",
+      "properties": [
+        {
+          "textRaw": "Point.x",
+          "name": "x",
+          "desc": "<p>横坐标。</p>\n"
+        },
+        {
+          "textRaw": "Point.y",
+          "name": "y",
+          "desc": "<p>纵坐标。</p>\n"
+        }
+      ],
+      "type": "module",
+      "displayName": "Point"
+    }
+  ],
+  "properties": [
+    {
+      "textRaw": "colors.BLACK",
+      "type": "property",
+      "name": "BLACK",
+      "desc": "<p>黑色，颜色值 #FF000000</p>\n"
+    },
+    {
+      "textRaw": "colors.DKGRAY",
+      "type": "property",
+      "name": "DKGRAY",
+      "desc": "<p>深灰色，颜色值 #FF444444</p>\n"
+    },
+    {
+      "textRaw": "colors.GRAY",
+      "type": "property",
+      "name": "GRAY",
+      "desc": "<p>灰色，颜色值 #FF888888</p>\n"
+    },
+    {
+      "textRaw": "colors.LTGRAY",
+      "type": "property",
+      "name": "LTGRAY",
+      "desc": "<p>亮灰色，颜色值 #FFCCCCCC</p>\n"
+    },
+    {
+      "textRaw": "colors.WHITE",
+      "type": "property",
+      "name": "WHITE",
+      "desc": "<p>白色，颜色值 #FFFFFFFF</p>\n"
+    },
+    {
+      "textRaw": "colors.RED",
+      "type": "property",
+      "name": "RED",
+      "desc": "<p>红色，颜色值 #FFFF0000</p>\n"
+    },
+    {
+      "textRaw": "colors.GREEN",
+      "type": "property",
+      "name": "GREEN",
+      "desc": "<p>绿色，颜色值 #FF00FF00</p>\n"
+    },
+    {
+      "textRaw": "colors.BLUE",
+      "type": "property",
+      "name": "BLUE",
+      "desc": "<p>蓝色，颜色值 #FF0000FF</p>\n"
+    },
+    {
+      "textRaw": "colors.YELLOW",
+      "type": "property",
+      "name": "YELLOW",
+      "desc": "<p>黄色，颜色值 #FFFFFF00</p>\n"
+    },
+    {
+      "textRaw": "colors.CYAN",
+      "type": "property",
+      "name": "CYAN",
+      "desc": "<p>青色，颜色值 #FF00FFFF</p>\n"
+    },
+    {
+      "textRaw": "colors.MAGENTA",
+      "type": "property",
+      "name": "MAGENTA",
+      "desc": "<p>品红色，颜色值 #FFFF00FF</p>\n"
+    },
+    {
+      "textRaw": "colors.TRANSPARENT",
+      "type": "property",
+      "name": "TRANSPARENT",
+      "desc": "<p>透明，颜色值 #00000000</p>\n"
+    }
+  ]
+}

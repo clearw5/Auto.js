@@ -1,0 +1,341 @@
+{
+  "source": "..\\api\\keys.md",
+  "modules": [
+    {
+      "textRaw": "Keys",
+      "name": "keys",
+      "desc": "<p>按键模拟部分提供了一些模拟物理按键的全局函数，包括Home、音量键、照相键等，有的函数依赖于无障碍服务，有的函数依赖于root权限。</p>\n<p>一般来说，以大写字母开头的函数都依赖于root权限。执行此类函数时，如果没有root权限，则函数执行后没有效果，并会在控制台输出一个警告。</p>\n",
+      "methods": [
+        {
+          "textRaw": "back()",
+          "type": "method",
+          "name": "back",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>模拟按下返回键。返回是否执行成功。\n此函数依赖于无障碍服务。</p>\n"
+        },
+        {
+          "textRaw": "home()",
+          "type": "method",
+          "name": "home",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>模拟按下Home键。返回是否执行成功。\n此函数依赖于无障碍服务。</p>\n"
+        },
+        {
+          "textRaw": "powerDialog()",
+          "type": "method",
+          "name": "powerDialog",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>弹出电源键菜单。返回是否执行成功。\n此函数依赖于无障碍服务。</p>\n"
+        },
+        {
+          "textRaw": "notifications()",
+          "type": "method",
+          "name": "notifications",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>拉出通知栏。返回是否执行成功。\n此函数依赖于无障碍服务。</p>\n"
+        },
+        {
+          "textRaw": "quickSettings()",
+          "type": "method",
+          "name": "quickSettings",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>显示快速设置(下拉通知栏到底)。返回是否执行成功。\n此函数依赖于无障碍服务。</p>\n"
+        },
+        {
+          "textRaw": "recents()",
+          "type": "method",
+          "name": "recents",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>显示最近任务。返回是否执行成功。\n此函数依赖于无障碍服务。</p>\n"
+        },
+        {
+          "textRaw": "splitScreen()",
+          "type": "method",
+          "name": "splitScreen",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>分屏。返回是否执行成功。\n此函数依赖于无障碍服务, 并且需要系统自身功能的支持。</p>\n"
+        },
+        {
+          "textRaw": "Home()",
+          "type": "method",
+          "name": "Home",
+          "desc": "<p>模拟按下Home键。\n此函数依赖于root权限。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "Back()",
+          "type": "method",
+          "name": "Back",
+          "desc": "<p>模拟按下返回键。\n此函数依赖于root权限。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "Power()",
+          "type": "method",
+          "name": "Power",
+          "desc": "<p>模拟按下电源键。\n此函数依赖于root权限。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "Menu()",
+          "type": "method",
+          "name": "Menu",
+          "desc": "<p>模拟按下菜单键。\n此函数依赖于root权限。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "VolumeUp()",
+          "type": "method",
+          "name": "VolumeUp",
+          "desc": "<p>按下音量上键。\n此函数依赖于root权限。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "VolumeDown()",
+          "type": "method",
+          "name": "VolumeDown",
+          "desc": "<p>按键音量上键。\n此函数依赖于root权限。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "Camera()",
+          "type": "method",
+          "name": "Camera",
+          "desc": "<p>模拟按下照相键。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "Up()",
+          "type": "method",
+          "name": "Up",
+          "desc": "<p>模拟按下物理按键上。\n此函数依赖于root权限。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "Down()",
+          "type": "method",
+          "name": "Down",
+          "desc": "<p>模拟按下物理按键下。\n此函数依赖于root权限。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "Left()",
+          "type": "method",
+          "name": "Left",
+          "desc": "<p>模拟按下物理按键左。\n此函数依赖于root权限。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "Right()",
+          "type": "method",
+          "name": "Right",
+          "desc": "<p>模拟按下物理按键右。\n此函数依赖于root权限。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "OK()",
+          "type": "method",
+          "name": "OK",
+          "desc": "<p>模拟按下物理按键确定。\n此函数依赖于root权限。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "Text(text)",
+          "type": "method",
+          "name": "Text",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "text {string} 要输入的文字，只能为英文或英文符号 输入文字text。例如`Text(\"aaa\");` ",
+                  "name": "text",
+                  "type": "string",
+                  "desc": "要输入的文字，只能为英文或英文符号 输入文字text。例如`Text(\"aaa\");`"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "text"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "KeyCode(code)",
+          "type": "method",
+          "name": "KeyCode",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "code {number} | <String> 要按下的按键的数字代码或名称。参见下表。 模拟物理按键。例如`KeyCode(29)`和`KeyCode(\"KEYCODE_A\")`是按下A键。 ",
+                  "name": "code",
+                  "type": "number",
+                  "desc": "| <String> 要按下的按键的数字代码或名称。参见下表。 模拟物理按键。例如`KeyCode(29)`和`KeyCode(\"KEYCODE_A\")`是按下A键。"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "code"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "type": "module",
+      "displayName": "Keys"
+    },
+    {
+      "textRaw": "附录: KeyCode对照表",
+      "name": "附录:_keycode对照表",
+      "desc": "<p>KeyCode             KeyEvent Value  </p>\n<ul>\n<li>KEYCODE_MENU 1  </li>\n<li>KEYCODE_SOFT_RIGHT 2  </li>\n<li>KEYCODE_HOME 3  </li>\n<li>KEYCODE_BACK 4  </li>\n<li>KEYCODE_CALL 5  </li>\n<li>KEYCODE_ENDCALL 6  </li>\n<li>KEYCODE_0 7  </li>\n<li>KEYCODE_1 8  </li>\n<li>KEYCODE_2 9  </li>\n<li>KEYCODE_3 10  </li>\n<li>KEYCODE_4 11  </li>\n<li>KEYCODE_5 12  </li>\n<li>KEYCODE_6 13  </li>\n<li>KEYCODE_7 14  </li>\n<li>KEYCODE_8 15  </li>\n<li>KEYCODE_9 16  </li>\n<li>KEYCODE_STAR 17  </li>\n<li>KEYCODE_POUND 18  </li>\n<li>KEYCODE_DPAD_UP 19  </li>\n<li>KEYCODE_DPAD_DOWN 20  </li>\n<li>KEYCODE_DPAD_LEFT 21  </li>\n<li>KEYCODE_DPAD_RIGHT 22  </li>\n<li>KEYCODE_DPAD_CENTER 23  </li>\n<li>KEYCODE_VOLUME_UP 24  </li>\n<li>KEYCODE_VOLUME_DOWN 25  </li>\n<li>KEYCODE_POWER 26  </li>\n<li>KEYCODE_CAMERA 27  </li>\n<li>KEYCODE_CLEAR 28  </li>\n<li>KEYCODE_A 29  </li>\n<li>KEYCODE_B 30  </li>\n<li>KEYCODE_C 31  </li>\n<li>KEYCODE_D 32  </li>\n<li>KEYCODE_E 33  </li>\n<li>KEYCODE_F 34  </li>\n<li>KEYCODE_G 35  </li>\n<li>KEYCODE_H 36  </li>\n<li>KEYCODE_I 37  </li>\n<li>KEYCODE_J 38  </li>\n<li>KEYCODE_K 39  </li>\n<li>KEYCODE_L 40  </li>\n<li>KEYCODE_M 41  </li>\n<li>KEYCODE_N 42  </li>\n<li>KEYCODE_O 43  </li>\n<li>KEYCODE_P 44  </li>\n<li>KEYCODE_Q 45  </li>\n<li>KEYCODE_R 46  </li>\n<li>KEYCODE_S 47  </li>\n<li>KEYCODE_T 48  </li>\n<li>KEYCODE_U 49  </li>\n<li>KEYCODE_V 50  </li>\n<li>KEYCODE_W 51  </li>\n<li>KEYCODE_X 52  </li>\n<li>KEYCODE_Y 53  </li>\n<li>KEYCODE_Z 54  </li>\n<li>KEYCODE_COMMA 55  </li>\n<li>KEYCODE_PERIOD 56  </li>\n<li>KEYCODE_ALT_LEFT 57  </li>\n<li>KEYCODE_ALT_RIGHT 58  </li>\n<li>KEYCODE_SHIFT_LEFT 59  </li>\n<li>KEYCODE_SHIFT_RIGHT 60  </li>\n<li>KEYCODE_TAB 61  </li>\n<li>KEYCODE_SPACE 62  </li>\n<li>KEYCODE_SYM 63  </li>\n<li>KEYCODE_EXPLORER 64  </li>\n<li>KEYCODE_ENVELOPE 65  </li>\n<li>KEYCODE_ENTER 66  </li>\n<li>KEYCODE_DEL 67  </li>\n<li>KEYCODE_GRAVE 68  </li>\n<li>KEYCODE_MINUS 69  </li>\n<li>KEYCODE_EQUALS 70  </li>\n<li>KEYCODE_LEFT_BRACKET 71  </li>\n<li>KEYCODE_RIGHT_BRACKET 72  </li>\n<li>KEYCODE_BACKSLASH 73  </li>\n<li>KEYCODE_SEMICOLON 74  </li>\n<li>KEYCODE_APOSTROPHE 75  </li>\n<li>KEYCODE_SLASH 76  </li>\n<li>KEYCODE_AT 77  </li>\n<li>KEYCODE_NUM 78  </li>\n<li>KEYCODE_HEADSETHOOK 79  </li>\n<li>KEYCODE_FOCUS 80  </li>\n<li>KEYCODE_PLUS 81  </li>\n<li>KEYCODE_MENU 82  </li>\n<li>KEYCODE_NOTIFICATION 83  </li>\n<li>KEYCODE_SEARCH 84  </li>\n<li>TAG<em>LAST</em> KEYCODE 85  </li>\n</ul>\n",
+      "type": "module",
+      "displayName": "附录: KeyCode对照表"
+    }
+  ]
+}

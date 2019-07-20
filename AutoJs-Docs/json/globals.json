@@ -1,0 +1,449 @@
+{
+  "source": "..\\api\\globals.md",
+  "modules": [
+    {
+      "textRaw": "全局变量与函数",
+      "name": "全局变量与函数",
+      "desc": "<p>全局变量和函数在所有模块中均可使用。 但以下变量的作用域只在模块内，详见 <a href=\"modules.html\">module</a>：</p>\n<ul>\n<li>exports</li>\n<li>module</li>\n<li>require()\n以下的对象是特定于 Auto.js 的。 有些内置对象是 JavaScript 语言本身的一部分，它们也是全局的。</li>\n</ul>\n<p>一些模块中的函数为了使用方便也可以直接全局使用，这些函数在此不再赘述。例如timers模块的setInterval, setTimeout等函数。</p>\n",
+      "methods": [
+        {
+          "textRaw": "sleep(n)",
+          "type": "method",
+          "name": "sleep",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`n` {number} 毫秒数 ",
+                  "name": "n",
+                  "type": "number",
+                  "desc": "毫秒数"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "n"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>暂停运行n<strong>毫秒</strong>的时间。1秒等于1000毫秒。</p>\n<pre><code>//暂停5毫秒\nsleep(5000);\n</code></pre>"
+        },
+        {
+          "textRaw": "currentPackage()",
+          "type": "method",
+          "name": "currentPackage",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回最近一次监测到的正在运行的应用的包名，一般可以认为就是当前正在运行的应用的包名。</p>\n<p>此函数依赖于无障碍服务，如果服务未启动，则抛出异常并提示用户启动。</p>\n"
+        },
+        {
+          "textRaw": "currentActivity()",
+          "type": "method",
+          "name": "currentActivity",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回最近一次监测到的正在运行的Activity的名称，一般可以认为就是当前正在运行的Activity的名称。</p>\n<p>此函数依赖于无障碍服务，如果服务未启动，则抛出异常并提示用户启动。</p>\n"
+        },
+        {
+          "textRaw": "setClip(text)",
+          "type": "method",
+          "name": "setClip",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`text` {string} 文本 ",
+                  "name": "text",
+                  "type": "string",
+                  "desc": "文本"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "text"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>设置剪贴板内容。此剪贴板即系统剪贴板，在一般应用的输入框中&quot;粘贴&quot;既可使用。</p>\n<pre><code>setClip(&quot;剪贴板文本&quot;);\n</code></pre>"
+        },
+        {
+          "textRaw": "getClip()",
+          "type": "method",
+          "name": "getClip",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回系统剪贴板的内容。</p>\n<pre><code>toast(&quot;剪贴板内容为:&quot; + getClip());\n</code></pre>"
+        },
+        {
+          "textRaw": "toast(message)",
+          "type": "method",
+          "name": "toast",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "message {string} 要显示的信息 ",
+                  "name": "message",
+                  "type": "string",
+                  "desc": "要显示的信息"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "message"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>以气泡显示信息message几秒。(具体时间取决于安卓系统，一般都是2秒)</p>\n<p>注意，信息的显示是&quot;异步&quot;执行的，并且，不会等待信息消失程序才继续执行。如果在循环中执行该命令，可能出现脚本停止运行后仍然有不断的气泡信息出现的情况。\n例如:</p>\n<pre><code>for(var i = 0; i &lt; 100; i++){\n  toast(i);\n}\n</code></pre><p>运行这段程序以后，会很快执行完成，且不断弹出消息，在任务管理中关闭所有脚本也无法停止。\n要保证气泡消息才继续执行可以用：</p>\n<pre><code>for(var i = 0; i &lt; 100; i++){\n  toast(i);\n  sleep(2000);\n}\n</code></pre><p>或者修改toast函数：</p>\n<pre><code>var _toast_ = toast;\ntoast = function(message){\n  _toast_(message);\n  sleep(2000);\n}\nfor(var i = 0; i &lt; 100; i++){\n  toast(i);\n}\n</code></pre>"
+        },
+        {
+          "textRaw": "toastLog(message)",
+          "type": "method",
+          "name": "toastLog",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "message {string} 要显示的信息 ",
+                  "name": "message",
+                  "type": "string",
+                  "desc": "要显示的信息"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "message"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>相当于<code>toast(message);log(message)</code>。显示信息message并在控制台中输出。参见console.log。</p>\n"
+        },
+        {
+          "textRaw": "waitForActivity(activity[, period = 200])",
+          "type": "method",
+          "name": "waitForActivity",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`activity` Activity名称 ",
+                  "name": "activity",
+                  "desc": "Activity名称"
+                },
+                {
+                  "textRaw": "`period` 轮询等待间隔（毫秒） ",
+                  "name": "period",
+                  "desc": "轮询等待间隔（毫秒）",
+                  "optional": true,
+                  "default": " 200"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "activity"
+                },
+                {
+                  "name": "period ",
+                  "optional": true,
+                  "default": " 200"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>等待指定的Activity出现，period为检查Activity的间隔。</p>\n"
+        },
+        {
+          "textRaw": "waitForPackage(package[, period = 200])",
+          "type": "method",
+          "name": "waitForPackage",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`package` 包名 ",
+                  "name": "package",
+                  "desc": "包名"
+                },
+                {
+                  "textRaw": "`period` 轮询等待间隔（毫秒） ",
+                  "name": "period",
+                  "desc": "轮询等待间隔（毫秒）",
+                  "optional": true,
+                  "default": " 200"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "package"
+                },
+                {
+                  "name": "period ",
+                  "optional": true,
+                  "default": " 200"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>等待指定的应用出现。例如<code>waitForPackage(&quot;com.tencent.mm&quot;)</code>为等待当前界面为微信。</p>\n"
+        },
+        {
+          "textRaw": "exit()",
+          "type": "method",
+          "name": "exit",
+          "desc": "<p>立即停止脚本运行。</p>\n<p>立即停止是通过抛出<code>ScriptInterrupttedException</code>来实现的，因此如果用<code>try...catch</code>把exit()函数的异常捕捉，则脚本不会立即停止，仍会运行几行后再停止。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "random(min, max)",
+          "type": "method",
+          "name": "random",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`min` {number} 随机数产生的区间下界 ",
+                  "name": "min",
+                  "type": "number",
+                  "desc": "随机数产生的区间下界"
+                },
+                {
+                  "textRaw": "`max` {number} 随机数产生的区间上界 ",
+                  "name": "max",
+                  "type": "number",
+                  "desc": "随机数产生的区间上界"
+                },
+                {
+                  "textRaw": "返回 {number} ",
+                  "name": "返回",
+                  "type": "number"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "min"
+                },
+                {
+                  "name": "max"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回一个在[min...max]之间的随机数。例如random(0, 2)可能产生0, 1, 2。</p>\n"
+        },
+        {
+          "textRaw": "random()",
+          "type": "method",
+          "name": "random",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {number} ",
+                  "name": "返回",
+                  "type": "number"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回在[0, 1)的随机浮点数。</p>\n"
+        },
+        {
+          "textRaw": "requiresApi(api)",
+          "type": "method",
+          "name": "requiresApi",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`api` Android版本号 ",
+                  "name": "api",
+                  "desc": "Android版本号"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "api"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>表示此脚本需要Android API版本达到指定版本才能运行。例如<code>requiresApi(19)</code>表示脚本需要在Android 4.4以及以上运行。</p>\n<p>调用该函数时会判断运行脚本的设备系统的版本号，如果没有达到要求则抛出异常。</p>\n<p>可以参考以下Android API和版本的对照表:</p>\n<p> 平台版本：     API级别</p>\n<p> Android 7.0：  24</p>\n<p> Android 6.0：  23</p>\n<p> Android 5.1：  22</p>\n<p> Android 5.0：  21</p>\n<p> Android 4.4W：  20</p>\n<p> Android 4.4：  19</p>\n<p> Android 4.3：  18</p>\n"
+        },
+        {
+          "textRaw": "requiresAutojsVersion(version)",
+          "type": "method",
+          "name": "requiresAutojsVersion",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`version` {string} | {number} Auto.js的版本或版本号 ",
+                  "name": "version",
+                  "type": "string",
+                  "desc": "| {number} Auto.js的版本或版本号"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "version"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>表示此脚本需要Auto.js版本达到指定版本才能运行。例如<code>requiresAutojsVersion(&quot;3.0.0 Beta&quot;)</code>表示脚本需要在Auto.js 3.0.0 Beta以及以上运行。</p>\n<p>调用该函数时会判断运行脚本的Auto.js的版本号，如果没有达到要求则抛出异常。</p>\n<p>version参数可以是整数表示版本号，例如<code>requiresAutojsVersion(250)</code>；也可以是字符串格式表示的版本，例如&quot;3.0.0 Beta&quot;, &quot;3.1.0 Alpha4&quot;, &quot;3.2.0&quot;等。</p>\n<p>可以通过<code>app.autojs.versionCode</code>和<code>app.autojs.versionName</code>获取当前的Auto.js版本号和版本。</p>\n"
+        },
+        {
+          "textRaw": "runtime.requestPermissions(permissions)",
+          "type": "method",
+          "name": "requestPermissions",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`permissions` {Array} 权限的字符串数组 ",
+                  "name": "permissions",
+                  "type": "Array",
+                  "desc": "权限的字符串数组"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "permissions"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>动态申请安卓的权限。例如：</p>\n<pre><code>//请求GPS权限\nruntime.requestPermissions([&quot;access_fine_location&quot;]);\n</code></pre><p>尽管安卓有很多权限，但必须写入Manifest才能动态申请，为了防止权限的滥用，目前Auto.js只能额外申请两个权限：</p>\n<ul>\n<li><code>access_fine_location</code> GPS权限</li>\n<li><code>record_audio</code> 录音权限</li>\n</ul>\n<p>您可以通过APK编辑器来增加Auto.js以及Auto.js打包的应用的权限。</p>\n<p>安卓所有的权限列表参见<a href=\"https://developer.android.com/guide/topics/permissions/overview\">Permissions Overview</a>。（并没有用）</p>\n"
+        },
+        {
+          "textRaw": "runtime.loadJar(path)",
+          "type": "method",
+          "name": "loadJar",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} jar文件路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "jar文件路径"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>加载目标jar文件，加载成功后将可以使用该Jar文件的类。</p>\n<pre><code>// 加载jsoup.jar\nruntime.loadJar(&quot;./jsoup.jar&quot;);\n// 使用jsoup解析html\nimportClass(org.jsoup.Jsoup);\nlog(Jsoup.parse(files.read(&quot;./test.html&quot;)));\n</code></pre><p>(jsoup是一个Java实现的解析Html DOM的库，可以在<a href=\"https://jsoup.org/download\">Jsoup</a>下载)</p>\n"
+        },
+        {
+          "textRaw": "runtime.loadDex(path)",
+          "type": "method",
+          "name": "loadDex",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} dex文件路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "dex文件路径"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>加载目标dex文件，加载成功后将可以使用该dex文件的类。</p>\n<p>因为加载jar实际上是把jar转换为dex再加载的，因此加载dex文件会比jar文件快得多。可以使用Android SDK的build tools的dx工具把jar转换为dex。</p>\n"
+        }
+      ],
+      "modules": [
+        {
+          "textRaw": "context",
+          "name": "context",
+          "desc": "<p>全局变量。一个android.content.Context对象。</p>\n<p>注意该对象为ApplicationContext，因此不能用于界面、对话框等的创建。</p>\n",
+          "type": "module",
+          "displayName": "context"
+        }
+      ],
+      "type": "module",
+      "displayName": "全局变量与函数"
+    }
+  ]
+}

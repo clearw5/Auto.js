@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>关于本文档 | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/documentation.html">
+</head>
+<body class="alt apidoc" id="api-section-documentation">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation active" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="documentation" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_undefined"><a href="#documentation">关于本文档</a></span><ul>
+<li><span class="stability_0"><a href="#documentation_api">API稳定性</a></span></li>
+<li><span class="stability_undefined"><a href="#documentation_1">如何阅读本文档</a></span></li>
+<li><span class="stability_undefined"><a href="#documentation_input_i_text">input([i, ]text)</a></span></li>
+<li><span class="stability_undefined"><a href="#documentation_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff">images.detectsColor(image, color, x, y[, threshold = 16, algorithm = &quot;diff&quot;])</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>关于本文档<span><a class="mark" href="#documentation" id="documentation">#</a></span></h1>
+<!-- type=misc -->
+<p>本文档为Auto.js的文档，解释了Auto.js各个模块的API的使用方法、作用和例子。</p>
+<p>文档借助Node.js的文档构建工具生成，并在github上开源(<a href="https://github.com/hyb1996/AutoJs-Docs">https://github.com/hyb1996/AutoJs-Docs</a> )，目前由开发者维护。</p>
+<h2>API稳定性<span><a class="mark" href="#documentation_api" id="documentation_api">#</a></span></h2>
+<p>由于Auto.js处于活跃的更新和开发状态，API可能随时有变动，我们用Stability来标记模块、函数的稳定性。这些标记包括：</p>
+<div class="api_stability api_stability_0"><a href="documentation.html#documentation_stability_index">Stability: 0</a> - Deprecated  弃用的函数、模块或特性，在未来的更新中将很快会被移除或更改。应该在脚本中移除对这些函数的使用，以免后续出现意料之外的问题。</div><div class="api_stability api_stability_1"><a href="documentation.html#documentation_stability_index">Stability: 1</a> - Experimental  实验性的函数、模块或特性，在未来的更新中可能会更改或移除。应该谨慎使用这些函数或模块，或者仅用作临时或试验用途。</div><div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable  稳定的函数、模块或特性，在未来的更新中这些模块已有的函数一般不会被更改，会保证后向兼容性。</div><h2>如何阅读本文档<span><a class="mark" href="#documentation_1" id="documentation_1">#</a></span></h2>
+<p>先看一个例子，下面是<a href="coordinates-based-automation.html">基于控件的操作模拟</a>的章节中input函数的部分说明。</p>
+<h2>input([i, ]text)<span><a class="mark" href="#documentation_input_i_text" id="documentation_input_i_text">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>i</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 表示要输入的为第i + 1个输入框</li>
+<li><code>text</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要输入的文本</li>
+</ul>
+</div><p>input表示函数名，括号内的<code>[i, ]text</code>为函数的参数。下面是参数列表，&quot;number&quot;表示参数i的类型为数值，&quot;string&quot;表示参数text的类型为字符串。</p>
+<p>例如input(1, &quot;啦啦啦&quot;)，执行这个语句会在屏幕上的第2个输入框处输入&quot;啦啦啦&quot;。</p>
+<p>方括号[ ]表示参数为可选参数。也就是说，可以省略i直接调用input。例如input(&quot;嘿嘿嘿&quot;)，按照文档，这个语句会在屏幕上所有输入框输入&quot;嘿嘿嘿&quot;。</p>
+<p>调用有可选参数的函数时请不要写上方括号。</p>
+<p>我们再看第二个例子。图片和图色处理中detectsColor函数的部分说明。</p>
+<h2>images.detectsColor(image, color, x, y[, threshold = 16, algorithm = &quot;diff&quot;])<span><a class="mark" href="#documentation_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff" id="documentation_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要检测的颜色</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要检测的位置横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要检测的位置纵坐标</li>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色相似度临界值，默认为16。取值范围为0~255。</li>
+<li><p><code>algorithm</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色匹配算法，包括:</p>
+<ul>
+<li>&quot;equal&quot;: 相等匹配，只有与给定颜色color完全相等时才匹配。</li>
+<li>&quot;diff&quot;: 差值匹配。与给定颜色的R、G、B差的绝对值之和小于threshold时匹配。</li>
+<li><p>&quot;rgb&quot;: rgb欧拉距离相似度。与给定颜色color的rgb欧拉距离小于等于threshold时匹配。</p>
+</li>
+<li><p>&quot;rgb+&quot;: 加权rgb欧拉距离匹配(<a href="https://en.wikipedia.org/wiki/Color_difference">LAB Delta E</a>)。</p>
+</li>
+<li>&quot;hs&quot;: hs欧拉距离匹配。hs为HSV空间的色调值。</li>
+</ul>
+</li>
+</ul>
+</div><p>同样地，<code>[, threshold = 16, algorithm = &quot;rgb&quot;]</code>为可选参数，并且，等于号=后面的值为参数的默认值。也就是如果不指定该参数，则该参数将会为这个值。</p>
+<p>例如 <code>images.detectsColor(captureScreen(), &quot;#112233&quot;, 100, 200)</code> 相当于 <code>images.detectsColor(captureScreen(), &quot;#112233&quot;, 100, 200, 16, &quot;rgb&quot;)</code>，
+而<code>images.detectsColor(captureScreen(), &quot;#112233&quot;, 100, 200, 64)</code> 相当于<code>images.detectsColor(captureScreen(), &quot;#112233&quot;, 100, 200, 64, &quot;rgb&quot;)</code>。</p>
+<p>调用有可选参数及默认值的函数时请不要写上方括号和等于号。</p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

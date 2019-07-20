@@ -1,0 +1,14 @@
+{
+  "source": "..\\api\\modules.md",
+  "modules": [
+    {
+      "textRaw": "module (模块)",
+      "name": "module_(模块)",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>Auto.js 有一个简单的模块加载系统。 在 Auto.js 中，文件和模块是一一对应的（每个文件被视为一个独立的模块）。</p>\n<p>例子，假设有一个名为 foo.js 的文件：</p>\n<pre><code>var circle = require(&#39;circle.js&#39;);\nconsole.log(&quot;半径为 4 的圆的面积是 %d&quot;, circle.area(4));\n</code></pre><p>在第一行中，foo.js 加载了同一目录下的 circle.js 模块。</p>\n<p>circle.js 文件的内容为：</p>\n<pre><code>const PI = Math.PI;\n\nvar circle = {};\n\ncircle.area = function (r) {\n  return PI * r * r;\n};\n\ncircle.circumference = (r) =&gt; 2 * PI * r;\n\nmodule.exports = circle;\n</code></pre><p>circle.js 模块导出了 area() 和 circumference() 两个函数。 通过在特殊的 exports 对象上指定额外的属性，函数和对象可以被添加到模块的根部。</p>\n<p>模块内的本地变量是私有的。 在这个例子中，变量 PI 是 circle.js 私有的，不会影响到加载他的脚本的变量环境。</p>\n<p>module.exports属性可以被赋予一个新的值（例如函数或对象）。</p>\n<p>如下，bar.js 会用到 square 模块，square 导出一个构造函数：</p>\n<pre><code>const square = require(&#39;square.js&#39;);\nconst mySquare = square(2);\nconsole.log(&quot;正方形的面积是 %d&quot;, mySquare.area());\nsquare 模块定义在 square.js 中：\n\n// 赋值给 `exports` 不会修改模块，必须使用 `module.exports`\nmodule.exports = function(width) {\n  return {\n    area: () =&gt; width ** 2\n  };\n};\n</code></pre>",
+      "type": "module",
+      "displayName": "module (模块)"
+    }
+  ]
+}

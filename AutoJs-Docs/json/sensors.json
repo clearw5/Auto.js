@@ -1,0 +1,154 @@
+{
+  "source": "..\\api\\sensors.md",
+  "modules": [
+    {
+      "textRaw": "Sensors",
+      "name": "sensors",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>sensors模块提供了获取手机上的传感器的信息的支持，这些传感器包括距离传感器、光线光感器、重力传感器、方向传感器等。需要指出的是，脚本只能获取传感器的数据，<strong>不能模拟或伪造传感器的数据和事件</strong>，因此诸如模拟摇一摇的功能是无法实现的。</p>\n<p>要监听一个传感器时，需要使用<code>sensors.register()</code>注册监听器，之后才能开始监听；不需要监听时则调用<code>sensors.unregister()</code>注销监听器。在脚本结束时会自动注销所有的监听器。同时，这种监听会使脚本保持运行状态，如果不注销监听器，脚本会一直保持运行状态。</p>\n<p>例如，监听光线传感器的代码为：</p>\n<pre><code>//光线传感器监听\nsensors.register(&quot;light&quot;).on(&quot;change&quot;, (event, light)=&gt;{\n    log(&quot;当前光强度为&quot;, light);\n});\n</code></pre><p>要注意的是，每个传感器的数据并不相同，所以对他们调用<code>on()</code>监听事件时的回调函数参数也不是相同，例如光线传感器参数为<code>(event, light)</code>，加速度传感器参数为<code>(event, ax, ay, az)</code>。甚至在某些设备上的传感器参数有所增加，例如华为手机的距离传感器为三个参数，一般手机只有一个参数。</p>\n<p>常用的传感器及其事件参数如下表：</p>\n<ul>\n<li><p><code>accelerometer</code> 加速度传感器，参数<code>(event, ax, ay, az)</code>:</p>\n<ul>\n<li><code>event</code> <a href=\"#sensors_sensorevent\">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>\n<li><code>ax</code> {number} x轴上的加速度，单位m/s^2</li>\n<li><code>ay</code> {number} y轴上的加速度，单位m/s^2</li>\n<li><p><code>az</code> {number} z轴上的加速度，单位m/s^2\n这里的x轴，y轴，z轴所属的坐标系统如下图(其中z轴垂直于设备屏幕表面):</p>\n<p>!<img src=\"#images/axis_device.png\" alt=\"axis_device\"></p>\n</li>\n</ul>\n</li>\n<li><p><code>orientation</code> 方向传感器，参数<code>(event, azimuth, pitch, roll)</code>:</p>\n<ul>\n<li><code>event</code> <a href=\"#sensors_sensorevent\">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>\n<li><code>azimuth</code> {number} 方位角，从地磁指北方向线起，依顺时针方向到y轴之间的水平夹角，单位角度，范围0~359</li>\n<li><code>pitch</code> {number} 绕x轴旋转的角度，当设备水平放置时该值为0，当设备顶部翘起时该值为正数，当设备尾部翘起时该值为负数，单位角度，范围-180~180</li>\n<li><code>roll</code> {number} 绕y轴顺时针旋转的角度，单位角度，范围-90~90</li>\n</ul>\n</li>\n<li><p><code>gyroscope</code> 陀螺仪传感器，参数<code>(event, wx, wy, wz)</code>:</p>\n<ul>\n<li><code>event</code> <a href=\"#sensors_sensorevent\">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>\n<li><code>wx</code> {number} 绕x轴的角速度，单位弧度/s</li>\n<li><code>wy</code> {number} 绕y轴的角速度，单位弧度/s</li>\n<li><code>wz</code> {number} 绕z轴的角速度，单位弧度/s</li>\n</ul>\n</li>\n<li><p><code>magnetic_field</code> 磁场传感器，参数<code>(event, bx, by, bz)</code>:</p>\n<ul>\n<li><code>event</code> <a href=\"#sensors_sensorevent\">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>\n<li><code>bx</code> {number} x轴上的磁场强度，单位uT</li>\n<li><code>by</code> {number} y轴上的磁场强度，单位uT</li>\n<li><code>bz</code> {number} z轴上的磁场强度，单位uT</li>\n</ul>\n</li>\n<li><p><code>gravity</code> 重力传感器，参数<code>(event, gx, gy, gz)</code>:</p>\n<ul>\n<li><code>event</code> <a href=\"#sensors_sensorevent\">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>\n<li><code>gx</code> {number} x轴上的重力加速度，单位m/s^2</li>\n<li><code>gy</code> {number} y轴上的重力加速度，单位m/s^2</li>\n<li><code>gz</code> {number} z轴上的重力加速度，单位m/s^2</li>\n</ul>\n</li>\n<li><p><code>linear_acceleration</code> 线性加速度传感器，参数<code>(event, ax, ay, az)</code>:</p>\n<ul>\n<li><code>event</code> <a href=\"#sensors_sensorevent\">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>\n<li><code>ax</code> {number} x轴上的线性加速度，单位m/s^2</li>\n<li><code>ay</code> {number} y轴上的线性加速度，单位m/s^2</li>\n<li><code>az</code> {number} z轴上的线性加速度，单位m/s^2</li>\n</ul>\n</li>\n<li><p><code>ambient_temperature</code> 环境温度传感器，大部分设备并不支持，参数<code>(event, t)</code>:</p>\n<ul>\n<li><code>event</code> <a href=\"#sensors_sensorevent\">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>\n<li><code>t</code> {number} 环境温度，单位摄氏度。</li>\n</ul>\n</li>\n<li><p><code>light</code> 光线传感器，参数<code>(event, light)</code>:</p>\n<ul>\n<li><code>event</code> <a href=\"#sensors_sensorevent\">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>\n<li><code>light</code> {number} 环境光强度，单位lux</li>\n</ul>\n</li>\n<li><p><code>pressure</code> 压力传感器，参数<code>(event, p)</code>:</p>\n<ul>\n<li><code>event</code> <a href=\"#sensors_sensorevent\">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>\n<li><code>p</code> {number} 大气压，单位hPa</li>\n</ul>\n</li>\n<li><p><code>proximity</code> 距离传感器，参数<code>(event, distance)</code>:</p>\n<ul>\n<li><code>event</code> <a href=\"#sensors_sensorevent\">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>\n<li><code>distance</code> {number} 一般指设备前置摄像头旁边的距离传感器到前方障碍物的距离，并且很多设备上这个值只有两种情况：当障碍物较近时该值为0，当障碍物较远或在范围内没有障碍物时该值为5</li>\n</ul>\n</li>\n<li><p><code>relative_humidity</code> 湿度传感器，大部分设备并不支持，参数<code>(event, rh)</code>:</p>\n<ul>\n<li><code>event</code> <a href=\"#sensors_sensorevent\">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>\n<li><code>rh</code> {number} 相对湿度，范围为0~100（百分比）</li>\n</ul>\n</li>\n</ul>\n",
+      "methods": [
+        {
+          "textRaw": "sensors.register(sensorName[, delay])",
+          "type": "method",
+          "name": "register",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`sensorName` {string} 传感器名称，常用的传感器名称如上面所述 ",
+                  "name": "sensorName",
+                  "type": "string",
+                  "desc": "传感器名称，常用的传感器名称如上面所述"
+                },
+                {
+                  "textRaw": "`delay` {number} 传感器数据更新频率，可选，默认为`sensors.delay.normal`。可用的值如下： ",
+                  "options": [
+                    {
+                      "textRaw": "`sensors.delay.normal` 正常频率 ",
+                      "name": "sensors.delay.normal",
+                      "desc": "正常频率"
+                    },
+                    {
+                      "textRaw": "`sensors.delay.ui` 适合于用户界面的更新频率 ",
+                      "name": "sensors.delay.ui",
+                      "desc": "适合于用户界面的更新频率"
+                    },
+                    {
+                      "textRaw": "`sensors.delay.game` 适合于游戏的更新频率 ",
+                      "name": "sensors.delay.game",
+                      "desc": "适合于游戏的更新频率"
+                    },
+                    {
+                      "textRaw": "`sensors.delay.fastest` 最快的更新频率】 ",
+                      "name": "sensors.delay.fastest",
+                      "desc": "最快的更新频率】"
+                    }
+                  ],
+                  "name": "delay",
+                  "type": "number",
+                  "desc": "传感器数据更新频率，可选，默认为`sensors.delay.normal`。可用的值如下：",
+                  "optional": true
+                },
+                {
+                  "textRaw": "返回 [SensorEventEmiiter](#sensors_sensoreventemitter) ",
+                  "name": "返回",
+                  "desc": "[SensorEventEmiiter](#sensors_sensoreventemitter)"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "sensorName"
+                },
+                {
+                  "name": "delay",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>注册一个传感器监听并返回<a href=\"#sensors_sensoreventemitter\">SensorEventEmitter</a>。</p>\n<p>例如:</p>\n<pre><code>console.show();\n//注册传感器监听\nvar sensor = sensors.register(&quot;gravity&quot;);\nif(sensor == null){\n    toast(&quot;不支持重力传感器&quot;);\n    exit();\n}\n//监听数据\nsensor.on(&quot;change&quot;, (gx, gy, gz)=&gt;{\n    log(&quot;重力加速度: %d, %d, %d&quot;, gx, gy, gz);\n});\n</code></pre><p>可以通过delay参数来指定传感器数据的更新频率，例如：</p>\n<pre><code>var sensor = sensors.register(&quot;gravity&quot;, sensors.delay.game);\n</code></pre><p>另外，如果不支持<code>sensorName</code>所指定的传感器，那么该函数将返回<code>null</code>；但如果<code>sensors.ignoresUnsupportedSensor</code>的值被设置为<code>true</code>, 则该函数会返回一个不会分发任何传感器事件的<a href=\"#sensors_sensoreventemitter\">SensorEventEmitter</a>。</p>\n<p>例如:</p>\n<pre><code>sensors.ignoresUnsupportedSensor = true;\n//无需null判断\nsensors.register(&quot;gravity&quot;).on(&quot;change&quot;, (gx, gy, gz)=&gt;{\n    log(&quot;重力加速度: %d, %d, %d&quot;, gx, gy, gz);\n});\n</code></pre><p>更多信息，参见<a href=\"#sensors_sensoreventemitter\">SensorEventEmitter</a>和<a href=\"#sensors_sensors_ignoresUnsupportedSensor\">sensors.ignoresUnsupportedSensor</a>。</p>\n"
+        },
+        {
+          "textRaw": "sensors.unregister(emitter)",
+          "type": "method",
+          "name": "unregister",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`emiiter` [SensorEventEmitter](#sensors_sensoreventemitter) ",
+                  "name": "emiiter",
+                  "desc": "[SensorEventEmitter](#sensors_sensoreventemitter)"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "emitter"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>注销该传感器监听器。被注销的监听器将不再能监听传感器数据。</p>\n<pre><code>//注册一个传感器监听器\nvar sensor = sensors.register(&quot;gravity&quot;);\nif(sensor == null){\n    exit();\n}\n//2秒后注销该监听器\nsetTimeout(()=&gt; {\n    sensors.unregister(sensor);\n}, 2000);\n</code></pre>"
+        },
+        {
+          "textRaw": "sensors.unregisterAll()",
+          "type": "method",
+          "name": "unregisterAll",
+          "desc": "<p>注销所有传感器监听器。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        }
+      ],
+      "properties": [
+        {
+          "textRaw": "`ignoresUnsupportedSensor` {boolean} ",
+          "type": "boolean",
+          "name": "ignoresUnsupportedSensor",
+          "desc": "<p>表示是否忽略不支持的传感器。如果该值被设置为<code>true</code>，则函数<code>sensors.register()</code>即使对不支持的传感器也会返回一个无任何数据的虚拟传感器监听，也就是<code>sensors.register()</code>不会返回<code>null</code>从而避免非空判断，并且此时会触发<code>sensors</code>的&quot;unsupported_sensor&quot;事件。</p>\n<pre><code>//忽略不支持的传感器\nsensors.ignoresUnsupportedSensor = true;\n//监听有不支持的传感器时的事件\nsensors.on(&quot;unsupported_sensor&quot;, function(sensorName){\n    toastLog(&quot;不支持的传感器: &quot; + sensorName);\n});\n//随便注册一个不存在的传感器。\nlog(sensors.register(&quot;aaabbb&quot;));\n</code></pre>"
+        }
+      ],
+      "modules": [
+        {
+          "textRaw": "事件: 'unsupported_sensor'",
+          "name": "事件:_'unsupported_sensor'",
+          "desc": "<ul>\n<li><code>sensorName</code> {string} 不支持的传感器名称</li>\n</ul>\n<p>当<code>sensors.ignoresUnsupportedSensor</code>被设置为<code>true</code>并且有不支持的传感器被注册时触发该事件。事件参数的传感器名称。</p>\n",
+          "type": "module",
+          "displayName": "事件: 'unsupported_sensor'"
+        }
+      ],
+      "type": "module",
+      "displayName": "Sensors"
+    },
+    {
+      "textRaw": "SensorEventEmitter",
+      "name": "sensoreventemitter",
+      "desc": "<p>注册传感器返回的对象，其本身是一个EventEmmiter，用于监听传感器事件。</p>\n",
+      "modules": [
+        {
+          "textRaw": "事件: 'change'",
+          "name": "事件:_'change'",
+          "desc": "<ul>\n<li><code>..args</code> {Any} 传感器参数</li>\n</ul>\n<p>当传感器数据改变时触发该事件；该事件触发的最高频繁由<code>sensors.register()</code>指定的delay参数决定。</p>\n<p>事件参数根据传感器类型不同而不同，具体参见本章最前面的列表。</p>\n<p>一个监听光线传感器和加速度传感器并且每0.5秒获取一个数据并最终写入一个csv表格文件的例子如下：</p>\n<pre><code>//csv文件路径\ncosnt csvPath = &quot;/sdcard/sensors_data.csv&quot;;\n//记录光线传感器的数据\nvar light = 0;\n//记录加速度传感器的数据\nvar ax = 0;\nvar ay = 0;\nvar az = 0;\n//监听光线传感器\nsensors.register(&quot;light&quot;, sensors.delay.fastest)\n    .on(&quot;change&quot;, l =&gt; {\n        light = l;\n    });\n//监听加速度传感器\nsensors.register(&quot;accelerometer&quot;, sensors.delay.fastest)\n    .on(&quot;change&quot;, (ax0, ay0, az0) =&gt; {\n        ax = ax0;\n        ay = ay0;\n        az = az0;\n    });\n\nvar file = open(csvPath, &quot;w&quot;);\n//写csv表格头\nfile.writeline(&quot;light,ax,ay,az&quot;)\n//每0.5秒获取一次数据并写入文件\nsetInterval(()=&gt;{\n    file.writeline(util.format(&quot;%d,%d,%d,%d&quot;, light, ax, ay, az));\n}, 500);\n//10秒后退出并打开文件\nsetTimeout(()=&gt;{\n    file.close();\n    sensors.unregsiterAll();\n    app.viewFile(csvPath);\n}, 10 * 1000);\n</code></pre>",
+          "type": "module",
+          "displayName": "事件: 'change'"
+        },
+        {
+          "textRaw": "事件: 'accuracy_change'",
+          "name": "事件:_'accuracy_change'",
+          "desc": "<ul>\n<li><code>accuracy</code> {number} 表示传感器精度。为以下值之一:<ul>\n<li>-1 传感器未连接</li>\n<li>0 传感器不可读</li>\n<li>1 低精度</li>\n<li>2 中精度</li>\n<li>3 高精度</li>\n</ul>\n</li>\n</ul>\n<p>当传感器精度改变时会触发的事件。比较少用。</p>\n",
+          "type": "module",
+          "displayName": "事件: 'accuracy_change'"
+        }
+      ],
+      "type": "module",
+      "displayName": "SensorEventEmitter"
+    }
+  ]
+}

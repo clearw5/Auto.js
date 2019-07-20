@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Timers | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/timers.html">
+</head>
+<body class="alt apidoc" id="api-section-timers">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers active" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="timers" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#timers_timers">Timers</a></span><ul>
+<li><span class="stability_undefined"><a href="#timers_setinterval_callback_delay_args">setInterval(callback, delay[, ...args])</a></span></li>
+<li><span class="stability_undefined"><a href="#timers_settimeout_callback_delay_args">setTimeout(callback, delay[, ...args])</a></span></li>
+<li><span class="stability_undefined"><a href="#timers_setimmediate_callback_args">setImmediate(callback[, ...args])</a></span></li>
+<li><span class="stability_undefined"><a href="#timers_clearinterval_id">clearInterval(id)</a></span></li>
+<li><span class="stability_undefined"><a href="#timers_cleartimeout_id">clearTimeout(id)</a></span></li>
+<li><span class="stability_undefined"><a href="#timers_clearimmediate_id">clearImmediate(id)</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>Timers<span><a class="mark" href="#timers_timers" id="timers_timers">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>timers 模块暴露了一个全局的 API，用于在某个未来时间段调用调度函数。 因为定时器函数是全局的，所以使用该 API 无需调用 timers.<em>*</em></p>
+<p>Auto.js 中的计时器函数实现了与 Web 浏览器提供的定时器类似的 API，除了它使用了一个不同的内部实现，它是基于 Android Looper-Handler消息循环机制构建的。其实现机制与Node.js比较相似。</p>
+<p>例如，要在5秒后发出消息&quot;hello&quot;:</p>
+<pre><code>setTimeout(function(){
+    toast(&quot;hello&quot;)
+}, 5000);
+</code></pre><p>需要注意的是，这些定时器仍然是单线程的。如果脚本主体有耗时操作或死循环，则设定的定时器不能被及时执行，例如：</p>
+<pre><code>setTimeout(function(){
+    //这里的语句会在15秒后执行而不是5秒后
+    toast(&quot;hello&quot;)
+}, 5000);
+//暂停10秒
+sleep(10000);
+</code></pre><p>再如：</p>
+<pre><code>setTimeout(function(){
+    //这里的语句永远不会被执行
+    toast(&quot;hello&quot;)
+}, 5000);
+//死循环
+while(true);
+</code></pre><h2>setInterval(callback, delay[, ...args])<span><a class="mark" href="#timers_setinterval_callback_delay_args" id="timers_setinterval_callback_delay_args">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 当定时器到点时要调用的函数。</li>
+<li><code>delay</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 调用 callback 之前要等待的毫秒数。</li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span> 当调用 callback 时要传入的可选参数。</li>
+</ul>
+</div><p>预定每隔 delay 毫秒重复执行的 callback。 返回一个用于 clearInterval() 的 id。</p>
+<p>当 delay 小于 0 时，delay 会被设为 0。</p>
+<h2>setTimeout(callback, delay[, ...args])<span><a class="mark" href="#timers_settimeout_callback_delay_args" id="timers_settimeout_callback_delay_args">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 当定时器到点时要调用的函数。</li>
+<li><code>delay</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 调用 callback 之前要等待的毫秒数。</li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span> 当调用 callback 时要传入的可选参数。</li>
+</ul>
+</div><p>预定在 delay 毫秒之后执行的单次 callback。 返回一个用于 clearTimeout() 的 id。</p>
+<p>callback 可能不会精确地在 delay 毫秒被调用。 Auto.js 不能保证回调被触发的确切时间，也不能保证它们的顺序。 回调会在尽可能接近所指定的时间上调用。</p>
+<p>当 delay 小于 0 时，delay 会被设为 0。</p>
+<h2>setImmediate(callback[, ...args])<span><a class="mark" href="#timers_setimmediate_callback_args" id="timers_setimmediate_callback_args">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 在Looper循环的当前回合结束时要调用的函数。</li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span> 当调用 callback 时要传入的可选参数。</li>
+</ul>
+</div><p>预定立即执行的 callback，它是在 I/O 事件的回调之后被触发。 返回一个用于 clearImmediate() 的 id。</p>
+<p>当多次调用 setImmediate() 时，callback 函数会按照它们被创建的顺序依次执行。 每次事件循环迭代都会处理整个回调队列。 如果一个立即定时器是被一个正在执行的回调排入队列的，则该定时器直到下一次事件循环迭代才会被触发。</p>
+<p>setImmediate()、setInterval() 和 setTimeout() 方法每次都会返回表示预定的计时器的id。 它们可用于取消定时器并防止触发。</p>
+<h2>clearInterval(id)<span><a class="mark" href="#timers_clearinterval_id" id="timers_clearinterval_id">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 一个 setInterval() 返回的 id。</li>
+</ul>
+</div><p>取消一个由 setInterval() 创建的循环定时任务。</p>
+<p>例如：</p>
+<pre><code>//每5秒就发出一次hello
+var id = setInterval(function(){
+    toast(&quot;hello&quot;);
+}, 5000);
+//1分钟后取消循环
+setTimeout(function(){
+    clearInterval(id);
+}, 60 * 1000);
+</code></pre><h2>clearTimeout(id)<span><a class="mark" href="#timers_cleartimeout_id" id="timers_cleartimeout_id">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 一个 setTimeout() 返回的 id。</li>
+</ul>
+</div><p>取消一个由 setTimeout() 创建的定时任务。</p>
+<h2>clearImmediate(id)<span><a class="mark" href="#timers_clearimmediate_id" id="timers_clearimmediate_id">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 一个 setImmediate() 返回的 id。</li>
+</ul>
+</div><p>取消一个由 setImmediate() 创建的 Immediate 对象。</p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

@@ -1,0 +1,598 @@
+{
+  "source": "..\\api\\ui.md",
+  "modules": [
+    {
+      "textRaw": "用户界面: UI",
+      "name": "用户界面:_ui",
+      "desc": "<p>ui模块提供了编写用户界面的支持。</p>\n<p>带有ui的脚本的的最前面必须使用<code>&quot;ui&quot;;</code>指定ui模式，否则脚本将不会以ui模式运行。正确示范:</p>\n<pre><code>&quot;ui&quot;;\n\n//脚本的其他代码\n</code></pre><p>字符串&quot;ui&quot;的前面可以有注释、空行和空格<strong>[v4.1.0新增]</strong>，但是不能有其他代码。</p>\n<p>界面是由视图(View)组成的。View分成两种，控件(Widget)和布局(Layout)。控件(Widget)用来具体显示文字、图片、网页等，比如文本控件(text)用来显示文字，按钮控件(button)则可以显示一个按钮并提供点击效果，图片控件(img)则用来显示来自网络或者文件的图片，除此之外还有输入框控件(input)、进度条控件(progressbar)、单选复选框控件(checkbox)等；布局(Layout)则是装着一个或多个控件的&quot;容器&quot;，用于控制在他里面的控件的位置，比如垂直布局(vertical)会把他里面的控件从上往下依次显示(即纵向排列)，水平布局(horizontal)则会把他里面的控件从左往右依次显示(即横向排列)，以及帧布局(frame)，他会把他里面的控件直接在左上角显示，如果有多个控件，后面的控件会重叠在前面的控件上。</p>\n<p>我们使用xml来编写界面，并通过<code>ui.layout()</code>函数指定界面的布局xml。举个例子：</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;vertical&gt;\n        &lt;button text=&quot;第一个按钮&quot;/&gt;\n        &lt;button text=&quot;第二个按钮&quot;/&gt;\n    &lt;/vertical&gt;\n);\n</code></pre><p>在这个例子中，第3~6行的部分就是xml，指定了界面的具体内容。代码的第3行的标签<code>&lt;vertical&gt; ... &lt;/vertical&gt;</code>表示垂直布局，布局的标签通常以<code>&lt;...&gt;</code>开始，以<code>&lt;/...&gt;</code>结束，两个标签之间的内容就是布局里面的内容，例如<code>&lt;frame&gt; ... &lt;/frame&gt;</code>。在这个例子中第4, 5行的内容就是垂直布局(vertical)里面的内容。代码的第4行是一个按钮控件(button)，控件的标签通常以<code>&lt;...</code>开始，以<code>/&gt;</code>结束，他们之间是控件的具体属性，例如<code>&lt;text ... /&gt;</code>。在这个例子中<code>text=&quot;第一个按钮&quot;</code>的部分就是按钮控件(button)的属性，这个属性指定了这个按钮控件的文本内容(text)为&quot;第一个按钮&quot;。</p>\n<p>代码的第5行和第4行一样，也是一个按钮控件，只不过他的文本内容为&quot;第二个按钮&quot;。这两个控件在垂直布局中，因此会纵向排列，效果如图：</p>\n<p><img src=\"images/ex1.png\" alt=\"ex1\"></p>\n<p>如果我们把这个例子的垂直布局(vertical)改成水平布局(horizontal)，也即：</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;horizontal&gt;\n        &lt;button text=&quot;第一个按钮&quot;/&gt;\n        &lt;button text=&quot;第二个按钮&quot;/&gt;\n    &lt;/horizontal&gt;\n);\n</code></pre><p>则这两个按钮会横向排列，效果如图：</p>\n<p><img src=\"images/ex1-horizontal.png\" alt=\"ex1-horizontal\"></p>\n<p>一个控件可以指定多个属性(甚至可以不指定任何属性)，用空格隔开即可；布局同样也可以指定属性，例如:</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;vertical bg=&quot;#ff0000&quot;&gt;\n        &lt;button text=&quot;第一个按钮&quot; textSize=&quot;20sp&quot;/&gt;\n        &lt;button text=&quot;第二个按钮&quot;/&gt;\n    &lt;/vertical&gt;\n);\n</code></pre><p>第三行<code>bg=&quot;#ff0000&quot;</code>指定了垂直布局的背景色(bg)为&quot;#ff0000&quot;，这是一个RGB颜色，表示红色(有关RGB的相关知识参见<a href=\"http://tool.oschina.net/commons?type=3\">RGB颜色对照表</a>)。第四行的<code>textSize=&quot;20sp&quot;</code>则指定了按钮控件的字体大小(textSize)为&quot;20sp&quot;，sp是一个字体单位，暂时不用深入理会。上述代码的效果如图：</p>\n<p><img src=\"images/ex1-properties.png\" alt=\"ex-properties\"></p>\n<p>一个界面便由一些布局和控件组成。为了便于文档阅读，我们再说明一下以下术语：</p>\n<ul>\n<li>子视图, 子控件: 布局里面的控件是这个布局的子控件/子视图。实际上布局里面不仅仅只能有控件，还可以是嵌套的布局。因此用子视图(Child View)更准确一些。在上面的例子中，按钮便是垂直布局的子控件。</li>\n<li>父视图，父布局：直接包含一个控件的布局是这个控件的父布局/父视图(Parent View)。在上面的例子中，垂直布局便是按钮的父布局。</li>\n</ul>\n",
+      "type": "module",
+      "displayName": "用户界面: UI"
+    },
+    {
+      "textRaw": "视图: View",
+      "name": "视图:_view",
+      "desc": "<p>控件和布局都属于视图(View)。在这个章节中将介绍所有控件和布局的共有的属性和函数。例如属性背景，宽高等(所有控件和布局都能设置背景和宽高)，函数<code>click()</code>设置视图(View)被点击时执行的动作。</p>\n",
+      "modules": [
+        {
+          "textRaw": "w",
+          "name": "w",
+          "desc": "<p>View的宽度，是属性<code>width</code>的缩写形式。可以设置的值为<code>*</code>, <code>auto</code>和具体数值。其中<code>*</code>表示宽度<strong>尽量</strong>填满父布局，而<code>auto</code>表示宽度将根据View的内容自动调整(自适应宽度)。例如：</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;horizontal&gt;\n        &lt;button w=&quot;auto&quot; text=&quot;自适应宽度&quot;/&gt;\n        &lt;button w=&quot;*&quot; text=&quot;填满父布局&quot;/&gt;\n    &lt;/horizontal&gt;\n);\n</code></pre><p>在这个例子中，第一个按钮为自适应宽度，第二个按钮为填满父布局，显示效果为：</p>\n<p><img src=\"images/ex-w.png\" alt=\"ex-w\"></p>\n<p>如果不设置该属性，则不同的控件和布局有不同的默认宽度，大多数为<code>auto</code>。</p>\n<p>宽度属性也可以指定一个具体数值。例如<code>w=&quot;20&quot;</code>，<code>w=&quot;20px&quot;</code>等。不加单位的情况下默认单位为dp，其他单位包括px(像素), mm(毫米), in(英寸)。有关尺寸单位的更多内容，参见<a href=\"#ui_尺寸的单位_Dimension\">尺寸的单位: Dimension</a>。</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;horizontal&gt;\n        &lt;button w=&quot;200&quot; text=&quot;宽度200dp&quot;/&gt;\n        &lt;button w=&quot;100&quot; text=&quot;宽度100dp&quot;/&gt;\n    &lt;/horizontal&gt;\n);\n</code></pre>",
+          "type": "module",
+          "displayName": "w"
+        },
+        {
+          "textRaw": "h",
+          "name": "h",
+          "desc": "<p>View的高度，是属性<code>height</code>的缩写形式。可以设置的值为<code>*</code>, <code>auto</code>和具体数值。其中<code>*</code>表示宽度<strong>尽量</strong>填满父布局，而<code>auto</code>表示宽度将根据View的内容自动调整(自适应宽度)。</p>\n<p>如果不设置该属性，则不同的控件和布局有不同的默认高度，大多数为<code>auto</code>。</p>\n<p>宽度属性也可以指定一个具体数值。例如<code>h=&quot;20&quot;</code>，<code>h=&quot;20px&quot;</code>等。不加单位的情况下默认单位为dp，其他单位包括px(像素), mm(毫米), in(英寸)。有关尺寸单位的更多内容，参见<a href=\"#ui_尺寸的单位_Dimension\">尺寸的单位: Dimension</a>。</p>\n",
+          "type": "module",
+          "displayName": "h"
+        },
+        {
+          "textRaw": "id",
+          "name": "id",
+          "desc": "<p>View的id，用来区分一个界面下的不同控件和布局，一个界面的id在同一个界面下通常是唯一的，也就是一般不存在两个View有相同的id。id属性也是连接xml布局和JavaScript代码的桥梁，在代码中可以通过一个View的id来获取到这个View，并对他进行操作(设置点击动作、设置属性、获取属性等)。例如：</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;frame&gt;\n        &lt;button id=&quot;ok&quot; text=&quot;确定&quot;/&gt;\n    &lt;/frame&gt;\n);\n//通过ui.ok获取到按钮控件\ntoast(ui.ok.getText());\n</code></pre><p>这个例子中有一个按钮控件&quot;确定&quot;，id属性为&quot;ok&quot;，那么我们可以在代码中使用<code>ui.ok</code>来获取他，再通过<code>getText()</code>函数获取到这个按钮控件的文本内容。\n另外这个例子中使用帧布局(frame)是因为，我们只有一个控件，因此用于最简单的布局帧布局。</p>\n",
+          "type": "module",
+          "displayName": "id"
+        },
+        {
+          "textRaw": "gravity",
+          "name": "gravity",
+          "desc": "<p>View的&quot;重力&quot;。用于决定View的内容相对于View的位置，可以设置的值为:</p>\n<ul>\n<li><code>left</code> 靠左</li>\n<li><code>right</code> 靠右</li>\n<li><code>top</code> 靠顶部</li>\n<li><code>bottom</code> 靠底部</li>\n<li><code>center</code> 居中</li>\n<li><code>center_vertical</code> 垂直居中</li>\n<li><code>center_horizontal</code> 水平居中</li>\n</ul>\n<p>例如对于一个按钮控件，<code>gravity=&quot;right&quot;</code>会使其中的文本内容靠右显示。例如：</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;frame&gt;\n        &lt;button gravity=&quot;right&quot; w=&quot;*&quot; h=&quot;auto&quot; text=&quot;靠右的文字&quot;/&gt;\n    &lt;/frame&gt;\n);\n</code></pre><p>显示效果为:</p>\n<p><img src=\"images/ex-gravity.png\" alt=\"ex-gravity\"></p>\n<p>这些属性是可以组合的，例如<code>gravity=&quot;right|bottom&quot;</code>的View他的内容会在右下角。</p>\n",
+          "type": "module",
+          "displayName": "gravity"
+        },
+        {
+          "textRaw": "layout_gravity",
+          "name": "layout_gravity",
+          "desc": "<p>View在布局中的&quot;重力&quot;，用于决定View本身在他的<strong>父布局</strong>的位置，可以设置的值和gravity属性相同。注意把这个属性和gravity属性区分开来。</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;frame w=&quot;*&quot; h=&quot;*&quot;&gt;\n        &lt;button layout_gravity=&quot;center&quot; w=&quot;auto&quot; h=&quot;auto&quot; text=&quot;居中的按钮&quot;/&gt;\n        &lt;button layout_gravity=&quot;right|bottom&quot; w=&quot;auto&quot; h=&quot;auto&quot; text=&quot;右下角的按钮&quot;/&gt;\n    &lt;/frame&gt;\n);\n</code></pre><p>在这个例子中，我们让帧布局(frame)的大小占满整个屏幕，通过给第一个按钮设置属性<code>layout_gravity=&quot;center&quot;</code>来使得按钮在帧布局中居中，通过给第二个按钮设置属性<code>layout_gravity=&quot;right|bottom&quot;</code>使得他在帧布局中位于右下角。效果如图：</p>\n<p><img src=\"images/ex-layout-gravity.png\" alt=\"ex-layout-gravity\"></p>\n<p>要注意的是，layout_gravity的属性不一定总是生效的，具体取决于布局的类别。例如不能让水平布局中的第一个子控件靠底部显示(否则和水平布局本身相违背)。</p>\n",
+          "type": "module",
+          "displayName": "layout_gravity"
+        },
+        {
+          "textRaw": "margin",
+          "name": "margin",
+          "desc": "<p>margin为View和其他View的间距，即外边距。margin属性包括四个值:</p>\n<ul>\n<li><code>marginLeft</code> 左外边距</li>\n<li><code>marginRight</code> 右外边距</li>\n<li><code>marginTop</code> 上外边距</li>\n<li><code>marginBottom</code> 下外边距</li>\n</ul>\n<p>而margin属性本身的值可以有三种格式:</p>\n<ul>\n<li><code>margin=&quot;marginAll&quot;</code> 指定各个外边距都是该值。例如<code>margin=&quot;10&quot;</code>表示左右上下边距都是10dp。</li>\n<li><code>margin=&quot;marginLeft marginTop marginRight marginBottom&quot;</code> 分别指定各个外边距。例如<code>margin=&quot;10 20 30 40&quot;</code>表示左边距为10dp, 上边距为20dp, 右边距为30dp, 下边距为40dp</li>\n<li><code>margin=&quot;marginHorizontal marginVertical&quot;</code> 指定水平外边距和垂直外边距。例如<code>margin=&quot;10 20&quot;</code>表示左右边距为10dp, 上下边距为20dp。</li>\n</ul>\n<p>用一个例子来具体理解外边距的含义：</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;horizontal&gt;\n        &lt;button margin=&quot;30&quot; text=&quot;距离四周30&quot;/&gt;\n        &lt;button text=&quot;普通的按钮&quot;/&gt;\n    &lt;/horizontal&gt;\n);\n</code></pre><p>第一个按钮的margin属性指定了他的边距为30dp, 也就是他与水平布局以及第二个按钮的间距都是30dp, 其显示效果如图:</p>\n<p><img src=\"images/ex1-margin.png\" alt=\"ex1-margin\"></p>\n<p>如果把<code>margin=&quot;30&quot;</code>改成<code>margin=&quot;10 40&quot;</code>那么第一个按钮的左右间距为10dp, 上下间距为40dp, 效果如图:</p>\n<p><img src=\"images/ex2-margin.png\" alt=\"ex2-margin\"></p>\n<p>有关margin属性的单位，参见<a href=\"#ui_尺寸的单位_Dimension\">尺寸的单位: Dimension</a>。</p>\n",
+          "type": "module",
+          "displayName": "margin"
+        },
+        {
+          "textRaw": "marginLeft",
+          "name": "marginleft",
+          "desc": "<p>View的左外边距。如果该属性和margin属性指定的值冲突，则在后面的属性生效，前面的属性无效，例如<code>margin=&quot;20&quot; marginLeft=&quot;10&quot;</code>的左外边距为10dp，其他外边距为20dp。</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;horizontal&gt;\n        &lt;button marginLeft=&quot;50&quot; text=&quot;距离左边50&quot;/&gt;\n        &lt;button text=&quot;普通的按钮&quot;/&gt;\n    &lt;/horizontal&gt;\n);\n</code></pre><p>第一个按钮指定了左外边距为50dp，则他和他的父布局水平布局(horizontal)的左边的间距为50dp, 效果如图：</p>\n<p><img src=\"images/ex-marginLeft.png\" alt=\"ex-marginLeft\"></p>\n",
+          "type": "module",
+          "displayName": "marginLeft"
+        },
+        {
+          "textRaw": "marginRight",
+          "name": "marginright",
+          "desc": "<p>View的右外边距。如果该属性和margin属性指定的值冲突，则在后面的属性生效，前面的属性无效。</p>\n",
+          "type": "module",
+          "displayName": "marginRight"
+        },
+        {
+          "textRaw": "marginTop",
+          "name": "margintop",
+          "desc": "<p>View的上外边距。如果该属性和margin属性指定的值冲突，则在后面的属性生效，前面的属性无效。</p>\n",
+          "type": "module",
+          "displayName": "marginTop"
+        },
+        {
+          "textRaw": "marginBottom",
+          "name": "marginbottom",
+          "desc": "<p>View的下外边距。如果该属性和margin属性指定的值冲突，则在后面的属性生效，前面的属性无效。</p>\n",
+          "type": "module",
+          "displayName": "marginBottom"
+        },
+        {
+          "textRaw": "padding",
+          "name": "padding",
+          "desc": "<p>View和他的自身内容的间距，也就是内边距。注意和margin属性区分开来，margin属性是View之间的间距，而padding是View和他自身内容的间距。举个例子，一个文本控件的padding也即文本控件的边缘和他的文本内容的间距，paddingLeft即文本控件的左边和他的文本内容的间距。</p>\n<p>paddding属性的值同样有三种格式：</p>\n<ul>\n<li><code>padding=&quot;paddingAll&quot;</code> 指定各个内边距都是该值。例如<code>padding=&quot;10&quot;</code>表示左右上下内边距都是10dp。</li>\n<li><code>padding=&quot;paddingLeft paddingTop paddingRight paddingBottom&quot;</code> 分别指定各个内边距。例如<code>padding=&quot;10 20 30 40&quot;</code>表示左内边距为10dp, 上内边距为20dp, 右内边距为30dp, 下内边距为40dp</li>\n<li><code>padding=&quot;paddingHorizontal paddingVertical&quot;</code> 指定水平内边距和垂直内边距。例如<code>padding=&quot;10 20&quot;</code>表示左右内边距为10dp, 上下内边距为20dp。</li>\n</ul>\n<p>用一个例子来具体理解内边距的含义：</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;frame w=&quot;*&quot; h=&quot;*&quot; gravity=&quot;center&quot;&gt;\n        &lt;text padding=&quot;10 20 30 40&quot; bg=&quot;#ff0000&quot; w=&quot;auto&quot; h=&quot;auto&quot; text=&quot;HelloWorld&quot;/&gt;\n    &lt;/frame&gt;\n);\n</code></pre><p>这个例子是一个居中的按钮(通过父布局的<code>gravity=&quot;center&quot;</code>属性设置)，背景色为红色(<code>bg=&quot;#ff0000&quot;</code>)，文本内容为&quot;HelloWorld&quot;，左边距为10dp，上边距为20dp，下边距为30dp，右边距为40dp，其显示效果如图：</p>\n<p><img src=\"images/ex-padding.png\" alt=\"ex-padding\"></p>\n",
+          "type": "module",
+          "displayName": "padding"
+        },
+        {
+          "textRaw": "paddingLeft",
+          "name": "paddingleft",
+          "desc": "<p>View的左内边距。如果该属性和padding属性指定的值冲突，则在后面的属性生效，前面的属性无效。</p>\n",
+          "type": "module",
+          "displayName": "paddingLeft"
+        },
+        {
+          "textRaw": "paddingRight",
+          "name": "paddingright",
+          "desc": "<p>View的右内边距。如果该属性和padding属性指定的值冲突，则在后面的属性生效，前面的属性无效。</p>\n",
+          "type": "module",
+          "displayName": "paddingRight"
+        },
+        {
+          "textRaw": "paddingTop",
+          "name": "paddingtop",
+          "desc": "<p>View的上内边距。如果该属性和padding属性指定的值冲突，则在后面的属性生效，前面的属性无效。</p>\n",
+          "type": "module",
+          "displayName": "paddingTop"
+        },
+        {
+          "textRaw": "paddingBottom",
+          "name": "paddingbottom",
+          "desc": "<p>View的下内边距。如果该属性和padding属性指定的值冲突，则在后面的属性生效，前面的属性无效。</p>\n",
+          "type": "module",
+          "displayName": "paddingBottom"
+        },
+        {
+          "textRaw": "bg",
+          "name": "bg",
+          "desc": "<p>View的背景。其值可以是一个链接或路径指向的图片，或者RGB格式的颜色，或者其他背景。具体参见<a href=\"#draw\">Drawables</a>。</p>\n<p>例如，<code>bg=&quot;#00ff00&quot;</code>设置背景为绿色，<code>bg=&quot;file:///sdcard/1.png&quot;</code>设置背景为图片&quot;1.png&quot;，<code>bg=&quot;?attr/selectableItemBackground&quot;</code>设置背景为点击时出现的波纹效果(可能需要同时设置<code>clickable=&quot;true&quot;</code>才生效)。</p>\n",
+          "type": "module",
+          "displayName": "bg"
+        },
+        {
+          "textRaw": "alpha",
+          "name": "alpha",
+          "desc": "<p>View的透明度，其值是一个0~1之间的小数，0表示完全透明，1表示完全不透明。例如<code>alpha=&quot;0.5&quot;</code>表示半透明。</p>\n",
+          "type": "module",
+          "displayName": "alpha"
+        },
+        {
+          "textRaw": "foreground",
+          "name": "foreground",
+          "desc": "<p>View的前景。前景即在一个View的内容上显示的内容，可能会覆盖掉View本身的内容。其值和属性bg的值类似。</p>\n",
+          "type": "module",
+          "displayName": "foreground"
+        },
+        {
+          "textRaw": "minHeight",
+          "name": "minheight",
+          "desc": "<p>View的最小高度。该值不总是生效的，取决于其父布局是否有足够的空间容纳。</p>\n<p>例：<code>&lt;text height=&quot;auto&quot; minHeight=&quot;50&quot;/&gt;</code></p>\n<p>有关该属性的单位，参见<a href=\"#ui_尺寸的单位_Dimension\">尺寸的单位: Dimension</a>。</p>\n",
+          "type": "module",
+          "displayName": "minHeight"
+        },
+        {
+          "textRaw": "minWidth",
+          "name": "minwidth",
+          "desc": "<p>View的最小宽度。该值不总是生效的，取决于其父布局是否有足够的空间容纳。</p>\n<p>例：<code>&lt;input width=&quot;auto&quot; minWidth=&quot;50&quot;/&gt;</code></p>\n<p>有关该属性的单位，参见<a href=\"#ui_尺寸的单位_Dimension\">尺寸的单位: Dimension</a>。</p>\n",
+          "type": "module",
+          "displayName": "minWidth"
+        },
+        {
+          "textRaw": "visibility",
+          "name": "visibility",
+          "desc": "<p>View的可见性，该属性可以决定View是否显示出来。其值可以为：</p>\n<ul>\n<li><code>gone</code> 不可见。</li>\n<li><code>visible</code> 可见。默认情况下View都是可见的。</li>\n<li><code>invisible</code> 不可见，但仍然占用位置。</li>\n</ul>\n",
+          "type": "module",
+          "displayName": "visibility"
+        },
+        {
+          "textRaw": "rotation",
+          "name": "rotation",
+          "desc": "<p>View的旋转角度。通过该属性可以让这个View顺时针旋转一定的角度。例如<code>rotation=&quot;90&quot;</code>可以让他顺时针旋转90度。</p>\n<p>如果要设置旋转中心，可以通过<code>transformPivotX</code>, <code>transformPivotY</code>属性设置。默认的旋转中心为View的中心。</p>\n",
+          "type": "module",
+          "displayName": "rotation"
+        },
+        {
+          "textRaw": "transformPivotX",
+          "name": "transformpivotx",
+          "desc": "<p>View的变换中心坐标x。用于View的旋转、放缩等变换的中心坐标。例如<code>transformPivotX=&quot;10&quot;</code>。</p>\n<p>该坐标的坐标系以View的左上角为原点。也就是x值为变换中心到View的左边的距离。</p>\n<p>有关该属性的单位，参见<a href=\"#ui_尺寸的单位_Dimension\">尺寸的单位: Dimension</a>。</p>\n",
+          "type": "module",
+          "displayName": "transformPivotX"
+        },
+        {
+          "textRaw": "transformPivotY",
+          "name": "transformpivoty",
+          "desc": "<p>View的变换中心坐标y。用于View的旋转、放缩等变换的中心坐标。例如<code>transformPivotY=&quot;10&quot;</code>。</p>\n<p>该坐标的坐标系以View的左上角为原点。也就是y值为变换中心到View的上边的距离。</p>\n<p>有关该属性的单位，参见<a href=\"#ui_尺寸的单位_Dimension\">尺寸的单位: Dimension</a>。</p>\n",
+          "type": "module",
+          "displayName": "transformPivotY"
+        },
+        {
+          "textRaw": "style",
+          "name": "style",
+          "desc": "<p>设置View的样式。不同控件有不同的可选的内置样式。具体参见各个控件的说明。</p>\n<p>需要注意的是，style属性只支持安卓5.1及其以上。</p>\n",
+          "type": "module",
+          "displayName": "style"
+        }
+      ],
+      "type": "module",
+      "displayName": "视图: View"
+    },
+    {
+      "textRaw": "文本控件: text",
+      "name": "文本控件:_text",
+      "desc": "<p>文本控件用于显示文本，可以控制文本的字体大小，字体颜色，字体等。</p>\n<p>以下介绍该控件的主要属性和方法，如果要查看他的所有属性和方法，请阅读<a href=\"http://www.zhdoc.net/android/reference/android/widget/TextView.html\">TextView</a>。</p>\n",
+      "modules": [
+        {
+          "textRaw": "text",
+          "name": "text",
+          "desc": "<p>设置文本的内容。例如<code>text=&quot;一段文本&quot;</code>。</p>\n",
+          "type": "module",
+          "displayName": "text"
+        },
+        {
+          "textRaw": "textColor",
+          "name": "textcolor",
+          "desc": "<p>设置字体的颜色，可以是RGB格式的颜色(例如#ff00ff)，或者颜色名称(例如red, green等)，具体参见<a href=\"#ui_颜色\">颜色</a>。</p>\n<p>示例, 红色字体：<code>&lt;text text=&quot;红色字体&quot; textColor=&quot;red&quot;/&gt;</code></p>\n",
+          "type": "module",
+          "displayName": "textColor"
+        },
+        {
+          "textRaw": "textSize",
+          "name": "textsize",
+          "desc": "<p>设置字体的大小，单位一般是sp。按照Material Design的规范，正文字体大小为14sp，标题字体大小为18sp，次标题为16sp。</p>\n<p>示例，超大字体: <code>&lt;text text=&quot;超大字体&quot; textSize=&quot;40sp&quot;/&gt;</code></p>\n",
+          "type": "module",
+          "displayName": "textSize"
+        },
+        {
+          "textRaw": "textStyle",
+          "name": "textstyle",
+          "desc": "<p>设置字体的样式，比如斜体、粗体等。可选的值为：</p>\n<ul>\n<li>bold  加粗字体</li>\n<li>italic  斜体    </li>\n<li>normal  正常字体</li>\n</ul>\n<p>可以用或(&quot;|&quot;)把他们组合起来，比如粗斜体为&quot;bold|italic&quot;。</p>\n<p>例如，粗体：`<text textStyle=\"bold\" textSize=\"18sp\" text=\"这是粗体\"/></p>\n",
+          "type": "module",
+          "displayName": "textStyle"
+        },
+        {
+          "textRaw": "lines",
+          "name": "lines",
+          "desc": "<p>设置文本控件的行数。即使文本内容没有达到设置的行数，控件也会留出相应的宽度来显示空白行；如果文本内容超出了设置的行数，则超出的部分不会显示。</p>\n<p>另外在xml中是不能设置多行文本的，要在代码中设置。例如:</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;vertical&gt;\n        &lt;text id=&quot;myText&quot; line=&quot;3&quot;&gt;\n    &lt;/vertical&gt;\n)\n//通过\\n换行\nui.myText.setText(&quot;第一行\\n第二行\\n第三行\\n第四行&quot;);\n</code></pre>",
+          "type": "module",
+          "displayName": "lines"
+        },
+        {
+          "textRaw": "maxLines",
+          "name": "maxlines",
+          "desc": "<p>设置文本控件的最大行数。</p>\n",
+          "type": "module",
+          "displayName": "maxLines"
+        },
+        {
+          "textRaw": "typeface",
+          "name": "typeface",
+          "desc": "<p>设置字体。可选的值为：</p>\n<ul>\n<li><code>normal</code> 正常字体</li>\n<li><code>sans</code> 衬线字体</li>\n<li><code>serif</code> 非衬线字体</li>\n<li><code>monospace</code> 等宽字体</li>\n</ul>\n<p>示例，等宽字体: <code>&lt;text text=&quot;等宽字体&quot; typeface=&quot;monospace&quot;/&gt;</code></p>\n",
+          "type": "module",
+          "displayName": "typeface"
+        },
+        {
+          "textRaw": "ellipsize",
+          "name": "ellipsize",
+          "desc": "<p>设置文本的省略号位置。文本的省略号会在文本内容超出文本控件时显示。可选的值为：</p>\n<ul>\n<li><code>end</code>   在文本末尾显示省略号</li>\n<li><code>marquee</code>   跑马灯效果，文本将滚动显示</li>\n<li><code>middle</code>    在文本中间显示省略号</li>\n<li><code>none</code>    不显示省略号</li>\n<li><code>start</code>    在文本开头显示省略号</li>\n</ul>\n",
+          "type": "module",
+          "displayName": "ellipsize"
+        },
+        {
+          "textRaw": "ems",
+          "name": "ems",
+          "desc": "<p>当设置该属性后,TextView显示的字符长度（单位是em）,超出的部分将不显示，或者根据ellipsize属性的设置显示省略号。</p>\n<p>例如，限制文本最长为5em: `<text ems=\"5\" ellipsize=\"end\" text=\"很长很长很长很长很长很长很长的文本\"/></p>\n",
+          "type": "module",
+          "displayName": "ems"
+        },
+        {
+          "textRaw": "autoLink",
+          "name": "autolink",
+          "desc": "<p>控制是否自动找到url和电子邮件地址等链接，并转换为可点击的链接。默认值为“none”。</p>\n<p>设置该值可以让文本中的链接、电话等变成可点击状态。</p>\n<p>可选的值为以下的值以其通过或(&quot;|&quot;)的组合：</p>\n<ul>\n<li><code>all</code>    匹配所有连接、邮件、地址、电话</li>\n<li><code>email</code>    匹配电子邮件地址</li>\n<li><code>map</code>    匹配地图地址</li>\n<li><code>none</code>    不匹配 (默认)</li>\n<li><code>phone</code>    匹配电话号码</li>\n<li><code>web</code>    匹配URL地址</li>\n</ul>\n<p>示例：<code>&lt;text autoLink=&quot;web|phone&quot; text=&quot;百度: http://www.baidu.com 电信电话: 10000&quot;/&gt;</code></p>\n",
+          "type": "module",
+          "displayName": "autoLink"
+        }
+      ],
+      "type": "module",
+      "displayName": "文本控件: text"
+    },
+    {
+      "textRaw": "按钮控件: button",
+      "name": "按钮控件:_button",
+      "desc": "<p>按钮控件是一个特殊的文本控件，因此所有文本控件的函数的属性都适用于按钮控件。</p>\n<p>除此之外，按钮控件有一些内置的样式，通过<code>style</code>属性设置，包括：</p>\n<ul>\n<li>Widget.AppCompat.Button.Colored 带颜色的按钮</li>\n<li>Widget.AppCompat.Button.Borderless 无边框按钮</li>\n<li>Widget.AppCompat.Button.Borderless.Colored 带颜色的无边框按钮</li>\n</ul>\n<p>这些样式的具体效果参见&quot;示例/界面控件/按钮控件.js&quot;。</p>\n<p>例如：<code>&lt;button style=&quot;Widget.AppCompat.Button.Colored&quot; text=&quot;漂亮的按钮&quot;/&gt;</code></p>\n",
+      "type": "module",
+      "displayName": "按钮控件: button"
+    },
+    {
+      "textRaw": "输入框控件: input",
+      "name": "输入框控件:_input",
+      "desc": "<p>输入框控件也是一个特殊的文本控件，因此所有文本控件的函数的属性和函数都适用于按钮控件。输入框控件有自己的属性和函数，要查看所有这些内容，阅读<a href=\"http://www.zhdoc.net/android/reference/android/widget/EditText.html\">EditText</a>。</p>\n<p>对于一个输入框控件，我们可以通过text属性设置他的内容，通过lines属性指定输入框的行数；在代码中通过<code>getText()</code>函数获取输入的内容。例如：</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;vertical padding=&quot;16&quot;&gt;\n        &lt;text textSize=&quot;16sp&quot; textColor=&quot;black&quot; text=&quot;请输入姓名&quot;/&gt;\n        &lt;input id=&quot;name&quot; text=&quot;小明&quot;/&gt;\n        &lt;button id=&quot;ok&quot; text=&quot;确定&quot;/&gt;\n    &lt;/vertical&gt;\n);\n//指定确定按钮点击时要执行的动作\nui.ok.click(function(){\n    //通过getText()获取输入的内容\n    var name = ui.name.getText();\n    toast(name + &quot;您好!&quot;);\n});\n</code></pre><p>效果如图：</p>\n<p><img src=\"ex-input.png\" alt=\"ex-input\"></p>\n<p>除此之外，输入框控件有另外一些主要属性(虽然这些属性对于文本控件也是可用的但一般只用于输入框控件)：</p>\n",
+      "modules": [
+        {
+          "textRaw": "hint",
+          "name": "hint",
+          "desc": "<p>输入提示。这个提示会在输入框为空的时候显示出来。如图所示:</p>\n<p><img src=\"images/ex-hint.png\" alt=\"ex-hint\"></p>\n<p>上面图片效果的代码为：</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;vertical&gt;\n        &lt;input hint=&quot;请输入姓名&quot;/&gt;\n    &lt;/vertical&gt;\n)\n</code></pre>",
+          "type": "module",
+          "displayName": "hint"
+        },
+        {
+          "textRaw": "textColorHint",
+          "name": "textcolorhint",
+          "desc": "<p>指定输入提示的字体颜色。</p>\n",
+          "type": "module",
+          "displayName": "textColorHint"
+        },
+        {
+          "textRaw": "textSizeHint",
+          "name": "textsizehint",
+          "desc": "<p>指定输入提示的字体大小。</p>\n",
+          "type": "module",
+          "displayName": "textSizeHint"
+        },
+        {
+          "textRaw": "inputType",
+          "name": "inputtype",
+          "desc": "<p>指定输入框可以输入的文本类型。可选的值为以下值及其用&quot;|&quot;的组合:</p>\n<ul>\n<li><code>date</code>    用于输入日期。</li>\n<li><code>datetime</code>    用于输入日期和时间。</li>\n<li><code>none</code>    没有内容类型。此输入框不可编辑。</li>\n<li><code>number</code>    仅可输入数字。</li>\n<li><code>numberDecimal</code>    可以与number和它的其他选项组合，以允许输入十进制数(包括小数)。</li>\n<li><code>numberPassword</code>    仅可输入数字密码。</li>\n<li><code>numberSigned</code>    可以与number和它的其他选项组合，以允许输入有符号的数。</li>\n<li><code>phone</code>    用于输入一个电话号码。</li>\n<li><code>text</code>    只是普通文本。</li>\n<li><code>textAutoComplete</code>    可以与text和它的其他选项结合, 以指定此字段将做自己的自动完成, 并适当地与输入法交互。</li>\n<li><code>textAutoCorrect</code>    可以与text和它的其他选项结合, 以请求自动文本输入纠错。</li>\n<li><code>textCapCharacters</code>    可以与text和它的其他选项结合, 以请求大写所有字符。</li>\n<li><code>textCapSentences</code>    可以与text和它的其他选项结合, 以请求大写每个句子里面的第一个字符。</li>\n<li><code>textCapWords</code>    可以与text和它的其他选项结合, 以请求大写每个单词里面的第一个字符。</li>\n<li><code>textEmailAddress</code>    用于输入一个电子邮件地址。</li>\n<li><code>textEmailSubject</code>    用于输入电子邮件的主题。</li>\n<li><code>textImeMultiLine</code>    可以与text和它的其他选项结合，以指示虽然常规文本视图不应为多行, 但如果可以, 则IME应提供多行支持。</li>\n<li><code>textLongMessage</code>    用于输入长消息的内容。</li>\n<li><code>textMultiLine</code>    可以与text和它的其他选项结合, 以便在该字段中允许多行文本。如果未设置此标志, 则文本字段将被限制为单行。</li>\n<li><code>textNoSuggestions</code>    可以与text及它的其他选项结合, 以指示输入法不应显示任何基于字典的单词建议。</li>\n<li><code>textPassword</code>    用于输入密码。</li>\n<li><code>textPersonName</code>    用于输入人名。</li>\n<li><code>textPhonetic</code>    用于输入拼音发音的文本, 如联系人条目中的拼音名称字段。</li>\n<li><code>textPostalAddress</code>    用于输入邮寄地址。</li>\n<li><code>textShortMessage</code>    用于输入短的消息内容。</li>\n<li><code>textUri</code>    用于输入一个URI。</li>\n<li><code>textVisiblePassword</code>    用于输入可见的密码。</li>\n<li><code>textWebEditText</code>    用于输入在web表单中的文本。</li>\n<li><code>textWebEmailAddress</code>    用于在web表单里输入一个电子邮件地址。</li>\n<li><code>textWebPassword</code>    用于在web表单里输入一个密码。</li>\n<li><code>time</code>    用于输入时间。</li>\n</ul>\n<p>例如，想指定一个输入框的输入类型为小数数字，为: <code>&lt;input inputType=&quot;number|numberDecimal&quot;/&gt;</code></p>\n",
+          "type": "module",
+          "displayName": "inputType"
+        },
+        {
+          "textRaw": "password",
+          "name": "password",
+          "desc": "<p>指定输入框输入框是否为密码输入框。默认为<code>false</code>。</p>\n<p>例如：<code>&lt;input password=&quot;true&quot;/&gt;</code></p>\n",
+          "type": "module",
+          "displayName": "password"
+        },
+        {
+          "textRaw": "numeric",
+          "name": "numeric",
+          "desc": "<p>指定输入框输入框是否为数字输入框。默认为<code>false</code>。</p>\n<p>例如：<code>&lt;input numeric=&quot;true&quot;/&gt;</code></p>\n",
+          "type": "module",
+          "displayName": "numeric"
+        },
+        {
+          "textRaw": "phoneNumber",
+          "name": "phonenumber",
+          "desc": "<p>指定输入框输入框是否为电话号码输入框。默认为<code>false</code>。</p>\n<p>例如：<code>&lt;input phoneNumber=&quot;true&quot;/&gt;</code></p>\n",
+          "type": "module",
+          "displayName": "phoneNumber"
+        },
+        {
+          "textRaw": "digits",
+          "name": "digits",
+          "desc": "<p>指定输入框可以输入的字符。例如，要指定输入框只能输入&quot;1234567890+-&quot;，为<code>&lt;input digits=&quot;1234567890+-&quot;/&gt;</code>。</p>\n",
+          "type": "module",
+          "displayName": "digits"
+        },
+        {
+          "textRaw": "singleLine",
+          "name": "singleline",
+          "desc": "<p>指定输入框是否为单行输入框。默认为<code>false</code>。您也可以通过<code>lines=&quot;1&quot;</code>来指定单行输入框。</p>\n<p>例如：<code>&lt;input singleLine=&quot;true&quot;/&gt;</code></p>\n",
+          "type": "module",
+          "displayName": "singleLine"
+        }
+      ],
+      "type": "module",
+      "displayName": "输入框控件: input"
+    },
+    {
+      "textRaw": "图片控件: img",
+      "name": "图片控件:_img",
+      "desc": "<p>图片控件用于显示来自网络、本地或者内嵌数据的图片，并可以指定图片以圆角矩形、圆形等显示。但是不能用于显示gif动态图。</p>\n<p>这里只介绍他的主要方法和属性，如果要查看他的所有方法和属性，阅读<a href=\"http://www.zhdoc.net/android/reference/android/widget/ImageView.html\">ImageView</a>。</p>\n",
+      "modules": [
+        {
+          "textRaw": "src",
+          "name": "src",
+          "desc": "<p>使用一个Uri指定图片的来源。可以是图片的地址(<a href=\"http://....)，本地路径(file://....)或者base64数据(&quot;data:image/png;base64,...&quot;)。\">http://....)，本地路径(file://....)或者base64数据(&quot;data:image/png;base64,...&quot;)。</a></p>\n<p>如果使用图片地址或本地路径，Auto.js会自动使用适当的缓存来储存这些图片，减少下次加载的时间。</p>\n<p>例如，显示百度的logo:</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;frame&gt;\n        &lt;img src=&quot;https://www.baidu.com/img/bd_logo1.png&quot;/&gt;\n    &lt;/frame&gt;\n);\n</code></pre><p>再例如，显示文件/sdcard/1.png的图片为 <code>&lt;img src=&quot;file:///sdcard/1.png&quot;/&gt;</code>。\n再例如，使base64显示一张钱包小图片为：</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;frame&gt;\n        &lt;img w=&quot;40&quot; h=&quot;40&quot; src=&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAEu0lEQVRoge3bW4iVVRQH8N+ZnDKxvJUGCSWUlXYle/ChiKAkIiu7UXQjonwNIopM8cHoAhkRGQXdfIiE0Ep8KalQoptRTiFFZiRlOo6TPuSk4zk97G9w5vidc77LPjNi84f1MN+391rrf9a+rL32N4xiFMcUjouo5zyciYPYH0FnBadiNiZiD2oR9JbGRdgiOFPDIXRhCWYU0Dcj6duV6BrQuyWxNaLowBcOO1Uv+7EKc4WINUIlabMq6dNI35eJzRHDWOzS2MEB6cd6XI/OQf07k2frkzat9HQnNkcUG7R2dECq2I53EtmePMvaf+MwcWqKu+RzuqhUcfcwcWqKTvmiXFQ2GDodRhQz0aN9ZHsSG0cVrkGf+GT7MG8YeeTCHeKS7sOdMR1stjcWxY2YH0nXh1gdSdf/E+2I8KVYigkl9ewVUsxNpT1qMzaKN4ejJxrtyEt7IuraE1EX2jOkp+JBnFxSzz68KuTqoyiK2BHuxDO4NpK+j/GoOAWF6BiH98Q/SHyCycPIIxMm4FPZCPTj30SynIFr+A7ThotMK4wXopA1Ym9gSiKv5Oj3bdKnFMpuS514E1fm6NMnbF098s3NS4QS0Ik5+hyBsoSXYkGO9jvxy6C/t+IPIYJZcBWW57AXFfMNrSo2kqqw2l4hvSzcIRTw1sm24FVxb5s4NcR0/JXBuUNYJttI6sDjsi1kvTgrGpsMjq3O4FQNa+SbNhWsyKj7I4wpzSYDbpFtKB/EOSn9ZwpRfx5Xp7yfhN0Z9FdxXxxKjTEe2zI4U8NnKf3PNrT2VcWTKe1eyGjjT+Eapm14IqMjNTyd0n9JSrsDwhmaEN2H8GMOO8viUjyMSfJVJh9O0bGoQdt1eFm2oVwve7UpC1ssX568KEXH6fghp54s8lRkrk7CjpxOrGqg6wQ8IKSKWXPpVtIt8ly+v4ATf2t+yqlgDl5SbCjXy8JIXFXweQEHqngxo43JeEw54l+JVLKaJeypRZzoFxavrIWG6cKPW2SO9+PCMkQHsLiA8fpIv5/DmUn4qaCtpWWIEiLzdUHj9XJA2H5uFRbBZriuoI1NSpatpio+nJtFvFvYd2c1sDsGvxfQ3a/knrwgMtm0qD8rPSprCuq8uRmhVqvanBbvm+EQfsNKIcnvTmnTiUdwQcq73oJ2L2v2stXx6vyCRr8RDuk/C8OMUK24J6VtBaekPG81zxuh0TTJhC7FhtUOHF+n61whGalvu8uRWVJFvgPEYOkqQzhLVSPPXLoYa4Xh3Stcls1NaTdb8Xx7ZxnCvSUIfy/kzWno0Pyzx3dL2C0695Hto7NGUhXy5Lzp3kLZKiqNpNTl2+YShgdIvyXbVck44TB/oKTNzWUIv13S+IDsFmpY84QvZAcwTbh4e04o18SwtbIM4dsiOTFYVgzSv7wN+m9vRqjV/PrA0JuCox1bhYNKQ7Qi3CcU1fpiedRG9AkLXhRfbxCnKlET0s21ifwaSWcPbopBdDDOwGtClTD2vCsq+/C68K8HmVDk7DhFyIsvFzKnGThN+689+oU9dptwQb5B+LB8dx4lMb7xqAhkJwo/xljhFFSfSdUc3mPrcbwj15P+pP0/QiR7hYSkGsHnUYziWMF/mXV4JVcZ8G0AAAAASUVORK5CYII=&quot;/&gt;\n    &lt;/frame&gt;\n);\n</code></pre>",
+          "type": "module",
+          "displayName": "src"
+        },
+        {
+          "textRaw": "tint",
+          "name": "tint",
+          "desc": "<p>图片着色，其值是一个颜色名称或RGB颜色值。使用该属性会将图片中的非透明区域都涂上同一颜色。可以用于改变图片的颜色。</p>\n<p>例如，对于上面的base64的图片: <code>&lt;img w=&quot;40&quot; h=&quot;40&quot; tint=&quot;red&quot; src=&quot;data:image/png;base64,...&quot;/&gt;</code>，则钱包图标颜色会变成红色。</p>\n",
+          "type": "module",
+          "displayName": "tint"
+        },
+        {
+          "textRaw": "scaleType",
+          "name": "scaletype",
+          "desc": "<p>控制图片根据图片控件的宽高放缩时的模式。可选的值为：</p>\n<ul>\n<li><code>center</code>    在控件中居中显示图像, 但不执行缩放。</li>\n<li><code>centerCrop</code>    保持图像的长宽比缩放图片, 使图像的尺寸 (宽度和高度) 等于或大于控件的相应尺寸 (不包括内边距padding)并且使图像在控件中居中显示。</li>\n<li><code>centerInside</code>    保持图像的长宽比缩放图片, 使图像的尺寸 (宽度和高度) 小于视图的相应尺寸 (不包括内边距padding)并且图像在控件中居中显示。</li>\n<li><code>fitCenter</code>    保持图像的长宽比缩放图片, 使图片的宽<strong>或</strong>高和控件的宽高相同并使图片在控件中居中显示</li>\n<li><code>fitEnd</code>    保持图像的长宽比缩放图片, 使图片的宽<strong>或</strong>高和控件的宽高相同并使图片在控件中靠右下角显示</li>\n<li><code>fitStart</code>    保持图像的长宽比缩放图片, 使图片的宽<strong>或</strong>高和控件的宽高相同并使图片在控件靠左上角显示</li>\n<li><code>fitXY</code>    使图片和宽高和控件的宽高完全匹配，但图片的长宽比可能不能保持一致</li>\n<li><code>matrix</code>    绘制时使用图像矩阵进行缩放。需要在代码中使用<code>setImageMatrix(Matrix)</code>函数才能生效。</li>\n</ul>\n<p>默认的scaleType为<code>fitCenter</code>；除此之外最常用的是<code>fitXY</code>， 他能使图片放缩到控件一样的大小，但图片可能会变形。</p>\n",
+          "type": "module",
+          "displayName": "scaleType"
+        },
+        {
+          "textRaw": "radius",
+          "name": "radius",
+          "desc": "<p>图片控件的半径。如果设置为控件宽高的一半并且控件的宽高相同则图片将剪切为圆形显示；否则图片为圆角矩形显示，半径即为四个圆角的半径，也可以通过<code>radiusTopLeft</code>, <code>radiusTopRight</code>, <code>radiusBottomLeft</code>, <code>radiusBottomRight</code>等属性分别设置四个圆角的半径。</p>\n<p>例如，圆角矩形的Auto.js图标：<code>&lt;img w=&quot;100&quot; h=&quot;100&quot; radius=&quot;20&quot; bg=&quot;white&quot; src=&quot;http://www.autojs.org/assets/uploads/profile/3-profileavatar.png&quot; /&gt;</code></p>\n<p>有关该属性的单位，参见<a href=\"#ui_尺寸的单位_Dimension\">尺寸的单位: Dimension</a>。</p>\n",
+          "type": "module",
+          "displayName": "radius"
+        },
+        {
+          "textRaw": "radiusTopLeft",
+          "name": "radiustopleft",
+          "desc": "<p>图片控件的左上角圆角的半径。有关该属性的单位，参见<a href=\"#ui_尺寸的单位_Dimension\">尺寸的单位: Dimension</a>。</p>\n",
+          "type": "module",
+          "displayName": "radiusTopLeft"
+        },
+        {
+          "textRaw": "radiusTopRight",
+          "name": "radiustopright",
+          "desc": "<p>图片控件的右上角圆角的半径。有关该属性的单位，参见<a href=\"#ui_尺寸的单位_Dimension\">尺寸的单位: Dimension</a>。</p>\n",
+          "type": "module",
+          "displayName": "radiusTopRight"
+        },
+        {
+          "textRaw": "radiusBottomLeft",
+          "name": "radiusbottomleft",
+          "desc": "<p>图片控件的左下角圆角的半径。有关该属性的单位，参见<a href=\"#ui_尺寸的单位_Dimension\">尺寸的单位: Dimension</a>。</p>\n",
+          "type": "module",
+          "displayName": "radiusBottomLeft"
+        },
+        {
+          "textRaw": "radiusBottomRight",
+          "name": "radiusbottomright",
+          "desc": "<p>图片控件的右下角圆角的半径。有关该属性的单位，参见<a href=\"#ui_尺寸的单位_Dimension\">尺寸的单位: Dimension</a>。</p>\n",
+          "type": "module",
+          "displayName": "radiusBottomRight"
+        },
+        {
+          "textRaw": "borderWidth",
+          "name": "borderwidth",
+          "desc": "<p>图片控件的边框宽度。用于在图片外面显示一个边框，边框会随着图片控件的外形(圆角等)改变而相应变化。\n例如, 圆角矩形带灰色边框的Auto.js图标：<code>&lt;img w=&quot;100&quot; h=&quot;100&quot; radius=&quot;20&quot; borderWidth=&quot;5&quot; borderColor=&quot;gray&quot; bg=&quot;white&quot; src=&quot;http://www.autojs.org/assets/uploads/profile/3-profileavatar.png&quot; /&gt;</code></p>\n",
+          "type": "module",
+          "displayName": "borderWidth"
+        },
+        {
+          "textRaw": "borderColor",
+          "name": "bordercolor",
+          "desc": "<p>图片控件的边框颜色。</p>\n",
+          "type": "module",
+          "displayName": "borderColor"
+        },
+        {
+          "textRaw": "circle",
+          "name": "circle",
+          "desc": "<p>指定该图片控件的图片是否剪切为圆形显示。如果为<code>true</code>，则图片控件会使其宽高保持一致(如果宽高不一致，则保持高度等于宽度)并使圆形的半径为宽度的一半。</p>\n<p>例如，圆形的Auto.js图标：<code>&lt;img w=&quot;100&quot; h=&quot;100&quot; circle=&quot;true&quot; bg=&quot;white&quot; src=&quot;http://www.autojs.org/assets/uploads/profile/3-profileavatar.png&quot; /&gt;</code></p>\n",
+          "type": "module",
+          "displayName": "circle"
+        }
+      ],
+      "type": "module",
+      "displayName": "图片控件: img"
+    },
+    {
+      "textRaw": "垂直布局: vertical",
+      "name": "垂直布局:_vertical",
+      "desc": "<p>垂直布局是一种比较简单的布局，会把在它里面的控件按照垂直方向依次摆放，如下图所示：</p>\n<p>垂直布局:</p>\n<p> —————</p>\n<p>| 控件1 |</p>\n<p>| 控件2 |</p>\n<p>| 控件3 |</p>\n<p>| ............ |</p>\n<p> ——————</p>\n",
+      "modules": [
+        {
+          "textRaw": "layout_weight",
+          "name": "layout_weight",
+          "desc": "<p>垂直布局中的控件可以通过<code>layout_weight</code>属性来控制控件高度占垂直布局高度的比例。如果为一个控件指定<code>layout_weight</code>, 则这个控件的高度=垂直布局剩余高度 * layout_weight / weightSum；如果不指定weightSum, 则weightSum为所有子控件的layout_weight之和。所谓&quot;剩余高度&quot;，指的是垂直布局中减去没有指定layout_weight的控件的剩余高度。\n例如:</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;vertical h=&quot;100dp&quot;&gt;\n        &lt;text layout_weight=&quot;1&quot; text=&quot;控件1&quot; bg=&quot;#ff0000&quot;/&gt;\n        &lt;text layout_weight=&quot;1&quot; text=&quot;控件2&quot; bg=&quot;#00ff00&quot;/&gt;\n        &lt;text layout_weight=&quot;1&quot; text=&quot;控件3&quot; bg=&quot;#0000ff&quot;/&gt;\n    &lt;/vertical&gt;\n);\n</code></pre><p>在这个布局中，三个控件的layout_weight都是1，也就是他们的高度都会占垂直布局高度的1/3，都是33.3dp.\n再例如：</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;vertical h=&quot;100dp&quot;&gt;\n        &lt;text layout_weight=&quot;1&quot; text=&quot;控件1&quot; bg=&quot;#ff0000&quot;/&gt;\n        &lt;text layout_weight=&quot;2&quot; text=&quot;控件2&quot; bg=&quot;#00ff00&quot;/&gt;\n        &lt;text layout_weight=&quot;1&quot; text=&quot;控件3&quot; bg=&quot;#0000ff&quot;/&gt;\n    &lt;/vertical&gt;\n);\n</code></pre><p>在这个布局中，第一个控件高度为1/4, 第二个控件为2/4, 第三个控件为1/4.\n再例如：</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;vertical h=&quot;100dp&quot; weightSum=&quot;5&quot;&gt;\n        &lt;text layout_weight=&quot;1&quot; text=&quot;控件1&quot; bg=&quot;#ff0000&quot;/&gt;\n        &lt;text layout_weight=&quot;2&quot; text=&quot;控件2&quot; bg=&quot;#00ff00&quot;/&gt;\n        &lt;text layout_weight=&quot;1&quot; text=&quot;控件3&quot; bg=&quot;#0000ff&quot;/&gt;\n    &lt;/vertical&gt;\n);\n</code></pre><p>在这个布局中，因为指定了weightSum为5, 因此第一个控件高度为1/5, 第二个控件为2/5, 第三个控件为1/5.\n再例如：</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;vertical h=&quot;100dp&quot;&gt;\n        &lt;text h=&quot;40dp&quot; text=&quot;控件1&quot; bg=&quot;#ff0000&quot;/&gt;\n        &lt;text layout_weight=&quot;2&quot; text=&quot;控件2&quot; bg=&quot;#00ff00&quot;/&gt;\n        &lt;text layout_weight=&quot;1&quot; text=&quot;控件3&quot; bg=&quot;#0000ff&quot;/&gt;\n    &lt;/vertical&gt;\n);\n</code></pre><p>在这个布局中，第一个控件并没有指定layout_weight, 而是指定高度为40dp, 因此不加入比例计算，此时布局剩余高度为60dp。第二个控件高度为剩余高度的2/3，也就是40dp，第三个控件高度为剩余高度的1/3，也就是20dp。</p>\n<p>垂直布局的layout_weight属性还可以用于控制他的子控件高度占满剩余空间，例如：</p>\n<pre><code>&quot;ui&quot;;\nui.layout(\n    &lt;vertical h=&quot;100dp&quot;&gt;\n        &lt;text h=&quot;40dp&quot; text=&quot;控件1&quot; bg=&quot;#ff0000&quot;/&gt;\n        &lt;text h=&quot;40dp&quot; text=&quot;控件2&quot; bg=&quot;#00ff00&quot;/&gt;\n        &lt;text layout_weight=&quot;1&quot; text=&quot;控件3&quot; bg=&quot;#0000ff&quot;/&gt;\n    &lt;/vertical&gt;\n);\n</code></pre><p>在这个布局中，第三个控件的高度会占满除去控件1和控件2的剩余空间。</p>\n",
+          "type": "module",
+          "displayName": "layout_weight"
+        }
+      ],
+      "type": "module",
+      "displayName": "垂直布局: vertical"
+    },
+    {
+      "textRaw": "水平布局: horizontal",
+      "name": "水平布局:_horizontal",
+      "desc": "<p>水平布局是一种比较简单的布局，会把在它里面的控件按照水平方向依次摆放，如下图所示：\n水平布局:\n ————————————————————————————</p>\n<p>| 控件1 | 控件2 | 控件3 | ... |</p>\n<p> ————————————————————————————</p>\n",
+      "modules": [
+        {
+          "textRaw": "layout_weight",
+          "name": "layout_weight",
+          "desc": "<p>水平布局中也可以使用layout_weight属性来控制子控件的<strong>宽度</strong>占父布局的比例。和垂直布局中类似，不再赘述。</p>\n",
+          "type": "module",
+          "displayName": "layout_weight"
+        }
+      ],
+      "type": "module",
+      "displayName": "水平布局: horizontal"
+    },
+    {
+      "textRaw": "线性布局: linear",
+      "name": "线性布局:_linear",
+      "desc": "<p>实际上，垂直布局和水平布局都属于线性布局。线性布局有一个orientation的属性，用于指定布局的方向，可选的值为<code>vertical</code>和<code>horizontal</code>。</p>\n<p>例如<code>&lt;linear orientation=&quot;vertical&quot;&gt;&lt;/linear&gt;</code>相当于<code>&lt;vertical&gt;&lt;/vertical&gt;</code>。</p>\n<p>线性布局的默认方向是横向的，因此，一个没有指定orientation属性的线性布局就是横向布局。</p>\n",
+      "type": "module",
+      "displayName": "线性布局: linear"
+    },
+    {
+      "textRaw": "帧布局: frame",
+      "name": "帧布局:_frame",
+      "desc": "<p>帧布局</p>\n",
+      "type": "module",
+      "displayName": "帧布局: frame"
+    },
+    {
+      "textRaw": "Tab: tab",
+      "name": "Tab: tab",
+      "methods": [
+        {
+          "textRaw": "ui.statusBarColor(color)",
+          "type": "method",
+          "name": "statusBarColor",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "view"
+                },
+                {
+                  "name": "menu"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "color"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "ui.showPopupMenu(view, menu)",
+          "type": "method",
+          "name": "showPopupMenu",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "view"
+                },
+                {
+                  "name": "menu"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "type": "module",
+      "displayName": "ui"
+    },
+    {
+      "textRaw": "ui",
+      "name": "ui",
+      "methods": [
+        {
+          "textRaw": "ui.statusBarColor(color)",
+          "type": "method",
+          "name": "statusBarColor",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "view"
+                },
+                {
+                  "name": "menu"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "color"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "ui.showPopupMenu(view, menu)",
+          "type": "method",
+          "name": "showPopupMenu",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "view"
+                },
+                {
+                  "name": "menu"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "type": "module",
+      "displayName": "ui"
+    },
+    {
+      "textRaw": "Drawables",
+      "name": "Drawables",
+      "desc": "<p><strong>(完善中...)</strong></p>\n",
+      "type": "module",
+      "displayName": "颜色"
+    },
+    {
+      "textRaw": "颜色",
+      "name": "颜色",
+      "desc": "<p><strong>(完善中...)</strong></p>\n",
+      "type": "module",
+      "displayName": "颜色"
+    }
+  ]
+}

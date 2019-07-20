@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>shell函数 | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/shell.html">
+</head>
+<body class="alt apidoc" id="api-section-shell">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell active" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="shell" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#shell_shell">shell函数</a></span><ul>
+<li><span class="stability_undefined"><a href="#shell_shell_cmd_root">shell(cmd[, root])</a></span></li>
+</ul>
+</li>
+<li><span class="stability_2"><a href="#shell_shell_1">Shell</a></span><ul>
+<li><span class="stability_undefined"><a href="#shell_new_shell_root">new Shell(root)</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_shell_exec_cmd">Shell.exec(cmd)</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_shell_exit">Shell.exit()</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_shell_exitandwaitfor">Shell.exitAndWaitFor()</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_shell_setcallback_callback">Shell.setCallback(callback)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#shell_shell_2">附录: shell命令简介</a></span><ul>
+<li><span class="stability_undefined"><a href="#shell_am">am命令</a></span><ul>
+<li><span class="stability_undefined"><a href="#shell_start_options_intent">start [options] intent</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_startservice_options_intent">startservice [options] intent</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_force_stop_package">force-stop package</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_kill_options_package">kill [options] package</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_kill_all">kill-all</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_broadcast_options_intent">broadcast [options] intent</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_instrument_options_component">instrument [options] component</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_dumpheap_options_process_file">dumpheap [options] process file</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_monitor_options_anr">monitor [options]    启动对崩溃或 ANR 的监控。</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_screen_compat_span_class_type_lt_on_gt_span_span_class_type_lt_off_gt_span_package">screen-compat <span class="type">&lt;on&gt;</span> | <span class="type">&lt;off&gt;</span> package</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_display_size_reset_widthxheight">display-size [reset|widthxheight]</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_display_density_dpi">display-density dpi</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_to_uri_intent">to-uri intent</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_to_intent_uri_intent">to-intent-uri intent</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_intent">intent参数的规范</a></span><ul>
+<li><span class="stability_undefined"><a href="#shell_uri_component_package">URI component package</a></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#shell">应用包名</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_pm">pm命令</a></span><ul>
+<li><span class="stability_undefined"><a href="#shell_list_packages_options_filter">list packages [options] filter</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_list_permission_groups">list permission-groups</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_list_permissions_options_group">list permissions [options] group</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_list_instrumentation_options">list instrumentation [options]</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_list_features">list features</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_list_libraries">list libraries</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_list_users">list users</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_path_package">path package</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_install_options_path">install [options] path</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_uninstall_options_package">uninstall [options] package</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_clear_package">clear package</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_enable_package_or_component">enable package_or_component</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_disable_package_or_component">disable package_or_component</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_disable_user_options_package_or_component">disable-user [options] package_or_component</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_grant_package_name_permission">grant package_name permission</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_revoke_package_name_permission">revoke package_name permission</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_set_install_location_location">set-install-location location</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_get_install_location">get-install-location</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_set_permission_enforced_permission_true_false">set-permission-enforced permission [true|false]</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_trim_caches_desired_free_space">trim-caches desired_free_space</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_create_user_user_name">create-user user_name</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_remove_user_user_id">remove-user user_id</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_get_max_users">get-max-users</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#shell_1">其他命令</a></span><ul>
+<li><span class="stability_undefined"><a href="#shell_2">进行屏幕截图</a></span></li>
+<li><span class="stability_undefined"><a href="#shell_3">列表文件</a></span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <p>shell即Unix Shell，在类Unix系统提供与操作系统交互的一系列命令。</p>
+<p>很多程序可以用来执行shell命令，例如终端模拟器。</p>
+<p>在Auto.js大致等同于用adb执行命令&quot;adb shell&quot;。其实现包括两种方式：</p>
+<ul>
+<li>通过<code>java.lang.Runtime.exec</code>执行(shell, Tap, Home等函数)</li>
+<li>通过内嵌终端模拟器执行(RootAutomator, Shell等对象)</li>
+</ul>
+<h1>shell函数<span><a class="mark" href="#shell_shell" id="shell_shell">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><h2>shell(cmd[, root])<span><a class="mark" href="#shell_shell_cmd_root" id="shell_shell_cmd_root">#</a></span></h2>
+<div class="signature"><ul>
+<li>cmd <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要执行的命令</li>
+<li>root <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 是否以root权限运行，默认为false。</li>
+</ul>
+</div><p>一次性执行命令cmd, 并返回命令的执行结果。返回对象的其属性如下:</p>
+<ul>
+<li>code <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 返回码。执行成功时为0，失败时为非0的数字。</li>
+<li>result <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 运行结果(stdout输出结果)</li>
+<li>error <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 运行的错误信息(stderr输出结果)。例如执行需要root权限的命令但没有授予root权限会返回错误信息&quot;Permission denied&quot;。</li>
+</ul>
+<p>示例(强制停止微信) ： </p>
+<pre><code>var result = shell(&quot;am force-stop com.tencent.mm&quot;, true);
+log(result);
+console.show();
+if(result.code == 0){
+  toast(&quot;执行成功&quot;);
+}else{
+  toast(&quot;执行失败！请到控制台查看错误信息&quot;);
+}
+</code></pre><h1>Shell<span><a class="mark" href="#shell_shell_1" id="shell_shell_1">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>shell函数通过用来一次性执行单条命令并获取结果。如果有多条命令需要执行，用Shell对象的效率更高。这是因为，每次运行shell函数都会打开一个单独的shell进程并在运行结束后关闭他，这个过程需要一定的时间；而Shell对象自始至终使用同一个shell进程。</p>
+<h2>new Shell(root)<span><a class="mark" href="#shell_new_shell_root" id="shell_new_shell_root">#</a></span></h2>
+<div class="signature"><ul>
+<li>root <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a> 是否以root权限运行一个shell进程，默认为false。这将会影响其后使用该Shell对象执行的命令的权限</li>
+</ul>
+</div><p>Shell对象的&quot;构造函数&quot;。</p>
+<pre><code>var sh = new Shell(true);
+//强制停止微信
+sh.exec(&quot;am force-stop com.tencent.mm&quot;);
+sh.exit();
+</code></pre><h2>Shell.exec(cmd)<span><a class="mark" href="#shell_shell_exec_cmd" id="shell_shell_exec_cmd">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>cmd</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要执行的命令</li>
+</ul>
+</div><p>执行命令cmd。该函数不会返回任何值。</p>
+<p>注意，命令执行是&quot;异步&quot;的、非阻塞的。也就是不会等待命令完成后才继续向下执行。</p>
+<p>尽管这样的设计使用起来有很多不便之处，但受限于终端模拟器，暂时没有解决方式；如果后续能找到解决方案，则将提供<code>Shell.execAndWaitFor</code>函数。</p>
+<h2>Shell.exit()<span><a class="mark" href="#shell_shell_exit" id="shell_shell_exit">#</a></span></h2>
+<p>直接退出shell。正在执行的命令会被强制退出。</p>
+<h2>Shell.exitAndWaitFor()<span><a class="mark" href="#shell_shell_exitandwaitfor" id="shell_shell_exitandwaitfor">#</a></span></h2>
+<p>执行&quot;exit&quot;命令并等待执行命令执行完成、退出shell。</p>
+<p>此函数会执行exit命令来正常退出shell。</p>
+<h2>Shell.setCallback(callback)<span><a class="mark" href="#shell_shell_setcallback_callback" id="shell_shell_setcallback_callback">#</a></span></h2>
+<div class="signature"><ul>
+<li>callback <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 回调函数</li>
+</ul>
+</div><p>设置该Shell的回调函数，以便监听Shell的输出。可以包括以下属性：</p>
+<ul>
+<li>onOutput <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 每当shell有新的输出时便会调用该函数。其参数是一个字符串。</li>
+<li>onNewLine <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 每当shell有新的一行输出时便会调用该函数。其参数是一个字符串(不包括最后的换行符)。</li>
+</ul>
+<p>例如:</p>
+<pre><code>var sh = new Shell();
+sh.setCallback({
+    onNewLine: function(line){
+        //有新的一行输出时打印到控制台
+        log(line);
+    }
+})
+while(true){
+    //循环输入命令
+    var cmd = dialogs.rawInput(&quot;请输入要执行的命令，输入exit退出&quot;);
+    if(cmd == &quot;exit&quot;){
+        break;
+    }
+    //执行命令
+    sh.exec(cmd);
+}
+sh.exit();
+</code></pre><h1>附录: shell命令简介<span><a class="mark" href="#shell_shell_2" id="shell_shell_2">#</a></span></h1>
+<p>以下关于shell命令的资料来自<a href="https://developer.android.com/studio/command-line/adb.html#shellcommands">AndroidStudio用户指南：Shell命令</a>。</p>
+<h2>am命令<span><a class="mark" href="#shell_am" id="shell_am">#</a></span></h2>
+<p>am命令即Activity Manager命令，用于管理应用程序活动、服务等。</p>
+<p><strong>以下命令均以&quot;am &quot;开头，例如<code>shell(&#39;am start -p com.tencent.mm&#39;);</code>(启动微信)</strong></p>
+<h3>start [options] intent<span><a class="mark" href="#shell_start_options_intent" id="shell_start_options_intent">#</a></span></h3>
+<p>启动 intent 指定的 Activity(应用程序活动)。<br>请参阅 <a href="#shell_intent">intent 参数的规范</a>。    </p>
+<p>选项包括：</p>
+<ul>
+<li>-D：启用调试。</li>
+<li>-W：等待启动完成。</li>
+<li>--start-profiler file：启动分析器并将结果发送到 file。</li>
+<li>-P file：类似于 --start-profiler，但当应用进入空闲状态时分析停止。</li>
+<li>-R count：重复 Activity 启动 count 次数。在每次重复前，将完成顶部 Activity。</li>
+<li>-S：启动 Activity 前强行停止目标应用。</li>
+<li>--opengl-trace：启用 OpenGL 函数的跟踪。</li>
+<li>--user user_id | current：指定要作为哪个用户运行；如果未指定，则作为当前用户运行。</li>
+</ul>
+<h3>startservice [options] intent<span><a class="mark" href="#shell_startservice_options_intent" id="shell_startservice_options_intent">#</a></span></h3>
+<p>启动 intent 指定的 Service(服务)。<br>请参阅 <a href="#shell_intent">intent 参数的规范</a>。<br>选项包括：</p>
+<ul>
+<li>--user user_id | current：指定要作为哪个用户运行；如果未指定，则作为当前用户运行。</li>
+</ul>
+<h3>force-stop package<span><a class="mark" href="#shell_force_stop_package" id="shell_force_stop_package">#</a></span></h3>
+<p>强行停止与 package（<a href="#应用包名">应用包名</a>）关联的所有应用。  </p>
+<h3>kill [options] package<span><a class="mark" href="#shell_kill_options_package" id="shell_kill_options_package">#</a></span></h3>
+<p>终止与 package（<a href="#应用包名">应用包名</a>）关联的所有进程。此命令仅终止可安全终止且不会影响用户体验的进程。<br>选项包括：</p>
+<ul>
+<li>--user user_id | all | current：指定将终止其进程的用户；如果未指定，则终止所有用户的进程。</li>
+</ul>
+<h3>kill-all<span><a class="mark" href="#shell_kill_all" id="shell_kill_all">#</a></span></h3>
+<p>终止所有后台进程。</p>
+<h3>broadcast [options] intent<span><a class="mark" href="#shell_broadcast_options_intent" id="shell_broadcast_options_intent">#</a></span></h3>
+<p>发出广播 intent。
+请参阅 <a href="#shell_intent">intent 参数的规范</a>。     </p>
+<p>选项包括：</p>
+<ul>
+<li>[--user user_id | all | current]：指定要发送到的用户；如果未指定，则发送到所有用户。</li>
+</ul>
+<h3>instrument [options] component<span><a class="mark" href="#shell_instrument_options_component" id="shell_instrument_options_component">#</a></span></h3>
+<p>使用 Instrumentation 实例启动监控。通常，目标 component 是表单 test_package/runner_class。<br>选项包括：</p>
+<ul>
+<li>-r：输出原始结果（否则对 report_key_streamresult 进行解码）。与 [-e perf true] 结合使用以生成性能测量的原始输出。</li>
+<li>-e name value：将参数 name 设为 value。对于测试运行器，通用表单为 -e testrunner_flag value[,value...]。</li>
+<li>-p file：将分析数据写入 file。</li>
+<li>-w：先等待仪器完成，然后再返回。测试运行器需要使用此选项。</li>
+<li>--no-window-animation：运行时关闭窗口动画。</li>
+<li>--user user_id | current：指定仪器在哪个用户中运行；如果未指定，则在当前用户中运行。</li>
+<li>profile start process file    启动 process 的分析器，将结果写入 file。</li>
+<li>profile stop process    停止 process 的分析器。</li>
+</ul>
+<h3>dumpheap [options] process file<span><a class="mark" href="#shell_dumpheap_options_process_file" id="shell_dumpheap_options_process_file">#</a></span></h3>
+<p>转储 process 的堆，写入 file。</p>
+<p>选项包括：</p>
+<ul>
+<li>--user [user_id|current]：提供进程名称时，指定要转储的进程用户；如果未指定，则使用当前用户。</li>
+<li>-n：转储原生堆，而非托管堆。</li>
+<li>set-debug-app [options] package    将应用 package 设为调试。</li>
+</ul>
+<p>选项包括：</p>
+<ul>
+<li>-w：应用启动时等待调试程序。</li>
+<li>--persistent：保留此值。</li>
+<li>clear-debug-app    使用 set-debug-app 清除以前针对调试用途设置的软件包。</li>
+</ul>
+<h3>monitor [options]    启动对崩溃或 ANR 的监控。<span><a class="mark" href="#shell_monitor_options_anr" id="shell_monitor_options_anr">#</a></span></h3>
+<p>选项包括：</p>
+<ul>
+<li>--gdb：在崩溃/ANR 时在给定端口上启动 gdbserv。<h3>screen-compat <span class="type">&lt;on&gt;</span> | <span class="type">&lt;off&gt;</span> package<span><a class="mark" href="#shell_screen_compat_span_class_type_lt_on_gt_span_span_class_type_lt_off_gt_span_package" id="shell_screen_compat_span_class_type_lt_on_gt_span_span_class_type_lt_off_gt_span_package">#</a></span></h3>
+控制 package 的屏幕兼容性模式。</li>
+</ul>
+<h3>display-size [reset|widthxheight]<span><a class="mark" href="#shell_display_size_reset_widthxheight" id="shell_display_size_reset_widthxheight">#</a></span></h3>
+<p>替换模拟器/设备显示尺寸。此命令对于在不同尺寸的屏幕上测试您的应用非常有用，它支持使用大屏设备模仿小屏幕分辨率（反之亦然）。<br>示例：</p>
+<pre><code>shell(&quot;am display-size 1280x800&quot;, true);
+</code></pre><h3>display-density dpi<span><a class="mark" href="#shell_display_density_dpi" id="shell_display_density_dpi">#</a></span></h3>
+<p>替换模拟器/设备显示密度。此命令对于在不同密度的屏幕上测试您的应用非常有用，它支持使用低密度屏幕在高密度环境环境上进行测试（反之亦然）。<br>示例：</p>
+<pre><code>shell(&quot;am display-density 480&quot;, true);
+</code></pre><h3>to-uri intent<span><a class="mark" href="#shell_to_uri_intent" id="shell_to_uri_intent">#</a></span></h3>
+<p>将给定的 intent 规范以 URI 的形式输出。
+请参阅  <a href="#shell_intent">intent 参数的规范</a>。</p>
+<h3>to-intent-uri intent<span><a class="mark" href="#shell_to_intent_uri_intent" id="shell_to_intent_uri_intent">#</a></span></h3>
+<p>将给定的 intent 规范以 intent:URI 的形式输出。
+请参阅 intent 参数的规范。</p>
+<h3>intent参数的规范<span><a class="mark" href="#shell_intent" id="shell_intent">#</a></span></h3>
+<p>对于采用 intent 参数的 am 命令，您可以使用以下选项指定 intent：</p>
+<ul>
+<li>-a action<br>指定 intent 操作，如“android.intent.action.VIEW”。此指定只能声明一次。</li>
+<li>-d data_uri<br>指定 intent 数据 URI，如“content://contacts/people/1”。此指定只能声明一次。</li>
+<li>-t mime_type<br>指定 intent MIME 类型，如“image/png”。此指定只能声明一次。</li>
+<li>-c category<br>指定 intent 类别，如“android.intent.category.APP_CONTACTS”。</li>
+<li>-n component<br>指定带有软件包名称前缀的组件名称以创建显式 intent，如“com.example.app/.ExampleActivity”。</li>
+<li>-f flags<br>将标志添加到 setFlags() 支持的 intent。</li>
+<li>--esn extra_key<br>添加一个 null extra。URI intent 不支持此选项。</li>
+<li>-e|--es extra_key extra_string_value<br>添加字符串数据作为键值对。</li>
+<li>--ez extra_key extra_boolean_value<br>添加布尔型数据作为键值对。</li>
+<li>--ei extra_key extra_int_value<br>添加整数型数据作为键值对。</li>
+<li>--el extra_key extra_long_value<br>添加长整型数据作为键值对。</li>
+<li>--ef extra_key extra_float_value<br>添加浮点型数据作为键值对。</li>
+<li>--eu extra_key extra_uri_value<br>添加 URI 数据作为键值对。</li>
+<li>--ecn extra_key extra_component_name_value<br>添加组件名称，将其作为 ComponentName 对象进行转换和传递。</li>
+<li>--eia extra_key extra_int_value[,extra_int_value...]<br>添加整数数组。</li>
+<li>--ela extra_key extra_long_value[,extra_long_value...]<br>添加长整型数组。</li>
+<li>--efa extra_key extra_float_value[,extra_float_value...]<br>添加浮点型数组。</li>
+<li>--grant-read-uri-permission<br>包含标志 FLAG_GRANT_READ_URI_PERMISSION。</li>
+<li>--grant-write-uri-permission<br>包含标志 FLAG_GRANT_WRITE_URI_PERMISSION。</li>
+<li>--debug-log-resolution<br>包含标志 FLAG_DEBUG_LOG_RESOLUTION。</li>
+<li>--exclude-stopped-packages<br>包含标志 FLAG_EXCLUDE_STOPPED_PACKAGES。</li>
+<li>--include-stopped-packages<br>包含标志 FLAG_INCLUDE_STOPPED_PACKAGES。</li>
+<li>--activity-brought-to-front<br>包含标志 FLAG_ACTIVITY_BROUGHT_TO_FRONT。</li>
+<li>--activity-clear-top<br>包含标志 FLAG_ACTIVITY_CLEAR_TOP。</li>
+<li>--activity-clear-when-task-reset<br>包含标志 FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET。</li>
+<li>--activity-exclude-from-recents<br>包含标志 FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS。</li>
+<li>--activity-launched-from-history<br>包含标志 FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY。</li>
+<li>--activity-multiple-task<br>包含标志 FLAG_ACTIVITY_MULTIPLE_TASK。</li>
+<li>--activity-no-animation<br>包含标志 FLAG_ACTIVITY_NO_ANIMATION。</li>
+<li>--activity-no-history<br>包含标志 FLAG_ACTIVITY_NO_HISTORY。</li>
+<li>--activity-no-user-action<br>包含标志 FLAG_ACTIVITY_NO_USER_ACTION。</li>
+<li>--activity-previous-is-top<br>包含标志 FLAG_ACTIVITY_PREVIOUS_IS_TOP。</li>
+<li>--activity-reorder-to-front<br>包含标志 FLAG_ACTIVITY_REORDER_TO_FRONT。</li>
+<li>--activity-reset-task-if-needed<br>包含标志 FLAG_ACTIVITY_RESET_TASK_IF_NEEDED。</li>
+<li>--activity-single-top<br>包含标志 FLAG_ACTIVITY_SINGLE_TOP。</li>
+<li>--activity-clear-task<br>包含标志 FLAG_ACTIVITY_CLEAR_TASK。</li>
+<li>--activity-task-on-home<br>包含标志 FLAG_ACTIVITY_TASK_ON_HOME。</li>
+<li>--receiver-registered-only<br>包含标志 FLAG_RECEIVER_REGISTERED_ONLY。</li>
+<li>--receiver-replace-pending<br>包含标志 FLAG_RECEIVER_REPLACE_PENDING。</li>
+<li>--selector<br>需要使用 -d 和 -t 选项以设置 intent 数据和类型。<h4>URI component package<span><a class="mark" href="#shell_uri_component_package" id="shell_uri_component_package">#</a></span></h4>
+如果不受上述某一选项的限制，您可以直接指定 URI、软件包名称和组件名称。当参数不受限制时，如果参数包含一个“:”（冒号），则此工具假定参数是一个 URI；如果参数包含一个“/”（正斜杠），则此工具假定参数是一个组件名称；否则，此工具假定参数是一个软件包名称。</li>
+</ul>
+<h2>应用包名<span><a class="mark" href="#shell" id="shell">#</a></span></h2>
+<p>所谓应用包名，是唯一确定应用的标识。例如微信的包名是&quot;com.tencent.mm&quot;, QQ的包名是&quot;com.tencent.mobileqq&quot;。<br>要获取一个应用的包名，可以通过函数<code>getPackageName(appName)</code>获取。参见帮助-&gt;其他一般函数。</p>
+<h2>pm命令<span><a class="mark" href="#shell_pm" id="shell_pm">#</a></span></h2>
+<p>pm命令用于管理应用程序，例如卸载应用、冻结应用等。<br><strong>以下命令均以&quot;pm &quot;开头，例如&quot;shell(\&quot;pm disable com.tencent.mm\&quot;);&quot;(冻结微信)</strong></p>
+<h3>list packages [options] filter<span><a class="mark" href="#shell_list_packages_options_filter" id="shell_list_packages_options_filter">#</a></span></h3>
+<p>输出所有软件包，或者，仅输出包名称包含 filter 中的文本的软件包。<br>选项：</p>
+<ul>
+<li>-f：查看它们的关联文件。</li>
+<li>-d：进行过滤以仅显示已停用的软件包。</li>
+<li>-e：进行过滤以仅显示已启用的软件包。</li>
+<li>-s：进行过滤以仅显示系统软件包。</li>
+<li>-3：进行过滤以仅显示第三方软件包。</li>
+<li>-i：查看软件包的安装程序。</li>
+<li>-u：也包括卸载的软件包。</li>
+<li>--user user_id：要查询的用户空间。</li>
+</ul>
+<h3>list permission-groups<span><a class="mark" href="#shell_list_permission_groups" id="shell_list_permission_groups">#</a></span></h3>
+<p>输出所有已知的权限组。</p>
+<h3>list permissions [options] group<span><a class="mark" href="#shell_list_permissions_options_group" id="shell_list_permissions_options_group">#</a></span></h3>
+<p>输出所有已知权限，或者，仅输出 group 中的权限。<br>选项：</p>
+<ul>
+<li>-g：按组加以组织。</li>
+<li>-f：输出所有信息。</li>
+<li>-s：简短摘要。</li>
+<li>-d：仅列出危险权限。</li>
+<li>-u：仅列出用户将看到的权限。</li>
+</ul>
+<h3>list instrumentation [options]<span><a class="mark" href="#shell_list_instrumentation_options" id="shell_list_instrumentation_options">#</a></span></h3>
+<p>列出所有测试软件包。<br>选项：</p>
+<ul>
+<li>-f：列出用于测试软件包的 APK 文件。</li>
+<li>target_package：列出仅用于此应用的测试软件包。</li>
+</ul>
+<h3>list features<span><a class="mark" href="#shell_list_features" id="shell_list_features">#</a></span></h3>
+<p>输出系统的所有功能。</p>
+<h3>list libraries<span><a class="mark" href="#shell_list_libraries" id="shell_list_libraries">#</a></span></h3>
+<p>输出当前设备支持的所有库。</p>
+<h3>list users<span><a class="mark" href="#shell_list_users" id="shell_list_users">#</a></span></h3>
+<p>输出系统上的所有用户。</p>
+<h3>path package<span><a class="mark" href="#shell_path_package" id="shell_path_package">#</a></span></h3>
+<p>输出给定 package 的 APK 的路径。  </p>
+<h3>install [options] path<span><a class="mark" href="#shell_install_options_path" id="shell_install_options_path">#</a></span></h3>
+<p>将软件包（通过 path 指定）安装到系统。<br>选项：</p>
+<ul>
+<li>-l：安装具有转发锁定功能的软件包。</li>
+<li>-r：重新安装现有应用，保留其数据。</li>
+<li>-t：允许安装测试 APK。</li>
+<li>-i installer_package_name：指定安装程序软件包名称。</li>
+<li>-s：在共享的大容量存储（如 sdcard）上安装软件包。</li>
+<li>-f：在内部系统内存上安装软件包。</li>
+<li>-d：允许版本代码降级。</li>
+<li>-g：授予应用清单文件中列出的所有权限。</li>
+</ul>
+<h3>uninstall [options] package<span><a class="mark" href="#shell_uninstall_options_package" id="shell_uninstall_options_package">#</a></span></h3>
+<p>从系统中卸载软件包。<br>选项：</p>
+<ul>
+<li>-k：移除软件包后保留数据和缓存目录。<h3>clear package<span><a class="mark" href="#shell_clear_package" id="shell_clear_package">#</a></span></h3>
+删除与软件包关联的所有数据。</li>
+</ul>
+<h3>enable package_or_component<span><a class="mark" href="#shell_enable_package_or_component" id="shell_enable_package_or_component">#</a></span></h3>
+<p>启用给定软件包或组件（作为“package/class”写入）。</p>
+<h3>disable package_or_component<span><a class="mark" href="#shell_disable_package_or_component" id="shell_disable_package_or_component">#</a></span></h3>
+<p>停用给定软件包或组件（作为“package/class”写入）。</p>
+<h3>disable-user [options] package_or_component<span><a class="mark" href="#shell_disable_user_options_package_or_component" id="shell_disable_user_options_package_or_component">#</a></span></h3>
+<p>选项：</p>
+<ul>
+<li>--user user_id：要停用的用户。<h3>grant package_name permission<span><a class="mark" href="#shell_grant_package_name_permission" id="shell_grant_package_name_permission">#</a></span></h3>
+向应用授予权限。在运行 Android 6.0（API 级别 23）及更高版本的设备上，可以是应用清单中声明的任何权限。在运行 Android 5.1（API 级别 22）和更低版本的设备上，必须是应用定义的可选权限。</li>
+</ul>
+<h3>revoke package_name permission<span><a class="mark" href="#shell_revoke_package_name_permission" id="shell_revoke_package_name_permission">#</a></span></h3>
+<p>从应用中撤销权限。在运行 Android 6.0（API 级别 23）及更高版本的设备上，可以是应用清单中声明的任何权限。在运行 Android 5.1（API 级别 22）和更低版本的设备上，必须是应用定义的可选权限。</p>
+<h3>set-install-location location<span><a class="mark" href="#shell_set_install_location_location" id="shell_set_install_location_location">#</a></span></h3>
+<p>更改默认安装位置。位置值：  </p>
+<ul>
+<li>0：自动—让系统决定最佳位置。</li>
+<li>1：内部—安装在内部设备存储上。</li>
+<li>2：外部—安装在外部介质上。</li>
+</ul>
+<blockquote>
+<p>注：此命令仅用于调试目的；使用此命令会导致应用中断和其他意外行为。</p>
+</blockquote>
+<h3>get-install-location<span><a class="mark" href="#shell_get_install_location" id="shell_get_install_location">#</a></span></h3>
+<p>返回当前安装位置。返回值：</p>
+<ul>
+<li>0 [auto]：让系统决定最佳位置。</li>
+<li>1 [internal]：安装在内部设备存储上</li>
+<li>2 [external]：安装在外部介质上</li>
+</ul>
+<h3>set-permission-enforced permission [true|false]<span><a class="mark" href="#shell_set_permission_enforced_permission_true_false" id="shell_set_permission_enforced_permission_true_false">#</a></span></h3>
+<p>指定是否应强制执行给定的权限。</p>
+<h3>trim-caches desired_free_space<span><a class="mark" href="#shell_trim_caches_desired_free_space" id="shell_trim_caches_desired_free_space">#</a></span></h3>
+<p>减少缓存文件以达到给定的可用空间。</p>
+<h3>create-user user_name<span><a class="mark" href="#shell_create_user_user_name" id="shell_create_user_user_name">#</a></span></h3>
+<p>使用给定的 user_name 创建新用户，输出新用户的标识符。</p>
+<h3>remove-user user_id<span><a class="mark" href="#shell_remove_user_user_id" id="shell_remove_user_user_id">#</a></span></h3>
+<p>移除具有给定的 user_id 的用户，删除与该用户关联的所有数据。</p>
+<h3>get-max-users<span><a class="mark" href="#shell_get_max_users" id="shell_get_max_users">#</a></span></h3>
+<p>输出设备支持的最大用户数。</p>
+<h2>其他命令<span><a class="mark" href="#shell_1" id="shell_1">#</a></span></h2>
+<h3>进行屏幕截图<span><a class="mark" href="#shell_2" id="shell_2">#</a></span></h3>
+<p>screencap 命令是一个用于对设备显示屏进行屏幕截图的 shell 实用程序。在 shell 中，此语法为：</p>
+<pre><code>screencap filename
+</code></pre><p>例如：</p>
+<pre><code>$ shell(&quot;screencap /sdcard/screen.png&quot;);
+</code></pre><h3>列表文件<span><a class="mark" href="#shell_3" id="shell_3">#</a></span></h3>
+<pre><code>ls filepath
+</code></pre><p>例如:</p>
+<pre><code>log(shell(&quot;ls /system/bin&quot;).result);
+</code></pre>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>HTTP | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/http.html">
+</head>
+<body class="alt apidoc" id="api-section-http">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http active-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="http" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#http_http">HTTP</a></span><ul>
+<li><span class="stability_undefined"><a href="#http_http_get_url_options_callback">http.get(url[, options, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#http_http_post_url_data_options_callback">http.post(url, data[, options, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#http_http_postjson_url_data_options_callback">http.postJson(url[, data, options, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#http_http_postmultipart_url_files_options_callback">http.postMultipart(url, files[, options, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#http_http_request_url_options_callback">http.request(url[, options, callback])</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#http_response">Response</a></span><ul>
+<li><span class="stability_undefined"><a href="#http_response_statuscode">Response.statusCode</a></span></li>
+<li><span class="stability_undefined"><a href="#http_response_statusmessage">Response.statusMessage</a></span></li>
+<li><span class="stability_undefined"><a href="#http_response_headers">Response.headers</a></span></li>
+<li><span class="stability_undefined"><a href="#http_response_body">Response.body</a></span></li>
+<li><span class="stability_undefined"><a href="#http_response_request">Response.request</a></span></li>
+<li><span class="stability_undefined"><a href="#http_response_url">Response.url</a></span></li>
+<li><span class="stability_undefined"><a href="#http_response_method">Response.method</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>HTTP<span><a class="mark" href="#http_http" id="http_http">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>http模块提供一些进行http请求的函数。</p>
+<h2>http.get(url[, options, callback])<span><a class="mark" href="#http_http_get_url_options_callback" id="http_http_get_url_options_callback">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 请求的URL地址，需要以&quot;<a href="http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。">http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。</a></li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 请求选项。参见[http.request()][]。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调函数，可选，其参数是一个[Response][]对象。如果不加回调函数，则该请求将阻塞、同步地执行。</li>
+</ul>
+</div><p>对地址url进行一次HTTP GET 请求。如果没有回调函数，则在请求完成或失败时返回此次请求的响应(参见[Response][])。</p>
+<p>最简单GET请求如下:</p>
+<pre><code>console.show();
+var r = http.get(&quot;www.baidu.com&quot;);
+log(&quot;code = &quot; + r.statusCode);
+log(&quot;html = &quot; + r.body.string());
+</code></pre><p>采用回调形式的GET请求如下：</p>
+<pre><code>console.show();
+http.get(&quot;www.baidu.com&quot;, {}, function(res, err){
+    if(err){
+        console.error(err);
+        return;
+    }
+    log(&quot;code = &quot; + res.statusCode);
+    log(&quot;html = &quot; + res.body.string());
+});
+</code></pre><p>如果要增加HTTP头部信息，则在options参数中添加，例如：</p>
+<pre><code>console.show();
+var r = http.get(&quot;www.baidu.com&quot;, {
+    headers: {
+        &#39;Accept-Language&#39;: &#39;zh-cn,zh;q=0.5&#39;,
+        &#39;User-Agent&#39;: &#39;Mozilla/5.0(Macintosh;IntelMacOSX10_7_0)AppleWebKit/535.11(KHTML,likeGecko)Chrome/17.0.963.56Safari/535.11&#39;
+    }
+});
+log(&quot;code = &quot; + r.statusCode);
+log(&quot;html = &quot; + r.body.string());
+</code></pre><p>一个请求天气并解析返回的天气JSON结果的例子如下：</p>
+<pre><code>var city = &quot;广州&quot;;
+var res = http.get(&quot;http://www.sojson.com/open/api/weather/json.shtml?city=&quot; + city);
+if(res.statusCode != 200){
+    toast(&quot;请求失败: &quot; + res.statusCode + &quot; &quot; + res.statusMessage);
+}else{
+    var weather = res.body.json();
+    log(weather);
+    toast(util.format(&quot;温度: %s 湿度: %s 空气质量: %s&quot;, weather.data.wendu,
+        weather.data.shidu, weather.quality));
+}
+</code></pre><h2>http.post(url, data[, options, callback])<span><a class="mark" href="#http_http_post_url_data_options_callback" id="http_http_post_url_data_options_callback">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 请求的URL地址，需要以&quot;<a href="http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。">http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。</a></li>
+<li><code>data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> POST数据。</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 请求选项。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调，其参数是一个[Response][]对象。如果不加回调参数，则该请求将阻塞、同步地执行。</li>
+</ul>
+</div><p>对地址url进行一次HTTP POST 请求。如果没有回调函数，则在请求完成或失败时返回此次请求的响应(参见[Response][])。</p>
+<p>其中POST数据可以是字符串或键值对。具体含义取决于options.contentType的值。默认为&quot;application/x-www-form-urlencoded&quot;(表单提交), 这种方式是JQuery的ajax函数的默认方式。</p>
+<p>一个模拟表单提交登录淘宝的例子如下:</p>
+<pre><code>var url = &quot;https://login.taobao.com/member/login.jhtml&quot;;
+var username = &quot;你的用户名&quot;;
+var password = &quot;你的密码&quot;;
+var res = http.post(url, {
+    &quot;TPL_username&quot;: username,
+    &quot;TPL_password&quot;: password
+});
+var html = res.body.string();
+if(html.contains(&quot;页面跳转中&quot;)){
+    toast(&quot;登录成功&quot;);
+}else{
+    toast(&quot;登录失败&quot;);
+}
+</code></pre><h2>http.postJson(url[, data, options, callback])<span><a class="mark" href="#http_http_postjson_url_data_options_callback" id="http_http_postjson_url_data_options_callback">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 请求的URL地址，需要以&quot;<a href="http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。">http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。</a></li>
+<li><code>data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> POST数据。</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 请求选项。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调，其参数是一个[Response][]对象。如果不加回调参数，则该请求将阻塞、同步地执行。</li>
+</ul>
+</div><p>以JSON格式向目标Url发起POST请求。如果没有回调函数，则在请求完成或失败时返回此次请求的响应(参见[Response][])。</p>
+<p>JSON格式指的是，将会调用<code>JSON.stringify()</code>把data对象转换为JSON字符串，并在HTTP头部信息中把&quot;Content-Type&quot;属性置为&quot;application/json&quot;。这种方式是AngularJS的ajax函数的默认方式。</p>
+<p>一个调用图灵机器人接口的例子如下：</p>
+<pre><code>var url = &quot;http://www.tuling123.com/openapi/api&quot;;
+r = http.postJson(url, {
+    key: &quot;65458a5df537443b89b31f1c03202a80&quot;,
+    info: &quot;你好啊&quot;,
+    userid: &quot;1&quot;,
+});
+toastLog(r.body.string());
+</code></pre><h2>http.postMultipart(url, files[, options, callback])<span><a class="mark" href="#http_http_postmultipart_url_files_options_callback" id="http_http_postmultipart_url_files_options_callback">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 请求的URL地址，需要以&quot;<a href="http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。">http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。</a></li>
+<li><code>files</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> POST数据。</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 请求选项。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调，其参数是一个<code>Response</code>对象。如果不加回调参数，则该请求将阻塞、同步地执行。</li>
+</ul>
+</div><p>向目标地址发起类型为multipart/form-data的请求（通常用于文件上传等), 其中files参数是<span class="type">&lt;name1: value1, name2: value2, ...&gt;</span>的键值对，value的格式可以是以下几种情况：</p>
+<ol>
+<li><code>string</code></li>
+<li>文件类型，即open()返回的类型</li>
+<li>[fileName, filePath]</li>
+<li>[fileName, mimeType, filePath]</li>
+</ol>
+<p>其中1属于非文件参数，2、3、4为文件参数。举个例子，最简单的文件上传的请求为：</p>
+<pre><code>var res = http.postMultipart(url, {
+    file: open(&quot;/sdcard/1.txt&quot;)
+});
+log(res.body.string());
+</code></pre><p>如果使用格式2，则代码为</p>
+<pre><code>var res = http.postMultipart(url, {
+    file: [&quot;1.txt&quot;, &quot;/sdcard/1.txt&quot;]
+});
+log(res.body.string());
+</code></pre><p>如果使用格式3，则代码为</p>
+<pre><code>var res = http.postMultipart(url, {
+    file: [&quot;1.txt&quot;, &quot;text/plain&quot;, &quot;/sdcard/1.txt&quot;]
+});
+log(res.body.string());
+</code></pre><p>如果使用格式2的同时要附带非文件参数&quot;appId=abcdefghijk&quot;，则为:</p>
+<pre><code>var res = http.postMultipart(url, {
+    appId: &quot;adcdefghijk&quot;,
+    file: open(&quot;/sdcard/1.txt&quot;)
+});
+log(res.body.string());
+</code></pre><h2>http.request(url[, options, callback])<span><a class="mark" href="#http_http_request_url_options_callback" id="http_http_request_url_options_callback">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 请求的URL地址，需要以&quot;<a href="http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。">http://&quot;或&quot;https://&quot;开头。如果url没有以&quot;http://&quot;开头，则默认为&quot;http://&quot;。</a></li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 请求选项。参见[http.buildRequest()][]。</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调，其参数是一个[Response][]对象。如果不加回调参数，则该请求将阻塞、同步地执行。</li>
+</ul>
+</div><p>对目标地址url发起一次HTTP请求。如果没有回调函数，则在请求完成或失败时返回此次请求的响应(参见[Response][])。</p>
+<p>选项options可以包含以下属性：</p>
+<ul>
+<li><code>headers</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 键值对形式的HTTP头部信息。有关HTTP头部信息，参见<a href="http://www.runoob.com/http/http-header-fields.html">菜鸟教程：HTTP响应头信息</a>。</li>
+<li><code>method</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> HTTP请求方法。包括&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELET&quot;, &quot;PATCH&quot;。</li>
+<li><code>contentType</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> HTTP头部信息中的&quot;Content-Type&quot;, 表示HTTP请求的内容类型。例如&quot;text/plain&quot;, &quot;application/json&quot;。更多信息参见<a href="http://www.runoob.com/http/http-content-type.html">菜鸟教程：HTTP contentType</a>。</li>
+<li><code>body</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> HTTP请求的内容。可以是一个字符串，也可以是一个字节数组；或者是一个以<a href="https://github.com/square/okio/blob/master/okio/src/main/java/okio/BufferedSink.java">BufferedSink</a>为参数的函数。</li>
+</ul>
+<p>该函数是get, post, postJson等函数的基础函数。因此除非是PUT, DELET等请求，或者需要更高定制的HTTP请求，否则直接使用get, post, postJson等函数会更加方便。</p>
+<h1>Response<span><a class="mark" href="#http_response" id="http_response">#</a></span></h1>
+<p>HTTP请求的响应。</p>
+<h2>Response.statusCode<span><a class="mark" href="#http_response_statuscode" id="http_response_statuscode">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>当前响应的HTTP状态码。例如200(OK), 404(Not Found)等。</p>
+<p>有关HTTP状态码的信息，参见<a href="http://www.runoob.com/http/http-status-codes.html">菜鸟教程：HTTP状态码</a>。</p>
+<h2>Response.statusMessage<span><a class="mark" href="#http_response_statusmessage" id="http_response_statusmessage">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> </li>
+</ul>
+</div><p>当前响应的HTTP状态信息。例如&quot;OK&quot;, &quot;Bad Request&quot;, &quot;Forbidden&quot;。</p>
+<p>有关HTTP状态码的信息，参见<a href="http://www.runoob.com/http/http-status-codes.html">菜鸟教程：HTTP状态码</a>。</p>
+<p>例子：</p>
+<pre><code>var res = http.get(&quot;www.baidu.com&quot;);
+if(res.statusCode &gt;= 200 &amp;&amp; res.statusCode &lt; 300){
+    toast(&quot;页面获取成功!&quot;);
+}else if(res.statusCode == 404){
+    toast(&quot;页面没找到哦...&quot;);
+}else{
+    toast(&quot;错误: &quot; + res.statusCode + &quot; &quot; + res.statusMessage);
+}
+</code></pre><h2>Response.headers<span><a class="mark" href="#http_response_headers" id="http_response_headers">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a></li>
+</ul>
+</div><p>当前响应的HTTP头部信息。该对象的键是响应头名称，值是各自的响应头值。 所有响应头名称都是小写的(吗)。</p>
+<p>有关HTTP头部信息，参见<a href="http://www.runoob.com/http/http-header-fields.html">菜鸟教程：HTTP响应头信息</a>。</p>
+<p>例子:</p>
+<pre><code>console.show();
+var res = http.get(&quot;www.qq.com&quot;);
+console.log(&quot;HTTP Headers:&quot;)
+for(var headerName in res.headers){
+    console.log(&quot;%s: %s&quot;, headerName, res.headers[headerName]);
+}
+</code></pre><h2>Response.body<span><a class="mark" href="#http_response_body" id="http_response_body">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a></li>
+</ul>
+</div><p>当前响应的内容。他有以下属性和函数：</p>
+<ul>
+<li>bytes() <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 以字节数组形式返回响应内容</li>
+<li>string() <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 以字符串形式返回响应内容</li>
+<li>json() <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 把响应内容作为JSON格式的数据并调用JSON.parse，返回解析后的对象</li>
+<li>contentType <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 当前响应的内容类型</li>
+</ul>
+<h2>Response.request<span><a class="mark" href="#http_response_request" id="http_response_request">#</a></span></h2>
+<div class="signature"><ul>
+<li><span class="type">&lt;Request&gt;</span>
+当前响应所对应的请求。参见[Request][]。</li>
+</ul>
+</div><h2>Response.url<span><a class="mark" href="#http_response_url" id="http_response_url">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a>
+当前响应所对应的请求URL。</li>
+</ul>
+</div><h2>Response.method<span><a class="mark" href="#http_response_method" id="http_response_method">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a>
+当前响应所对应的HTTP请求的方法。例如&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;等。</li>
+</ul>
+</div>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

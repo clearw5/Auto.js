@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Threads | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/threads.html">
+</head>
+<body class="alt apidoc" id="api-section-threads">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads active" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="threads" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_1"><a href="#threads_threads">Threads</a></span><ul>
+<li><span class="stability_undefined"><a href="#threads_threads_start_action">threads.start(action)</a></span></li>
+<li><span class="stability_undefined"><a href="#threads_threads_shutdownall">threads.shutDownAll()</a></span></li>
+<li><span class="stability_undefined"><a href="#threads_threads_currentthread">threads.currentThread()</a></span></li>
+<li><span class="stability_undefined"><a href="#threads_threads_disposable">threads.disposable()</a></span></li>
+<li><span class="stability_undefined"><a href="#threads_threads_atomic_initialvalue">threads.atomic([initialValue])</a></span></li>
+<li><span class="stability_undefined"><a href="#threads_threads_lock">threads.lock()</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#threads_thread">Thread</a></span><ul>
+<li><span class="stability_undefined"><a href="#threads_thread_interrupt">Thread.interrupt()</a></span></li>
+<li><span class="stability_undefined"><a href="#threads_thread_join_timeout">Thread.join([timeout])</a></span></li>
+<li><span class="stability_undefined"><a href="#threads_isalive">isAlive()</a></span></li>
+<li><span class="stability_undefined"><a href="#threads_waitfor">waitFor()</a></span></li>
+<li><span class="stability_undefined"><a href="#threads_thread_settimeout_callback_delay_args">Thread.setTimeout(callback, delay[, ...args])</a></span></li>
+<li><span class="stability_undefined"><a href="#threads_thread_setinterval_callback_delay_args">Thread.setInterval(callback, delay[, ...args])</a></span></li>
+<li><span class="stability_undefined"><a href="#threads_thread_setimmediate_callback_args">Thread.setImmediate(callback[, ...args])</a></span></li>
+<li><span class="stability_undefined"><a href="#threads_thread_clearinterval_id">Thread.clearInterval(id)</a></span></li>
+<li><span class="stability_undefined"><a href="#threads_thread_cleartimeout_id">Thread.clearTimeout(id)</a></span></li>
+<li><span class="stability_undefined"><a href="#threads_thread_clearimmediate_id">Thread.clearImmediate(id)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#threads">线程安全</a></span><ul>
+<li><span class="stability_undefined"><a href="#threads_sync_func">sync(func)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#threads_1">线程通信</a></span></li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>Threads<span><a class="mark" href="#threads_threads" id="threads_threads">#</a></span></h1>
+<div class="api_stability api_stability_1"><a href="documentation.html#documentation_stability_index">Stability: 1</a> - Experiment</div><p>threads模块提供了多线程支持，可以启动新线程来运行脚本。</p>
+<p>脚本主线程会等待所有子线程执行完成后才停止执行，因此如果子线程中有死循环，请在必要的时候调用<code>exit()</code>来直接停止脚本或<code>threads.shutDownAll()</code>来停止所有子线程。</p>
+<p>通过<code>threads.start()</code>启动的所有线程会在脚本被强制停止时自动停止。</p>
+<p>由于JavaScript自身没有多线程的支持，因此您可能会遇到意料之外的问题。</p>
+<h2>threads.start(action)<span><a class="mark" href="#threads_threads_start_action" id="threads_threads_start_action">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>action</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 要在新线程执行的函数</li>
+<li>返回 <a href="#threads_thread">Thread</a></li>
+</ul>
+</div><p>启动一个新线程并执行action。</p>
+<p>例如:</p>
+<pre><code>threads.start(function(){
+    //在新线程执行的代码
+    while(true){
+        log(&quot;子线程&quot;);
+    }
+});
+while(true){
+    log(&quot;脚本主线程&quot;);
+}
+</code></pre><p>通过该函数返回的<a href="#threads_thread">Thread</a>对象可以获取该线程的状态，控制该线程的运行中。例如:</p>
+<pre><code>var thread = threads.start(function(){
+    while(true){
+        log(&quot;子线程&quot;);
+    }
+});
+//停止线程执行
+thread.interrupt();
+</code></pre><p>更多信息参见<a href="#threads_thread">Thread</a>。</p>
+<h2>threads.shutDownAll()<span><a class="mark" href="#threads_threads_shutdownall" id="threads_threads_shutdownall">#</a></span></h2>
+<p>停止所有通过<code>threads.start()</code>启动的子线程。</p>
+<h2>threads.currentThread()<span><a class="mark" href="#threads_threads_currentthread" id="threads_threads_currentthread">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="#threads_thread">Thread</a></li>
+</ul>
+</div><p>返回当前线程。</p>
+<h2>threads.disposable()<span><a class="mark" href="#threads_threads_disposable" id="threads_threads_disposable">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="#threads_disposable">Disposable</a></li>
+</ul>
+</div><p>新建一个Disposable对象，用于等待另一个线程的某个一次性结果。更多信息参见<a href="#threads_线程通信">线程通信</a>以及<a href="#threads_disposable">Disposable</a>。</p>
+<h2>threads.atomic([initialValue])<span><a class="mark" href="#threads_threads_atomic_initialvalue" id="threads_threads_atomic_initialvalue">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>initialValue</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 初始整数值，默认为0</li>
+<li>返回<a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/atomic/AtomicLong.html">AtomicLong</a></li>
+</ul>
+</div><p>新建一个整数原子变量。更多信息参见<a href="#threads_线程安全">线程安全</a>以及<a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/atomic/AtomicLong.html">AtomicLong</a>。</p>
+<h2>threads.lock()<span><a class="mark" href="#threads_threads_lock" id="threads_threads_lock">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回<a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReentrantLock.html">ReentrantLock</a></li>
+</ul>
+</div><p>新建一个可重入锁。更多信息参见<a href="#threads_线程安全">线程安全</a>以及<a href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReentrantLock.html">ReentrantLock</a>。</p>
+<h1>Thread<span><a class="mark" href="#threads_thread" id="threads_thread">#</a></span></h1>
+<p>线程对象，<code>threads.start()</code>返回的对象，用于获取和控制线程的状态，与其他线程交互等。</p>
+<p>Thread对象提供了和timers模块一样的API，例如<code>setTimeout()</code>, <code>setInterval()</code>等，用于在该线程执行相应的定时回调，从而使线程之间可以直接交互。例如：</p>
+<pre><code>var thread = threads.start(function(){
+    //在子线程执行的定时器
+    setInterval(function(){
+        log(&quot;子线程:&quot; + threads.currentThread());
+    }, 1000);
+});
+
+log(&quot;当前线程为主线程:&quot; + threads.currentThread());
+
+//等待子线程启动
+thread.waitFor();
+//在子线程执行的定时器
+thread.setTimeout(function(){
+    //这段代码会在子线程执行
+    log(&quot;当前线程为子线程:&quot; + threads.currentThread());
+}, 2000);
+
+sleep(30 * 1000);
+thread.interrupt();
+</code></pre><h2>Thread.interrupt()<span><a class="mark" href="#threads_thread_interrupt" id="threads_thread_interrupt">#</a></span></h2>
+<p>中断线程运行。</p>
+<h2>Thread.join([timeout])<span><a class="mark" href="#threads_thread_join_timeout" id="threads_thread_join_timeout">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>timeout</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 等待时间，单位毫秒</li>
+</ul>
+</div><p>等待线程执行完成。如果timeout为0，则会一直等待直至该线程执行完成；否则最多等待timeout毫秒的时间。</p>
+<p>例如:</p>
+<pre><code>var sum = 0;
+//启动子线程计算1加到10000
+var thread = threads.start(function(){
+    for(var i = 0; i &lt; 10000; i++){
+        sum += i;
+    }
+});
+//等待该线程完成
+thread.join();
+toast(&quot;sum = &quot; + sum);
+</code></pre><h2>isAlive()<span><a class="mark" href="#threads_isalive" id="threads_isalive">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>返回线程是否存活。如果线程仍未开始或已经结束，返回<code>false</code>; 如果线程已经开始或者正在运行中，返回<code>true</code>。</p>
+<h2>waitFor()<span><a class="mark" href="#threads_waitfor" id="threads_waitfor">#</a></span></h2>
+<p>等待线程开始执行。调用<code>threads.start()</code>以后线程仍然需要一定时间才能开始执行，因此调用此函数会等待线程开始执行；如果线程已经处于执行状态则立即返回。</p>
+<pre><code>var thread = threads.start(function(){
+    //do something
+});
+thread.waitFor();
+thread.setTimeout(function(){
+    //do something
+}, 1000);
+</code></pre><h2>Thread.setTimeout(callback, delay[, ...args])<span><a class="mark" href="#threads_thread_settimeout_callback_delay_args" id="threads_thread_settimeout_callback_delay_args">#</a></span></h2>
+<p>参见<a href="timers.html#timers_settimeout_callback_delay_args">timers.setTimeout()</a>。</p>
+<p>区别在于, 该定时器会在该线程执行。如果当前线程仍未开始执行或已经执行结束，则抛出<code>IllegalStateException</code>。</p>
+<pre><code>log(&quot;当前线程(主线程):&quot; + threads.currentThread());
+
+var thread = threads.start(function(){
+    //设置一个空的定时来保持线程的运行状态
+    setInterval(function(){}, 1000);
+});
+
+sleep(1000);
+thread.setTimeout(function(){
+    log(&quot;当前线程(子线程):&quot; + threads.currentThread());
+    exit();
+}, 1000);
+</code></pre><h2>Thread.setInterval(callback, delay[, ...args])<span><a class="mark" href="#threads_thread_setinterval_callback_delay_args" id="threads_thread_setinterval_callback_delay_args">#</a></span></h2>
+<p>参见<a href="timers.html#timers_setinterval_callback_delay_args">timers.setInterval()</a>。</p>
+<p>区别在于, 该定时器会在该线程执行。如果当前线程仍未开始执行或已经执行结束，则抛出<code>IllegalStateException</code>。</p>
+<h2>Thread.setImmediate(callback[, ...args])<span><a class="mark" href="#threads_thread_setimmediate_callback_args" id="threads_thread_setimmediate_callback_args">#</a></span></h2>
+<p>参见<a href="timers.html#timers_setimmediate_callback_delay_args">timers.setImmediate()</a>。</p>
+<p>区别在于, 该定时器会在该线程执行。如果当前线程仍未开始执行或已经执行结束，则抛出<code>IllegalStateException</code>。</p>
+<h2>Thread.clearInterval(id)<span><a class="mark" href="#threads_thread_clearinterval_id" id="threads_thread_clearinterval_id">#</a></span></h2>
+<p>参见<a href="timers.html#timers_clearinterval_id">timers.clearInterval()</a>。</p>
+<p>区别在于, 该定时器会在该线程执行。如果当前线程仍未开始执行或已经执行结束，则抛出<code>IllegalStateException</code>。</p>
+<h2>Thread.clearTimeout(id)<span><a class="mark" href="#threads_thread_cleartimeout_id" id="threads_thread_cleartimeout_id">#</a></span></h2>
+<p>参见<a href="timers.html#timers_cleartimeout_id">timers.clearTimeout()</a>。</p>
+<p>区别在于, 该定时器会在该线程执行。如果当前线程仍未开始执行或已经执行结束，则抛出<code>IllegalStateException</code>。</p>
+<h2>Thread.clearImmediate(id)<span><a class="mark" href="#threads_thread_clearimmediate_id" id="threads_thread_clearimmediate_id">#</a></span></h2>
+<p>参见<a href="timers.html#timers_clearimmediate_id">timers.clearImmediate()</a>。</p>
+<p>区别在于, 该定时器会在该线程执行。如果当前线程仍未开始执行或已经执行结束，则抛出<code>IllegalStateException</code>。</p>
+<h1>线程安全<span><a class="mark" href="#threads" id="threads">#</a></span></h1>
+<p>线程安全问题是一个相对专业的编程问题，本章节只提供给有需要的用户。</p>
+<p>引用维基百科的解释：</p>
+<blockquote>
+<p>线程安全是编程中的术语，指某个函数、函数库在多线程环境中被调用时，能够正确地处理多个线程之间的共享变量，使程序功能正确完成。</p>
+</blockquote>
+<p>在Auto.js中，线程间变量在符合JavaScript变量作用域规则的前提下是共享的，例如全局变量在所有线程都能访问，并且保证他们在所有线程的可见性。但是，不保证任何操作的原子性。例如经典的自增&quot;i++&quot;将不是原子性操作。</p>
+<p>Rhino和Auto.js提供了一些简单的设施来解决简单的线程安全问题，如锁<code>threads.lock()</code>, 函数同步锁<code>sync()</code>, 整数原子变量<code>threads.atomic()</code>等。</p>
+<p>例如，对于多线程共享下的整数的自增操作(自增操作会导致问题，是因为自增操作实际上为<code>i = i + 1</code>，也就是先读取i的值, 把他加1, 再赋值给i, 如果两个线程同时进行自增操作，可能出现i的值只增加了1的情况)，应该使用<code>threads.atomic()</code>函数来新建一个整数原子变量，或者使用锁<code>threads.lock()</code>来保证操作的原子性，或者用<code>sync()</code>来增加同步锁。</p>
+<p>线程不安全的代码如下：</p>
+<pre><code>var i = 0;
+threads.start(function(){
+    while(true){
+        log(i++);
+    }
+});
+while(true){
+    log(i++);
+}
+</code></pre><p>此段代码运行后打开日志，可以看到日志中有重复的值出现。</p>
+<p>使用<code>threads.atomic()</code>的线程安全的代码如下:</p>
+<pre><code>//atomic返回的对象保证了自增的原子性
+var i = threads.atomic();
+threads.start(function(){
+    while(true){
+        log(i.getAndIncrement());
+    }
+});
+while(true){
+    log(i.getAndIncrement());
+}
+</code></pre><p>或者:</p>
+<pre><code>//锁保证了操作的原子性
+var lock = threads.lock();
+var i = 0;
+threads.start(function(){
+    while(true){
+        lock.lock();
+        log(i++);
+        lock.unlock();
+    }
+});
+while(true){
+    lock.lock();
+    log(i++);
+    lock.unlock();
+}
+</code></pre><p>或者:</p>
+<pre><code>//sync函数会把里面的函数加上同步锁，使得在同一时刻最多只能有一个线程执行这个函数
+var i = 0;
+var getAndIncrement = sync(function(){
+    return i++;
+});
+threads.start(function(){
+    while(true){
+        log(getAndIncrement());
+    }
+});
+while(true){
+    log(getAndIncrement());
+}
+</code></pre><p>另外，数组Array不是线程安全的，如果有这种复杂的需求，请用Android和Java相关API来实现。例如<code>CopyOnWriteList</code>, <code>Vector</code>等都是代替数组的线程安全的类，用于不同的场景。例如:</p>
+<pre><code>var nums = new java.util.Vector();
+nums.add(123);
+nums.add(456);
+toast(&quot;长度为&quot; + nums.size());
+toast(&quot;第一个元素为&quot; + nums.get(0));
+</code></pre><p>但很明显的是，这些类不像数组那样简便易用，也不能使用诸如<code>slice()</code>之类的方便的函数。在未来可能会加入线程安全的数组来解决这个问题。当然您也可以为每个数组的操作加锁来解决线程安全问题：</p>
+<pre><code>var nums = [];
+var numsLock = threads.lock();
+threads.start(function(){
+    //向数组添加元素123
+    numsLock.lock();
+    nums.push(123);
+    log(&quot;线程: %s, 数组: %s&quot;, threads.currentThread(), nums);
+    numsLock.unlock();
+});
+
+threads.start(function(){
+    //向数组添加元素456
+    numsLock.lock();
+    nums.push(456);
+    log(&quot;线程: %s, 数组: %s&quot;, threads.currentThread(), nums);
+    numsLock.unlock();
+});
+
+//删除数组最后一个元素
+numsLock.lock();
+nums.pop();
+log(&quot;线程: %s, 数组: %s&quot;, threads.currentThread(), nums);
+numsLock.unlock();
+</code></pre><h2>sync(func)<span><a class="mark" href="#threads_sync_func" id="threads_sync_func">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>func</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 函数</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a></li>
+</ul>
+</div><p>给函数func加上同步锁并作为一个新函数返回。</p>
+<pre><code>var i = 0;
+function add(x){
+    i += x;
+}
+
+var syncAdd = sync(add);
+syncAdd(10);
+toast(i);
+</code></pre><h1>线程通信<span><a class="mark" href="#threads_1" id="threads_1">#</a></span></h1>
+<p>Auto.js提供了一些简单的设施来支持简单的线程通信。<code>threads.disposable()</code>用于一个线程等待另一个线程的(一次性)结果，同时<code>Lock.newCondition()</code>提供了Condition对象用于一般的线程通信(await, signal)。另外，<code>events</code>模块也可以用于线程通信，通过指定<code>EventEmiiter</code>的回调执行的线程来实现。</p>
+<p>使用<code>threads.disposable()</code>可以简单地等待和获取某个线程的执行结果。例如要等待某个线程计算&quot;1+.....+10000&quot;:</p>
+<pre><code>var sum = threads.disposable();
+//启动子线程计算
+threads.start(function(){
+    var s = 0;
+    //从1加到10000
+    for(var i = 1; i &lt;= 10000; i++){
+        s += i;
+    }
+    //通知主线程接收结果
+    sum.setAndNotify(s);
+});
+//blockedGet()用于等待结果
+toast(&quot;sum = &quot; + sum.blockedGet());
+</code></pre><p>如果上述代码用<code>Condition</code>实现：</p>
+<pre><code>//新建一个锁
+var lock = threads.lock();
+//新建一个条件，即&quot;计算完成&quot;
+var complete = lock.newCondition();
+var sum = 0;
+threads.start(function(){
+    //从1加到10000
+    for(var i = 1; i &lt;= 10000; i++){
+        sum += i;
+    }
+    //通知主线程接收结果
+    lock.lock();
+    complete.signal();
+    lock.unlock();
+});
+//等待计算完成
+lock.lock();
+complete.await();
+lock.unlock();
+//打印结果
+toast(&quot;sum = &quot; + sum);
+</code></pre><p>如果上诉代码用<code>events</code>模块实现：</p>
+<pre><code>//新建一个emitter, 并指定回调执行的线程为当前线程
+var sum = events.emitter(threads.currentThread());
+threads.start(function(){
+    var s = 0;
+    //从1加到10000
+    for(var i = 1; i &lt;= 10000; i++){
+        s += i;
+    }
+    //发送事件result通知主线程接收结果
+    sum.emit(&#39;result&#39;, s);
+});
+sum.on(&#39;result&#39;, function(s){
+    toastLog(&quot;sum = &quot; + s + &quot;, 当前线程: &quot; + threads.currentThread());
+});
+</code></pre><p>有关线程的其他问题，例如生产者消费者等问题，请用Java相关方法解决，例如<code>java.util.concurrent.BlockingQueue</code>。</p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

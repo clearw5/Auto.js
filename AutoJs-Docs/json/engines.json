@@ -1,0 +1,443 @@
+{
+  "source": "..\\api\\engines.md",
+  "modules": [
+    {
+      "textRaw": "Engines",
+      "name": "engines",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>engines模块包含了一些与脚本环境、脚本运行、脚本引擎有关的函数，包括运行其他脚本，关闭脚本等。</p>\n<p>例如，获取脚本所在目录：</p>\n<pre><code>toast(engines.myEngine().cwd());\n</code></pre>",
+      "methods": [
+        {
+          "textRaw": "engines.execScript(name, script[, config])",
+          "type": "method",
+          "name": "execScript",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`name` {string} 要运行的脚本名称。这个名称和文件名称无关，只是在任务管理中显示的名称。 ",
+                  "name": "name",
+                  "type": "string",
+                  "desc": "要运行的脚本名称。这个名称和文件名称无关，只是在任务管理中显示的名称。"
+                },
+                {
+                  "textRaw": "`script` {string} 要运行的脚本内容。 ",
+                  "name": "script",
+                  "type": "string",
+                  "desc": "要运行的脚本内容。"
+                },
+                {
+                  "textRaw": "`config` {Object} 运行配置项 ",
+                  "options": [
+                    {
+                      "textRaw": "`delay` {number} 延迟执行的毫秒数，默认为0 ",
+                      "name": "delay",
+                      "type": "number",
+                      "desc": "延迟执行的毫秒数，默认为0"
+                    },
+                    {
+                      "textRaw": "`loopTimes` {number} 循环运行次数，默认为1。0为无限循环。 ",
+                      "name": "loopTimes",
+                      "type": "number",
+                      "desc": "循环运行次数，默认为1。0为无限循环。"
+                    },
+                    {
+                      "textRaw": "`interval` {number} 循环运行时两次运行之间的时间间隔，默认为0 ",
+                      "name": "interval",
+                      "type": "number",
+                      "desc": "循环运行时两次运行之间的时间间隔，默认为0"
+                    },
+                    {
+                      "textRaw": "`path` {Array} | {string} 指定脚本运行的目录。这些路径会用于require时寻找模块文件。 ",
+                      "name": "path",
+                      "type": "Array",
+                      "desc": "| {string} 指定脚本运行的目录。这些路径会用于require时寻找模块文件。"
+                    }
+                  ],
+                  "name": "config",
+                  "type": "Object",
+                  "desc": "运行配置项",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "script"
+                },
+                {
+                  "name": "config",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>在新的脚本环境中运行脚本script。返回一个<a href=\"#engines_scriptexecution\">ScriptExectuion</a>对象。</p>\n<p>所谓新的脚本环境，指定是，脚本中的变量和原脚本的变量是不共享的，并且，脚本会在新的线程中运行。</p>\n<p>最简单的例子如下：</p>\n<pre><code>engines.execScript(&quot;hello world&quot;, &quot;toast(&#39;hello world&#39;)&quot;);\n</code></pre><p>如果要循环运行，则：</p>\n<pre><code>//每隔3秒运行一次脚本，循环10次\nengines.execScript(&quot;hello world&quot;, &quot;toast(&#39;hello world&#39;)&quot;, {\n    loopTimes: 10,\n    interval: 3000\n});\n</code></pre><p>用字符串来编写脚本非常不方便，可以结合 <code>Function.toString()</code>的方法来执行特定函数:</p>\n<pre><code>function helloWorld(){\n    //注意，这里的变量和脚本主体的变量并不共享\n    toast(&quot;hello world&quot;);\n}\nengines.execScript(&quot;hello world&quot;, &quot;helloWorld();\\n&quot; + helloWorld.toString());\n</code></pre><p>如果要传递变量，则可以把这些封装成一个函数：</p>\n<pre><code>function exec(action, args){\n    args = args || {};\n    engines.execScript(action.name, action + &quot;(&quot; + JSON.stringify(args) + &quot;);\\n&quot; + action.toString());\n}\n\n//要执行的函数，是一个简单的加法\nfunction add(args){\n    toast(args.a + args.b);\n}\n\n//在新的脚本环境中执行 1 + 2\nexec(add, {a: 1, b:2});\n</code></pre>"
+        },
+        {
+          "textRaw": "engines.execScriptFile(path[, config])",
+          "type": "method",
+          "name": "execScriptFile",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 要运行的脚本路径。 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "要运行的脚本路径。"
+                },
+                {
+                  "textRaw": "`config` {Object} 运行配置项 ",
+                  "options": [
+                    {
+                      "textRaw": "`delay` {number} 延迟执行的毫秒数，默认为0 ",
+                      "name": "delay",
+                      "type": "number",
+                      "desc": "延迟执行的毫秒数，默认为0"
+                    },
+                    {
+                      "textRaw": "`loopTimes` {number} 循环运行次数，默认为1。0为无限循环。 ",
+                      "name": "loopTimes",
+                      "type": "number",
+                      "desc": "循环运行次数，默认为1。0为无限循环。"
+                    },
+                    {
+                      "textRaw": "`interval` {number} 循环运行时两次运行之间的时间间隔，默认为0 ",
+                      "name": "interval",
+                      "type": "number",
+                      "desc": "循环运行时两次运行之间的时间间隔，默认为0"
+                    },
+                    {
+                      "textRaw": "`path` {Array} | {string} 指定脚本运行的目录。这些路径会用于require时寻找模块文件。 ",
+                      "name": "path",
+                      "type": "Array",
+                      "desc": "| {string} 指定脚本运行的目录。这些路径会用于require时寻找模块文件。"
+                    }
+                  ],
+                  "name": "config",
+                  "type": "Object",
+                  "desc": "运行配置项",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                },
+                {
+                  "name": "config",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>在新的脚本环境中运行脚本文件path。返回一个<a href=\"#ScriptExecution\">ScriptExecution</a>对象。</p>\n<pre><code>engines.execScriptFile(&quot;/sdcard/脚本/1.js&quot;);\n</code></pre>"
+        },
+        {
+          "textRaw": "engines.execAutoFile(path[, config])",
+          "type": "method",
+          "name": "execAutoFile",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 要运行的录制文件路径。 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "要运行的录制文件路径。"
+                },
+                {
+                  "textRaw": "`config` {Object} 运行配置项 ",
+                  "options": [
+                    {
+                      "textRaw": "`delay` {number} 延迟执行的毫秒数，默认为0 ",
+                      "name": "delay",
+                      "type": "number",
+                      "desc": "延迟执行的毫秒数，默认为0"
+                    },
+                    {
+                      "textRaw": "`loopTimes` {number} 循环运行次数，默认为1。0为无限循环。 ",
+                      "name": "loopTimes",
+                      "type": "number",
+                      "desc": "循环运行次数，默认为1。0为无限循环。"
+                    },
+                    {
+                      "textRaw": "`interval` {number} 循环运行时两次运行之间的时间间隔，默认为0 ",
+                      "name": "interval",
+                      "type": "number",
+                      "desc": "循环运行时两次运行之间的时间间隔，默认为0"
+                    },
+                    {
+                      "textRaw": "`path` {Array} | {string} 指定脚本运行的目录。这些路径会用于require时寻找模块文件。 ",
+                      "name": "path",
+                      "type": "Array",
+                      "desc": "| {string} 指定脚本运行的目录。这些路径会用于require时寻找模块文件。"
+                    }
+                  ],
+                  "name": "config",
+                  "type": "Object",
+                  "desc": "运行配置项",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                },
+                {
+                  "name": "config",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>在新的脚本环境中运行录制文件path。返回一个<a href=\"#ScriptExecution\">ScriptExecution</a>对象。</p>\n<pre><code>engines.execAutoFile(&quot;/sdcard/脚本/1.auto&quot;);\n</code></pre>"
+        },
+        {
+          "textRaw": "engines.stopAll()",
+          "type": "method",
+          "name": "stopAll",
+          "desc": "<p>停止所有正在运行的脚本。包括当前脚本自身。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "engines.stopAllAndToast()",
+          "type": "method",
+          "name": "stopAllAndToast",
+          "desc": "<p>停止所有正在运行的脚本并显示停止的脚本数量。包括当前脚本自身。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "engines.myEngine()",
+          "type": "method",
+          "name": "myEngine",
+          "desc": "<p>返回当前脚本的脚本引擎对象(<a href=\"#engines_scriptengine\">ScriptEngine</a>)</p>\n<p><strong>[v4.1.0新增]</strong>\n特别的，该对象可以通过<code>execArgv</code>来获取他的运行参数，包括外部参数、intent等。例如：</p>\n<pre><code>log(engines.myEngine().execArgv);\n</code></pre><p>普通脚本的运行参数通常为空，通过定时任务的广播启动的则可以获取到启动的intent。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "engines.all()",
+          "type": "method",
+          "name": "all",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {Array} ",
+                  "name": "返回",
+                  "type": "Array"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回当前所有正在运行的脚本的脚本引擎<a href=\"#engines_scriptengine\">ScriptEngine</a>的数组。</p>\n<pre><code>log(engines.all());\n</code></pre>"
+        }
+      ],
+      "type": "module",
+      "displayName": "Engines"
+    },
+    {
+      "textRaw": "ScriptExecution",
+      "name": "scriptexecution",
+      "desc": "<p>执行脚本时返回的对象，可以通过他获取执行的引擎、配置等，也可以停止这个执行。</p>\n<p>要停止这个脚本的执行，使用<code>exectuion.getEngine().forceStop()</code>.</p>\n",
+      "methods": [
+        {
+          "textRaw": "ScriptExecution.getEngine()",
+          "type": "method",
+          "name": "getEngine",
+          "desc": "<p>返回执行该脚本的脚本引擎对象(<a href=\"#engines_scriptengine\">ScriptEngine</a>)</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "ScriptExecution.getConfig()",
+          "type": "method",
+          "name": "getConfig",
+          "desc": "<p>返回该脚本的运行配置(<a href=\"#engines_scriptconfig\">ScriptConfig</a>)</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        }
+      ],
+      "type": "module",
+      "displayName": "ScriptExecution"
+    },
+    {
+      "textRaw": "ScriptEngine",
+      "name": "scriptengine",
+      "desc": "<p>脚本引擎对象。</p>\n",
+      "methods": [
+        {
+          "textRaw": "ScriptEngine.forceStop()",
+          "type": "method",
+          "name": "forceStop",
+          "desc": "<p>停止脚本引擎的执行。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "ScriptEngine.cwd()",
+          "type": "method",
+          "name": "cwd",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回脚本执行的路径。对于一个脚本文件而言为这个脚本所在的文件夹；对于其他脚本，例如字符串脚本，则为<code>null</code>或者执行时的设置值。</p>\n"
+        },
+        {
+          "textRaw": "ScriptEngine.getSource()",
+          "type": "method",
+          "name": "getSource",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 [ScriptSource](#engines_scriptsource) ",
+                  "name": "返回",
+                  "desc": "[ScriptSource](#engines_scriptsource)"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回当前脚本引擎正在执行的脚本对象。</p>\n<pre><code>log(engines.myEngine().getSource());\n</code></pre>"
+        },
+        {
+          "textRaw": "ScriptEngine.emit(eventName[, ...args])",
+          "type": "method",
+          "name": "emit",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`eventName` {string} 事件名称 ",
+                  "name": "eventName",
+                  "type": "string",
+                  "desc": "事件名称"
+                },
+                {
+                  "textRaw": "`...args` {any} 事件参数 ",
+                  "name": "...args",
+                  "type": "any",
+                  "desc": "事件参数",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "eventName"
+                },
+                {
+                  "name": "...args",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>向该脚本引擎发送一个事件，该事件可以在该脚本引擎对应的脚本的events模块监听到并在脚本主线程执行事件处理。</p>\n<p>例如脚本receiver.js的内容如下：</p>\n<pre><code>//监听say事件\nevents.on(&quot;say&quot;, function(words){\n    toastLog(words);\n});\n//保持脚本运行\nsetInterval(()=&gt;{}, 1000);\n</code></pre><p>同一目录另一脚本可以启动他并发送该事件：</p>\n<pre><code>//运行脚本\nvar e = engines.execScriptFile(&quot;./receiver.js&quot;);\n//等待脚本启动\nsleep(2000);\n//向该脚本发送事件\ne.getEngine().emit(&quot;say&quot;, &quot;你好&quot;);\n</code></pre>"
+        }
+      ],
+      "type": "module",
+      "displayName": "ScriptEngine"
+    },
+    {
+      "textRaw": "ScriptConfig",
+      "name": "scriptconfig",
+      "desc": "<p>脚本执行时的配置。</p>\n",
+      "modules": [
+        {
+          "textRaw": "delay",
+          "name": "delay",
+          "desc": "<ul>\n<li>{number}</li>\n</ul>\n<p>延迟执行的毫秒数</p>\n",
+          "type": "module",
+          "displayName": "delay"
+        },
+        {
+          "textRaw": "interval",
+          "name": "interval",
+          "desc": "<ul>\n<li>{number}</li>\n</ul>\n<p>循环运行时两次运行之间的时间间隔</p>\n",
+          "type": "module",
+          "displayName": "interval"
+        },
+        {
+          "textRaw": "loopTimes",
+          "name": "looptimes",
+          "desc": "<ul>\n<li>{number}</li>\n</ul>\n<p>循环运行次数</p>\n",
+          "type": "module",
+          "displayName": "loopTimes"
+        }
+      ],
+      "methods": [
+        {
+          "textRaw": "getPath()",
+          "type": "method",
+          "name": "getPath",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {Array} ",
+                  "name": "返回",
+                  "type": "Array"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回一个字符串数组表示脚本运行时模块寻找的路径。</p>\n"
+        }
+      ],
+      "type": "module",
+      "displayName": "ScriptConfig"
+    }
+  ]
+}

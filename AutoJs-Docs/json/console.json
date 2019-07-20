@@ -1,0 +1,490 @@
+{
+  "source": "..\\api\\console.md",
+  "modules": [
+    {
+      "textRaw": "Console",
+      "name": "console",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>控制台模块提供了一个和Web浏览器中相似的用于调试的控制台。用于输出一些调试信息、中间结果等。\nconsole模块中的一些函数也可以直接作为全局函数使用，例如log, print等。</p>\n",
+      "methods": [
+        {
+          "textRaw": "console.show()",
+          "type": "method",
+          "name": "show",
+          "desc": "<p>显示控制台。这会显示一个控制台的悬浮窗(需要悬浮窗权限)。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "console.hide()",
+          "type": "method",
+          "name": "hide",
+          "desc": "<p>隐藏控制台悬浮窗。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "console.clear()",
+          "type": "method",
+          "name": "clear",
+          "desc": "<p>清空控制台。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "console.log([data][, ...args])",
+          "type": "method",
+          "name": "log",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`data` {any} ",
+                  "name": "data",
+                  "type": "any",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`...args` {any} ",
+                  "name": "...args",
+                  "type": "any",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "data",
+                  "optional": true
+                },
+                {
+                  "name": "...args",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>打印到控制台，并带上换行符。 可以传入多个参数，第一个参数作为主要信息，其他参数作为类似于 <a href=\"http://man7.org/linux/man-pages/man3/printf.3.html\">printf(3)</a> 中的代替值（参数都会传给 util.format()）。</p>\n<pre><code>const count = 5;\nconsole.log(&#39;count: %d&#39;, count);\n// 打印: count: 5 到 stdout\nconsole.log(&#39;count:&#39;, count);\n// 打印: count: 5 到 stdout\n</code></pre><p>详见 util.format()。</p>\n<p>该函数也可以作为全局函数使用。</p>\n"
+        },
+        {
+          "textRaw": "console.verbose([data][, ...args])",
+          "type": "method",
+          "name": "verbose",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`data` {any} ",
+                  "name": "data",
+                  "type": "any",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`...args` {any} ",
+                  "name": "...args",
+                  "type": "any",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "data",
+                  "optional": true
+                },
+                {
+                  "name": "...args",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>与console.log类似，但输出结果以灰色字体显示。输出优先级低于log，用于输出观察性质的信息。</p>\n"
+        },
+        {
+          "textRaw": "console.info([data][, ...args])",
+          "type": "method",
+          "name": "info",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`data` {any} ",
+                  "name": "data",
+                  "type": "any",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`...args` {any} ",
+                  "name": "...args",
+                  "type": "any",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "data",
+                  "optional": true
+                },
+                {
+                  "name": "...args",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>与console.log类似，但输出结果以绿色字体显示。输出优先级高于log, 用于输出重要信息。</p>\n"
+        },
+        {
+          "textRaw": "console.warn([data][, ...args])",
+          "type": "method",
+          "name": "warn",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`data` {any} ",
+                  "name": "data",
+                  "type": "any",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`...args` {any} ",
+                  "name": "...args",
+                  "type": "any",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "data",
+                  "optional": true
+                },
+                {
+                  "name": "...args",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>与console.log类似，但输出结果以蓝色字体显示。输出优先级高于info, 用于输出警告信息。</p>\n"
+        },
+        {
+          "textRaw": "console.error([data][, ...args])",
+          "type": "method",
+          "name": "error",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`data` {any} ",
+                  "name": "data",
+                  "type": "any",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`...args` {any} ",
+                  "name": "...args",
+                  "type": "any",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "data",
+                  "optional": true
+                },
+                {
+                  "name": "...args",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>与console.log类似，但输出结果以红色字体显示。输出优先级高于warn, 用于输出错误信息。</p>\n"
+        },
+        {
+          "textRaw": "console.assert(value, message)",
+          "type": "method",
+          "name": "assert",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "value {any} 要断言的布尔值 ",
+                  "name": "value",
+                  "type": "any",
+                  "desc": "要断言的布尔值"
+                },
+                {
+                  "textRaw": "message {string} value为false时要输出的信息 ",
+                  "name": "message",
+                  "type": "string",
+                  "desc": "value为false时要输出的信息"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "value"
+                },
+                {
+                  "name": "message"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>断言。如果value为false则输出错误信息message并停止脚本运行。</p>\n<pre><code>var a = 1 + 1;\nconsole.assert(a == 2, &quot;加法出错啦&quot;);\n</code></pre>"
+        },
+        {
+          "textRaw": "console.time([label])",
+          "type": "method",
+          "name": "time",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>label</code> {String} 计时器标签，可省略</li>\n</ul>\n<p>启动一个定时器，用以计算一个操作的持续时间。\n定时器由一个唯一的 <code>label</code> 标识。\n当调用 <code>console.timeEnd()</code> 时，可以使用相同的 <code>label</code> 来停止定时器，并以毫秒为单位将持续时间输出到控制台。\n重复启动同一个标签的定时器会覆盖之前启动同一标签的定时器。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "label",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "console.timeEnd(label)",
+          "type": "method",
+          "name": "timeEnd",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>label</code> {String} 计时器标签</li>\n</ul>\n<p>停止之前通过调用 <code>console.time()</code> 启动的定时器，并打印结果到控制台。\n调用 <code>console.timeEnd()</code> 后定时器会被删除。如果不存在标签指定的定时器则会打印 <code>NaNms</code>。</p>\n<pre><code class=\"lang-js\">console.time(&#39;求和&#39;);\nvar sum = 0;\nfor(let i = 0; i &lt; 100000; i++){\n    sum += i;\n}\nconsole.timeEnd(&#39;求和&#39;);\n// 打印 求和: xxx ms\n</code></pre>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "label"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "console.trace([data][, ...args])",
+          "type": "method",
+          "name": "trace",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>data</code> {any}</li>\n<li><code>...args</code> {any}</li>\n</ul>\n<p>与console.log类似，同时会打印出调用这个函数所在的调用栈信息（即当前运行的文件、行数等信息）。</p>\n<pre><code class=\"lang-js\">console.trace(&#39;Show me&#39;);\n// 打印: (堆栈跟踪会根据被调用的跟踪的位置而变化)\n// Show me\n//  at &lt;test&gt;:7\n</code></pre>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "data",
+                  "optional": true
+                },
+                {
+                  "name": "...args",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "console.input(data[, ...args])",
+          "type": "method",
+          "name": "input",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`data` {any} ",
+                  "name": "data",
+                  "type": "any"
+                },
+                {
+                  "textRaw": "`...args` {any} ",
+                  "name": "...args",
+                  "type": "any",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "data"
+                },
+                {
+                  "name": "...args",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>与console.log一样输出信息，并在控制台显示输入框等待输入。按控制台的确认按钮后会将输入的字符串用eval计算后返回。</p>\n<p><strong>部分机型可能会有控制台不显示输入框的情况，属于bug。</strong></p>\n<p>例如：</p>\n<pre><code>var n = console.input(&quot;请输入一个数字:&quot;); \n//输入123之后：\ntoast(n + 1);\n//显示124\n</code></pre>"
+        },
+        {
+          "textRaw": "console.rawInput(data[, ...args])",
+          "type": "method",
+          "name": "rawInput",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`data` {any} ",
+                  "name": "data",
+                  "type": "any"
+                },
+                {
+                  "textRaw": "`...args` {any} ",
+                  "name": "...args",
+                  "type": "any",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "data"
+                },
+                {
+                  "name": "...args",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>与console.log一样输出信息，并在控制台显示输入框等待输入。按控制台的确认按钮后会将输入的字符串直接返回。</p>\n<p>部分机型可能会有控制台不显示输入框的情况，属于bug。</p>\n<p>例如：</p>\n<pre><code>var n = console.rawInput(&quot;请输入一个数字:&quot;); \n//输入123之后：\ntoast(n + 1);\n//显示1231\n</code></pre>"
+        },
+        {
+          "textRaw": "console.setSize(w, h)",
+          "type": "method",
+          "name": "setSize",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`w` {number} 宽度 ",
+                  "name": "w",
+                  "type": "number",
+                  "desc": "宽度"
+                },
+                {
+                  "textRaw": "`h` {number} 高度 ",
+                  "name": "h",
+                  "type": "number",
+                  "desc": "高度"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "w"
+                },
+                {
+                  "name": "h"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>设置控制台的大小，单位像素。</p>\n<pre><code>console.show();\n//设置控制台大小为屏幕的四分之一\nconsole.setSize(device.width / 2, device.height / 2);\n</code></pre>"
+        },
+        {
+          "textRaw": "console.setPosition(x, y)",
+          "type": "method",
+          "name": "setPosition",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`x` {number} 横坐标 ",
+                  "name": "x",
+                  "type": "number",
+                  "desc": "横坐标"
+                },
+                {
+                  "textRaw": "`y` {number} 纵坐标 ",
+                  "name": "y",
+                  "type": "number",
+                  "desc": "纵坐标"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "x"
+                },
+                {
+                  "name": "y"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>设置控制台的位置，单位像素。</p>\n<pre><code>console.show();\nconsole.setPosition(100, 100);\n</code></pre>"
+        },
+        {
+          "textRaw": "console.setGlobalLogConfig(config)",
+          "type": "method",
+          "name": "setGlobalLogConfig",
+          "desc": "<p><strong>[v4.1.0新增]</strong></p>\n<ul>\n<li><code>config</code> {Object} 日志配置，可选的项有：<ul>\n<li><code>file</code> {string} 日志文件路径，将会把日志写入该文件中</li>\n<li><code>maxFileSize</code> {number} 最大文件大小，单位字节，默认为512 * 1024 (512KB)</li>\n<li><code>rootLevel</code> {string} 写入的日志级别，默认为&quot;ALL&quot;（所有日志），可以为&quot;OFF&quot;(关闭), &quot;DEBUG&quot;, &quot;INFO&quot;, &quot;WARN&quot;, &quot;ERROR&quot;, &quot;FATAL&quot;等。</li>\n<li><code>maxBackupSize</code> {number} 日志备份文件最大数量，默认为5</li>\n<li><code>filePattern</code> {string} 日志写入格式，参见<a href=\"http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/PatternLayout.html\">PatternLayout</a></li>\n</ul>\n</li>\n</ul>\n<p>设置日志保存的路径和配置。例如把日志保存到&quot;/sdcard/1.txt&quot;:</p>\n<pre><code>console.setGlobalLogConfig({\n    &quot;file&quot;: &quot;/sdcard/1.txt&quot;\n});\n</code></pre><p>注意该函数会影响所有脚本的日志记录。</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "config"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "print(text)",
+          "type": "method",
+          "name": "print",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "text {string} | {Object} 要打印到控制台的信息 ",
+                  "name": "text",
+                  "type": "string",
+                  "desc": "| {Object} 要打印到控制台的信息"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "text"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>相当于<code>log(text)</code>。</p>\n"
+        }
+      ],
+      "type": "module",
+      "displayName": "Console"
+    }
+  ]
+}

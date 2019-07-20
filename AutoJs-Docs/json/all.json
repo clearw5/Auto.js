@@ -1,0 +1,14 @@
+{
+  "source": "..\\api\\all.md",
+  "desc": [
+    {
+      "type": "html",
+      "pre": false,
+      "text": "<!--lint disable prohibited-strings-->\n"
+    },
+    {
+      "type": "paragraph",
+      "text": "@include documentation"
+    }
+  ]
+}

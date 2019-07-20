@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>colors | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/images.html">
+</head>
+<body class="alt apidoc" id="api-section-images">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images active" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="images" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#images_colors">colors</a></span><ul>
+<li><span class="stability_undefined"><a href="#images_colors_tostring_color">colors.toString(color)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_red_color">colors.red(color)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_green_color">colors.green(color)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_blue_color">colors.blue(color)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_alpha_color">colors.alpha(color)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_rgb_red_green_blue">colors.rgb(red, green, blue)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_argb_alpha_red_green_blue">colors.argb(alpha, red, green, blue)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_parsecolor_colorstr">colors.parseColor(colorStr)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_issimilar_color2_color2_threshold_algorithm">colors.isSimilar(color2, color2[, threshold, algorithm])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_equals_color1_color2">colors.equals(color1, color2)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#images_colors_black">colors.BLACK</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_dkgray">colors.DKGRAY</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_gray">colors.GRAY</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_ltgray">colors.LTGRAY</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_white">colors.WHITE</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_red">colors.RED</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_green">colors.GREEN</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_blue">colors.BLUE</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_yellow">colors.YELLOW</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_cyan">colors.CYAN</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_magenta">colors.MAGENTA</a></span></li>
+<li><span class="stability_undefined"><a href="#images_colors_transparent">colors.TRANSPARENT</a></span></li>
+<li><span class="stability_2"><a href="#images_images">Images</a></span><ul>
+<li><span class="stability_undefined"><a href="#images">图片处理</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_read_path">images.read(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_load_url">images.load(url)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_copy_img">images.copy(img)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_save_image_path_format_png_quality_100">images.save(image, path[, format = &quot;png&quot;, quality = 100])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_frombase64_base64">images.fromBase64(base64)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_tobase64_img_format_png_quality_100">images.toBase64(img[, format = &quot;png&quot;, quality = 100])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_frombytes_bytes">images.fromBytes(bytes)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_tobytes_img_format_png_quality_100">images.toBytes(img[, format = &quot;png&quot;, quality = 100])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_clip_img_x_y_w_h">images.clip(img, x, y, w, h)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_resize_img_size_interpolation">images.resize(img, size[, interpolation])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_scale_img_fx_fy_interpolation">images.scale(img, fx, fy[, interpolation])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_rotate_img_degress_x_y">images.rotate(img, degress[, x, y])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_concat_img1_image2_direction">images.concat(img1, image2[, direction])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_grayscale_img">images.grayscale(img)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_image_threshold_img_threshold_maxval_type">image.threshold(img, threshold, maxVal[, type])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_adaptivethreshold_img_maxvalue_adaptivemethod_thresholdtype_blocksize_c">images.adaptiveThreshold(img, maxValue, adaptiveMethod, thresholdType, blockSize, C)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_cvtcolor_img_code_dstcn">images.cvtColor(img, code[, dstCn])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_inrange_img_lowerbound_upperbound">images.inRange(img, lowerBound, upperBound)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_interval_img_color_interval">images.interval(img, color, interval)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_blur_img_size_anchor_type">images.blur(img, size[, anchor, type])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_medianblur_img_size">images.medianBlur(img, size)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_gaussianblur_img_size_sigmax_sigmay_type">images.gaussianBlur(img, size[, sigmaX, sigmaY, type])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_mattoimage_mat">images.matToImage(mat)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_1">找图找色</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_requestscreencapture_landscape">images.requestScreenCapture([landscape])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_capturescreen">images.captureScreen()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_capturescreen_path">images.captureScreen(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_pixel_image_x_y">images.pixel(image, x, y)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findcolor_image_color_options">images.findColor(image, color, options)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findcolorinregion_img_color_x_y_width_height_threshold">images.findColorInRegion(img, color, x, y[, width, height, threshold])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findcolorequals_img_color_x_y_width_height">images.findColorEquals(img, color[, x, y, width, height])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findmulticolors_img_firstcolor_colors_options">images.findMultiColors(img, firstColor, colors[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff">images.detectsColor(image, color, x, y[, threshold = 16, algorithm = &quot;diff&quot;])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findimage_img_template_options">images.findImage(img, template[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_findimageinregion_img_template_x_y_width_height_threshold">images.findImageInRegion(img, template, x, y[, width, height, threshold])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_matchtemplate_img_template_options">images.matchTemplate(img, template, options)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#images_matchingresult">MatchingResult</a></span><ul>
+<li><span class="stability_undefined"><a href="#images_matches">matches</a></span></li>
+<li><span class="stability_undefined"><a href="#images_points">points</a></span></li>
+<li><span class="stability_undefined"><a href="#images_first">first()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_last">last()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_leftmost">leftmost()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_topmost">topmost()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_rightmost">rightmost()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_bottommost">bottommost()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_best">best()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_worst">worst()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_sortby_cmp">sortBy(cmp)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#images_image">Image</a></span><ul>
+<li><span class="stability_undefined"><a href="#images_image_getwidth">Image.getWidth()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_image_getheight">Image.getHeight()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_image_saveto_path">Image.saveTo(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_image_pixel_x_y">Image.pixel(x, y)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#images_point">Point</a></span><ul>
+<li><span class="stability_undefined"><a href="#images_point_x">Point.x</a></span></li>
+<li><span class="stability_undefined"><a href="#images_point_y">Point.y</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>colors<span><a class="mark" href="#images_colors" id="images_colors">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>在Auto.js有两种方式表示一个颜色。</p>
+<p>一种是使用一个字符串&quot;#AARRGGBB&quot;或&quot;#RRGGBB&quot;，其中 AA 是Alpha通道(透明度)的值，RR 是R通道(红色)的值，GG 是G通道(绿色)的值，BB是B通道(蓝色)的值。例如&quot;#ffffff&quot;表示白色, &quot;#7F000000&quot;表示半透明的黑色。</p>
+<p>另一种是使用一个16进制的&quot;32位整数&quot; 0xAARRGGBB 来表示一个颜色，例如 <code>0xFF112233</code>表示颜色&quot;#112233&quot;, <code>0x11223344</code>表示颜色&quot;#11223344&quot;。</p>
+<p>可以通过<code>colors.toString()</code>把颜色整数转换为字符串，通过<code>colors.parseColor()</code>把颜色字符串解析为颜色整数。</p>
+<h2>colors.toString(color)<span><a class="mark" href="#images_colors_tostring_color" id="images_colors_tostring_color">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数RGB颜色值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回颜色值的字符串，格式为 &quot;#AARRGGBB&quot;。</p>
+<h2>colors.red(color)<span><a class="mark" href="#images_colors_red_color" id="images_colors_red_color">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回颜色color的R通道的值，范围0~255.</p>
+<h2>colors.green(color)<span><a class="mark" href="#images_colors_green_color" id="images_colors_green_color">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回颜色color的G通道的值，范围0~255.</p>
+<h2>colors.blue(color)<span><a class="mark" href="#images_colors_blue_color" id="images_colors_blue_color">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回颜色color的B通道的值，范围0~255.</p>
+<h2>colors.alpha(color)<span><a class="mark" href="#images_colors_alpha_color" id="images_colors_alpha_color">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回颜色color的Alpha通道的值，范围0~255.</p>
+<h2>colors.rgb(red, green, blue)<span><a class="mark" href="#images_colors_rgb_red_green_blue" id="images_colors_rgb_red_green_blue">#</a></span></h2>
+<div class="signature"><ul>
+<li>red <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的R通道的值</li>
+<li>blue <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的G通道的值</li>
+<li>green <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的B通道的值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回这些颜色通道构成的整数颜色值。Alpha通道将是255（不透明）。</p>
+<h2>colors.argb(alpha, red, green, blue)<span><a class="mark" href="#images_colors_argb_alpha_red_green_blue" id="images_colors_argb_alpha_red_green_blue">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>alpha</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的Alpha通道的值</li>
+<li><code>red</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a>  颜色的R通道的值</li>
+<li><code>green</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的G通道的值</li>
+<li><code>blue</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色的B通道的值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回这些颜色通道构成的整数颜色值。</p>
+<h2>colors.parseColor(colorStr)<span><a class="mark" href="#images_colors_parsecolor_colorstr" id="images_colors_parsecolor_colorstr">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>colorStr</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 表示颜色的字符串，例如&quot;#112233&quot;</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回颜色的整数值。</p>
+<h2>colors.isSimilar(color2, color2[, threshold, algorithm])<span><a class="mark" href="#images_colors_issimilar_color2_color2_threshold_algorithm" id="images_colors_issimilar_color2_color2_threshold_algorithm">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>color1</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值1</li>
+<li><code>color1</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值2</li>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色相似度临界值，默认为4。取值范围为0~255。这个值越大表示允许的相似程度越小，如果这个值为0，则两个颜色相等时该函数才会返回true。</li>
+<li><code>algorithm</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色匹配算法，默认为&quot;diff&quot;, 包括:<ul>
+<li>&quot;diff&quot;: 差值匹配。与给定颜色的R、G、B差的绝对值之和小于threshold时匹配。</li>
+<li>&quot;rgb&quot;: rgb欧拉距离相似度。与给定颜色color的rgb欧拉距离小于等于threshold时匹配。</li>
+<li>&quot;rgb+&quot;: 加权rgb欧拉距离匹配(<a href="https://en.wikipedia.org/wiki/Color_difference">LAB Delta E</a>)。</li>
+<li>&quot;hs&quot;: hs欧拉距离匹配。hs为HSV空间的色调值。</li>
+</ul>
+</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a></li>
+</ul>
+</div><p>返回两个颜色是否相似。</p>
+<h2>colors.equals(color1, color2)<span><a class="mark" href="#images_colors_equals_color1_color2" id="images_colors_equals_color1_color2">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>color1</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值1</li>
+<li><code>color1</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色值2</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;Boolean&gt;</a></li>
+</ul>
+</div><p>返回两个颜色是否相等。<em>*注意该函数会忽略Alpha通道的值进行比较</em>。</p>
+<pre><code>log(colors.equals(&quot;#112233&quot;, &quot;#112234&quot;));
+log(colors.equals(0xFF112233, 0xFF223344));
+</code></pre><h1>colors.BLACK<span><a class="mark" href="#images_colors_black" id="images_colors_black">#</a></span></h1>
+<p>黑色，颜色值 #FF000000</p>
+<h1>colors.DKGRAY<span><a class="mark" href="#images_colors_dkgray" id="images_colors_dkgray">#</a></span></h1>
+<p>深灰色，颜色值 #FF444444</p>
+<h1>colors.GRAY<span><a class="mark" href="#images_colors_gray" id="images_colors_gray">#</a></span></h1>
+<p>灰色，颜色值 #FF888888</p>
+<h1>colors.LTGRAY<span><a class="mark" href="#images_colors_ltgray" id="images_colors_ltgray">#</a></span></h1>
+<p>亮灰色，颜色值 #FFCCCCCC</p>
+<h1>colors.WHITE<span><a class="mark" href="#images_colors_white" id="images_colors_white">#</a></span></h1>
+<p>白色，颜色值 #FFFFFFFF</p>
+<h1>colors.RED<span><a class="mark" href="#images_colors_red" id="images_colors_red">#</a></span></h1>
+<p>红色，颜色值 #FFFF0000</p>
+<h1>colors.GREEN<span><a class="mark" href="#images_colors_green" id="images_colors_green">#</a></span></h1>
+<p>绿色，颜色值 #FF00FF00</p>
+<h1>colors.BLUE<span><a class="mark" href="#images_colors_blue" id="images_colors_blue">#</a></span></h1>
+<p>蓝色，颜色值 #FF0000FF</p>
+<h1>colors.YELLOW<span><a class="mark" href="#images_colors_yellow" id="images_colors_yellow">#</a></span></h1>
+<p>黄色，颜色值 #FFFFFF00</p>
+<h1>colors.CYAN<span><a class="mark" href="#images_colors_cyan" id="images_colors_cyan">#</a></span></h1>
+<p>青色，颜色值 #FF00FFFF</p>
+<h1>colors.MAGENTA<span><a class="mark" href="#images_colors_magenta" id="images_colors_magenta">#</a></span></h1>
+<p>品红色，颜色值 #FFFF00FF</p>
+<h1>colors.TRANSPARENT<span><a class="mark" href="#images_colors_transparent" id="images_colors_transparent">#</a></span></h1>
+<p>透明，颜色值 #00000000</p>
+<h1>Images<span><a class="mark" href="#images_images" id="images_images">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>images模块提供了一些手机设备中常见的图片处理函数，包括截图、读写图片、图片剪裁、旋转、二值化、找色找图等。</p>
+<p>该模块分为两个部分，找图找色部分和图片处理部分。</p>
+<p>需要注意的是，image对象创建后尽量在不使用时进行回收，同时避免循环创建大量图片。因为图片是一种占用内存比较大的资源，尽管Auto.js通过各种方式（比如图片缓存机制、垃圾回收时回收图片、脚本结束时回收所有图片）尽量降低图片资源的泄漏和内存占用，但是糟糕的代码仍然可以占用大量内存。</p>
+<p>Image对象通过调用<code>recycle()</code>函数来回收。例如：</p>
+<pre><code>// 读取图片
+var img = images.read(&quot;./1.png&quot;);
+//对图片进行操作
+... 
+// 回收图片
+img.recycle();
+</code></pre><p>例外的是，<code>caputerScreen()</code>返回的图片不需要回收。</p>
+<h2>图片处理<span><a class="mark" href="#images" id="images">#</a></span></h2>
+<h2>images.read(path)<span><a class="mark" href="#images_images_read_path" id="images_images_read_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片路径</li>
+</ul>
+</div><p>读取在路径path的图片文件并返回一个Image对象。如果文件不存在或者文件无法解码则返回null。</p>
+<h2>images.load(url)<span><a class="mark" href="#images_images_load_url" id="images_images_load_url">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片URL地址</li>
+</ul>
+</div><p>加载在地址URL的网络图片并返回一个Image对象。如果地址不存在或者图片无法解码则返回null。</p>
+<h2>images.copy(img)<span><a class="mark" href="#images_images_copy_img" id="images_images_copy_img">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+</div><p>复制一张图片并返回新的副本。该函数会完全复制img对象的数据。</p>
+<h2>images.save(image, path[, format = &quot;png&quot;, quality = 100])<span><a class="mark" href="#images_images_save_image_path_format_png_quality_100" id="images_images_save_image_path_format_png_quality_100">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li><code>format</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片格式，可选的值为:<ul>
+<li><code>png</code></li>
+<li><code>jpeg</code>/<code>jpg</code></li>
+<li><code>webp</code></li>
+</ul>
+</li>
+<li><code>quality</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片质量，为0~100的整数值</li>
+</ul>
+</div><p>把图片image以PNG格式保存到path中。如果文件不存在会被创建；文件存在会被覆盖。</p>
+<pre><code>//把图片压缩为原来的一半质量并保存
+var img = images.read(&quot;/sdcard/1.png&quot;);
+images.save(img, &quot;/sdcard/1.jpg&quot;, &quot;jpg&quot;, 50);
+app.viewFile(&quot;/sdcard/1.jpg&quot;);
+</code></pre><h2>images.fromBase64(base64)<span><a class="mark" href="#images_images_frombase64_base64" id="images_images_frombase64_base64">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>base64</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片的Base64数据</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+</div><p>解码Base64数据并返回解码后的图片Image对象。如果base64无法解码则返回<code>null</code>。</p>
+<h2>images.toBase64(img[, format = &quot;png&quot;, quality = 100])<span><a class="mark" href="#images_images_tobase64_img_format_png_quality_100" id="images_images_tobase64_img_format_png_quality_100">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>image</code> <span class="type">&lt;image&gt;</span> 图片</li>
+<li><code>format</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片格式，可选的值为:<ul>
+<li><code>png</code></li>
+<li><code>jpeg</code>/<code>jpg</code></li>
+<li><code>webp</code></li>
+</ul>
+</li>
+<li><code>quality</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片质量，为0~100的整数值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>把图片编码为base64数据并返回。</p>
+<h2>images.fromBytes(bytes)<span><a class="mark" href="#images_images_frombytes_bytes" id="images_images_frombytes_bytes">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>bytes</code> <span class="type">&lt;byte[]&gt;</span> 字节数组</li>
+</ul>
+</div><p>解码字节数组bytes并返回解码后的图片Image对象。如果bytes无法解码则返回<code>null</code>。</p>
+<h2>images.toBytes(img[, format = &quot;png&quot;, quality = 100])<span><a class="mark" href="#images_images_tobytes_img_format_png_quality_100" id="images_images_tobytes_img_format_png_quality_100">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>image</code> <span class="type">&lt;image&gt;</span> 图片</li>
+<li><code>format</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片格式，可选的值为:<ul>
+<li><code>png</code></li>
+<li><code>jpeg</code>/<code>jpg</code></li>
+<li><code>webp</code></li>
+</ul>
+</li>
+<li><code>quality</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片质量，为0~100的整数值</li>
+<li>返回 <span class="type">&lt;byte[]&gt;</span></li>
+</ul>
+</div><p>把图片编码为字节数组并返回。</p>
+<h2>images.clip(img, x, y, w, h)<span><a class="mark" href="#images_images_clip_img_x_y_w_h" id="images_images_clip_img_x_y_w_h">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的左上角横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的左上角纵坐标</li>
+<li><code>w</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的宽度</li>
+<li><code>h</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的高度</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+</div><p>从图片img的位置(x, y)处剪切大小为w * h的区域，并返回该剪切区域的新图片。</p>
+<pre><code>var src = images.read(&quot;/sdcard/1.png&quot;);
+var clip = images.clip(src, 100, 100, 400, 400);
+images.save(clip, &quot;/sdcard/clip.png&quot;);
+</code></pre><h2>images.resize(img, size[, interpolation])<span><a class="mark" href="#images_images_resize_img_size_interpolation" id="images_images_resize_img_size_interpolation">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>size</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 两个元素的数组[w, h]，分别表示宽度和高度；如果只有一个元素，则宽度和高度相等</li>
+<li><p><code>interpolation</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 插值方法，可选，默认为&quot;LINEAR&quot;（线性插值），可选的值有：</p>
+<ul>
+<li><code>NEAREST</code> 最近邻插值</li>
+<li><code>LINEAR</code> 线性插值（默认）</li>
+<li><code>AREA</code> 区域插值</li>
+<li><code>CUBIC</code> 三次样条插值</li>
+<li><code>LANCZOS4</code> Lanczos插值
+参见<a href="https://docs.opencv.org/3.4.4/da/d54/group__imgproc__transform.html#ga5bb5a1fea74ea38e1a5445ca803ff121">InterpolationFlags</a></li>
+</ul>
+</li>
+<li><p>返回 <span class="type">&lt;Image&gt;</span></p>
+</li>
+</ul>
+<p>调整图片大小，并返回调整后的图片。例如把图片放缩为200*300：<code>images.resize(img, [200, 300])</code>。</p>
+<p>参见<a href="https://docs.opencv.org/3.4.4/da/d54/group__imgproc__transform.html#ga47a974309e9102f5f08231edc7e7529d">Imgproc.resize</a>。</p>
+<h2>images.scale(img, fx, fy[, interpolation])<span><a class="mark" href="#images_images_scale_img_fx_fy_interpolation" id="images_images_scale_img_fx_fy_interpolation">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>fx</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 宽度放缩倍数</li>
+<li><code>fy</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 高度放缩倍数</li>
+<li><p><code>interpolation</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 插值方法，可选，默认为&quot;LINEAR&quot;（线性插值），可选的值有：</p>
+<ul>
+<li><code>NEAREST</code> 最近邻插值</li>
+<li><code>LINEAR</code> 线性插值（默认）</li>
+<li><code>AREA</code> 区域插值</li>
+<li><code>CUBIC</code> 三次样条插值</li>
+<li><code>LANCZOS4</code> Lanczos插值
+参见<a href="https://docs.opencv.org/3.4.4/da/d54/group__imgproc__transform.html#ga5bb5a1fea74ea38e1a5445ca803ff121">InterpolationFlags</a></li>
+</ul>
+</li>
+<li><p>返回 <span class="type">&lt;Image&gt;</span></p>
+</li>
+</ul>
+<p>放缩图片，并返回放缩后的图片。例如把图片变成原来的一半：<code>images.scale(img, 0.5, 0.5)</code>。</p>
+<p>参见<a href="https://docs.opencv.org/3.4.4/da/d54/group__imgproc__transform.html#ga47a974309e9102f5f08231edc7e7529d">Imgproc.resize</a>。</p>
+<h2>images.rotate(img, degress[, x, y])<span><a class="mark" href="#images_images_rotate_img_degress_x_y" id="images_images_rotate_img_degress_x_y">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>degress</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 旋转角度。</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 旋转中心x坐标，默认为图片中点</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 旋转中心y坐标，默认为图片中点</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>将图片逆时针旋转degress度，返回旋转后的图片对象。</p>
+<p>例如逆时针旋转90度为<code>images.rotate(img, 90)</code>。</p>
+<h2>images.concat(img1, image2[, direction])<span><a class="mark" href="#images_images_concat_img1_image2_direction" id="images_images_concat_img1_image2_direction">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img1</code> <span class="type">&lt;Image&gt;</span> 图片1</li>
+<li><code>img2</code> <span class="type">&lt;Image&gt;</span> 图片2</li>
+<li>direction <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 连接方向，默认为&quot;RIGHT&quot;，可选的值有：<ul>
+<li><code>LEFT</code> 将图片2接到图片1左边</li>
+<li><code>RIGHT</code> 将图片2接到图片1右边</li>
+<li><code>TOP</code> 将图片2接到图片1上边</li>
+<li><code>BOTTOM</code> 将图片2接到图片1下边</li>
+</ul>
+</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>连接两张图片，并返回连接后的图像。如果两张图片大小不一致，小的那张将适当居中。</p>
+<h2>images.grayscale(img)<span><a class="mark" href="#images_images_grayscale_img" id="images_images_grayscale_img">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>灰度化图片，并返回灰度化后的图片。</p>
+<h2>image.threshold(img, threshold, maxVal[, type])<span><a class="mark" href="#images_image_threshold_img_threshold_maxval_type" id="images_image_threshold_img_threshold_maxval_type">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 阈值</li>
+<li><code>maxVal</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 最大值</li>
+<li><p><code>type</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 阈值化类型，默认为&quot;BINARY&quot;，参见<a href="https://docs.opencv.org/3.4.4/d7/d1b/group__imgproc__misc.html#gaa9e58d2860d4afa658ef70a9b1115576">ThresholdTypes</a>, 可选的值:</p>
+<ul>
+<li><code>BINARY</code> </li>
+<li><code>BINARY_INV</code> </li>
+<li><code>TRUNC</code></li>
+<li><code>TOZERO</code></li>
+<li><code>TOZERO_INV</code></li>
+<li><code>OTSU</code></li>
+<li><code>TRIANGLE</code> </li>
+</ul>
+</li>
+<li><p>返回 <span class="type">&lt;Image&gt;</span></p>
+</li>
+</ul>
+<p>将图片阈值化，并返回处理后的图像。可以用这个函数进行图片二值化。例如：<code>images.threshold(img, 100, 255, &quot;BINARY&quot;)</code>，这个代码将图片中大于100的值全部变成255，其余变成0，从而达到二值化的效果。如果img是一张灰度化图片，这个代码将会得到一张黑白图片。</p>
+<p>可以参考有关博客（比如<a href="https://blog.csdn.net/u012566751/article/details/77046445">threshold函数的使用</a>）或者OpenCV文档<a href="https://docs.opencv.org/3.4.4/d7/d1b/group__imgproc__misc.html#gae8a4a146d1ca78c626a53577199e9c57">threshold</a>。</p>
+<h2>images.adaptiveThreshold(img, maxValue, adaptiveMethod, thresholdType, blockSize, C)<span><a class="mark" href="#images_images_adaptivethreshold_img_maxvalue_adaptivemethod_thresholdtype_blocksize_c" id="images_images_adaptivethreshold_img_maxvalue_adaptivemethod_thresholdtype_blocksize_c">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>maxValue</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 最大值</li>
+<li><code>adaptiveMethod</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 在一个邻域内计算阈值所采用的算法，可选的值有：<ul>
+<li><code>MEAN_C</code> 计算出领域的平均值再减去参数C的值</li>
+<li><code>GAUSSIAN_C</code> 计算出领域的高斯均值再减去参数C的值</li>
+</ul>
+</li>
+<li><code>thresholdType</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 阈值化类型，可选的值有：<ul>
+<li><code>BINARY</code></li>
+<li><code>BINARY_INV</code> </li>
+</ul>
+</li>
+<li><code>blockSize</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 邻域块大小</li>
+<li><code>C</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 偏移值调整量</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>对图片进行自适应阈值化处理，并返回处理后的图像。</p>
+<p>可以参考有关博客（比如<a href="https://blog.csdn.net/guduruyu/article/details/68059450">threshold与adaptiveThreshold</a>）或者OpenCV文档<a href="https://docs.opencv.org/3.4.4/d7/d1b/group__imgproc__misc.html#ga72b913f352e4a1b1b397736707afcde3">adaptiveThreshold</a>。</p>
+<h2>images.cvtColor(img, code[, dstCn])<span><a class="mark" href="#images_images_cvtcolor_img_code_dstcn" id="images_images_cvtcolor_img_code_dstcn">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>code</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色空间转换的类型，可选的值有一共有205个（参见<a href="https://docs.opencv.org/3.4.4/d8/d01/group__imgproc__color__conversions.html#ga4e0972be5de079fed4e3a10e24ef5ef0">ColorConversionCodes</a>），这里只列出几个：<ul>
+<li><code>BGR2GRAY</code> BGR转换为灰度</li>
+<li><code>BGR2HSV</code> BGR转换为HSV </li>
+<li>``</li>
+</ul>
+</li>
+<li><code>dstCn</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 目标图像的颜色通道数量，如果不填写则根据其他参数自动决定。</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>对图像进行颜色空间转换，并返回转换后的图像。</p>
+<p>可以参考有关博客（比如<a href="https://blog.csdn.net/u011574296/article/details/70896811?locationNum=14&amp;fps=1">颜色空间转换</a>）或者OpenCV文档<a href="https://docs.opencv.org/3.4.4/d8/d01/group__imgproc__color__conversions.html#ga397ae87e1288a81d2363b61574eb8cab">cvtColor</a>。</p>
+<h2>images.inRange(img, lowerBound, upperBound)<span><a class="mark" href="#images_images_inrange_img_lowerbound_upperbound" id="images_images_inrange_img_lowerbound_upperbound">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>lowerBound</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色下界</li>
+<li><code>upperBound</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色下界</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>将图片二值化，在lowerBound~upperBound范围以外的颜色都变成0，在范围以内的颜色都变成255。</p>
+<p>例如<code>images.inRange(img, &quot;#000000&quot;, &quot;#222222&quot;)</code>。</p>
+<h2>images.interval(img, color, interval)<span><a class="mark" href="#images_images_interval_img_color_interval" id="images_images_interval_img_color_interval">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色值</li>
+<li><code>interval</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 每个通道的范围间隔</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>将图片二值化，在color-interval ~ color+interval范围以外的颜色都变成0，在范围以内的颜色都变成255。这里对color的加减是对每个通道而言的。</p>
+<p>例如<code>images.interval(img, &quot;#888888&quot;, 16)</code>，每个通道的颜色值均为0x88，加减16后的范围是[0x78, 0x98]，因此这个代码将把#787878~#989898的颜色变成#FFFFFF，而把这个范围以外的变成#000000。</p>
+<h2>images.blur(img, size[, anchor, type])<span><a class="mark" href="#images_images_blur_img_size_anchor_type" id="images_images_blur_img_size_anchor_type">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>size</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 定义滤波器的大小，如[3, 3]</li>
+<li><code>anchor</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 指定锚点位置(被平滑点)，默认为图像中心</li>
+<li><code>type</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 推断边缘像素类型，默认为&quot;DEFAULT&quot;，可选的值有：<ul>
+<li><code>CONSTANT</code> iiiiii|abcdefgh|iiiiiii with some specified i</li>
+<li><code>REPLICATE</code> aaaaaa|abcdefgh|hhhhhhh</li>
+<li><code>REFLECT</code> fedcba|abcdefgh|hgfedcb</li>
+<li><code>WRAP</code> cdefgh|abcdefgh|abcdefg</li>
+<li><code>REFLECT_101</code> gfedcb|abcdefgh|gfedcba</li>
+<li><code>TRANSPARENT</code> uvwxyz|abcdefgh|ijklmno</li>
+<li><code>REFLECT101</code> same as BORDER_REFLECT_101</li>
+<li><code>DEFAULT</code> same as BORDER_REFLECT_101</li>
+<li><code>ISOLATED</code> do not look outside of ROI</li>
+</ul>
+</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>对图像进行模糊（平滑处理），返回处理后的图像。</p>
+<p>可以参考有关博客（比如<a href="https://www.cnblogs.com/denny402/p/3848316.html">实现图像平滑处理</a>）或者OpenCV文档<a href="https://docs.opencv.org/3.4.4/d4/d86/group__imgproc__filter.html#ga8c45db9afe636703801b0b2e440fce37">blur</a>。</p>
+<h2>images.medianBlur(img, size)<span><a class="mark" href="#images_images_medianblur_img_size" id="images_images_medianblur_img_size">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>size</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 定义滤波器的大小，如[3, 3]</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>对图像进行中值滤波，返回处理后的图像。</p>
+<p>可以参考有关博客（比如<a href="https://www.cnblogs.com/denny402/p/3848316.html">实现图像平滑处理</a>）或者OpenCV文档<a href="https://docs.opencv.org/3.4.4/d4/d86/group__imgproc__filter.html#ga564869aa33e58769b4469101aac458f9">blur</a>。</p>
+<h2>images.gaussianBlur(img, size[, sigmaX, sigmaY, type])<span><a class="mark" href="#images_images_gaussianblur_img_size_sigmax_sigmay_type" id="images_images_gaussianblur_img_size_sigmax_sigmay_type">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>size</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 定义滤波器的大小，如[3, 3]</li>
+<li><code>sigmaX</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> x方向的标准方差，不填写则自动计算</li>
+<li><code>sigmaY</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> y方向的标准方差，不填写则自动计算</li>
+<li><code>type</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 推断边缘像素类型，默认为&quot;DEFAULT&quot;，参见<code>images.blur</code></li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>对图像进行高斯模糊，返回处理后的图像。</p>
+<p>可以参考有关博客（比如<a href="https://www.cnblogs.com/denny402/p/3848316.html">实现图像平滑处理</a>）或者OpenCV文档<a href="https://docs.opencv.org/3.4.4/d4/d86/group__imgproc__filter.html#gaabe8c836e97159a9193fb0b11ac52cf1">GaussianBlur</a>。</p>
+<h2>images.matToImage(mat)<span><a class="mark" href="#images_images_mattoimage_mat" id="images_images_mattoimage_mat">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>mat</code> <span class="type">&lt;Mat&gt;</span> OpenCV的Mat对象</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>把Mat对象转换为Image对象。</p>
+<h2>找图找色<span><a class="mark" href="#images_1" id="images_1">#</a></span></h2>
+<h2>images.requestScreenCapture([landscape])<span><a class="mark" href="#images_images_requestscreencapture_landscape" id="images_images_requestscreencapture_landscape">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>landscape</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a> 布尔值， 表示将要执行的截屏是否为横屏。如果landscape为false, 则表示竖屏截图; true为横屏截图。</li>
+</ul>
+</div><p>向系统申请屏幕截图权限，返回是否请求成功。</p>
+<p>第一次使用该函数会弹出截图权限请求，建议选择“总是允许”。</p>
+<p>这个函数只是申请截图权限，并不会真正执行截图，真正的截图函数是<code>captureScreen()</code>。</p>
+<p>该函数在截图脚本中只需执行一次，而无需每次调用<code>captureScreen()</code>都调用一次。</p>
+<p><strong>如果不指定landscape值，则截图方向由当前设备屏幕方向决定</strong>，因此务必注意执行该函数时的屏幕方向。</p>
+<p>建议在本软件界面运行该函数，在其他软件界面运行时容易出现一闪而过的黑屏现象。  </p>
+<p>示例:</p>
+<pre><code>//请求截图
+if(!requestScreenCapture()){
+    toast(&quot;请求截图失败&quot;);
+    exit();
+}
+//连续截图10张图片(间隔1秒)并保存到存储卡目录
+for(var i = 0; i &lt; 10; i++){
+    captureScreen(&quot;/sdcard/screencapture&quot; + i + &quot;.png&quot;);
+    sleep(1000);
+}
+</code></pre><p>该函数也可以作为全局函数使用。</p>
+<h2>images.captureScreen()<span><a class="mark" href="#images_images_capturescreen" id="images_images_capturescreen">#</a></span></h2>
+<p>截取当前屏幕并返回一个Image对象。</p>
+<p>没有截图权限时执行该函数会抛出SecurityException。</p>
+<p>该函数不会返回null，两次调用可能返回相同的Image对象。这是因为设备截图的更新需要一定的时间，短时间内（一般来说是16ms）连续调用则会返回同一张截图。</p>
+<p>截图需要转换为Bitmap格式，从而该函数执行需要一定的时间(0~20ms)。</p>
+<p>另外在requestScreenCapture()执行成功后需要一定时间后才有截图可用，因此如果立即调用captureScreen()，会等待一定时间后(一般为几百ms)才返回截图。</p>
+<p>例子:</p>
+<pre><code>//请求横屏截图
+requestScreenCapture(true);
+//截图
+var img = captureScreen();
+//获取在点(100, 100)的颜色值
+var color = images.pixel(img, 100, 100);
+//显示该颜色值
+toast(colors.toString(color));
+</code></pre><p>该函数也可以作为全局函数使用。</p>
+<h2>images.captureScreen(path)<span><a class="mark" href="#images_images_capturescreen_path" id="images_images_capturescreen_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 截图保存路径</li>
+</ul>
+</div><p>截取当前屏幕并以PNG格式保存到path中。如果文件不存在会被创建；文件存在会被覆盖。</p>
+<p>该函数不会返回任何值。该函数也可以作为全局函数使用。</p>
+<h2>images.pixel(image, x, y)<span><a class="mark" href="#images_images_pixel_image_x_y" id="images_images_pixel_image_x_y">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要获取的像素的横坐标。</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要获取的像素的纵坐标。</li>
+</ul>
+</div><p>返回图片image在点(x, y)处的像素的ARGB值。  </p>
+<p>该值的格式为0xAARRGGBB，是一个&quot;32位整数&quot;(虽然JavaScript中并不区分整数类型和其他数值类型)。</p>
+<p>坐标系以图片左上角为原点。以图片左侧边为y轴，上侧边为x轴。</p>
+<h2>images.findColor(image, color, options)<span><a class="mark" href="#images_images_findcolor_image_color_options" id="images_images_findcolor_image_color_options">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要寻找的颜色的RGB值。如果是一个整数，则以0xRRGGBB的形式代表RGB值（A通道会被忽略）；如果是字符串，则以&quot;#RRGGBB&quot;代表其RGB值。</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项</li>
+</ul>
+</div><p>在图片中寻找颜色color。找到时返回找到的点Point，找不到时返回null。</p>
+<p>选项包括：</p>
+<ul>
+<li><code>region</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 找色区域。是一个两个或四个元素的数组。(region[0], region[1])表示找色区域的左上角；region[2]*region[3]表示找色区域的宽高。如果只有region只有两个元素，则找色区域为(region[0], region[1])到屏幕右下角。如果不指定region选项，则找色区域为整张图片。</li>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色时颜色相似度的临界值，范围为0~255（越小越相似，0为颜色相等，255为任何颜色都能匹配）。默认为4。threshold和浮点数相似度(0.0~1.0)的换算为 similarity = (255 - threshold) / 255.</li>
+</ul>
+<p>该函数也可以作为全局函数使用。</p>
+<p>一个循环找色的例子如下：</p>
+<pre><code>requestScreenCapture();
+
+//循环找色，找到红色(#ff0000)时停止并报告坐标
+while(true){
+    var img = captureScreen();
+    var point = findColor(img, &quot;#ff0000&quot;);
+    if(point){
+        toast(&quot;找到红色，坐标为(&quot; + point.x + &quot;, &quot; + point.y + &quot;)&quot;);
+    }
+}
+</code></pre><p>一个区域找色的例子如下：</p>
+<pre><code>//读取本地图片/sdcard/1.png
+var img = images.read(&quot;/sdcard/1.png&quot;);
+//判断图片是否加载成功
+if(!img){
+    toast(&quot;没有该图片&quot;);
+    exit();
+}
+//在该图片中找色，指定找色区域为在位置(400, 500)的宽为300长为200的区域，指定找色临界值为4
+var point = findColor(img, &quot;#00ff00&quot;, {
+     region: [400, 500, 300, 200],
+     threshold: 4
+ });
+if(point){
+    toast(&quot;找到啦:&quot; + point);
+}else{
+    toast(&quot;没找到&quot;);
+}
+</code></pre><h2>images.findColorInRegion(img, color, x, y[, width, height, threshold])<span><a class="mark" href="#images_images_findcolorinregion_img_color_x_y_width_height_threshold" id="images_images_findcolorinregion_img_color_x_y_width_height_threshold">#</a></span></h2>
+<p>区域找色的简便方法。</p>
+<p>相当于</p>
+<pre><code>images.findColor(img, color, {
+     region: [x, y, width, height],
+     threshold: threshold
+});
+</code></pre><p>该函数也可以作为全局函数使用。</p>
+<h2>images.findColorEquals(img, color[, x, y, width, height])<span><a class="mark" href="#images_images_findcolorequals_img_color_x_y_width_height" id="images_images_findcolorequals_img_color_x_y_width_height">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要寻找的颜色</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色区域的左上角横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色区域的左上角纵坐标</li>
+<li><code>width</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色区域的宽度</li>
+<li><code>height</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色区域的高度</li>
+<li>返回 <span class="type">&lt;Point&gt;</span></li>
+</ul>
+</div><p>在图片img指定区域中找到颜色和color完全相等的某个点，并返回该点的左边；如果没有找到，则返回<code>null</code>。</p>
+<p>找色区域通过<code>x</code>, <code>y</code>, <code>width</code>, <code>height</code>指定，如果不指定找色区域，则在整张图片中寻找。</p>
+<p>该函数也可以作为全局函数使用。</p>
+<p>示例：
+(通过找QQ红点的颜色来判断是否有未读消息)</p>
+<pre><code>requestScreenCapture();
+launchApp(&quot;QQ&quot;);
+sleep(1200);
+var p = findColorEquals(captureScreen(), &quot;#f64d30&quot;);
+if(p){
+    toast(&quot;有未读消息&quot;);
+}else{
+    toast(&quot;没有未读消息&quot;);
+}
+</code></pre><h2>images.findMultiColors(img, firstColor, colors[, options])<span><a class="mark" href="#images_images_findmulticolors_img_firstcolor_colors_options" id="images_images_findmulticolors_img_firstcolor_colors_options">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 要找色的图片</li>
+<li><code>firstColor</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 第一个点的颜色</li>
+<li><code>colors</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 表示剩下的点相对于第一个点的位置和颜色的数组，数组的每个元素为[x, y, color]</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项，包括：<ul>
+<li><code>region</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 找色区域。是一个两个或四个元素的数组。(region[0], region[1])表示找色区域的左上角；region[2]*region[3]表示找色区域的宽高。如果只有region只有两个元素，则找色区域为(region[0], region[1])到屏幕右下角。如果不指定region选项，则找色区域为整张图片。</li>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找色时颜色相似度的临界值，范围为0~255（越小越相似，0为颜色相等，255为任何颜色都能匹配）。默认为4。threshold和浮点数相似度(0.0~1.0)的换算为 similarity = (255 - threshold) / 255.</li>
+</ul>
+</li>
+</ul>
+</div><p>多点找色，类似于按键精灵的多点找色，其过程如下：</p>
+<ol>
+<li>在图片img中找到颜色firstColor的位置(x0, y0)</li>
+<li>对于数组colors的每个元素[x, y, color]，检查图片img在位置(x + x0, y + y0)上的像素是否是颜色color，是的话返回(x0, y0)，否则继续寻找firstColor的位置，重新执行第1步</li>
+<li>整张图片都找不到时返回<code>null</code></li>
+</ol>
+<p>例如，对于代码<code>images.findMultiColors(img, &quot;#123456&quot;, [[10, 20, &quot;#ffffff&quot;], [30, 40, &quot;#000000&quot;]])</code>，假设图片在(100, 200)的位置的颜色为#123456, 这时如果(110, 220)的位置的颜色为#fffff且(130, 240)的位置的颜色为#000000，则函数返回点(100, 200)。</p>
+<p>如果要指定找色区域，则在options中指定，例如:</p>
+<pre><code>var p = images.findMultiColors(img, &quot;#123456&quot;, [[10, 20, &quot;#ffffff&quot;], [30, 40, &quot;#000000&quot;]], {
+    region: [0, 960, 1080, 960]
+});
+</code></pre><h2>images.detectsColor(image, color, x, y[, threshold = 16, algorithm = &quot;diff&quot;])<span><a class="mark" href="#images_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff" id="images_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要检测的颜色</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要检测的位置横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 要检测的位置纵坐标</li>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色相似度临界值，默认为16。取值范围为0~255。</li>
+<li><p><code>algorithm</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色匹配算法，包括:</p>
+<ul>
+<li>&quot;equal&quot;: 相等匹配，只有与给定颜色color完全相等时才匹配。</li>
+<li>&quot;diff&quot;: 差值匹配。与给定颜色的R、G、B差的绝对值之和小于threshold时匹配。</li>
+<li><p>&quot;rgb&quot;: rgb欧拉距离相似度。与给定颜色color的rgb欧拉距离小于等于threshold时匹配。</p>
+</li>
+<li><p>&quot;rgb+&quot;: 加权rgb欧拉距离匹配(<a href="https://en.wikipedia.org/wiki/Color_difference">LAB Delta E</a>)。</p>
+</li>
+<li>&quot;hs&quot;: hs欧拉距离匹配。hs为HSV空间的色调值。</li>
+</ul>
+</li>
+</ul>
+</div><p>返回图片image在位置(x, y)处是否匹配到颜色color。用于检测图片中某个位置是否是特定颜色。</p>
+<p>一个判断微博客户端的某个微博是否被点赞过的例子：</p>
+<pre><code>requestScreenCapture();
+//找到点赞控件
+var like = id(&quot;ly_feed_like_icon&quot;).findOne();
+//获取该控件中点坐标
+var x = like.bounds().centerX();
+var y = like.bounds().centerY();
+//截图
+var img = captureScreen();
+//判断在该坐标的颜色是否为橙红色
+if(images.detectsColor(img, &quot;#fed9a8&quot;, x, y)){
+    //是的话则已经是点赞过的了，不做任何动作
+}else{
+    //否则点击点赞按钮
+    like.click();
+}
+</code></pre><h2>images.findImage(img, template[, options])<span><a class="mark" href="#images_images_findimage_img_template_options" id="images_images_findimage_img_template_options">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 大图片</li>
+<li><code>template</code> <span class="type">&lt;Image&gt;</span> 小图片（模板）</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 找图选项</li>
+</ul>
+</div><p>找图。在大图片img中查找小图片template的位置（模块匹配），找到时返回位置坐标(Point)，找不到时返回null。</p>
+<p>选项包括：</p>
+<ul>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片相似度。取值范围为0~1的浮点数。默认值为0.9。</li>
+<li><code>region</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 找图区域。参见findColor函数关于region的说明。</li>
+<li><code>level</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> <strong>一般而言不必修改此参数</strong>。不加此参数时该参数会根据图片大小自动调整。找图算法是采用图像金字塔进行的, level参数表示金字塔的层次, level越大可能带来越高的找图效率，但也可能造成找图失败（图片因过度缩小而无法分辨）或返回错误位置。因此，除非您清楚该参数的意义并需要进行性能调优，否则不需要用到该参数。</li>
+</ul>
+<p>该函数也可以作为全局函数使用。</p>
+<p>一个最简单的找图例子如下：</p>
+<pre><code>var img = images.read(&quot;/sdcard/大图.png&quot;);
+var templ = images.read(&quot;/sdcard/小图.png&quot;);
+var p = findImage(img, templ);
+if(p){
+    toast(&quot;找到啦:&quot; + p);
+}else{
+    toast(&quot;没找到&quot;);
+}
+</code></pre><p>稍微复杂点的区域找图例子如下：</p>
+<pre><code>auto();
+requestScreenCapture();
+var wx = images.read(&quot;/sdcard/微信图标.png&quot;);
+//返回桌面
+home();
+//截图并找图
+var p = findImage(captureScreen(), wx, {
+    region: [0, 50],
+    threshold: 0.8
+});
+if(p){
+    toast(&quot;在桌面找到了微信图标啦: &quot; + p);
+}else{
+    toast(&quot;在桌面没有找到微信图标&quot;);
+}
+</code></pre><h2>images.findImageInRegion(img, template, x, y[, width, height, threshold])<span><a class="mark" href="#images_images_findimageinregion_img_template_x_y_width_height_threshold" id="images_images_findimageinregion_img_template_x_y_width_height_threshold">#</a></span></h2>
+<p>区域找图的简便方法。相当于：</p>
+<pre><code>images.findImage(img, template, {
+    region: [x, y, width, height],
+    threshold: threshold
+})
+</code></pre><p>该函数也可以作为全局函数使用。</p>
+<h2>images.matchTemplate(img, template, options)<span><a class="mark" href="#images_images_matchtemplate_img_template_options" id="images_images_matchtemplate_img_template_options">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 大图片</li>
+<li><code>template</code> <span class="type">&lt;Image&gt;</span> 小图片（模板）</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 找图选项：<ul>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片相似度。取值范围为0~1的浮点数。默认值为0.9。</li>
+<li><code>region</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 找图区域。参见findColor函数关于region的说明。</li>
+<li><code>max</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找图结果最大数量，默认为5</li>
+<li><code>level</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> <strong>一般而言不必修改此参数</strong>。不加此参数时该参数会根据图片大小自动调整。找图算法是采用图像金字塔进行的, level参数表示金字塔的层次, level越大可能带来越高的找图效率，但也可能造成找图失败（图片因过度缩小而无法分辨）或返回错误位置。因此，除非您清楚该参数的意义并需要进行性能调优，否则不需要用到该参数。</li>
+</ul>
+</li>
+<li>返回 <span class="type">&lt;MatchingResult&gt;</span></li>
+</ul>
+<p>在大图片中搜索小图片，并返回搜索结果MatchingResult。该函数可以用于找图时找出多个位置，可以通过max参数控制最大的结果数量。也可以对匹配结果进行排序、求最值等操作。</p>
+<h1>MatchingResult<span><a class="mark" href="#images_matchingresult" id="images_matchingresult">#</a></span></h1>
+<p><strong>[v4.1.0新增]</strong></p>
+<h2>matches<span><a class="mark" href="#images_matches" id="images_matches">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 匹配结果的数组。</li>
+</ul>
+</div><p>数组的元素是一个Match对象：</p>
+<ul>
+<li><code>point</code> <span class="type">&lt;Point&gt;</span> 匹配位置</li>
+<li><code>similarity</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 相似度</li>
+</ul>
+<p>例如: </p>
+<pre><code>var result = images.matchTemplate(img, template, {
+    max: 100
+});
+result.matches.forEach(match =&gt; {
+    log(&quot;point = &quot; + match.point + &quot;, similarity = &quot; + match.similarity);
+});
+</code></pre><h2>points<span><a class="mark" href="#images_points" id="images_points">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 匹配位置的数组。</li>
+</ul>
+</div><h2>first()<span><a class="mark" href="#images_first" id="images_first">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>第一个匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>last()<span><a class="mark" href="#images_last" id="images_last">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>最后一个匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>leftmost()<span><a class="mark" href="#images_leftmost" id="images_leftmost">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>位于大图片最左边的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>topmost()<span><a class="mark" href="#images_topmost" id="images_topmost">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>位于大图片最上边的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>rightmost()<span><a class="mark" href="#images_rightmost" id="images_rightmost">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>位于大图片最右边的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>bottommost()<span><a class="mark" href="#images_bottommost" id="images_bottommost">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>位于大图片最下边的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>best()<span><a class="mark" href="#images_best" id="images_best">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>相似度最高的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>worst()<span><a class="mark" href="#images_worst" id="images_worst">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>相似度最低的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>sortBy(cmp)<span><a class="mark" href="#images_sortby_cmp" id="images_sortby_cmp">#</a></span></h2>
+<div class="signature"><ul>
+<li>cmp <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a>|<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 比较函数，或者是一个字符串表示排序方向。例如&quot;left&quot;表示将匹配结果按匹配位置从左往右排序、&quot;top&quot;表示将匹配结果按匹配位置从上往下排序，&quot;left-top&quot;表示将匹配结果按匹配位置从左往右、从上往下排序。方向包括<code>left</code>（左）, <code>top</code> （上）, <code>right</code> （右）, <code>bottom</code>（下）。</li>
+<li><span class="type">&lt;MatchingResult&gt;</span></li>
+</ul>
+</div><p>对匹配结果进行排序，并返回排序后的结果。</p>
+<pre><code>var result = images.matchTemplate(img, template, {
+    max: 100
+});
+log(result.sortBy(&quot;top-right&quot;));
+</code></pre><h1>Image<span><a class="mark" href="#images_image" id="images_image">#</a></span></h1>
+<p>表示一张图片，可以是截图的图片，或者本地读取的图片，或者从网络获取的图片。</p>
+<h2>Image.getWidth()<span><a class="mark" href="#images_image_getwidth" id="images_image_getwidth">#</a></span></h2>
+<p>返回以像素为单位图片宽度。</p>
+<h2>Image.getHeight()<span><a class="mark" href="#images_image_getheight" id="images_image_getheight">#</a></span></h2>
+<p>返回以像素为单位的图片高度。</p>
+<h2>Image.saveTo(path)<span><a class="mark" href="#images_image_saveto_path" id="images_image_saveto_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+</ul>
+</div><p>把图片保存到路径path。（如果文件存在则覆盖）</p>
+<h2>Image.pixel(x, y)<span><a class="mark" href="#images_image_pixel_x_y" id="images_image_pixel_x_y">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 纵坐标</li>
+</ul>
+</div><p>返回图片image在点(x, y)处的像素的ARGB值。  </p>
+<p>该值的格式为0xAARRGGBB，是一个&quot;32位整数&quot;(虽然JavaScript中并不区分整数类型和其他数值类型)。</p>
+<p>坐标系以图片左上角为原点。以图片左侧边为y轴，上侧边为x轴。</p>
+<p>##</p>
+<h1>Point<span><a class="mark" href="#images_point" id="images_point">#</a></span></h1>
+<p>findColor, findImage返回的对象。表示一个点（坐标）。</p>
+<h2>Point.x<span><a class="mark" href="#images_point_x" id="images_point_x">#</a></span></h2>
+<p>横坐标。</p>
+<h2>Point.y<span><a class="mark" href="#images_point_y" id="images_point_y">#</a></span></h2>
+<p>纵坐标。</p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

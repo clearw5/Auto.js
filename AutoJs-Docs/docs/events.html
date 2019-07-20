@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Events | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/events.html">
+</head>
+<body class="alt apidoc" id="api-section-events">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events active" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="events" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#events_events">Events</a></span><ul>
+<li><span class="stability_undefined"><a href="#events_events_emitter">events.emitter()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_observekey">events.observeKey()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_onkeydown_keyname_listener">events.onKeyDown(keyName, listener)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_onkeyup_keyname_listener">events.onKeyUp(keyName, listener)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_oncekeydown_keyname_listener">events.onceKeyDown(keyName, listener)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_oncekeyup_keyname_listener">events.onceKeyUp(keyName, listener)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_removeallkeydownlisteners_keyname">events.removeAllKeyDownListeners(keyName)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_removeallkeyuplisteners_keyname">events.removeAllKeyUpListeners(keyName)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_setkeyinterceptionenabled_key_enabled">events.setKeyInterceptionEnabled([key, ]enabled)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_observetouch">events.observeTouch()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_settoucheventtimeout_timeout">events.setTouchEventTimeout(timeout)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_gettoucheventtimeout">events.getTouchEventTimeout()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_ontouch_listener">events.onTouch(listener)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_removealltouchlisteners">events.removeAllTouchListeners()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_key">事件: &#39;key&#39;</a></span></li>
+<li><span class="stability_undefined"><a href="#events_key_down">事件: &#39;key_down&#39;</a></span></li>
+<li><span class="stability_undefined"><a href="#events_key_up">事件: &#39;key_up&#39;</a></span></li>
+<li><span class="stability_undefined"><a href="#events_exit">事件: &#39;exit`</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_observenotification">events.observeNotification()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_events_observetoast">events.observeToast()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_toast">事件: &#39;toast&#39;</a></span></li>
+<li><span class="stability_undefined"><a href="#events_notification">事件: &#39;notification&#39;</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#events_notification_1">Notification</a></span><ul>
+<li><span class="stability_undefined"><a href="#events_notification_number">Notification.number</a></span></li>
+<li><span class="stability_undefined"><a href="#events_notification_when">Notification.when</a></span></li>
+<li><span class="stability_undefined"><a href="#events_notification_getpackagename">Notification.getPackageName()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_notification_gettitle">Notification.getTitle()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_notification_gettext">Notification.getText()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_notification_click">Notification.click()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_notification_delete">Notification.delete()</a></span></li>
+</ul>
+</li>
+<li><span class="stability_2"><a href="#events_keyevent">KeyEvent</a></span><ul>
+<li><span class="stability_undefined"><a href="#events_keyevent_getaction">KeyEvent.getAction()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_keyevent_getkeycode">KeyEvent.getKeyCode()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_keyevent_geteventtime">KeyEvent.getEventTime()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_keyevent_getdowntime">KeyEvent.getDownTime()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_keyevent_keycodetostring_keycode">KeyEvent.keyCodeToString(keyCode)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_2"><a href="#events_keys">keys</a></span></li>
+<li><span class="stability_2"><a href="#events_eventemitter">EventEmitter</a></span><ul>
+<li><span class="stability_undefined"><a href="#events_eventemitter_defaultmaxlisteners">EventEmitter.defaultMaxListeners</a></span></li>
+<li><span class="stability_undefined"><a href="#events_eventemitter_addlistener_eventname_listener">EventEmitter.addListener(eventName, listener)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_eventemitter_emit_eventname_args">EventEmitter.emit(eventName[, ...args])</a></span></li>
+<li><span class="stability_undefined"><a href="#events_eventemitter_eventnames">EventEmitter.eventNames()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_eventemitter_getmaxlisteners">EventEmitter.getMaxListeners()</a></span></li>
+<li><span class="stability_undefined"><a href="#events_eventemitter_listenercount_eventname">EventEmitter.listenerCount(eventName)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_eventemitter_listeners_eventname">EventEmitter.listeners(eventName)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_eventemitter_on_eventname_listener">EventEmitter.on(eventName, listener)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_eventemitter_once_eventname_listener">EventEmitter.once(eventName, listener)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_eventemitter_prependlistener_eventname_listener">EventEmitter.prependListener(eventName, listener)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_eventemitter_prependoncelistener_eventname_listener">EventEmitter.prependOnceListener(eventName, listener)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_eventemitter_removealllisteners_eventname">EventEmitter.removeAllListeners([eventName])</a></span></li>
+<li><span class="stability_undefined"><a href="#events_eventemitter_removelistener_eventname_listener">EventEmitter.removeListener(eventName, listener)</a></span></li>
+<li><span class="stability_undefined"><a href="#events_eventemitter_setmaxlisteners_n">EventEmitter.setMaxListeners(n)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#events_events_broadcast">events.broadcast: 脚本间广播</a></span></li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>Events<span><a class="mark" href="#events_events" id="events_events">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>events模块提供了监听手机通知、按键、触摸的接口。您可以用他配合自动操作函数完成自动化工作。</p>
+<p>events本身是一个<a href="#events_eventemitter">EventEmiiter</a>, 但内置了一些事件、包括按键事件、通知事件、Toast事件等。</p>
+<p>需要注意的是，事件的处理是单线程的，并且仍然在原线程执行，如果脚本主体或者其他事件处理中有耗时操作、轮询等，则事件将无法得到及时处理（会进入事件队列等待脚本主体或其他事件处理完成才执行）。例如:</p>
+<pre><code>auto();
+events.observeNotification();
+events.on(&#39;toast&#39;, function(t){
+    //这段代码将得不到执行
+    log(t);
+});
+while(true){
+    //死循环
+}
+</code></pre><h2>events.emitter()<span><a class="mark" href="#events_events_emitter" id="events_events_emitter">#</a></span></h2>
+<p>返回一个新的<a href="#events_eventemitter">EventEmitter</a>。这个EventEmitter没有内置任何事件。</p>
+<h2>events.observeKey()<span><a class="mark" href="#events_events_observekey" id="events_events_observekey">#</a></span></h2>
+<p>启用按键监听，例如音量键、Home键。按键监听使用无障碍服务实现，如果无障碍服务未启用会抛出异常并提示开启。</p>
+<p>只有这个函数成功执行后, <code>onKeyDown</code>, <code>onKeyUp</code>等按键事件的监听才有效。</p>
+<p>该函数在安卓4.3以上才能使用。</p>
+<h2>events.onKeyDown(keyName, listener)<span><a class="mark" href="#events_events_onkeydown_keyname_listener" id="events_events_onkeydown_keyname_listener">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>keyName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要监听的按键名称</li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 按键监听器。参数为一个<a href="#events_keyevent">KeyEvent</a>。</li>
+</ul>
+</div><p>注册一个按键监听函数，当有keyName对应的按键被按下会调用该函数。可用的按键名称参见<a href="#events_keys">Keys</a>。</p>
+<p>例如:</p>
+<pre><code>//启用按键监听
+events.observeKey();
+//监听音量上键按下
+events.onKeyDown(&quot;volume_up&quot;, function(event){
+    toast(&quot;音量上键被按下了&quot;);
+});
+//监听菜单键按下
+events.onKeyDown(&quot;menu&quot;, function(event){
+    toast(&quot;菜单键被按下了&quot;);
+    exit();
+});
+</code></pre><h2>events.onKeyUp(keyName, listener)<span><a class="mark" href="#events_events_onkeyup_keyname_listener" id="events_events_onkeyup_keyname_listener">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>keyName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要监听的按键名称</li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 按键监听器。参数为一个<a href="#events_keyevent">KeyEvent</a>。</li>
+</ul>
+</div><p>注册一个按键监听函数，当有keyName对应的按键弹起会调用该函数。可用的按键名称参见<a href="#events_keys">Keys</a>。</p>
+<p>一次完整的按键动作包括了按键按下和弹起。按下事件会在手指按下一个按键的&quot;瞬间&quot;触发, 弹起事件则在手指放开这个按键时触发。</p>
+<p>例如:</p>
+<pre><code>//启用按键监听
+events.observeKey();
+//监听音量下键弹起
+events.onKeyDown(&quot;volume_down&quot;, function(event){
+    toast(&quot;音量上键弹起&quot;);
+});
+//监听Home键弹起
+events.onKeyDown(&quot;home&quot;, function(event){
+    toast(&quot;Home键弹起&quot;);
+    exit();
+});
+</code></pre><h2>events.onceKeyDown(keyName, listener)<span><a class="mark" href="#events_events_oncekeydown_keyname_listener" id="events_events_oncekeydown_keyname_listener">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>keyName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要监听的按键名称</li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 按键监听器。参数为一个<a href="#events_keyevent">KeyEvent</a></li>
+</ul>
+</div><p>注册一个按键监听函数，当有keyName对应的按键被按下时会调用该函数，之后会注销该按键监听器。</p>
+<p>也就是listener只有在onceKeyDown调用后的第一次按键事件被调用一次。</p>
+<h2>events.onceKeyUp(keyName, listener)<span><a class="mark" href="#events_events_oncekeyup_keyname_listener" id="events_events_oncekeyup_keyname_listener">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>keyName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要监听的按键名称</li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 按键监听器。参数为一个<a href="#events_keyevent">KeyEvent</a></li>
+</ul>
+</div><p>注册一个按键监听函数，当有keyName对应的按键弹起时会调用该函数，之后会注销该按键监听器。</p>
+<p>也就是listener只有在onceKeyUp调用后的第一次按键事件被调用一次。</p>
+<h2>events.removeAllKeyDownListeners(keyName)<span><a class="mark" href="#events_events_removeallkeydownlisteners_keyname" id="events_events_removeallkeydownlisteners_keyname">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>keyName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 按键名称</li>
+</ul>
+</div><p>删除该按键的KeyDown(按下)事件的所有监听。</p>
+<h2>events.removeAllKeyUpListeners(keyName)<span><a class="mark" href="#events_events_removeallkeyuplisteners_keyname" id="events_events_removeallkeyuplisteners_keyname">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>keyName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 按键名称</li>
+</ul>
+</div><p>删除该按键的KeyUp(弹起)事件的所有监听。</p>
+<h2>events.setKeyInterceptionEnabled([key, ]enabled)<span><a class="mark" href="#events_events_setkeyinterceptionenabled_key_enabled" id="events_events_setkeyinterceptionenabled_key_enabled">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>enabled</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+<li><code>key</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要屏蔽的按键</li>
+</ul>
+</div><p>设置按键屏蔽是否启用。所谓按键屏蔽指的是，屏蔽原有按键的功能，例如使得音量键不再能调节音量，但此时仍然能通过按键事件监听按键。</p>
+<p>如果不加参数key则会屏蔽所有按键。</p>
+<p>例如，调用<code>events.setKeyInterceptionEnabled(true)</code>会使系统的音量、Home、返回等键不再具有调节音量、回到主页、返回的作用，但此时仍然能通过按键事件监听按键。</p>
+<p>该函数通常于按键监听结合，例如想监听音量键并使音量键按下时不弹出音量调节框则为：</p>
+<pre><code>events.setKeyInterceptionEnabled(&quot;volume_up&quot;, true);
+events.observeKey();
+events.onKeyDown(&quot;volume_up&quot;, ()=&gt;{
+    log(&quot;音量上键被按下&quot;);
+});
+</code></pre><p>只要有一个脚本屏蔽了某个按键，该按键便会被屏蔽；当脚本退出时，会自动解除所有按键屏蔽。</p>
+<h2>events.observeTouch()<span><a class="mark" href="#events_events_observetouch" id="events_events_observetouch">#</a></span></h2>
+<p>启用屏幕触摸监听。（需要root权限）</p>
+<p>只有这个函数被成功执行后, 触摸事件的监听才有效。</p>
+<p>没有root权限调用该函数则什么也不会发生。</p>
+<h2>events.setTouchEventTimeout(timeout)<span><a class="mark" href="#events_events_settoucheventtimeout_timeout" id="events_events_settoucheventtimeout_timeout">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>timeout</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 两个触摸事件的最小间隔。单位毫秒。默认为10毫秒。如果number小于0，视为0处理。</li>
+</ul>
+</div><p>设置两个触摸事件分发的最小时间间隔。</p>
+<p>例如间隔为10毫秒的话，前一个触摸事件发生并被注册的监听器处理后，至少要过10毫秒才能分发和处理下一个触摸事件，这10毫秒之间的触摸将会被忽略。</p>
+<p>建议在满足需要的情况下尽量提高这个间隔。一个简单滑动动作可能会连续触发上百个触摸事件，如果timeout设置过低可能造成事件拥堵。强烈建议不要设置timeout为0。</p>
+<h2>events.getTouchEventTimeout()<span><a class="mark" href="#events_events_gettoucheventtimeout" id="events_events_gettoucheventtimeout">#</a></span></h2>
+<p>返回触摸事件的最小时间间隔。</p>
+<h2>events.onTouch(listener)<span><a class="mark" href="#events_events_ontouch_listener" id="events_events_ontouch_listener">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 参数为<a href="images.html#images_point">Point</a>的函数</li>
+</ul>
+</div><p>注册一个触摸监听函数。相当于<code>on(&quot;touch&quot;, listener)</code>。</p>
+<p>例如:</p>
+<pre><code>//启用触摸监听
+events.observeTouch();
+//注册触摸监听器
+events.onTouch(function(p){
+    //触摸事件发生时, 打印出触摸的点的坐标
+    log(p.x + &quot;, &quot; + p.y);
+});
+</code></pre><h2>events.removeAllTouchListeners()<span><a class="mark" href="#events_events_removealltouchlisteners" id="events_events_removealltouchlisteners">#</a></span></h2>
+<p>删除所有事件监听函数。</p>
+<h2>事件: &#39;key&#39;<span><a class="mark" href="#events_key" id="events_key">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>keyCode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 键值</li>
+<li><code>event</code> <span class="type">&lt;KeyEvent&gt;</span> 事件</li>
+</ul>
+</div><p>当有按键被按下或弹起时会触发该事件。
+例如：</p>
+<pre><code>auto();
+events.observeKey();
+events.on(&quot;key&quot;, function(keyCode, event){
+    //处理按键事件
+});
+</code></pre><p>其中监听器的参数KeyCode包括：</p>
+<ul>
+<li><code>keys.home</code> 主页键</li>
+<li><code>keys.back</code> 返回键</li>
+<li><code>keys.menu</code> 菜单键</li>
+<li><code>keys.volume_up</code> 音量上键</li>
+<li><code>keys.volume_down</code> 音量下键</li>
+</ul>
+<p>例如：</p>
+<pre><code>auto();
+events.observeKey();
+events.on(&quot;key&quot;, function(keyCode, event){
+    if(keyCode == keys.menu &amp;&amp; event.getAction() == event.ACTION_UP){
+        toast(&quot;菜单键按下&quot;);
+    }
+});
+</code></pre><h2>事件: &#39;key_down&#39;<span><a class="mark" href="#events_key_down" id="events_key_down">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>keyCode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 键值</li>
+<li><code>event</code> <span class="type">&lt;KeyEvent&gt;</span> 事件</li>
+</ul>
+</div><p>当有按键被按下时会触发该事件。</p>
+<pre><code>auto();
+events.observeKey();
+events.on(&quot;key_down&quot;, function(keyCode, event){
+    //处理按键按下事件
+});
+</code></pre><h2>事件: &#39;key_up&#39;<span><a class="mark" href="#events_key_up" id="events_key_up">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>keyCode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 键值</li>
+<li><code>event</code> <span class="type">&lt;KeyEvent&gt;</span> 事件</li>
+</ul>
+</div><p>当有按键弹起时会触发该事件。</p>
+<pre><code>auto();
+events.observeKey();
+events.on(&quot;key_up&quot;, function(keyCode, event){
+    //处理按键弹起事件
+});
+</code></pre><h2>事件: &#39;exit`<span><a class="mark" href="#events_exit" id="events_exit">#</a></span></h2>
+<p>当脚本正常或者异常退出时会触发该事件。事件处理中如果有异常抛出，则立即中止exit事件的处理（即使exit事件有多个处理函数）并在控制台和日志中打印该异常。</p>
+<p>一个脚本停止运行时，会关闭该脚本的所有悬浮窗，触发exit事件，之后再回收资源。如果exit事件的处理中有死循环，则后续资源无法得到及时回收。
+此时脚本会停留在任务列表，如果在任务列表中关闭，则会强制结束exit事件的处理并回收后续资源。</p>
+<pre><code>log(&quot;开始运行&quot;)
+events.on(&quot;exit&quot;, function(){
+    log(&quot;结束运行&quot;);
+});
+log(&quot;即将结束运行&quot;);
+</code></pre><h2>events.observeNotification()<span><a class="mark" href="#events_events_observenotification" id="events_events_observenotification">#</a></span></h2>
+<p>开启通知监听。例如QQ消息、微信消息、推送等通知。</p>
+<p>通知监听依赖于通知服务，如果通知服务没有运行，会抛出异常并跳转到通知权限开启界面。（有时即使通知权限已经开启通知服务也没有运行，这时需要关闭权限再重新开启一次）</p>
+<p>例如：</p>
+<pre><code>events.obverseNotification();
+events.onNotification(function(notification){
+    log(notification.getText());
+});
+</code></pre><h2>events.observeToast()<span><a class="mark" href="#events_events_observetoast" id="events_events_observetoast">#</a></span></h2>
+<p>开启Toast监听。</p>
+<p>Toast监听依赖于无障碍服务，因此此函数会确保无障碍服务运行。</p>
+<h2>事件: &#39;toast&#39;<span><a class="mark" href="#events_toast" id="events_toast">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>toast</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a><ul>
+<li><code>getText()</code> 获取Toast的文本内容</li>
+<li><code>getPackageName()</code> 获取发出Toast的应用包名</li>
+</ul>
+</li>
+</ul>
+</div><p>当有应用发出toast(气泡消息)时会触发该事件。但Auto.js软件本身的toast除外。</p>
+<p>例如，要记录发出所有toast的应用：</p>
+<pre><code>events.observeToast();
+events.onToast(function(toast){
+    log(&quot;Toast内容: &quot; + toast.getText() + &quot; 包名: &quot; + toast.getPackageName());
+});
+</code></pre><h2>事件: &#39;notification&#39;<span><a class="mark" href="#events_notification" id="events_notification">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>notification</code> <a href="#events_notification">Notification</a> 通知对象</li>
+</ul>
+</div><p>当有应用发出通知时会触发该事件，参数为<a href="#events_notification">Notification</a>。</p>
+<p>例如：</p>
+<pre><code>events.observeNotification();
+events.on(&quot;notification&quot;, function(n){
+    log(&quot;收到新通知:\n 标题: %s, 内容: %s, \n包名: %s&quot;, n.getTitle(), n.getText(), n.getPackageName());
+});
+</code></pre><h1>Notification<span><a class="mark" href="#events_notification_1" id="events_notification_1">#</a></span></h1>
+<p>通知对象，可以获取通知详情，包括通知标题、内容、发出通知的包名、时间等，也可以对通知进行操作，比如点击、删除。</p>
+<h2>Notification.number<span><a class="mark" href="#events_notification_number" id="events_notification_number">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>通知数量。例如QQ连续收到两条消息时number为2。</p>
+<h2>Notification.when<span><a class="mark" href="#events_notification_when" id="events_notification_when">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>通知发出时间的时间戳，可以用于构造<code>Date</code>对象。例如：</p>
+<pre><code>events.observeNotification();
+events.on(&quot;notification&quot;, function(n){
+    log(&quot;通知时间为}&quot; + new Date(n.when));
+});
+</code></pre><h2>Notification.getPackageName()<span><a class="mark" href="#events_notification_getpackagename" id="events_notification_getpackagename">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>获取发出通知的应用包名。</p>
+<h2>Notification.getTitle()<span><a class="mark" href="#events_notification_gettitle" id="events_notification_gettitle">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>获取通知的标题。</p>
+<h2>Notification.getText()<span><a class="mark" href="#events_notification_gettext" id="events_notification_gettext">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>获取通知的内容。</p>
+<h2>Notification.click()<span><a class="mark" href="#events_notification_click" id="events_notification_click">#</a></span></h2>
+<p>点击该通知。例如对于一条QQ消息，点击会进入具体的聊天界面。</p>
+<h2>Notification.delete()<span><a class="mark" href="#events_notification_delete" id="events_notification_delete">#</a></span></h2>
+<p>删除该通知。该通知将从通知栏中消失。</p>
+<h1>KeyEvent<span><a class="mark" href="#events_keyevent" id="events_keyevent">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><h2>KeyEvent.getAction()<span><a class="mark" href="#events_keyevent_getaction" id="events_keyevent_getaction">#</a></span></h2>
+<p>返回事件的动作。包括：</p>
+<ul>
+<li><code>KeyEvent.ACTION_DOWN</code> 按下事件</li>
+<li><code>KeyEvent.ACTION_UP</code> 弹起事件</li>
+</ul>
+<h2>KeyEvent.getKeyCode()<span><a class="mark" href="#events_keyevent_getkeycode" id="events_keyevent_getkeycode">#</a></span></h2>
+<p>返回按键的键值。包括：</p>
+<ul>
+<li><code>KeyEvent.KEYCODE_HOME</code> 主页键</li>
+<li><code>KeyEvent.KEYCODE_BACK</code> 返回键</li>
+<li><code>KeyEvent.KEYCODE_MENU</code> 菜单键</li>
+<li><code>KeyEvent.KEYCODE_VOLUME_UP</code> 音量上键</li>
+<li><code>KeyEvent.KEYCODE_VOLUME_DOWN</code> 音量下键</li>
+</ul>
+<h2>KeyEvent.getEventTime()<span><a class="mark" href="#events_keyevent_geteventtime" id="events_keyevent_geteventtime">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回事件发生的时间戳。</p>
+<h2>KeyEvent.getDownTime()<span><a class="mark" href="#events_keyevent_getdowntime" id="events_keyevent_getdowntime">#</a></span></h2>
+<p>返回最近一次按下事件的时间戳。如果本身是按下事件，则与<code>getEventTime()</code>相同。</p>
+<h2>KeyEvent.keyCodeToString(keyCode)<span><a class="mark" href="#events_keyevent_keycodetostring_keycode" id="events_keyevent_keycodetostring_keycode">#</a></span></h2>
+<p>把键值转换为字符串。例如KEYCODE_HOME转换为&quot;KEYCODE_HOME&quot;。</p>
+<h1>keys<span><a class="mark" href="#events_keys" id="events_keys">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>按键事件中所有可用的按键名称为：</p>
+<ul>
+<li><code>volume_up</code>  音量上键</li>
+<li><code>volume_down</code> 音量下键</li>
+<li><code>home</code> 主屏幕键</li>
+<li><code>back</code> 返回键</li>
+<li><code>menu</code> 菜单键</li>
+</ul>
+<h1>EventEmitter<span><a class="mark" href="#events_eventemitter" id="events_eventemitter">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><h2>EventEmitter.defaultMaxListeners<span><a class="mark" href="#events_eventemitter_defaultmaxlisteners" id="events_eventemitter_defaultmaxlisteners">#</a></span></h2>
+<p>每个事件默认可以注册最多 10 个监听器。 单个 EventEmitter 实例的限制可以使用 emitter.setMaxListeners(n) 方法改变。 所有 EventEmitter 实例的默认值可以使用 EventEmitter.defaultMaxListeners 属性改变。 </p>
+<p>设置 EventEmitter.defaultMaxListeners 要谨慎，因为会影响所有 EventEmitter 实例，包括之前创建的。 因而，调用 emitter.setMaxListeners(n) 优先于 EventEmitter.defaultMaxListeners。</p>
+<p>注意，与Node.js不同，<strong>这是一个硬性限制</strong>。 EventEmitter 实例不允许添加更多的监听器，监听器超过最大数量时会抛出TooManyListenersException。</p>
+<pre><code>emitter.setMaxListeners(emitter.getMaxListeners() + 1);
+emitter.once(&#39;event&#39;, () =&gt; {
+  // 做些操作
+  emitter.setMaxListeners(Math.max(emitter.getMaxListeners() - 1, 0));
+});
+</code></pre><h2>EventEmitter.addListener(eventName, listener)<span><a class="mark" href="#events_eventemitter_addlistener_eventname_listener" id="events_eventemitter_addlistener_eventname_listener">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>eventName</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a></li>
+</ul>
+</div><p>emitter.on(eventName, listener) 的别名。</p>
+<h2>EventEmitter.emit(eventName[, ...args])<span><a class="mark" href="#events_eventemitter_emit_eventname_args" id="events_eventemitter_emit_eventname_args">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>eventName</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>args</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+</div><p>按监听器的注册顺序，同步地调用每个注册到名为 eventName 事件的监听器，并传入提供的参数。</p>
+<p>如果事件有监听器，则返回 true ，否则返回 false。</p>
+<h2>EventEmitter.eventNames()<span><a class="mark" href="#events_eventemitter_eventnames" id="events_eventemitter_eventnames">#</a></span></h2>
+<p>返回一个列出触发器已注册监听器的事件的数组。 数组中的值为字符串或符号。</p>
+<pre><code>const myEE = events.emitter();
+myEE.on(&#39;foo&#39;, () =&gt; {});
+myEE.on(&#39;bar&#39;, () =&gt; {});
+
+const sym = Symbol(&#39;symbol&#39;);
+myEE.on(sym, () =&gt; {});
+
+console.log(myEE.eventNames());
+// 打印: [ &#39;foo&#39;, &#39;bar&#39;, Symbol(symbol) ]
+</code></pre><h2>EventEmitter.getMaxListeners()<span><a class="mark" href="#events_eventemitter_getmaxlisteners" id="events_eventemitter_getmaxlisteners">#</a></span></h2>
+<p>返回 EventEmitter 当前的最大监听器限制值，该值可以通过 emitter.setMaxListeners(n) 设置或默认为 EventEmitter.defaultMaxListeners。</p>
+<h2>EventEmitter.listenerCount(eventName)<span><a class="mark" href="#events_eventemitter_listenercount_eventname" id="events_eventemitter_listenercount_eventname">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 正在被监听的事件名</li>
+</ul>
+</div><p>返回正在监听名为 eventName 的事件的监听器的数量。</p>
+<h2>EventEmitter.listeners(eventName)<span><a class="mark" href="#events_eventemitter_listeners_eventname" id="events_eventemitter_listeners_eventname">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回名为 eventName 的事件的监听器数组的副本。</p>
+<pre><code>server.on(&#39;connection&#39;, (stream) =&gt; {
+  console.log(&#39;someone connected!&#39;);
+});
+console.log(util.inspect(server.listeners(&#39;connection&#39;)));
+// 打印: [ [Function] ]
+</code></pre><h2>EventEmitter.on(eventName, listener)<span><a class="mark" href="#events_eventemitter_on_eventname_listener" id="events_eventemitter_on_eventname_listener">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>eventName</code> <span class="type">&lt;any&gt;</span> 事件名</li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调函数</li>
+</ul>
+</div><p>添加 listener 函数到名为 eventName 的事件的监听器数组的末尾。 不会检查 listener 是否已被添加。 多次调用并传入相同的 eventName 和 listener 会导致 listener 被添加与调用多次。</p>
+<pre><code>server.on(&#39;connection&#39;, (stream) =&gt; {
+  console.log(&#39;有连接！&#39;);
+});
+</code></pre><p>返回一个 EventEmitter 引用，可以链式调用。</p>
+<p>默认情况下，事件监听器会按照添加的顺序依次调用。 emitter.prependListener() 方法可用于将事件监听器添加到监听器数组的开头。</p>
+<pre><code>const myEE = events.emitter();
+myEE.on(&#39;foo&#39;, () =&gt; console.log(&#39;a&#39;));
+myEE.prependListener(&#39;foo&#39;, () =&gt; console.log(&#39;b&#39;));
+myEE.emit(&#39;foo&#39;);
+// 打印:
+//   b
+//   a
+</code></pre><h2>EventEmitter.once(eventName, listener)<span><a class="mark" href="#events_eventemitter_once_eventname_listener" id="events_eventemitter_once_eventname_listener">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>eventName</code> <span class="type">&lt;any&gt;</span> 事件名</li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调函数</li>
+</ul>
+</div><p>添加一个单次 listener 函数到名为 eventName 的事件。 下次触发 eventName 事件时，监听器会被移除，然后调用。</p>
+<pre><code>server.once(&#39;connection&#39;, (stream) =&gt; {
+  console.log(&#39;首次调用！&#39;);
+});
+</code></pre><p>返回一个 EventEmitter 引用，可以链式调用。</p>
+<p>默认情况下，事件监听器会按照添加的顺序依次调用。 emitter.prependOnceListener() 方法可用于将事件监听器添加到监听器数组的开头。</p>
+<pre><code>const myEE = events.emitter();
+myEE.once(&#39;foo&#39;, () =&gt; console.log(&#39;a&#39;));
+myEE.prependOnceListener(&#39;foo&#39;, () =&gt; console.log(&#39;b&#39;));
+myEE.emit(&#39;foo&#39;);
+// 打印:
+//   b
+//   a
+</code></pre><h2>EventEmitter.prependListener(eventName, listener)<span><a class="mark" href="#events_eventemitter_prependlistener_eventname_listener" id="events_eventemitter_prependlistener_eventname_listener">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>eventName</code> <span class="type">&lt;any&gt;</span> 事件名</li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调函数</li>
+</ul>
+</div><p>添加 listener 函数到名为 eventName 的事件的监听器数组的开头。 不会检查 listener 是否已被添加。 多次调用并传入相同的 eventName 和 listener 会导致 listener 被添加与调用多次。</p>
+<pre><code>server.prependListener(&#39;connection&#39;, (stream) =&gt; {
+  console.log(&#39;有连接！&#39;);
+});
+</code></pre><p>返回一个 EventEmitter 引用，可以链式调用。</p>
+<h2>EventEmitter.prependOnceListener(eventName, listener)<span><a class="mark" href="#events_eventemitter_prependoncelistener_eventname_listener" id="events_eventemitter_prependoncelistener_eventname_listener">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>eventName</code> <span class="type">&lt;any&gt;</span> 事件名</li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 回调函数</li>
+</ul>
+</div><p>添加一个单次 listener 函数到名为 eventName 的事件的监听器数组的开头。 下次触发 eventName 事件时，监听器会被移除，然后调用。</p>
+<pre><code>server.prependOnceListener(&#39;connection&#39;, (stream) =&gt; {
+  console.log(&#39;首次调用！&#39;);
+});
+</code></pre><p>返回一个 EventEmitter 引用，可以链式调用。</p>
+<h2>EventEmitter.removeAllListeners([eventName])<span><a class="mark" href="#events_eventemitter_removealllisteners_eventname" id="events_eventemitter_removealllisteners_eventname">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>eventName</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+</div><p>移除全部或指定 eventName 的监听器。</p>
+<p>注意，在代码中移除其他地方添加的监听器是一个不好的做法，尤其是当 EventEmitter 实例是其他组件或模块创建的。</p>
+<p>返回一个 EventEmitter 引用，可以链式调用。</p>
+<h2>EventEmitter.removeListener(eventName, listener)<span><a class="mark" href="#events_eventemitter_removelistener_eventname_listener" id="events_eventemitter_removelistener_eventname_listener">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>eventName</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a></li>
+</ul>
+</div><p>从名为 eventName 的事件的监听器数组中移除指定的 listener。</p>
+<pre><code>const callback = (stream) =&gt; {
+  console.log(&#39;有连接！&#39;);
+};
+server.on(&#39;connection&#39;, callback);
+// ...
+server.removeListener(&#39;connection&#39;, callback);
+</code></pre><p>removeListener 最多只会从监听器数组里移除一个监听器实例。 如果任何单一的监听器被多次添加到指定 eventName 的监听器数组中，则必须多次调用 removeListener 才能移除每个实例。</p>
+<p>注意，一旦一个事件被触发，所有绑定到它的监听器都会按顺序依次触发。 这意味着，在事件触发后、最后一个监听器完成执行前，任何 removeListener() 或 removeAllListeners() 调用都不会从 emit() 中移除它们。 随后的事件会像预期的那样发生。</p>
+<pre><code>const myEmitter = events.emitter();
+
+const callbackA = () =&gt; {
+  console.log(&#39;A&#39;);
+  myEmitter.removeListener(&#39;event&#39;, callbackB);
+};
+
+const callbackB = () =&gt; {
+  console.log(&#39;B&#39;);
+};
+
+myEmitter.on(&#39;event&#39;, callbackA);
+
+myEmitter.on(&#39;event&#39;, callbackB);
+
+// callbackA 移除了监听器 callbackB，但它依然会被调用。
+// 触发是内部的监听器数组为 [callbackA, callbackB]
+myEmitter.emit(&#39;event&#39;);
+// 打印:
+//   A
+//   B
+
+// callbackB 被移除了。
+// 内部监听器数组为 [callbackA]
+myEmitter.emit(&#39;event&#39;);
+// 打印:
+//   A
+</code></pre><p>因为监听器是使用内部数组进行管理的，所以调用它会改变在监听器被移除后注册的任何监听器的位置索引。 虽然这不会影响监听器的调用顺序，但意味着由 emitter.listeners() 方法返回的监听器数组副本需要被重新创建。</p>
+<p>返回一个 EventEmitter 引用，可以链式调用。</p>
+<h2>EventEmitter.setMaxListeners(n)<span><a class="mark" href="#events_eventemitter_setmaxlisteners_n" id="events_eventemitter_setmaxlisteners_n">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>n</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>默认情况下，如果为特定事件添加了超过 10 个监听器，则 EventEmitter 会打印一个警告。 此限制有助于寻找内存泄露。 但是，并不是所有的事件都要被限为 10 个。 emitter.setMaxListeners() 方法允许修改指定的 EventEmitter 实例的限制。 值设为 Infinity（或 0）表明不限制监听器的数量。</p>
+<p>返回一个 EventEmitter 引用，可以链式调用。</p>
+<h1>events.broadcast: 脚本间广播<span><a class="mark" href="#events_events_broadcast" id="events_events_broadcast">#</a></span></h1>
+<p>脚本间通信除了使用engines模块提供的<code>ScriptEngine.emit()</code>方法以外，也可以使用events模块提供的broadcast广播。</p>
+<p>events.broadcast本身是一个EventEmitter，但它的事件是在脚本间共享的，所有脚本都能发送和监听这些事件；事件处理会在脚本主线程执行（后续可能加入函数<code>onThisThread(eventName, ...args)</code>来提供在其他线程执行的能力）。</p>
+<p>例如在一个脚本发送一个广播hello:</p>
+<pre><code>events.broadcast.emit(&quot;hello&quot;, &quot;小明&quot;);
+</code></pre><p>在其他脚本中监听并处理：</p>
+<pre><code>events.broadcast.on(&quot;hello&quot;, function(name){
+    toast(&quot;你好, &quot; + name);
+});
+//保持脚本运行
+setInterval(()=&gt;{}, 1000);
+</code></pre>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

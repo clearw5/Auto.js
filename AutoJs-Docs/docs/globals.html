@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>全局变量与函数 | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/globals.html">
+</head>
+<body class="alt apidoc" id="api-section-globals">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals active" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="globals" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_undefined"><a href="#globals">全局变量与函数</a></span><ul>
+<li><span class="stability_undefined"><a href="#globals_sleep_n">sleep(n)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_currentpackage">currentPackage()</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_currentactivity">currentActivity()</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_setclip_text">setClip(text)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_getclip">getClip()</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_toast_message">toast(message)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_toastlog_message">toastLog(message)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_waitforactivity_activity_period_200">waitForActivity(activity[, period = 200])</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_waitforpackage_package_period_200">waitForPackage(package[, period = 200])</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_exit">exit()</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_random_min_max">random(min, max)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_random">random()</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_requiresapi_api">requiresApi(api)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_requiresautojsversion_version">requiresAutojsVersion(version)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_runtime_requestpermissions_permissions">runtime.requestPermissions(permissions)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_runtime_loadjar_path">runtime.loadJar(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_runtime_loaddex_path">runtime.loadDex(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_context">context</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>全局变量与函数<span><a class="mark" href="#globals" id="globals">#</a></span></h1>
+<p>全局变量和函数在所有模块中均可使用。 但以下变量的作用域只在模块内，详见 <a href="modules.html">module</a>：</p>
+<ul>
+<li>exports</li>
+<li>module</li>
+<li>require()
+以下的对象是特定于 Auto.js 的。 有些内置对象是 JavaScript 语言本身的一部分，它们也是全局的。</li>
+</ul>
+<p>一些模块中的函数为了使用方便也可以直接全局使用，这些函数在此不再赘述。例如timers模块的setInterval, setTimeout等函数。</p>
+<h2>sleep(n)<span><a class="mark" href="#globals_sleep_n" id="globals_sleep_n">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>n</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 毫秒数</li>
+</ul>
+</div><p>暂停运行n<strong>毫秒</strong>的时间。1秒等于1000毫秒。</p>
+<pre><code>//暂停5毫秒
+sleep(5000);
+</code></pre><h2>currentPackage()<span><a class="mark" href="#globals_currentpackage" id="globals_currentpackage">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回最近一次监测到的正在运行的应用的包名，一般可以认为就是当前正在运行的应用的包名。</p>
+<p>此函数依赖于无障碍服务，如果服务未启动，则抛出异常并提示用户启动。</p>
+<h2>currentActivity()<span><a class="mark" href="#globals_currentactivity" id="globals_currentactivity">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回最近一次监测到的正在运行的Activity的名称，一般可以认为就是当前正在运行的Activity的名称。</p>
+<p>此函数依赖于无障碍服务，如果服务未启动，则抛出异常并提示用户启动。</p>
+<h2>setClip(text)<span><a class="mark" href="#globals_setclip_text" id="globals_setclip_text">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>text</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文本</li>
+</ul>
+</div><p>设置剪贴板内容。此剪贴板即系统剪贴板，在一般应用的输入框中&quot;粘贴&quot;既可使用。</p>
+<pre><code>setClip(&quot;剪贴板文本&quot;);
+</code></pre><h2>getClip()<span><a class="mark" href="#globals_getclip" id="globals_getclip">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回系统剪贴板的内容。</p>
+<pre><code>toast(&quot;剪贴板内容为:&quot; + getClip());
+</code></pre><h2>toast(message)<span><a class="mark" href="#globals_toast_message" id="globals_toast_message">#</a></span></h2>
+<div class="signature"><ul>
+<li>message <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要显示的信息</li>
+</ul>
+</div><p>以气泡显示信息message几秒。(具体时间取决于安卓系统，一般都是2秒)</p>
+<p>注意，信息的显示是&quot;异步&quot;执行的，并且，不会等待信息消失程序才继续执行。如果在循环中执行该命令，可能出现脚本停止运行后仍然有不断的气泡信息出现的情况。
+例如:</p>
+<pre><code>for(var i = 0; i &lt; 100; i++){
+  toast(i);
+}
+</code></pre><p>运行这段程序以后，会很快执行完成，且不断弹出消息，在任务管理中关闭所有脚本也无法停止。
+要保证气泡消息才继续执行可以用：</p>
+<pre><code>for(var i = 0; i &lt; 100; i++){
+  toast(i);
+  sleep(2000);
+}
+</code></pre><p>或者修改toast函数：</p>
+<pre><code>var _toast_ = toast;
+toast = function(message){
+  _toast_(message);
+  sleep(2000);
+}
+for(var i = 0; i &lt; 100; i++){
+  toast(i);
+}
+</code></pre><h2>toastLog(message)<span><a class="mark" href="#globals_toastlog_message" id="globals_toastlog_message">#</a></span></h2>
+<div class="signature"><ul>
+<li>message <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要显示的信息</li>
+</ul>
+</div><p>相当于<code>toast(message);log(message)</code>。显示信息message并在控制台中输出。参见console.log。</p>
+<h2>waitForActivity(activity[, period = 200])<span><a class="mark" href="#globals_waitforactivity_activity_period_200" id="globals_waitforactivity_activity_period_200">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>activity</code> Activity名称</li>
+<li><code>period</code> 轮询等待间隔（毫秒）</li>
+</ul>
+</div><p>等待指定的Activity出现，period为检查Activity的间隔。</p>
+<h2>waitForPackage(package[, period = 200])<span><a class="mark" href="#globals_waitforpackage_package_period_200" id="globals_waitforpackage_package_period_200">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>package</code> 包名</li>
+<li><code>period</code> 轮询等待间隔（毫秒）</li>
+</ul>
+</div><p>等待指定的应用出现。例如<code>waitForPackage(&quot;com.tencent.mm&quot;)</code>为等待当前界面为微信。</p>
+<h2>exit()<span><a class="mark" href="#globals_exit" id="globals_exit">#</a></span></h2>
+<p>立即停止脚本运行。</p>
+<p>立即停止是通过抛出<code>ScriptInterrupttedException</code>来实现的，因此如果用<code>try...catch</code>把exit()函数的异常捕捉，则脚本不会立即停止，仍会运行几行后再停止。</p>
+<h2>random(min, max)<span><a class="mark" href="#globals_random_min_max" id="globals_random_min_max">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>min</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 随机数产生的区间下界</li>
+<li><code>max</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 随机数产生的区间上界</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回一个在[min...max]之间的随机数。例如random(0, 2)可能产生0, 1, 2。</p>
+<h2>random()<span><a class="mark" href="#globals_random" id="globals_random">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回在[0, 1)的随机浮点数。</p>
+<h2>requiresApi(api)<span><a class="mark" href="#globals_requiresapi_api" id="globals_requiresapi_api">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>api</code> Android版本号</li>
+</ul>
+</div><p>表示此脚本需要Android API版本达到指定版本才能运行。例如<code>requiresApi(19)</code>表示脚本需要在Android 4.4以及以上运行。</p>
+<p>调用该函数时会判断运行脚本的设备系统的版本号，如果没有达到要求则抛出异常。</p>
+<p>可以参考以下Android API和版本的对照表:</p>
+<p> 平台版本：     API级别</p>
+<p> Android 7.0：  24</p>
+<p> Android 6.0：  23</p>
+<p> Android 5.1：  22</p>
+<p> Android 5.0：  21</p>
+<p> Android 4.4W：  20</p>
+<p> Android 4.4：  19</p>
+<p> Android 4.3：  18</p>
+<h2>requiresAutojsVersion(version)<span><a class="mark" href="#globals_requiresautojsversion_version" id="globals_requiresautojsversion_version">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>version</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> Auto.js的版本或版本号</li>
+</ul>
+</div><p>表示此脚本需要Auto.js版本达到指定版本才能运行。例如<code>requiresAutojsVersion(&quot;3.0.0 Beta&quot;)</code>表示脚本需要在Auto.js 3.0.0 Beta以及以上运行。</p>
+<p>调用该函数时会判断运行脚本的Auto.js的版本号，如果没有达到要求则抛出异常。</p>
+<p>version参数可以是整数表示版本号，例如<code>requiresAutojsVersion(250)</code>；也可以是字符串格式表示的版本，例如&quot;3.0.0 Beta&quot;, &quot;3.1.0 Alpha4&quot;, &quot;3.2.0&quot;等。</p>
+<p>可以通过<code>app.autojs.versionCode</code>和<code>app.autojs.versionName</code>获取当前的Auto.js版本号和版本。</p>
+<h2>runtime.requestPermissions(permissions)<span><a class="mark" href="#globals_runtime_requestpermissions_permissions" id="globals_runtime_requestpermissions_permissions">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>permissions</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 权限的字符串数组</li>
+</ul>
+</div><p>动态申请安卓的权限。例如：</p>
+<pre><code>//请求GPS权限
+runtime.requestPermissions([&quot;access_fine_location&quot;]);
+</code></pre><p>尽管安卓有很多权限，但必须写入Manifest才能动态申请，为了防止权限的滥用，目前Auto.js只能额外申请两个权限：</p>
+<ul>
+<li><code>access_fine_location</code> GPS权限</li>
+<li><code>record_audio</code> 录音权限</li>
+</ul>
+<p>您可以通过APK编辑器来增加Auto.js以及Auto.js打包的应用的权限。</p>
+<p>安卓所有的权限列表参见<a href="https://developer.android.com/guide/topics/permissions/overview">Permissions Overview</a>。（并没有用）</p>
+<h2>runtime.loadJar(path)<span><a class="mark" href="#globals_runtime_loadjar_path" id="globals_runtime_loadjar_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> jar文件路径</li>
+</ul>
+</div><p>加载目标jar文件，加载成功后将可以使用该Jar文件的类。</p>
+<pre><code>// 加载jsoup.jar
+runtime.loadJar(&quot;./jsoup.jar&quot;);
+// 使用jsoup解析html
+importClass(org.jsoup.Jsoup);
+log(Jsoup.parse(files.read(&quot;./test.html&quot;)));
+</code></pre><p>(jsoup是一个Java实现的解析Html DOM的库，可以在<a href="https://jsoup.org/download">Jsoup</a>下载)</p>
+<h2>runtime.loadDex(path)<span><a class="mark" href="#globals_runtime_loaddex_path" id="globals_runtime_loaddex_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> dex文件路径</li>
+</ul>
+</div><p>加载目标dex文件，加载成功后将可以使用该dex文件的类。</p>
+<p>因为加载jar实际上是把jar转换为dex再加载的，因此加载dex文件会比jar文件快得多。可以使用Android SDK的build tools的dx工具把jar转换为dex。</p>
+<h2>context<span><a class="mark" href="#globals_context" id="globals_context">#</a></span></h2>
+<p>全局变量。一个android.content.Context对象。</p>
+<p>注意该对象为ApplicationContext，因此不能用于界面、对话框等的创建。</p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

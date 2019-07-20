@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Device | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/device.html">
+</head>
+<body class="alt apidoc" id="api-section-device">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device active" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="device" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#device_device">Device</a></span><ul>
+<li><span class="stability_undefined"><a href="#device_device_width">device.width</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_height">device.height</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_buildid">device.buildId</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_broad">device.broad</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_brand">device.brand</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_device">device.device</a></span></li>
+<li><span class="stability_undefined"><a href="#device_deivce_model">deivce.model</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_product">device.product</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_bootloader">device.bootloader</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_hardware">device.hardware</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_fingerprint">device.fingerprint</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_serial">device.serial</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_sdkint">device.sdkInt</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_incremental">device.incremental</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_release">device.release</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_baseos">device.baseOS</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_securitypatch">device.securityPatch</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_codename">device.codename</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_getimei">device.getIMEI()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_getandroidid">device.getAndroidId()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_getmacaddress">device.getMacAddress()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_getbrightness">device.getBrightness()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_getbrightnessmode">device.getBrightnessMode()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_setbrightness_b">device.setBrightness(b)</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_setbrightnessmode_mode">device.setBrightnessMode(mode)</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_getmusicvolume">device.getMusicVolume()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_getnotificationvolume">device.getNotificationVolume()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_getalarmvolume">device.getAlarmVolume()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_getmusicmaxvolume">device.getMusicMaxVolume()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_getnotificationmaxvolume">device.getNotificationMaxVolume()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_getalarmmaxvolume">device.getAlarmMaxVolume()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_setmusicvolume_volume">device.setMusicVolume(volume)</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_setnotificationvolume_volume">device.setNotificationVolume(volume)</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_setalarmvolume_volume">device.setAlarmVolume(volume)</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_getbattery">device.getBattery()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_ischarging">device.isCharging()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_gettotalmem">device.getTotalMem()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_getavailmem">device.getAvailMem()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_isscreenon">device.isScreenOn()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_wakeup">device.wakeUp()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_wakeupifneeded">device.wakeUpIfNeeded()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_keepscreenon_timeout">device.keepScreenOn([timeout])</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_keepscreendim_timeout">device.keepScreenDim([timeout])</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_cancelkeepingawake">device.cancelKeepingAwake()</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_vibrate_millis">device.vibrate(millis)</a></span></li>
+<li><span class="stability_undefined"><a href="#device_device_cancelvibration">device.cancelVibration()</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>Device<span><a class="mark" href="#device_device" id="device_device">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>device模块提供了与设备有关的信息与操作，例如获取设备宽高，内存使用率，IMEI，调整设备亮度、音量等。</p>
+<p>此模块的部分函数，例如调整音量，需要&quot;修改系统设置&quot;的权限。如果没有该权限，会抛出<code>SecurityException</code>并跳转到权限设置界面。</p>
+<h2>device.width<span><a class="mark" href="#device_device_width" id="device_device_width">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>设备屏幕分辨率宽度。例如1080。</p>
+<h2>device.height<span><a class="mark" href="#device_device_height" id="device_device_height">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>设备屏幕分辨率高度。例如1920。</p>
+<h2>device.buildId<span><a class="mark" href="#device_device_buildid" id="device_device_buildid">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>Either a changelist number, or a label like &quot;M4-rc20&quot;.</p>
+<p>修订版本号，或者诸如&quot;M4-rc20&quot;的标识。</p>
+<h2>device.broad<span><a class="mark" href="#device_device_broad" id="device_device_broad">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>The name of the underlying board, like &quot;goldfish&quot;.</p>
+<p>设备的主板(?)型号。</p>
+<h2>device.brand<span><a class="mark" href="#device_device_brand" id="device_device_brand">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>The consumer-visible brand with which the product/hardware will be associated, if any.</p>
+<p>与产品或硬件相关的厂商品牌，如&quot;Xiaomi&quot;, &quot;Huawei&quot;等。</p>
+<h2>device.device<span><a class="mark" href="#device_device_device" id="device_device_device">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>The name of the industrial design.</p>
+<p>设备在工业设计中的名称。</p>
+<h2>deivce.model<span><a class="mark" href="#device_deivce_model" id="device_deivce_model">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>The end-user-visible name for the end product.</p>
+<p>设备型号。</p>
+<h2>device.product<span><a class="mark" href="#device_device_product" id="device_device_product">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>The name of the overall product.</p>
+<p>整个产品的名称。</p>
+<h2>device.bootloader<span><a class="mark" href="#device_device_bootloader" id="device_device_bootloader">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>The system bootloader version number.</p>
+<p>设备Bootloader的版本。</p>
+<h2>device.hardware<span><a class="mark" href="#device_device_hardware" id="device_device_hardware">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>The name of the hardware (from the kernel command line or /proc).</p>
+<p>设备的硬件名称(来自内核命令行或者/proc)。</p>
+<h2>device.fingerprint<span><a class="mark" href="#device_device_fingerprint" id="device_device_fingerprint">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>A string that uniquely identifies this build.  Do not attempt to parse this value.</p>
+<p>构建(build)的唯一标识码。</p>
+<h2>device.serial<span><a class="mark" href="#device_device_serial" id="device_device_serial">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>A hardware serial number, if available. Alphanumeric only, case-insensitive.</p>
+<p>硬件序列号。</p>
+<h2>device.sdkInt<span><a class="mark" href="#device_device_sdkint" id="device_device_sdkint">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>The user-visible SDK version of the framework; its possible values are defined in Build.VERSION_CODES.</p>
+<p>安卓系统API版本。例如安卓4.4的sdkInt为19。</p>
+<h2>device.incremental<span><a class="mark" href="#device_device_incremental" id="device_device_incremental">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>The internal value used by the underlying source control to represent this build. E.g., a perforce changelist number or a git hash.</p>
+<h2>device.release<span><a class="mark" href="#device_device_release" id="device_device_release">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>The user-visible version string. E.g., &quot;1.0&quot; or &quot;3.4b5&quot;.</p>
+<p>Android系统版本号。例如&quot;5.0&quot;, &quot;7.1.1&quot;。</p>
+<h2>device.baseOS<span><a class="mark" href="#device_device_baseos" id="device_device_baseos">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>The base OS build the product is based on.</p>
+<h2>device.securityPatch<span><a class="mark" href="#device_device_securitypatch" id="device_device_securitypatch">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>The user-visible security patch level.</p>
+<p>安全补丁程序级别。</p>
+<h2>device.codename<span><a class="mark" href="#device_device_codename" id="device_device_codename">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>The current development codename, or the string &quot;REL&quot; if this is a release build.</p>
+<p>开发代号，例如发行版是&quot;REL&quot;。</p>
+<h2>device.getIMEI()<span><a class="mark" href="#device_device_getimei" id="device_device_getimei">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回设备的IMEI.</p>
+<h2>device.getAndroidId()<span><a class="mark" href="#device_device_getandroidid" id="device_device_getandroidid">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回设备的Android ID。</p>
+<p>Android ID为一个用16进制字符串表示的64位整数，在设备第一次使用时随机生成，之后不会更改，除非恢复出厂设置。</p>
+<h2>device.getMacAddress()<span><a class="mark" href="#device_device_getmacaddress" id="device_device_getmacaddress">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>返回设备的Mac地址。该函数需要在有WLAN连接的情况下才能获取，否则会返回null。</p>
+<p><strong>可能的后续修改</strong>：未来可能增加有root权限的情况下通过root权限获取，从而在没有WLAN连接的情况下也能返回正确的Mac地址，因此请勿使用此函数判断WLAN连接。</p>
+<h2>device.getBrightness()<span><a class="mark" href="#device_device_getbrightness" id="device_device_getbrightness">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回当前的(手动)亮度。范围为0~255。</p>
+<h2>device.getBrightnessMode()<span><a class="mark" href="#device_device_getbrightnessmode" id="device_device_getbrightnessmode">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回当前亮度模式，0为手动亮度，1为自动亮度。</p>
+<h2>device.setBrightness(b)<span><a class="mark" href="#device_device_setbrightness_b" id="device_device_setbrightness_b">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>b</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 亮度，范围0~255</li>
+</ul>
+</div><p>设置当前手动亮度。如果当前是自动亮度模式，该函数不会影响屏幕的亮度。</p>
+<p>此函数需要&quot;修改系统设置&quot;的权限。如果没有该权限，会抛出SecurityException并跳转到权限设置界面。</p>
+<h2>device.setBrightnessMode(mode)<span><a class="mark" href="#device_device_setbrightnessmode_mode" id="device_device_setbrightnessmode_mode">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>mode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 亮度模式，0为手动亮度，1为自动亮度</li>
+</ul>
+</div><p>设置当前亮度模式。</p>
+<p>此函数需要&quot;修改系统设置&quot;的权限。如果没有该权限，会抛出SecurityException并跳转到权限设置界面。</p>
+<h2>device.getMusicVolume()<span><a class="mark" href="#device_device_getmusicvolume" id="device_device_getmusicvolume">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数值</li>
+</ul>
+</div><p>返回当前媒体音量。</p>
+<h2>device.getNotificationVolume()<span><a class="mark" href="#device_device_getnotificationvolume" id="device_device_getnotificationvolume">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数值</li>
+</ul>
+</div><p>返回当前通知音量。</p>
+<h2>device.getAlarmVolume()<span><a class="mark" href="#device_device_getalarmvolume" id="device_device_getalarmvolume">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数值</li>
+</ul>
+</div><p>返回当前闹钟音量。</p>
+<h2>device.getMusicMaxVolume()<span><a class="mark" href="#device_device_getmusicmaxvolume" id="device_device_getmusicmaxvolume">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数值</li>
+</ul>
+</div><p>返回媒体音量的最大值。</p>
+<h2>device.getNotificationMaxVolume()<span><a class="mark" href="#device_device_getnotificationmaxvolume" id="device_device_getnotificationmaxvolume">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数值</li>
+</ul>
+</div><p>返回通知音量的最大值。</p>
+<h2>device.getAlarmMaxVolume()<span><a class="mark" href="#device_device_getalarmmaxvolume" id="device_device_getalarmmaxvolume">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 整数值</li>
+</ul>
+</div><p>返回闹钟音量的最大值。</p>
+<h2>device.setMusicVolume(volume)<span><a class="mark" href="#device_device_setmusicvolume_volume" id="device_device_setmusicvolume_volume">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>volume</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 音量</li>
+</ul>
+</div><p>设置当前媒体音量。</p>
+<p>此函数需要&quot;修改系统设置&quot;的权限。如果没有该权限，会抛出SecurityException并跳转到权限设置界面。</p>
+<h2>device.setNotificationVolume(volume)<span><a class="mark" href="#device_device_setnotificationvolume_volume" id="device_device_setnotificationvolume_volume">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>volume</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 音量</li>
+</ul>
+</div><p>设置当前通知音量。</p>
+<p>此函数需要&quot;修改系统设置&quot;的权限。如果没有该权限，会抛出SecurityException并跳转到权限设置界面。</p>
+<h2>device.setAlarmVolume(volume)<span><a class="mark" href="#device_device_setalarmvolume_volume" id="device_device_setalarmvolume_volume">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>volume</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 音量</li>
+</ul>
+</div><p>设置当前闹钟音量。</p>
+<p>此函数需要&quot;修改系统设置&quot;的权限。如果没有该权限，会抛出SecurityException并跳转到权限设置界面。</p>
+<h2>device.getBattery()<span><a class="mark" href="#device_device_getbattery" id="device_device_getbattery">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 0.0~100.0的浮点数</li>
+</ul>
+</div><p>返回当前电量百分比。</p>
+<h2>device.isCharging()<span><a class="mark" href="#device_device_ischarging" id="device_device_ischarging">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>返回设备是否正在充电。</p>
+<h2>device.getTotalMem()<span><a class="mark" href="#device_device_gettotalmem" id="device_device_gettotalmem">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回设备内存总量，单位字节(B)。1MB = 1024 * 1024B。</p>
+<h2>device.getAvailMem()<span><a class="mark" href="#device_device_getavailmem" id="device_device_getavailmem">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>返回设备当前可用的内存，单位字节(B)。</p>
+<h2>device.isScreenOn()<span><a class="mark" href="#device_device_isscreenon" id="device_device_isscreenon">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>返回设备屏幕是否是亮着的。如果屏幕亮着，返回<code>true</code>; 否则返回<code>false</code>。</p>
+<p>需要注意的是，类似于vivo xplay系列的息屏时钟不属于&quot;屏幕亮着&quot;的情况，虽然屏幕确实亮着但只能显示时钟而且不可交互，此时<code>isScreenOn()</code>也会返回<code>false</code>。</p>
+<h2>device.wakeUp()<span><a class="mark" href="#device_device_wakeup" id="device_device_wakeup">#</a></span></h2>
+<p>唤醒设备。包括唤醒设备CPU、屏幕等。可以用来点亮屏幕。</p>
+<h2>device.wakeUpIfNeeded()<span><a class="mark" href="#device_device_wakeupifneeded" id="device_device_wakeupifneeded">#</a></span></h2>
+<p>如果屏幕没有点亮，则唤醒设备。</p>
+<h2>device.keepScreenOn([timeout])<span><a class="mark" href="#device_device_keepscreenon_timeout" id="device_device_keepscreenon_timeout">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>timeout</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 屏幕保持常亮的时间, 单位毫秒。如果不加此参数，则一直保持屏幕常亮。</li>
+</ul>
+</div><p>保持屏幕常亮。</p>
+<p>此函数无法阻止用户使用锁屏键等正常关闭屏幕，只能使得设备在无人操作的情况下保持屏幕常亮；同时，如果此函数调用时屏幕没有点亮，则会唤醒屏幕。</p>
+<p>在某些设备上，如果不加参数timeout，只能在Auto.js的界面保持屏幕常亮，在其他界面会自动失效，这是因为设备的省电策略造成的。因此，建议使用比较长的时长来代替&quot;一直保持屏幕常亮&quot;的功能，例如<code>device.keepScreenOn(3600 * 1000)</code>。</p>
+<p>可以使用<code>device.cancelKeepingAwake()</code>来取消屏幕常亮。</p>
+<pre><code>//一直保持屏幕常亮
+device.keepScreenOn()
+</code></pre><h2>device.keepScreenDim([timeout])<span><a class="mark" href="#device_device_keepscreendim_timeout" id="device_device_keepscreendim_timeout">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>timeout</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 屏幕保持常亮的时间, 单位毫秒。如果不加此参数，则一直保持屏幕常亮。</li>
+</ul>
+</div><p>保持屏幕常亮，但允许屏幕变暗来节省电量。此函数可以用于定时脚本唤醒屏幕操作，不需要用户观看屏幕，可以让屏幕变暗来节省电量。</p>
+<p>此函数无法阻止用户使用锁屏键等正常关闭屏幕，只能使得设备在无人操作的情况下保持屏幕常亮；同时，如果此函数调用时屏幕没有点亮，则会唤醒屏幕。</p>
+<p>可以使用<code>device.cancelKeepingAwake()</code>来取消屏幕常亮。</p>
+<h2>device.cancelKeepingAwake()<span><a class="mark" href="#device_device_cancelkeepingawake" id="device_device_cancelkeepingawake">#</a></span></h2>
+<p>取消设备保持唤醒状态。用于取消<code>device.keepScreenOn()</code>, <code>device.keepScreenDim()</code>等函数设置的屏幕常亮。</p>
+<h2>device.vibrate(millis)<span><a class="mark" href="#device_device_vibrate_millis" id="device_device_vibrate_millis">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>millis</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 震动时间，单位毫秒</li>
+</ul>
+</div><p>使设备震动一段时间。</p>
+<pre><code>//震动两秒
+device.vibrate(2000);
+</code></pre><h2>device.cancelVibration()<span><a class="mark" href="#device_device_cancelvibration" id="device_device_cancelvibration">#</a></span></h2>
+<p>如果设备处于震动状态，则取消震动。</p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>

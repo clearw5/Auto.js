@@ -1,0 +1,206 @@
+{
+  "source": "..\\api\\media.md",
+  "modules": [
+    {
+      "textRaw": "Media",
+      "name": "media",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>media模块提供多媒体编程的支持。目前仅支持音乐播放和媒体文件扫描。后续会结合UI加入视频播放等功能。</p>\n<p>需要注意是，使用该模块播放音乐时是在后台异步播放的，在脚本结束后会自动结束播放，因此可能需要插入诸如<code>sleep()</code>的语句来使脚本保持运行。例如：</p>\n<pre><code>//播放音乐\nmedia.playMusic(&quot;/sdcard/1.mp3&quot;);\n//让音乐播放完\nsleep(media.getMusicDuration());\n</code></pre>",
+      "methods": [
+        {
+          "textRaw": "media.scanFile(path)",
+          "type": "method",
+          "name": "scanFile",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 媒体文件路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "媒体文件路径"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>扫描路径path的媒体文件，将它加入媒体库中；或者如果该文件以及被删除，则通知媒体库移除该文件。</p>\n<p>媒体库包括相册、音乐库等，因此该函数可以用于把某个图片文件加入相册。</p>\n<pre><code>//请求截图\nrequestScreenCapture(false);\n//截图\nvar im = captureScreen();\nvar path = &quot;/sdcard/screenshot.png&quot;;\n//保存图片\nim.saveTo(path);\n//把图片加入相册\nmedia.scanFile(path);\n</code></pre>"
+        },
+        {
+          "textRaw": "media.playMusic(path[, volume, looping])",
+          "type": "method",
+          "name": "playMusic",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 音乐文件路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "音乐文件路径"
+                },
+                {
+                  "textRaw": "`volume` {number} 播放音量，为0~1的浮点数，默认为1 ",
+                  "name": "volume",
+                  "type": "number",
+                  "desc": "播放音量，为0~1的浮点数，默认为1",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`looping` {boolean} 是否循环播放，如果looping为`true`则循环播放，默认为`false` ",
+                  "name": "looping",
+                  "type": "boolean",
+                  "desc": "是否循环播放，如果looping为`true`则循环播放，默认为`false`",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                },
+                {
+                  "name": "volume",
+                  "optional": true
+                },
+                {
+                  "name": "looping",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>播放音乐文件path。该函数不会显示任何音乐播放界面。如果文件不存在或者文件不是受支持的音乐格式，则抛出<code>UncheckedIOException</code>异常。</p>\n<pre><code>//播放音乐\nmedia.playMusic(&quot;/sdcard/1.mp3&quot;);\n//让音乐播放完\nsleep(media.getMusicDuration());\n</code></pre><p>如果要循环播放音乐，则使用looping参数：</p>\n<pre><code>\n</code></pre><p>//传递第三个参数为true以循环播放音乐\nmedia.playMusic(&quot;/sdcard/1.mp3&quot;, 1, true);\n//等待三次播放的时间\nsleep(media.getMusicDuration() * 3);</p>\n<pre><code>\n</code></pre><p>如果要使用音乐播放器播放音乐，调用<code>app.viewFile(path)</code>函数。</p>\n"
+        },
+        {
+          "textRaw": "media.musicSeekTo(msec)",
+          "type": "method",
+          "name": "musicSeekTo",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`msec` {number} 毫秒数，表示音乐进度 ",
+                  "name": "msec",
+                  "type": "number",
+                  "desc": "毫秒数，表示音乐进度"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "msec"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>把当前播放进度调整到时间msec的位置。如果当前没有在播放音乐，则调用函数没有任何效果。</p>\n<p>例如，要把音乐调到1分钟的位置，为<code>media.musicSeekTo(60 * 1000)</code>。</p>\n<pre><code>//播放音乐\nmedia.playMusic(&quot;/sdcard/1.mp3&quot;);\n//调整到30秒的位置\nmedia.musicSeekTo(30 * 1000);\n//等待音乐播放完成\nsleep(media.getMusicDuration() - 30 * 1000);\n</code></pre>"
+        },
+        {
+          "textRaw": "media.pauseMusic()",
+          "type": "method",
+          "name": "pauseMusic",
+          "desc": "<p>暂停音乐播放。如果当前没有在播放音乐，则调用函数没有任何效果。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "media.resumeMusic()",
+          "type": "method",
+          "name": "resumeMusic",
+          "desc": "<p>继续音乐播放。如果当前没有播放过音乐，则调用该函数没有任何效果。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "media.stopMusic()",
+          "type": "method",
+          "name": "stopMusic",
+          "desc": "<p>停止音乐播放。如果当前没有在播放音乐，则调用函数没有任何效果。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "media.isMusicPlaying()",
+          "type": "method",
+          "name": "isMusicPlaying",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回当前是否正在播放音乐。</p>\n"
+        },
+        {
+          "textRaw": "media.getMusicDuration()",
+          "type": "method",
+          "name": "getMusicDuration",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {number} ",
+                  "name": "返回",
+                  "type": "number"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回当前音乐的时长。单位毫秒。</p>\n"
+        },
+        {
+          "textRaw": "media.getMusicCurrentPosition()",
+          "type": "method",
+          "name": "getMusicCurrentPosition",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {number} ",
+                  "name": "返回",
+                  "type": "number"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回当前音乐的播放进度(已经播放的时间)，单位毫秒。</p>\n"
+        }
+      ],
+      "type": "module",
+      "displayName": "Media"
+    }
+  ]
+}

@@ -1,0 +1,1193 @@
+{
+  "source": "..\\api\\files.md",
+  "modules": [
+    {
+      "textRaw": "Files",
+      "name": "files",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>files模块提供了一些常见的文件处理，包括文件读写、移动、复制、删掉等。</p>\n<p>一次性的文件读写可以直接使用<code>files.read()</code>, <code>files.write()</code>, <code>files.append()</code>等方便的函数，但如果需要频繁读写或随机读写，则使用<code>open()</code>函数打开一个文件对象来操作文件，并在操作完毕后调用<code>close()</code>函数关闭文件。</p>\n",
+      "methods": [
+        {
+          "textRaw": "files.isFile(path)",
+          "type": "method",
+          "name": "isFile",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回路径path是否是文件。</p>\n<pre><code>log(files.isDir(&quot;/sdcard/文件夹/&quot;)); //返回false\nlog(files.isDir(&quot;/sdcard/文件.txt&quot;)); //返回true\n</code></pre>"
+        },
+        {
+          "textRaw": "files.isDir(path)",
+          "type": "method",
+          "name": "isDir",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回路径path是否是文件夹。</p>\n<pre><code>log(files.isDir(&quot;/sdcard/文件夹/&quot;)); //返回true\nlog(files.isDir(&quot;/sdcard/文件.txt&quot;)); //返回false\n</code></pre>"
+        },
+        {
+          "textRaw": "files.isEmptyDir(path)",
+          "type": "method",
+          "name": "isEmptyDir",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回文件夹path是否为空文件夹。如果该路径并非文件夹，则直接返回<code>false</code>。</p>\n"
+        },
+        {
+          "textRaw": "files.join(parent, child)",
+          "type": "method",
+          "name": "join",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`parent` {string} 父目录路径 ",
+                  "name": "parent",
+                  "type": "string",
+                  "desc": "父目录路径"
+                },
+                {
+                  "textRaw": "`child` {string} 子路径 ",
+                  "name": "child",
+                  "type": "string",
+                  "desc": "子路径"
+                },
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "parent"
+                },
+                {
+                  "name": "child"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>连接两个路径并返回，例如<code>files.join(&quot;/sdcard/&quot;, &quot;1.txt&quot;)</code>返回&quot;/sdcard/1.txt&quot;。</p>\n"
+        },
+        {
+          "textRaw": "files.create(path)",
+          "type": "method",
+          "name": "create",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>创建一个文件或文件夹并返回是否创建成功。如果文件已经存在，则直接返回<code>false</code>。</p>\n<pre><code>files.create(&quot;/sdcard/新文件夹/&quot;);\n</code></pre>"
+        },
+        {
+          "textRaw": "files.createWithDirs(path)",
+          "type": "method",
+          "name": "createWithDirs",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>创建一个文件或文件夹并返回是否创建成功。如果文件所在文件夹不存在，则先创建他所在的一系列文件夹。如果文件已经存在，则直接返回<code>false</code>。</p>\n<pre><code>files.createWithDirs(&quot;/sdcard/新文件夹/新文件夹/新文件夹/1.txt&quot;);\n</code></pre>"
+        },
+        {
+          "textRaw": "files.exists(path)",
+          "type": "method",
+          "name": "exists",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回在路径path处的文件是否存在。</p>\n"
+        },
+        {
+          "textRaw": "files.ensureDir(path)",
+          "type": "method",
+          "name": "ensureDir",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>确保路径path所在的文件夹存在。如果该路径所在文件夹不存在，则创建该文件夹。</p>\n<p>例如对于路径&quot;/sdcard/Download/ABC/1.txt&quot;，如果/Download/文件夹不存在，则会先创建Download，再创建ABC文件夹。</p>\n"
+        },
+        {
+          "textRaw": "files.read(path[, encoding = \"utf-8\"])",
+          "type": "method",
+          "name": "read",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "`encoding` {string} 字符编码，可选，默认为utf-8 ",
+                  "name": "encoding",
+                  "type": "string",
+                  "desc": "字符编码，可选，默认为utf-8",
+                  "optional": true,
+                  "default": " \"utf-8\""
+                },
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                },
+                {
+                  "name": "encoding ",
+                  "optional": true,
+                  "default": " \"utf-8\""
+                }
+              ]
+            }
+          ],
+          "desc": "<p>读取文本文件path的所有内容并返回。如果文件不存在，则抛出<code>FileNotFoundException</code>。</p>\n<pre><code>log(files.read(&quot;/sdcard/1.txt&quot;));\n</code></pre>"
+        },
+        {
+          "textRaw": "files.readBytes(path)",
+          "type": "method",
+          "name": "readBytes",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "返回 {byte[]} ",
+                  "name": "返回",
+                  "type": "byte[]"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>读取文件path的所有内容并返回一个字节数组。如果文件不存在，则抛出<code>FileNotFoundException</code>。</p>\n<p>注意，该数组是Java的数组，不具有JavaScript数组的forEach, slice等函数。</p>\n<p>一个以16进制形式打印文件的例子如下:</p>\n<pre><code>var data = files.readBytes(&quot;/sdcard/1.png&quot;);\nvar sb = new java.lang.StringBuilder();\nfor(var i = 0; i &lt; data.length; i++){\n    sb.append(data[i].toString(16));\n}\nlog(sb.toString());\n</code></pre>"
+        },
+        {
+          "textRaw": "files.write(path, text[, encoding = \"utf-8\"])",
+          "type": "method",
+          "name": "write",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "`text` {string} 要写入的文本内容 ",
+                  "name": "text",
+                  "type": "string",
+                  "desc": "要写入的文本内容"
+                },
+                {
+                  "textRaw": "`encoding` {string} 字符编码 ",
+                  "name": "encoding",
+                  "type": "string",
+                  "desc": "字符编码",
+                  "optional": true,
+                  "default": " \"utf-8\""
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                },
+                {
+                  "name": "text"
+                },
+                {
+                  "name": "encoding ",
+                  "optional": true,
+                  "default": " \"utf-8\""
+                }
+              ]
+            }
+          ],
+          "desc": "<p>把text写入到文件path中。如果文件存在则覆盖，不存在则创建。</p>\n<pre><code>var text = &quot;文件内容&quot;;\n//写入文件\nfiles.write(&quot;/sdcard/1.txt&quot;, text);\n//用其他应用查看文件\napp.viewFile(&quot;/sdcard/1.txt&quot;);\n</code></pre>"
+        },
+        {
+          "textRaw": "files.writeBytes(path, bytes)",
+          "type": "method",
+          "name": "writeBytes",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "`bytes` {byte[]} 字节数组，要写入的二进制数据 ",
+                  "name": "bytes",
+                  "type": "byte[]",
+                  "desc": "字节数组，要写入的二进制数据"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                },
+                {
+                  "name": "bytes"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>把bytes写入到文件path中。如果文件存在则覆盖，不存在则创建。</p>\n"
+        },
+        {
+          "textRaw": "files.append(path, text[, encoding = 'utf-8'])",
+          "type": "method",
+          "name": "append",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "`text` {string} 要写入的文本内容 ",
+                  "name": "text",
+                  "type": "string",
+                  "desc": "要写入的文本内容"
+                },
+                {
+                  "textRaw": "`encoding` {string} 字符编码 ",
+                  "name": "encoding",
+                  "type": "string",
+                  "desc": "字符编码",
+                  "optional": true,
+                  "default": " 'utf-8'"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                },
+                {
+                  "name": "text"
+                },
+                {
+                  "name": "encoding ",
+                  "optional": true,
+                  "default": " 'utf-8'"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>把text追加到文件path的末尾。如果文件不存在则创建。</p>\n<pre><code>var text = &quot;追加的文件内容&quot;;\nfiles.append(&quot;/sdcard/1.txt&quot;, text);\nfiles.append(&quot;/sdcard/1.txt&quot;, text);\n//用其他应用查看文件\napp.viewFile(&quot;/sdcard/1.txt&quot;);\n</code></pre>"
+        },
+        {
+          "textRaw": "files.appendBytes(path, text[, encoding = 'utf-8'])",
+          "type": "method",
+          "name": "appendBytes",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "`bytes` {byte[]} 字节数组，要写入的二进制数据 ",
+                  "name": "bytes",
+                  "type": "byte[]",
+                  "desc": "字节数组，要写入的二进制数据"
+                },
+                {
+                  "name": "encoding ",
+                  "optional": true,
+                  "default": " 'utf-8'"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                },
+                {
+                  "name": "text"
+                },
+                {
+                  "name": "encoding ",
+                  "optional": true,
+                  "default": " 'utf-8'"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>把bytes追加到文件path的末尾。如果文件不存在则创建。</p>\n"
+        },
+        {
+          "textRaw": "files.copy(fromPath, toPath)",
+          "type": "method",
+          "name": "copy",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`fromPath` {string} 要复制的原文件路径 ",
+                  "name": "fromPath",
+                  "type": "string",
+                  "desc": "要复制的原文件路径"
+                },
+                {
+                  "textRaw": "`toPath` {string} 复制到的文件路径 ",
+                  "name": "toPath",
+                  "type": "string",
+                  "desc": "复制到的文件路径"
+                },
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "fromPath"
+                },
+                {
+                  "name": "toPath"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>复制文件，返回是否复制成功。例如<code>files.copy(&quot;/sdcard/1.txt&quot;, &quot;/sdcard/Download/1.txt&quot;)</code>。</p>\n"
+        },
+        {
+          "textRaw": "files.move(fromPath, toPath)",
+          "type": "method",
+          "name": "move",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`fromPath` {string} 要移动的原文件路径 ",
+                  "name": "fromPath",
+                  "type": "string",
+                  "desc": "要移动的原文件路径"
+                },
+                {
+                  "textRaw": "`toPath` {string} 移动到的文件路径 ",
+                  "name": "toPath",
+                  "type": "string",
+                  "desc": "移动到的文件路径"
+                },
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "fromPath"
+                },
+                {
+                  "name": "toPath"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>移动文件，返回是否移动成功。例如<code>files.move(&quot;/sdcard/1.txt&quot;, &quot;/sdcard/Download/1.txt&quot;)</code>会把1.txt文件从sd卡根目录移动到Download文件夹。</p>\n"
+        },
+        {
+          "textRaw": "files.rename(path, newName)",
+          "type": "method",
+          "name": "rename",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 要重命名的原文件路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "要重命名的原文件路径"
+                },
+                {
+                  "textRaw": "`newName` {string} 要重命名的新文件名 ",
+                  "name": "newName",
+                  "type": "string",
+                  "desc": "要重命名的新文件名"
+                },
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                },
+                {
+                  "name": "newName"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>重命名文件，并返回是否重命名成功。例如<code>files.rename(&quot;/sdcard/1.txt&quot;, &quot;2.txt&quot;)</code>。</p>\n"
+        },
+        {
+          "textRaw": "files.renameWithoutExtension(path, newName)",
+          "type": "method",
+          "name": "renameWithoutExtension",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 要重命名的原文件路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "要重命名的原文件路径"
+                },
+                {
+                  "textRaw": "`newName` {string} 要重命名的新文件名 ",
+                  "name": "newName",
+                  "type": "string",
+                  "desc": "要重命名的新文件名"
+                },
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                },
+                {
+                  "name": "newName"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>重命名文件，不包含拓展名，并返回是否重命名成功。例如<code>files.rename(&quot;/sdcard/1.txt&quot;, &quot;2&quot;)</code>会把&quot;1.txt&quot;重命名为&quot;2.txt&quot;。</p>\n"
+        },
+        {
+          "textRaw": "files.getName(path)",
+          "type": "method",
+          "name": "getName",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回文件的文件名。例如<code>files.getName(&quot;/sdcard/1.txt&quot;)</code>返回&quot;1.txt&quot;。</p>\n"
+        },
+        {
+          "textRaw": "files.getNameWithoutExtension(path)",
+          "type": "method",
+          "name": "getNameWithoutExtension",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回不含拓展名的文件的文件名。例如<code>files.getName(&quot;/sdcard/1.txt&quot;)</code>返回&quot;1&quot;。</p>\n"
+        },
+        {
+          "textRaw": "files.getExtension(path)",
+          "type": "method",
+          "name": "getExtension",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回文件的拓展名。例如<code>files.getExtension(&quot;/sdcard/1.txt&quot;)</code>返回&quot;txt&quot;。</p>\n"
+        },
+        {
+          "textRaw": "files.remove(path)",
+          "type": "method",
+          "name": "remove",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>删除文件或<strong>空文件夹</strong>，返回是否删除成功。</p>\n"
+        },
+        {
+          "textRaw": "files.removeDir(path)",
+          "type": "method",
+          "name": "removeDir",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "返回 {boolean} ",
+                  "name": "返回",
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>删除文件夹，如果文件夹不为空，则删除该文件夹的所有内容再删除该文件夹，返回是否全部删除成功。</p>\n"
+        },
+        {
+          "textRaw": "files.getSdcardPath()",
+          "type": "method",
+          "name": "getSdcardPath",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回SD卡路径。所谓SD卡，即外部存储器。</p>\n"
+        },
+        {
+          "textRaw": "files.cwd()",
+          "type": "method",
+          "name": "cwd",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>返回脚本的&quot;当前工作文件夹路径&quot;。该路径指的是，如果脚本本身为脚本文件，则返回这个脚本文件所在目录；否则返回<code>null</code>获取其他设定路径。</p>\n<p>例如，对于脚本文件&quot;/sdcard/脚本/1.js&quot;运行<code>files.cwd()</code>返回&quot;/sdcard/脚本/&quot;。</p>\n"
+        },
+        {
+          "textRaw": "files.path(relativePath)",
+          "type": "method",
+          "name": "path",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`relativePath` {string} 相对路径 ",
+                  "name": "relativePath",
+                  "type": "string",
+                  "desc": "相对路径"
+                },
+                {
+                  "textRaw": "返回 {string} ",
+                  "name": "返回",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "relativePath"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>返回相对路径对应的绝对路径。例如<code>files.path(&quot;./1.png&quot;)</code>，如果运行这个语句的脚本位于文件夹&quot;/sdcard/脚本/&quot;中，则返回<code>&quot;/sdcard/脚本/1.png&quot;</code>。</p>\n"
+        },
+        {
+          "textRaw": "files.listDir(path[, filter])",
+          "type": "method",
+          "name": "listDir",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 路径 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "路径"
+                },
+                {
+                  "textRaw": "`filter` {Function} 过滤函数，可选。接收一个`string`参数（文件名），返回一个`boolean`值。 ",
+                  "name": "filter",
+                  "type": "Function",
+                  "desc": "过滤函数，可选。接收一个`string`参数（文件名），返回一个`boolean`值。",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                },
+                {
+                  "name": "filter",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>列出文件夹path下的满足条件的文件和文件夹的名称的数组。如果不加filter参数，则返回所有文件和文件夹。</p>\n<p>列出sdcard目录下所有文件和文件夹为:</p>\n<pre><code>var arr = files.listDir(&quot;/sdcard/&quot;);\nlog(arr);\n</code></pre><p>列出脚本目录下所有js脚本文件为:</p>\n<pre><code>var dir = &quot;/sdcard/脚本/&quot;;\nvar jsFiles = files.listDir(dir, function(name){\n    return name.endsWith(&quot;.js&quot;) &amp;&amp; files.isFile(files.join(dir, name));\n});\nlog(jsFiles);\n</code></pre>"
+        },
+        {
+          "textRaw": "open(path[, mode = \"r\", encoding = \"utf-8\", bufferSize = 8192])",
+          "type": "method",
+          "name": "open",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`path` {string} 文件路径，例如\"/sdcard/1.txt\"。 ",
+                  "name": "path",
+                  "type": "string",
+                  "desc": "文件路径，例如\"/sdcard/1.txt\"。"
+                },
+                {
+                  "textRaw": "`mode` {string} 文件打开模式，包括: ",
+                  "options": [
+                    {
+                      "textRaw": "\"r\": 只读文本模式。该模式下只能对文件执行**文本**读取操作。 ",
+                      "name": "r",
+                      "desc": "只读文本模式。该模式下只能对文件执行**文本**读取操作。"
+                    },
+                    {
+                      "textRaw": "\"w\": 只写文本模式。该模式下只能对文件执行**文本**覆盖写入操作。 ",
+                      "name": "w",
+                      "desc": "只写文本模式。该模式下只能对文件执行**文本**覆盖写入操作。"
+                    },
+                    {
+                      "textRaw": "\"a\": 附加文本模式。该模式下将会把写入的文本附加到文件末尾。   ",
+                      "name": "a",
+                      "desc": "附加文本模式。该模式下将会把写入的文本附加到文件末尾。"
+                    },
+                    {
+                      "textRaw": "\"rw\": 随机读写文本模式。该模式下将会把写入的文本附加到文件末尾。   目前暂不支持二进制模式，随机读写模式。 ",
+                      "name": "rw",
+                      "desc": "随机读写文本模式。该模式下将会把写入的文本附加到文件末尾。   目前暂不支持二进制模式，随机读写模式。"
+                    }
+                  ],
+                  "name": "mode",
+                  "type": "string",
+                  "desc": "文件打开模式，包括:",
+                  "optional": true,
+                  "default": " \"r\""
+                },
+                {
+                  "textRaw": "`encoding` {string} 字符编码。 ",
+                  "name": "encoding",
+                  "type": "string",
+                  "desc": "字符编码。",
+                  "optional": true,
+                  "default": " \"utf-8\""
+                },
+                {
+                  "textRaw": "`bufferSize` {number} 文件读写的缓冲区大小。 ",
+                  "name": "bufferSize",
+                  "type": "number",
+                  "desc": "文件读写的缓冲区大小。",
+                  "optional": true,
+                  "default": " 8192"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "path"
+                },
+                {
+                  "name": "mode ",
+                  "optional": true,
+                  "default": " \"r\""
+                },
+                {
+                  "name": "encoding ",
+                  "optional": true,
+                  "default": " \"utf-8\""
+                },
+                {
+                  "name": "bufferSize ",
+                  "optional": true,
+                  "default": " 8192"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>打开一个文件。根据打开模式返回不同的文件对象。包括：</p>\n<ul>\n<li>&quot;r&quot;: 返回一个ReadableTextFile对象。</li>\n<li>&quot;w&quot;, &quot;a&quot;: 返回一个WritableTextFile对象。</li>\n</ul>\n<p>对于&quot;w&quot;模式，如果文件并不存在，则会创建一个，已存在则会清空该文件内容；其他模式文件不存在会抛出FileNotFoundException。</p>\n"
+        }
+      ],
+      "type": "module",
+      "displayName": "Files"
+    },
+    {
+      "textRaw": "ReadableTextFile",
+      "name": "readabletextfile",
+      "desc": "<p>可读文件对象。</p>\n",
+      "methods": [
+        {
+          "textRaw": "ReadableTextFile.read()",
+          "type": "method",
+          "name": "read",
+          "desc": "<p>返回该文件剩余的所有内容的字符串。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "ReadableTextFile.read(maxCount)",
+          "type": "method",
+          "name": "read",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`maxCount` {Number} 最大读取的字符数量 ",
+                  "name": "maxCount",
+                  "type": "Number",
+                  "desc": "最大读取的字符数量"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "maxCount"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>读取该文件接下来最长为maxCount的字符串并返回。即使文件剩余内容不足maxCount也不会出错。</p>\n"
+        },
+        {
+          "textRaw": "ReadableTextFile.readline()",
+          "type": "method",
+          "name": "readline",
+          "desc": "<p>读取一行并返回（不包含换行符）。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "ReadableTextFile.readlines()",
+          "type": "method",
+          "name": "readlines",
+          "desc": "<p>读取剩余的所有行，并返回它们按顺序组成的字符串数组。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "close()",
+          "type": "method",
+          "name": "close",
+          "desc": "<p>关闭该文件。</p>\n<p><strong>打开一个文件不再使用时务必关闭</strong></p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        }
+      ],
+      "type": "module",
+      "displayName": "ReadableTextFile"
+    },
+    {
+      "textRaw": "PWritableTextFile",
+      "name": "pwritabletextfile",
+      "desc": "<p>可写文件对象。</p>\n",
+      "methods": [
+        {
+          "textRaw": "PWritableTextFile.write(text)",
+          "type": "method",
+          "name": "write",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`text` {string} 文本 ",
+                  "name": "text",
+                  "type": "string",
+                  "desc": "文本"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "text"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>把文本内容text写入到文件中。</p>\n"
+        },
+        {
+          "textRaw": "PWritableTextFile.writeline(line)",
+          "type": "method",
+          "name": "writeline",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`text` {string} 文本 ",
+                  "name": "text",
+                  "type": "string",
+                  "desc": "文本"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "line"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>把文本line写入到文件中并写入一个换行符。</p>\n"
+        },
+        {
+          "textRaw": "PWritableTextFile.writelines(lines)",
+          "type": "method",
+          "name": "writelines",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`lines` {Array} 字符串数组 ",
+                  "name": "lines",
+                  "type": "Array",
+                  "desc": "字符串数组"
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "lines"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>把很多行写入到文件中....</p>\n"
+        },
+        {
+          "textRaw": "PWritableTextFile.flush()",
+          "type": "method",
+          "name": "flush",
+          "desc": "<p>把缓冲区内容输出到文件中。</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "PWritableTextFile.close()",
+          "type": "method",
+          "name": "close",
+          "desc": "<p>关闭文件。同时会被缓冲区内容输出到文件。</p>\n<p><strong>打开一个文件写入后，不再使用时务必关闭，否则文件可能会丢失</strong></p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        }
+      ],
+      "type": "module",
+      "displayName": "PWritableTextFile"
+    }
+  ]
+}

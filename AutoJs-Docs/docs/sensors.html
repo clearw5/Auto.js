@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sensors | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/sensors.html">
+</head>
+<body class="alt apidoc" id="api-section-sensors">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="返回首页">
+          Auto.js
+        </a>
+      </div>
+      <ul>
+<li><a class="nav-documentation" href="documentation.html">关于本文档</a></li>
+<li><a class="nav-http-www-w3school-com-cn-js-pro_js_syntax-asp" href="http://www.w3school.com.cn/js/pro_js_syntax.asp">W3CSchool - ECMAScript教程</a></li>
+<li><a class="nav-http-es6-ruanyifeng-com-README" href="http://es6.ruanyifeng.com/#README">阮一峰 - ECMAScript 6教程</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-overview" href="overview.html">Overview - 综述</a></li>
+<li><a class="nav-qa" href="qa.html">Q&amp;A - 常见问题</a></li>
+<li><a class="nav-app" href="app.html">App - 应用</a></li>
+<li><a class="nav-console" href="console.html">Console - 控制台</a></li>
+<li><a class="nav-coordinates-based-automation" href="coordinates-based-automation.html">CoordinatesBasedAutomation - 基于坐标的操作</a></li>
+<li><a class="nav-device" href="device.html">Device - 设备</a></li>
+<li><a class="nav-dialogs" href="dialogs.html">Dialogs - 对话框</a></li>
+<li><a class="nav-engines" href="engines.html">Engines - 脚本引擎</a></li>
+<li><a class="nav-events" href="events.html">Events - 事件与监听</a></li>
+<li><a class="nav-floaty" href="floaty.html">Floaty - 悬浮窗</a></li>
+<li><a class="nav-files" href="files.html">Files - 文件系统</a></li>
+<li><a class="nav-globals" href="globals.html">Globals - 一般全局函数</a></li>
+<li><a class="nav-http" href="http.html">Http - HTTP</a></li>
+<li><a class="nav-images" href="images.html">Images - 图片与图色处理</a></li>
+<li><a class="nav-keys" href="keys.html">Keys - 按键模拟</a></li>
+<li><a class="nav-media" href="media.html">Media - 多媒体</a></li>
+<li><a class="nav-modules" href="modules.html">Modules - 模块</a></li>
+<li><a class="nav-widgets-based-automation" href="widgets-based-automation.html">WidgetsBasedAutomation - 基于控件的操作</a></li>
+<li><a class="nav-sensors active" href="sensors.html">Sensors - 传感器</a></li>
+<li><a class="nav-shell" href="shell.html">Shell - Shell命令</a></li>
+<li><a class="nav-storages" href="storages.html">Storages - 本地存储</a></li>
+<li><a class="nav-threads" href="threads.html">Threads - 多线程</a></li>
+<li><a class="nav-timers" href="timers.html">Timers - 定时器</a></li>
+<li><a class="nav-ui" href="ui.html">UI - 用户界面</a></li>
+<li><a class="nav-https-developer-mozilla-org-zh-CN-docs-Mozilla-Projects-Rhino-Scripting_Java" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/Rhino/Scripting_Java">Work with Java - 调用Java API</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a class="nav-https-github-com-hyb1996-NoRootScriptDroid" href="https://github.com/hyb1996/NoRootScriptDroid">GitHub项目 &amp; Issue提交</a></li>
+<li><a class="nav-http-autojs-org" href="http://autojs.org">Auto.js交流社区</a></li>
+</ul>
+
+    </div>
+
+    <div id="column1" data-id="sensors" class="interior">
+      <header>
+        <h1>Auto.js 4.1.0 文档</h1>
+        <div id="gtoc">
+          <p>
+            <a href="index.html" name="toc">索引</a> |
+            <a href="all.html">查看全部</a>
+          </p>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#sensors_sensors">Sensors</a></span><ul>
+<li><span class="stability_undefined"><a href="#sensors_sensors_register_sensorname_delay">sensors.register(sensorName[, delay])</a></span></li>
+<li><span class="stability_undefined"><a href="#sensors_sensors_unregister_emitter">sensors.unregister(emitter)</a></span></li>
+<li><span class="stability_undefined"><a href="#sensors_sensors_unregisterall">sensors.unregisterAll()</a></span></li>
+<li><span class="stability_undefined"><a href="#sensors_sensors_ignoresunsupportedsensor">sensors.ignoresUnsupportedSensor</a></span></li>
+<li><span class="stability_undefined"><a href="#sensors_unsupported_sensor">事件: &#39;unsupported_sensor&#39;</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#sensors_sensoreventemitter">SensorEventEmitter</a></span><ul>
+<li><span class="stability_undefined"><a href="#sensors_change">事件: &#39;change&#39;</a></span></li>
+<li><span class="stability_undefined"><a href="#sensors_accuracy_change">事件: &#39;accuracy_change&#39;</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+
+      <div id="apicontent">
+        <h1>Sensors<span><a class="mark" href="#sensors_sensors" id="sensors_sensors">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>sensors模块提供了获取手机上的传感器的信息的支持，这些传感器包括距离传感器、光线光感器、重力传感器、方向传感器等。需要指出的是，脚本只能获取传感器的数据，<strong>不能模拟或伪造传感器的数据和事件</strong>，因此诸如模拟摇一摇的功能是无法实现的。</p>
+<p>要监听一个传感器时，需要使用<code>sensors.register()</code>注册监听器，之后才能开始监听；不需要监听时则调用<code>sensors.unregister()</code>注销监听器。在脚本结束时会自动注销所有的监听器。同时，这种监听会使脚本保持运行状态，如果不注销监听器，脚本会一直保持运行状态。</p>
+<p>例如，监听光线传感器的代码为：</p>
+<pre><code>//光线传感器监听
+sensors.register(&quot;light&quot;).on(&quot;change&quot;, (event, light)=&gt;{
+    log(&quot;当前光强度为&quot;, light);
+});
+</code></pre><p>要注意的是，每个传感器的数据并不相同，所以对他们调用<code>on()</code>监听事件时的回调函数参数也不是相同，例如光线传感器参数为<code>(event, light)</code>，加速度传感器参数为<code>(event, ax, ay, az)</code>。甚至在某些设备上的传感器参数有所增加，例如华为手机的距离传感器为三个参数，一般手机只有一个参数。</p>
+<p>常用的传感器及其事件参数如下表：</p>
+<ul>
+<li><p><code>accelerometer</code> 加速度传感器，参数<code>(event, ax, ay, az)</code>:</p>
+<ul>
+<li><code>event</code> <a href="#sensors_sensorevent">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>
+<li><code>ax</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> x轴上的加速度，单位m/s^2</li>
+<li><code>ay</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> y轴上的加速度，单位m/s^2</li>
+<li><p><code>az</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> z轴上的加速度，单位m/s^2
+这里的x轴，y轴，z轴所属的坐标系统如下图(其中z轴垂直于设备屏幕表面):</p>
+<p>!<img src="#images/axis_device.png" alt="axis_device"></p>
+</li>
+</ul>
+</li>
+<li><p><code>orientation</code> 方向传感器，参数<code>(event, azimuth, pitch, roll)</code>:</p>
+<ul>
+<li><code>event</code> <a href="#sensors_sensorevent">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>
+<li><code>azimuth</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 方位角，从地磁指北方向线起，依顺时针方向到y轴之间的水平夹角，单位角度，范围0~359</li>
+<li><code>pitch</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 绕x轴旋转的角度，当设备水平放置时该值为0，当设备顶部翘起时该值为正数，当设备尾部翘起时该值为负数，单位角度，范围-180~180</li>
+<li><code>roll</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 绕y轴顺时针旋转的角度，单位角度，范围-90~90</li>
+</ul>
+</li>
+<li><p><code>gyroscope</code> 陀螺仪传感器，参数<code>(event, wx, wy, wz)</code>:</p>
+<ul>
+<li><code>event</code> <a href="#sensors_sensorevent">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>
+<li><code>wx</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 绕x轴的角速度，单位弧度/s</li>
+<li><code>wy</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 绕y轴的角速度，单位弧度/s</li>
+<li><code>wz</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 绕z轴的角速度，单位弧度/s</li>
+</ul>
+</li>
+<li><p><code>magnetic_field</code> 磁场传感器，参数<code>(event, bx, by, bz)</code>:</p>
+<ul>
+<li><code>event</code> <a href="#sensors_sensorevent">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>
+<li><code>bx</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> x轴上的磁场强度，单位uT</li>
+<li><code>by</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> y轴上的磁场强度，单位uT</li>
+<li><code>bz</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> z轴上的磁场强度，单位uT</li>
+</ul>
+</li>
+<li><p><code>gravity</code> 重力传感器，参数<code>(event, gx, gy, gz)</code>:</p>
+<ul>
+<li><code>event</code> <a href="#sensors_sensorevent">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>
+<li><code>gx</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> x轴上的重力加速度，单位m/s^2</li>
+<li><code>gy</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> y轴上的重力加速度，单位m/s^2</li>
+<li><code>gz</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> z轴上的重力加速度，单位m/s^2</li>
+</ul>
+</li>
+<li><p><code>linear_acceleration</code> 线性加速度传感器，参数<code>(event, ax, ay, az)</code>:</p>
+<ul>
+<li><code>event</code> <a href="#sensors_sensorevent">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>
+<li><code>ax</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> x轴上的线性加速度，单位m/s^2</li>
+<li><code>ay</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> y轴上的线性加速度，单位m/s^2</li>
+<li><code>az</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> z轴上的线性加速度，单位m/s^2</li>
+</ul>
+</li>
+<li><p><code>ambient_temperature</code> 环境温度传感器，大部分设备并不支持，参数<code>(event, t)</code>:</p>
+<ul>
+<li><code>event</code> <a href="#sensors_sensorevent">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>
+<li><code>t</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 环境温度，单位摄氏度。</li>
+</ul>
+</li>
+<li><p><code>light</code> 光线传感器，参数<code>(event, light)</code>:</p>
+<ul>
+<li><code>event</code> <a href="#sensors_sensorevent">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>
+<li><code>light</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 环境光强度，单位lux</li>
+</ul>
+</li>
+<li><p><code>pressure</code> 压力传感器，参数<code>(event, p)</code>:</p>
+<ul>
+<li><code>event</code> <a href="#sensors_sensorevent">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>
+<li><code>p</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 大气压，单位hPa</li>
+</ul>
+</li>
+<li><p><code>proximity</code> 距离传感器，参数<code>(event, distance)</code>:</p>
+<ul>
+<li><code>event</code> <a href="#sensors_sensorevent">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>
+<li><code>distance</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 一般指设备前置摄像头旁边的距离传感器到前方障碍物的距离，并且很多设备上这个值只有两种情况：当障碍物较近时该值为0，当障碍物较远或在范围内没有障碍物时该值为5</li>
+</ul>
+</li>
+<li><p><code>relative_humidity</code> 湿度传感器，大部分设备并不支持，参数<code>(event, rh)</code>:</p>
+<ul>
+<li><code>event</code> <a href="#sensors_sensorevent">SensorEvent</a> 传感器事件，用于获取传感器数据变化时的所有信息</li>
+<li><code>rh</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 相对湿度，范围为0~100（百分比）</li>
+</ul>
+</li>
+</ul>
+<h2>sensors.register(sensorName[, delay])<span><a class="mark" href="#sensors_sensors_register_sensorname_delay" id="sensors_sensors_register_sensorname_delay">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>sensorName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 传感器名称，常用的传感器名称如上面所述</li>
+<li><code>delay</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 传感器数据更新频率，可选，默认为<code>sensors.delay.normal</code>。可用的值如下：<ul>
+<li><code>sensors.delay.normal</code> 正常频率</li>
+<li><code>sensors.delay.ui</code> 适合于用户界面的更新频率</li>
+<li><code>sensors.delay.game</code> 适合于游戏的更新频率</li>
+<li><code>sensors.delay.fastest</code> 最快的更新频率】</li>
+</ul>
+</li>
+<li>返回 <a href="#sensors_sensoreventemitter">SensorEventEmiiter</a></li>
+</ul>
+</div><p>注册一个传感器监听并返回<a href="#sensors_sensoreventemitter">SensorEventEmitter</a>。</p>
+<p>例如:</p>
+<pre><code>console.show();
+//注册传感器监听
+var sensor = sensors.register(&quot;gravity&quot;);
+if(sensor == null){
+    toast(&quot;不支持重力传感器&quot;);
+    exit();
+}
+//监听数据
+sensor.on(&quot;change&quot;, (gx, gy, gz)=&gt;{
+    log(&quot;重力加速度: %d, %d, %d&quot;, gx, gy, gz);
+});
+</code></pre><p>可以通过delay参数来指定传感器数据的更新频率，例如：</p>
+<pre><code>var sensor = sensors.register(&quot;gravity&quot;, sensors.delay.game);
+</code></pre><p>另外，如果不支持<code>sensorName</code>所指定的传感器，那么该函数将返回<code>null</code>；但如果<code>sensors.ignoresUnsupportedSensor</code>的值被设置为<code>true</code>, 则该函数会返回一个不会分发任何传感器事件的<a href="#sensors_sensoreventemitter">SensorEventEmitter</a>。</p>
+<p>例如:</p>
+<pre><code>sensors.ignoresUnsupportedSensor = true;
+//无需null判断
+sensors.register(&quot;gravity&quot;).on(&quot;change&quot;, (gx, gy, gz)=&gt;{
+    log(&quot;重力加速度: %d, %d, %d&quot;, gx, gy, gz);
+});
+</code></pre><p>更多信息，参见<a href="#sensors_sensoreventemitter">SensorEventEmitter</a>和<a href="#sensors_sensors_ignoresUnsupportedSensor">sensors.ignoresUnsupportedSensor</a>。</p>
+<h2>sensors.unregister(emitter)<span><a class="mark" href="#sensors_sensors_unregister_emitter" id="sensors_sensors_unregister_emitter">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>emiiter</code> <a href="#sensors_sensoreventemitter">SensorEventEmitter</a></li>
+</ul>
+</div><p>注销该传感器监听器。被注销的监听器将不再能监听传感器数据。</p>
+<pre><code>//注册一个传感器监听器
+var sensor = sensors.register(&quot;gravity&quot;);
+if(sensor == null){
+    exit();
+}
+//2秒后注销该监听器
+setTimeout(()=&gt; {
+    sensors.unregister(sensor);
+}, 2000);
+</code></pre><h2>sensors.unregisterAll()<span><a class="mark" href="#sensors_sensors_unregisterall" id="sensors_sensors_unregisterall">#</a></span></h2>
+<p>注销所有传感器监听器。</p>
+<h2>sensors.ignoresUnsupportedSensor<span><a class="mark" href="#sensors_sensors_ignoresunsupportedsensor" id="sensors_sensors_ignoresunsupportedsensor">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>表示是否忽略不支持的传感器。如果该值被设置为<code>true</code>，则函数<code>sensors.register()</code>即使对不支持的传感器也会返回一个无任何数据的虚拟传感器监听，也就是<code>sensors.register()</code>不会返回<code>null</code>从而避免非空判断，并且此时会触发<code>sensors</code>的&quot;unsupported_sensor&quot;事件。</p>
+<pre><code>//忽略不支持的传感器
+sensors.ignoresUnsupportedSensor = true;
+//监听有不支持的传感器时的事件
+sensors.on(&quot;unsupported_sensor&quot;, function(sensorName){
+    toastLog(&quot;不支持的传感器: &quot; + sensorName);
+});
+//随便注册一个不存在的传感器。
+log(sensors.register(&quot;aaabbb&quot;));
+</code></pre><h2>事件: &#39;unsupported_sensor&#39;<span><a class="mark" href="#sensors_unsupported_sensor" id="sensors_unsupported_sensor">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>sensorName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 不支持的传感器名称</li>
+</ul>
+</div><p>当<code>sensors.ignoresUnsupportedSensor</code>被设置为<code>true</code>并且有不支持的传感器被注册时触发该事件。事件参数的传感器名称。</p>
+<h1>SensorEventEmitter<span><a class="mark" href="#sensors_sensoreventemitter" id="sensors_sensoreventemitter">#</a></span></h1>
+<p>注册传感器返回的对象，其本身是一个EventEmmiter，用于监听传感器事件。</p>
+<h2>事件: &#39;change&#39;<span><a class="mark" href="#sensors_change" id="sensors_change">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>..args</code> <span class="type">&lt;Any&gt;</span> 传感器参数</li>
+</ul>
+</div><p>当传感器数据改变时触发该事件；该事件触发的最高频繁由<code>sensors.register()</code>指定的delay参数决定。</p>
+<p>事件参数根据传感器类型不同而不同，具体参见本章最前面的列表。</p>
+<p>一个监听光线传感器和加速度传感器并且每0.5秒获取一个数据并最终写入一个csv表格文件的例子如下：</p>
+<pre><code>//csv文件路径
+cosnt csvPath = &quot;/sdcard/sensors_data.csv&quot;;
+//记录光线传感器的数据
+var light = 0;
+//记录加速度传感器的数据
+var ax = 0;
+var ay = 0;
+var az = 0;
+//监听光线传感器
+sensors.register(&quot;light&quot;, sensors.delay.fastest)
+    .on(&quot;change&quot;, l =&gt; {
+        light = l;
+    });
+//监听加速度传感器
+sensors.register(&quot;accelerometer&quot;, sensors.delay.fastest)
+    .on(&quot;change&quot;, (ax0, ay0, az0) =&gt; {
+        ax = ax0;
+        ay = ay0;
+        az = az0;
+    });
+
+var file = open(csvPath, &quot;w&quot;);
+//写csv表格头
+file.writeline(&quot;light,ax,ay,az&quot;)
+//每0.5秒获取一次数据并写入文件
+setInterval(()=&gt;{
+    file.writeline(util.format(&quot;%d,%d,%d,%d&quot;, light, ax, ay, az));
+}, 500);
+//10秒后退出并打开文件
+setTimeout(()=&gt;{
+    file.close();
+    sensors.unregsiterAll();
+    app.viewFile(csvPath);
+}, 10 * 1000);
+</code></pre><h2>事件: &#39;accuracy_change&#39;<span><a class="mark" href="#sensors_accuracy_change" id="sensors_accuracy_change">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>accuracy</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 表示传感器精度。为以下值之一:<ul>
+<li>-1 传感器未连接</li>
+<li>0 传感器不可读</li>
+<li>1 低精度</li>
+<li>2 中精度</li>
+<li>3 高精度</li>
+</ul>
+</li>
+</ul>
+</div><p>当传感器精度改变时会触发的事件。比较少用。</p>
+
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <!-- __TRACKING__ -->
+</body>
+</html>
