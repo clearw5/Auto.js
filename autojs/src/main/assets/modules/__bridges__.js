@@ -42,6 +42,15 @@ function wrap(value){
     return value;
 }
 
+bridges.toArray = function (iterable) {
+    var iterator = iterable.iterator();
+    var arr = [];
+    while (iterator.hasNext()) {
+        arr.push(iterator.next());
+    }
+    return arr;
+};
+
 bridges.asArray = function (list) {
     var arr = [];
     for (var i = 0; i < list.size(); i++) {
@@ -59,14 +68,7 @@ bridges.asArray = function (list) {
     }
     return arr;
 };
-bridges.toArray = function (iterable) {
-    var iterator = iterable.iterator();
-    var arr = [];
-    while (iterator.hasNext()) {
-        arr.push(iterator.next());
-    }
-    return arr;
-};
+
 bridges.toString = function (o) {
     return String(o);
 };

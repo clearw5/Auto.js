@@ -1,15 +1,29 @@
 package org.autojs.autojs.ui.edit;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.DrawerLayout;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Parcelable;
+
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -18,36 +32,45 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.autojs.engine.JavaScriptEngine;
+import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.pio.PFiles;
+import com.stardust.util.BackPressedHandler;
+import com.stardust.util.Callback;
+import com.stardust.util.ViewUtils;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EViewGroup;
+import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
+import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.model.autocomplete.AutoCompletion;
 import org.autojs.autojs.model.autocomplete.CodeCompletion;
+import org.autojs.autojs.model.autocomplete.CodeCompletions;
+import org.autojs.autojs.model.autocomplete.Symbols;
 import org.autojs.autojs.model.indices.Module;
 import org.autojs.autojs.model.indices.Property;
 import org.autojs.autojs.model.script.Scripts;
+import org.autojs.autojs.tool.Observers;
 import org.autojs.autojs.ui.doc.ManualDialog;
-import org.autojs.autojs.model.autocomplete.CodeCompletions;
 import org.autojs.autojs.ui.edit.completion.CodeCompletionBar;
-import org.autojs.autojs.model.autocomplete.Symbols;
+import org.autojs.autojs.ui.edit.debug.DebugBar;
 import org.autojs.autojs.ui.edit.editor.CodeEditor;
 import org.autojs.autojs.ui.edit.keyboard.FunctionsKeyboardHelper;
 import org.autojs.autojs.ui.edit.keyboard.FunctionsKeyboardView;
 import org.autojs.autojs.ui.edit.theme.Theme;
 import org.autojs.autojs.ui.edit.theme.Themes;
+import org.autojs.autojs.ui.edit.toolbar.DebugToolbarFragment;
+import org.autojs.autojs.ui.edit.toolbar.DebugToolbarFragment_;
+import org.autojs.autojs.ui.edit.toolbar.NormalToolbarFragment;
+import org.autojs.autojs.ui.edit.toolbar.NormalToolbarFragment_;
+import org.autojs.autojs.ui.edit.toolbar.SearchToolbarFragment;
+import org.autojs.autojs.ui.edit.toolbar.SearchToolbarFragment_;
+import org.autojs.autojs.ui.edit.toolbar.ToolbarFragment;
 import org.autojs.autojs.ui.log.LogActivity_;
 import org.autojs.autojs.ui.widget.EWebView;
 import org.autojs.autojs.ui.widget.SimpleTextWatcher;
-import org.autojs.autojs.ui.widget.ToolbarMenuItem;
-import com.stardust.util.BackPressedHandler;
-import com.stardust.util.ViewUtils;
-import com.stardust.widget.ViewSwitcher;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EViewGroup;
-import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
 import java.util.List;
@@ -57,12 +80,15 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 import static org.autojs.autojs.model.script.Scripts.ACTION_ON_EXECUTION_FINISHED;
+import static org.autojs.autojs.model.script.Scripts.EXTRA_EXCEPTION_COLUMN_NUMBER;
+import static org.autojs.autojs.model.script.Scripts.EXTRA_EXCEPTION_LINE_NUMBER;
+import static org.autojs.autojs.model.script.Scripts.EXTRA_EXCEPTION_MESSAGE;
 
 /**
  * Created by Stardust on 2017/9/28.
  */
 @EViewGroup(R.layout.editor_view)
-public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintClickListener, FunctionsKeyboardView.ClickCallback {
+public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintClickListener, FunctionsKeyboardView.ClickCallback, ToolbarFragment.OnMenuItemClickListener {
 
     public static final String EXTRA_PATH = "path";
     public static final String EXTRA_NAME = "name";
@@ -77,12 +103,6 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     @ViewById(R.id.code_completion_bar)
     CodeCompletionBar mCodeCompletionBar;
 
-    @ViewById(R.id.toolbar_switcher)
-    ViewSwitcher mToolbarSwitcher;
-
-    @ViewById(R.id.replace)
-    ToolbarMenuItem mReplaceMenuItem;
-
     @ViewById(R.id.input_method_enhance_bar)
     View mInputMethodEnhanceBar;
 
@@ -95,6 +115,9 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     @ViewById(R.id.functions_keyboard)
     FunctionsKeyboardView mFunctionsKeyboard;
 
+    @ViewById(R.id.debug_bar)
+    DebugBar mDebugBar;
+
     @ViewById(R.id.docs)
     EWebView mDocsWebView;
 
@@ -102,9 +125,9 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     DrawerLayout mDrawerLayout;
 
     private String mName;
-    private File mFile;
+    private Uri mUri;
     private boolean mReadOnly = false;
-    private ScriptExecution mScriptExecution;
+    private int mScriptExecutionId;
     private AutoCompletion mAutoCompletion;
     private Theme mEditorTheme;
     private FunctionsKeyboardHelper mFunctionsKeyboardHelper;
@@ -112,11 +135,14 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         @Override
         public void onReceive(Context context, Intent intent) {
             if (ACTION_ON_EXECUTION_FINISHED.equals(intent.getAction())) {
-                mScriptExecution = null;
+                mScriptExecutionId = ScriptExecution.NO_ID;
+                if (mDebugging) {
+                    exitDebugging();
+                }
                 setMenuItemStatus(R.id.run, true);
-                String msg = intent.getStringExtra(Scripts.EXTRA_EXCEPTION_MESSAGE);
-                int line = intent.getIntExtra(Scripts.EXTRA_EXCEPTION_LINE_NUMBER, -1);
-                int col = intent.getIntExtra(Scripts.EXTRA_EXCEPTION_COLUMN_NUMBER, 0);
+                String msg = intent.getStringExtra(EXTRA_EXCEPTION_MESSAGE);
+                int line = intent.getIntExtra(EXTRA_EXCEPTION_LINE_NUMBER, -1);
+                int col = intent.getIntExtra(EXTRA_EXCEPTION_COLUMN_NUMBER, 0);
                 if (line >= 1) {
                     mEditor.jumpTo(line - 1, col);
                 }
@@ -126,7 +152,11 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
             }
         }
     };
+
+    private SparseBooleanArray mMenuItemStatus = new SparseBooleanArray();
     private String mRestoredText;
+    private NormalToolbarFragment mNormalToolbar = new NormalToolbarFragment_();
+    private boolean mDebugging = false;
 
     public EditorView(Context context) {
         super(context);
@@ -158,25 +188,27 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         }
     }
 
-    public File getFile() {
-        return mFile;
+    public Uri getUri() {
+        return mUri;
     }
 
-    public void handleIntent(Intent intent) {
+    public Observable<String> handleIntent(Intent intent) {
         mName = intent.getStringExtra(EXTRA_NAME);
-        handleText(intent);
-        mReadOnly = intent.getBooleanExtra(EXTRA_READ_ONLY, false);
-        boolean saveEnabled = intent.getBooleanExtra(EXTRA_SAVE_ENABLED, true);
-        if (mReadOnly || !saveEnabled) {
-            findViewById(R.id.save).setVisibility(View.GONE);
-        }
-        if (!intent.getBooleanExtra(EXTRA_RUN_ENABLED, true)) {
-            findViewById(R.id.run).setVisibility(GONE);
-        }
-        if (mReadOnly) {
-            mEditor.setReadOnly(true);
-        }
-
+        return handleText(intent)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(str -> {
+                    mReadOnly = intent.getBooleanExtra(EXTRA_READ_ONLY, false);
+                    boolean saveEnabled = intent.getBooleanExtra(EXTRA_SAVE_ENABLED, true);
+                    if (mReadOnly || !saveEnabled) {
+                        findViewById(R.id.save).setVisibility(View.GONE);
+                    }
+                    if (!intent.getBooleanExtra(EXTRA_RUN_ENABLED, true)) {
+                        findViewById(R.id.run).setVisibility(GONE);
+                    }
+                    if (mReadOnly) {
+                        mEditor.setReadOnly(true);
+                    }
+                });
     }
 
     public void setRestoredText(String text) {
@@ -184,33 +216,39 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         mEditor.setText(text);
     }
 
-    private void handleText(Intent intent) {
+    private Observable<String> handleText(Intent intent) {
         String path = intent.getStringExtra(EXTRA_PATH);
         String content = intent.getStringExtra(EXTRA_CONTENT);
         if (content != null) {
             setInitialText(content);
+            return Observable.just(content);
         } else {
-            mFile = new File(path);
-            if (mName == null) {
-                mName = mFile.getName();
+            if (path == null) {
+                if (intent.getData() == null) {
+                    return Observable.error(new IllegalArgumentException("path and content is empty"));
+                } else {
+                    mUri = intent.getData();
+                }
+            } else {
+                mUri = Uri.fromFile(new File(path));
             }
-            loadFile(mFile);
+            if (mName == null) {
+                mName = PFiles.getNameWithoutExtension(mUri.getPath());
+            }
+            return loadUri(mUri);
         }
     }
 
 
-    private void loadFile(final File file) {
+    @SuppressLint("CheckResult")
+    private Observable<String> loadUri(final Uri uri) {
         mEditor.setProgress(true);
-        Observable.fromCallable(() -> PFiles.read(file))
+        return Observable.fromCallable(() -> PFiles.read(getContext().getContentResolver().openInputStream(uri)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> {
+                .doOnNext(s -> {
                     setInitialText(s);
                     mEditor.setProgress(false);
-                }, err -> {
-                    err.printStackTrace();
-                    Toast.makeText(getContext(), getContext().getString(R.string.text_cannot_read_file, file.getPath()),
-                            Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -225,22 +263,48 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
 
     private void setMenuItemStatus(int id, boolean enabled) {
-        findViewById(id).setEnabled(enabled);
+        mMenuItemStatus.put(id, enabled);
+        ToolbarFragment fragment = (ToolbarFragment) getActivity().getSupportFragmentManager()
+                .findFragmentById(R.id.toolbar_menu);
+        if (fragment == null) {
+            mNormalToolbar.setMenuItemStatus(id, enabled);
+        } else {
+            fragment.setMenuItemStatus(id, enabled);
+        }
     }
 
+    public boolean getMenuItemStatus(int id, boolean defValue) {
+        return mMenuItemStatus.get(id, defValue);
+    }
 
     @AfterViews
     void init() {
-        setTheme(Theme.getDefault(getContext()));
+        //setTheme(Theme.getDefault(getContext()));
         setUpEditor();
         setUpInputMethodEnhancedBar();
         setUpFunctionsKeyboard();
         setMenuItemStatus(R.id.save, false);
         mDocsWebView.getWebView().getSettings().setDisplayZoomControls(true);
         mDocsWebView.getWebView().loadUrl(Pref.getDocumentationUrl() + "index.html");
-        Themes.getCurrent(getContext()).
-                observeOn(AndroidSchedulers.mainThread())
+        Themes.getCurrent(getContext())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::setTheme);
+        initNormalToolbar();
+    }
+
+    private void initNormalToolbar() {
+        mNormalToolbar.setOnMenuItemClickListener(this);
+        mNormalToolbar.setOnMenuItemLongClickListener(id -> {
+            if (id == R.id.run) {
+                debug();
+                return true;
+            }
+            return false;
+        });
+        Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.toolbar_menu);
+        if (fragment == null) {
+            showNormalToolbar();
+        }
     }
 
     private void setUpFunctionsKeyboard() {
@@ -268,12 +332,16 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
             setMenuItemStatus(R.id.undo, mEditor.canUndo());
             setMenuItemStatus(R.id.redo, mEditor.canRedo());
         }));
-        mEditor.setCursorChangeCallback(this::autoComplete);
+        mEditor.addCursorChangeCallback(this::autoComplete);
         mEditor.getCodeEditText().setTextSize(Pref.getEditorTextSize((int) ViewUtils.pxToSp(getContext(), mEditor.getCodeEditText().getTextSize())));
     }
 
     private void autoComplete(String line, int cursor) {
         mAutoCompletion.onCursorChange(line, cursor);
+    }
+
+    public DebugBar getDebugBar() {
+        return mDebugBar;
     }
 
     public void setTheme(Theme theme) {
@@ -288,37 +356,72 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     public boolean onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             if (mDocsWebView.getWebView().canGoBack()) {
                 mDocsWebView.getWebView().goBack();
             } else {
-                mDrawerLayout.closeDrawer(Gravity.START);
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             }
             return true;
         }
         return false;
     }
 
+    @Override
+    public void onToolbarMenuItemClick(int id) {
+        switch (id) {
+            case R.id.run:
+                runAndSaveFileIfNeeded();
+                break;
+            case R.id.save:
+                saveFile();
+                break;
+            case R.id.undo:
+                undo();
+                break;
+            case R.id.redo:
+                redo();
+                break;
+            case R.id.replace:
+                replace();
+                break;
+            case R.id.find_next:
+                findNext();
+                break;
+            case R.id.find_prev:
+                findPrev();
+                break;
+            case R.id.cancel_search:
+                cancelSearch();
+                break;
+        }
+    }
 
-    @Click(R.id.run)
+    @SuppressLint("CheckResult")
     public void runAndSaveFileIfNeeded() {
         save().observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> run());
+                .subscribe(s -> run(true), Observers.toastMessage());
     }
 
-    public void run() {
-        Snackbar.make(this, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
-        mScriptExecution = Scripts.runWithBroadcastSender(mFile);
+    public ScriptExecution run(boolean showMessage) {
+        if (showMessage) {
+            Snackbar.make(this, R.string.text_start_running, Snackbar.LENGTH_SHORT).show();
+        }
+        // TODO: 2018/10/24
+        ScriptExecution execution = Scripts.INSTANCE.runWithBroadcastSender(new File(mUri.getPath()));
+        if (execution == null) {
+            return null;
+        }
+        mScriptExecutionId = execution.getId();
         setMenuItemStatus(R.id.run, false);
+        return execution;
     }
 
 
-    @Click(R.id.undo)
     public void undo() {
         mEditor.undo();
     }
 
-    @Click(R.id.redo)
     public void redo() {
         mEditor.redo();
     }
@@ -326,7 +429,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     public Observable<String> save() {
         return Observable.just(mEditor.getText())
                 .observeOn(Schedulers.io())
-                .doOnNext(s -> PFiles.write(mFile, s))
+                .doOnNext(s -> PFiles.write(getContext().getContentResolver().openOutputStream(mUri), s))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(s -> {
                     mEditor.markTextAsSaved();
@@ -335,32 +438,55 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     public void forceStop() {
-        if (mScriptExecution != null) {
-            mScriptExecution.getEngine().forceStop();
+        doWithCurrentEngine(ScriptEngine::forceStop);
+    }
+
+    private void doWithCurrentEngine(Callback<ScriptEngine> callback) {
+        ScriptExecution execution = AutoJs.getInstance().getScriptEngineService().getScriptExecution(mScriptExecutionId);
+        if (execution != null) {
+            ScriptEngine engine = execution.getEngine();
+            if (engine != null) {
+                callback.call(engine);
+            }
         }
     }
 
-    @Click(R.id.save)
+    @SuppressLint("CheckResult")
     public void saveFile() {
-        save().subscribe();
+        save()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(Observers.emptyConsumer(), e -> {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
-    @Click(R.id.find_next)
     void findNext() {
         mEditor.findNext();
     }
 
-    @Click(R.id.find_prev)
     void findPrev() {
         mEditor.findPrev();
     }
 
-    @Click(R.id.cancel)
     void cancelSearch() {
-        mToolbarSwitcher.showFirst();
+        showNormalToolbar();
     }
 
-    @Click(R.id.replace)
+    private void showNormalToolbar() {
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.toolbar_menu, mNormalToolbar)
+                .commitAllowingStateLoss();
+    }
+
+    FragmentActivity getActivity() {
+        Context context = getContext();
+        while (!(context instanceof Activity) && context instanceof ContextWrapper) {
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        return (FragmentActivity) context;
+    }
+
     void replace() {
         mEditor.replaceSelection();
     }
@@ -374,14 +500,13 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     public void showConsole() {
-        if (mScriptExecution != null) {
-            ((JavaScriptEngine) mScriptExecution.getEngine()).getRuntime().console.show();
-        }
+        doWithCurrentEngine(engine -> ((JavaScriptEngine) engine).getRuntime().console.show());
     }
 
     public void openByOtherApps() {
-        if (mFile != null)
-            Scripts.openByOtherApps(mFile);
+        if (mUri != null) {
+            Scripts.INSTANCE.openByOtherApps(mUri);
+        }
     }
 
     public void beautifyCode() {
@@ -431,22 +556,54 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         return mEditor;
     }
 
-    public void find(String keywords, boolean usingRegex) {
+    public void find(String keywords, boolean usingRegex) throws CodeEditor.CheckedPatternSyntaxException {
         mEditor.find(keywords, usingRegex);
-        mReplaceMenuItem.setVisibility(GONE);
-        mToolbarSwitcher.showSecond();
+        showSearchToolbar(false);
     }
 
-    public void replace(String keywords, String replacement, boolean usingRegex) {
+    private void showSearchToolbar(boolean showReplaceItem) {
+        SearchToolbarFragment searchToolbarFragment = SearchToolbarFragment_.builder()
+                .arg(SearchToolbarFragment.ARGUMENT_SHOW_REPLACE_ITEM, showReplaceItem)
+                .build();
+        searchToolbarFragment.setOnMenuItemClickListener(this);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.toolbar_menu, searchToolbarFragment)
+                .commit();
+    }
+
+    public void replace(String keywords, String replacement, boolean usingRegex) throws CodeEditor.CheckedPatternSyntaxException {
         mEditor.replace(keywords, replacement, usingRegex);
-        mReplaceMenuItem.setVisibility(VISIBLE);
-        mToolbarSwitcher.showSecond();
+        showSearchToolbar(true);
     }
 
-    public void replaceAll(String keywords, String replacement, boolean usingRegex) {
+    public void replaceAll(String keywords, String replacement, boolean usingRegex) throws CodeEditor.CheckedPatternSyntaxException {
         mEditor.replaceAll(keywords, replacement, usingRegex);
     }
 
+
+    public void debug() {
+        DebugToolbarFragment debugToolbarFragment = DebugToolbarFragment_.builder()
+                .build();
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.toolbar_menu, debugToolbarFragment)
+                .commit();
+        mDebugBar.setVisibility(VISIBLE);
+        mInputMethodEnhanceBar.setVisibility(GONE);
+        mDebugging = true;
+    }
+
+    public void exitDebugging() {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.toolbar_menu);
+        if (fragment instanceof DebugToolbarFragment) {
+            ((DebugToolbarFragment) fragment).detachDebugger();
+        }
+        showNormalToolbar();
+        mEditor.setDebuggingLine(-1);
+        mDebugBar.setVisibility(GONE);
+        mInputMethodEnhanceBar.setVisibility(VISIBLE);
+        mDebugging = false;
+    }
 
     private void showErrorMessage(String msg) {
         Snackbar.make(EditorView.this, getResources().getString(R.string.text_error) + ": " + msg, Snackbar.LENGTH_LONG)
@@ -475,7 +632,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
                 .url(absUrl)
                 .pinToLeft(v -> {
                     mDocsWebView.getWebView().loadUrl(absUrl);
-                    mDrawerLayout.openDrawer(Gravity.START);
+                    mDrawerLayout.openDrawer(GravityCompat.START);
                 })
                 .show();
     }
@@ -511,5 +668,36 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         }
     }
 
+    public int getScriptExecutionId() {
+        return mScriptExecutionId;
+    }
 
+    @Nullable
+    public ScriptExecution getScriptExecution() {
+        return AutoJs.getInstance().getScriptEngineService().getScriptExecution(mScriptExecutionId);
+    }
+
+    @Nullable
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        Parcelable superData = super.onSaveInstanceState();
+        bundle.putParcelable("super_data", superData);
+        bundle.putInt("script_execution_id", mScriptExecutionId);
+        return bundle;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        Bundle bundle = (Bundle) state;
+        Parcelable superData = bundle.getParcelable("super_data");
+        mScriptExecutionId = bundle.getInt("script_execution_id", ScriptExecution.NO_ID);
+        super.onRestoreInstanceState(superData);
+        setMenuItemStatus(R.id.run, mScriptExecutionId == ScriptExecution.NO_ID);
+    }
+
+    public void destroy() {
+        mEditor.destroy();
+        mAutoCompletion.shutdown();
+    }
 }

@@ -9,6 +9,7 @@ import android.util.SparseArray;
 import com.stardust.autojs.core.looper.Timer;
 import com.stardust.autojs.core.looper.TimerThread;
 import com.stardust.autojs.runtime.ScriptBridges;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.concurrent.VolatileBox;
 
 /**
@@ -25,10 +26,10 @@ public class Timers {
     private Timer mUiTimer;
 
 
-    public Timers(ScriptBridges bridges, Threads threads) {
-        mMainTimer = new Timer(bridges, mMaxCallbackUptimeMillisForAllThreads);
-        mUiTimer = new Timer(bridges, mMaxCallbackUptimeMillisForAllThreads, Looper.getMainLooper());
-        mThreads = threads;
+    public Timers(ScriptRuntime runtime) {
+        mMainTimer = new Timer(runtime, mMaxCallbackUptimeMillisForAllThreads);
+        mUiTimer = new Timer(runtime, mMaxCallbackUptimeMillisForAllThreads, Looper.getMainLooper());
+        mThreads = runtime.threads;
     }
 
     public Timer getMainTimer() {
@@ -80,14 +81,14 @@ public class Timers {
 
     public boolean hasPendingCallbacks() {
         //如果是脚本主线程，则检查所有子线程中的定时回调。mFutureCallbackUptimeMillis用来记录所有子线程中定时最久的一个。
-        // if (mThreads.getMainThread() == Thread.currentThread()) {
-        //   return mMaxCallbackUptimeMillisForAllThreads.get() > SystemClock.uptimeMillis();
-        //}
-        //否则检查当前线程的定时回调
+        if (mThreads.getMainThread() == Thread.currentThread()) {
+            return mMaxCallbackUptimeMillisForAllThreads.get() > SystemClock.uptimeMillis();
+        }
+        // 否则检查当前线程的定时回调
         return getTimerForCurrentThread().hasPendingCallbacks();
     }
 
-    public void recycle(){
+    public void recycle() {
         mMainTimer.removeAllCallbacks();
     }
 

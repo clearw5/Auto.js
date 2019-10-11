@@ -1,6 +1,6 @@
 package com.stardust.autojs.script;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
@@ -41,6 +41,15 @@ public class JavaScriptFileSource extends JavaScriptSource {
         if (mScript == null)
             mScript = PFiles.read(mFile);
         return mScript;
+    }
+
+    @Override
+    protected int parseExecutionMode() {
+        short flags = EncryptedScriptFileHeader.INSTANCE.getHeaderFlags(mFile);
+        if (flags == EncryptedScriptFileHeader.FLAG_INVALID_FILE) {
+            return super.parseExecutionMode();
+        }
+        return flags;
     }
 
     @Override

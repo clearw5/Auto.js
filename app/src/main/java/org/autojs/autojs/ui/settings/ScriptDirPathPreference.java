@@ -1,7 +1,7 @@
 package org.autojs.autojs.ui.settings;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -13,9 +13,10 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.prefs.MaterialEditTextPreference;
 
+import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
+import org.autojs.autojs.model.explorer.Explorers;
 import org.autojs.autojs.storage.file.FileObservable;
-import org.autojs.autojs.storage.file.StorageFileProvider;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 import org.autojs.autojs.tool.SimpleObserver;
 
@@ -55,18 +56,18 @@ public class ScriptDirPathPreference extends MaterialEditTextPreference {
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {
-        String oldPath = StorageFileProvider.getDefaultDirectoryPath();
+        String oldPath = Pref.getScriptDirPath();
         super.onDialogClosed(positiveResult);
         if (!positiveResult) {
             return;
         }
-        String newPath = StorageFileProvider.getDefaultDirectoryPath();
+        String newPath = Pref.getScriptDirPath();
         if (TextUtils.equals(oldPath, newPath)) {
             return;
         }
         int id = mRadioGroup.getCheckedRadioButtonId();
         if (id == R.id.none) {
-            StorageFileProvider.getDefault().refreshAll();
+            Explorers.workspace().refreshAll();
             return;
         }
         Observable<File> fileObservable;
@@ -99,7 +100,7 @@ public class ScriptDirPathPreference extends MaterialEditTextPreference {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         dialog.dismiss();
-                        StorageFileProvider.getDefault().refreshAll();
+                        Explorers.workspace().refreshAll();
                         Toast.makeText(getContext(), getContext().getString(R.string.text_error_copy_file,
                                 e.getMessage()), Toast.LENGTH_LONG).show();
                     }
@@ -107,7 +108,7 @@ public class ScriptDirPathPreference extends MaterialEditTextPreference {
                     @Override
                     public void onComplete() {
                         dialog.dismiss();
-                        StorageFileProvider.getDefault().refreshAll();
+                        Explorers.workspace().refreshAll();
                     }
                 });
     }

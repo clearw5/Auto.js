@@ -5,7 +5,7 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -13,9 +13,10 @@
         <com.stardust.theme.widget.ThemeColorToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:theme="@style/ToolBarStyle"/>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
 
     <FrameLayout
@@ -32,12 +33,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="6dp"
                     android:layout_marginRight="6dp"
-                    app:cardBackgroundColor="@android:color/white"
                     app:cardCornerRadius="2dp"
                     app:cardElevation="1dp"
                     app:cardUseCompatPadding="true">
@@ -57,24 +57,26 @@
                             android:textColor="?android:textColorSecondary"/>
 
                         <LinearLayout
+                            android:id="@+id/source_path_container"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1">
+                                android:layout_weight="1"
+                                android:hint="@string/text_source_file_path">
 
-                                <android.support.design.widget.TextInputEditText
+                                <androidx.appcompat.widget.AppCompatEditText
                                     android:id="@+id/source_path"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:hint="@string/text_source_file_path"/>
+                                    />
 
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
 
-                            <android.support.v7.widget.AppCompatButton
+                            <androidx.appcompat.widget.AppCompatButton
                                 android:id="@+id/select_source"
                                 style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
                                 android:layout_width="60dp"
@@ -90,20 +92,21 @@
                             android:layout_marginTop="12dp"
                             android:orientation="horizontal">
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1">
+                                android:layout_weight="1"
+                                android:hint="@string/text_output_apk_path">
 
-                                <android.support.design.widget.TextInputEditText
+                                <androidx.appcompat.widget.AppCompatEditText
                                     android:id="@+id/output_path"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:hint="@string/text_output_apk_path"/>
+                                    />
 
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
 
-                            <android.support.v7.widget.AppCompatButton
+                            <androidx.appcompat.widget.AppCompatButton
                                 android:id="@+id/select_output"
                                 style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
                                 android:layout_width="60dp"
@@ -113,9 +116,10 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/app_config"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="6dp"
@@ -138,29 +142,29 @@
                             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                             android:textColor="?android:textColorSecondary"/>
 
-                        <android.support.design.widget.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <android.support.design.widget.TextInputEditText
-                                android:id="@+id/app_name"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="@string/text_app_name"/>
-                        </android.support.design.widget.TextInputLayout>
-
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp">
+                            android:hint="@string/text_app_name">
 
-                            <android.support.design.widget.TextInputEditText
+                            <androidx.appcompat.widget.AppCompatEditText
+                                android:id="@+id/app_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:hint="@string/text_package_name">
+
+                            <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/package_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_."
-                                android:hint="@string/text_package_name"/>
-                        </android.support.design.widget.TextInputLayout>
+                                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_."/>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -173,32 +177,34 @@
                                 android:layout_weight="1"
                                 android:orientation="vertical">
 
-                                <android.support.design.widget.TextInputLayout
+                                <com.google.android.material.textfield.TextInputLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="12dp">
+                                    android:layout_marginTop="12dp"
+                                    android:hint="@string/text_version_name">
 
-                                    <android.support.design.widget.TextInputEditText
+                                    <androidx.appcompat.widget.AppCompatEditText
                                         android:id="@+id/version_name"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:hint="@string/text_version_name"
-                                        android:text="1.0.0"/>
-                                </android.support.design.widget.TextInputLayout>
 
-                                <android.support.design.widget.TextInputLayout
+                                        android:text="1.0.0"/>
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="12dp">
+                                    android:layout_marginTop="12dp"
+                                    android:hint="@string/text_version_code">
 
-                                    <android.support.design.widget.TextInputEditText
+                                    <androidx.appcompat.widget.AppCompatEditText
                                         android:id="@+id/version_code"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:hint="@string/text_version_code"
+
                                         android:inputType="number"
                                         android:text="1"/>
-                                </android.support.design.widget.TextInputLayout>
+                                </com.google.android.material.textfield.TextInputLayout>
                             </LinearLayout>
 
                             <LinearLayout
@@ -209,8 +215,8 @@
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginBottom="12dp"
                                     android:layout_marginTop="12dp"
+                                    android:layout_marginBottom="12dp"
                                     android:text="@string/text_icon"
                                     android:textColor="#9e9e9e"
                                     android:textSize="12sp"/>
@@ -232,7 +238,7 @@
 
                     </LinearLayout>
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
             </LinearLayout>
         </ScrollView>
 

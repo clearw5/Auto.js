@@ -24,7 +24,7 @@ public class ScriptExecutionObserver implements ScriptExecutionListener {
     }
 
     @Override
-    public void onException(ScriptExecution execution, Exception e) {
+    public void onException(ScriptExecution execution, Throwable e) {
         for (ScriptExecutionListener listener : mScriptExecutionListeners) {
             listener.onException(execution, e);
         }
@@ -61,7 +61,7 @@ public class ScriptExecutionObserver implements ScriptExecutionListener {
         }
 
         @Override
-        public void onException(ScriptExecution execution, Exception e) {
+        public void onException(ScriptExecution execution, Throwable e) {
             mScriptExecutionListener.onException(execution, e);
             mScriptExecutionObserver.onException(execution, e);
         }

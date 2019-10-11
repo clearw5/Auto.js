@@ -17,8 +17,12 @@
         android:id="@+id/send"
         android:title="@string/text_send"/>
 
-
-    <item android:title="@string/text_more">
+    <item
+        android:id="@+id/reset"
+        android:title="@string/text_reset_to_initial_content"/>
+    <item
+        android:id="@+id/more"
+        android:title="@string/text_more">
 
         <menu>
 

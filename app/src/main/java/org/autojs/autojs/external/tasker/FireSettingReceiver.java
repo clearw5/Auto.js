@@ -3,7 +3,7 @@ package org.autojs.autojs.external.tasker;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.autojs.autojs.external.ScriptIntents;
 import org.autojs.autojs.external.open.RunIntentActivity;

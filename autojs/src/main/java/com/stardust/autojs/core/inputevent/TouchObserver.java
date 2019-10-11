@@ -1,6 +1,6 @@
 package com.stardust.autojs.core.inputevent;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import static com.stardust.autojs.core.record.inputevent.InputEventRecorder.parseDeviceNumber;
 

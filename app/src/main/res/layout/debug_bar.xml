@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#aaffa726"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/ic_debug"/>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/text_debug"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"/>
+
+
+        <ImageView
+            android:id="@+id/execute"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginRight="8dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_script"
+            android:tint="@android:color/white"/>
+
+        <ImageView
+            android:id="@+id/add"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_add_white_48dp"
+            android:tint="@android:color/white"/>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/variables"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

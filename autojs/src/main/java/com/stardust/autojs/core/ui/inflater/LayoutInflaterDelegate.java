@@ -18,118 +18,118 @@ public interface LayoutInflaterDelegate {
 
     LayoutInflaterDelegate NO_OP = new NoOp();
 
-    View beforeInflation(String xml, ViewGroup parent);
+    View beforeInflation(InflateContext inflateContext, String xml, ViewGroup parent);
 
-    View afterInflation(View doInflation, String xml, ViewGroup parent);
+    View afterInflation(InflateContext inflateContext, View doInflation, String xml, ViewGroup parent);
 
-    String beforeConvertXml(String xml);
+    String beforeConvertXml(InflateContext inflateContext, String xml);
 
-    String afterConvertXml(String xml);
+    String afterConvertXml(InflateContext inflateContext, String xml);
 
-    View beforeInflateView(Node node, ViewGroup parent, boolean attachToParent);
+    View beforeInflateView(InflateContext inflateContext, Node node, ViewGroup parent, boolean attachToParent);
 
-    View afterInflateView(View view, Node node, ViewGroup parent, boolean attachToParent);
+    View afterInflateView(InflateContext inflateContext, View view, Node node, ViewGroup parent, boolean attachToParent);
 
-    View beforeCreateView(Node node, String viewName, HashMap<String, String> attrs);
+    View beforeCreateView(InflateContext inflateContext, Node node, String viewName, ViewGroup parent, HashMap<String, String> attrs);
 
-    View afterCreateView(View view, Node node, String viewName, HashMap<String, String> attrs);
+    View afterCreateView(InflateContext inflateContext, View view, Node node, String viewName, ViewGroup parent, HashMap<String, String> attrs);
 
-    boolean beforeApplyAttributes(View view, ViewInflater<View> inflater, HashMap<String, String> attrs, ViewGroup parent);
+    boolean beforeApplyAttributes(InflateContext inflateContext, View view, ViewInflater<View> inflater, HashMap<String, String> attrs, ViewGroup parent);
 
-    void afterApplyAttributes(View view, ViewInflater<View> inflater, HashMap<String, String> attrs, ViewGroup parent);
+    void afterApplyAttributes(InflateContext inflateContext, View view, ViewInflater<View> inflater, HashMap<String, String> attrs, ViewGroup parent);
 
-    boolean beforeInflateChildren(ViewInflater<View> inflater, Node node, ViewGroup parent);
+    boolean beforeInflateChildren(InflateContext inflateContext, ViewInflater<View> inflater, Node node, ViewGroup parent);
 
-    void afterInflateChildren(ViewInflater<View> inflater, Node node, ViewGroup parent);
+    void afterInflateChildren(InflateContext inflateContext, ViewInflater<View> inflater, Node node, ViewGroup parent);
 
-    void afterApplyPendingAttributesOfChildren(ViewGroupInflater inflater, ViewGroup view);
+    void afterApplyPendingAttributesOfChildren(InflateContext inflateContext, ViewGroupInflater inflater, ViewGroup view);
 
-    boolean beforeApplyPendingAttributesOfChildren(ViewGroupInflater inflater, ViewGroup view);
+    boolean beforeApplyPendingAttributesOfChildren(InflateContext inflateContext, ViewGroupInflater inflater, ViewGroup view);
 
-    boolean beforeApplyAttribute(ViewInflater<View> inflater, View view, String ns, String attrName, String value, ViewGroup parent, Map<String, String> attrs);
+    boolean beforeApplyAttribute(InflateContext inflateContext, ViewInflater<View> inflater, View view, String ns, String attrName, String value, ViewGroup parent, Map<String, String> attrs);
 
 
-    void afterApplyAttribute(ViewInflater<View> inflater, View view, String ns, String attrName, String value, ViewGroup parent, Map<String, String> attrs);
+    void afterApplyAttribute(InflateContext inflateContext, ViewInflater<View> inflater, View view, String ns, String attrName, String value, ViewGroup parent, Map<String, String> attrs);
 
 
     class NoOp implements LayoutInflaterDelegate {
         @Override
-        public String beforeConvertXml(String xml) {
+        public String beforeConvertXml(InflateContext inflateContext, String xml) {
             return null;
         }
 
         @Override
-        public String afterConvertXml(String xml) {
+        public String afterConvertXml(InflateContext inflateContext, String xml) {
             return xml;
         }
 
         @Override
-        public View afterInflation(View result, String xml, ViewGroup parent) {
+        public View afterInflation(InflateContext inflateContext, View result, String xml, ViewGroup parent) {
             return result;
         }
 
         @Override
-        public View beforeInflation(String xml, ViewGroup parent) {
+        public View beforeInflation(InflateContext inflateContext, String xml, ViewGroup parent) {
             return null;
         }
 
         @Override
-        public View beforeInflateView(Node node, ViewGroup parent, boolean attachToParent) {
+        public View beforeInflateView(InflateContext inflateContext, Node node, ViewGroup parent, boolean attachToParent) {
             return null;
         }
 
         @Override
-        public View afterInflateView(View view, Node node, ViewGroup parent, boolean attachToParent) {
+        public View afterInflateView(InflateContext inflateContext, View view, Node node, ViewGroup parent, boolean attachToParent) {
             return view;
         }
 
         @Override
-        public View beforeCreateView(Node node, String viewName, HashMap<String, String> attrs) {
+        public View beforeCreateView(InflateContext inflateContext, Node node, String viewName, ViewGroup parent, HashMap<String, String> attrs) {
             return null;
         }
 
         @Override
-        public View afterCreateView(View view, Node node, String viewName, HashMap<String, String> attrs) {
+        public View afterCreateView(InflateContext inflateContext, View view, Node node, String viewName, ViewGroup parent, HashMap<String, String> attrs) {
             return view;
         }
 
         @Override
-        public boolean beforeApplyAttributes(View view, ViewInflater<View> inflater, HashMap<String, String> attrs, ViewGroup parent) {
+        public boolean beforeApplyAttributes(InflateContext inflateContext, View view, ViewInflater<View> inflater, HashMap<String, String> attrs, ViewGroup parent) {
             return false;
         }
 
         @Override
-        public void afterApplyAttributes(View view, ViewInflater<View> inflater, HashMap<String, String> attrs, ViewGroup parent) {
+        public void afterApplyAttributes(InflateContext inflateContext, View view, ViewInflater<View> inflater, HashMap<String, String> attrs, ViewGroup parent) {
 
         }
 
         @Override
-        public boolean beforeInflateChildren(ViewInflater<View> inflater, Node node, ViewGroup parent) {
+        public boolean beforeInflateChildren(InflateContext inflateContext, ViewInflater<View> inflater, Node node, ViewGroup parent) {
             return false;
         }
 
         @Override
-        public void afterInflateChildren(ViewInflater<View> inflater, Node node, ViewGroup parent) {
+        public void afterInflateChildren(InflateContext inflateContext, ViewInflater<View> inflater, Node node, ViewGroup parent) {
 
         }
 
         @Override
-        public void afterApplyPendingAttributesOfChildren(ViewGroupInflater inflater, ViewGroup view) {
+        public void afterApplyPendingAttributesOfChildren(InflateContext inflateContext, ViewGroupInflater inflater, ViewGroup view) {
 
         }
 
         @Override
-        public boolean beforeApplyPendingAttributesOfChildren(ViewGroupInflater inflater, ViewGroup view) {
+        public boolean beforeApplyPendingAttributesOfChildren(InflateContext inflateContext, ViewGroupInflater inflater, ViewGroup view) {
             return false;
         }
 
         @Override
-        public boolean beforeApplyAttribute(ViewInflater<View> inflater, View view, String ns, String attrName, String value, ViewGroup parent, Map<String, String> attrs) {
+        public boolean beforeApplyAttribute(InflateContext inflateContext, ViewInflater<View> inflater, View view, String ns, String attrName, String value, ViewGroup parent, Map<String, String> attrs) {
             return false;
         }
 
         @Override
-        public void afterApplyAttribute(ViewInflater<View> inflater, View view, String ns, String attrName, String value, ViewGroup parent, Map<String, String> attrs) {
+        public void afterApplyAttribute(InflateContext inflateContext, ViewInflater<View> inflater, View view, String ns, String attrName, String value, ViewGroup parent, Map<String, String> attrs) {
 
         }
     }

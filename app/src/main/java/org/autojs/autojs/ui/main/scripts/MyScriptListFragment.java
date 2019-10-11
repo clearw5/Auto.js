@@ -3,25 +3,30 @@ package org.autojs.autojs.ui.main.scripts;
 import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
+import androidx.annotation.Nullable;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import com.stardust.autojs.script.AutoFileSource;
-import org.autojs.autojs.R;
-import org.autojs.autojs.model.script.ScriptFile;
-import org.autojs.autojs.model.script.Scripts;
-import org.autojs.autojs.storage.file.StorageFileProvider;
-import org.autojs.autojs.tool.SimpleObserver;
-import org.autojs.autojs.ui.common.ScriptOperations;
-import org.autojs.autojs.ui.main.FloatingActionMenu;
-import org.autojs.autojs.ui.main.QueryEvent;
-import org.autojs.autojs.ui.main.ViewPagerFragment;
-import org.autojs.autojs.ui.viewmodel.ScriptList;
-import com.stardust.util.BackPressedHandler;
+import com.stardust.app.GlobalAppContext;
+import com.stardust.util.IntentUtil;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.autojs.autojs.Pref;
+import org.autojs.autojs.R;
+import org.autojs.autojs.external.fileprovider.AppFileProvider;
+import org.autojs.autojs.model.explorer.ExplorerDirPage;
+import org.autojs.autojs.model.explorer.Explorers;
+import org.autojs.autojs.model.script.Scripts;
+import org.autojs.autojs.tool.SimpleObserver;
+import org.autojs.autojs.ui.common.ScriptOperations;
+import org.autojs.autojs.ui.explorer.ExplorerView;
+import org.autojs.autojs.ui.main.FloatingActionMenu;
+import org.autojs.autojs.ui.main.QueryEvent;
+import org.autojs.autojs.ui.main.ViewPagerFragment;
+import org.autojs.autojs.ui.project.ProjectConfigActivity;
+import org.autojs.autojs.ui.project.ProjectConfigActivity_;
+import org.autojs.autojs.ui.viewmodel.ExplorerItemList;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -31,7 +36,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  * Created by Stardust on 2017/3/13.
  */
 @EFragment(R.layout.fragment_my_script_list)
-public class MyScriptListFragment extends ViewPagerFragment implements BackPressedHandler, FloatingActionMenu.OnFloatingActionButtonClickListener {
+public class MyScriptListFragment extends ViewPagerFragment implements FloatingActionMenu.OnFloatingActionButtonClickListener {
 
     private static final String TAG = "MyScriptListFragment";
 
@@ -40,7 +45,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
     }
 
     @ViewById(R.id.script_file_list)
-    ScriptListView mScriptFileList;
+    ExplorerView mExplorerView;
 
     private FloatingActionMenu mFloatingActionMenu;
 
@@ -52,30 +57,16 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
 
     @AfterViews
     void setUpViews() {
-        ScriptList.SortConfig sortConfig = ScriptList.SortConfig.from(PreferenceManager.getDefaultSharedPreferences(getContext()));
-        mScriptFileList.setSortConfig(sortConfig);
-        mScriptFileList.setStorageFileProvider(StorageFileProvider.getDefault());
-        mScriptFileList.setOnScriptFileClickListener((view, file) -> {
-            if (file.getType() == ScriptFile.TYPE_JAVA_SCRIPT) {
-                Scripts.edit(file);
+        ExplorerItemList.SortConfig sortConfig = ExplorerItemList.SortConfig.from(PreferenceManager.getDefaultSharedPreferences(getContext()));
+        mExplorerView.setSortConfig(sortConfig);
+        mExplorerView.setExplorer(Explorers.workspace(), ExplorerDirPage.createRoot(Pref.getScriptDirPath()));
+        mExplorerView.setOnItemClickListener((view, item) -> {
+            if (item.isEditable()) {
+                Scripts.INSTANCE.edit(getActivity(), item.toScriptFile());
+            } else {
+                IntentUtil.viewFile(GlobalAppContext.get(), item.getPath(), AppFileProvider.AUTHORITY);
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((BackPressedHandler.HostActivity) getActivity())
-                .getBackPressedObserver()
-                .registerHandlerAtFront(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        ((BackPressedHandler.HostActivity) getActivity())
-                .getBackPressedObserver()
-                .unregisterHandler(this);
     }
 
     @Override
@@ -92,7 +83,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
     private void initFloatingActionMenuIfNeeded(final FloatingActionButton fab) {
         if (mFloatingActionMenu != null)
             return;
-        mFloatingActionMenu = ((FloatingActionMenu) getActivity().findViewById(R.id.floating_action_menu));
+        mFloatingActionMenu = getActivity().findViewById(R.id.floating_action_menu);
         mFloatingActionMenu.getState()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SimpleObserver<Boolean>() {
@@ -113,8 +104,8 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
             mFloatingActionMenu.collapse();
             return true;
         }
-        if (mScriptFileList.canGoBack()) {
-            mScriptFileList.goBack();
+        if (mExplorerView.canGoBack()) {
+            mExplorerView.goBack();
             return true;
         }
         return false;
@@ -134,17 +125,17 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
             return;
         }
         if (event == QueryEvent.CLEAR) {
-            mScriptFileList.setFilter(null);
+            mExplorerView.setFilter(null);
             return;
         }
         String query = event.getQuery();
-        mScriptFileList.setFilter((file -> file.getSimplifiedName().contains(query)));
+        mExplorerView.setFilter((item -> item.getName().contains(query)));
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mScriptFileList.getSortConfig().saveInto(PreferenceManager.getDefaultSharedPreferences(getContext()));
+        mExplorerView.getSortConfig().saveInto(PreferenceManager.getDefaultSharedPreferences(getContext()));
     }
 
     @Override
@@ -163,20 +154,26 @@ public class MyScriptListFragment extends ViewPagerFragment implements BackPress
 
     @Override
     public void onClick(FloatingActionButton button, int pos) {
-        if (mScriptFileList == null)
+        if (mExplorerView == null)
             return;
         switch (pos) {
             case 0:
-                new ScriptOperations(getContext(), mScriptFileList, mScriptFileList.getCurrentDirectory())
+                new ScriptOperations(getContext(), mExplorerView, mExplorerView.getCurrentPage())
                         .newDirectory();
                 break;
             case 1:
-                new ScriptOperations(getContext(), mScriptFileList, mScriptFileList.getCurrentDirectory())
-                        .newScriptFile();
+                new ScriptOperations(getContext(), mExplorerView, mExplorerView.getCurrentPage())
+                        .newFile();
                 break;
             case 2:
-                new ScriptOperations(getContext(), mScriptFileList, mScriptFileList.getCurrentDirectory())
+                new ScriptOperations(getContext(), mExplorerView, mExplorerView.getCurrentPage())
                         .importFile();
+                break;
+            case 3:
+                ProjectConfigActivity_.intent(getContext())
+                        .extra(ProjectConfigActivity.EXTRA_PARENT_DIRECTORY, mExplorerView.getCurrentPage().getPath())
+                        .extra(ProjectConfigActivity.EXTRA_NEW_PROJECT, true)
+                        .start();
                 break;
 
         }

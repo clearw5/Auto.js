@@ -4,13 +4,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
 import com.stardust.autojs.execution.ExecutionConfig;
-import org.autojs.autojs.external.ScriptIntents;
-import org.autojs.autojs.storage.database.TimedTaskDatabase;
 
+import org.autojs.autojs.external.ScriptIntents;
+import org.autojs.autojs.storage.database.BaseModel;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDateTime;
@@ -19,11 +16,9 @@ import org.joda.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 
 
-/**
- * Created by Stardust on 2017/11/27.
- */
-@Table(database = TimedTaskDatabase.class)
-public class TimedTask {
+public class TimedTask extends BaseModel {
+
+    public static final String TABLE = "TimedTask";
 
     private static final int FLAG_DISPOSABLE = 0;
     public final static int FLAG_SUNDAY = 0x1;
@@ -36,29 +31,18 @@ public class TimedTask {
     private static final int FLAG_EVERYDAY = 0x7F;
     private static final int REQUEST_CODE = 2000;
 
-    @PrimaryKey(autoincrement = true, quickCheckAutoIncrement = true)
-    @Column(name = "id")
-    int mId = -1;
-
-    @Column(name = "time")
     long mTimeFlag;
 
-    @Column(name = "scheduled")
     boolean mScheduled;
 
-    @Column(name = "delay")
     long mDelay = 0;
 
-    @Column(name = "interval")
     long mInterval = 0;
 
-    @Column(name = "loop_times")
     int mLoopTimes = 1;
 
-    @Column(name = "millis")
     long mMillis;
 
-    @Column(name = "script_path")
     String mScriptPath;
 
     public TimedTask() {
@@ -69,9 +53,9 @@ public class TimedTask {
         mMillis = millis;
         mTimeFlag = timeFlag;
         mScriptPath = scriptPath;
-        mDelay = config.delay;
-        mLoopTimes = config.loopTimes;
-        mInterval = config.interval;
+        mDelay = config.getDelay();
+        mLoopTimes = config.getLoopTimes();
+        mInterval = config.getInterval();
     }
 
     public boolean isDisposable() {
@@ -148,17 +132,8 @@ public class TimedTask {
         return mMillis;
     }
 
-    public int getId() {
-        return mId;
-    }
-
     public String getScriptPath() {
         return mScriptPath;
-    }
-
-
-    public void setId(int id) {
-        mId = id;
     }
 
     public long getTimeFlag() {
@@ -207,7 +182,7 @@ public class TimedTask {
 
     public Intent createIntent() {
         return new Intent(TaskReceiver.ACTION_TASK)
-                .putExtra(TaskReceiver.EXTRA_TASK_ID, mId)
+                .putExtra(TaskReceiver.EXTRA_TASK_ID, getId())
                 .putExtra(ScriptIntents.EXTRA_KEY_PATH, mScriptPath)
                 .putExtra(ScriptIntents.EXTRA_KEY_DELAY, mDelay)
                 .putExtra(ScriptIntents.EXTRA_KEY_LOOP_TIMES, mLoopTimes)
@@ -216,14 +191,14 @@ public class TimedTask {
 
 
     public PendingIntent createPendingIntent(Context context) {
-        return PendingIntent.getBroadcast(context, REQUEST_CODE + 1 + getId(),
+        return PendingIntent.getBroadcast(context, (int) ((REQUEST_CODE + 1 + getId()) % 65535),
                 createIntent(), PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     @Override
     public String toString() {
         return "TimedTask{" +
-                "mId=" + mId +
+                "mId=" + getId() +
                 ", mTimeFlag=" + mTimeFlag +
                 ", mScheduled=" + mScheduled +
                 ", mDelay=" + mDelay +
@@ -234,20 +209,6 @@ public class TimedTask {
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TimedTask timedTask = (TimedTask) o;
-
-        return mId == timedTask.mId;
-    }
-
-    @Override
-    public int hashCode() {
-        return mId;
-    }
 
     public static TimedTask dailyTask(LocalTime time, String scriptPath, ExecutionConfig config) {
         return new TimedTask(time.getMillisOfDay(), FLAG_EVERYDAY, scriptPath, config);

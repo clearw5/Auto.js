@@ -1,10 +1,24 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/text_color_secondary</item>
+        <item name="android:textColorSecondary">@color/text_color_thirdly</item>
+        <item name="android:windowBackground">@color/window_background</item>
+        <item name="android:itemBackground">@color/item_background</item>
+        <item name="itemBackgroundDark">@color/item_background_dark</item>
+        <item name="android:divider">@color/divider</item>
+        <item name="drawer_item_text_color">@color/drawer_menu_item_text_color</item>
+        <item name="drawer_group_text_color">@color/drawer_menu_group_text_color</item>
+    </style>
 
+    <style name="ToolBarStyle" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorPrimary">@color/toolbar</item>
+        <item name="android:textColorSecondary">@color/toolbar</item>
+        <item name="actionMenuTextColor">@color/toolbar</item>
     </style>
 
     <style name="EditorTheme" parent="AppTheme">
@@ -13,15 +27,12 @@
     </style>
 
     <style name="AppTheme.FullScreen" parent="AppTheme">
-        <!-- Customize your theme here. -->
         <item name="windowNoTitle">true</item>
-
         <item name="windowActionBar">false</item>
     </style>
 
     <style name="AppTheme.Splash" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
         <item name="windowNoTitle">true</item>
-
         <item name="windowActionBar">false</item>
     </style>
 
@@ -42,7 +53,6 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-
     <style name="IssueReporterTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -53,8 +63,11 @@
 
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar"/>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorPrimary">#212121</item>
+        <item name="android:textColorSecondary">@color/colorAccent</item>
+    </style>
 
 </resources>

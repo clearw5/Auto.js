@@ -5,7 +5,7 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -15,101 +15,24 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ToolBarStyle"
             android:background="?attr/colorPrimary"
-            android:title="@string/_app_name"
+            android:title="@string/app_name"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <com.stardust.widget.ViewSwitcher
-                android:id="@+id/toolbar_switcher"
+            <FrameLayout
+                android:id="@+id/toolbar_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="right">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="right"
-                    android:orientation="horizontal">
-
-                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
-                        android:id="@+id/run"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        app:icon="@drawable/ic_play_arrow_white_48dp"
-                        app:icon_color="@android:color/white"
-                        app:text="@string/text_run"/>
-
-                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
-                        android:id="@+id/undo"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        app:icon="@drawable/ic_undo_white_48dp"
-                        app:text="@string/text_undo"/>
-
-                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
-                        android:id="@+id/redo"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        app:icon="@drawable/ic_redo_white_48dp"
-                        app:text="@string/text_redo"/>
-
-                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
-                        android:id="@+id/save"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:enabled="false"
-                        app:icon="@drawable/ic_save_white_48dp"
-                        app:text="@string/text_save"/>
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="right"
-                    android:orientation="horizontal">
-
-                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
-                        android:id="@+id/replace"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        app:icon="@drawable/ic_ali_replace"
-                        app:text="@string/text_replace"/>
-
-                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
-                        android:id="@+id/find_prev"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        app:icon="@drawable/ic_ali_up"
-                        app:text="@string/text_find_prev"/>
-
-                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
-                        android:id="@+id/find_next"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        app:icon="@drawable/ic_ali_down"
-                        app:text="@string/text_find_next"/>
-
-
-                    <org.autojs.autojs.ui.widget.ToolbarMenuItem
-                        android:id="@+id/cancel"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        app:icon="@drawable/ic_close_white_48dp"
-                        app:text="@string/text_cancel"/>
-
-
-                </LinearLayout>
-            </com.stardust.widget.ViewSwitcher>
+                android:layout_gravity="right"/>
 
         </com.stardust.theme.widget.ThemeColorToolbar>
 
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
 
-    <android.support.v4.widget.DrawerLayout
+    <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -166,6 +89,13 @@
                 android:layout_height="match_parent"
                 android:visibility="gone"/>
 
+
+            <org.autojs.autojs.ui.edit.debug.DebugBar
+                android:id="@+id/debug_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
         </LinearLayout>
 
         <org.autojs.autojs.ui.widget.EWebView
@@ -173,6 +103,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"/>
-    </android.support.v4.widget.DrawerLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
 
 </LinearLayout>

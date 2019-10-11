@@ -5,19 +5,18 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.stardust.autojs.core.eventloop.EventEmitter;
 import com.stardust.autojs.core.looper.Loopers;
 import com.stardust.autojs.runtime.ScriptBridges;
 import com.stardust.autojs.runtime.ScriptRuntime;
-import com.stardust.util.MapEntries;
+import com.stardust.util.MapBuilder;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Created by Stardust on 2018/2/5.
@@ -60,21 +59,21 @@ public class Sensors extends EventEmitter implements Loopers.LooperQuitHandler {
     }
 
 
-    private static final Map<String, Integer> SENSORS = new MapEntries<String, Integer>()
-            .entry("ACCELEROMETER", Sensor.TYPE_ACCELEROMETER)
-            .entry("MAGNETIC_FIELD", Sensor.TYPE_MAGNETIC_FIELD)
-            .entry("ORIENTATION", Sensor.TYPE_ORIENTATION)
-            .entry("GYROSCOPE", Sensor.TYPE_GYROSCOPE)
-            .entry("LIGHT", Sensor.TYPE_LIGHT)
-            .entry("TEMPERATURE", Sensor.TYPE_TEMPERATURE)
-            .entry("PRESSURE", Sensor.TYPE_PRESSURE)
-            .entry("AMBIENT_TEMPERATURE", Sensor.TYPE_AMBIENT_TEMPERATURE)
-            .entry("PROXIMITY", Sensor.TYPE_PROXIMITY)
-            .entry("GRAVITY", Sensor.TYPE_GRAVITY)
-            .entry("LINEAR_ACCELERATION", Sensor.TYPE_LINEAR_ACCELERATION)
-            .entry("RELATIVE_HUMIDITY", Sensor.TYPE_RELATIVE_HUMIDITY)
-            .entry("AMBIENT_TEMPERATURE", Sensor.TYPE_AMBIENT_TEMPERATURE)
-            .map();
+    private static final Map<String, Integer> SENSORS = new MapBuilder<String, Integer>()
+            .put("ACCELEROMETER", Sensor.TYPE_ACCELEROMETER)
+            .put("MAGNETIC_FIELD", Sensor.TYPE_MAGNETIC_FIELD)
+            .put("ORIENTATION", Sensor.TYPE_ORIENTATION)
+            .put("GYROSCOPE", Sensor.TYPE_GYROSCOPE)
+            .put("LIGHT", Sensor.TYPE_LIGHT)
+            .put("TEMPERATURE", Sensor.TYPE_TEMPERATURE)
+            .put("PRESSURE", Sensor.TYPE_PRESSURE)
+            .put("AMBIENT_TEMPERATURE", Sensor.TYPE_AMBIENT_TEMPERATURE)
+            .put("PROXIMITY", Sensor.TYPE_PROXIMITY)
+            .put("GRAVITY", Sensor.TYPE_GRAVITY)
+            .put("LINEAR_ACCELERATION", Sensor.TYPE_LINEAR_ACCELERATION)
+            .put("RELATIVE_HUMIDITY", Sensor.TYPE_RELATIVE_HUMIDITY)
+            .put("AMBIENT_TEMPERATURE", Sensor.TYPE_AMBIENT_TEMPERATURE)
+            .build();
 
     public boolean ignoresUnsupportedSensor = false;
     public final Delay delay = new Delay();
@@ -92,7 +91,7 @@ public class Sensors extends EventEmitter implements Loopers.LooperQuitHandler {
         mScriptBridges = runtime.bridges;
         mNoOpSensorEventEmitter = new SensorEventEmitter(runtime.bridges);
         mScriptRuntime = runtime;
-        runtime.loopers.addLooperQuiteHandler(this);
+        runtime.loopers.addLooperQuitHandler(this);
     }
 
     public SensorEventEmitter register(String sensorName) {
@@ -167,5 +166,6 @@ public class Sensors extends EventEmitter implements Loopers.LooperQuitHandler {
             }
             mSensorEventEmitters.clear();
         }
+        mScriptRuntime.loopers.removeLooperQuitHandler(this);
     }
 }

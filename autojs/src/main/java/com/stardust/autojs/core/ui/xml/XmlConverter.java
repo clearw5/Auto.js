@@ -1,11 +1,9 @@
 package com.stardust.autojs.core.ui.xml;
 
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.webkit.WebView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
@@ -13,9 +11,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TimePicker;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.stardust.autojs.core.graphics.ScriptCanvasView;
 import com.stardust.autojs.core.ui.widget.JsButton;
 import com.stardust.autojs.core.ui.widget.JsEditText;
@@ -25,6 +24,7 @@ import com.stardust.autojs.core.ui.widget.JsImageView;
 import com.stardust.autojs.core.ui.widget.JsLinearLayout;
 import com.stardust.autojs.core.ui.widget.JsListView;
 import com.stardust.autojs.core.ui.widget.JsRelativeLayout;
+import com.stardust.autojs.core.ui.widget.JsSpinner;
 import com.stardust.autojs.core.ui.widget.JsTabLayout;
 import com.stardust.autojs.core.ui.widget.JsTextView;
 import com.stardust.autojs.core.ui.widget.JsToolbar;
@@ -40,7 +40,6 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -68,7 +67,7 @@ public class XmlConverter {
                     .map("webview", JsWebView.class.getName())
                     .map("progressbar", ProgressBar.class.getName())
                     .map("seekbar", SeekBar.class.getName())
-                    .map("spinner", Spinner.class.getName())
+                    .map("spinner", JsSpinner.class.getName())
                     .map("radio", RadioButton.class.getName())
                     .map("radiogroup", RadioGroup.class.getName())
                     .map("checkbox", CheckBox.class.getName())
@@ -81,6 +80,8 @@ public class XmlConverter {
                     .map("appbar", AppBarLayout.class.getName())
                     .map("tabs", JsTabLayout.class.getName())
                     .map("viewpager", JsViewPager.class.getName())
+                    .map("card", CardView.class.getName())
+                    .map("fab", FloatingActionButton.class.getName())
             );
 
     private static final AttributeHandler ATTRIBUTE_HANDLER = new AttributeHandler.AttrNameRouter()
@@ -89,8 +90,8 @@ public class XmlConverter {
             .handler("size", new AttributeHandler.DimenHandler("textSize"))
             .handler("id", new AttributeHandler.IdHandler())
             .handler("vertical", new AttributeHandler.OrientationHandler())
-            .handler("margin", new AttributeHandler.MarginPaddingHandler("layout_margin"))
-            .handler("padding", new AttributeHandler.MarginPaddingHandler("padding"))
+            .handler("margin", new AttributeHandler.DimenHandler("layout_margin"))
+            .handler("padding", new AttributeHandler.DimenHandler("padding"))
             .handler("marginLeft", new AttributeHandler.DimenHandler("layout_marginLeft"))
             .handler("marginRight", new AttributeHandler.DimenHandler("layout_marginRight"))
             .handler("marginTop", new AttributeHandler.DimenHandler("layout_marginTop"))
@@ -101,8 +102,6 @@ public class XmlConverter {
             .handler("paddingBottom", new AttributeHandler.DimenHandler("paddingBottom"))
             .defaultHandler(new AttributeHandler.MappedAttributeHandler()
                     .mapName("align", "layout_gravity")
-                    .mapName("bg", "background")
-                    .mapName("color", "textColor")
             );
 
     public static String convertToAndroidLayout(String xml) throws IOException, SAXException, ParserConfigurationException {

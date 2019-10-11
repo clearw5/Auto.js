@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+
+    <org.autojs.autojs.ui.explorer.ExplorerProjectToolbar
+        android:id="@+id/project_toolbar"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="6dp"
+        android:foreground="?selectableItemBackground"
+        android:layout_marginTop="8dp"
+        app:cardElevation="0.97dp"
+        app:cardUseCompatPadding="true"
+        android:layout_height="wrap_content"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/explorer_item_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

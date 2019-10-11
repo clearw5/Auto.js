@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="4dp"
+    android:layout_marginTop="2dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginBottom="2dp"
+    app:cardCornerRadius="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/root"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_label_root_permission"
+                android:paddingLeft="4dp"
+                android:paddingTop="2dp"
+                android:paddingRight="4dp"
+                android:paddingBottom="2dp"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                tools:text="免Root"/>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="@android:color/black"
+                android:textSize="17sp"
+                tools:text="Hello, Auto.js"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <org.autojs.autojs.ui.widget.AvatarView
+                android:id="@+id/avatar"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:scaleType="fitXY"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#202020"
+                    android:textSize="14sp"
+                    tools:text="admin"/>
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#909090"
+                    android:textSize="13sp"
+                    tools:text="admin"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp">
+
+            <org.autojs.autojs.ui.main.market.ImageText
+                android:id="@+id/download"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?selectableItemBackgroundBorderless"
+                android:tint="#939393"
+                app:image_width="30dp"
+                app:src="@drawable/download"
+                app:text="@string/text_download"/>
+
+            <org.autojs.autojs.ui.main.market.ImageText
+                android:id="@+id/upvote"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?selectableItemBackgroundBorderless"
+                app:image_width="30dp"
+                app:src="@drawable/upvote"/>
+
+            <org.autojs.autojs.ui.main.market.ImageText
+                android:id="@+id/downvote"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?selectableItemBackgroundBorderless"
+                app:image_width="30dp"
+                app:src="@drawable/downvote"/>
+
+            <org.autojs.autojs.ui.main.market.ImageText
+                android:id="@+id/star"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?selectableItemBackgroundBorderless"
+                app:image_width="30dp"
+                app:src="@drawable/star"
+                app:text="@string/text_star"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

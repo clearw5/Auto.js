@@ -1,6 +1,6 @@
 package com.stardust.util;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by Stardust on 2017/5/3.

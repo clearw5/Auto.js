@@ -28,17 +28,17 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/air_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -62,12 +62,12 @@
                     android:layout_height="wrap_content"/>
 
                 <include
-                    layout="@layout/air_card_login"
+                    layout="@layout/air_card_login_compat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/air_card_margin_top"/>
 
-                <android.support.v4.widget.Space
+                <android.widget.Space
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_margin="@dimen/air_baseline"/>
@@ -76,7 +76,7 @@
 
         </ScrollView>
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/air_buttonSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

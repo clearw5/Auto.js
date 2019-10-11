@@ -22,22 +22,30 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v7.widget.AppCompatEditText;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TimingLogger;
 import android.view.Gravity;
+import android.view.MotionEvent;
+import android.widget.TextView;
+import android.widget.TextViewHelper;
 
-import org.autojs.autojs.BuildConfig;
 import org.autojs.autojs.ui.edit.theme.Theme;
 import org.autojs.autojs.ui.edit.theme.TokenMapping;
-import com.stardust.util.ClipboardUtil;
+
 import com.stardust.util.TextUtils;
 
 import org.mozilla.javascript.Token;
+
+import java.util.LinkedHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.autojs.autojs.ui.edit.editor.BracketMatching.UNMATCHED_BRACKET;
 
@@ -54,7 +62,7 @@ public class CodeEditText extends AppCompatEditText {
     // 文字范围
     protected HVScrollView mParentScrollView;
 
-    private CodeEditor.CursorChangeCallback mCallback;
+    private final CopyOnWriteArrayList<CodeEditor.CursorChangeCallback> mCursorChangeCallbacks = new CopyOnWriteArrayList<>();
     private volatile JavaScriptHighlighter.HighlightTokens mHighlightTokens;
     private Theme mTheme;
     private TimingLogger mLogger = new TimingLogger(LOG_TAG, "draw");
@@ -62,6 +70,9 @@ public class CodeEditText extends AppCompatEditText {
     private int mFirstLineForDraw = -1, mLastLineForDraw;
     private int[] mMatchingBrackets = {-1, -1};
     private int mUnmatchedBracket = -1;
+    private LinkedHashMap<Integer, CodeEditor.Breakpoint> mBreakpoints = new LinkedHashMap<>();
+    private int mDebuggingLine = -1;
+    private CodeEditor.BreakpointChangeListener mBreakpointChangeListener;
 
 
     public CodeEditText(Context context) {
@@ -85,6 +96,19 @@ public class CodeEditText extends AppCompatEditText {
         setHorizontallyScrolling(true);
         mTheme = Theme.getDefault(getContext());
         mLineHighlightPaint.setStyle(Paint.Style.FILL);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            setImportantForAutofill(IMPORTANT_FOR_AUTOFILL_NO);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public int getAutofillType() {
+        return AUTOFILL_TYPE_NONE;
+    }
+
+    public LinkedHashMap<Integer, CodeEditor.Breakpoint> getBreakpoints() {
+        return mBreakpoints;
     }
 
     public void setTheme(Theme theme) {
@@ -98,11 +122,16 @@ public class CodeEditText extends AppCompatEditText {
         if (mParentScrollView == null) {
             mParentScrollView = (HVScrollView) getParent();
         }
+        if (getLayout() == null) {
+            super.onDraw(canvas);
+            invalidate();
+            return;
+        }
         updatePaddingForGutter();
         updateLineRangeForDraw(canvas);
 
-        //绘制当前行高亮需要在绘制光标之前
-        drawLineHighlight(canvas, mLineHighlightPaint, getCurrentLine());
+        //绘制行高亮需要在绘制光标之前
+        drawLineHighlights(canvas);
 
         //调用super.onDraw绘制光标和选择高亮。因为字体颜色被设置为透明因此super.onDraw()绘制的字体不显示
         // TODO: 2018/2/24 优化效率。不绘制透明字体。
@@ -116,6 +145,30 @@ public class CodeEditText extends AppCompatEditText {
         canvas.restore();
 
         mLogger.dumpToLog();
+    }
+
+    public int getDebuggingLine() {
+        return mDebuggingLine;
+    }
+
+    public void setDebuggingLine(int debuggingLine) {
+        mDebuggingLine = debuggingLine;
+        invalidate();
+    }
+
+    private void drawLineHighlights(Canvas canvas) {
+        int currentLine = getCurrentLine();
+        int debugHighlightLine = mDebuggingLine;
+        if (debugHighlightLine != currentLine) {
+            //绘制当前行高亮
+            mLineHighlightPaint.setColor(mTheme.getLineHighlightBackgroundColor());
+            drawLineHighlight(canvas, mLineHighlightPaint, getCurrentLine());
+        }
+        if (debugHighlightLine != -1) {
+            mLineHighlightPaint.setColor(mTheme.getDebuggingLineBackgroundColor());
+            drawLineHighlight(canvas, mLineHighlightPaint, debugHighlightLine);
+        }
+
     }
 
     private void updateLineRangeForDraw(Canvas canvas) {
@@ -136,14 +189,6 @@ public class CodeEditText extends AppCompatEditText {
         }
     }
 
-    @Override
-    public boolean onTextContextMenuItem(int id) {
-        if (id == android.R.id.paste) {
-            ClipboardUtil.setClip(getContext(), ClipboardUtil.getClip(getContext()).toString());
-        }
-        return super.onTextContextMenuItem(id);
-    }
-
     //该方法中内联了很多函数来提高效率 但是 这是必要的吗？？？
     // 绘制文本着色
     private void drawText(Canvas canvas) {
@@ -151,6 +196,7 @@ public class CodeEditText extends AppCompatEditText {
             return;
         }
         JavaScriptHighlighter.HighlightTokens highlightTokens = mHighlightTokens;
+        //Log.d(LOG_TAG, "drawText: tokens = " + highlightTokens);
         Layout layout = getLayout();
         int lineCount = getLineCount();
         int textLength = highlightTokens == null ? 0 : highlightTokens.getText().length();
@@ -159,15 +205,22 @@ public class CodeEditText extends AppCompatEditText {
         int scrollX = Math.max(getRealScrollX() - paddingLeft, 0);
         Paint paint = getPaint();
         int lineNumberColor = mTheme.getLineNumberColor();
+        int breakPointColor = mTheme.getBreakpointColor();
         if (DEBUG)
             Log.d(LOG_TAG, "draw line: " + (mLastLineForDraw - mFirstLineForDraw + 1));
         mLogger.addSplit("before draw line");
         for (int line = mFirstLineForDraw; line <= mLastLineForDraw && line < lineCount; line++) {
             int lineBottom = layout.getLineTop(line + 1);
+            int lineTop = layout.getLineTop(line);
             int lineBaseline = lineBottom - layout.getLineDescent(line);
 
             //drawLineNumber
             String lineNumberText = Integer.toString(line + 1);
+            // if there is a breakpoint at this line, draw highlight background for line number
+            if (mBreakpoints.containsKey(line)) {
+                paint.setColor(breakPointColor);
+                canvas.drawRect(0, lineTop, paddingLeft - 10, lineBottom, paint);
+            }
             paint.setColor(lineNumberColor);
             canvas.drawText(lineNumberText, 0, lineNumberText.length(), 10,
                     lineBaseline, paint);
@@ -212,6 +265,12 @@ public class CodeEditText extends AppCompatEditText {
             }
             paint.setColor(previousColor);
             float offsetX = paint.measureText(text, lineStart, previousColorPos);
+            if (previousColorPos < 0 || visibleCharEnd > textLength || previousColorPos >= visibleCharEnd) {
+                Log.e(LOG_TAG, "IndexOutOfBounds: previousColorPos = " + previousColorPos + ", visibleCharEnd = "
+                        + visibleCharEnd + ", textLength = " + textLength);
+                //postInvalidate();
+                return;
+            }
             canvas.drawText(text, previousColorPos, visibleCharEnd, paddingLeft + offsetX, lineBaseline, paint);
             if (DEBUG) {
                 mLogger.addSplit("draw line " + line + " (" + (visibleCharEnd - visibleCharStart) + ") ");
@@ -223,9 +282,12 @@ public class CodeEditText extends AppCompatEditText {
         if (line < mFirstLineForDraw || line > mLastLineForDraw || mFirstLineForDraw < 0 || line < 0) {
             return;
         }
-        int lineTop = getLayout().getLineTop(line);
-        int lineBottom = getLayout().getLineTop(line + 1);
-        paint.setColor(mTheme.getLineHighlightBackgroundColor());
+        Layout layout = getLayout();
+        if (layout == null) {
+            return;
+        }
+        int lineTop = layout.getLineTop(line);
+        int lineBottom = layout.getLineTop(line + 1);
         canvas.drawRect(0, lineTop, canvas.getWidth(), lineBottom, paint);
     }
 
@@ -280,7 +342,8 @@ public class CodeEditText extends AppCompatEditText {
     protected void onSelectionChanged(int selStart, int selEnd) {
         //调用父类的onSelectionChanged时会发送一个AccessibilityEvent，当文本过大时造成异常
         //super.onSelectionChanged(selStart, selEnd);
-        if (mCallback == null || selStart != selEnd) {
+        //父类构造函数会调用onSelectionChanged, 此时mCursorChangeCallbacks还没有初始化
+        if (mCursorChangeCallbacks == null || mCursorChangeCallbacks.isEmpty() || selStart != selEnd) {
             return;
         }
         callCursorChangeCallback(getText(), selStart);
@@ -323,7 +386,7 @@ public class CodeEditText extends AppCompatEditText {
         if (text.length() == 0) {
             return;
         }
-        if (mCallback == null)
+        if (mCursorChangeCallbacks.isEmpty())
             return;
         int lineStart = TextUtils.lastIndexOf(text, '\n', sel - 1) + 1;
         if (lineStart < 0) {
@@ -340,15 +403,26 @@ public class CodeEditText extends AppCompatEditText {
             return;
         String line = text.subSequence(lineStart, lineEnd).toString();
         int cursor = sel - lineStart;
-        mCallback.onCursorChange(line, cursor);
+        for (CodeEditor.CursorChangeCallback callback : mCursorChangeCallbacks) {
+            callback.onCursorChange(line, cursor);
+        }
     }
 
-    public void setCursorChangeCallback(CodeEditor.CursorChangeCallback callback) {
-        mCallback = callback;
+    public void addCursorChangeCallback(CodeEditor.CursorChangeCallback callback) {
+        mCursorChangeCallbacks.add(callback);
     }
+
+    public boolean removeCursorChangeCallback(CodeEditor.CursorChangeCallback callback) {
+        return mCursorChangeCallbacks.remove(callback);
+    }
+
 
     public void updateHighlightTokens(JavaScriptHighlighter.HighlightTokens highlightTokens) {
+        if (mHighlightTokens != null && mHighlightTokens.getId() >= highlightTokens.getId()) {
+            return;
+        }
         mHighlightTokens = highlightTokens;
+        Log.d(LOG_TAG, "updateHighlightTokens: tokens = " + highlightTokens);
         postInvalidate();
     }
 
@@ -363,4 +437,105 @@ public class CodeEditText extends AppCompatEditText {
         super.setSelection(index);
     }
 
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        Editable text = getText();
+        TextView.SavedState savedState = (SavedState) super.onSaveInstanceState();
+        if (text != null && text.length() > 50 * 1024) {
+            // avoid TransactionTooLargeException
+            TextViewHelper.setText(savedState, "");
+        }
+        bundle.putParcelable("super_data", savedState);
+        bundle.putInt("debugging_line", mDebuggingLine);
+        int[] breakpoints = new int[mBreakpoints.size()];
+        int i = 0;
+        for (CodeEditor.Breakpoint breakpoint : mBreakpoints.values()) {
+            breakpoints[i++] = breakpoint.line;
+        }
+        bundle.putIntArray("breakpoints", breakpoints);
+        return bundle;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        Bundle bundle = (Bundle) state;
+        Parcelable superData = bundle.getParcelable("super_data");
+        mDebuggingLine = bundle.getInt("debugging_line", -1);
+        int[] breakpoints = bundle.getIntArray("breakpoints");
+        if (breakpoints != null) {
+            for (int breakpoint : breakpoints) {
+                mBreakpoints.put(breakpoint, new CodeEditor.Breakpoint(breakpoint));
+            }
+        }
+        super.onRestoreInstanceState(superData);
+    }
+
+    private int mTouchedLine = -1;
+    private boolean mTouchValid = true;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        //如果行号区域被按下
+        if (event.getAction() == MotionEvent.ACTION_DOWN && event.getX() < getPaddingLeft()) {
+            //则计算当前行，如果行号有效，记录起来
+            int line = getLayout().getLineForVertical((int) event.getY());
+            if (line >= 0) {
+                mTouchedLine = line;
+                mTouchValid = true;
+                return true;
+            }
+        } else if (mTouchedLine >= 0) {
+            //如果之前已经是行号区域被按下了，则之后的事件也要处理
+            //如果之后的触摸区域超出行号区域，或者触摸的行号与第一次触摸事件时的不同，则这一系列的触摸无效
+            if (event.getX() >= getPaddingLeft() || (getLayout().getLineForVertical((int) event.getY()) != mTouchedLine)) {
+                mTouchValid = false;
+            }
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                //当触摸有效时，对那一行设置断点或取消断点
+                if (mTouchValid) {
+                    if (!removeBreakpoint(mTouchedLine)) {
+                        addBreakpoint(mTouchedLine);
+                    }
+                    invalidate();
+                }
+                mTouchedLine = -1;
+            }
+            return true;
+        }
+
+        return super.onTouchEvent(event);
+    }
+
+    public boolean removeBreakpoint(int line) {
+        boolean success = mBreakpoints.remove(line) != null;
+        if (success && mBreakpointChangeListener != null) {
+            mBreakpointChangeListener.onBreakpointChange(line, false);
+            invalidate();
+        }
+        return success;
+    }
+
+    public void addBreakpoint(int line) {
+        mBreakpoints.put(line, new CodeEditor.Breakpoint(line));
+        if (mBreakpointChangeListener != null) {
+            mBreakpointChangeListener.onBreakpointChange(line, true);
+        }
+        invalidate();
+    }
+
+    public void setBreakpointChangeListener(CodeEditor.BreakpointChangeListener listener) {
+        mBreakpointChangeListener = listener;
+    }
+
+    public void removeAllBreakpoints() {
+        int size = mBreakpoints.size();
+        mBreakpoints.clear();
+        if (mBreakpointChangeListener != null) {
+            mBreakpointChangeListener.onAllBreakpointRemoved(size);
+        }
+        invalidate();
+
+    }
 }

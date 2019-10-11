@@ -3,6 +3,7 @@ package org.autojs.autojs.ui.edit.editor;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.os.Parcelable;
 import android.text.Layout;
 import android.text.TextUtils;
 
@@ -71,4 +72,10 @@ public class LayoutHelper {
         return low;
     }
 
+    public static int getVisibleLineAt(Layout layout, float x, float y) {
+        if(layout == null) {
+            return -1;
+        }
+        return 0;
+    }
 }

@@ -3,10 +3,9 @@ package com.stardust.autojs.core.looper;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.util.Log;
 import android.util.SparseArray;
 
-import com.stardust.autojs.runtime.ScriptBridges;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.concurrent.VolatileBox;
 
 /**
@@ -19,19 +18,19 @@ public class Timer {
 
     private SparseArray<Runnable> mHandlerCallbacks = new SparseArray<>();
     private int mCallbackMaxId = 0;
-    private ScriptBridges mBridges;
+    private ScriptRuntime mRuntime;
     private Handler mHandler;
     private long mMaxCallbackUptimeMillis = 0;
     private final VolatileBox<Long> mMaxCallbackMillisForAllThread;
 
-    public Timer(ScriptBridges bridges, VolatileBox<Long> maxCallbackMillisForAllThread) {
-        mBridges = bridges;
+    public Timer(ScriptRuntime runtime, VolatileBox<Long> maxCallbackMillisForAllThread) {
+        mRuntime = runtime;
         mMaxCallbackMillisForAllThread = maxCallbackMillisForAllThread;
         mHandler = new Handler();
     }
 
-    public Timer(ScriptBridges bridges, VolatileBox<Long> maxCallbackMillisForAllThread, Looper looper) {
-        mBridges = bridges;
+    public Timer(ScriptRuntime runtime, VolatileBox<Long> maxCallbackMillisForAllThread, Looper looper) {
+        mRuntime = runtime;
         mMaxCallbackMillisForAllThread = maxCallbackMillisForAllThread;
         mHandler = new Handler(looper);
     }
@@ -40,12 +39,24 @@ public class Timer {
         mCallbackMaxId++;
         final int id = mCallbackMaxId;
         Runnable r = () -> {
-            mBridges.callFunction(callback, null, args);
+            callFunction(callback, null, args);
             mHandlerCallbacks.remove(id);
         };
         mHandlerCallbacks.put(id, r);
         postDelayed(r, delay);
         return id;
+    }
+
+    private void callFunction(Object callback, Object thiz, Object[] args) {
+        if(Looper.myLooper() == Looper.getMainLooper()){
+            try {
+                mRuntime.bridges.callFunction(callback, thiz, args);
+            }catch (Exception e){
+                mRuntime.exit(e);
+            }
+        }else {
+            mRuntime.bridges.callFunction(callback, thiz, args);
+        }
     }
 
     public boolean clearTimeout(int id) {
@@ -60,7 +71,7 @@ public class Timer {
             public void run() {
                 if (mHandlerCallbacks.get(id) == null)
                     return;
-                mBridges.callFunction(listener, null, args);
+                callFunction(listener, null, args);
                 postDelayed(this, interval);
             }
         };
@@ -78,6 +89,10 @@ public class Timer {
         }
     }
 
+    public void post(Runnable r) {
+
+    }
+
     public boolean clearInterval(int id) {
         return clearCallback(id);
     }
@@ -86,7 +101,7 @@ public class Timer {
         mCallbackMaxId++;
         final int id = mCallbackMaxId;
         Runnable r = () -> {
-            mBridges.callFunction(listener, null, args);
+            callFunction(listener, null, args);
             mHandlerCallbacks.remove(id);
         };
         mHandlerCallbacks.put(id, r);

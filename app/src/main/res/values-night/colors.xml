@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="window_background">#202020</color>
+    <color name="item_background">#333333</color>
+    <color name="item_background_dark">#252525</color>
+    <color name="drawer_menu_item_text_color">#9a9a9a</color>
+    <color name="drawer_menu_group_text_color">#808080</color>
+    <color name="divider">#111214</color>
+    <color name="text_color_secondary">#9a9a9a</color>
+    <color name="text_color_thirdly">#808080</color>
+    <color name="tab_indicator">#6D6D6E</color>
+    <color name="tab_text">#3A3A3C</color>
+    <color name="toolbar">#8D8D8E</color>
+    <color name="toolbar_disabled">#3A3A3C</color>
+    <color name="console_debug">#dfc0c0c0</color>
+    <color name="console_verbose">#7F7F80</color>
+
+</resources>

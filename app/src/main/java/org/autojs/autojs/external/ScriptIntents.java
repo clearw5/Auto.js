@@ -9,8 +9,9 @@ import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.autojs.script.SequenceScriptSource;
 import com.stardust.autojs.script.StringScriptSource;
+
+import org.autojs.autojs.Pref;
 import org.autojs.autojs.autojs.AutoJs;
-import org.autojs.autojs.storage.file.StorageFileProvider;
 import org.autojs.autojs.model.script.PathChecker;
 
 import java.io.File;
@@ -27,7 +28,6 @@ public class ScriptIntents {
     public static final String EXTRA_KEY_LOOP_INTERVAL = "interval";
     public static final String EXTRA_KEY_DELAY = "delay";
 
-
     public static boolean isTaskerBundleValid(Bundle bundle) {
         return bundle.containsKey(ScriptIntents.EXTRA_KEY_PATH) || bundle.containsKey(EXTRA_KEY_PRE_EXECUTE_SCRIPT);
     }
@@ -39,7 +39,11 @@ public class ScriptIntents {
         long delay = intent.getLongExtra(EXTRA_KEY_DELAY, 0);
         long interval = intent.getLongExtra(EXTRA_KEY_LOOP_INTERVAL, 0);
         ScriptSource source = null;
-        ExecutionConfig config = new ExecutionConfig().loop(delay, loopTimes, interval);
+        ExecutionConfig config = new ExecutionConfig();
+        config.setDelay(delay);
+        config.setLoopTimes(loopTimes);
+        config.setInterval(interval);
+        config.setArgument("intent", intent);
         if (path == null && script != null) {
             source = new StringScriptSource(script);
         } else if (path != null && new PathChecker(context).checkAndToastError(path)) {
@@ -49,9 +53,9 @@ public class ScriptIntents {
             } else {
                 source = fileScriptSource;
             }
-            config.executePath(new File(path).getParent());
+            config.setWorkingDirectory(new File(path).getParent());
         } else {
-            config.executePath(StorageFileProvider.getDefaultDirectoryPath());
+            config.setWorkingDirectory(Pref.getScriptDirPath());
         }
         if (source == null) {
             return false;

@@ -1,6 +1,5 @@
 package org.autojs.autojs.storage.database;
 
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 /**
  * Created by Stardust on 2017/11/28.
@@ -8,10 +7,15 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 public class ModelChange<M> {
 
-    private final M mData;
-    private final BaseModel.Action mAction;
+    public static final int INSERT = 1;
+    public static final int UPDATE = 2;
+    public static final int DELETE = 3;
 
-    public ModelChange(M data, BaseModel.Action action) {
+
+    private final M mData;
+    private final int mAction;
+
+    public ModelChange(M data, int action) {
         mData = data;
         mAction = action;
     }
@@ -20,7 +24,7 @@ public class ModelChange<M> {
         return mData;
     }
 
-    public BaseModel.Action getAction() {
+    public int getAction() {
         return mAction;
     }
 

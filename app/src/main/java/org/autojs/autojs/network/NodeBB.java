@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.GsonBuilder;
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory;
 import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import org.autojs.autojs.R;
@@ -40,6 +41,7 @@ public class NodeBB {
                         .setLenient()
                         .create()))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(CoroutineCallAdapterFactory.create())
                 .client(new OkHttpClient.Builder()
                         .cookieJar(new WebkitCookieManagerProxy())
                         .build())

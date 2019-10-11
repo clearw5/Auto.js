@@ -8,7 +8,7 @@
               android:paddingRight="16dp"
               android:paddingTop="8dp">
 
-    <android.support.v7.widget.AppCompatSeekBar
+    <androidx.appcompat.widget.AppCompatSeekBar
         android:id="@+id/seekbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:minHeight="60dp"
-        android:text="@string/_app_name"
+        android:text="@string/app_name"
         android:textColor="@android:color/primary_text_light"/>
 
 </LinearLayout>

@@ -3,7 +3,7 @@ package org.autojs.autojs.ui.widget;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -58,7 +58,7 @@ public class BubblePopupMenu extends PopupWindow {
         } else {
             params.leftMargin = 0;
         }
-        if (y + height > screenHeight) {
+        if (y > screenHeight / 2) {
             getContentView().setRotation(180);
             mRecyclerView.setRotation(180);
             params.leftMargin = -params.leftMargin;

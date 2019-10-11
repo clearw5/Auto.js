@@ -2,19 +2,21 @@ package org.autojs.autojs.ui.edit.editor;
 
 
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.TimingLogger;
 
 import com.stardust.autojs.rhino.TokenStream;
 import com.stardust.pio.UncheckedIOException;
+
 import org.autojs.autojs.ui.edit.theme.Theme;
 import org.autojs.autojs.ui.widget.SimpleTextWatcher;
 
 import org.mozilla.javascript.Token;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChangedListener {
@@ -25,14 +27,25 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
         public final int[] colors;
         private String mText;
         private int mCount;
+        private final int mId;
 
-        public HighlightTokens(String text) {
+        public HighlightTokens(String text, int id) {
             colors = new int[text.length()];
             mText = text;
+            mId = id;
         }
 
+        public int getId() {
+            return mId;
+        }
 
         public void addToken(int tokenStart, int tokenEnd, int color) {
+            if (mCount < tokenStart) {
+                int c = mCount > 0 ? colors[mCount - 1] : color;
+                for (int i = mCount; i < tokenStart; i++) {
+                    colors[i] = c;
+                }
+            }
             for (int i = tokenStart; i < tokenEnd; i++) {
                 colors[i] = color;
             }
@@ -41,9 +54,7 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
 
         @Override
         public String toString() {
-            return "HighlightTokens{" +
-                    "colors=" + Arrays.toString(colors) +
-                    '}';
+            return super.toString() + "{count = " + mCount + ", length = " + mText.length() + "}";
         }
 
         public int getCharCount() {
@@ -57,14 +68,18 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
 
     private Theme mTheme;
     private CodeEditText mCodeEditText;
-    private ExecutorService mExecutorService = Executors.newSingleThreadExecutor();
+    private ThreadPoolExecutor mExecutorService = new ThreadPoolExecutor(3, 6,
+            2L, TimeUnit.MINUTES, new LinkedBlockingQueue<>());
     private AtomicInteger mRunningHighlighterId = new AtomicInteger();
     private TimingLogger mLogger = new TimingLogger(CodeEditText.LOG_TAG, "highlight");
+    private final TextWatcher mTextWatcher;
 
     public JavaScriptHighlighter(Theme theme, CodeEditText codeEditText) {
+        mExecutorService.allowCoreThreadTimeOut(true);
         mTheme = theme;
         mCodeEditText = codeEditText;
-        codeEditText.addTextChangedListener(new SimpleTextWatcher(this));
+        mTextWatcher = new SimpleTextWatcher(this);
+        codeEditText.addTextChangedListener(mTextWatcher);
     }
 
     @Override
@@ -78,7 +93,13 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
     }
 
     public void updateTokens(String sourceString) {
+        if (mTheme == null) {
+            return;
+        }
         final int id = mRunningHighlighterId.incrementAndGet();
+        if (mExecutorService.isShutdown() || mExecutorService.isTerminated() || mExecutorService.isTerminating()) {
+            return;
+        }
         mExecutorService.execute(() -> {
             try {
                 mLogger.reset();
@@ -94,12 +115,10 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
 
     private void updateTokens(String sourceString, int id) throws IOException {
         TokenStream ts = new TokenStream(null, sourceString, 0);
-        HighlightTokens highlightTokens = new HighlightTokens(sourceString);
+        HighlightTokens highlightTokens = new HighlightTokens(sourceString, id);
         int token;
         int color = mTheme.getColorForToken(Token.NAME);
         while ((token = ts.getToken()) != Token.EOF) {
-            if (mRunningHighlighterId.get() != id)
-                return;
             color = mTheme.getColorForToken(token);
             highlightTokens.addToken(ts.getTokenBeg(), ts.getTokenEnd(), color);
         }
@@ -109,5 +128,9 @@ public class JavaScriptHighlighter implements SimpleTextWatcher.AfterTextChanged
         mCodeEditText.updateHighlightTokens(highlightTokens);
     }
 
+    public void shutdown() {
+        mCodeEditText.removeTextChangedListener(mTextWatcher);
+        mExecutorService.shutdownNow();
+    }
 
 }

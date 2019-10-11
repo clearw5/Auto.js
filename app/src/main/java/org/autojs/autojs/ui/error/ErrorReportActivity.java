@@ -2,19 +2,18 @@ package org.autojs.autojs.ui.error;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseIntArray;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+
 import org.autojs.autojs.BuildConfig;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
@@ -80,41 +79,14 @@ public class ErrorReportActivity extends BaseActivity {
                 .title(mTitle)
                 .content(R.string.crash_feedback)
                 .positiveText(R.string.text_exit)
-                .neutralText(R.string.text_copy_debug_info)
-                .negativeText(R.string.text_report_bug)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        exit();
-                    }
-                })
-                .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        copyToClip(getDeviceMessage() + errorDetail);
-                        exitAfter(1000);
-                    }
-                })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        startIssueReportActivity();
-                        finish();
-                    }
+                .negativeText(R.string.text_copy_debug_info)
+                .onPositive((dialog, which) -> exit())
+                .onNegative((dialog, which) -> {
+                    copyToClip(getDeviceMessage() + message + "\n" + errorDetail);
+                    exitAfter(1000);
                 })
                 .cancelable(false)
                 .show();
-    }
-
-    private void startIssueReportActivity() {
-        Intent intent = new Intent(this, IssueReporterActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.putExtras(getIntent());
-        startActivity(intent);
-    }
-
-    private void showErrorMessage(String message, String errorDetail) {
-        ((TextView) findViewById(R.id.error)).setText(message + "\n" + errorDetail);
     }
 
     private String getDeviceMessage() {

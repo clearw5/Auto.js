@@ -19,6 +19,25 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+exports.extend = (function () {
+  var extendStatics = Object.setPrototypeOf ||
+      ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+      function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+  return function (d, b) {
+      extendStatics(d, b);
+      function __() { this.constructor = d; }
+      d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+})();
+
+exports.java = require("__java_util__");
+
+exports.__assignFunctions__ = function(src, target, functions) {
+    for(let f of functions){
+        target[f] = src[f].bind(src);
+    }
+}
+
 var formatRegExp = /%[sdj%]/g;
 exports.format = function(f) {
   if (!isString(f)) {

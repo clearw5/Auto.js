@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AutoJs</string>
+    <string name="app_name">Auto.js</string>
     <string name="text_error">错误:</string>
     <string name="text_start_running">开始运行</string>
     <string name="text_path_is_empty">路径为空</string>
@@ -13,8 +13,8 @@
     <string name="text_console">控制台</string>
     <string name="text_no_floating_window_permission">没有悬浮窗权限</string>
     <string name="text_accessibility_service_description">使脚本自动操作(点击、长按、滑动等)所需，若关闭则只能执行不涉及自动操作的脚本。</string>
-    <string name="_app_name">AutoJs</string>
     <string name="text_should_enable_key_observing">按键监听未启用，请在软件设置中开启</string>
+    <string name="text_should_enable_gesture_observing">手势监听未启用，请在软件设置中开启</string>
     <string name="no_write_settings_permissin">沒有修改系統设置权限</string>
     <string name="exception_notification_service_disabled">通知服务未运行，请重新启用通知权限</string>
     <string name="text_requires_app_version_to_run_the_script" formatted="true">本脚本需要Auto.js版本号%d以上才能运行</string>

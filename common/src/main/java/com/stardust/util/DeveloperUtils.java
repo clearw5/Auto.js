@@ -9,18 +9,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.content.pm.Signature;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Base64;
-import android.util.Log;
-
-import com.stardust.R;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 

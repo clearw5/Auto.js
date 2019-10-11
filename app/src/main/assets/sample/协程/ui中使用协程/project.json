@@ -1,0 +1,11 @@
+{
+  "name": "协程UI示例",
+  "main": "main.js",
+  "ignore": [
+    "build"
+  ],
+  "packageName": "com.example.cont.ui",
+  "versionName": "1.0.0",
+  "versionCode": 1,
+  "useFeatures": ["continuation"]
+}

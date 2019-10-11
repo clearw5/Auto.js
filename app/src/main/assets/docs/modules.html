@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>module (模块) | Auto.js 3.0.0 文档</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <title>module (模块) | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="https://nodejs.org/api/modules.html">
@@ -61,7 +61,7 @@
 
     <div id="column1" data-id="modules" class="interior">
       <header>
-        <h1>Auto.js 3.0.0 文档</h1>
+        <h1>Auto.js 4.1.0 文档</h1>
         <div id="gtoc">
           <p>
             <a href="index.html" name="toc">索引</a> |
@@ -83,7 +83,7 @@
         <h1>module (模块)<span><a class="mark" href="#modules_module" id="modules_module">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>Auto.js 有一个简单的模块加载系统。 在 Auto.js 中，文件和模块是一一对应的（每个文件被视为一个独立的模块）。</p>
 <p>例子，假设有一个名为 foo.js 的文件：</p>
-<pre><code>const circle = require(&#39;circle.js&#39;);
+<pre><code>var circle = require(&#39;circle.js&#39;);
 console.log(&quot;半径为 4 的圆的面积是 %d&quot;, circle.area(4));
 </code></pre><p>在第一行中，foo.js 加载了同一目录下的 circle.js 模块。</p>
 <p>circle.js 文件的内容为：</p>
@@ -91,7 +91,9 @@ console.log(&quot;半径为 4 的圆的面积是 %d&quot;, circle.area(4));
 
 var circle = {};
 
-circle.area = (r) =&gt; PI * r ** 2;
+circle.area = function (r) {
+  return PI * r * r;
+};
 
 circle.circumference = (r) =&gt; 2 * PI * r;
 

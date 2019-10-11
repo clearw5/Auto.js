@@ -1,12 +1,13 @@
 package com.stardust.autojs.runtime.api;
 
-import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.pio.PFileInterface;
 import com.stardust.pio.PFiles;
+import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.Func1;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Stardust on 2018/1/23.
@@ -20,6 +21,7 @@ public class Files {
         mRuntime = runtime;
     }
 
+    // FIXME: 2018/10/16 is not correct in sub-directory?
     public String path(String relativePath) {
         String cwd = cwd();
         if (cwd == null || relativePath == null || relativePath.startsWith("/"))
@@ -35,7 +37,8 @@ public class Files {
             }
             f = new File(f, path);
         }
-        return f.getPath();
+        String path = f.getPath();
+        return relativePath.endsWith(File.separator) ? path + "/" : path;
     }
 
     public String cwd() {
@@ -82,11 +85,24 @@ public class Files {
         return PFiles.read(path(path), encoding);
     }
 
+
     public String read(String path) {
         return PFiles.read(path(path));
     }
 
-    public byte[] readBytes(String path){
+    public String readAssets(String path, String encoding) {
+        try {
+            return PFiles.read(mRuntime.getUiHandler().getContext().getAssets().open(path), encoding);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public String readAssets(String path) {
+        return readAssets(path, "UTF-8");
+    }
+
+    public byte[] readBytes(String path) {
         return PFiles.readBytes(path(path));
     }
 
@@ -185,4 +201,5 @@ public class Files {
     public String getSimplifiedPath(String path) {
         return PFiles.getSimplifiedPath(path);
     }
+
 }

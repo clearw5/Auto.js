@@ -1,6 +1,7 @@
 package com.stardust.autojs;
 
 import android.content.Context;
+import androidx.annotation.Nullable;
 
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
@@ -19,17 +20,13 @@ import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.lang.ThreadCompat;
-import com.stardust.util.TextUtils;
 import com.stardust.util.UiHandler;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PipedReader;
-import java.io.PipedWriter;
-import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -59,32 +56,52 @@ public class ScriptEngineService {
         }
 
         private void onFinish(ScriptExecution execution) {
-            if (execution.getEngine() instanceof JavaScriptEngine) {
-                ((JavaScriptEngine) execution.getEngine()).getRuntime().onExit();
-            }
+
         }
 
         @Override
-        public void onException(ScriptExecution execution, Exception e) {
+        public void onException(ScriptExecution execution, Throwable e) {
             e.printStackTrace();
             onFinish(execution);
+            String message = null;
             if (!causedByInterrupted(e)) {
+                message = e.getMessage();
                 if (execution.getEngine() instanceof JavaScriptEngine) {
                     ((JavaScriptEngine) execution.getEngine()).getRuntime()
-                            .console.error(getScriptTrace(e));
+                            .console.error(e);
                 }
-                EVENT_BUS.post(new ScriptExecutionEvent(ScriptExecutionEvent.ON_EXCEPTION, e.getMessage()));
+            }
+            if (execution.getEngine() instanceof JavaScriptEngine) {
+                JavaScriptEngine engine = (JavaScriptEngine) execution.getEngine();
+                Throwable uncaughtException = engine.getUncaughtException();
+                if (uncaughtException != null) {
+                    engine.getRuntime().console.error(uncaughtException);
+                    message = uncaughtException.getMessage();
+                }
+            }
+            if (message != null) {
+                EVENT_BUS.post(new ScriptExecutionEvent(ScriptExecutionEvent.ON_EXCEPTION, message));
             }
         }
+
     };
 
 
+    private static ScriptEngineService sInstance;
     private final Context mContext;
     private UiHandler mUiHandler;
     private final Console mGlobalConsole;
     private final ScriptEngineManager mScriptEngineManager;
-    private final EngineLifecycleObserver mEngineLifecycleObserver = new EngineLifecycleObserver();
+    private final EngineLifecycleObserver mEngineLifecycleObserver = new EngineLifecycleObserver() {
+
+        @Override
+        public void onEngineRemove(ScriptEngine engine) {
+            mScriptExecutions.remove(engine.getId());
+            super.onEngineRemove(engine);
+        }
+    };
     private ScriptExecutionObserver mScriptExecutionObserver = new ScriptExecutionObserver();
+    private LinkedHashMap<Integer, ScriptExecution> mScriptExecutions = new LinkedHashMap<>();
 
     ScriptEngineService(ScriptEngineServiceBuilder builder) {
         mUiHandler = builder.mUiHandler;
@@ -119,6 +136,12 @@ public class ScriptEngineService {
     }
 
     public ScriptExecution execute(ScriptExecutionTask task) {
+        ScriptExecution execution = executeInternal(task);
+        mScriptExecutions.put(execution.getId(), execution);
+        return execution;
+    }
+
+    private ScriptExecution executeInternal(ScriptExecutionTask task) {
         if (task.getListener() != null) {
             task.setExecutionListener(new ScriptExecutionObserver.Wrapper(mScriptExecutionObserver, task.getListener()));
         } else {
@@ -137,11 +160,7 @@ public class ScriptEngineService {
         } else {
             r = new RunnableScriptExecution(mScriptEngineManager, task);
         }
-        if (task.getConfig().runInNewThread) {
-            new ThreadCompat(r).start();
-        } else {
-            r.run();
-        }
+        new ThreadCompat(r).start();
         return r;
     }
 
@@ -151,14 +170,6 @@ public class ScriptEngineService {
 
     public ScriptExecution execute(ScriptSource source, ExecutionConfig config) {
         return execute(new ScriptExecutionTask(source, null, config));
-    }
-
-    public ScriptExecution execute(ScriptSource source, ScriptExecutionListener listener) {
-        return execute(source, listener, ExecutionConfig.getDefault());
-    }
-
-    public ScriptExecution execute(ScriptSource source) {
-        return execute(source, null, ExecutionConfig.getDefault());
     }
 
     @Subscribe
@@ -184,6 +195,30 @@ public class ScriptEngineService {
     public Set<ScriptEngine> getEngines() {
         return mScriptEngineManager.getEngines();
     }
+
+    public Collection<ScriptExecution> getScriptExecutions() {
+        return mScriptExecutions.values();
+    }
+
+    @Nullable
+    public ScriptExecution getScriptExecution(int id) {
+        if (id == ScriptExecution.NO_ID) {
+            return null;
+        }
+        return mScriptExecutions.get(id);
+    }
+
+    public static void setInstance(ScriptEngineService service) {
+        if (sInstance != null) {
+            throw new IllegalStateException();
+        }
+        sInstance = service;
+    }
+
+    public static ScriptEngineService getInstance() {
+        return sInstance;
+    }
+
 
     private static class EngineLifecycleObserver implements ScriptEngineManager.EngineLifecycleCallback {
 
@@ -242,26 +277,6 @@ public class ScriptEngineService {
 
         public String getMessage() {
             return mMessage;
-        }
-    }
-
-    private static String getScriptTrace(Exception e) {
-        try {
-            PipedReader reader = new PipedReader(8192);
-            PrintWriter writer = new PrintWriter(new PipedWriter(reader));
-            e.printStackTrace(writer);
-            writer.close();
-            BufferedReader bufferedReader = new BufferedReader(reader);
-            String line;
-            StringBuilder scriptTrace = new StringBuilder(TextUtils.toEmptyIfNull(e.getMessage()));
-            while ((line = bufferedReader.readLine()) != null) {
-                if (line.trim().startsWith("at script"))
-                    scriptTrace.append("\n").append(line);
-            }
-            return scriptTrace.toString();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-            return e.getMessage();
         }
     }
 

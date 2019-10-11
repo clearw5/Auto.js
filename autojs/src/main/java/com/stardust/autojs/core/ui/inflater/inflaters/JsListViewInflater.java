@@ -1,9 +1,7 @@
 package com.stardust.autojs.core.ui.inflater.inflaters;
 
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.annotation.Nullable;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
 import com.stardust.autojs.core.ui.inflater.ResourceParser;

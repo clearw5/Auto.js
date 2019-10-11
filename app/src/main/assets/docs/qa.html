@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Q & A | Auto.js 3.0.0 文档</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <title>Q & A | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="https://nodejs.org/api/qa.html">
@@ -61,7 +61,7 @@
 
     <div id="column1" data-id="qa" class="interior">
       <header>
-        <h1>Auto.js 3.0.0 文档</h1>
+        <h1>Auto.js 4.1.0 文档</h1>
         <div id="gtoc">
           <p>
             <a href="index.html" name="toc">索引</a> |
@@ -76,8 +76,9 @@
         <ul>
 <li><span class="stability_undefined"><a href="#qa_q_a">Q &amp; A</a></span><ul>
 <li><span class="stability_undefined"><a href="#qa">如何定时运行脚本</a></span></li>
-<li><span class="stability_undefined"><a href="#qa_1">如何把图片和脚本一起打包，或者打包多个脚本</a></span></li>
-<li><span class="stability_undefined"><a href="#qa_2">如何使打包的应用不显示主界面</a></span></li>
+<li><span class="stability_undefined"><a href="#qa_1">定时任何如何获取外部参数</a></span></li>
+<li><span class="stability_undefined"><a href="#qa_2">如何把图片和脚本一起打包，或者打包多个脚本</a></span></li>
+<li><span class="stability_undefined"><a href="#qa_3">如何使打包的应用不显示主界面</a></span></li>
 <li><span class="stability_undefined"><a href="#qa_auto_js">Auto.js自带的模块和函数中没有的功能如何实现</a></span></li>
 </ul>
 </li>
@@ -89,35 +90,30 @@
         <h1>Q &amp; A<span><a class="mark" href="#qa_q_a" id="qa_q_a">#</a></span></h1>
 <h2>如何定时运行脚本<span><a class="mark" href="#qa" id="qa">#</a></span></h2>
 <p>点击脚本右边的菜单按钮-&gt;更多-&gt;定时任务即可定时运行脚本，但是必须保持Auto.js后台运行(自启动白名单、电源管理白名单等)。同时，可以在脚本的开头使用<code>device.wakeUp()</code>来唤醒屏幕；但是，Auto.js没有解锁屏幕的功能，因此难以在有锁屏密码的设备上达到效果。</p>
-<h2>如何把图片和脚本一起打包，或者打包多个脚本<span><a class="mark" href="#qa_1" id="qa_1">#</a></span></h2>
-<p>如果除了单脚本以外还有其他脚本、图片、音乐等资源一起打包，则需要使用项目打包功能。</p>
-<ol>
-<li>新建一个文件夹，命名为项目名称。</li>
-<li>在该文件夹下新建脚本，或者移动脚本到该文件夹，命名为main.js，表示主脚本。脚本打包后将会从该脚本开始运行。</li>
-<li>把其他资源或脚本放在该文件夹，并通过相对路径引用。</li>
-<li>通过文件夹菜单的&quot;打包&quot;功能来打包该项目</li>
-</ol>
+<h2>定时任何如何获取外部参数<span><a class="mark" href="#qa_1" id="qa_1">#</a></span></h2>
+<p>如果一个脚本是用intent&quot;启动&quot;的，比如定时任务中的特定事件（网络状态变化等）触发而启动的，则可以通过<code>engines.myEngine().execArgv.intent</code>获取启动的intent，从而获取外部参数。</p>
+<h2>如何把图片和脚本一起打包，或者打包多个脚本<span><a class="mark" href="#qa_2" id="qa_2">#</a></span></h2>
+<p>如果除了单脚本以外还有其他脚本、图片、音乐等资源一起打包，则需要使用项目功能。</p>
+<p>点击Auto.js的&quot;+&quot;号，选择项目，填写项目名称、包名等信息以后，点击&quot;√&quot;即可新建一个项目。可以在项目中放多个脚本、模块、资源文件，点击项目工具栏的apk打包图标即可打包一个项目，点击工具栏可以重新配置项目。</p>
 <p>例如，主脚本要读取同一文件夹下的图片1.png，再执行找图，则可以通过<code>images.read(&quot;./1.png&quot;)</code>来读取，其中&quot;./1.png&quot;表示同一目录1.png图片；ui中的图片控件要引用同一文件夹的2.png图片则为<code>&lt;img src=&quot;file://2.png&quot;/&gt;</code>。Auto.js内置的函数和模块都支持相对路径，但是，其他情况则需要使用<code>files.path()</code>函数来把相对路径转换为绝对路径。</p>
-<p>目前Auto.js还不支持项目的图形化管理，后续会加入。</p>
-<h2>如何使打包的应用不显示主界面<span><a class="mark" href="#qa_2" id="qa_2">#</a></span></h2>
-<p>需要使用项目打包功能。</p>
-<ol>
-<li>新建一个文件夹，命名为项目名称。</li>
-<li>在该文件夹下新建脚本，或者移动脚本到该文件夹，命名为main.js，表示主脚本。脚本打包后将会从该脚本开始运行。</li>
-<li>在该文件夹下新建一个project.json的文件，其内容如下：<pre><code>{
-&quot;name&quot;: &quot;项目名称&quot;,
-&quot;versionName&quot;: &quot;1.0.0&quot;,
-&quot;versionCode&quot;: 1,
-&quot;packageName&quot;: &quot;org.autojs.example&quot;,
-&quot;main&quot;: &quot;main.js&quot;,
-&quot;launchConfig&quot;: {
-   &quot;hideLogs&quot;: true
+<h2>如何使打包的应用不显示主界面<span><a class="mark" href="#qa_3" id="qa_3">#</a></span></h2>
+<p>需要使用项目功能。新建项目后，修改项目下的<code>project.json</code>文件，增加以下条目：</p>
+<pre><code>&quot;launchConfig&quot;: {
+    &quot;hideLogs&quot;: true
 }
+</code></pre><p>例如：</p>
+<pre><code>{
+  &quot;name&quot;: &quot;项目名称&quot;,
+  &quot;versionName&quot;: &quot;1.0.0&quot;,
+  &quot;versionCode&quot;: 1,
+  &quot;packageName&quot;: &quot;org.autojs.example&quot;,
+  &quot;main&quot;: &quot;main.js&quot;,
+  &quot;launchConfig&quot;: {
+      &quot;hideLogs&quot;: true
+  }
 }
-</code></pre>其中，项目名称改为自己的项目名称，&quot;org.autojs.example&quot;改成自己的包名，下面的&quot;launchConfig&quot;表示启动配置，&quot;hideLogs&quot;表示隐藏日志。</li>
-<li>通过文件夹菜单的&quot;打包&quot;功能来打包该项目</li>
-</ol>
-<p>有关项目打包和配置的更多信息，参见项目与项目配置(待补)。</p>
+</code></pre><p>&quot;launchConfig&quot;表示启动配置，&quot;hideLogs&quot;表示隐藏日志。</p>
+<p>参见项目与项目配置。</p>
 <h2>Auto.js自带的模块和函数中没有的功能如何实现<span><a class="mark" href="#qa_auto_js" id="qa_auto_js">#</a></span></h2>
 <p>由于Auto.js支持直接调用Android的API，对于Auto.js没有内置的函数，可以直接通过修改Android代码为JavaScript代码实现。例如旋转图片的Android代码为：</p>
 <pre><code>import android.graphics.Bitmap;

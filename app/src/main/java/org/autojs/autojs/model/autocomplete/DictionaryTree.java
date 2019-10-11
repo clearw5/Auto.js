@@ -1,10 +1,9 @@
 package org.autojs.autojs.model.autocomplete;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;

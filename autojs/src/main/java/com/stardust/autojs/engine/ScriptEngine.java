@@ -1,18 +1,20 @@
 package com.stardust.autojs.engine;
 
-import android.support.annotation.CallSuper;
+import androidx.annotation.CallSuper;
 
-import com.stardust.autojs.runtime.exception.ScriptException;
+import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.ScriptSource;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by Stardust on 2017/4/2.
  * <p>
  * <p>
- * A ScriptEngine is created by {@link ScriptEngineManager#createEngine(String)} ()}, and then can be
+ * A ScriptEngine is created by {@link ScriptEngineManager#createEngine(String, int)} ()}, and then can be
  * used to execute script with {@link ScriptEngine#execute(ScriptSource)} in the **same** thread.
  * When the execution finish successfully, the engine should be destroy in the thread that created it.
  * <p>
@@ -24,7 +26,7 @@ public interface ScriptEngine<S extends ScriptSource> {
 
     String TAG_ENV_PATH = "env_path";
     String TAG_SOURCE = "source";
-    String TAG_EXECUTE_PATH = "execute_path";
+    String TAG_WORKING_DIRECTORY = "execute_path";
 
     void put(String name, Object value);
 
@@ -42,10 +44,13 @@ public interface ScriptEngine<S extends ScriptSource> {
 
     String cwd();
 
-    void uncaughtException(Exception throwable);
+    void uncaughtException(Throwable throwable);
 
-    Exception getUncaughtException();
+    Throwable getUncaughtException();
 
+    void setId(int id);
+
+    int getId();
 
     /**
      * @hide
@@ -66,38 +71,40 @@ public interface ScriptEngine<S extends ScriptSource> {
 
         private Map<String, Object> mTags = new ConcurrentHashMap<>();
         private OnDestroyListener mOnDestroyListener;
-        private boolean mDestroyed = false;
-        private Exception mUncaughtException;
-
+        private volatile boolean mDestroyed = false;
+        private Throwable mUncaughtException;
+        private volatile AtomicInteger mId = new AtomicInteger(ScriptExecution.NO_ID);
 
         @Override
-        public synchronized void setTag(String key, Object value) {
-            if (value == null)
-                return;
-            mTags.put(key, value);
+        public void setTag(String key, Object value) {
+            if (value == null) {
+                mTags.remove(key);
+            } else {
+                mTags.put(key, value);
+            }
         }
 
         @Override
-        public synchronized Object getTag(String key) {
+        public Object getTag(String key) {
             return mTags.get(key);
         }
 
         @Override
-        public synchronized boolean isDestroyed() {
+        public boolean isDestroyed() {
             return mDestroyed;
         }
 
         @CallSuper
         @Override
-        public synchronized void destroy() {
-            mDestroyed = true;
+        public void destroy() {
             if (mOnDestroyListener != null) {
                 mOnDestroyListener.onDestroy(this);
             }
+            mDestroyed = true;
         }
 
         public String cwd() {
-            return (String) getTag(TAG_EXECUTE_PATH);
+            return (String) getTag(TAG_WORKING_DIRECTORY);
         }
 
         public void setOnDestroyListener(OnDestroyListener onDestroyListener) {
@@ -107,14 +114,24 @@ public interface ScriptEngine<S extends ScriptSource> {
         }
 
         @Override
-        public void uncaughtException(Exception throwable) {
+        public void uncaughtException(Throwable throwable) {
             mUncaughtException = throwable;
             forceStop();
         }
 
         @Override
-        public Exception getUncaughtException() {
+        public Throwable getUncaughtException() {
             return mUncaughtException;
+        }
+
+        @Override
+        public void setId(int id) {
+            mId.compareAndSet(ScriptExecution.NO_ID, id);
+        }
+
+        @Override
+        public int getId() {
+            return mId.get();
         }
     }
 }

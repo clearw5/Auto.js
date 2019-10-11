@@ -5,16 +5,20 @@ import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.stardust.app.DialogUtils;
 import com.stardust.enhancedfloaty.FloatyService;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.ui.codegeneration.CodeGenerateDialog;
+import org.autojs.autojs.ui.floating.FloatyWindowManger;
 import org.autojs.autojs.ui.floating.FullScreenFloatyWindow;
+
+import com.stardust.view.accessibility.LayoutInspector;
 import com.stardust.view.accessibility.NodeInfo;
+
 import org.autojs.autojs.ui.widget.BubblePopupMenu;
 
 import java.util.Arrays;
@@ -37,9 +41,24 @@ public class LayoutBoundsFloatyWindow extends FullScreenFloatyWindow {
         mRootNode = rootNode;
     }
 
+    public static void capture(LayoutInspector inspector, Context context) {
+        LayoutInspector.CaptureAvailableListener listener = new LayoutInspector.CaptureAvailableListener() {
+            @Override
+            public void onCaptureAvailable(NodeInfo capture) {
+                inspector.removeCaptureAvailableListener(this);
+                LayoutBoundsFloatyWindow window = new LayoutBoundsFloatyWindow(capture);
+                FloatyWindowManger.addWindow(context, window);
+            }
+        };
+        inspector.addCaptureAvailableListener(listener);
+        if (!inspector.captureCurrentWindow()) {
+            inspector.removeCaptureAvailableListener(listener);
+        }
+    }
+
     @Override
-    protected View inflateView(FloatyService service) {
-        mContext = new ContextThemeWrapper(service, R.style.AppTheme);
+    protected View onCreateView(FloatyService floatyService) {
+        mContext = new ContextThemeWrapper(floatyService, R.style.AppTheme);
         mLayoutBoundsView = new LayoutBoundsView(mContext) {
             @Override
             public boolean dispatchKeyEvent(KeyEvent event) {
@@ -50,11 +69,10 @@ public class LayoutBoundsFloatyWindow extends FullScreenFloatyWindow {
                 return super.dispatchKeyEvent(event);
             }
         };
-        setupView();
         return mLayoutBoundsView;
     }
 
-    private void setupView() {
+    protected void onViewCreated(View v) {
         mLayoutBoundsView.setOnNodeInfoSelectListener(info -> {
             mSelectedNode = info;
             ensureOperationPopMenu();
@@ -115,7 +133,7 @@ public class LayoutBoundsFloatyWindow extends FullScreenFloatyWindow {
                     .customView(mNodeInfoView, false)
                     .theme(Theme.LIGHT)
                     .build();
-            mNodeInfoDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
+            mNodeInfoDialog.getWindow().setType(FloatyWindowManger.getWindowType());
         }
     }
 

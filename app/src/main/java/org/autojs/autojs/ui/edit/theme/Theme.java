@@ -25,6 +25,8 @@ public class Theme {
     private int mImeBarForegroundColor = Color.WHITE;
     private EditorTheme mEditorTheme;
     private int mLineHighlightBackground;
+    private int mBreakpointColor;
+    private int mDebuggingLineBackground;
 
     public Theme(EditorTheme theme) {
         mEditorTheme = theme;
@@ -34,6 +36,8 @@ public class Theme {
         mImeBarBackgroundColor = parseColor(theme.getEditorColors().getImeBackgroundColor(), mImeBarBackgroundColor);
         mImeBarForegroundColor = parseColor(theme.getEditorColors().getImeForegroundColor(), mImeBarForegroundColor);
         mLineHighlightBackground = parseColor(theme.getEditorColors().getLineHighlightBackground(), mLineHighlightBackground);
+        mDebuggingLineBackground = parseColor(theme.getEditorColors().getDebuggingLineBackground(), mDebuggingLineBackground);
+        mBreakpointColor = parseColor(theme.getEditorColors().getBreakpointForeground(), mBackgroundColor);
 
         for (TokenColor tokenColor : theme.getTokenColors()) {
             String foregroundStr = tokenColor.getSettings().getForeground();
@@ -141,4 +145,11 @@ public class Theme {
     }
 
 
+    public int getBreakpointColor() {
+        return mBreakpointColor;
+    }
+
+    public int getDebuggingLineBackgroundColor() {
+        return mDebuggingLineBackground;
+    }
 }

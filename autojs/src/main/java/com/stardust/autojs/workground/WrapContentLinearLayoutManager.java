@@ -1,10 +1,11 @@
 package com.stardust.autojs.workground;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by Stardust on 2017/2/13.

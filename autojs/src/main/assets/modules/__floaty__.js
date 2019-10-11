@@ -2,18 +2,24 @@
 module.exports = function(runtime, global){
     var floaty = {};
 
-    floaty.window = function(layout){
-        if(typeof(layout) == 'xml'){
-            layout = layout.toXMLString();
+    floaty.window = function(xml){
+        if(typeof(xml) == 'xml'){
+            xml = xml.toXMLString();
         }
-        return wrap(runtime.floaty.window(layout));
+        return wrap(runtime.floaty.window(function(context, parent){
+             runtime.ui.layoutInflater.setContext(context);
+             return runtime.ui.layoutInflater.inflate(xml.toString(), parent, true);
+        }));
     }
 
-    floaty.rawWindow = function(layout){
-        if(typeof(layout) == 'xml'){
-            layout = layout.toXMLString();
+    floaty.rawWindow = function(xml){
+        if(typeof(xml) == 'xml'){
+            xml = xml.toXMLString();
         }
-        return wrap(runtime.floaty.rawWindow(layout));
+        return wrap(runtime.floaty.rawWindow(function(context, parent){
+             runtime.ui.layoutInflater.setContext(context);
+             return runtime.ui.layoutInflater.inflate(xml.toString(), parent, true);
+        }));
     }
 
     function wrap(window){
@@ -26,13 +32,8 @@ module.exports = function(runtime, global){
             get: function(name) {
                var value = window[name];
                if(typeof(value) == 'undefined'){
-                   value = viewCache[name];
                    if(!value){
                         value = window.findView(name);
-                        if(value){
-                            value = ui.__decorate__(value);
-                            viewCache[name] = value;
-                        }
                    }
                    if(!value){
                       value = undefined;

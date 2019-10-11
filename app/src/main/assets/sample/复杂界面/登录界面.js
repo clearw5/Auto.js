@@ -45,7 +45,7 @@ function showRegisterUI(){
           </linear>
           <linear>
              <text w="56" gravity="center" color="#111111" size="16">邮箱</text>
-             <input w="*" h="40" inputType="email"/>
+             <input w="*" h="40" inputType="textEmailAddress"/>
           </linear>
           <linear gravity="center">
              <button>确定</button>

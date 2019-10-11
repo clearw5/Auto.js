@@ -46,5 +46,21 @@ public class Functions {
         R call(T1 t1, T2 t2, T3 t3, T4 t4);
     }
 
+    public interface VoidFunc1<T1> extends Func {
+        void call(T1 t1);
+    }
+
+    public interface VoidFunc2<T1, T2> extends Func {
+        void call(T1 t1, T2 t2);
+    }
+
+    public interface VoidFunc3<T1, T2, T3> extends Func {
+        void call(T1 t1, T2 t2, T3 t3);
+    }
+
+    public interface VoidFunc4<T1, T2, T3, T4> extends Func {
+        void call(T1 t1, T2 t2, T3 t3, T4 t4);
+    }
+
 
 }

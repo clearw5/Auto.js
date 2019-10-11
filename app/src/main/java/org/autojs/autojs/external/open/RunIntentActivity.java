@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.widget.Toast;
 
 import com.stardust.autojs.script.StringScriptSource;
@@ -38,7 +38,7 @@ public class RunIntentActivity extends Activity {
         Uri uri = intent.getData();
         if (uri != null && "content".equals(uri.getScheme())) {
             InputStream stream = getContentResolver().openInputStream(uri);
-            Scripts.run(new StringScriptSource(PFiles.read(stream)));
+            Scripts.INSTANCE.run(new StringScriptSource(PFiles.read(stream)));
         } else {
             ScriptIntents.handleIntent(this, intent);
         }

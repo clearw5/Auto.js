@@ -11,35 +11,16 @@ import com.stardust.enhancedfloaty.FloatyWindow;
  * Created by Stardust on 2017/10/18.
  */
 
-public abstract class FullScreenFloatyWindow implements FloatyWindow {
-
-    private WindowManager mWindowManager;
-    private WindowManager.LayoutParams mLayoutParams;
-    private View mView;
+public abstract class FullScreenFloatyWindow extends FloatyWindow {
 
     @Override
-    public void onCreate(FloatyService floatyService, WindowManager windowManager) {
-        mWindowManager = windowManager;
-        mView = inflateView(floatyService);
-        mLayoutParams = new WindowManager.LayoutParams(
+    protected WindowManager.LayoutParams onCreateWindowLayoutParams() {
+        return new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.TYPE_PHONE,
+                FloatyWindowManger.getWindowType(),
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 PixelFormat.TRANSLUCENT);
-        mWindowManager.addView(mView, mLayoutParams);
     }
 
-    protected abstract View inflateView(FloatyService service);
-
-    @Override
-    public void onServiceDestroy(FloatyService floatyService) {
-        close();
-    }
-
-    @Override
-    public void close() {
-        mWindowManager.removeView(mView);
-        FloatyService.removeWindow(this);
-    }
 }

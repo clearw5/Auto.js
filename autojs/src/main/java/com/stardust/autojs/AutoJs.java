@@ -5,14 +5,15 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
-import com.stardust.autojs.core.console.GlobalStardustConsole;
-import com.stardust.autojs.core.console.StardustConsole;
+import com.stardust.autojs.core.console.GlobalConsole;
+import com.stardust.autojs.core.console.ConsoleImpl;
 import com.stardust.autojs.core.image.capture.ScreenCaptureRequestActivity;
 import com.stardust.autojs.core.image.capture.ScreenCaptureRequester;
 import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;
@@ -20,21 +21,24 @@ import com.stardust.autojs.core.util.Shell;
 import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
 import com.stardust.autojs.engine.RootAutomatorEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
+import com.stardust.autojs.rhino.InterruptibleAndroidContextFactory;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 import com.stardust.autojs.runtime.api.AppUtils;
-import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptSource;
+import com.stardust.util.ResourceMonitor;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.UiHandler;
-import com.stardust.view.accessibility.AccessibilityInfoProvider;
+import com.stardust.autojs.core.activity.ActivityInfoProvider;
 import com.stardust.view.accessibility.AccessibilityNotificationObserver;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.LayoutInspector;
 
-import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.OpenCVLoader;
+import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.WrappedException;
+
+import java.io.File;
 
 /**
  * Created by Stardust on 2017/11/29.
@@ -45,44 +49,63 @@ public abstract class AutoJs {
     private final AccessibilityActionRecorder mAccessibilityActionRecorder = new AccessibilityActionRecorder();
     private final AccessibilityNotificationObserver mNotificationObserver;
     private ScriptEngineManager mScriptEngineManager;
-    private final LayoutInspector mLayoutInspector = new LayoutInspector();
+    private final LayoutInspector mLayoutInspector;
     private final Context mContext;
     private final Application mApplication;
     private final UiHandler mUiHandler;
     private final AppUtils mAppUtils;
-    private final AccessibilityInfoProvider mAccessibilityInfoProvider;
+    private final ActivityInfoProvider mActivityInfoProvider;
     private final ScreenCaptureRequester mScreenCaptureRequester = new ScreenCaptureRequesterImpl();
     private final ScriptEngineService mScriptEngineService;
-    private final Console mGlobalConsole;
+    private final GlobalConsole mGlobalConsole;
 
 
     protected AutoJs(final Application application) {
         mContext = application.getApplicationContext();
         mApplication = application;
+        mLayoutInspector = new LayoutInspector(mContext);
         mUiHandler = new UiHandler(mContext);
-        mAppUtils = new AppUtils(mContext);
+        mAppUtils = createAppUtils(mContext);
         mGlobalConsole = createGlobalConsole();
         mNotificationObserver = new AccessibilityNotificationObserver(mContext);
-        mAccessibilityInfoProvider = new AccessibilityInfoProvider(mContext.getPackageManager());
+        mActivityInfoProvider = new ActivityInfoProvider(mContext);
         mScriptEngineService = buildScriptEngineService();
+        ScriptEngineService.setInstance(mScriptEngineService);
         init();
     }
 
-    protected Console createGlobalConsole() {
-        return new GlobalStardustConsole(mUiHandler);
+    protected AppUtils createAppUtils(Context context) {
+        return new AppUtils(mContext);
+    }
+
+    protected GlobalConsole createGlobalConsole() {
+        return new GlobalConsole(mUiHandler);
     }
 
     protected void init() {
         addAccessibilityServiceDelegates();
         registerActivityLifecycleCallbacks();
-        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_13, mContext, new BaseLoaderCallback(mContext) {
+        ResourceMonitor.setExceptionCreator(resource -> {
+            Exception exception;
+            if (org.mozilla.javascript.Context.getCurrentContext() != null) {
+                exception = new WrappedException(new ResourceMonitor.UnclosedResourceException(resource));
+            } else {
+                exception = new ResourceMonitor.UnclosedResourceException(resource);
+            }
+            exception.fillInStackTrace();
+            return exception;
         });
+        ResourceMonitor.setUnclosedResourceDetectedHandler(detectedException -> mGlobalConsole.error(detectedException));
     }
 
     public abstract void ensureAccessibilityServiceEnabled();
 
     protected Application getApplication() {
         return mApplication;
+    }
+
+    public ScriptEngineManager getScriptEngineManager() {
+        return mScriptEngineManager;
     }
 
     protected ScriptEngineService buildScriptEngineService() {
@@ -101,15 +124,19 @@ public abstract class AutoJs {
             engine.setRuntime(createRuntime());
             return engine;
         });
+        initContextFactory();
         mScriptEngineManager.registerEngine(AutoFileSource.ENGINE, () -> new RootAutomatorEngine(mContext));
+    }
 
+    protected void initContextFactory() {
+        ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mContext.getCacheDir(), "classes")));
     }
 
     protected ScriptRuntime createRuntime() {
         return new ScriptRuntime.Builder()
-                .setConsole(new StardustConsole(mUiHandler, mGlobalConsole))
+                .setConsole(new ConsoleImpl(mUiHandler, mGlobalConsole))
                 .setScreenCaptureRequester(mScreenCaptureRequester)
-                .setAccessibilityBridge(new AccessibilityBridgeImpl())
+                .setAccessibilityBridge(new AccessibilityBridgeImpl(mUiHandler))
                 .setUiHandler(mUiHandler)
                 .setAppUtils(mAppUtils)
                 .setEngineService(mScriptEngineService)
@@ -139,9 +166,9 @@ public abstract class AutoJs {
 
 
     private void addAccessibilityServiceDelegates() {
-        AccessibilityService.addDelegate(100, mAccessibilityInfoProvider);
-        AccessibilityService.addDelegate(200, mNotificationObserver);
-        AccessibilityService.addDelegate(300, mAccessibilityActionRecorder);
+        AccessibilityService.Companion.addDelegate(100, mActivityInfoProvider);
+        AccessibilityService.Companion.addDelegate(200, mNotificationObserver);
+        AccessibilityService.Companion.addDelegate(300, mAccessibilityActionRecorder);
     }
 
     public AccessibilityActionRecorder getAccessibilityActionRecorder() {
@@ -160,7 +187,7 @@ public abstract class AutoJs {
         return mLayoutInspector;
     }
 
-    public Console getGlobalConsole() {
+    public GlobalConsole getGlobalConsole() {
         return mGlobalConsole;
     }
 
@@ -168,8 +195,8 @@ public abstract class AutoJs {
         return mScriptEngineService;
     }
 
-    public AccessibilityInfoProvider getInfoProvider() {
-        return mAccessibilityInfoProvider;
+    public ActivityInfoProvider getInfoProvider() {
+        return mActivityInfoProvider;
     }
 
 
@@ -181,8 +208,8 @@ public abstract class AutoJs {
 
     private class AccessibilityBridgeImpl extends AccessibilityBridge {
 
-        public AccessibilityBridgeImpl() {
-            super(createAccessibilityConfig());
+        public AccessibilityBridgeImpl(UiHandler uiHandler) {
+            super(mContext, createAccessibilityConfig(), uiHandler);
         }
 
         @Override
@@ -198,12 +225,12 @@ public abstract class AutoJs {
         @Nullable
         @Override
         public AccessibilityService getService() {
-            return AccessibilityService.getInstance();
+            return AccessibilityService.Companion.getInstance();
         }
 
         @Override
-        public AccessibilityInfoProvider getInfoProvider() {
-            return mAccessibilityInfoProvider;
+        public ActivityInfoProvider getInfoProvider() {
+            return mActivityInfoProvider;
         }
 
         @Override

@@ -3,38 +3,60 @@ module.exports = function (runtime, global) {
     require("object-observe-lite.min")();
     require("array-observe.min")();
 
-    var J = require("__java_util__");
-
-
+    var J = util.java;
     var ui = {};
-    ui.__view_cache__ = {};
+
+    ui.__widgets__ = {};
 
     ui.__defineGetter__("emitter", ()=>  activity ? activity.getEventEmitter() : null);
 
     ui.layout = function (xml) {
-        if(!activity){
+        if(typeof(activity) == 'undefined'){
             throw new Error("需要在ui模式下运行才能使用该函数");
         }
-        if(typeof(xml) == 'xml'){
-            xml = xml.toXMLString();
-        }
         runtime.ui.layoutInflater.setContext(activity);
-        var view = runtime.ui.layoutInflater.inflate(xml);
+        var view = runtime.ui.layoutInflater.inflate(xml, activity.window.decorView, false);
         ui.setContentView(view);
     }
 
-    ui.inflate = function(xml, parent){
-        if(!activity){
-            throw new Error("需要在ui模式下运行才能使用该函数");
+    ui.layoutFile = function(file) {
+        ui.layout(files.read(file));
+    }
+
+    ui.inflate = function(xml, parent, attachToParent){
+        if(typeof(xml) == 'xml'){
+            xml = xml.toXMLString();
         }
         parent = parent || null;
-        runtime.ui.layoutInflater.setContext(activity);
-        return decorate(runtime.ui.layoutInflater.inflate(xml.toString(), parent));
+        attachToParent = !!attachToParent;
+        let ctx;
+        if(typeof(activity) == 'undefined') {
+            ctx = new android.view.ContextThemeWrapper(context, com.stardust.autojs.R.style.ScriptTheme);
+        } else {
+            ctx = activity;
+        }
+        runtime.ui.layoutInflater.setContext(ctx);
+        return runtime.ui.layoutInflater.inflate(xml.toString(), parent, attachToParent);
+    }
+
+    ui.__inflate__ = function(ctx, xml, parent, attachToParent){
+        if(typeof(xml) == 'xml'){
+            xml = xml.toXMLString();
+        }
+        parent = parent || null;
+        attachToParent = !!attachToParent;
+        return runtime.ui.layoutInflater.inflate(ctx, xml.toString(), parent, attachToParent);
+    }
+
+    ui.registerWidget = function(name, widget){
+        if(typeof(widget) !== 'function'){
+            throw new TypeError('widget should be a class-like function');
+        }
+        ui.__widgets__[name] = widget;
     }
 
     ui.setContentView = function (view) {
         ui.view = view;
-        ui.__view_cache__ = {};
         ui.run(function () {
             activity.setContentView(view);
         });
@@ -43,15 +65,15 @@ module.exports = function (runtime, global) {
     ui.findById = function (id) {
         if (!ui.view)
             return null;
-        var v = ui.findByStringId(ui.view, id);
-        if (v) {
-            v = decorate(v);
-        }
-        return v;
+        return ui.findByStringId(ui.view, id);
+    }
+
+    ui.findView = function(id) {
+        return ui.findById(id);
     }
 
     ui.isUiThread = function () {
-        importClass(android.os.Looper);
+        let Looper = android.os.Looper;
         return Looper.myLooper() == Looper.getMainLooper();
     }
 
@@ -79,8 +101,11 @@ module.exports = function (runtime, global) {
     }
 
     ui.post = function (action, delay) {
-        delay = delay || 0;
-        runtime.getUiHandler().postDelay(wrapUiAction(action), delay);
+        if(delay == undefined){
+            runtime.getUiHandler().post(wrapUiAction(action));
+        }else{
+            runtime.getUiHandler().postDelayed(wrapUiAction(action), delay);
+        }
     }
 
     ui.statusBarColor = function (color) {
@@ -107,64 +132,102 @@ module.exports = function (runtime, global) {
     runtime.ui.bindingContext = global;
     var layoutInflater = runtime.ui.layoutInflater;
     layoutInflater.setLayoutInflaterDelegate({
-        beforeConvertXml: function (xml) {
+        beforeConvertXml: function (context, xml) {
             return null;
         },
-        afterConvertXml: function (xml) {
+        afterConvertXml: function (context, xml) {
             return xml;
         },
-        afterInflation: function (result, xml, parent) {
+        afterInflation: function (context, result, xml, parent) {
             return result;
         },
-        beforeInflation: function (xml, parent) {
+        beforeInflation: function (context, xml, parent) {
             return null;
         },
-        beforeInflateView: function (node, parent, attachToParent) {
+        beforeInflateView: function (context, node, parent, attachToParent) {
             return null;
         },
-        afterInflateView: function (view, node, parent, attachToParent) {
+        afterInflateView: function (context, view, node, parent, attachToParent) {
+            let widget = view.widget;
+            if(widget && context.get("root") != widget){
+                widget.notifyAfterInflation(view);
+            }
             return view;
         },
-        beforeCreateView: function (node, viewName, attrs) {
+        beforeCreateView: function (context, node, viewName, parent, attrs) {
+            if(ui.__widgets__.hasOwnProperty(viewName)){
+                let Widget = ui.__widgets__[viewName];
+                let widget = new Widget();
+                let ctx = layoutInflater.newInflateContext();
+                ctx.put("root", widget);
+                ctx.put("widget", widget);
+                let view = ui.__inflate__(ctx, widget.renderInternal(), parent, false);
+                return view;
+            };
             return null;
         },
-        afterCreateView: function (view, node, viewName, attrs) {
+        afterCreateView: function (context, view, node, viewName, parent, attrs) {
             if (view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsListView" ||
                 view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsGridView") {
                 initListView(view);
             }
+            var widget = context.get("widget");
+            if(widget != null){
+                widget.view = view;
+                view.widget = widget;
+                let viewAttrs = com.stardust.autojs.core.ui.ViewExtras.getViewAttributes(view, layoutInflater.resourceParser);
+                viewAttrs.setViewAttributeDelegate({
+                    has: function(name) {
+                        return widget.hasAttr(name);
+                    },
+                    get: function(view, name, getter){
+                        return widget.getAttr(view, name, getter);
+                    },
+                    set: function(view, name, value, setter) {
+                        widget.setAttr(view, name, value, setter);
+                    }
+                });
+                widget.notifyViewCreated(view);
+            }
             return view;
         },
-        beforeApplyAttributes: function (view, inflater, attrs, parent) {
+        beforeApplyAttributes: function (context, view, inflater, attrs, parent) {
             return false;
         },
-        afterApplyAttributes: function (view, inflater, attrs, parent) {
-
+        afterApplyAttributes: function (context, view, inflater, attrs, parent) {
+            context.remove("widget");
         },
-        beforeInflateChildren: function (inflater, node, parent) {
+        beforeInflateChildren: function (context, inflater, node, parent) {
             return false;
         },
-        afterInflateChildren: function (inflater, node, parent) {
+        afterInflateChildren: function (context, inflater, node, parent) {
 
         },
-        afterApplyPendingAttributesOfChildren: function (inflater, view) {
+        afterApplyPendingAttributesOfChildren: function (context, inflater, view) {
 
         },
-        beforeApplyPendingAttributesOfChildren: function (inflater, view) {
+        beforeApplyPendingAttributesOfChildren: function (context, inflater, view) {
             return false;
         },
-        beforeApplyAttribute: function (inflater, view, ns, attrName, value, parent, attrs) {
+        beforeApplyAttribute: function (context, inflater, view, ns, attrName, value, parent, attrs) {
             var isDynamic = layoutInflater.isDynamicValue(value);
             if ((isDynamic && layoutInflater.getInflateFlags() == layoutInflater.FLAG_IGNORES_DYNAMIC_ATTRS)
                     || (!isDynamic && layoutInflater.getInflateFlags() == layoutInflater.FLAG_JUST_DYNAMIC_ATTRS)) {
                 return true;
             }
             value = bind(value);
-            inflater.setAttr(view, ns, attrName, value, parent, attrs);
-            this.afterApplyAttribute(inflater, view, ns, attrName, value, parent, attrs);
+            let widget = context.get("widget");
+            if(widget != null && widget.hasAttr(attrName)){
+                widget.setAttr(view, attrName, value, (view, attrName, value)=>{
+                    inflater.setAttr(view, ns, attrName, value, parent, attrs);
+                });
+            } else {
+                inflater.setAttr(view, ns, attrName, value, parent, attrs);
+            }
+            this.afterApplyAttribute(context, inflater, view, ns, attrName, value, parent, attrs);
             return true;
         },
-        afterApplyAttribute: function (inflater, view, ns, attrName, value, parent, attrs) {
+        afterApplyAttribute: function (context, inflater, view, ns, attrName, value, parent, attrs) {
 
         }
     });
@@ -192,109 +255,7 @@ module.exports = function (runtime, global) {
                 }).call(ctx);
             }
         });
-
     }
-
-    function decorate(view) {
-        var javaObject = view;
-        var view = global.events.__asEmitter__(Object.create(view));
-        view.__javaObject__ = javaObject;
-        if (view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsListView"
-            || view.getClass().getName() == "com.stardust.autojs.core.ui.widget.JsGridView") {
-            view = decorateList(view);
-        }
-        var gestureDetector = new android.view.GestureDetector(context, {
-            onDown: function (e) {
-                e = wrapMotionEvent(e);
-                emit("touch_down", e, view);
-                return e.consumed;
-            },
-            onShowPress: function (e) {
-                e = wrapMotionEvent(e);
-                emit("show_press", e, view);
-            },
-            onSingleTapUp: function (e) {
-                e = wrapMotionEvent(e);
-                emit("single_tap", e, view);
-                return e.consumed;
-            },
-            onScroll: function (e1, e2, distanceX, distanceY) {
-                e1 = wrapMotionEvent(e1);
-                e2 = wrapMotionEvent(e2);
-                emit("scroll", e1, e2, distanceX, distanceY, view);
-                return e1.consumed || e2.consumed;
-            },
-            onLongPress: function (e) {
-                e = wrapMotionEvent(e);
-                emit("long_press", e, view);
-            },
-            onFling: function (e1, e2, velocityX, velocityY) {
-                e1 = wrapMotionEvent(e1);
-                e2 = wrapMotionEvent(e2);
-                emit("fling", e1, e2, velocityX, velocityY, view);
-                return e1.consumed || e2.consumed;
-            }
-        });
-        view.setOnTouchListener(function (v, event) {
-            if (gestureDetector.onTouchEvent(event)) {
-                return true;
-            }
-            event = wrapMotionEvent(event);
-            event.consumed = false;
-            emit("touch", event, view);
-            return event.consumed;
-        });
-        if(!J.instanceOf(view, "android.widget.AdapterView")){
-            view.setOnLongClickListener(function (v) {
-                var event = {};
-                event.consumed = false;
-                emit("long_click", event, view);
-                return event.consumed;
-            });
-            view.setOnClickListener(function (v) {
-                emit("click", view);
-            });
-        }
-
-        view.setOnKeyListener(function (v, keyCode, event) {
-            event = wrapMotionEvent(event);
-            emit("key", keyCode, event, v);
-            return event.consumed;
-        });
-        if (typeof (view.setOnCheckedChangeListener) == 'function') {
-            view.setOnCheckedChangeListener(function (v, isChecked) {
-                emit("check", isChecked == true ? true : false, view);
-            });
-        }
-        view._id = function (id) {
-            return ui.findById(view, id);
-        }
-        view.click = function (listener) {
-            if (listener) {
-                view.setOnClickListener(new android.view.View.OnClickListener(wrapUiAction(listener)));
-            } else {
-                view.performClick();
-            }
-        }
-        view.longClick = function (listener) {
-            if (listener) {
-                view.setOnLongClickListener(wrapUiAction(listener, false));
-            } else {
-                view.performLongClick();
-            }
-        }
-        function emit() {
-            var args = arguments;
-            global.__exitIfError__(function () {
-                //不支持使用apply的原因是rhino会把参数中的primitive变成object
-                functionApply(view, view.emit, args);
-                //view.emit.apply(view, args);
-            });
-        }
-        return view;
-    }
-
-
 
     function initListView(list) {
         list.setDataSourceAdapter({
@@ -326,31 +287,6 @@ module.exports = function (runtime, global) {
         });
     }
 
-    function decorateList(list) {
-        list.setOnItemTouchListener({
-            onItemClick: function(listView, itemView, item, pos){
-                emit("item_click", item, pos, itemView, listView);
-            },
-            onItemLongClick: function(listView, itemView, item, pos){
-                var event = {};
-                event.consumed = false;
-                emit("item_long_click", event, item, pos, itemView, listView);
-                return event.consumed;
-            }
-        });
-        function emit() {
-            var args = arguments;
-            global.__exitIfError__(function () {
-                //不支持使用apply的原因是rhino会把参数中的primitive变成object
-                functionApply(list, list.emit, args);
-                //view.emit.apply(view, args);
-            });
-        }
-        return list;
-    }
-
-    ui.__decorate__ = decorate;
-
     function wrapUiAction(action, defReturnValue) {
         if (typeof (activity) != 'undefined') {
             return function () { return action(); };
@@ -360,29 +296,62 @@ module.exports = function (runtime, global) {
         }
     }
 
-    function wrapMotionEvent(e) {
-        e = Object.create(e);
-        e.consumed = false;
-        return e;
-    }
-
-    function functionApply(obj, func, args) {
-        if (args.length == 0)
-            return func.call(obj);
-        if (args.length == 1)
-            return func.call(obj, args[0]);
-        if (args.length == 2)
-            return func.call(obj, args[0], args[1]);
-        if (args.length == 3)
-            return func.call(obj, args[0], args[1], args[2]);
-        if (args.length == 4)
-            return func.call(obj, args[0], args[1], args[2], args[3]);
-        if (args.length == 5)
-            return func.call(obj, args[0], args[1], args[2], args[3], args[4]);
-        if (args.length == 6)
-            return func.call(obj, args[0], args[1], args[2], args[3], args[4], args[5]);
-        throw new Error("too many arguments: " + args.length);
-    }
+    ui.Widget = (function(){
+        function Widget(){
+            this.__attrs__ = {};
+        }
+        Widget.prototype.renderInternal = function(){
+            if(typeof(this.render) === 'function'){
+                return this.render();
+            }
+            return (< />)
+        };
+        Widget.prototype.defineAttr = function(attrName, getter, setter){
+            var attrAlias = attrName;
+            var applier = null;
+            if(typeof(arguments[1]) == 'string'){
+                attrAlias = arguments[1];
+                if(arguments.length >= 3){
+                    applier = arguments[2];
+                }
+            } else if(typeof(arguments[1]) == 'function' && typeof(arguments[2]) != 'function'){
+                applier = arguments[1];
+            }
+            if(!(typeof(arguments[1]) == 'function' && typeof(arguments[2]) == 'function')){
+                getter = ()=> {
+                    return this[attrAlias];
+                };
+                setter = (view, attrName, value, setter)=> {
+                    this[attrAlias] = value;
+                    applier && applier(view, attrName, value, setter);
+                };
+            }
+            this.__attrs__[attrName] = {
+                getter: getter,
+                setter: setter
+            };
+        };
+        Widget.prototype.hasAttr = function(attrName){
+            return this.__attrs__.hasOwnProperty(attrName);
+        };
+        Widget.prototype.setAttr = function(view, attrName, value, setter){
+            this.__attrs__[attrName].setter(view, attrName, value, setter);
+        };
+        Widget.prototype.getAttr = function(view, attrName, getter){
+            return this.__attrs__[attrName].getter(view, attrName, getter);
+        };
+        Widget.prototype.notifyViewCreated = function(view){
+            if(typeof(this.onViewCreated) == 'function'){
+                this.onViewCreated(view);
+            }
+        };
+        Widget.prototype.notifyAfterInflation = function(view){
+            if(typeof(this.onFinishInflation) == 'function'){
+                this.onFinishInflation(view);
+            }
+        }
+        return Widget;
+    })();
 
     var proxy = runtime.ui;
     proxy.__proxy__ = {
@@ -391,14 +360,9 @@ module.exports = function (runtime, global) {
         },
         get: function (name) {
             if (!ui[name] && ui.view) {
-                var cache = ui.__view_cache__[name];
-                if (cache) {
-                    return cache;
-                }
-                cache = ui.findById(name);
-                if (cache) {
-                    ui.__view_cache__[name] = cache;
-                     return cache;
+                let v = ui.findById(name);
+                if (v) {
+                    return v;
                 }
             }
             return ui[name];

@@ -3,7 +3,8 @@ package com.stardust.util;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 
 /**
@@ -18,7 +19,8 @@ public class ClipboardUtil {
     }
 
     public static CharSequence getClip(Context context) {
-        return ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE)).getPrimaryClip().getItemAt(0).getText();
+        ClipData clip = ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE)).getPrimaryClip();
+        return (clip == null || clip.getItemCount() == 0) ? null : clip.getItemAt(0).getText();
     }
 
     @NonNull

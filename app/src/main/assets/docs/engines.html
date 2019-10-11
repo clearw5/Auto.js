@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Engines | Auto.js 3.0.0 文档</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <title>Engines | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="https://nodejs.org/api/engines.html">
@@ -61,7 +61,7 @@
 
     <div id="column1" data-id="engines" class="interior">
       <header>
-        <h1>Auto.js 3.0.0 文档</h1>
+        <h1>Auto.js 4.1.0 文档</h1>
         <div id="gtoc">
           <p>
             <a href="index.html" name="toc">索引</a> |
@@ -185,6 +185,10 @@ exec(add, {a: 1, b:2});
 <p>停止所有正在运行的脚本并显示停止的脚本数量。包括当前脚本自身。</p>
 <h2>engines.myEngine()<span><a class="mark" href="#engines_engines_myengine" id="engines_engines_myengine">#</a></span></h2>
 <p>返回当前脚本的脚本引擎对象(<a href="#engines_scriptengine">ScriptEngine</a>)</p>
+<p><strong>[v4.1.0新增]</strong>
+特别的，该对象可以通过<code>execArgv</code>来获取他的运行参数，包括外部参数、intent等。例如：</p>
+<pre><code>log(engines.myEngine().execArgv);
+</code></pre><p>普通脚本的运行参数通常为空，通过定时任务的广播启动的则可以获取到启动的intent。</p>
 <h2>engines.all()<span><a class="mark" href="#engines_engines_all" id="engines_engines_all">#</a></span></h2>
 <div class="signature"><ul>
 <li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a></li>

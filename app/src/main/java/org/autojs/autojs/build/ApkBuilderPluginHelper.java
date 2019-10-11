@@ -3,11 +3,11 @@ package org.autojs.autojs.build;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
 
 import com.stardust.pio.UncheckedIOException;
+
 import org.autojs.autojs.BuildConfig;
-import org.autojs.autojs.ui.build.BuildActivity;
+
 import com.stardust.util.DeveloperUtils;
 
 import java.io.IOException;
@@ -21,6 +21,7 @@ public class ApkBuilderPluginHelper {
 
     private static final String PLUGIN_PACKAGE_NAME = "org.autojs.apkbuilderplugin";
     private static final String TEMPLATE_APK_PATH = "template.apk";
+    private static final boolean DEBUG_APK_PLUGIN = false;
 
     public static boolean isPluginAvailable(Context context) {
         return DeveloperUtils.checkSignature(context, PLUGIN_PACKAGE_NAME);
@@ -28,9 +29,9 @@ public class ApkBuilderPluginHelper {
 
     public static InputStream openTemplateApk(Context context) {
         try {
-            //if (BuildConfig.DEBUG) {
-            //  return context.getAssets().open(TEMPLATE_APK_PATH);
-            //}
+            if (DEBUG_APK_PLUGIN && BuildConfig.DEBUG) {
+                return context.getAssets().open(TEMPLATE_APK_PATH);
+            }
             return context.getPackageManager().getResourcesForApplication(PLUGIN_PACKAGE_NAME)
                     .getAssets().open(TEMPLATE_APK_PATH);
         } catch (IOException e) {

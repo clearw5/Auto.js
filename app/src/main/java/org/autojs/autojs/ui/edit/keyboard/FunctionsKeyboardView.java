@@ -5,14 +5,13 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -27,6 +26,7 @@ import org.autojs.autojs.model.indices.Module;
 import org.autojs.autojs.model.indices.Modules;
 import org.autojs.autojs.model.indices.Property;
 import org.autojs.autojs.ui.widget.GridDividerDecoration;
+import org.autojs.autojs.workground.WrapContentGridLayoutManger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,10 +98,11 @@ public class FunctionsKeyboardView extends FrameLayout {
     }
 
     private void initPropertiesView() {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), SPAN_COUNT);
-        mPropertiesView.setLayoutManager(gridLayoutManager);
+        WrapContentGridLayoutManger manager = new WrapContentGridLayoutManger(getContext(), SPAN_COUNT);
+        manager.setDebugInfo("FunctionsKeyboardView");
+        mPropertiesView.setLayoutManager(manager);
         mPropertiesView.setAdapter(new PropertiesAdapter());
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 
             @Override
             public int getSpanSize(int position) {

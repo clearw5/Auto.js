@@ -2,23 +2,24 @@ package org.autojs.autojs.external.tasker;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.os.Environment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import org.autojs.autojs.R;
-import org.autojs.autojs.external.ScriptIntents;
-import org.autojs.autojs.model.script.ScriptFile;
-import org.autojs.autojs.storage.file.StorageFileProvider;
-import org.autojs.autojs.ui.BaseActivity;
-import org.autojs.autojs.ui.main.scripts.ScriptListView;
 import com.twofortyfouram.locale.sdk.client.ui.activity.AbstractAppCompatPluginActivity;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.autojs.autojs.R;
+import org.autojs.autojs.external.ScriptIntents;
+import org.autojs.autojs.model.explorer.ExplorerDirPage;
+import org.autojs.autojs.model.explorer.Explorers;
+import org.autojs.autojs.ui.BaseActivity;
+import org.autojs.autojs.ui.explorer.ExplorerView;
 
 import static org.autojs.autojs.ui.edit.EditorView.EXTRA_CONTENT;
 
@@ -31,7 +32,6 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
 
     private String mSelectedScriptFilePath;
     private String mPreExecuteScript;
-    private StorageFileProvider mStorageFileProvider;
 
     @AfterViews
     void setUpViews() {
@@ -41,11 +41,10 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
 
 
     private void initScriptListRecyclerView() {
-        mStorageFileProvider = StorageFileProvider.getExternalStorageProvider();
-        ScriptListView scriptList = (ScriptListView) findViewById(R.id.script_list);
-        scriptList.setStorageFileProvider(mStorageFileProvider, new ScriptFile(StorageFileProvider.getDefaultDirectory()));
-        scriptList.setOnScriptFileClickListener((view, file) -> {
-            mSelectedScriptFilePath = file.getPath();
+        ExplorerView explorerView = (ExplorerView) findViewById(R.id.script_list);
+        explorerView.setExplorer(Explorers.external(), ExplorerDirPage.createRoot(Environment.getExternalStorageDirectory()));
+        explorerView.setOnItemClickListener((view, item) -> {
+            mSelectedScriptFilePath = item.getPath();
             finish();
         });
     }
@@ -59,7 +58,7 @@ public class TaskPrefEditActivity extends AbstractAppCompatPluginActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_refresh) {
-            mStorageFileProvider.refreshAll();
+            Explorers.external().refreshAll();
         } else if (item.getItemId() == R.id.action_clear_file_selection) {
             mSelectedScriptFilePath = null;
         } else {

@@ -1,6 +1,6 @@
 package com.stardust.autojs.core.permission;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public interface OnRequestPermissionsResultCallback {
 

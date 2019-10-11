@@ -1,18 +1,13 @@
 package org.autojs.autojs.model.script;
 
-import android.os.Environment;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.pio.PFile;
-import com.stardust.pio.PFiles;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
 
 /**
  * Created by Stardust on 2017/1/23.

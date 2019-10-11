@@ -12,6 +12,10 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
 
 
     <!-- 非Auto.js运行必需，不会主动申请，某些脚本可以自行申请-->
@@ -21,21 +25,27 @@
     <!-- Ad SDK Permissions -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
+
     <application
         xmlns:tools="http://schemas.android.com/tools"
         android:name=".App"
         android:allowBackup="false"
         android:icon="@drawable/autojs_material"
-        android:label="@string/_app_name"
+        android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:replace="android:label, android:icon, android:allowBackup">
 
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.1"/>
+
         <activity
-            android:name=".ui.splash.SplashActivity_"
+            android:name=".ui.splash.SplashActivity"
             android:hardwareAccelerated="true"
-            android:label="@string/_app_name"
+            android:label="@string/app_name"
             android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -46,7 +56,7 @@
         <activity
             android:name=".ui.main.MainActivity_"
             android:hardwareAccelerated="true"
-            android:label="@string/_app_name"
+            android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.FullScreen">
         </activity>
@@ -62,7 +72,7 @@
         </activity>
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name=".external.fileprovider.AppFileProvider"
             android:authorities="org.autojs.autojs.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -73,7 +83,10 @@
 
         <activity
             android:name=".ui.edit.EditActivity_"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="standard"
             android:multiprocess="true"
+            android:taskAffinity="org.autojs.autojs.edit"
             android:theme="@style/EditorTheme">
         </activity>
         <activity android:name=".ui.settings.AboutActivity_"/>
@@ -81,7 +94,10 @@
             android:name=".ui.settings.SettingsActivity_"
             android:theme="@style/AppTheme.Settings"/>
         <activity android:name=".ui.error.ErrorReportActivity"/>
-        <activity android:name=".external.tasker.TaskerScriptEditActivity_"/>
+        <activity
+            android:name=".external.tasker.TaskerScriptEditActivity_"
+            android:configChanges="orientation|screenSize"
+            />
         <activity android:name=".ui.edit.ViewSampleActivity"/>
         <activity
             android:name=".ui.user.LoginActivity_"
@@ -90,7 +106,10 @@
             android:name=".ui.user.RegisterActivity_"
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".ui.user.WebActivity_"/>
-        <activity android:name=".ui.build.BuildActivity_"/>
+        <activity
+            android:name=".ui.project.BuildActivity_"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.project.ProjectConfigActivity_"/>
         <activity android:name=".ui.log.LogActivity_"/>
         <activity android:name=".ui.doc.DocumentationActivity_"/>
         <activity android:name=".ui.shortcut.ShortcutIconSelectActivity_"/>
@@ -102,6 +121,10 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
 
         <activity
@@ -109,21 +132,86 @@
             android:theme="@style/IssueReporterTheme"/>
 
 
+        <service android:name=".external.foreground.ForegroundService"/>
         <service android:name=".external.ScriptExecutionIntentService"/>
 
         <activity android:name=".external.tasker.TaskPrefEditActivity_"/>
+
+        <service
+            android:name=".external.tile.LayoutBoundsTile"
+            android:icon="@drawable/ic_circular_menu_bounds"
+            android:label="@string/text_inspect_layout_bounds"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="false"/>
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".external.tile.LayoutHierarchyTile"
+            android:icon="@drawable/ic_circular_menu_hierarchy"
+            android:label="@string/text_inspect_layout_hierarchy"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="false"/>
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
 
         <activity-alias
             android:name=".external.tasker.PluginActivity"
             android:exported="true"
             android:icon="@drawable/ic_android_eat_js"
-            android:label="@string/_app_name"
+            android:label="@string/app_name"
             android:targetActivity=".external.tasker.TaskPrefEditActivity_"
             tools:ignore="ExportedActivity">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING"/>
             </intent-filter>
         </activity-alias>
+
+        <receiver android:name="org.autojs.autojs.external.receiver.StaticBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+                <action android:name="android.intent.action.TIME_SET"/>
+                <action android:name="android.intent.action.TIMEZONE_CHANGED"/>
+                <action android:name="android.intent.action.UID_REMOVED"/>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
+                <action android:name="android.intent.action.ACTION_SHUTDOWN"/>
+                <action android:name="android.intent.action.DATE_CHANGED"/>
+                <action android:name="android.intent.action.DREAMING_STARTED"/>
+                <action android:name="android.intent.action.DREAMING_STOPPED"/>
+                <action android:name="android.intent.action.HEADSET_PLUG"/>
+                <action android:name="android.intent.action.INPUT_METHOD_CHANGED"/>
+                <action android:name="android.intent.action.LOCALE_CHANGED"/>
+                <action android:name="android.intent.action.MEDIA_BUTTON"/>
+                <action android:name="android.intent.action.MEDIA_CHECKING"/>
+                <action android:name="android.intent.action.MEDIA_MOUNTED"/>
+                <action android:name="android.intent.action.PACKAGE_FIRST_LAUNCH"/>
+                <action android:name="android.intent.action.PROVIDER_CHANGED"/>
+                <action android:name="android.intent.action.WALLPAPER_CHANGED"/>
+                <action android:name="android.intent.action.USER_UNLOCKED"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED"/>
+                <action android:name="android.intent.action.PACKAGE_CHANGED"/>
+                <action android:name="android.intent.action.PACKAGE_DATA_CLEARED"/>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <action android:name="android.intent.action.PACKAGE_RESTARTED"/>
+
+                <data android:scheme="package"/>
+            </intent-filter>
+        </receiver>
 
         <receiver
             android:name=".external.tasker.FireSettingReceiver"
@@ -193,21 +281,8 @@
         </activity>
 
         <service
-            android:name=".accessibility.AccessibilityService"
-            android:label="@string/_app_name"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService"/>
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_service_config"/>
-        </service>
-
-        <service
             android:name="com.stardust.notification.NotificationListenerService"
-            android:label="@string/_app_name"
+            android:label="@string/app_name"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService"/>
@@ -227,12 +302,6 @@
         <receiver android:name=".timing.TaskReceiver">
             <intent-filter>
                 <action android:name="com.stardust.autojs.action.task"/>
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name=".timing.TimedTaskScheduler">
-            <intent-filter>
-                <action android:name="com.stardust.autojs.action.check_task"/>
             </intent-filter>
         </receiver>
 
