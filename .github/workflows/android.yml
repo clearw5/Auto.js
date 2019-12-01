@@ -18,6 +18,6 @@ jobs:
     - name: Upload apk
       uses: actions/upload-artifact@v1
       with:
-        name: app-release.apk
-        path: app/build/outputs/apk/release/app-release.apk
+        name: app-armeabi-v7a-release-unsigned.apk
+        path: app/build/outputs/apk/common/release/app-common-armeabi-v7a-release-unsigned.apk
 
