@@ -16,6 +16,7 @@ android {
         multiDexEnabled true
     }
     lintOptions {
+        abortOnError false
         disable 'MissingTranslation'
         disable 'ExtraTranslation'
     }
