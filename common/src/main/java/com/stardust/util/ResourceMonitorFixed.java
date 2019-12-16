@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 
-public final class ResourceMonitor {
+public final class ResourceMonitorFixed {
 
     private static final String LOG_TAG = "ResourceMonitor";
 
@@ -60,7 +60,7 @@ public final class ResourceMonitor {
         sUnclosedResourceDetectedHandler = unclosedResourceDetectedHandler;
     }
 
-    public static void onOpen(ResourceMonitor.Resource resource) {
+    public static void onOpen(ResourceMonitorFixed.Resource resource) {
         if (!sEnabled) {
             return;
         }
@@ -72,7 +72,7 @@ public final class ResourceMonitor {
         int resourceId = resource.getResourceId();
         Exception exception;
         if (sExceptionCreator == null) {
-            exception = new ResourceMonitor.UnclosedResourceException(resource);
+            exception = new ResourceMonitorFixed.UnclosedResourceException(resource);
             exception.fillInStackTrace();
         } else {
             exception = sExceptionCreator.create(resource);
@@ -82,7 +82,7 @@ public final class ResourceMonitor {
         map.getLock().unlock();
     }
 
-    public static void onClose(ResourceMonitor.Resource resource) {
+    public static void onClose(ResourceMonitorFixed.Resource resource) {
         if (!sEnabled) {
             return;
         }
@@ -94,7 +94,7 @@ public final class ResourceMonitor {
         }
     }
 
-    public static void onFinalize(ResourceMonitor.Resource resource) {
+    public static void onFinalize(ResourceMonitorFixed.Resource resource) {
         if (!sEnabled) {
             return;
         }
@@ -131,7 +131,7 @@ public final class ResourceMonitor {
     }
 
     public static void setEnabled(boolean mEnabled) {
-        ResourceMonitor.sEnabled = mEnabled;
+        ResourceMonitorFixed.sEnabled = mEnabled;
     }
 
     public static final class UnclosedResourceException extends RuntimeException {

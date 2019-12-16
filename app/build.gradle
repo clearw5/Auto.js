@@ -81,7 +81,10 @@ android {
             buildConfigField "String", "CHANNEL", '"coolapk"'
         }
     }
-
+    // 避免压缩TensorFlow
+    aaptOptions {
+        noCompress "tflite"
+    }
 }
 
 
@@ -95,6 +98,9 @@ repositories {
 }
 
 dependencies {
+
+    // TensorFlow-lite
+    implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.1-alpha01', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
