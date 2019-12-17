@@ -101,7 +101,7 @@
             android:title="@string/text_documentation_source"
             />
 
-        <org.autojs.autojs.ui.settings.ScriptDirPathPreference
+        <org.autojs.autojsm.ui.settings.ScriptDirPathPreference
             android:defaultValue="@string/default_value_script_dir_path"
             android:entries="@array/keys_documentation_source"
             android:entryValues="@array/values_documentation_source"

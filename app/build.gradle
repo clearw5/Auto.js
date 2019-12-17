@@ -17,7 +17,7 @@ android {
     compileSdkVersion versions.compile
     buildToolsVersion versions.buildTool
     defaultConfig {
-        applicationId "org.autojs.autojs"
+        applicationId "org.autojs.autojsm"
         minSdkVersion versions.mini
         targetSdkVersion versions.target
         versionCode versions.appVersionCode

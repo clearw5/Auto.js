@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="org.autojs.autojs">
+          package="org.autojs.autojsm">
 
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -28,7 +28,7 @@
 
     <application
         xmlns:tools="http://schemas.android.com/tools"
-        android:name=".App"
+        android:name="org.autojs.autojsm.App"
         android:allowBackup="false"
         android:icon="@drawable/autojs_material"
         android:label="@string/app_name"
@@ -43,7 +43,7 @@
             android:value="2.1"/>
 
         <activity
-            android:name=".ui.splash.SplashActivity"
+            android:name="org.autojs.autojsm.ui.splash.SplashActivity"
             android:hardwareAccelerated="true"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Splash">
@@ -61,7 +61,7 @@
             android:theme="@style/AppTheme.FullScreen">
         </activity>
         <activity
-            android:name=".external.shortcut.ShortcutActivity"
+            android:name="org.autojs.autojsm.external.shortcut.ShortcutActivity"
             android:taskAffinity="org.autojs.autojs.external.shortcut.ShortcutActivity"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
@@ -72,8 +72,8 @@
         </activity>
 
         <provider
-            android:name=".external.fileprovider.AppFileProvider"
-            android:authorities="org.autojs.autojs.fileprovider"
+            android:name="org.autojs.autojsm.external.fileprovider.AppFileProvider"
+            android:authorities="org.autojs.autojsm.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -93,12 +93,12 @@
         <activity
             android:name=".ui.settings.SettingsActivity_"
             android:theme="@style/AppTheme.Settings"/>
-        <activity android:name=".ui.error.ErrorReportActivity"/>
+        <activity android:name="org.autojs.autojsm.ui.error.ErrorReportActivity"/>
         <activity
             android:name=".external.tasker.TaskerScriptEditActivity_"
             android:configChanges="orientation|screenSize"
             />
-        <activity android:name=".ui.edit.ViewSampleActivity"/>
+        <activity android:name="org.autojs.autojsm.ui.edit.ViewSampleActivity"/>
         <activity
             android:name=".ui.user.LoginActivity_"
             android:windowSoftInputMode="adjustResize"/>
@@ -115,7 +115,7 @@
         <activity android:name=".ui.shortcut.ShortcutIconSelectActivity_"/>
         <activity android:name=".ui.timing.TimedTaskSettingActivity_"/>
         <activity
-            android:name=".ui.shortcut.ShortcutCreateActivity"
+            android:name="org.autojs.autojsm.ui.shortcut.ShortcutCreateActivity"
             android:theme="@style/AppTheme.Transparent"/>
         <activity android:name=".external.widget.ScriptWidgetSettingsActivity_">
             <intent-filter>
@@ -128,17 +128,17 @@
         </activity>
 
         <activity
-            android:name=".ui.error.IssueReporterActivity"
+            android:name="org.autojs.autojsm.ui.error.IssueReporterActivity"
             android:theme="@style/IssueReporterTheme"/>
 
 
-        <service android:name=".external.foreground.ForegroundService"/>
-        <service android:name=".external.ScriptExecutionIntentService"/>
+        <service android:name="org.autojs.autojsm.external.foreground.ForegroundService"/>
+        <service android:name="org.autojs.autojsm.external.ScriptExecutionIntentService"/>
 
         <activity android:name=".external.tasker.TaskPrefEditActivity_"/>
 
         <service
-            android:name=".external.tile.LayoutBoundsTile"
+            android:name="org.autojs.autojsm.external.tile.LayoutBoundsTile"
             android:icon="@drawable/ic_circular_menu_bounds"
             android:label="@string/text_inspect_layout_bounds"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
@@ -151,7 +151,7 @@
         </service>
 
         <service
-            android:name=".external.tile.LayoutHierarchyTile"
+            android:name="org.autojs.autojsm.external.tile.LayoutHierarchyTile"
             android:icon="@drawable/ic_circular_menu_hierarchy"
             android:label="@string/text_inspect_layout_hierarchy"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
@@ -176,7 +176,7 @@
             </intent-filter>
         </activity-alias>
 
-        <receiver android:name="org.autojs.autojs.external.receiver.StaticBroadcastReceiver">
+        <receiver android:name="org.autojs.autojsm.external.receiver.StaticBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
@@ -214,7 +214,7 @@
         </receiver>
 
         <receiver
-            android:name=".external.tasker.FireSettingReceiver"
+            android:name="org.autojs.autojsm.external.tasker.FireSettingReceiver"
             android:exported="true"
             android:process=":background"
             tools:ignore="ExportedReceiver">
@@ -226,7 +226,7 @@
         </receiver>
 
         <activity
-            android:name=".external.open.EditIntentActivity"
+            android:name="org.autojs.autojsm.external.open.EditIntentActivity"
             android:icon="@drawable/autojs_material"
             android:label="@string/text_edit_script">
             <intent-filter>
@@ -243,7 +243,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".external.open.RunIntentActivity"
+            android:name="org.autojs.autojsm.external.open.RunIntentActivity"
             android:icon="@drawable/autojs_material"
             android:label="@string/text_run_script"
             android:taskAffinity="org.autojs.autojs.external.open.RunIntentActivity"
@@ -262,7 +262,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".external.open.ImportIntentActivity"
+            android:name="org.autojs.autojsm.external.open.ImportIntentActivity"
             android:icon="@drawable/autojs_material"
             android:label="@string/text_import_script"
             android:theme="@style/AppTheme.Transparent">
@@ -289,7 +289,7 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".external.widget.ScriptWidget">
+        <receiver android:name="org.autojs.autojsm.external.widget.ScriptWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
@@ -299,7 +299,7 @@
                 android:resource="@xml/script_widget_config"/>
         </receiver>
 
-        <receiver android:name=".timing.TaskReceiver">
+        <receiver android:name="org.autojs.autojsm.timing.TaskReceiver">
             <intent-filter>
                 <action android:name="com.stardust.autojs.action.task"/>
             </intent-filter>

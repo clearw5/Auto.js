@@ -6,7 +6,7 @@
               android:orientation="horizontal"
               android:padding="16dp">
 
-    <org.autojs.autojs.ui.widget.CheckBoxCompat
+    <org.autojs.autojsm.ui.widget.CheckBoxCompat
         android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

@@ -57,7 +57,7 @@
         tools:text="2"
         tools:visibility="visible"/>
 
-    <org.autojs.autojs.ui.widget.PrefSwitch
+    <org.autojs.autojsm.ui.widget.PrefSwitch
         android:id="@+id/sw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

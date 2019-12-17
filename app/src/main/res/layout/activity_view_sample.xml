@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="org.autojs.autojs.ui.edit.EditActivity">
+    tools:context="org.autojs.autojsm.ui.edit.EditActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
                 android:layout_gravity="right"
                 android:orientation="horizontal">
 
-                <org.autojs.autojs.ui.widget.ToolbarMenuItem
+                <org.autojs.autojsm.ui.widget.ToolbarMenuItem
                     android:id="@+id/edit"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
@@ -36,7 +36,7 @@
                     app:icon_color="@android:color/white"
                     app:text="@string/text_edit"/>
 
-                <org.autojs.autojs.ui.widget.ToolbarMenuItem
+                <org.autojs.autojsm.ui.widget.ToolbarMenuItem
                     android:id="@+id/run"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"

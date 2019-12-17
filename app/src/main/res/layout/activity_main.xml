@@ -5,7 +5,7 @@
                                    android:id="@+id/drawer_layout"
                                    android:layout_width="match_parent"
                                    android:layout_height="match_parent"
-                                   tools:context="org.autojs.autojs.ui.main.MainActivity">
+                                   tools:context="org.autojs.autojsm.ui.main.MainActivity">
 
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -57,9 +57,9 @@
             app:backgroundTint="@color/colorPrimary"
             app:layout_anchor="@id/viewpager"
             app:layout_anchorGravity="bottom|right|end"
-            app:layout_behavior="org.autojs.autojs.ui.widget.ScrollAwareFABBehavior"/>
+            app:layout_behavior="org.autojs.autojsm.ui.widget.ScrollAwareFABBehavior"/>
 
-        <org.autojs.autojs.ui.main.FloatingActionMenu
+        <org.autojs.autojsm.ui.main.FloatingActionMenu
             android:id="@+id/floating_action_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
 
     <fragment
         android:id="@+id/fragment_drawer"
-        android:name="org.autojs.autojs.ui.main.drawer.DrawerFragment_"
+        android:name="org.autojs.autojsm.ui.main.drawer.DrawerFragment_"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"

@@ -50,7 +50,7 @@
             android:textSize="16sp"/>
     </LinearLayout>
 
-    <org.autojs.autojs.ui.explorer.ExplorerView
+    <org.autojs.autojsm.ui.explorer.ExplorerView
         android:id="@+id/script_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

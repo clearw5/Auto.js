@@ -6,7 +6,7 @@
               android:layout_height="match_parent">
 
 
-    <org.autojs.autojs.ui.explorer.ExplorerProjectToolbar
+    <org.autojs.autojsm.ui.explorer.ExplorerProjectToolbar
         android:id="@+id/project_toolbar"
         android:layout_width="match_parent"
         android:layout_marginLeft="8dp"

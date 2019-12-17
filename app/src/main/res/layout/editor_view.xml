@@ -42,7 +42,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <org.autojs.autojs.ui.edit.editor.CodeEditor
+            <org.autojs.autojsm.ui.edit.editor.CodeEditor
                 android:id="@+id/editor"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -55,7 +55,7 @@
                 android:layout_height="70dp"
                 android:background="#77f2f3f7">
 
-                <org.autojs.autojs.ui.edit.completion.CodeCompletionBar
+                <org.autojs.autojsm.ui.edit.completion.CodeCompletionBar
                     android:id="@+id/symbol_bar"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
@@ -72,7 +72,7 @@
                     android:src="@drawable/ic_ali_fx"
                     android:tint="#222329"/>
 
-                <org.autojs.autojs.ui.edit.completion.CodeCompletionBar
+                <org.autojs.autojsm.ui.edit.completion.CodeCompletionBar
                     android:id="@+id/code_completion_bar"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
@@ -83,14 +83,14 @@
 
             </RelativeLayout>
 
-            <org.autojs.autojs.ui.edit.keyboard.FunctionsKeyboardView
+            <org.autojs.autojsm.ui.edit.keyboard.FunctionsKeyboardView
                 android:id="@+id/functions_keyboard"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone"/>
 
 
-            <org.autojs.autojs.ui.edit.debug.DebugBar
+            <org.autojs.autojsm.ui.edit.debug.DebugBar
                 android:id="@+id/debug_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
 
         </LinearLayout>
 
-        <org.autojs.autojs.ui.widget.EWebView
+        <org.autojs.autojsm.ui.widget.EWebView
             android:id="@+id/docs"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

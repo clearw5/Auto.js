@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp">
 
-            <org.autojs.autojs.ui.widget.AvatarView
+            <org.autojs.autojsm.ui.widget.AvatarView
                 android:id="@+id/avatar"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
@@ -93,7 +93,7 @@
             android:paddingTop="3dp"
             android:paddingBottom="3dp">
 
-            <org.autojs.autojs.ui.main.market.ImageText
+            <org.autojs.autojsm.ui.main.market.ImageText
                 android:id="@+id/download"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -104,7 +104,7 @@
                 app:src="@drawable/download"
                 app:text="@string/text_download"/>
 
-            <org.autojs.autojs.ui.main.market.ImageText
+            <org.autojs.autojsm.ui.main.market.ImageText
                 android:id="@+id/upvote"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -113,7 +113,7 @@
                 app:image_width="30dp"
                 app:src="@drawable/upvote"/>
 
-            <org.autojs.autojs.ui.main.market.ImageText
+            <org.autojs.autojsm.ui.main.market.ImageText
                 android:id="@+id/downvote"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -122,7 +122,7 @@
                 app:image_width="30dp"
                 app:src="@drawable/downvote"/>
 
-            <org.autojs.autojs.ui.main.market.ImageText
+            <org.autojs.autojsm.ui.main.market.ImageText
                 android:id="@+id/star"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
