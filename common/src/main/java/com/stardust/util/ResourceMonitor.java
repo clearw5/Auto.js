@@ -121,6 +121,8 @@ public final class ResourceMonitor {
                         }
                     }
                 });
+            } else {
+                map.getLock().unlock();
             }
 
         }
