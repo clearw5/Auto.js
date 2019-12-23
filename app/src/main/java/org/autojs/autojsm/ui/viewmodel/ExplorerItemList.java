@@ -17,7 +17,7 @@ public class ExplorerItemList {
 
     public static class SortConfig {
 
-        private static final String CLASS_NAME = "org.autojs.autojs.ui.viewmodel.ScriptList.SortConfig";
+        private static final String CLASS_NAME = "org.autojs.autojsm.ui.viewmodel.ScriptList.SortConfig";
 
         private int mDirSortType = SORT_TYPE_NAME;
         private boolean mDirSortedAscending;

@@ -62,7 +62,7 @@
         </activity>
         <activity
             android:name="org.autojs.autojsm.external.shortcut.ShortcutActivity"
-            android:taskAffinity="org.autojs.autojs.external.shortcut.ShortcutActivity"
+            android:taskAffinity="org.autojs.autojsm.external.shortcut.ShortcutActivity"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -86,7 +86,7 @@
             android:configChanges="orientation|screenSize"
             android:launchMode="standard"
             android:multiprocess="true"
-            android:taskAffinity="org.autojs.autojs.edit"
+            android:taskAffinity="org.autojs.autojsm.edit"
             android:theme="@style/EditorTheme">
         </activity>
         <activity android:name=".ui.settings.AboutActivity_"/>
@@ -246,7 +246,7 @@
             android:name="org.autojs.autojsm.external.open.RunIntentActivity"
             android:icon="@drawable/autojs_material"
             android:label="@string/text_run_script"
-            android:taskAffinity="org.autojs.autojs.external.open.RunIntentActivity"
+            android:taskAffinity="org.autojs.autojsm.external.open.RunIntentActivity"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

@@ -11,7 +11,7 @@ import org.autojs.autojsm.R;
  */
 
 public class ScriptExecutionGlobalListener implements ScriptExecutionListener {
-    private static final String ENGINE_TAG_START_TIME = "org.autojs.autojs.autojs.Goodbye, World";
+    private static final String ENGINE_TAG_START_TIME = "org.autojs.autojsm.autojs.Goodbye, World";
 
     @Override
     public void onStart(ScriptExecution execution) {

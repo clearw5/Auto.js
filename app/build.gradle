@@ -14,6 +14,20 @@ configurations.all {
 }
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('/Users/jiangwenjie/auto-js-t-pkcs12.jks')
+            storePassword 'fixture'
+            keyPassword 'fixture'
+            keyAlias = 'autojs-t'
+        }
+        release {
+            storeFile file('/Users/jiangwenjie/auto-js-t-pkcs12.jks')
+            storePassword 'fixture'
+            keyPassword 'fixture'
+            keyAlias = 'autojs-t'
+        }
+    }
     compileSdkVersion versions.compile
     buildToolsVersion versions.buildTool
     defaultConfig {
@@ -35,6 +49,7 @@ android {
             shrinkResources false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -45,6 +60,7 @@ android {
     lintOptions {
         disable 'MissingTranslation'
         disable 'ExtraTranslation'
+        abortOnError false
     }
 
     configurations.all {

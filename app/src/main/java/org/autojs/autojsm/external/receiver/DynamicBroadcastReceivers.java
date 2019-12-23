@@ -19,7 +19,7 @@ import java.util.Set;
 
 public class DynamicBroadcastReceivers {
 
-    public static final String ACTION_STARTUP = "org.autojs.autojs.action.startup";
+    public static final String ACTION_STARTUP = "org.autojs.autojsm.action.startup";
 
     private static final String LOG_TAG = "DynBroadcastReceivers";
 

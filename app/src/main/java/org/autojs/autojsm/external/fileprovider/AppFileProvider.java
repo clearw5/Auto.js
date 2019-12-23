@@ -8,7 +8,7 @@ import java.io.File;
 
 public class AppFileProvider extends FileProvider {
 
-    public static final String AUTHORITY = "org.autojs.autojs.fileprovider";
+    public static final String AUTHORITY = "org.autojs.autojsm.fileprovider";
 
     public static Uri getUriForFile(Context context, File file){
         return FileProvider.getUriForFile(context, AUTHORITY, file);

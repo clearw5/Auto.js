@@ -24,7 +24,6 @@ import okhttp3.Response;
 public class ExampleUnitTest {
 
 
-    @Test
     public void test() throws IOException {
         File file = new File("C:\\Users\\Stardust\\Desktop\\1.txt");
         System.out.println(PFiles.read(file));
