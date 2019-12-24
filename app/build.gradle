@@ -43,6 +43,7 @@ android {
         encoding = 'utf-8'
     }
     lintOptions {
+        abortOnError false
         disable 'MissingTranslation'
         disable 'ExtraTranslation'
     }
