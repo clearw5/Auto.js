@@ -27,6 +27,18 @@ android {
             keyPassword 'fixture'
             keyAlias = 'autojs-t'
         }
+        assembleCoolapk {
+            storeFile file('/Users/jiangwenjie/auto-js-t-pkcs12.jks')
+            storePassword 'fixture'
+            keyPassword 'fixture'
+            keyAlias = 'autojs-t'
+        }
+        assembleRelease {
+            storeFile file('/Users/jiangwenjie/auto-js-t-pkcs12.jks')
+            storePassword 'fixture'
+            keyPassword 'fixture'
+            keyAlias = 'autojs-t'
+        }
     }
     compileSdkVersion versions.compile
     buildToolsVersion versions.buildTool
