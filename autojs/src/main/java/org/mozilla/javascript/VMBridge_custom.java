@@ -5,14 +5,14 @@ import android.util.Log;
 
 import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 
-import org.mozilla.javascript.jdk15.VMBridge_jdk15;
+import org.mozilla.javascript.jdk18.VMBridge_jdk18;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class VMBridge_custom extends VMBridge_jdk15 {
+public class VMBridge_custom extends VMBridge_jdk18 {
 
     private static final String LOG_TAG = "VMBridge_custom";
 
@@ -73,9 +73,9 @@ public class VMBridge_custom extends VMBridge_jdk15 {
         } catch (InvocationTargetException var10) {
             throw Context.throwAsScriptRuntimeEx(var10);
         } catch (IllegalAccessException var11) {
-            throw Kit.initCause(new IllegalStateException(), var11);
+            throw Kit.codeBug(var11.getMessage());
         } catch (InstantiationException var12) {
-            throw Kit.initCause(new IllegalStateException(), var12);
+            throw Kit.codeBug(var12.getMessage());
         }
     }
 
