@@ -297,7 +297,7 @@ public class TimedTaskSettingActivity extends BaseActivity {
     void showDisposableTaskDatePicker() {
         LocalDate date = DATE_FORMATTER.parseLocalDate(mDisposableTaskDate.getText().toString());
         new DatePickerDialog(this, (view, year, month, dayOfMonth) ->
-                mDisposableTaskDate.setText(DATE_FORMATTER.print(new LocalDate(year, month, dayOfMonth)))
+                mDisposableTaskDate.setText(DATE_FORMATTER.print(new LocalDate(year, month + 1, dayOfMonth)))
                 , date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth())
                 .show();
     }
