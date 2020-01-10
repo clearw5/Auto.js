@@ -19,7 +19,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 import dalvik.system.DexClassLoader;
 
@@ -32,8 +37,9 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
 
     private static final String LOG_TAG = "AndroidClassLoader";
     private final ClassLoader parent;
-    private final List<DexClassLoader> mDexClassLoaders = new ArrayList<>();
+    public final Map<File, DexClassLoader> mDexClassLoaders = new LinkedHashMap<>();
     private final File mCacheDir;
+    private final File mLibsDir;
 
     /**
      * Create a new instance with the given parent classloader and cache dierctory
@@ -44,11 +50,13 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
     public AndroidClassLoader(ClassLoader parent, File dir) {
         this.parent = parent;
         mCacheDir = dir;
+        mLibsDir = new File(dir, "libs");
         if (dir.exists()) {
             PFiles.deleteFilesOfDir(dir);
         } else {
             dir.mkdirs();
         }
+        mLibsDir.mkdir();
     }
 
     /**
@@ -127,9 +135,19 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
         if (!file.exists()) {
             throw new FileNotFoundException(file.getPath());
         }
-        DexClassLoader loader = new DexClassLoader(file.getPath(), mCacheDir.getPath(), null, parent);
-        mDexClassLoaders.add(loader);
+        DexClassLoader loader = new DexClassLoader(file.getPath(), mCacheDir.getPath(), mLibsDir.getPath(), parent);
+        // 移除已有的，使得最新载入的在LinkedHashMap末尾
+        mDexClassLoaders.remove(file);
+        mDexClassLoaders.put(file, loader);
         return loader;
+    }
+
+    /**
+     * 移除已加载的dex文件
+     */
+    public void unloadAllDex() {
+        PFiles.deleteFilesOfDir(mCacheDir);
+        this.mDexClassLoaders.clear();
     }
 
     private DexClassLoader dexJar(File classFile, File dexFile) throws IOException {
@@ -172,8 +190,9 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
             throws ClassNotFoundException {
         Class<?> loadedClass = findLoadedClass(name);
         if (loadedClass == null) {
-            for (DexClassLoader dex : mDexClassLoaders) {
-                loadedClass = dex.loadClass(name);
+            ListIterator<DexClassLoader> reverseIterator = new ArrayList<>(mDexClassLoaders.values()).listIterator(mDexClassLoaders.size());
+            while (reverseIterator.hasPrevious()) {
+                loadedClass = reverseIterator.previous().loadClass(name);
                 if (loadedClass != null) {
                     break;
                 }

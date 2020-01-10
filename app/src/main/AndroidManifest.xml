@@ -73,7 +73,7 @@
 
         <provider
             android:name="org.autojs.autojsm.external.fileprovider.AppFileProvider"
-            android:authorities="org.autojs.autojsm.fileprovider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

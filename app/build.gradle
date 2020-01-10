@@ -5,6 +5,7 @@ apply plugin: 'com.jakewharton.butterknife'
 
 def AAVersion = '4.5.2'
 def SupportLibVersion = '28.0.0'
+def homePath = System.properties['user.home']
 
 configurations.all {
     resolutionStrategy {
@@ -14,7 +15,20 @@ configurations.all {
 }
 
 android {
-
+    signingConfigs {
+        release {
+            storeFile file(homePath + '/auto-js-t-pkcs12.jks')
+            storePassword 'fixture'
+            keyPassword 'fixture'
+            keyAlias = 'autojs-t'
+        }
+        debug {
+            storeFile file(homePath + '/auto-js-t-pkcs12.jks')
+            storePassword 'fixture'
+            keyPassword 'fixture'
+            keyAlias = 'autojs-t'
+        }
+    }
     compileSdkVersion versions.compile
     buildToolsVersion versions.buildTool
     defaultConfig {
@@ -25,17 +39,27 @@ android {
         versionName versions.appVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        "resourcePackageName": android.defaultConfig.applicationId
+                ]
+            }
+        }
     }
     buildTypes {
         debug {
             shrinkResources false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            applicationIdSuffix ".debug"
         }
         release {
             shrinkResources false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {

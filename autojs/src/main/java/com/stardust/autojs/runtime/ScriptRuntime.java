@@ -362,6 +362,13 @@ public class ScriptRuntime {
         }
     }
 
+    /**
+     * 移除所有已加载的外置jar或者dex
+     */
+    public void unloadAllDex() {
+        ((AndroidClassLoader) ContextFactory.getGlobal().getApplicationClassLoader()).unloadAllDex();
+    }
+
     public void exit() {
         mThread.interrupt();
         engines.myEngine().forceStop();
