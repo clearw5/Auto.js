@@ -28,7 +28,7 @@
     <string name="text_about">About</string>
     <string name="text_licenses">Open Sources Licenses</string>
     <string name="text_do_not_remind_again">Don\'t show again</string>
-    <string name="copyright">Copyright©2016 All right reserves.</string>
+    <string name="copyright">Copyright©2018–2020 All right reserves.</string>
     <string name="developer">Stardust</string>
     <string name="github">Source Code</string>
     <string name="text_already_copy_to_clip">Copied</string>
@@ -149,7 +149,7 @@
     <string name="text_code_beautify">Beautify code</string>
     <string name="text_guard_mode">Protection mode</string>
     <string name="summary_guard_mode">Prevent automation of scripts when Auto.js in the front</string>
-    <string name="text_layout_inspector_is_dumping">Inspecting layout...</string>
+    <string name="text_layout_inspector_is_dumping">Inspecting layout…</string>
     <string name="text_force_stop">Force stop</string>
     <string name="text_execution_finished">\\n------------\\n[%s]Finished，spent %f seconds.</string>
     <string name="text_about_me_and_repo">About app and developer</string>

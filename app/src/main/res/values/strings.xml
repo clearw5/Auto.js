@@ -27,8 +27,14 @@
     <string name="text_about">关于</string>
     <string name="text_licenses">开放源代码许可</string>
     <string name="text_do_not_remind_again">不再提示</string>
-    <string name="copyright">Copyright©2018-2019 All right reserves.</string>
+    <string name="copyright">Copyright©2018–2020 All right reserves.</string>
     <string name="developer">星尘幻影</string>
+    <string name="modifier">TonyJiangWJ</string>
+    <string name="origin_developer">原作者信息：</string>
+    <string name="modify_developer">代码修改者信息：</string>
+    <string name="new_github">修改版源代码</string>
+    <string name="new_github_repo">https://github.com/TonyJiangWJ/Auto.js</string>
+    <string name="text_it_is_the_modifier_of_app">这是当前版本的修改者，优化了部分代码</string>
     <string name="qq" translatable="false">2732014414</string>
     <string name="email" translatable="false">hybbbb1996@gmail.com</string>
     <string name="github">软件源代码</string>

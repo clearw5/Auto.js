@@ -5,16 +5,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.evernote.android.job.Job;
-import com.evernote.android.job.JobManager;
-import com.evernote.android.job.JobRequest;
-
 import org.autojs.autojsm.external.ScriptIntents;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
+import androidx.work.Data;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -61,32 +70,39 @@ public class TimedTaskScheduler {
             runTask(context, timedTask);
             return;
         }
-        cancel(timedTask);
+
         Log.d(LOG_TAG, "schedule task: task = " + timedTask + ", millis = " + millis + ", timeWindow = " + timeWindow);
-        new JobRequest.Builder(String.valueOf(timedTask.getId()))
-                .setExact(timeWindow)
-                .build()
-                .schedule();
+
+        WorkManager.getInstance(context).enqueueUniqueWork(String.valueOf(timedTask.getId()),
+                ExistingWorkPolicy.KEEP,
+                new OneTimeWorkRequest
+                        .Builder(TimedTaskWorker.class)
+                        .addTag(String.valueOf(timedTask.getId()))
+                        .setInputData(new Data.Builder().putLong("taskId", timedTask.getId()).build())
+                        .setInitialDelay(timeWindow, TimeUnit.MILLISECONDS)
+                        .build()
+        );
     }
 
-    public static void cancel(TimedTask timedTask) {
-        int cancelCount = JobManager.instance().cancelAllForTag(String.valueOf(timedTask.getId()));
-        Log.d(LOG_TAG, "cancel task: task = " + timedTask + ", cancel = " + cancelCount);
+    public static void cancel(TimedTask timedTask, Context context) {
+        WorkManager.getInstance(context).cancelAllWorkByTag(String.valueOf(timedTask.getId()));
+        Log.d(LOG_TAG, "cancel task: task = " + timedTask);
     }
 
     public static void init(@NotNull Context context) {
-        JobManager.create(context).addJobCreator(tag -> {
-            if (tag.equals(JOB_TAG_CHECK_TASKS)) {
-                return new CheckTasksJob(context);
-            } else {
-                return new TimedTaskJob(context);
-            }
-        });
-        new JobRequest.Builder(JOB_TAG_CHECK_TASKS)
-                .setPeriodic(TimeUnit.MINUTES.toMillis(20))
-                .build()
-                .scheduleAsync();
+        createCheckWorker(context, 20);
         checkTasks(context, true);
+    }
+
+    private static void createCheckWorker(Context context, int delay) {
+        PeriodicWorkRequest.Builder builder = new PeriodicWorkRequest
+                .Builder(CheckTaskWorker.class, 20, TimeUnit.MINUTES);
+        if (delay > 0) {
+            builder.setInitialDelay(delay, TimeUnit.MINUTES);
+        }
+
+        Log.d(LOG_TAG, "创建定期检测任务");
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(JOB_TAG_CHECK_TASKS, ExistingPeriodicWorkPolicy.REPLACE, builder.build());
     }
 
     private static void runTask(Context context, TimedTask task) {
@@ -94,42 +110,69 @@ public class TimedTaskScheduler {
         Intent intent = task.createIntent();
         ScriptIntents.handleIntent(context, intent);
         TimedTaskManager.getInstance().notifyTaskFinished(task.getId());
+        ensureCheckTaskWorks(context);
     }
 
-    private static class TimedTaskJob extends Job {
-
-        private final Context mContext;
-
-        TimedTaskJob(Context context) {
-            mContext = context;
-        }
-
-        @NonNull
-        @Override
-        protected Result onRunJob(@NonNull Params params) {
-            long id = Long.parseLong(params.getTag());
-            TimedTask task = TimedTaskManager.getInstance().getTimedTask(id);
-            Log.d(LOG_TAG, "onRunJob: id = " + id + ", task = " + task);
-            if (task == null) {
-                return Result.FAILURE;
+    public static void ensureCheckTaskWorks(Context context) {
+        try {
+            List<WorkInfo> workInfoList = WorkManager.getInstance(context).getWorkInfosForUniqueWork(JOB_TAG_CHECK_TASKS).get();
+            boolean workFine = false;
+            if (workInfoList != null && workInfoList.size() > 0) {
+                for (WorkInfo workInfo : workInfoList) {
+                    if (workInfo.getState() == WorkInfo.State.ENQUEUED) {
+                        workFine = true;
+                    }
+                }
             }
-            runTask(mContext, task);
-            return Result.SUCCESS;
+            if (!workFine) {
+                createCheckWorker(context, 0);
+                checkTasks(context, true);
+            }
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "获取定时校验任务失败");
         }
     }
 
-    private static class CheckTasksJob extends Job {
-        private final Context mContext;
+    public static class TimedTaskWorker extends Worker {
 
-        CheckTasksJob(Context context) {
-            mContext = context;
+        private static final String DONE_TIME = "DONE_TIME";
+
+        public TimedTaskWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+            super(context, workerParams);
         }
 
         @NonNull
         @Override
-        protected Result onRunJob(@NonNull Params params) {
-            checkTasks(mContext, false);
-            return Result.SUCCESS;
+        public Result doWork() {
+            long id = this.getInputData().getLong("taskId", -1);
+            if (id > -1) {
+                TimedTask task = TimedTaskManager.getInstance().getTimedTask(id);
+                Log.d(LOG_TAG, "onRunJob: id = " + id + ", task = " + task + ", currentMillis=" + System.currentTimeMillis());
+                if (task == null) {
+                    return Result.failure();
+                }
+                runTask(getApplicationContext(), task);
+                return Result.success(
+                        new Data.Builder()
+                                .putString(DONE_TIME, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date()))
+                                .build()
+                );
+            }
+            return Result.failure();
+        }
+    }
+
+    public static class CheckTaskWorker extends Worker {
+
+        public CheckTaskWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+            super(context, workerParams);
+        }
+
+        @NonNull
+        @Override
+        public Result doWork() {
+            checkTasks(getApplicationContext(), false);
+            return Result.success();
         }
     }
 

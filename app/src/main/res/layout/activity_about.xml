@@ -82,14 +82,14 @@
 
     </LinearLayout>
 
-    <com.stardust.theme.widget.ThemeColorFloatingActionButton
-        android:id="@+id/share"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:src="@drawable/ic_share_white_48dp"
-        app:layout_anchor="@id/icon_container"
-        app:layout_anchorGravity="bottom|right|end"/>
+<!--    <com.stardust.theme.widget.ThemeColorFloatingActionButton-->
+<!--        android:id="@+id/share"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="16dp"-->
+<!--        android:clickable="true"-->
+<!--        android:src="@drawable/ic_share_white_48dp"-->
+<!--        app:layout_anchor="@id/icon_container"-->
+<!--        app:layout_anchorGravity="bottom|right|end"/>-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

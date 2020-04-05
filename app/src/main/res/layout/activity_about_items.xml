@@ -6,7 +6,13 @@
               android:background="@android:color/white"
               android:orientation="vertical">
 
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/origin_developer"
+        android:textColor="@android:color/secondary_text_light"
+        android:textSize="16sp"/>
+    <include layout="@layout/divider"/>
     <LinearLayout
         android:id="@+id/developer"
         android:layout_width="match_parent"
@@ -106,6 +112,63 @@
             android:textIsSelectable="true"
             android:textSize="16sp"/>
 
+    </LinearLayout>
+
+    <include layout="@layout/divider"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/modify_developer"
+        android:textColor="@android:color/secondary_text_light"
+        android:textSize="16sp"/>
+    <include layout="@layout/divider"/>
+    <LinearLayout
+        android:id="@+id/modifier"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_developer"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/modifier"
+            android:textColor="@android:color/secondary_text_light"
+            android:textIsSelectable="true"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+    <include layout="@layout/divider"/>
+    <LinearLayout
+        android:id="@+id/new_github"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:clickable="true"
+        android:foreground="?selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_github_mark"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/new_github"
+            android:textColor="@android:color/secondary_text_light"
+            android:textSize="16sp"/>
     </LinearLayout>
 
     <include layout="@layout/divider"/>

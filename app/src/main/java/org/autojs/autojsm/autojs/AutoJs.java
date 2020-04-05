@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Looper;
+import android.util.Log;
+
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.stardust.app.GlobalAppContext;
@@ -185,6 +187,10 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         runtime.putProperty("broadcast.inspect_layout_bounds", LayoutBoundsFloatyWindow.class.getName());
         runtime.putProperty("broadcast.inspect_layout_hierarchy", LayoutHierarchyFloatyWindow.class.getName());
         return runtime;
+    }
+
+    public void debugInfo(String content) {
+        AutoJs.getInstance().getGlobalConsole().println(Log.DEBUG, content);
     }
 
 }

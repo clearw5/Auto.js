@@ -22,27 +22,27 @@
             android:background="@drawable/drawer_header_shadow"
             android:visibility="gone"/>
 
-        <org.autojs.autojsm.ui.widget.AvatarView
-            android:id="@+id/avatar"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_above="@+id/username"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="12dp"
-            android:scaleType="fitXY"/>
+<!--        <org.autojs.autojsm.ui.widget.AvatarView-->
+<!--            android:id="@+id/avatar"-->
+<!--            android:layout_width="64dp"-->
+<!--            android:layout_height="64dp"-->
+<!--            android:layout_above="@+id/username"-->
+<!--            android:layout_marginBottom="8dp"-->
+<!--            android:layout_marginLeft="12dp"-->
+<!--            android:scaleType="fitXY"/>-->
 
-        <TextView
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginBottom="12dp"
-            android:layout_marginLeft="20dp"
-            android:gravity="center"
-            android:text="@string/not_login"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"/>
+<!--        <TextView-->
+<!--            android:id="@+id/username"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_alignParentLeft="true"-->
+<!--            android:layout_marginBottom="12dp"-->
+<!--            android:layout_marginLeft="20dp"-->
+<!--            android:gravity="center"-->
+<!--            android:text="@string/not_login"-->
+<!--            android:textColor="@android:color/white"-->
+<!--            android:textSize="16sp"/>-->
 
         <ImageView
             android:id="@+id/default_cover"
