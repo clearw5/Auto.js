@@ -57,6 +57,7 @@ public class TimedTaskManager {
                     .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
         } else {
             task.setScheduled(false);
+            task.setExecuted(true);
             mTimedTaskDatabase.update(task)
                     .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
         }

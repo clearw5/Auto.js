@@ -9,6 +9,8 @@ import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.autojs.script.StringScriptSource;
 
+import java.util.Collections;
+
 /**
  * Created by Stardust on 2017/8/4.
  */

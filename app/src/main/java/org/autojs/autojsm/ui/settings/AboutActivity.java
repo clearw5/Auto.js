@@ -1,6 +1,7 @@
 package org.autojs.autojsm.ui.settings;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,6 +12,7 @@ import org.autojs.autojsm.timing.TimedTaskManager;
 import org.autojs.autojsm.tool.IntentTool;
 import org.autojs.autojsm.ui.BaseActivity;
 import org.autojs.autojsm.theme.dialog.ThemeColorMaterialDialogBuilder;
+
 import com.stardust.util.IntentUtil;
 import com.tencent.bugly.crashreport.CrashReport;
 
@@ -22,8 +24,13 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import androidx.annotation.RequiresApi;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
@@ -69,34 +76,26 @@ public class AboutActivity extends BaseActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Click(R.id.icon_container)
     @SuppressWarnings("CheckResult")
     void showDebugInfo() {
-        try {
-            List<WorkInfo> workInfos = WorkManager.getInstance(getApplicationContext()).getWorkInfosForUniqueWork("checkTasks").get();
-            if (workInfos != null && workInfos.size() > 0) {
-                for (WorkInfo workInfo : workInfos) {
-                    AutoJs.getInstance().debugInfo("checkTasks work:" + workInfo.toString());
-                }
+        final long currentMillis = System.currentTimeMillis();
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        final String currentDateTimeStr = LocalDateTime.now().format(formatter);
+        TimedTaskManager.getInstance().getAllTasks().forEach(timedTask -> {
+            if (timedTask.getNextTime() < currentMillis) {
+                AutoJs.getInstance().debugInfo("timedTask is out date" +
+                        " nextTime:" + LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(timedTask.getNextTime()), ZoneId.of("GMT+8"))
+                        .format(formatter) + " millis: " + timedTask.getMillis()
+                        + " current: " + currentDateTimeStr + " info:" + timedTask);
             } else {
-                AutoJs.getInstance().debugInfo("checkTasks work is not running");
-            }
-        } catch (Exception e) {
-
-        }
-
-        TimedTaskManager.getInstance().getAllTasks().forEach(task -> {
-            try {
-                List<WorkInfo> workInfos = WorkManager.getInstance(getApplicationContext()).getWorkInfosByTag(String.valueOf(task.getId())).get();
-                if (workInfos != null && workInfos.size() > 0) {
-                    for (WorkInfo workInfo : workInfos) {
-                        AutoJs.getInstance().debugInfo("work for taskId: " + task.getId() + " workInfo: " + workInfo.toString());
-                    }
-                } else {
-                    AutoJs.getInstance().debugInfo("work for taskId:" + task.getId() + " is not running");
-                }
-            } catch (Exception e) {
-
+                AutoJs.getInstance().debugInfo("timedTask is not ready" +
+                        " nextTime:" + LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(timedTask.getNextTime()), ZoneId.of("GMT+8"))
+                        .format(formatter) + " millis: " + timedTask.getMillis()
+                        + " current: " + currentDateTimeStr + " info:" + timedTask);
             }
         });
     }

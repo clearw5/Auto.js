@@ -1,7 +1,5 @@
 package org.autojs.autojsm.ui.main;
 
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -19,8 +17,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
-import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
 
 import android.provider.Settings;
 import android.util.Log;
@@ -51,7 +47,6 @@ import org.autojs.autojsm.R;
 import org.autojs.autojsm.autojs.AutoJs;
 import org.autojs.autojsm.external.foreground.ForegroundService;
 import org.autojs.autojsm.model.explorer.Explorers;
-import org.autojs.autojsm.timing.TimedTaskManager;
 import org.autojs.autojsm.timing.TimedTaskScheduler;
 import org.autojs.autojsm.tool.AccessibilityServiceTool;
 import org.autojs.autojsm.ui.BaseActivity;
@@ -72,8 +67,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, BackPressedHandler.HostActivity, PermissionRequestProxyActivity {
@@ -83,17 +76,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     private static final String LOG_TAG = "MainActivity";
-
-    private static volatile ThreadPoolExecutor singleThreadPool = null;
-
-    static {
-        if (BuildConfig.DEBUG) {
-            // 单线程线程池，保证调试时仅一个线程存在
-            singleThreadPool = new ThreadPoolExecutor(1, 1, 10,
-                    TimeUnit.SECONDS,
-                    new SynchronousQueue<>(), new ThreadPoolExecutor.DiscardPolicy());
-        }
-    }
 
 
     @ViewById(R.id.drawer_layout)
@@ -125,31 +107,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         EventBus.getDefault().register(this);
         applyDayNightMode();
 
-
-        // 调试输出
-        if (BuildConfig.DEBUG && singleThreadPool != null) {
-            singleThreadPool.execute(() -> {
-                while (true) {
-                    try {
-                        List<WorkInfo> workInfos = WorkManager.getInstance(getApplicationContext()).getWorkInfosForUniqueWork("checkTasks").get();
-                        if (workInfos != null && workInfos.size() > 0) {
-                            for (WorkInfo workInfo : workInfos) {
-                                AutoJs.getInstance().debugInfo("checkTasks work:" + workInfo.toString());
-                            }
-                        } else {
-                            AutoJs.getInstance().debugInfo("checkTasks work is not running");
-                        }
-                    } catch (Exception e) {
-
-                    }
-                    try {
-                        Thread.sleep(15000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
     }
 
     @AfterViews
@@ -294,26 +251,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         mVersionGuard.checkForDeprecatesAndUpdates();
         // 确保校验工作正常运行
         TimedTaskScheduler.ensureCheckTaskWorks(getApplicationContext());
-
-        // 调试输出
-        if (BuildConfig.DEBUG) {
-            AutoJs.getInstance().debugInfo("重新进入主界面");
-
-            TimedTaskManager.getInstance().getAllTasks().forEach(task -> {
-                try {
-                    List<WorkInfo> workInfos = WorkManager.getInstance(getApplicationContext()).getWorkInfosByTag(String.valueOf(task.getId())).get();
-                    if (workInfos != null && workInfos.size() > 0) {
-                        for (WorkInfo workInfo : workInfos) {
-                            AutoJs.getInstance().debugInfo("work for taskId: " + task.getId() + " workInfo: " + workInfo.toString());
-                        }
-                    } else {
-                        AutoJs.getInstance().debugInfo("work for taskId:" + task.getId() + " is not running");
-                    }
-                } catch (Exception e) {
-
-                }
-            });
-        }
     }
 
     @Override

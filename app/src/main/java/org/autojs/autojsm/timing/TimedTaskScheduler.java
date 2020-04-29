@@ -3,27 +3,18 @@ package org.autojs.autojsm.timing;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.autojs.autojsm.external.ScriptIntents;
+import org.autojs.autojsm.timing.work.AndroidJobProvider;
+import org.autojs.autojsm.timing.work.WorkManagerProvider;
+import org.autojs.autojsm.timing.work.WorkProvider;
+import org.autojs.autojsm.timing.work.WorkProviderConstants;
 import org.jetbrains.annotations.NotNull;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import androidx.annotation.NonNull;
-import androidx.work.Data;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.ExistingWorkPolicy;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -37,8 +28,7 @@ public class TimedTaskScheduler {
     private static final String LOG_TAG = "TimedTaskScheduler";
     private static final long SCHEDULE_TASK_MIN_TIME = TimeUnit.DAYS.toMillis(2);
 
-    private static final String JOB_TAG_CHECK_TASKS = "checkTasks";
-
+    protected static final String JOB_TAG_CHECK_TASKS = "checkTasks";
 
     @SuppressLint("CheckResult")
     public static void checkTasks(Context context, boolean force) {
@@ -55,8 +45,7 @@ public class TimedTaskScheduler {
             return;
         }
         scheduleTask(context, timedTask, millis, force);
-        TimedTaskManager.getInstance()
-                .notifyTaskScheduled(timedTask);
+        TimedTaskManager.getInstance().notifyTaskScheduled(timedTask);
     }
 
     private synchronized static void scheduleTask(Context context, TimedTask timedTask, long millis, boolean force) {
@@ -73,20 +62,11 @@ public class TimedTaskScheduler {
 
         Log.d(LOG_TAG, "schedule task: task = " + timedTask + ", millis = " + millis + ", timeWindow = " + timeWindow);
 
-        WorkManager.getInstance(context).enqueueUniqueWork(String.valueOf(timedTask.getId()),
-                ExistingWorkPolicy.KEEP,
-                new OneTimeWorkRequest
-                        .Builder(TimedTaskWorker.class)
-                        .addTag(String.valueOf(timedTask.getId()))
-                        .setInputData(new Data.Builder().putLong("taskId", timedTask.getId()).build())
-                        .setInitialDelay(timeWindow, TimeUnit.MILLISECONDS)
-                        .build()
-        );
+        getWorkProvider(context).enqueueWork(timedTask, timeWindow);
     }
 
     public static void cancel(TimedTask timedTask, Context context) {
-        WorkManager.getInstance(context).cancelAllWorkByTag(String.valueOf(timedTask.getId()));
-        Log.d(LOG_TAG, "cancel task: task = " + timedTask);
+        getWorkProvider(context).cancel(timedTask);
     }
 
     public static void init(@NotNull Context context) {
@@ -95,36 +75,34 @@ public class TimedTaskScheduler {
     }
 
     private static void createCheckWorker(Context context, int delay) {
-        PeriodicWorkRequest.Builder builder = new PeriodicWorkRequest
-                .Builder(CheckTaskWorker.class, 20, TimeUnit.MINUTES);
-        if (delay > 0) {
-            builder.setInitialDelay(delay, TimeUnit.MINUTES);
-        }
-
         Log.d(LOG_TAG, "创建定期检测任务");
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(JOB_TAG_CHECK_TASKS, ExistingPeriodicWorkPolicy.REPLACE, builder.build());
+        getWorkProvider(context).enqueuePeriodicWork(delay);
     }
 
-    private static void runTask(Context context, TimedTask task) {
+    protected static void runTask(Context context, TimedTask task) {
         Log.d(LOG_TAG, "run task: task = " + task);
         Intent intent = task.createIntent();
         ScriptIntents.handleIntent(context, intent);
         TimedTaskManager.getInstance().notifyTaskFinished(task.getId());
-        ensureCheckTaskWorks(context);
+        // 如果队列中有任务正在等待，直接取消
+        getWorkProvider(context).cancel(task);
     }
 
-    public static void ensureCheckTaskWorks(Context context) {
+    public static synchronized void ensureCheckTaskWorks(Context context) {
         try {
-            List<WorkInfo> workInfoList = WorkManager.getInstance(context).getWorkInfosForUniqueWork(JOB_TAG_CHECK_TASKS).get();
-            boolean workFine = false;
-            if (workInfoList != null && workInfoList.size() > 0) {
-                for (WorkInfo workInfo : workInfoList) {
-                    if (workInfo.getState() == WorkInfo.State.ENQUEUED) {
-                        workFine = true;
-                    }
+            boolean workFine = getWorkProvider(context).isCheckWorkFine();
+            // 校验是否有超时未执行的
+            final long currentMillis = System.currentTimeMillis();
+            boolean anyLost = TimedTaskManager.getInstance().getAllTasks().any(task -> {
+                if (task.getNextTime() < currentMillis) {
+                    Log.d(LOG_TAG, "task timeout: " + task.toString() + " nextTime:" + task.getNextTime() + " current millis:" + currentMillis);
+                    return true;
+                } else {
+                    return false;
                 }
-            }
-            if (!workFine) {
+            }).blockingGet();
+            if (!workFine || anyLost) {
+                Log.d(LOG_TAG, "ensureCheckTaskWorks: " + (workFine ? "PeriodicWork works fine, but missed some work" : "PeriodicWork died"));
                 createCheckWorker(context, 0);
                 checkTasks(context, true);
             }
@@ -133,46 +111,19 @@ public class TimedTaskScheduler {
         }
     }
 
-    public static class TimedTaskWorker extends Worker {
-
-        private static final String DONE_TIME = "DONE_TIME";
-
-        public TimedTaskWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-            super(context, workerParams);
+    private static WorkProvider getWorkProvider(Context context) {
+        try {
+            PreferenceManager.getDefaultSharedPreferences(context).getBoolean(WorkProviderConstants.ACTIVE_PROVIDER, false);
+        } catch (Exception e) {
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean(WorkProviderConstants.ACTIVE_PROVIDER, false).apply();
         }
 
-        @NonNull
-        @Override
-        public Result doWork() {
-            long id = this.getInputData().getLong("taskId", -1);
-            if (id > -1) {
-                TimedTask task = TimedTaskManager.getInstance().getTimedTask(id);
-                Log.d(LOG_TAG, "onRunJob: id = " + id + ", task = " + task + ", currentMillis=" + System.currentTimeMillis());
-                if (task == null) {
-                    return Result.failure();
-                }
-                runTask(getApplicationContext(), task);
-                return Result.success(
-                        new Data.Builder()
-                                .putString(DONE_TIME, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date()))
-                                .build()
-                );
-            }
-            return Result.failure();
-        }
-    }
-
-    public static class CheckTaskWorker extends Worker {
-
-        public CheckTaskWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-            super(context, workerParams);
-        }
-
-        @NonNull
-        @Override
-        public Result doWork() {
-            checkTasks(getApplicationContext(), false);
-            return Result.success();
+        if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean(WorkProviderConstants.ACTIVE_PROVIDER, false)) {
+            Log.d(LOG_TAG, "当前启用的定时任务方式为WorkManager");
+            return WorkManagerProvider.getInstance(context);
+        } else {
+            Log.d(LOG_TAG, "当前启用的定时任务方式为AndroidJob");
+            return AndroidJobProvider.getInstance(context);
         }
     }
 

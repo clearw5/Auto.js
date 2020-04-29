@@ -43,6 +43,15 @@ public class TimedTask extends BaseModel {
 
     long mMillis;
 
+    /**
+     * 目标执行时间
+     */
+    long targetExecuteMillis;
+    /**
+     * 已执行过
+     */
+    boolean executed;
+
     String mScriptPath;
 
     public TimedTask() {
@@ -56,6 +65,8 @@ public class TimedTask extends BaseModel {
         mDelay = config.getDelay();
         mLoopTimes = config.getLoopTimes();
         mInterval = config.getInterval();
+        executed = true;
+        getNextTime();
     }
 
     public boolean isDisposable() {
@@ -70,20 +81,30 @@ public class TimedTask extends BaseModel {
         mScheduled = scheduled;
     }
 
+    public void setExecuted(boolean executed) {
+        this.executed = executed;
+    }
+
     public long getNextTime() {
         if (isDisposable()) {
             return mMillis;
         }
-        if (isDaily()) {
-            LocalTime time = LocalTime.fromMillisOfDay(mMillis);
-            long nextTimeMillis = time.toDateTimeToday().getMillis();
-            if (System.currentTimeMillis() > nextTimeMillis) {
-                return nextTimeMillis + TimeUnit.DAYS.toMillis(1);
+        if (targetExecuteMillis < 10 || targetExecuteMillis < System.currentTimeMillis() && executed) {
+            // 更新目标执行时间，并标记为未执行
+            executed = false;
+            if (isDaily()) {
+                LocalTime time = LocalTime.fromMillisOfDay(mMillis);
+                long nextTimeMillis = time.toDateTimeToday().getMillis();
+                if (System.currentTimeMillis() > nextTimeMillis) {
+                    targetExecuteMillis = nextTimeMillis + TimeUnit.DAYS.toMillis(1);
+                } else {
+                    targetExecuteMillis = nextTimeMillis;
+                }
+            } else {
+                targetExecuteMillis = getNextTimeOfWeeklyTask();
             }
-            return nextTimeMillis;
         }
-        return getNextTimeOfWeeklyTask();
-
+        return targetExecuteMillis;
     }
 
     private long getNextTimeOfWeeklyTask() {
@@ -205,6 +226,8 @@ public class TimedTask extends BaseModel {
                 ", mInterval=" + mInterval +
                 ", mLoopTimes=" + mLoopTimes +
                 ", mMillis=" + mMillis +
+                ", targetExecuteMillis=" + targetExecuteMillis +
+                ", executed=" + executed +
                 ", mScriptPath='" + mScriptPath + '\'' +
                 '}';
     }
