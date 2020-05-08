@@ -56,6 +56,7 @@ android {
             applicationIdSuffix ".debug"
         }
         release {
+//            debuggable true
             shrinkResources false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -202,6 +203,8 @@ dependencies {
     })
     // WorkManager
     implementation 'androidx.work:work-runtime:2.3.4'
+    // Android job
+    implementation 'com.evernote:android-job:1.2.6'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
     // Optional, if you use support library fragments:

@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import io.reactivex.Observable;
+
 /**
  * Created by Stardust on 2017/11/28.
  */
@@ -55,7 +57,10 @@ public abstract class TaskGroup implements Parent<Task> {
         @Override
         public void refresh() {
             mTasks.clear();
-            for (TimedTask timedTask : TimedTaskManager.getInstance().getAllTasksAsList()) {
+            List<TimedTask> timedTasks = Observable.fromIterable(TimedTaskManager.getInstance().getAllTasksAsList())
+                    .toSortedList((o1, o2) -> Long.compare(o1.getNextTime(), o2.getNextTime()))
+                    .blockingGet();
+            for (TimedTask timedTask : timedTasks) {
                 mTasks.add(new Task.PendingTask(timedTask));
             }
             for (IntentTask intentTask : TimedTaskManager.getInstance().getAllIntentTasksAsList()) {

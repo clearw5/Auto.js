@@ -3,7 +3,6 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="org.autojs.autojsm">
 
-
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -15,7 +14,6 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
 
 
     <!-- 非Auto.js运行必需，不会主动申请，某些脚本可以自行申请-->
@@ -302,6 +300,13 @@
         <receiver android:name="org.autojs.autojsm.timing.TaskReceiver">
             <intent-filter>
                 <action android:name="com.stardust.autojs.action.task"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".timing.work.AlarmManagerProvider">
+            <intent-filter>
+                <action android:name="com.stardust.autojs.action.check_task"/>
+                <action android:name="com.android.deskclock.ALARM_ALERT"/>
             </intent-filter>
         </receiver>
 

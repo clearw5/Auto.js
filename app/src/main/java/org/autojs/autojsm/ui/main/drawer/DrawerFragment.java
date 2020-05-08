@@ -5,6 +5,7 @@ import android.app.AppOpsManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 
 import androidx.annotation.Nullable;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,11 @@ import org.autojs.autojsm.Pref;
 import org.autojs.autojsm.R;
 import org.autojs.autojsm.external.foreground.ForegroundService;
 import org.autojs.autojsm.network.UserService;
+import org.autojs.autojsm.timing.TimedTaskScheduler;
+import org.autojs.autojsm.timing.work.AlarmManagerProvider;
+import org.autojs.autojsm.timing.work.AndroidJobProvider;
+import org.autojs.autojsm.timing.work.WorkManagerProvider;
+import org.autojs.autojsm.timing.work.WorkProviderConstants;
 import org.autojs.autojsm.tool.Observers;
 import org.autojs.autojsm.ui.BaseActivity;
 import org.autojs.autojsm.ui.common.NotAskAgainDialog;
@@ -173,7 +180,8 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
                 new DrawerMenuGroup(R.string.text_others),
                 mConnectionItem,
                 new DrawerMenuItem(R.drawable.ic_personalize, R.string.text_theme_color, this::openThemeColorSettings),
-                new DrawerMenuItem(R.drawable.ic_night_mode, R.string.text_night_mode, R.string.key_night_mode, this::toggleNightMode)//,
+                new DrawerMenuItem(R.drawable.ic_night_mode, R.string.text_night_mode, R.string.key_night_mode, this::toggleNightMode),
+                new DrawerMenuItem(R.drawable.ic_descending_order, R.string.text_enable_android_job, R.string.key_work_provider, this::toggleWorkProvider)//,
 //                mCheckForUpdatesItem
         )));
         mDrawerMenu.setAdapter(mDrawerMenuAdapter);
@@ -234,13 +242,13 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
         }
         boolean enabled = AppOpsKt.isOpPermissionGranted(getContext(), AppOpsManager.OPSTR_GET_USAGE_STATS);
         boolean checked = holder.getSwitchCompat().isChecked();
-        if(checked && !enabled){
-            if(new NotAskAgainDialog.Builder(getContext(), "DrawerFragment.usage_stats")
+        if (checked && !enabled) {
+            if (new NotAskAgainDialog.Builder(getContext(), "DrawerFragment.usage_stats")
                     .title(R.string.text_usage_stats_permission)
                     .content(R.string.description_usage_stats_permission)
                     .positiveText(R.string.ok)
                     .dismissListener(dialog -> IntentUtil.requestAppUsagePermission(getContext()))
-                    .show() == null){
+                    .show() == null) {
                 IntentUtil.requestAppUsagePermission(getContext());
             }
         }
@@ -269,6 +277,26 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
 
     void toggleNightMode(DrawerMenuItemViewHolder holder) {
         ((BaseActivity) getActivity()).setNightModeEnabled(holder.getSwitchCompat().isChecked());
+    }
+
+    void toggleWorkProvider(DrawerMenuItemViewHolder holder) {
+        boolean enableAlarmManager = holder.getSwitchCompat().isChecked();
+        Log.d("switch-work-provider", "切换任务调度模式: " + (enableAlarmManager ? "alarm-manager" : "work-manager"));
+        // TODO 转换所有任务, 目前移除所有任务
+        if (enableAlarmManager) {
+            PreferenceManager.getDefaultSharedPreferences(getContext())
+                    .edit()
+                    .putString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.ALARM_MANAGER_PROVIDER)
+                    .apply();
+            WorkManagerProvider.getInstance(getContext()).cancelAllWorks();
+        } else {
+            PreferenceManager.getDefaultSharedPreferences(getContext())
+                    .edit()
+                    .putString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.WORK_MANAGER_PROVIDER)
+                    .apply();
+            AlarmManagerProvider.getInstance(getContext()).cancelAllWorks();
+        }
+        TimedTaskScheduler.ensureCheckTaskWorks(getContext());
     }
 
     @SuppressLint("CheckResult")

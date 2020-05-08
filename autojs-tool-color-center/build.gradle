@@ -1,0 +1,55 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion versions.compile
+    buildToolsVersion versions.buildTool
+
+    defaultConfig {
+        minSdkVersion versions.mini
+        targetSdkVersion versions.target
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+task makeJar(type: Copy) {
+    // 删除存在的
+    delete 'build/libs/mysdk.jar'
+    // 设置拷贝的文件
+    from('build/intermediates/packaged-classes/release/')
+    // 打进jar包后的文件目录
+    into('build/libs/')
+    // 将classes.jar放入build/libs/目录下
+    // include ,exclude参数来设置过滤
+    //（我们只关心classes.jar这个文件）
+    include('classes.jar')
+    // 重命名
+    rename ('classes.jar', 'mysdk.jar')
+}
+
+makeJar.dependsOn(build)
+
+dependencies {
+    api project(path: ':autojs')
+    testImplementation 'junit:junit:4.12'
+}
