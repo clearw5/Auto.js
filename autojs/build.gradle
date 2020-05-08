@@ -55,7 +55,8 @@ dependencies {
     api 'com.github.hyb1996:EnhancedFloaty:0.31'
     api 'com.makeramen:roundedimageview:2.3.0'
     // OpenCv
-    api(name: 'opencv-3.4.9', ext: 'aar')
+//    api(name: 'opencv-3.4.9', ext: 'aar')
+    api files('libs/opencv-3.4.9.aar')
     // OkHttp
     api 'com.squareup.okhttp3:okhttp:3.10.0'
     // JDeferred
@@ -68,9 +69,13 @@ dependencies {
     api 'de.mindpipe.android:android-logging-log4j:1.0.3'
     api 'log4j:log4j:1.2.17'
     // Terminal emulator
-    api(name: 'libtermexec-release', ext: 'aar')
-    api(name: 'emulatorview-release', ext: 'aar')
-    api(name: 'term-debug', ext: 'aar')
+//    api(name: 'libtermexec-release', ext: 'aar')
+//    api(name: 'emulatorview-release', ext: 'aar')
+//    api(name: 'term-debug', ext: 'aar')
+
+    api files('libs/libtermexec-release.aar')
+    api files('libs/emulatorview-release.aar')
+    api files('libs/term-debug.aar')
     api files('libs/rhino-1.7.11.jar')
     api project(path: ':common')
     api project(path: ':automator')
