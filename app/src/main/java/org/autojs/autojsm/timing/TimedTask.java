@@ -65,7 +65,9 @@ public class TimedTask extends BaseModel {
         mDelay = config.getDelay();
         mLoopTimes = config.getLoopTimes();
         mInterval = config.getInterval();
-        executed = true;
+        executed = false;
+        targetExecuteMillis = 0;
+        // 重新计算目标执行时间点
         getNextTime();
     }
 
@@ -87,24 +89,25 @@ public class TimedTask extends BaseModel {
 
     public long getNextTime() {
         if (isDisposable()) {
+            targetExecuteMillis = mMillis;
             return mMillis;
         }
         if (targetExecuteMillis < 10 || targetExecuteMillis < System.currentTimeMillis() && executed) {
             // 更新目标执行时间，并标记为未执行
             executed = false;
-            if (isDaily()) {
-                LocalTime time = LocalTime.fromMillisOfDay(mMillis);
-                long nextTimeMillis = time.toDateTimeToday().getMillis();
-                if (System.currentTimeMillis() > nextTimeMillis) {
-                    targetExecuteMillis = nextTimeMillis + TimeUnit.DAYS.toMillis(1);
-                } else {
-                    targetExecuteMillis = nextTimeMillis;
-                }
-            } else {
-                targetExecuteMillis = getNextTimeOfWeeklyTask();
-            }
+            targetExecuteMillis = isDaily() ? getNextTimeOfDailyTask() : getNextTimeOfWeeklyTask();
         }
         return targetExecuteMillis;
+    }
+
+    private long getNextTimeOfDailyTask() {
+        LocalTime time = LocalTime.fromMillisOfDay(mMillis);
+        long nextTimeMillis = time.toDateTimeToday().getMillis();
+        if (System.currentTimeMillis() > nextTimeMillis) {
+            return nextTimeMillis + TimeUnit.DAYS.toMillis(1);
+        } else {
+            return nextTimeMillis;
+        }
     }
 
     private long getNextTimeOfWeeklyTask() {

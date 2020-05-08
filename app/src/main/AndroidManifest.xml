@@ -3,7 +3,6 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="org.autojs.autojsm">
 
-
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -301,6 +300,13 @@
         <receiver android:name="org.autojs.autojsm.timing.TaskReceiver">
             <intent-filter>
                 <action android:name="com.stardust.autojs.action.task"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".timing.work.AlarmManagerProvider">
+            <intent-filter>
+                <action android:name="com.stardust.autojs.action.check_task"/>
+                <action android:name="com.android.deskclock.ALARM_ALERT"/>
             </intent-filter>
         </receiver>
 

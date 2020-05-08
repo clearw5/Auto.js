@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.autojs.autojsm.external.ScriptIntents;
+import org.autojs.autojsm.timing.work.AlarmManagerProvider;
 import org.autojs.autojsm.timing.work.AndroidJobProvider;
 import org.autojs.autojsm.timing.work.WorkManagerProvider;
 import org.autojs.autojsm.timing.work.WorkProvider;
@@ -113,19 +114,21 @@ public class TimedTaskScheduler {
 
     private static WorkProvider getWorkProvider(Context context) {
         try {
-            PreferenceManager.getDefaultSharedPreferences(context).getBoolean(WorkProviderConstants.ACTIVE_PROVIDER, false);
+            PreferenceManager.getDefaultSharedPreferences(context).getString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.WORK_MANAGER_PROVIDER);
         } catch (Exception e) {
-            PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean(WorkProviderConstants.ACTIVE_PROVIDER, false).apply();
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.WORK_MANAGER_PROVIDER).apply();
         }
-
-        if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean(WorkProviderConstants.ACTIVE_PROVIDER, false)) {
+        String currentActive = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.WORK_MANAGER_PROVIDER);
+        if (WorkProviderConstants.WORK_MANAGER_PROVIDER.equals(currentActive)) {
             Log.d(LOG_TAG, "当前启用的定时任务方式为WorkManager");
             return WorkManagerProvider.getInstance(context);
-        } else {
+        } else if (WorkProviderConstants.ANDROID_JOB_PROVIDER.equals(currentActive)){
             Log.d(LOG_TAG, "当前启用的定时任务方式为AndroidJob");
             return AndroidJobProvider.getInstance(context);
+        } else {
+            return AlarmManagerProvider.getInstance(context);
         }
     }
-
 
 }
