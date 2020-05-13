@@ -1,11 +1,13 @@
 package org.autojs.autojsm.timing;
 
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
 import com.stardust.autojs.execution.ExecutionConfig;
 
+import org.autojs.autojsm.BuildConfig;
 import org.autojs.autojsm.external.ScriptIntents;
 import org.autojs.autojsm.storage.database.BaseModel;
 import org.joda.time.DateTime;
@@ -206,6 +208,7 @@ public class TimedTask extends BaseModel {
 
     public Intent createIntent() {
         return new Intent(TaskReceiver.ACTION_TASK)
+                .setComponent(new ComponentName(BuildConfig.APPLICATION_ID, "org.autojs.autojsm.timing.TaskReceiver"))
                 .putExtra(TaskReceiver.EXTRA_TASK_ID, getId())
                 .putExtra(ScriptIntents.EXTRA_KEY_PATH, mScriptPath)
                 .putExtra(ScriptIntents.EXTRA_KEY_DELAY, mDelay)

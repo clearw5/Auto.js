@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
+import com.stardust.app.GlobalAppContext;
+
 import org.autojs.autojsm.timing.TimedTask;
 import org.autojs.autojsm.timing.TimedTaskManager;
 import org.autojs.autojsm.timing.TimedTaskScheduler;
@@ -81,8 +83,17 @@ public class WorkManagerProvider extends TimedTaskScheduler implements WorkProvi
     }
 
     @Override
+    @SuppressLint("CheckResult")
     public void cancelAllWorks() {
         WorkManager.getInstance(context).cancelAllWork().getResult();
+        TimedTaskManager.getInstance()
+                .getAllTasks()
+                .filter(TimedTask::isScheduled)
+                .forEach(timedTask -> {
+                    timedTask.setScheduled(false);
+                    timedTask.setExecuted(false);
+                    TimedTaskManager.getInstance().updateTaskWithoutReScheduling(timedTask);
+                });
     }
 
     @Override
@@ -152,8 +163,10 @@ public class WorkManagerProvider extends TimedTaskScheduler implements WorkProvi
             if (isStopped()) {
                 return Result.success();
             }
-            checkTasks(getApplicationContext(), false);
+            TimedTaskScheduler.getWorkProvider(GlobalAppContext.get()).checkTasks(getApplicationContext(), false);
             return Result.success();
         }
     }
+
+
 }

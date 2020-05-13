@@ -28,11 +28,11 @@ import com.stardust.notification.NotificationListenerService;
 
 import org.autojs.autojsm.Pref;
 import org.autojs.autojsm.R;
+import org.autojs.autojsm.autojs.AutoJs;
 import org.autojs.autojsm.external.foreground.ForegroundService;
 import org.autojs.autojsm.network.UserService;
 import org.autojs.autojsm.timing.TimedTaskScheduler;
 import org.autojs.autojsm.timing.work.AlarmManagerProvider;
-import org.autojs.autojsm.timing.work.AndroidJobProvider;
 import org.autojs.autojsm.timing.work.WorkManagerProvider;
 import org.autojs.autojsm.timing.work.WorkProviderConstants;
 import org.autojs.autojsm.tool.Observers;
@@ -181,7 +181,8 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
                 mConnectionItem,
                 new DrawerMenuItem(R.drawable.ic_personalize, R.string.text_theme_color, this::openThemeColorSettings),
                 new DrawerMenuItem(R.drawable.ic_night_mode, R.string.text_night_mode, R.string.key_night_mode, this::toggleNightMode),
-                new DrawerMenuItem(R.drawable.ic_descending_order, R.string.text_enable_android_job, R.string.key_work_provider, this::toggleWorkProvider)//,
+                new DrawerMenuItem(R.drawable.ic_descending_order, R.string.text_enable_alarm_manager, R.string.key_enable_alarm_manager, this::toggleWorkProvider),
+                new DrawerMenuItem(R.drawable.ic_enable_log, R.string.text_enable_debug_log, R.string.key_enable_debug_log, this::toggleDebugLog)//,
 //                mCheckForUpdatesItem
         )));
         mDrawerMenu.setAdapter(mDrawerMenuAdapter);
@@ -279,6 +280,11 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
         ((BaseActivity) getActivity()).setNightModeEnabled(holder.getSwitchCompat().isChecked());
     }
 
+    void toggleDebugLog(DrawerMenuItemViewHolder holder) {
+        boolean enableDebugLog = holder.getSwitchCompat().isChecked();
+        AutoJs.getInstance().setDebugEnabled(enableDebugLog);
+    }
+
     void toggleWorkProvider(DrawerMenuItemViewHolder holder) {
         boolean enableAlarmManager = holder.getSwitchCompat().isChecked();
         Log.d("switch-work-provider", "切换任务调度模式: " + (enableAlarmManager ? "alarm-manager" : "work-manager"));
@@ -289,12 +295,15 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
                     .putString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.ALARM_MANAGER_PROVIDER)
                     .apply();
             WorkManagerProvider.getInstance(getContext()).cancelAllWorks();
+            AutoJs.getInstance().debugInfo("切换任务调度模式为：alarm-manager");
+            ((AlarmManagerProvider) (AlarmManagerProvider.getInstance(getContext()))).checkTasksRepeatedlyIfNeeded(getContext());
         } else {
             PreferenceManager.getDefaultSharedPreferences(getContext())
                     .edit()
                     .putString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.WORK_MANAGER_PROVIDER)
                     .apply();
             AlarmManagerProvider.getInstance(getContext()).cancelAllWorks();
+            AutoJs.getInstance().debugInfo("切换任务调度模式为：work-manager");
         }
         TimedTaskScheduler.ensureCheckTaskWorks(getContext());
     }

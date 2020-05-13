@@ -75,7 +75,7 @@ public class TimedTaskManager {
         mTimedTaskDatabase.insert(timedTask)
                 .subscribe(id -> {
                     timedTask.setId(id);
-                    TimedTaskScheduler.scheduleTaskIfNeeded(mContext, timedTask, false);
+                    TimedTaskScheduler.getWorkProvider(mContext).scheduleTaskIfNeeded(mContext, timedTask, false);
                 }, Throwable::printStackTrace);
     }
 
@@ -135,7 +135,7 @@ public class TimedTaskManager {
         mTimedTaskDatabase.update(task)
                 .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
         TimedTaskScheduler.cancel(task, mContext);
-        TimedTaskScheduler.scheduleTaskIfNeeded(mContext, task, false);
+        TimedTaskScheduler.getWorkProvider(mContext).scheduleTaskIfNeeded(mContext, task, false);
     }
 
     @SuppressLint("CheckResult")

@@ -1,5 +1,7 @@
 package org.autojs.autojsm.timing.work;
 
+import android.content.Context;
+
 import org.autojs.autojsm.timing.TimedTask;
 
 public interface WorkProvider {
@@ -30,4 +32,10 @@ public interface WorkProvider {
     void cancelAllWorks();
 
     boolean isCheckWorkFine();
+
+    void checkTasks(Context context, boolean force);
+
+    void scheduleTaskIfNeeded(Context context, TimedTask timedTask, boolean force);
+
+    void scheduleTask(Context context, TimedTask timedTask, long millis, boolean force);
 }

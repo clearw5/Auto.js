@@ -56,7 +56,7 @@ android {
             applicationIdSuffix ".debug"
         }
         release {
-//            debuggable true
+            debuggable true
             shrinkResources false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

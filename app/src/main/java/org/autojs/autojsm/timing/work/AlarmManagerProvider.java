@@ -4,11 +4,20 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
+import android.os.SystemClock;
 import android.util.Log;
 
+import com.stardust.app.GlobalAppContext;
+
+import org.autojs.autojsm.BuildConfig;
+import org.autojs.autojsm.autojs.AutoJs;
+import org.autojs.autojsm.external.receiver.StaticBroadcastReceiver;
+import org.autojs.autojsm.timing.TaskReceiver;
 import org.autojs.autojsm.timing.TimedTask;
 import org.autojs.autojsm.timing.TimedTaskManager;
 
@@ -21,17 +30,22 @@ public class AlarmManagerProvider extends BroadcastReceiver implements WorkProvi
 
     private Context context;
 
-    private static final String ACTION_CHECK_TASK = "com.stardust.autojs.action.check_task";
+    private static final String ACTION_CHECK_TASK = "org.autojs.autojsm.action.check_task";
 
     private static final String LOG_TAG = "AlarmManagerProvider";
     private static final int REQUEST_CODE_CHECK_TASK_REPEATEDLY = 4000;
-    private static final long INTERVAL = TimeUnit.MINUTES.toMillis(1);
+    private static final long INTERVAL = TimeUnit.MINUTES.toMillis(15);
+    private static final long MIN_INTERVAL_GAP = TimeUnit.MINUTES.toMillis(5);
 
     private static final long SCHEDULE_TASK_MIN_TIME = TimeUnit.DAYS.toMillis(2);
 
     private volatile static AlarmManagerProvider instance = null;
 
     private static PendingIntent sCheckTasksPendingIntent;
+
+    public AlarmManagerProvider() {
+        this.context = GlobalAppContext.get();
+    }
 
     public AlarmManagerProvider(Context context) {
         this.context = context;
@@ -51,7 +65,7 @@ public class AlarmManagerProvider extends BroadcastReceiver implements WorkProvi
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(LOG_TAG, "onReceiveRtcWakeUp");
+        autoJsLog( "onReceiveRtcWakeUp");
         checkTasks(context, false);
         setupNextRtcWakeup(context, System.currentTimeMillis() + INTERVAL);
     }
@@ -59,7 +73,7 @@ public class AlarmManagerProvider extends BroadcastReceiver implements WorkProvi
 
     @Override
     public void enqueueWork(TimedTask timedTask, long timeWindow) {
-        Log.d(LOG_TAG, "enqueue task:" + timedTask.toString());
+        autoJsLog( "enqueue task:" + timedTask.toString());
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         PendingIntent op = timedTask.createPendingIntent(context);
         setExactCompat(alarmManager, op, System.currentTimeMillis() + timeWindow);
@@ -67,13 +81,13 @@ public class AlarmManagerProvider extends BroadcastReceiver implements WorkProvi
 
     @Override
     public void enqueuePeriodicWork(int delay) {
-        Log.d(LOG_TAG, "checkTasksRepeatedlyIfNeeded");
+        autoJsLog( "checkTasksRepeatedlyIfNeeded");
         checkTasksRepeatedlyIfNeeded(context);
     }
 
     @Override
     public void cancel(TimedTask timedTask) {
-        Log.d(LOG_TAG, "cancel task:" + timedTask);
+        autoJsLog( "cancel task:" + timedTask);
         AlarmManager alarmManager = getAlarmManager(context);
         alarmManager.cancel(timedTask.createPendingIntent(context));
     }
@@ -81,12 +95,17 @@ public class AlarmManagerProvider extends BroadcastReceiver implements WorkProvi
     @Override
     @SuppressLint("CheckResult")
     public void cancelAllWorks() {
-        Log.d(LOG_TAG, "cancel all tasks");
+        autoJsLog( "cancel all tasks");
         stopRtcRepeating(context);
         TimedTaskManager.getInstance()
                 .getAllTasks()
                 .filter(TimedTask::isScheduled)
-                .forEach(this::cancel);
+                .forEach(timedTask -> {
+                    cancel(timedTask);
+                    timedTask.setScheduled(false);
+                    timedTask.setExecuted(false);
+                    TimedTaskManager.getInstance().updateTaskWithoutReScheduling(timedTask);
+                });
     }
 
     @Override
@@ -96,7 +115,7 @@ public class AlarmManagerProvider extends BroadcastReceiver implements WorkProvi
 
     @SuppressLint("CheckResult")
     public void checkTasks(Context context, boolean force) {
-        Log.d(LOG_TAG, "check tasks: force = " + force);
+        autoJsLog( "check tasks: force = " + force);
         TimedTaskManager.getInstance().getAllTasks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -108,42 +127,59 @@ public class AlarmManagerProvider extends BroadcastReceiver implements WorkProvi
         if (!force && timedTask.isScheduled() || millis - System.currentTimeMillis() > SCHEDULE_TASK_MIN_TIME) {
             return;
         }
-        scheduleTask(context, timedTask, millis);
+        scheduleTask(context, timedTask, millis, force);
         TimedTaskManager.getInstance().notifyTaskScheduled(timedTask);
     }
 
-    private void scheduleTask(Context context, TimedTask timedTask, long millis) {
-        Log.d(LOG_TAG, "schedule task:" + timedTask);
-        if (millis <= System.currentTimeMillis()) {
-            Log.d(LOG_TAG, "task out date run:" + timedTask);
-            context.sendBroadcast(timedTask.createIntent());
+    public void scheduleTask(Context context, TimedTask timedTask, long millis, boolean force) {
+        if (!force && timedTask.isScheduled()) {
             return;
         }
-        enqueueWork(timedTask, millis);
+        autoJsLog( "schedule task:" + timedTask);
+        if (millis <= System.currentTimeMillis()) {
+            autoJsLog( "task out date run:" + timedTask);
+            GlobalAppContext.get().sendBroadcast(timedTask.createIntent());
+            return;
+        }
+        if (force) {
+            cancel(timedTask);
+        }
+        enqueueWork(timedTask, millis - System.currentTimeMillis());
     }
 
 
     private void setExactCompat(AlarmManager alarmManager, PendingIntent op, long millis) {
+        int type = AlarmManager.RTC_WAKEUP;
+        long gapMillis = millis - System.currentTimeMillis();
+        if (gapMillis <= MIN_INTERVAL_GAP) {
+            long oldMillis = millis;
+            // 目标时间修改为真实时间
+            millis = SystemClock.elapsedRealtime() + gapMillis;
+            type = AlarmManager.ELAPSED_REALTIME_WAKEUP;
+            autoJsLog( "less then 5 minutes, millis changed from " + oldMillis + " to " + millis);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, op);
+            alarmManager.setExactAndAllowWhileIdle(type, millis, op);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(millis, null), op);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, millis, op);
+            alarmManager.setExact(type, millis, op);
         } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, millis, op);
+            alarmManager.set(type, millis, op);
         }
     }
 
 
     public void checkTasksRepeatedlyIfNeeded(Context context) {
+        autoJsLog( "checkTasksRepeatedlyIfNeeded count:" + TimedTaskManager.getInstance().countTasks());
         if (TimedTaskManager.getInstance().countTasks() > 0) {
-            setupNextRtcWakeup(context, System.currentTimeMillis() + 5000);
+            // 设置周期性时间6分钟
+            setupNextRtcWakeup(context, System.currentTimeMillis() +  INTERVAL);
         }
     }
 
     private void setupNextRtcWakeup(Context context, long millis) {
-        Log.v(LOG_TAG, "setupNextRtcWakeup: at " + millis);
+        autoJsLog("setupNextRtcWakeup: at " + millis);
         if (millis <= 0) {
             throw new IllegalArgumentException("millis <= 0: " + millis);
         }
@@ -153,7 +189,7 @@ public class AlarmManagerProvider extends BroadcastReceiver implements WorkProvi
 
 
     public void stopRtcRepeating(Context context) {
-        Log.v(LOG_TAG, "stopRtcRepeating");
+        autoJsLog("stopRtcRepeating");
         AlarmManager alarmManager = getAlarmManager(context);
         alarmManager.cancel(createTaskCheckPendingIntent(context));
     }
@@ -167,8 +203,15 @@ public class AlarmManagerProvider extends BroadcastReceiver implements WorkProvi
     private PendingIntent createTaskCheckPendingIntent(Context context) {
         if (sCheckTasksPendingIntent == null) {
             sCheckTasksPendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE_CHECK_TASK_REPEATEDLY,
-                    new Intent(ACTION_CHECK_TASK), PendingIntent.FLAG_UPDATE_CURRENT);
+                    new Intent(ACTION_CHECK_TASK)
+                            .setComponent(new ComponentName(BuildConfig.APPLICATION_ID, "org.autojs.autojsm.timing.work.AlarmManagerProvider")),
+                    PendingIntent.FLAG_UPDATE_CURRENT);
         }
         return sCheckTasksPendingIntent;
+    }
+    
+    private void autoJsLog(String content) {
+        Log.d(LOG_TAG, content);
+        AutoJs.getInstance().debugInfo(content);
     }
 }

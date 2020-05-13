@@ -48,7 +48,7 @@ public final class ResourceMonitor {
 
     private static final ConcurrentHashMap<Class<?>, LockedResource> mResources = new ConcurrentHashMap<>();
     private static Handler sHandler;
-    private static boolean sEnabled = false/* BuildConfig.DEBUG */;
+    private static boolean sEnabled = BuildConfig.DEBUG;
     private static ExceptionCreator sExceptionCreator;
     private static UnclosedResourceDetectedHandler sUnclosedResourceDetectedHandler;
 

@@ -1,11 +1,13 @@
 package org.autojs.autojsm.timing.work;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
+import com.stardust.app.GlobalAppContext;
 
 import org.autojs.autojsm.timing.TimedTask;
 import org.autojs.autojsm.timing.TimedTaskManager;
@@ -66,8 +68,17 @@ public class AndroidJobProvider extends TimedTaskScheduler implements WorkProvid
     }
 
     @Override
+    @SuppressLint("CheckResult")
     public void cancelAllWorks() {
         JobManager.instance().cancelAll();
+        TimedTaskManager.getInstance()
+                .getAllTasks()
+                .filter(TimedTask::isScheduled)
+                .forEach(timedTask -> {
+                    timedTask.setScheduled(false);
+                    timedTask.setExecuted(false);
+                    TimedTaskManager.getInstance().updateTaskWithoutReScheduling(timedTask);
+                });
     }
 
     @Override
@@ -118,7 +129,7 @@ public class AndroidJobProvider extends TimedTaskScheduler implements WorkProvid
         @NonNull
         @Override
         protected Result onRunJob(@NonNull Params params) {
-            checkTasks(mContext, false);
+            TimedTaskScheduler.getWorkProvider(GlobalAppContext.get()).checkTasks(mContext, false);
             return Result.SUCCESS;
         }
     }

@@ -32,7 +32,7 @@ public class TimedTaskScheduler {
     protected static final String JOB_TAG_CHECK_TASKS = "checkTasks";
 
     @SuppressLint("CheckResult")
-    public static void checkTasks(Context context, boolean force) {
+    public void checkTasks(Context context, boolean force) {
         Log.d(LOG_TAG, "check tasks: force = " + force);
         TimedTaskManager.getInstance().getAllTasks()
                 .subscribeOn(Schedulers.io())
@@ -40,7 +40,7 @@ public class TimedTaskScheduler {
                 .subscribe(timedTask -> scheduleTaskIfNeeded(context, timedTask, force));
     }
 
-    public static void scheduleTaskIfNeeded(Context context, TimedTask timedTask, boolean force) {
+    public void scheduleTaskIfNeeded(Context context, TimedTask timedTask, boolean force) {
         long millis = timedTask.getNextTime();
         if ((!force && timedTask.isScheduled()) || millis - System.currentTimeMillis() > SCHEDULE_TASK_MIN_TIME) {
             return;
@@ -49,7 +49,14 @@ public class TimedTaskScheduler {
         TimedTaskManager.getInstance().notifyTaskScheduled(timedTask);
     }
 
-    private synchronized static void scheduleTask(Context context, TimedTask timedTask, long millis, boolean force) {
+    /**
+     * only available in WorkManagerProvider and AndroidJobProvider
+     * @param context
+     * @param timedTask
+     * @param millis
+     * @param force
+     */
+    public synchronized void scheduleTask(Context context, TimedTask timedTask, long millis, boolean force) {
         if (!force && timedTask.isScheduled()) {
             return;
         }
@@ -72,7 +79,7 @@ public class TimedTaskScheduler {
 
     public static void init(@NotNull Context context) {
         createCheckWorker(context, 20);
-        checkTasks(context, true);
+        getWorkProvider(context).checkTasks(context, true);
     }
 
     private static void createCheckWorker(Context context, int delay) {
@@ -105,14 +112,14 @@ public class TimedTaskScheduler {
             if (!workFine || anyLost) {
                 Log.d(LOG_TAG, "ensureCheckTaskWorks: " + (workFine ? "PeriodicWork works fine, but missed some work" : "PeriodicWork died"));
                 createCheckWorker(context, 0);
-                checkTasks(context, true);
+                getWorkProvider(context).checkTasks(context, true);
             }
         } catch (Exception e) {
             Log.e(LOG_TAG, "获取定时校验任务失败");
         }
     }
 
-    private static WorkProvider getWorkProvider(Context context) {
+    public static WorkProvider getWorkProvider(Context context) {
         try {
             PreferenceManager.getDefaultSharedPreferences(context).getString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.WORK_MANAGER_PROVIDER);
         } catch (Exception e) {
@@ -127,6 +134,7 @@ public class TimedTaskScheduler {
             Log.d(LOG_TAG, "当前启用的定时任务方式为AndroidJob");
             return AndroidJobProvider.getInstance(context);
         } else {
+            Log.d(LOG_TAG, "当前启用的定时任务方式为AlarmManager");
             return AlarmManagerProvider.getInstance(context);
         }
     }

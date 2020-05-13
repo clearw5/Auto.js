@@ -402,8 +402,10 @@
     <string name="text_project_save_error">项目保存失败 %s</string>
     <string name="text_night_mode">夜间模式</string>
     <string name="key_night_mode">key_night_mode</string>
-    <string name="text_enable_android_job">切换任务调度方式</string>
-    <string name="key_work_provider">ENABLE_WORK_MANAGER</string>
+    <string name="text_enable_alarm_manager">切换任务调度方式</string>
+    <string name="key_enable_alarm_manager">ENABLE_ALARM_MANAGER</string>
+    <string name="text_enable_debug_log">是否打印调试日志</string>
+    <string name="key_enable_debug_log">ENABLE_DEBUG_LOG</string>
     <string name="text_run_on_startup">Auto.js启动时</string>
     <string name="text_usage_stats_permission">查看使用统计权限</string>
     <string name="description_usage_stats_permission">通过\"查看使用统计\"权限可以获取本设备过去使用应用的情况，从而使获取当前应用(currentPackage)时更准确。</string>

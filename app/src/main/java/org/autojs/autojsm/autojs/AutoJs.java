@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -23,6 +24,7 @@ import org.autojs.autojsm.Pref;
 import org.autojs.autojsm.R;
 import org.autojs.autojsm.external.fileprovider.AppFileProvider;
 import org.autojs.autojsm.pluginclient.DevPluginService;
+import org.autojs.autojsm.timing.work.WorkProviderConstants;
 import org.autojs.autojsm.ui.floating.FloatyWindowManger;
 import org.autojs.autojsm.ui.floating.FullScreenFloatyWindow;
 import org.autojs.autojsm.ui.floating.layoutinspector.LayoutBoundsFloatyWindow;
@@ -61,6 +63,8 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         FullScreenFloatyWindow create(NodeInfo nodeInfo);
     }
 
+    private boolean enableDebugLog = false;
+
     private BroadcastReceiver mLayoutInspectBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -87,6 +91,8 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         intentFilter.addAction(LayoutBoundsFloatyWindow.class.getName());
         intentFilter.addAction(LayoutHierarchyFloatyWindow.class.getName());
         LocalBroadcastManager.getInstance(application).registerReceiver(mLayoutInspectBroadcastReceiver, intentFilter);
+        this.enableDebugLog = PreferenceManager.getDefaultSharedPreferences(GlobalAppContext.get())
+                .getBoolean(GlobalAppContext.getString(R.string.key_enable_debug_log), false);
     }
 
     private void capture(LayoutInspectFloatyWindow window) {
@@ -190,7 +196,13 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
     }
 
     public void debugInfo(String content) {
-        AutoJs.getInstance().getGlobalConsole().println(Log.DEBUG, content);
+        if (this.enableDebugLog) {
+            AutoJs.getInstance().getGlobalConsole().println(Log.VERBOSE, content);
+        }
+    }
+
+    public void setDebugEnabled(boolean enableDebugLog) {
+        this.enableDebugLog = enableDebugLog;
     }
 
 }
