@@ -1,7 +1,7 @@
 package com.tony;
 
 /**
- * @author jiangwenjie 2020/3/30
+ * @author TonyJiang 2020/3/30
  */
 public class IntBitCheck {
     private final int BYTE_SIZE = 1 << 5;

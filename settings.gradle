@@ -1,1 +1,2 @@
 include ':app', ':automator', ':common', ':autojs', ':inrt', ':autojs-tool-color-center'
+include ':autojs-tool-download'

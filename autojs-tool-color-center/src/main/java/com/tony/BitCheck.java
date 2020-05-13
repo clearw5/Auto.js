@@ -1,7 +1,7 @@
 package com.tony;
 
 /**
- * @author jiangwenjie 2019/12/6
+ * @author TonyJiang 2019/12/6
  */
 public class BitCheck {
     private int BUFFER_LENGTH;
