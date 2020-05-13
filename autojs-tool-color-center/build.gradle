@@ -1,7 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion versions.compile
@@ -32,9 +29,9 @@ android {
     }
 }
 
-task makeJar(type: Copy) {
+task makeColorCenterJar(type: Copy) {
     // 删除存在的
-    delete 'build/libs/mysdk.jar'
+    delete 'build/libs/color-center-sdk.jar'
     // 设置拷贝的文件
     from('build/intermediates/packaged-classes/release/')
     // 打进jar包后的文件目录
@@ -44,10 +41,10 @@ task makeJar(type: Copy) {
     //（我们只关心classes.jar这个文件）
     include('classes.jar')
     // 重命名
-    rename ('classes.jar', 'mysdk.jar')
+    rename ('classes.jar', 'color-center-sdk.jar')
 }
 
-makeJar.dependsOn(build)
+makeColorCenterJar.dependsOn(build)
 
 dependencies {
     api project(path: ':autojs')
