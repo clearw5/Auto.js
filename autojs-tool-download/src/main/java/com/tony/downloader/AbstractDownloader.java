@@ -1,5 +1,10 @@
 package com.tony.downloader;
 
+import android.annotation.SuppressLint;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.tony.ProgressInfo;
 import com.tony.listener.DefaultDownloaderListener;
 import com.tony.listener.DownloaderListener;
@@ -124,23 +129,42 @@ public abstract class AbstractDownloader {
     }
 
     private double tryGetConnectionWithLength(String url, int tryCount) throws IOException {
-        createDownloadConnection(url);
-        double totalLength = urlConnection.getContentLength();
-        int triedTime = 1;
-        showTrySummary(triedTime, totalLength);
-        while (totalLength < 0 && triedTime++ < tryCount) {
-            urlConnection.disconnect();
+        final AtomicBoolean completed = new AtomicBoolean(false);
+        final AtomicInteger triedTime = new AtomicInteger(1);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int count = 0;
+                while (!completed.get()) {
+                    StringBuilder sb = new StringBuilder("第").append(triedTime.get()).append("次获取下载包总大小");
+                    for (int i = 0; i <= count % 4; i++) {
+                        sb.append(".");
+                    }
+                    getListener().updateGui(sb.toString());
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    count++;
+                }
+            }
+        }).start();
+
+        double totalLength = -1;
+        do {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
             createDownloadConnection(url);
             totalLength = urlConnection.getContentLength();
-            showTrySummary(triedTime, totalLength);
-        }
+        } while (totalLength < 0 && triedTime.getAndAdd(1) < tryCount);
+        completed.set(true);
         return totalLength;
     }
 
-    private void showTrySummary(int triedTime, double length) {
-        getListener().updateGui("第" + triedTime + "次尝试获取http总大小：" + length);
-    }
 
+    @SuppressLint("DefaultLocale")
     public void downloadZip() {
         String zipUrl = getZipDownloadUrl();
         if (zipUrl != null) {
@@ -212,7 +236,7 @@ public abstract class AbstractDownloader {
             e.printStackTrace(pw);
             pw.flush();
             String exceptionInfo = new String(baOs.toByteArray());
-            getListener().updateGui(exceptionInfo);
+            getListener().updateError(exceptionInfo);
         } catch (Exception ex) {
         }
     }
@@ -254,7 +278,7 @@ public abstract class AbstractDownloader {
             this.setLocalVersion();
             getListener().updateGui("解压成功！");
         } else {
-            getListener().updateGui("解压失败！");
+            getListener().updateError("解压失败！");
         }
     }
 

@@ -15,6 +15,12 @@ public interface DownloaderListener {
     void updateGui(String string);
 
     /**
+     * 传递错误信息
+     * @param errorInfo
+     */
+    void updateError(String errorInfo);
+
+    /**
      * 更新进度信息
      *
      * @param progressInfo 进度数据

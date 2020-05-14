@@ -26,8 +26,14 @@ public class DefaultDownloaderListener implements DownloaderListener {
     }
 
     @Override
+    public void updateError(String errorInfo) {
+        System.err.println(errorInfo);
+    }
+
+    @Override
     public void updateProgress(ProgressInfo progressInfo) {
-        System.out.println("更新进度：" + getJsonResolver().toJSONString(progressInfo) + String.format(Locale.CHINA," %.2f%%", progressInfo.getProgress()));
+        System.out.println("更新进度：" + getJsonResolver().toJSONString(progressInfo)
+                + String.format(Locale.CHINA, " %.2f%%", progressInfo.getProgress()));
     }
 
     public DefaultDownloaderListener setJsonResolver(JSONResolver jsonResolver) {
