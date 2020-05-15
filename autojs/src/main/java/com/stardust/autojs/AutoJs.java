@@ -21,7 +21,7 @@ import com.stardust.autojs.core.util.Shell;
 import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
 import com.stardust.autojs.engine.RootAutomatorEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
-import com.stardust.autojs.rhino.InterruptibleAndroidContextFactory;
+import com.stardust.autojs.rhino.InterruptableAndroidContextFactory;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 import com.stardust.autojs.runtime.api.AppUtils;
@@ -129,7 +129,7 @@ public abstract class AutoJs {
     }
 
     protected void initContextFactory() {
-        ContextFactory.initGlobal(new InterruptibleAndroidContextFactory(new File(mContext.getCacheDir(), "classes")));
+        ContextFactory.initGlobal(new InterruptableAndroidContextFactory(new File(mContext.getCacheDir(), "classes")));
     }
 
     protected ScriptRuntime createRuntime() {

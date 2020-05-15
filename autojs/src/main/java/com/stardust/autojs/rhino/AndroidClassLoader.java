@@ -1,5 +1,7 @@
 package com.stardust.autojs.rhino;
 
+import java.util.WeakHashMap;
+
 import android.util.Log;
 
 import com.android.dx.command.dexer.Main;
@@ -17,14 +19,11 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.TreeMap;
 
 import dalvik.system.DexClassLoader;
 
@@ -40,6 +39,8 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
     private final Map<String, DexClassLoader> mDexClassLoaders = new LinkedHashMap<>();
     private final File mCacheDir;
     private final File mLibsDir;
+
+    private final WeakHashMap<DeleteOnFinalizeFile, String> weakDexFileMap = new WeakHashMap<>();
 
     /**
      * Create a new instance with the given parent classloader and cache dierctory
@@ -168,7 +169,10 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
         Main.run(arguments);
         DexClassLoader loader = loadDex(dexFile);
         if (isTmpDex) {
-            dexFile.delete();
+            Log.d(LOG_TAG, "delete tmpFile on finalize:" + dexFile.getName());
+            // 当弱引用失去引用时 删除File对象
+            weakDexFileMap.put(new DeleteOnFinalizeFile(dexFile), dexFile.getName());
+            Log.d(LOG_TAG, "current weakMap size:" + weakDexFileMap.size());
         }
         return loader;
     }
@@ -196,15 +200,26 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
             throws ClassNotFoundException {
         Class<?> loadedClass = findLoadedClass(name);
         if (loadedClass == null) {
-            ListIterator<DexClassLoader> reverseIterator = new ArrayList<>(mDexClassLoaders.values()).listIterator(mDexClassLoaders.size());
-            while (reverseIterator.hasPrevious()) {
-                loadedClass = reverseIterator.previous().loadClass(name);
-                if (loadedClass != null) {
-                    break;
+            if (parent != null) {
+                try {
+                    loadedClass = parent.loadClass(name);
+                } catch (Exception e) {
+                    // do nothing
                 }
             }
             if (loadedClass == null) {
-                loadedClass = parent.loadClass(name);
+                ListIterator<DexClassLoader> reverseIterator = new ArrayList<>(mDexClassLoaders.values()).listIterator(mDexClassLoaders.size());
+                while (reverseIterator.hasPrevious()) {
+                    DexClassLoader classLoader = reverseIterator.previous();
+//                    Log.d(LOG_TAG, "try to load class: " + name + " class loader info: " + classLoader.toString());
+                    loadedClass = classLoader.loadClass(name);
+                    if (loadedClass != null) {
+                        break;
+                    }
+                }
+            }
+            if (loadedClass == null) {
+                loadedClass = findClass(name);
             }
         }
         return loadedClass;

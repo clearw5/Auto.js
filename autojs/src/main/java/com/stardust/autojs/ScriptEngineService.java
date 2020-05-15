@@ -87,7 +87,7 @@ public class ScriptEngineService {
     };
 
 
-    private static ScriptEngineService sInstance;
+    private static volatile ScriptEngineService sInstance;
     private final Context mContext;
     private UiHandler mUiHandler;
     private final Console mGlobalConsole;
@@ -209,8 +209,12 @@ public class ScriptEngineService {
     }
 
     public static void setInstance(ScriptEngineService service) {
-        if (sInstance != null) {
-            throw new IllegalStateException();
+        if (sInstance == null) {
+            synchronized (ScriptEngineService.class) {
+                if (sInstance != null) {
+                    throw new IllegalStateException();
+                }
+            }
         }
         sInstance = service;
     }

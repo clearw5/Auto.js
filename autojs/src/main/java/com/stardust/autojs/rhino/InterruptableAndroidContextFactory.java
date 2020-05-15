@@ -10,7 +10,7 @@ import org.mozilla.javascript.Context;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class InterruptibleAndroidContextFactory extends AndroidContextFactory {
+public class InterruptableAndroidContextFactory extends AndroidContextFactory {
 
     private AtomicInteger mContextCount = new AtomicInteger();
     private static final String LOG_TAG = "ContextFactory";
@@ -20,7 +20,7 @@ public class InterruptibleAndroidContextFactory extends AndroidContextFactory {
      *
      * @param cacheDirectory the cache directory
      */
-    public InterruptibleAndroidContextFactory(File cacheDirectory) {
+    public InterruptableAndroidContextFactory(File cacheDirectory) {
         super(cacheDirectory);
     }
 

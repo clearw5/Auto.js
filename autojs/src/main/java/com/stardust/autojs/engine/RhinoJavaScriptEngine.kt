@@ -99,10 +99,19 @@ open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Co
 
     @Synchronized
     override fun destroy() {
-        super.destroy()
-        Log.d(LOG_TAG, "on destroy")
-        sContextEngineMap.remove(context)
-        Context.exit()
+        var destroySuccess = false;
+        try {
+            super.destroy()
+            Log.d(LOG_TAG, "on destroy")
+            sContextEngineMap.remove(context)
+            destroySuccess = true;
+        } finally {
+            if (destroySuccess)
+                Log.d(LOG_TAG, "destroy execute success")
+            else
+                Log.d(LOG_TAG, "destroy execute failed")
+            Context.exit()
+        }
     }
 
     override fun init() {
@@ -149,6 +158,10 @@ open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Co
         context.languageVersion = Context.VERSION_ES6
         context.locale = Locale.getDefault()
         context.wrapFactory = WrapFactory()
+    }
+
+    protected fun removeContext(context: Context) {
+        context.wrapFactory = null
     }
 
     private inner class WrapFactory : org.mozilla.javascript.WrapFactory() {
