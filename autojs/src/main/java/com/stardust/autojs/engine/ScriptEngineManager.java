@@ -1,9 +1,10 @@
 package com.stardust.autojs.engine;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.util.Supplier;
 
@@ -96,37 +97,34 @@ public class ScriptEngineManager {
 
 
     @Nullable
-    public ScriptEngine createEngine(String name) {
+    public ScriptEngine createEngine(String name, int id) {
         Supplier<ScriptEngine> s = mEngineSuppliers.get(name);
         if (s == null) {
             return null;
         }
         ScriptEngine engine = s.get();
+        engine.setId(id);
         putProperties(engine);
         addEngine(engine);
         return engine;
     }
 
     @Nullable
-    public ScriptEngine createEngineOfSource(ScriptSource source) {
-        return createEngine(source.getEngineName());
+    public ScriptEngine createEngineOfSource(ScriptSource source, int id) {
+        return createEngine(source.getEngineName(), id);
     }
 
-
     @NonNull
-    public ScriptEngine createEngineByNameOrThrow(String name) {
-        ScriptEngine engine = createEngine(name);
+    public ScriptEngine createEngineOfSourceOrThrow(ScriptSource source, int id) {
+        ScriptEngine engine = createEngineOfSource(source, id);
         if (engine == null)
-            throw new ScriptEngineFactory.EngineNotFoundException("name: " + name);
+            throw new ScriptEngineFactory.EngineNotFoundException("source: " + source.toString());
         return engine;
     }
 
     @NonNull
     public ScriptEngine createEngineOfSourceOrThrow(ScriptSource source) {
-        ScriptEngine engine = createEngineOfSource(source);
-        if (engine == null)
-            throw new ScriptEngineFactory.EngineNotFoundException("source: " + source.toString());
-        return engine;
+       return createEngineOfSourceOrThrow(source, ScriptExecution.NO_ID);
     }
 
     public void registerEngine(String name, Supplier<ScriptEngine> supplier) {

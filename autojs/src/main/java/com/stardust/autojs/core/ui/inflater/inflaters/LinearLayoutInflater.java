@@ -19,6 +19,12 @@ public class LinearLayoutInflater<V extends LinearLayout> extends ViewGroupInfla
             .map("vertical", LinearLayout.VERTICAL)
             .map("horizontal", LinearLayout.HORIZONTAL);
 
+    static final ValueMapper<Integer> SHOW_DIVIDERS = new ValueMapper<Integer>("showDividers")
+            .map("beginning", LinearLayout.SHOW_DIVIDER_BEGINNING)
+            .map("middle", LinearLayout.SHOW_DIVIDER_MIDDLE)
+            .map("end", LinearLayout.SHOW_DIVIDER_END)
+            .map("none", LinearLayout.SHOW_DIVIDER_NONE);
+
     public LinearLayoutInflater(ResourceParser resourceParser) {
         super(resourceParser);
     }
@@ -43,6 +49,9 @@ public class LinearLayoutInflater<V extends LinearLayout> extends ViewGroupInfla
                 break;
             case "orientation":
                 view.setOrientation(ORIENTATIONS.get(value));
+                break;
+            case "showDividers":
+                view.setShowDividers(SHOW_DIVIDERS.split(value));
                 break;
             case "weightSum":
                 view.setWeightSum(Float.valueOf(value));

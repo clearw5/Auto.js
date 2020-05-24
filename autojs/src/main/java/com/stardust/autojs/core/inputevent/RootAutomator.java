@@ -1,37 +1,28 @@
 package com.stardust.autojs.core.inputevent;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
+import android.util.Log;
+import android.util.SparseIntArray;
 import android.view.ViewConfiguration;
 
-import com.stardust.autojs.core.inputevent.InputDevices;
-import com.stardust.autojs.core.util.ProcessShell;
+import com.stardust.autojs.core.util.Shell;
 import com.stardust.autojs.engine.RootAutomatorEngine;
-import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.util.ScreenMetrics;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.stardust.autojs.core.inputevent.InputEventCodes.ABS_MT_POSITION_X;
-import static com.stardust.autojs.core.inputevent.InputEventCodes.ABS_MT_POSITION_Y;
-import static com.stardust.autojs.core.inputevent.InputEventCodes.ABS_MT_TOUCH_MAJOR;
-import static com.stardust.autojs.core.inputevent.InputEventCodes.ABS_MT_TRACKING_ID;
-import static com.stardust.autojs.core.inputevent.InputEventCodes.BTN_TOOL_FINGER;
-import static com.stardust.autojs.core.inputevent.InputEventCodes.BTN_TOUCH;
-import static com.stardust.autojs.core.inputevent.InputEventCodes.EV_ABS;
-import static com.stardust.autojs.core.inputevent.InputEventCodes.EV_KEY;
-import static com.stardust.autojs.core.inputevent.InputEventCodes.EV_SYN;
-import static com.stardust.autojs.core.inputevent.InputEventCodes.SYN_MT_REPORT;
-import static com.stardust.autojs.core.inputevent.InputEventCodes.SYN_REPORT;
+import static com.stardust.autojs.core.inputevent.InputEventCodes.*;
 
 /**
  * Created by Stardust on 2017/7/16.
  */
 
-public class RootAutomator {
+public class RootAutomator implements Shell.Callback {
 
     private static final String LOG_TAG = "RootAutomator";
 
@@ -43,20 +34,54 @@ public class RootAutomator {
 
     @Nullable
     private ScreenMetrics mScreenMetrics;
-    private AbstractShell mShell;
-    private int mDefaultId = 1;
+    private Shell mShell;
+    private int mDefaultId = 0;
+    private AtomicInteger mTracingId = new AtomicInteger(1);
+    private SparseIntArray mSlotIdMap = new SparseIntArray();
+    private final Object mReadyLock = new Object();
+    private volatile boolean mReady = false;
+    private final Context mContext;
+    private String mInputDevice;
 
-    public RootAutomator(Context context) {
-        mShell = new ProcessShell(true);
-        String path = RootAutomatorEngine.getExecutablePath(context);
-        String deviceNameOrPath = RootAutomatorEngine.getDeviceNameOrPath(context, InputDevices.getTouchDeviceName());
-        mShell.exec("chmod 777 " + path);
-        mShell.exec(path + " -d " + deviceNameOrPath);
+    public RootAutomator(Context context, String inputDevice, boolean waitForReady) throws IOException {
+        mContext = context;
+        if (inputDevice == null) {
+            mInputDevice = RootAutomatorEngine.getDeviceNameOrPath(mContext, InputDevices.getTouchDeviceName());
+        } else {
+            mInputDevice = inputDevice;
+        }
+        mShell = new Shell(true);
+        mShell.setCallback(this);
+        if (waitForReady) {
+            waitForReady();
+        }
     }
 
 
     public void sendEvent(int type, int code, int value) throws IOException {
+        waitForReady();
+        sendEventInternal(type, code, value);
+    }
+
+    private void sendEventInternal(int type, int code, int value) {
         mShell.exec(type + " " + code + " " + value);
+    }
+
+    private void waitForReady() throws IOException {
+        if (mReady) {
+            return;
+        }
+        synchronized (mReadyLock) {
+            if (mReady) {
+                return;
+            }
+            try {
+                mReadyLock.wait();
+            } catch (InterruptedException e) {
+                exit();
+                throw new ScriptInterruptedException();
+            }
+        }
     }
 
     public void touch(int x, int y) throws IOException {
@@ -150,13 +175,32 @@ public class RootAutomator {
     }
 
     public void touchDown(int x, int y, int id) throws IOException {
-        sendEvent(EV_ABS, ABS_MT_TRACKING_ID, id);
-        sendEvent(EV_KEY, BTN_TOUCH, 0x00000001);
-        sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000001);
+        if (mSlotIdMap.size() == 0) {
+            touchDown0(x, y, id);
+            return;
+        }
+        int slotId = mSlotIdMap.size();
+        mSlotIdMap.put(id, slotId);
+        sendEvent(EV_ABS, ABS_MT_SLOT, slotId);
+        sendEvent(EV_ABS, ABS_MT_TRACKING_ID, mTracingId.getAndIncrement());
         sendEvent(EV_ABS, ABS_MT_POSITION_X, scaleX(x));
         sendEvent(EV_ABS, ABS_MT_POSITION_Y, scaleY(y));
         sendEvent(EV_ABS, ABS_MT_TOUCH_MAJOR, 5);
-        sendEvent(EV_SYN, SYN_REPORT, 0x00000000);
+        sendEvent(EV_ABS, ABS_MT_WIDTH_MAJOR, 5);
+        sendEvent(EV_SYN, SYN_REPORT, 0);
+    }
+
+    private void touchDown0(int x, int y, int id) throws IOException {
+        mSlotIdMap.put(id, 0);
+        sendEvent(EV_ABS, ABS_MT_TRACKING_ID, mTracingId.getAndIncrement());
+        sendEvent(EV_KEY, BTN_TOUCH, DOWN);
+        //sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000001);
+        sendEvent(EV_ABS, ABS_MT_POSITION_X, scaleX(x));
+        sendEvent(EV_ABS, ABS_MT_POSITION_Y, scaleY(y));
+        //sendEvent(EV_ABS, ABS_MT_PRESSURE, 200);
+        sendEvent(EV_ABS, ABS_MT_TOUCH_MAJOR, 5);
+        sendEvent(EV_ABS, ABS_MT_WIDTH_MAJOR, 5);
+        sendEvent(EV_SYN, SYN_REPORT, 0);
     }
 
     public void touchDown(int x, int y) throws IOException {
@@ -164,9 +208,20 @@ public class RootAutomator {
     }
 
     public void touchUp(int id) throws IOException {
-        sendEvent(EV_ABS, ABS_MT_TRACKING_ID, id);
-        sendEvent(EV_KEY, BTN_TOUCH, 0x00000000);
-        sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000000);
+        int slotId;
+        int i = mSlotIdMap.indexOfKey(id);
+        if (i < 0) {
+            slotId = 0;
+        } else {
+            slotId = mSlotIdMap.valueAt(i);
+            mSlotIdMap.removeAt(i);
+        }
+        sendEvent(EV_ABS, ABS_MT_SLOT, slotId);
+        sendEvent(EV_ABS, ABS_MT_TRACKING_ID, 0xffffffff);
+        if (mSlotIdMap.size() == 0) {
+            sendEvent(EV_KEY, BTN_TOUCH, UP);
+            //sendEvent(EV_KEY, BTN_TOOL_FINGER, 0x00000000);
+        }
         sendEvent(EV_SYN, SYN_REPORT, 0x00000000);
     }
 
@@ -175,7 +230,9 @@ public class RootAutomator {
     }
 
     public void touchMove(int x, int y, int id) throws IOException {
-        sendEvent(EV_ABS, ABS_MT_TRACKING_ID, id);
+        int slotId = mSlotIdMap.get(id, 0);
+        sendEvent(EV_ABS, ABS_MT_SLOT, slotId);
+        sendEvent(EV_ABS, ABS_MT_TOUCH_MAJOR, 5);
         sendEvent(EV_ABS, ABS_MT_POSITION_X, scaleX(x));
         sendEvent(EV_ABS, ABS_MT_POSITION_Y, scaleY(y));
         sendEvent(EV_SYN, SYN_REPORT, 0x00000000);
@@ -207,7 +264,8 @@ public class RootAutomator {
     }
 
     public void exit() throws IOException {
-        sendEvent(0xffff, 0xffff, 0xefefefef);
+        sleep(1);
+        sendEventInternal(0xffff, 0xffff, 0xefefefef);
         mShell.exec("exit");
         mShell.exec("exit");
         mShell.exec("exit");
@@ -217,5 +275,34 @@ public class RootAutomator {
         mShell.exit();
     }
 
+    @Override
+    public void onOutput(String str) {
+
+    }
+
+    @Override
+    public void onNewLine(String line) {
+    }
+
+    @Override
+    public void onInitialized() {
+        String path = RootAutomatorEngine.getExecutablePath(mContext);
+        String deviceNameOrPath = RootAutomatorEngine.getDeviceNameOrPath(mContext, InputDevices.getTouchDeviceName());
+        Log.d(LOG_TAG, "deviceNameOrPath: " + deviceNameOrPath);
+        mShell.exec("chmod 777 " + path);
+        String command = String.format(Locale.getDefault(), "%s -d %s -sw %d -sh %d", path, deviceNameOrPath,
+                ScreenMetrics.getDeviceScreenWidth(), ScreenMetrics.getDeviceScreenHeight());
+        mShell.exec(command);
+        synchronized (mReadyLock) {
+            Log.d(LOG_TAG, "notify ready");
+            mReady = true;
+            mReadyLock.notifyAll();
+        }
+    }
+
+    @Override
+    public void onInterrupted(InterruptedException e) {
+
+    }
 }
 

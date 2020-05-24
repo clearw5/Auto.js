@@ -15,8 +15,10 @@ import com.stardust.concurrent.VolatileDispose;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.FloatyWindow;
 import com.stardust.enhancedfloaty.WindowBridge;
+import com.stardust.enhancedfloaty.util.WindowTypeCompat;
 
-public class RawWindow implements FloatyWindow {
+public class RawWindow extends FloatyWindow {
+
 
 
     public interface RawFloaty {
@@ -24,13 +26,9 @@ public class RawWindow implements FloatyWindow {
         View inflateWindowView(FloatyService service, ViewGroup parent);
     }
 
-    private WindowBridge mWindowBridge;
     private VolatileDispose<RuntimeException> mInflateException = new VolatileDispose<>();
-    private WindowManager mWindowManager;
-    private ViewGroup mWindowView;
-    private View mWindowContent;
     private RawFloaty mRawFloaty;
-    private WindowManager.LayoutParams mWindowLayoutParams;
+    private View mContentView;
 
     public RawWindow(RawFloaty rawFloaty) {
         mRawFloaty = rawFloaty;
@@ -38,26 +36,32 @@ public class RawWindow implements FloatyWindow {
 
     @Override
     public void onCreate(FloatyService floatyService, WindowManager windowManager) {
-        mWindowManager = windowManager;
-        mWindowView = (ViewGroup) View.inflate(floatyService, R.layout.raw_window, null);
-        mWindowLayoutParams = createWindowLayoutParams();
         try {
-            mWindowContent = mRawFloaty.inflateWindowView(floatyService, mWindowView);
-            mWindowManager.addView(mWindowView, mWindowLayoutParams);
+            super.onCreate(floatyService, windowManager);
         } catch (RuntimeException e) {
             mInflateException.setAndNotify(e);
             return;
         }
-        mWindowBridge = new WindowBridge.DefaultImpl(mWindowLayoutParams, windowManager, mWindowView);
         mInflateException.setAndNotify(Exceptions.NO_EXCEPTION);
+    }
+
+    @Override
+    protected View onCreateView(FloatyService floatyService) {
+        ViewGroup windowView = (ViewGroup) View.inflate(floatyService, R.layout.raw_window, null);
+        mContentView = mRawFloaty.inflateWindowView(floatyService, windowView);
+        return windowView;
     }
 
     public RuntimeException waitForCreation() {
         return mInflateException.blockedGetOrThrow(ScriptInterruptedException.class);
     }
 
+    public View getContentView() {
+        return mContentView;
+    }
 
-    protected WindowManager.LayoutParams createWindowLayoutParams() {
+    @Override
+    protected WindowManager.LayoutParams onCreateWindowLayoutParams() {
         int flags =
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
                         | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
@@ -69,55 +73,34 @@ public class RawWindow implements FloatyWindow {
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+                WindowTypeCompat.getWindowType(),
                 flags,
                 PixelFormat.TRANSLUCENT);
         layoutParams.gravity = Gravity.TOP | Gravity.START;
         return layoutParams;
     }
 
-
     public void disableWindowFocus() {
-        mWindowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        mWindowManager.updateViewLayout(mWindowView, mWindowLayoutParams);
+        WindowManager.LayoutParams windowLayoutParams = getWindowLayoutParams();
+        windowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        updateWindowLayoutParams(windowLayoutParams);
     }
 
     public void requestWindowFocus() {
-        mWindowLayoutParams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        mWindowManager.updateViewLayout(mWindowView, mWindowLayoutParams);
-        mWindowView.requestFocus();
+        WindowManager.LayoutParams windowLayoutParams = getWindowLayoutParams();
+        windowLayoutParams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        updateWindowLayoutParams(windowLayoutParams);
+        getWindowView().requestLayout();
     }
 
     public void setTouchable(boolean touchable) {
+        WindowManager.LayoutParams windowLayoutParams = getWindowLayoutParams();
         if (touchable) {
-            mWindowLayoutParams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+            windowLayoutParams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         } else {
-            mWindowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+            windowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         }
-        mWindowManager.updateViewLayout(mWindowView, mWindowLayoutParams);
+        updateWindowLayoutParams(windowLayoutParams);
     }
 
-    public WindowBridge getWindowBridge() {
-        return mWindowBridge;
-    }
-
-    public ViewGroup getWindowView() {
-        return mWindowView;
-    }
-
-    public View getWindowContent() {
-        return mWindowContent;
-    }
-
-    @Override
-    public void onServiceDestroy(FloatyService floatyService) {
-        close();
-    }
-
-    @Override
-    public void close() {
-        if (mWindowView != null)
-            mWindowManager.removeView(mWindowView);
-        FloatyService.removeWindow(this);
-    }
 }

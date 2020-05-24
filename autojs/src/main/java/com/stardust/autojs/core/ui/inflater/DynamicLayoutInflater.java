@@ -2,11 +2,8 @@ package com.stardust.autojs.core.ui.inflater;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.InflateException;
@@ -19,10 +16,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.stardust.autojs.core.ui.inflater.inflaters.AppBarInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.BaseViewInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.DatePickerInflater;
@@ -38,6 +35,7 @@ import com.stardust.autojs.core.ui.inflater.inflaters.TimePickerInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.ToolbarInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.ViewGroupInflater;
 import com.stardust.autojs.core.ui.inflater.util.Res;
+import com.stardust.autojs.core.ui.widget.JsSpinner;
 import com.stardust.autojs.core.ui.widget.JsTabLayout;
 import com.stardust.autojs.core.ui.widget.JsToolbar;
 import com.stardust.autojs.core.ui.xml.XmlConverter;
@@ -126,7 +124,7 @@ public class DynamicLayoutInflater {
         registerViewAttrSetter(DatePicker.class.getName(), new DatePickerInflater(mResourceParser));
         registerViewAttrSetter(RadioGroup.class.getName(), new RadioGroupInflater<>(mResourceParser));
         registerViewAttrSetter(ProgressBar.class.getName(), new ProgressBarInflater<>(mResourceParser));
-        registerViewAttrSetter(Spinner.class.getName(), new SpinnerInflater(mResourceParser));
+        registerViewAttrSetter(JsSpinner.class.getName(), new SpinnerInflater(mResourceParser));
         registerViewAttrSetter(TimePicker.class.getName(), new TimePickerInflater(mResourceParser));
         registerViewAttrSetter(AppBarLayout.class.getName(), new AppBarInflater<>(mResourceParser));
         registerViewAttrSetter(JsTabLayout.class.getName(), new TabLayoutInflater<>(mResourceParser));
@@ -145,87 +143,99 @@ public class DynamicLayoutInflater {
     }
 
     public View inflate(String xml, @Nullable ViewGroup parent) {
-        View view = mLayoutInflaterDelegate.beforeInflation(xml, parent);
-        if (view != null)
-            return view;
-        xml = convertXml(xml);
-        return mLayoutInflaterDelegate.afterInflation(doInflation(xml, parent), xml, parent);
+        return inflate(xml, parent, parent != null);
     }
 
-    protected View doInflation(String xml, @Nullable ViewGroup parent) {
+    public View inflate(String xml, @Nullable ViewGroup parent, boolean attachToParent) {
+        InflateContext context = newInflateContext();
+        return inflate(context, xml, parent, attachToParent);
+    }
+
+    public View inflate(InflateContext context, String xml, @Nullable ViewGroup parent, boolean attachToParent) {
+        View view = mLayoutInflaterDelegate.beforeInflation(context, xml, parent);
+        if (view != null)
+            return view;
+        xml = convertXml(context, xml);
+        return mLayoutInflaterDelegate.afterInflation(context, doInflation(context, xml, parent, attachToParent), xml, parent);
+    }
+
+    public InflateContext newInflateContext(){
+        return new InflateContext();
+    }
+
+
+    protected View doInflation(InflateContext context, String xml, @Nullable ViewGroup parent, boolean attachToParent) {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document document = db.parse(new ByteArrayInputStream(xml.getBytes()));
-            return inflate(document.getDocumentElement(), parent, true);
+            return inflate(context, document.getDocumentElement(), parent, attachToParent);
         } catch (Exception e) {
             throw new InflateException(e);
         }
     }
 
-    protected String convertXml(String xml) {
-        String str = mLayoutInflaterDelegate.beforeConvertXml(xml);
+    protected String convertXml(InflateContext context, String xml) {
+        String str = mLayoutInflaterDelegate.beforeConvertXml(context, xml);
         if (str != null)
             return str;
         try {
-            return mLayoutInflaterDelegate.afterConvertXml(XmlConverter.convertToAndroidLayout(xml));
+            return mLayoutInflaterDelegate.afterConvertXml(context, XmlConverter.convertToAndroidLayout(xml));
         } catch (Exception e) {
             throw new InflateException(e);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public View inflate(Node node, @Nullable ViewGroup parent, boolean attachToParent) {
-        View view = doInflation(node, parent, attachToParent);
-        if (view != null && view instanceof ShouldCallOnFinishInflate) {
+    public View inflate(InflateContext context, Node node, @Nullable ViewGroup parent, boolean attachToParent) {
+        View view = doInflation(context, node, parent, attachToParent);
+        if (view instanceof ShouldCallOnFinishInflate) {
             ((ShouldCallOnFinishInflate) view).onFinishDynamicInflate();
         }
         return view;
     }
 
-    protected View doInflation(Node node, @Nullable ViewGroup parent, boolean attachToParent) {
-        View view = mLayoutInflaterDelegate.beforeInflateView(node, parent, attachToParent);
+    protected View doInflation(InflateContext context, Node node, @Nullable ViewGroup parent, boolean attachToParent) {
+        View view = mLayoutInflaterDelegate.beforeInflateView(context, node, parent, attachToParent);
         if (view != null)
             return view;
         HashMap<String, String> attrs = getAttributesMap(node);
-        view = doCreateView(node, node.getNodeName(), attrs);
+        view = doCreateView(context, node, node.getNodeName(), parent, attrs);
         if (parent != null) {
             parent.addView(view); // have to add to parent to generate layout params
             if (!attachToParent) {
                 parent.removeView(view);
             }
         }
-        ViewInflater<View> inflater = applyAttributes(view, attrs, parent);
-        if (!(view instanceof ViewGroup) || !node.hasChildNodes()) {
-            return view;
+        ViewInflater<View> inflater = applyAttributes(context, view, attrs, parent);
+        if (view instanceof ViewGroup && node.hasChildNodes()) {
+            inflateChildren(context, inflater, node, (ViewGroup) view);
+            if (inflater instanceof ViewGroupInflater) {
+                applyPendingAttributesOfChildren(context, (ViewGroupInflater) inflater, (ViewGroup) view);
+            }
         }
-        inflateChildren(inflater, node, (ViewGroup) view);
-        if (inflater instanceof ViewGroupInflater) {
-            applyPendingAttributesOfChildren((ViewGroupInflater) inflater, (ViewGroup) view);
-        }
-        return mLayoutInflaterDelegate.afterInflateView(view, node, parent, attachToParent);
+        return mLayoutInflaterDelegate.afterInflateView(context, view, node, parent, attachToParent);
     }
 
     @SuppressWarnings("unchecked")
-    protected void applyPendingAttributesOfChildren(ViewGroupInflater inflater, ViewGroup view) {
-        if (mLayoutInflaterDelegate.beforeApplyPendingAttributesOfChildren(inflater, view)) {
+    protected void applyPendingAttributesOfChildren(InflateContext context, ViewGroupInflater inflater, ViewGroup view) {
+        if (mLayoutInflaterDelegate.beforeApplyPendingAttributesOfChildren(context, inflater, view)) {
             return;
         }
         inflater.applyPendingAttributesOfChildren(view);
-        mLayoutInflaterDelegate.afterApplyPendingAttributesOfChildren(inflater, view);
+        mLayoutInflaterDelegate.afterApplyPendingAttributesOfChildren(context, inflater, view);
 
     }
 
 
     @SuppressWarnings("unchecked")
-    public ViewInflater<View> applyAttributes(View view, HashMap<String, String> attrs, @Nullable ViewGroup parent) {
+    public ViewInflater<View> applyAttributes(InflateContext context, View view, HashMap<String, String> attrs, @Nullable ViewGroup parent) {
         ViewInflater<View> inflater = (ViewInflater<View>) getViewInflater(view);
-        if (mLayoutInflaterDelegate.beforeApplyAttributes(view, inflater, attrs, parent)) {
+        if (mLayoutInflaterDelegate.beforeApplyAttributes(context, view, inflater, attrs, parent)) {
             return inflater;
         }
-        applyAttributes(view, inflater, attrs, parent);
-        mLayoutInflaterDelegate.afterApplyAttributes(view, inflater, attrs, parent);
+        applyAttributes(context, view, inflater, attrs, parent);
+        mLayoutInflaterDelegate.afterApplyAttributes(context, view, inflater, attrs, parent);
         return inflater;
     }
 
@@ -240,31 +250,31 @@ public class DynamicLayoutInflater {
         return setter;
     }
 
-    protected void inflateChildren(ViewInflater<View> inflater, Node node, ViewGroup parent) {
-        if (mLayoutInflaterDelegate.beforeInflateChildren(inflater, node, parent)) {
+    protected void inflateChildren(InflateContext context, ViewInflater<View> inflater, Node node, ViewGroup parent) {
+        if (mLayoutInflaterDelegate.beforeInflateChildren(context, inflater, node, parent)) {
             return;
         }
         if (inflater.inflateChildren(this, node, parent)) {
             return;
         }
-        inflateChildren(node, parent);
-        mLayoutInflaterDelegate.afterInflateChildren(inflater, node, parent);
+        inflateChildren(context, node, parent);
+        mLayoutInflaterDelegate.afterInflateChildren(context, inflater, node, parent);
     }
 
-    public void inflateChildren(Node node, ViewGroup parent) {
+    public void inflateChildren(InflateContext context, Node node, ViewGroup parent) {
         NodeList nodeList = node.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node currentNode = nodeList.item(i);
             if (currentNode.getNodeType() != Node.ELEMENT_NODE) continue;
-            inflate(currentNode, parent, true);
+            inflate(context, currentNode, parent, true);
         }
     }
 
-    protected View doCreateView(Node node, String viewName, HashMap<String, String> attrs) {
-        View view = mLayoutInflaterDelegate.beforeCreateView(node, viewName, attrs);
+    protected View doCreateView(InflateContext context, Node node, String viewName, ViewGroup parent, HashMap<String, String> attrs) {
+        View view = mLayoutInflaterDelegate.beforeCreateView(context, node, viewName, parent, attrs);
         if (view != null)
             return view;
-        return mLayoutInflaterDelegate.afterCreateView(createViewForName(viewName, attrs), node, viewName, attrs);
+        return mLayoutInflaterDelegate.afterCreateView(context, createViewForName(viewName, attrs), node, viewName, parent, attrs);
     }
 
     public View createViewForName(String name, HashMap<String, String> attrs) {
@@ -307,14 +317,14 @@ public class DynamicLayoutInflater {
     }
 
     @SuppressWarnings("unchecked")
-    protected void applyAttributes(View view, ViewInflater<View> setter, Map<String, String> attrs, @Nullable ViewGroup parent) {
+    protected void applyAttributes(InflateContext context, View view, ViewInflater<View> setter, Map<String, String> attrs, @Nullable ViewGroup parent) {
         if (setter != null) {
             for (Map.Entry<String, String> entry : attrs.entrySet()) {
                 String[] attr = entry.getKey().split(":");
                 if (attr.length == 1) {
-                    applyAttribute(setter, view, null, attr[0], entry.getValue(), parent, attrs);
+                    applyAttribute(context, setter, view, null, attr[0], entry.getValue(), parent, attrs);
                 } else if (attr.length == 2) {
-                    applyAttribute(setter, view, attr[0], attr[1], entry.getValue(), parent, attrs);
+                    applyAttribute(context, setter, view, attr[0], attr[1], entry.getValue(), parent, attrs);
                 } else {
                     throw new InflateException("illegal attr name: " + entry.getKey());
                 }
@@ -326,8 +336,8 @@ public class DynamicLayoutInflater {
 
     }
 
-    protected void applyAttribute(ViewInflater<View> inflater, View view, String ns, String attrName, String value, ViewGroup parent, Map<String, String> attrs) {
-        if (mLayoutInflaterDelegate.beforeApplyAttribute(inflater, view, ns, attrName, value, parent, attrs)) {
+    protected void applyAttribute(InflateContext context, ViewInflater<View> inflater, View view, String ns, String attrName, String value, ViewGroup parent, Map<String, String> attrs) {
+        if (mLayoutInflaterDelegate.beforeApplyAttribute(context, inflater, view, ns, attrName, value, parent, attrs)) {
             return;
         }
         boolean isDynamic = isDynamicValue(value);
@@ -336,7 +346,7 @@ public class DynamicLayoutInflater {
             return;
         }
         inflater.setAttr(view, ns, attrName, value, parent, attrs);
-        mLayoutInflaterDelegate.afterApplyAttribute(inflater, view, ns, attrName, value, parent, attrs);
+        mLayoutInflaterDelegate.afterApplyAttribute(context, inflater, view, ns, attrName, value, parent, attrs);
 
     }
 

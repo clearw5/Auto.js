@@ -30,6 +30,12 @@ import java.util.Map;
 
 public class TextViewInflater<V extends TextView> extends BaseViewInflater<V> {
 
+    private static final int LEFT = 0;
+    private static final int TOP = 1;
+    private static final int RIGHT = 2;
+    private static final int BOTTOM = 3;
+
+
     private static final ValueMapper<Integer> AUTO_LINK_MASKS = new ValueMapper<Integer>("autoLink")
             .map("all", Linkify.ALL)
             .map("email", Linkify.EMAIL_ADDRESSES)
@@ -39,7 +45,7 @@ public class TextViewInflater<V extends TextView> extends BaseViewInflater<V> {
             .map("web", Linkify.WEB_URLS);
     private static final ValueMapper<TextUtils.TruncateAt> ELLIPSIZE = new ValueMapper<TextUtils.TruncateAt>("ellipsize")
             .map("end", TextUtils.TruncateAt.END)
-            .map("marquee", TextUtils.TruncateAt.MIDDLE)
+            .map("marquee", TextUtils.TruncateAt.MARQUEE)
             .map("none", null)
             .map("start", TextUtils.TruncateAt.START)
             .map("middle", TextUtils.TruncateAt.MIDDLE);
@@ -98,7 +104,7 @@ public class TextViewInflater<V extends TextView> extends BaseViewInflater<V> {
             .map("number", InputType.TYPE_CLASS_NUMBER)
             .map("signed", InputType.TYPE_NUMBER_FLAG_SIGNED);
 
-    private static final ValueMapper<Integer> TEXT_STYLES = new ValueMapper<Integer>("textStyle")
+    static final ValueMapper<Integer> TEXT_STYLES = new ValueMapper<Integer>("textStyle")
             .map("bold", Typeface.BOLD)
             .map("italic", Typeface.ITALIC)
             .map("normal", Typeface.NORMAL);
@@ -230,18 +236,10 @@ public class TextViewInflater<V extends TextView> extends BaseViewInflater<V> {
                 }
                 break;
             case "lineSpacingExtra":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setLineSpacing(Dimensions.parseToIntPixel(value, view), view.getLineSpacingMultiplier());
-                } else {
-                    mLineSpacingExtra = Dimensions.parseToIntPixel(value, view);
-                }
+                view.setLineSpacing(Dimensions.parseToIntPixel(value, view), view.getLineSpacingMultiplier());
                 break;
             case "lineSpacingMultiplier":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setLineSpacing(view.getLineSpacingExtra(), Dimensions.parseToIntPixel(value, view));
-                } else {
-                    mLineSpacingMultiplier = Dimensions.parseToIntPixel(value, view);
-                }
+                view.setLineSpacing(view.getLineSpacingExtra(), Dimensions.parseToIntPixel(value, view));
                 break;
             case "lines":
                 view.setLines(Integer.valueOf(value));
@@ -302,24 +300,16 @@ public class TextViewInflater<V extends TextView> extends BaseViewInflater<V> {
                 view.setSelectAllOnFocus(Boolean.valueOf(value));
                 break;
             case "shadowColor":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setShadowLayer(view.getShadowRadius(), view.getShadowDx(), view.getShadowDy(), Colors.parse(view, value));
-                }
+                view.setShadowLayer(view.getShadowRadius(), view.getShadowDx(), view.getShadowDy(), Colors.parse(view, value));
                 break;
             case "shadowDx":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setShadowLayer(view.getShadowRadius(), Dimensions.parseToPixel(value, view), view.getShadowDy(), view.getShadowColor());
-                }
+                view.setShadowLayer(view.getShadowRadius(), Dimensions.parseToPixel(value, view), view.getShadowDy(), view.getShadowColor());
                 break;
             case "shadowDy":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setShadowLayer(view.getShadowRadius(), view.getShadowDx(), Dimensions.parseToPixel(value, view), view.getShadowColor());
-                }
+                view.setShadowLayer(view.getShadowRadius(), view.getShadowDx(), Dimensions.parseToPixel(value, view), view.getShadowColor());
                 break;
             case "shadowRadius":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setShadowLayer(Dimensions.parseToPixel(value, view), view.getShadowDx(), view.getShadowDy(), view.getShadowColor());
-                }
+                view.setShadowLayer(Dimensions.parseToPixel(value, view), view.getShadowDx(), view.getShadowDy(), view.getShadowColor());
                 break;
             case "singleLine":
                 view.setSingleLine(Boolean.valueOf(value));
@@ -356,9 +346,11 @@ public class TextViewInflater<V extends TextView> extends BaseViewInflater<V> {
             case "text":
                 view.setText(Strings.parse(view, value));
                 break;
+            case "color":
             case "textColor":
                 view.setTextColor(Colors.parse(view.getContext(), value));
                 break;
+            case "size":
             case "textSize":
                 view.setTextSize(TypedValue.COMPLEX_UNIT_PX, Dimensions.parseToPixel(value, view));
                 break;
@@ -383,6 +375,18 @@ public class TextViewInflater<V extends TextView> extends BaseViewInflater<V> {
         mCapitalize = null;
         mAutoText = false;
     }
+
+    private void setDrawable(V view, int d) {
+        Drawable[] drawables = view.getCompoundDrawables();
+        view.setCompoundDrawables(
+                mDrawableLeft != null ? mDrawableLeft : drawables[0],
+                mDrawableTop != null ? mDrawableTop : drawables[1],
+                mDrawableRight != null ? mDrawableRight : drawables[2],
+                mDrawableBottom != null ? mDrawableBottom : drawables[3]
+        );
+        mDrawableLeft = mDrawableBottom = mDrawableRight = mDrawableTop = null;
+    }
+
 
     private void setDrawables(V view) {
         Drawable[] drawables = view.getCompoundDrawables();

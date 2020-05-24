@@ -1,6 +1,8 @@
 package com.stardust.autojs.core.ui.widget;
 
 import android.content.Context;
+import androidx.core.widget.ImageViewCompat;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -20,6 +22,7 @@ public class JsImageView extends RoundedImageView {
     public JsImageView(Context context) {
         super(context);
     }
+
 
     public JsImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -51,7 +54,7 @@ public class JsImageView extends RoundedImageView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth());
+        setMeasuredDimension(getMeasuredWidth(), getMeasuredHeight());
         if (mCircle) {
             setCornerRadius(getMeasuredWidth() / 2);
         }

@@ -3,6 +3,9 @@
 
     <attr name="title" format="string|reference"/>
     <attr name="icon" format="reference"/>
+    <attr name="drawer_item_text_color" format="color|reference"/>
+    <attr name="drawer_group_text_color" format="color|reference"/>
+    <attr name="itemBackgroundDark" format="color|reference"/>
 
     <declare-styleable name="ToolbarMenuItem">
         <attr name="text" format="string|reference"/>
@@ -25,6 +28,17 @@
 
     <declare-styleable name="DrawerMenuGroup">
         <attr name="title"/>
+    </declare-styleable>
+
+    <declare-styleable name="CircularActionMenu">
+        <attr name="cam_radius" format="dimension|reference"/>
+        <attr name="cam_angle" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="ImageText">
+        <attr name="text"/>
+        <attr name="src"/>
+        <attr name="image_width" format="dimension|reference"/>
     </declare-styleable>
 
 </resources>

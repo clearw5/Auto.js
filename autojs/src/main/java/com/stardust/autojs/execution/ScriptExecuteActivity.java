@@ -4,14 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
+import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.core.eventloop.EventEmitter;
 import com.stardust.autojs.core.eventloop.SimpleEvent;
 import com.stardust.autojs.engine.JavaScriptEngine;
@@ -19,11 +21,9 @@ import com.stardust.autojs.engine.LoopBasedJavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.runtime.ScriptRuntime;
-import com.stardust.autojs.runtime.api.UI;
 import com.stardust.autojs.script.ScriptSource;
-import com.stardust.util.IntentExtras;
 
-import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.ContinuationPending;
 
 /**
  * Created by Stardust on 2017/2/5.
@@ -32,13 +32,13 @@ import org.mozilla.javascript.NativeObject;
 public class ScriptExecuteActivity extends AppCompatActivity {
 
 
-    private static final String EXTRA_EXECUTION = ScriptExecuteActivity.class.getName() + ".execution";
+    private static final String LOG_TAG = "ScriptExecuteActivity";
+    private static final String EXTRA_EXECUTION_ID = ScriptExecuteActivity.class.getName() + ".execution_id";
     private Object mResult;
     private ScriptEngine mScriptEngine;
     private ScriptExecutionListener mExecutionListener;
     private ScriptSource mScriptSource;
     private ActivityScriptExecution mScriptExecution;
-    private IntentExtras mIntentExtras;
     private ScriptRuntime mRuntime;
 
 
@@ -47,10 +47,9 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     public static ActivityScriptExecution execute(Context context, ScriptEngineManager manager, ScriptExecutionTask task) {
         ActivityScriptExecution execution = new ActivityScriptExecution(manager, task);
         Intent i = new Intent(context, ScriptExecuteActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        IntentExtras.newExtras()
-                .put(EXTRA_EXECUTION, execution)
-                .putInIntent(i);
+                .putExtra(EXTRA_EXECUTION_ID, execution.getId())
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(task.getConfig().getIntentFlags());
         context.startActivity(i);
         return execution;
     }
@@ -59,46 +58,42 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mIntentExtras = readIntentExtras(savedInstanceState);
-        if (mIntentExtras == null || mIntentExtras.get(EXTRA_EXECUTION) == null) {
-            finish();
+        int executionId = getIntent().getIntExtra(EXTRA_EXECUTION_ID, ScriptExecution.NO_ID);
+        if (executionId == ScriptExecution.NO_ID) {
+            super.finish();
             return;
         }
-        mScriptExecution = mIntentExtras.get(EXTRA_EXECUTION);
+        ScriptExecution execution = ScriptEngineService.getInstance().getScriptExecution(executionId);
+        if (execution == null || !(execution instanceof ActivityScriptExecution)) {
+            super.finish();
+            return;
+        }
+        mScriptExecution = (ActivityScriptExecution) execution;
         mScriptSource = mScriptExecution.getSource();
         mScriptEngine = mScriptExecution.createEngine(this);
         mExecutionListener = mScriptExecution.getListener();
         mRuntime = ((JavaScriptEngine) mScriptEngine).getRuntime();
         mEventEmitter = new EventEmitter(mRuntime.bridges);
         runScript();
+        emit("create", savedInstanceState);
     }
 
     public EventEmitter getEventEmitter() {
         return mEventEmitter;
     }
 
-    private IntentExtras readIntentExtras(Bundle savedInstanceState) {
-        IntentExtras extras = IntentExtras.fromIntentAndRelease(getIntent());
-        if (extras == null && savedInstanceState != null) {
-            int id = savedInstanceState.getInt(IntentExtras.EXTRA_ID, -1);
-            if (id == -1) {
-                return null;
-            }
-            extras = IntentExtras.fromIdAndRelease(id);
-        }
-        return extras;
-    }
-
     private void runScript() {
         try {
             prepare();
             doExecution();
+        } catch (ContinuationPending pending) {
+            pending.printStackTrace();
         } catch (Exception e) {
             onException(e);
         }
     }
 
-    private void onException(Exception e) {
+    private void onException(Throwable e) {
         mExecutionListener.onException(mScriptExecution, e);
         super.finish();
     }
@@ -123,14 +118,18 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     private void prepare() {
         mScriptEngine.put("activity", this);
         mScriptEngine.setTag("activity", this);
-        mScriptEngine.setTag(ScriptEngine.TAG_ENV_PATH, mScriptExecution.getConfig().getRequirePath());
-        mScriptEngine.setTag(ScriptEngine.TAG_EXECUTE_PATH, mScriptExecution.getConfig().getExecutePath());
+        mScriptEngine.setTag(ScriptEngine.TAG_ENV_PATH, mScriptExecution.getConfig().getPath());
+        mScriptEngine.setTag(ScriptEngine.TAG_WORKING_DIRECTORY, mScriptExecution.getConfig().getWorkingDirectory());
         mScriptEngine.init();
     }
 
     @Override
     public void finish() {
-        Exception exception = mScriptEngine.getUncaughtException();
+        if (mScriptExecution == null || mExecutionListener == null) {
+            super.finish();
+            return;
+        }
+        Throwable exception = mScriptEngine.getUncaughtException();
         if (exception != null) {
             onException(exception);
         } else {
@@ -142,19 +141,20 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mScriptEngine.put("activity", null);
-        mScriptEngine.setTag("activity", null);
-        mScriptEngine.destroy();
+        Log.d(LOG_TAG, "onDestroy");
+        if (mScriptEngine != null) {
+            mScriptEngine.put("activity", null);
+            mScriptEngine.setTag("activity", null);
+            mScriptEngine.destroy();
+        }
         mScriptExecution = null;
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mIntentExtras == null)
-            return;
-        IntentExtras extras = IntentExtras.newExtras().putAll(mIntentExtras);
-        outState.putInt(IntentExtras.EXTRA_ID, extras.getId());
+        if (mScriptExecution != null)
+            outState.putInt(EXTRA_EXECUTION_ID, mScriptExecution.getId());
         emit("save_instance_state", outState);
     }
 
@@ -232,10 +232,6 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         }
     }
 
-    public void setSupportActionBar(@Nullable NativeObject toolbar) {
-        super.setSupportActionBar(UI.unwrapJsViewObject(toolbar, Toolbar.class));
-    }
-
     private static class ActivityScriptExecution extends ScriptExecution.AbstractScriptExecution {
 
         private ScriptEngine mScriptEngine;
@@ -251,7 +247,8 @@ public class ScriptExecuteActivity extends AppCompatActivity {
             if (mScriptEngine != null) {
                 mScriptEngine.forceStop();
             }
-            mScriptEngine = mScriptEngineManager.createEngineOfSourceOrThrow(getSource());
+            mScriptEngine = mScriptEngineManager.createEngineOfSourceOrThrow(getSource(), getId());
+            mScriptEngine.setTag(ExecutionConfig.getTag(), getConfig());
             return mScriptEngine;
         }
 

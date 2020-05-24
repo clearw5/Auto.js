@@ -1,28 +1,22 @@
 package org.autojs.autojs.timing;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.runtime.DirectModelNotifier;
-import com.raizlabs.android.dbflow.rx2.language.RXSQLite;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.raizlabs.android.dbflow.structure.ModelAdapter;
 import com.stardust.app.GlobalAppContext;
+
 import org.autojs.autojs.App;
+import org.autojs.autojs.storage.database.IntentTaskDatabase;
 import org.autojs.autojs.storage.database.ModelChange;
 import org.autojs.autojs.storage.database.TimedTaskDatabase;
+import org.autojs.autojs.tool.Observers;
 
 import java.util.List;
 
-import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
 
 /**
  * Created by Stardust on 2017/11/27.
@@ -30,11 +24,10 @@ import io.reactivex.subjects.PublishSubject;
 //TODO rx
 public class TimedTaskManager {
 
-
     private static TimedTaskManager sInstance;
-    private ModelAdapter<TimedTask> mTimedTaskModelAdapter;
     private Context mContext;
-    private PublishSubject<ModelChange<TimedTask>> mTimedTaskChanges = PublishSubject.create();
+    private TimedTaskDatabase mTimedTaskDatabase;
+    private IntentTaskDatabase mIntentTaskDatabase;
 
     public static TimedTaskManager getInstance() {
         if (sInstance == null) {
@@ -43,86 +36,137 @@ public class TimedTaskManager {
         return sInstance;
     }
 
+    @SuppressLint("CheckResult")
     public TimedTaskManager(Context context) {
         mContext = context;
-        mTimedTaskModelAdapter = FlowManager.getModelAdapter(TimedTask.class);
-        DirectModelNotifier.get().registerForModelChanges(TimedTask.class, new DirectModelNotifier.ModelChangedListener<TimedTask>() {
-            @Override
-            public void onModelChanged(@NonNull TimedTask model, @NonNull BaseModel.Action action) {
-                mTimedTaskChanges.onNext(new ModelChange<>(model, action));
-                if (action == BaseModel.Action.DELETE && countTasks() == 0) {
-                    TimedTaskScheduler.stopRtcRepeating(mContext);
-                } else if (action == BaseModel.Action.INSERT) {
-                    TimedTaskScheduler.startRtcRepeatingIfNeeded(mContext);
-                }
-            }
-
-            @Override
-            public void onTableChanged(@Nullable Class<?> tableChanged, @NonNull BaseModel.Action action) {
-
-            }
-        });
+        mTimedTaskDatabase = new TimedTaskDatabase(context);
+        mIntentTaskDatabase = new IntentTaskDatabase(context);
     }
 
-    public void notifyTaskFinished(int id) {
+    @SuppressLint("CheckResult")
+    public void notifyTaskFinished(long id) {
         TimedTask task = getTimedTask(id);
         if (task == null)
             return;
         if (task.isDisposable()) {
-            mTimedTaskModelAdapter.delete(task);
+            mTimedTaskDatabase.delete(task)
+                    .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
         } else {
             task.setScheduled(false);
-            mTimedTaskModelAdapter.update(task);
+            mTimedTaskDatabase.update(task)
+                    .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
         }
     }
 
-    public void cancelTask(TimedTask timedTask) {
-        TimedTaskScheduler.cancel(mContext, timedTask);
-        mTimedTaskModelAdapter.delete(timedTask);
+    @SuppressLint("CheckResult")
+    public void removeTask(TimedTask timedTask) {
+        TimedTaskScheduler.cancel(timedTask);
+        mTimedTaskDatabase.delete(timedTask)
+                .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
     }
 
+    @SuppressLint("CheckResult")
     public void addTask(TimedTask timedTask) {
-        mTimedTaskModelAdapter.insert(timedTask);
-        TimedTaskScheduler.scheduleTaskIfNeeded(mContext, timedTask);
+        mTimedTaskDatabase.insert(timedTask)
+                .subscribe(id -> {
+                    timedTask.setId(id);
+                    TimedTaskScheduler.scheduleTaskIfNeeded(mContext, timedTask, false);
+                }, Throwable::printStackTrace);
     }
 
+    @SuppressLint("CheckResult")
+    public void addTask(IntentTask intentTask) {
+        mIntentTaskDatabase.insert(intentTask)
+                .subscribe(i -> {
+                    if (!TextUtils.isEmpty(intentTask.getAction())) {
+                        App.Companion.getApp().getDynamicBroadcastReceivers()
+                                .register(intentTask);
+                    }
+                }, Throwable::printStackTrace);
+    }
+
+    @SuppressLint("CheckResult")
+    public void removeTask(IntentTask intentTask) {
+        mIntentTaskDatabase.delete(intentTask)
+                .subscribe(i -> {
+                    if (!TextUtils.isEmpty(intentTask.getAction())) {
+                        App.Companion.getApp().getDynamicBroadcastReceivers()
+                                .unregister(intentTask.getAction());
+                    }
+                }, Throwable::printStackTrace);
+    }
 
     public Flowable<TimedTask> getAllTasks() {
-        return RXSQLite.rx(SQLite.select().from(TimedTask.class))
-                .queryStreamResults()
-                .subscribeOn(Schedulers.io());
-
+        return mTimedTaskDatabase.queryAllAsFlowable();
     }
+
+    public Flowable<IntentTask> getIntentTaskOfAction(String action) {
+        return mIntentTaskDatabase.query("action = ?", action);
+    }
+
 
     public Observable<ModelChange<TimedTask>> getTimeTaskChanges() {
-        return mTimedTaskChanges;
+        return mTimedTaskDatabase.getModelChange();
     }
 
+    @SuppressLint("CheckResult")
     public void notifyTaskScheduled(TimedTask timedTask) {
         timedTask.setScheduled(true);
-        mTimedTaskModelAdapter.update(timedTask);
+        mTimedTaskDatabase.update(timedTask)
+                .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
 
     }
 
     public List<TimedTask> getAllTasksAsList() {
-        return SQLite.select().from(TimedTask.class)
-                .queryList();
+        return mTimedTaskDatabase.queryAll();
     }
 
-    public TimedTask getTimedTask(int taskId) {
-        return SQLite.select()
-                .from(TimedTask.class)
-                .where(TimedTask_Table.id.is(taskId))
-                .querySingle();
+    public TimedTask getTimedTask(long taskId) {
+        return mTimedTaskDatabase.queryById(taskId);
     }
 
+    @SuppressLint("CheckResult")
     public void updateTask(TimedTask task) {
-        mTimedTaskModelAdapter.update(task);
-        TimedTaskScheduler.cancel(mContext, task);
-        TimedTaskScheduler.scheduleTaskIfNeeded(mContext, task);
+        mTimedTaskDatabase.update(task)
+                .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
+        TimedTaskScheduler.cancel(task);
+        TimedTaskScheduler.scheduleTaskIfNeeded(mContext, task, false);
+    }
+
+    @SuppressLint("CheckResult")
+    public void updateTaskWithoutReScheduling(TimedTask task) {
+        mTimedTaskDatabase.update(task)
+                .subscribe(Observers.emptyConsumer(), Throwable::printStackTrace);
+    }
+
+    @SuppressLint("CheckResult")
+    public void updateTask(IntentTask task) {
+        mIntentTaskDatabase.update(task)
+                .subscribe(i -> {
+                    if (i > 0 && !TextUtils.isEmpty(task.getAction())) {
+                        App.Companion.getApp().getDynamicBroadcastReceivers()
+                                .register(task);
+                    }
+                }, Throwable::printStackTrace);
     }
 
     public long countTasks() {
-        return SQLite.select().from(TimedTask.class).count();
+        return mTimedTaskDatabase.count();
+    }
+
+    public List<IntentTask> getAllIntentTasksAsList() {
+        return mIntentTaskDatabase.queryAll();
+    }
+
+    public Observable<ModelChange<IntentTask>> getIntentTaskChanges() {
+        return mIntentTaskDatabase.getModelChange();
+    }
+
+    public IntentTask getIntentTask(long intentTaskId) {
+        return mIntentTaskDatabase.queryById(intentTaskId);
+    }
+
+    public Flowable<IntentTask> getAllIntentTasks() {
+        return mIntentTaskDatabase.queryAllAsFlowable();
     }
 }

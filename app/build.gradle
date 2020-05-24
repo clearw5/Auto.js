@@ -1,20 +1,29 @@
 apply plugin: 'com.android.application'
-def AAVersion = '4.3.1'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.jakewharton.butterknife'
+
+def AAVersion = '4.5.2'
+def SupportLibVersion = '28.0.0'
+
+configurations.all {
+    resolutionStrategy {
+        force "com.android.support:appcompat-v7:${SupportLibVersion}"
+        force "com.android.support:support-v4:${SupportLibVersion}"
+    }
+}
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion versions.compile
+    buildToolsVersion versions.buildTool
     defaultConfig {
         applicationId "org.autojs.autojs"
-        minSdkVersion 17
-        targetSdkVersion 23
-        versionCode 403
-        versionName "4.0.2 Alpha"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdkVersion versions.mini
+        targetSdkVersion versions.target
+        versionCode versions.appVersionCode
+        versionName versions.appVersionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-        ndk {
-            abiFilters 'armeabi-v7a'
-        }
     }
     buildTypes {
         debug {
@@ -34,13 +43,9 @@ android {
         encoding = 'utf-8'
     }
     lintOptions {
+        abortOnError false
         disable 'MissingTranslation'
         disable 'ExtraTranslation'
-    }
-    android.applicationVariants.all { variant ->
-        variant.outputs.all {
-            outputFileName = "${variant.name}-${variant.versionName}.apk"
-        }
     }
 
     configurations.all {
@@ -48,7 +53,27 @@ android {
     }
 
     flavorDimensions "channel"
+    splits {
 
+        // Configures multiple APKs based on ABI.
+        abi {
+
+            // Enables building multiple APKs per ABI.
+            enable true
+
+            // By default all ABIs are included, so use reset() and include to specify that we only
+            // want APKs for x86 and x86_64.
+
+            // Resets the list of ABIs that Gradle should create APKs for to none.
+            reset()
+
+            // Specifies a list of ABIs that Gradle should create APKs for.
+            include "x86", "armeabi-v7a"
+
+            // Specifies that we do not want to also generate a universal APK that includes all ABIs.
+            universalApk false
+        }
+    }
     productFlavors {
         common {
             buildConfigField "String", "CHANNEL", '"common"'
@@ -62,6 +87,7 @@ android {
 
 
 
+
 repositories {
     flatDir {
         dirs 'libs'
@@ -70,82 +96,86 @@ repositories {
 }
 
 dependencies {
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.1-alpha01', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
+    // Kotlin
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1"
     // Android Annotations
     annotationProcessor "org.androidannotations:androidannotations:$AAVersion"
-    compile "org.androidannotations:androidannotations-api:$AAVersion"
+    implementation "org.androidannotations:androidannotations-api:$AAVersion"
     // ButterKnife
-    compile('com.jakewharton:butterknife:8.6.0', {
+    implementation('com.jakewharton:butterknife:9.0.0-rc2', {
         exclude group: 'com.android.support'
     })
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc2'
     // Android supports
-    compile 'com.android.support:appcompat-v7:25.4.0'
-    compile 'com.android.support:cardview-v7:25.4.0'
-    compile 'com.android.support:design:25.4.0'
-    compile 'com.android.support:multidex:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0-alpha01'
+    implementation 'androidx.multidex:multidex:2.0.0'
     // Personal libraries
-    compile 'com.github.hyb1996:MutableTheme:0.2.2'
+    implementation 'com.github.hyb1996:MutableTheme:1.0.0'
     // Material Dialogs
-    compile('com.afollestad.material-dialogs:core:0.9.2.3', {
+    implementation('com.afollestad.material-dialogs:core:0.9.2.3', {
         exclude group: 'com.android.support'
     })
     // Common Markdown
-    compile 'com.github.atlassian:commonmark-java:commonmark-parent-0.9.0'
+    implementation 'com.github.atlassian:commonmark-java:commonmark-parent-0.9.0'
     // Android issue reporter (a github issue reporter)
-    compile('com.heinrichreimersoftware:android-issue-reporter:1.3.1', {
+    implementation('com.heinrichreimersoftware:android-issue-reporter:1.3.1', {
         exclude group: 'com.afollestad.material-dialogs'
         exclude group: 'com.android.support'
     })
     //MultiLevelListView
-    compile 'com.github.hyb1996:android-multi-level-listview:1.1'
+    implementation 'com.github.hyb1996:android-multi-level-listview:1.1'
     //Licenses Dialog
-    compile 'de.psdev.licensesdialog:licensesdialog:1.8.1'
+    implementation 'de.psdev.licensesdialog:licensesdialog:1.8.1'
     //Expandable RecyclerView
-    compile 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
+    implementation 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
     //FlexibleDivider
-    compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
+    implementation 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     //???
-    compile 'com.wang.avi:library:2.1.3'
+    implementation 'com.wang.avi:library:2.1.3'
     //Commons-lang
-    compile 'org.apache.commons:commons-lang3:3.6'
+    implementation 'org.apache.commons:commons-lang3:3.6'
     //Expandable RecyclerView
-    compile 'com.thoughtbot:expandablerecyclerview:1.3'
-    compile('com.github.hyb1996:FloatingCircularActionMenu:0.0.4')
-    compile 'com.github.hyb1996:Auto.js-ApkBuilder:1.0.1'
+    implementation 'com.thoughtbot:expandablerecyclerview:1.3'
+    implementation 'com.github.hyb1996:Auto.js-ApkBuilder:1.0.1'
     // RxJava
-    compile "io.reactivex.rxjava2:rxjava:2.1.2"
-    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation "io.reactivex.rxjava2:rxjava:2.1.2"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     // Retrofit
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
-    compile 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
     //Glide
-    compile('com.github.bumptech.glide:glide:4.2.0', {
+    implementation('com.github.bumptech.glide:glide:4.8.0', {
         exclude group: 'com.android.support'
     })
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
-    //dbflow
-    annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:4.1.2"
-    compile "com.github.Raizlabs.DBFlow:dbflow-core:4.1.2"
-    compile "com.github.Raizlabs.DBFlow:dbflow:4.1.2"
-    compile "com.github.Raizlabs.DBFlow:dbflow-rx2:4.1.2"
+    kapt 'com.github.bumptech.glide:compiler:4.8.0'
     //joda time
-    compile 'joda-time:joda-time:2.9.9'
+    implementation 'joda-time:joda-time:2.9.9'
     // Tasker Plugin
-    compile 'com.twofortyfouram:android-plugin-client-sdk-for-locale:4.0.3'
+    implementation 'com.twofortyfouram:android-plugin-client-sdk-for-locale:4.0.3'
     // Flurry
-    compile 'com.flurry.android:analytics:7.0.0@aar'
+    implementation 'com.flurry.android:analytics:7.0.0@aar'
+    // Bugly
+    implementation 'com.tencent.bugly:crashreport:2.6.6'
     // MaterialDialogCommon
-    compile('com.afollestad.material-dialogs:commons:0.9.2.3', {
+    implementation('com.afollestad.material-dialogs:commons:0.9.2.3', {
         exclude group: 'com.android.support'
     })
-    compile project(':automator')
-    compile project(':common')
-    compile project(':autojs')
-    implementation 'com.google.android.gms:play-services-ads:11.8.0'
+    // Android job
+    implementation 'com.evernote:android-job:1.2.6'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
+    // Optional, if you use support library fragments:
+    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
+    implementation project(':automator')
+    implementation project(':common')
+    implementation project(':autojs')
 }

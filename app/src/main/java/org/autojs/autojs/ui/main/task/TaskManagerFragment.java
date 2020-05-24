@@ -1,8 +1,9 @@
 package org.autojs.autojs.ui.main.task;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.View;
 
 import org.autojs.autojs.R;
@@ -70,4 +71,8 @@ public class TaskManagerFragment extends ViewPagerFragment {
         AutoJs.getInstance().getScriptEngineService().stopAll();
     }
 
+    @Override
+    public boolean onBackPressed(Activity activity) {
+        return false;
+    }
 }

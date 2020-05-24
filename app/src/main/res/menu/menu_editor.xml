@@ -79,6 +79,29 @@
 
     </item>
 
+    <item
+        android:title="@string/text_debug"
+        app:showAsAction="never">
+
+        <menu>
+
+            <item
+                android:id="@+id/action_breakpoint"
+                android:title="@string/text_set_breakpoint"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_launch_debugger"
+                android:title="@string/text_launch_debugger"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_remove_all_breakpoints"
+                android:title="@string/text_remove_all_breakpoints"
+                app:showAsAction="never"/>
+        </menu>
+
+    </item>
 
     <item
         android:id="@+id/action_build_apk"
@@ -96,6 +119,12 @@
                 android:id="@+id/action_console"
                 android:title="@string/text_console"
                 app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/action_import_java_class"
+                android:title="@string/text_search_java_class"
+                app:showAsAction="never"/>
+
             <item
                 android:id="@+id/action_info"
                 android:title="@string/text_info"

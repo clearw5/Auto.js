@@ -1,10 +1,9 @@
 package com.stardust.autojs.runtime.api;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.stardust.autojs.core.looper.MainThreadProxy;
 import com.stardust.autojs.core.looper.TimerThread;
-import com.stardust.autojs.engine.RhinoJavaScriptEngine;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.concurrent.VolatileDispose;
 
@@ -24,6 +23,7 @@ public class Threads {
     private final Thread mMainThread;
     private MainThreadProxy mMainThreadProxy;
     private int mSpawnCount = 0;
+    private boolean mExit = false;
 
     public Threads(ScriptRuntime runtime) {
         mRuntime = runtime;
@@ -45,21 +45,21 @@ public class Threads {
     public TimerThread start(Runnable runnable) {
         TimerThread thread = createThread(runnable);
         synchronized (mThreads) {
+            if (mExit) {
+                throw new IllegalStateException("script exiting");
+            }
             mThreads.add(thread);
-            thread.setName(thread.getName() + " (Spawn-" + mSpawnCount + ")");
+            thread.setName(mMainThread.getName() + " (Spawn-" + mSpawnCount + ")");
             mSpawnCount++;
+            thread.start();
         }
-        thread.start();
         return thread;
     }
 
     @NonNull
     private TimerThread createThread(Runnable runnable) {
         return new TimerThread(mRuntime, mRuntime.timers.getMaxCallbackUptimeMillisForAllThreads(),
-                () -> {
-                    ((RhinoJavaScriptEngine) mRuntime.engines.myEngine()).createContext();
-                    runnable.run();
-                }
+                runnable
         ) {
             @Override
             protected void onExit() {
@@ -96,6 +96,12 @@ public class Threads {
         }
     }
 
+    public void exit() {
+        synchronized (mThreads) {
+            shutDownAll();
+            mExit = true;
+        }
+    }
 
     public boolean hasRunningThreads() {
         synchronized (mThreads) {

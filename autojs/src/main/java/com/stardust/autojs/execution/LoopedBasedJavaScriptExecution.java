@@ -20,12 +20,12 @@ public class LoopedBasedJavaScriptExecution extends RunnableScriptExecution {
     protected Object doExecution(final ScriptEngine engine) {
         engine.setTag(ScriptEngine.TAG_SOURCE, getSource());
         getListener().onStart(this);
-        long delay = getConfig().delay;
+        long delay = getConfig().getDelay();
         sleep(delay);
         final LoopBasedJavaScriptEngine javaScriptEngine = (LoopBasedJavaScriptEngine) engine;
-        final long interval = getConfig().interval;
+        final long interval = getConfig().getInterval();
         javaScriptEngine.getRuntime().loopers.setMainLooperQuitHandler(new Loopers.LooperQuitHandler() {
-            long times = getConfig().loopTimes == 0 ? Integer.MAX_VALUE : getConfig().loopTimes;
+            long times = getConfig().getLoopTimes() == 0 ? Integer.MAX_VALUE : getConfig().getLoopTimes();
 
             @Override
             public boolean shouldQuit() {

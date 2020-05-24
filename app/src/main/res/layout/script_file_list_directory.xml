@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                                     xmlns:app="http://schemas.android.com/apk/res-auto"
                                     xmlns:tools="http://schemas.android.com/tools"
                                     android:id="@+id/item"
@@ -8,8 +8,9 @@
                                     android:layout_marginLeft="3dp"
                                     android:layout_marginRight="3dp"
                                     android:clickable="true"
+                                    android:focusable="true"
                                     android:foreground="?selectableItemBackground"
-                                    app:cardBackgroundColor="#ffffff"
+                                    app:cardBackgroundColor="?android:itemBackground"
                                     app:cardElevation="0.618dp"
                                     app:cardUseCompatPadding="true">
 
@@ -17,17 +18,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp">
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
 
         <ImageView
+            android:id="@+id/icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/ic_folder_yellow_100px"
-            android:tint="#ffda93"/>
+            android:layout_marginRight="16dp"/>
 
         <TextView
             android:id="@+id/name"
@@ -38,7 +38,7 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:paddingRight="16dp"
-            android:textColor="#484C4F"
+            android:textColor="?android:textColorPrimary"
             android:textSize="14sp"
             tools:text="正在运行的服务"/>
 
@@ -50,6 +50,7 @@
             android:layout_gravity="center_vertical"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
+            android:focusable="true"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:src="@drawable/ic_more_vert_black_24dp"
@@ -57,4 +58,4 @@
 
 
     </LinearLayout>
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

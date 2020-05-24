@@ -1,11 +1,11 @@
 <resources>
-    <string name="_app_name">Auto.js</string>
+    <string name="app_name">Auto.js</string>
     <string name="text_new_file">新建文件</string>
     <string name="text_create_fail">创建失败</string>
     <string name="text_please_input_name">请输入名称</string>
     <string name="text_name">名称</string>
     <string name="text_go_to_setting">去设置</string>
-    <string name="explain_accessibility_permission">软件需要打开\"无障碍服务\"才能运行，请在随后的设置中选择\"AutoJs\"并开启服务。\n您也可以稍后在侧拉菜单中设置。</string>
+    <string name="explain_accessibility_permission">软件需要打开\"无障碍服务\"才能运行，请在随后的设置中选择\"Auto.js\"并开启服务。\n您也可以稍后在侧拉菜单中设置。</string>
     <string name="text_cancel">取消</string>
     <string name="text_path_is_empty">路径为空</string>
     <string name="text_file_not_exists">文件不存在</string>
@@ -27,20 +27,17 @@
     <string name="text_about">关于</string>
     <string name="text_licenses">开放源代码许可</string>
     <string name="text_do_not_remind_again">不再提示</string>
-    <string name="copyright">Copyright©2016 All right reserves.</string>
+    <string name="copyright">Copyright©2018-2019 All right reserves.</string>
     <string name="developer">星尘幻影</string>
     <string name="qq" translatable="false">2732014414</string>
     <string name="email" translatable="false">hybbbb1996@gmail.com</string>
     <string name="github">软件源代码</string>
     <string name="text_already_copy_to_clip">已复制到剪贴板</string>
-    <string name="donate_developer">打赏作者</string>
     <string name="my_github">https://github.com/hyb1996/NoRootScriptDroid</string>
-    <string name="share_app">[AutoJs]下载地址：http://www.coolapk.com/apk/org.autojs.autojs </string>
+    <string name="share_app">[Auto.js]下载地址：http://www.coolapk.com/apk/org.autojs.autojs </string>
     <string name="text_floating_window">悬浮窗</string>
     <string name="text_error_report">错误报告</string>
     <string name="text_press_again_to_exit">再按一次退出程序</string>
-    <string name="sorry_for_crash">很抱歉(ಥ _ ಥ)程序遇到未知错误，即将停止运行\n错误代码：</string>
-    <string name="text_no_running_script">没有正在运行的脚本</string>
     <string name="text_already_stop_n_scripts">已停止%d个正在运行的脚本</string>
     <string name="text_start_running">开始运行</string>
     <string name="text_open_by_other_apps">用其他应用打开</string>
@@ -52,14 +49,12 @@
     <string name="text_error">错误</string>
     <string name="text_copy_debug_info">复制调试信息</string>
     <string name="text_it_is_the_developer_of_app">这是软件开发者(。・・)ノ</string>
-    <string name="text_lll">略略略</string>
     <string name="text_please_choose">请选择</string>
     <string name="text_crash">崩溃了o(≧口≦)o</string>
-    <string name="crash_feedback">点击\"退出\"退出程序(ಥ _ ಥ)或者提交错误报告或者复制调试信息反馈给开发者(≧∇≦)ﾉ</string>
+    <string name="crash_feedback">将会自动提交错误信息。您也可以手动复制调试信息提交给开发者(*^▽^*)或者点击\"退出\"退出程序o(╥﹏╥)o</string>
     <string name="text_clear">清空</string>
     <string name="text_console">控制台</string>
     <string name="text_log">日志</string>
-    <string name="text_report_bug">提交错误报告</string>
     <string name="text_report_fail">提交失败</string>
     <string name="text_report_succeed">提交成功</string>
     <string name="edit_and_run_handle_intent_error">无法处理文件</string>
@@ -69,7 +64,6 @@
     <string name="text_recorded">录制结束</string>
     <string name="text_copy_to_clip">复制到剪贴板</string>
     <string name="text_file_write_fail">文件写入失败</string>
-    <string name="text_join_qq_group">加入QQ互赞&amp;交流群</string>
     <string name="text_use_volume_control_record">使用音量下键控制</string>
     <string name="summary_use_volume_control_record">开启悬浮窗后每次音量下键会开始或停止脚本录制</string>
     <string name="key_use_volume_control_record">key_use_volume_control_record</string>
@@ -99,12 +93,11 @@
     <string name="text_import_succeed">导入成功</string>
     <string name="text_current_activity">当前活动:</string>
     <string name="text_current_package">当前应用包名:</string>
-    <string name="go_to_accessibility_settings"><![CDATA[请打开设置->无障碍服务->AutoJs并开启]]></string>
+    <string name="go_to_accessibility_settings"><![CDATA[请打开设置->无障碍服务->Auto.js并开启]]></string>
     <string name="text_script_running">脚本运行</string>
     <string name="key_use_volume_control_running">key_use_volume_control_running</string>
     <string name="text_use_volume_to_stop_running">音量上键停止所有脚本</string>
     <string name="text_need_to_enable_accessibility_service">需要启用无障碍服务</string>
-    <string name="text_name_should_not_be_empty">名称不能为空</string>
     <string name="text_import_fail">导入失败</string>
     <string name="text_no_brower">没有浏览器耶o(╯□╰)o快去安装一个吧</string>
     <string name="text_refresh">刷新</string>
@@ -126,7 +119,6 @@
     <string name="text_release_notes">更新日志</string>
     <string name="text_download_url">下载地址</string>
     <string name="text_directly_download">直接下载</string>
-    <string name="text_downloading">下载中</string>
     <string name="text_download_failed">下载失败</string>
     <string name="text_do_not_ask_again_for_this_version">此版本不再提示</string>
     <string name="text_code_beautify">格式化代码</string>
@@ -151,12 +143,6 @@
     <string name="text_show_layout_hierarchy">在布局层次中查看</string>
     <string name="text_show_layout_bounds">在布局范围中查看</string>
     <string name="text_more">更多</string>
-    <string name="format_skip">跳过 %d</string>
-    <string name="key_ad_showing_mode">key_ad_showing_mode</string>
-    <string name="text_ad">广告</string>
-    <string name="show_ad">欣赏广告</string>
-    <string name="text_ad_showing_settings">广告显示设置</string>
-    <string name="text_default">Default</string>
     <string name="text_script_save_successfully">保存成功，请刷新目录</string>
     <string name="text_run_repeatedly">循环运行</string>
     <string name="text_loop_interval">循环间隔(秒)</string>
@@ -166,7 +152,6 @@
     <string name="hint_loop_delay">延迟多少秒后开始循环</string>
     <string name="text_number_format_error">格式错误</string>
     <string name="text_accessibility_settings">打开无障碍服务</string>
-    <string name="text_inspect_failed">布局抓取失败，请关闭悬浮窗后动一下页面重试</string>
     <string name="text_enable_accessibitliy_service_by_root_failed">使用root权限开启失败</string>
     <string name="text_on_progress">处理中</string>
     <string name="text_delete_failed">删除失败</string>
@@ -184,7 +169,6 @@
     <string name="text_directory">文件夹</string>
     <string name="text_file">文件</string>
     <string name="text_tutorial">教程</string>
-    <string name="text_script">脚本</string>
     <string name="text_community">社区</string>
     <string name="text_manage">管理</string>
     <string name="not_login">未登录</string>
@@ -201,12 +185,10 @@
     <string name="text_time">时间</string>
     <string name="text_size">大小</string>
     <string name="text_type">类型</string>
-    <string name="text_donate">捐赠</string>
     <string name="text_editor_theme">编辑器主题</string>
     <string name="text_jump_to_line">跳转到行</string>
     <string name="text_info">信息</string>
     <string name="text_find_or_replace">查找/替换</string>
-    <string name="text_paste">粘贴</string>
     <string name="text_copy_all">复制全部</string>
     <string name="text_copy_line">复制行</string>
     <string name="text_delete_line">删除行</string>
@@ -219,14 +201,10 @@
     <string name="text_find_prev">向上</string>
     <string name="hint_regex">正则语法与JavaScript中相同, 可使用$1~9代替被捕获的匹配</string>
     <string name="text_jump">跳转</string>
-    <string name="text_jump_to_def">转到定义</string>
     <string name="text_jump_to_end">转到文件末尾</string>
     <string name="text_jump_to_start">转到文件开始</string>
     <string name="text_jump_to_line_start">转到行首</string>
     <string name="text_jump_to_line_end">转到行尾</string>
-    <string name="text_refactor">重构</string>
-    <string name="text_select_variable">选择变量</string>
-    <string name="text_show_type">显示变量类型</string>
     <string name="text_exit_floating_window">退出悬浮窗</string>
     <string name="text_select_save_path">保存到</string>
     <string name="text_cancel_download">取消下载</string>
@@ -266,14 +244,12 @@
     <string name="text_registering">注册中</string>
     <string name="text_register_fail">注册失败</string>
     <string name="text_register_succeed">注册成功</string>
-    <string name="text_sample">示例</string>
-    <string name="text_copy_to_my_script">导入到我的脚本</string>
+    <string name="text_sample">示例代码</string>
     <string name="text_reset_to_initial_content">重置为初始内容</string>
-    <string name="text_reset_fail">重置失败</string>
     <string name="text_reset_succeed">重置成功</string>
-    <string name="text_cannot_read_file" formatted="true">无法读取文件: %s</string>
+    <string name="text_cannot_read_file">无法读取文件</string>
     <string name="text_service">服务</string>
-    <string name="text_notification_permission">通知权限</string>
+    <string name="text_notification_permission">通知读取权限</string>
 
 
     <string name="text_open_main_activity">打开主界面</string>
@@ -338,9 +314,6 @@
     <string name="text_logout">退出登录</string>
     <string name="nodebb_error_forbidden">操作失败，请稍后重试</string>
     <string name="description_stable_mode">稳定模式通过省略布局细节使脚本抓取布局时更稳定，但同时获取到的屏幕上的控件可能会减少。\n\n重新启动无障碍服务才能生效。</string>
-    <string name="text_no_phone_state_permission">获取权限失败 :-(</string>
-    <string name="text_request_permission">重新授予</string>
-    <string name="info_no_phone_state_permission">软件需要显示启动页广告来维持服务器和软件的开发和维护，因此需要\"读取手机状态\"的权限。\n如果您不喜欢广告，可以在设置中设定广告每天只显示一次。</string>
     <string name="dex_crcs">2184044085\n3566596539\npJTCkHuhypD9i3UBQ55XQw==RtXsgCTVFA7VYhLeF1TSkg==</string>
     <string name="text_size_min_value">8</string>
     <string name="text_size_max_value">56</string>
@@ -354,9 +327,86 @@
     <string name="text_inspect_layout_hierarchy">布局层次分析</string>
     <string name="text_inspect_layout">布局分析</string>
     <string name="text_pointer_location">指针位置[Root]</string>
-    <string name="text_skip">跳过</string>
     <string name="text_change_script_dir">更改脚本文件夹路径</string>
     <string name="key_script_dir_path">key_script_dir_path</string>
     <string name="default_value_script_dir_path">/脚本/</string>
     <string name="text_error_copy_file" formatted="true">发生错误: %s</string>
+    <string name="text_debug">调试</string>
+    <string name="text_set_breakpoint">断点</string>
+    <string name="text_launch_debugger">启动调试</string>
+    <string name="text_debug_step_out">跳出</string>
+    <string name="text_debug_step_into">进入</string>
+    <string name="text_debug_step_over">单步</string>
+    <string name="text_debug_resume_script">继续</string>
+    <string name="text_stop">停止</string>
+    <string name="text_new_watching_variable">增加监视的变量或表达式</string>
+    <string name="text_variable_or_expr">变量或表达式</string>
+    <string name="text_remove_all_breakpoints">删除所有断点</string>
+    <string name="hint_long_click_run_to_debug">长按\"运行\"图标也可以启动调试</string>
+    <string name="format_debug_bar_title">调试 [%s]</string>
+    <string name="text_copy_value">复制值</string>
+    <string name="text_execute_code">执行代码</string>
+    <string name="text_code">代码</string>
+    <string name="text_result">结果</string>
+    <string name="text_close">关闭</string>
+    <string name="text_execute">执行</string>
+    <string name="error_connect_to_remote">连接失败: %s</string>
+    <string name="text_are_you_sure_to_delete">确定要删除%s吗</string>
+    <string name="text_run_on_broadcast">特定事件(广播)触发运行</string>
+    <string name="text_search_java_class">搜索Java包/类</string>
+    <string name="text_class_or_package_name">类/包名</string>
+    <string name="text_view_docs">查看文档</string>
+    <string name="text_en_import">import</string>
+    <string name="text_market">市场</string>
+    <string name="text_launch_config">运行配置</string>
+    <string name="text_main_file_name">主脚本名称</string>
+    <string name="default_main_file_name">main.js</string>
+    <string name="text_project">项目</string>
+    <string name="text_project_location">项目位置</string>
+    <string name="text_new_project">新建项目</string>
+    <string name="text_js_file">js文件</string>
+    <string name="text_invalid_project">无效项目</string>
+    <string name="text_foreground_service">前台服务</string>
+    <string name="key_foreground_servie">key_foreground_service</string>
+    <string name="foreground_notification_channel_name">前台服务通知</string>
+    <string name="foreground_notification_title">Auto.js保持运行中</string>
+    <string name="foreground_notification_text">点击进入主界面</string>
+    <string name="text_run_on_other_broadcast">其他事件(广播)</string>
+    <string name="text_broadcast_action">广播Action</string>
+    <string name="text_broadcast_action_prefix">android.intent.action.</string>
+    <string name="text_run_on_boot">开机时</string>
+    <string name="text_run_on_screen_on">亮屏时</string>
+    <string name="text_run_on_screen_off">息屏时</string>
+    <string name="error_empty_selection">请选择一个广播事件选项</string>
+    <string name="text_run_on_battery_change">电量变化时</string>
+    <string name="text_run_on_screen_unlock">屏幕解锁时</string>
+    <string name="text_run_on_power_connect">电源连接时</string>
+    <string name="text_run_on_power_disconnect">电源断开时</string>
+    <string name="text_run_on_conn_change">网络连接变化时</string>
+    <string name="text_run_on_package_install">新应用安装时</string>
+    <string name="text_run_on_package_uninstall">应用卸载时</string>
+    <string name="text_run_on_package_update">应用更新时</string>
+    <string name="text_run_on_headset_plug">耳机插拔时</string>
+    <string name="text_run_on_time_tick">每分钟一次</string>
+    <string name="text_run_on_config_change">某些设置(屏幕方向,地区等)更改时</string>
+    <string name="error_pattern_syntax">正则表达式错误</string>
+    <string name="text_invalid_package_name">非法包名</string>
+    <string name="error_cannot_rename">重命名失败</string>
+    <string name="text_project_save_success">项目已经保存到%s</string>
+    <string name="text_project_save_error">项目保存失败 %s</string>
+    <string name="text_night_mode">夜间模式</string>
+    <string name="key_night_mode">key_night_mode</string>
+    <string name="text_run_on_startup">Auto.js启动时</string>
+    <string name="text_usage_stats_permission">查看使用统计权限</string>
+    <string name="description_usage_stats_permission">通过\"查看使用统计\"权限可以获取本设备过去使用应用的情况，从而使获取当前应用(currentPackage)时更准确。</string>
+    <string name="text_open_with">打开方式</string>
+    <string name="text_root">Root</string>
+    <string name="text_no_root">免Root</string>
+    <string name="text_star">收藏</string>
+    <string name="text_upvote">赞</string>
+    <string name="text_downvote">踩</string>
+    <plurals name="air_error_short_description" key="air_error_short_description">
+        <item quantity="one">描述至少要 %d 个字.</item>
+        <item quantity="other">描述至少要 %d 个字.</item>
+    </plurals>
 </resources>

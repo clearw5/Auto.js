@@ -6,7 +6,7 @@
               android:orientation="vertical">
 
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -16,9 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+            android:theme="@style/ToolBarStyle"
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -30,13 +31,12 @@
             android:orientation="vertical">
 
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
-                android:layout_marginRight="6dp"
                 android:layout_marginTop="12dp"
-                app:cardBackgroundColor="@android:color/white"
+                android:layout_marginRight="6dp"
                 app:cardCornerRadius="2dp"
                 app:cardElevation="1dp"
                 app:cardUseCompatPadding="true">
@@ -108,8 +108,8 @@
                                 android:background="?selectableItemBackground"
                                 android:gravity="center_vertical"
                                 android:orientation="horizontal"
-                                android:paddingBottom="6dp"
-                                android:paddingTop="6dp">
+                                android:paddingTop="6dp"
+                                android:paddingBottom="6dp">
 
                                 <org.autojs.autojs.theme.widget.ThemeColorImageViewCompat
                                     android:layout_width="24dp"
@@ -124,7 +124,7 @@
                                     android:layout_height="36dp"
                                     android:layout_marginLeft="12dp"
                                     android:gravity="center_vertical"
-                                    android:textColor="#202020"
+                                    android:textColor="?android:textColorPrimary"
                                     android:textSize="16sp"/>
                             </LinearLayout>
 
@@ -132,8 +132,8 @@
                                 android:id="@+id/disposable_task_date_container"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentBottom="true"
                                 android:layout_below="@+id/disposable_task_time_container"
+                                android:layout_alignParentBottom="true"
                                 android:background="?selectableItemBackground"
                                 android:gravity="center_vertical"
                                 android:orientation="horizontal"
@@ -153,7 +153,7 @@
                                     android:layout_height="36dp"
                                     android:layout_marginLeft="12dp"
                                     android:gravity="center_vertical"
-                                    android:textColor="#202020"
+                                    android:textColor="?android:textColorPrimary"
                                     android:textSize="16sp"/>
                             </LinearLayout>
 
@@ -252,10 +252,187 @@
 
                         </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
+                        <RadioButton
+                            android:id="@+id/run_on_broadcast"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:paddingLeft="16dp"
+                            android:text="@string/text_run_on_broadcast"/>
+
+                        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:ael_expanded="false"
+                            app:ael_interpolator="fastOutSlowIn"
+                            app:ael_orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="24dp"
+                                android:orientation="vertical">
+
+                                <RadioGroup
+                                    android:id="@+id/broadcast_group"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_startup"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_startup"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_boot"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_boot"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_screen_on"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_screen_on"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_screen_off"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_screen_off"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_screen_unlock"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_screen_unlock"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_battery_change"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_battery_change"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_power_connect"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_power_connect"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_power_disconnect"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_power_disconnect"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_conn_change"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_conn_change"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_package_install"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_package_install"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_package_uninstall"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_package_uninstall"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_package_update"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_package_update"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_headset_plug"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_headset_plug"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_config_change"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_config_change"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_time_tick"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_time_tick"/>
+
+                                    <RadioButton
+                                        android:id="@+id/run_on_other_broadcast"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="16dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="@string/text_run_on_other_broadcast"/>
+
+                                </RadioGroup>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="36dp"
+                                    android:layout_marginTop="2dp"
+                                    android:hint="@string/text_broadcast_action">
+
+
+                                    <androidx.appcompat.widget.AppCompatEditText
+                                        android:id="@+id/action"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:maxLines="2"
+                                        android:text="@string/text_broadcast_action_prefix"/>
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                            </LinearLayout>
+
+                        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
                     </RadioGroup>
                 </LinearLayout>
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
     </ScrollView>
 

@@ -13,7 +13,6 @@ import java.io.IOException;
 
 public class TmpScriptFiles {
 
-
     public static File create(Context context) throws IOException {
         ensureTmpDir(context);
         File tmp = new File(getTmpDir(context), "tmp-" + System.currentTimeMillis() + ".js");

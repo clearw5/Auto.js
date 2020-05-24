@@ -1,6 +1,6 @@
 package com.stardust.autojs.core.record.inputevent;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.stardust.autojs.core.inputevent.InputEventCodes;
 import com.stardust.autojs.core.inputevent.InputEventObserver;

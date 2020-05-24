@@ -1,16 +1,22 @@
 package org.autojs.autojs.ui.filechooser;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.pio.PFile;
+
 import org.autojs.autojs.R;
-import org.autojs.autojs.model.script.ScriptFile;
-import org.autojs.autojs.storage.file.StorageFileProvider;
+import org.autojs.autojs.model.explorer.Explorer;
+import org.autojs.autojs.model.explorer.ExplorerDirPage;
+import org.autojs.autojs.model.explorer.ExplorerFileProvider;
+import org.autojs.autojs.model.explorer.Explorers;
+import org.autojs.autojs.model.script.Scripts;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,8 +38,10 @@ public class FileChooserDialogBuilder extends ThemeColorMaterialDialogBuilder {
     }
 
     private FileChooseListView mFileChooseListView;
-    private PFile mRootDir = StorageFileProvider.getDefaultDirectory();
     private MultiChoiceCallback mCallback;
+    private FileFilter mFileFilter;
+    private String mRootDir;
+    private String mInitialDir;
 
     public FileChooserDialogBuilder(@NonNull Context context) {
         super(context);
@@ -41,9 +49,7 @@ public class FileChooserDialogBuilder extends ThemeColorMaterialDialogBuilder {
         customView(mFileChooseListView, false);
         positiveText(R.string.ok);
         negativeText(R.string.cancel);
-        onPositive((dialog, which) -> {
-            notifySelected();
-        });
+        onPositive((dialog, which) -> notifySelected());
     }
 
     private void notifySelected() {
@@ -58,28 +64,25 @@ public class FileChooserDialogBuilder extends ThemeColorMaterialDialogBuilder {
     }
 
     public FileChooserDialogBuilder dir(String rootDir, String initialDir) {
-        mRootDir = new PFile(rootDir);
-        if (mRootDir.equals(StorageFileProvider.getDefaultDirectory())) {
-            mFileChooseListView.setStorageFileProvider(StorageFileProvider.getDefault());
-        } else {
-            mFileChooseListView.setStorageFileProvider(new StorageFileProvider(mRootDir, 10), new ScriptFile(initialDir));
-        }
+        mRootDir = rootDir;
+        mInitialDir = initialDir;
         return this;
     }
 
     public FileChooserDialogBuilder dir(String dir) {
-        return dir(dir, dir);
+        mRootDir = dir;
+        return this;
     }
 
     public FileChooserDialogBuilder justScriptFile() {
-        mFileChooseListView.setStorageFileProvider(new StorageFileProvider(mRootDir, 10, StorageFileProvider.SCRIPT_FILTER));
+        mFileFilter = Scripts.INSTANCE.getFILE_FILTER();
         return this;
     }
 
 
     public FileChooserDialogBuilder chooseDir() {
+        mFileFilter = File::isDirectory;
         mFileChooseListView.setCanChooseDir(true);
-        mFileChooseListView.setStorageFileProvider(new StorageFileProvider(mRootDir, 10, File::isDirectory));
         return this;
     }
 
@@ -120,5 +123,19 @@ public class FileChooserDialogBuilder extends ThemeColorMaterialDialogBuilder {
     public FileChooserDialogBuilder title(@StringRes int titleRes) {
         super.title(titleRes);
         return this;
+    }
+
+    @Override
+    public MaterialDialog build() {
+        ExplorerDirPage root = ExplorerDirPage.createRoot(mRootDir);
+        Explorer explorer = mFileFilter == null ? Explorers.external() :
+                new Explorer(new ExplorerFileProvider(mFileFilter), 0);
+        if(mInitialDir == null){
+            mFileChooseListView.setExplorer(explorer, root);
+        }else {
+            mFileChooseListView.setExplorer(explorer, root,
+                    new ExplorerDirPage(mInitialDir, root));
+        }
+        return super.build();
     }
 }

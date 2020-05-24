@@ -4,17 +4,19 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.Image;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 
+import com.stardust.autojs.core.opencv.Mat;
+import com.stardust.autojs.core.opencv.OpenCVHelper;
 import com.stardust.pio.UncheckedIOException;
 
 import org.opencv.android.Utils;
-import org.opencv.core.Mat;
-import org.opencv.highgui.Highgui;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * Created by Stardust on 2017/11/25.
@@ -26,19 +28,19 @@ public class ImageWrapper {
     private int mHeight;
     private Bitmap mBitmap;
 
-    public ImageWrapper(Mat mat) {
+    protected ImageWrapper(Mat mat) {
         mMat = mat;
         mWidth = mat.cols();
         mHeight = mat.rows();
     }
 
-    public ImageWrapper(Bitmap bitmap) {
+    protected ImageWrapper(Bitmap bitmap) {
         mBitmap = bitmap;
         mWidth = bitmap.getWidth();
         mHeight = bitmap.getHeight();
     }
 
-    public ImageWrapper(Bitmap bitmap, Mat mat) {
+    protected ImageWrapper(Bitmap bitmap, Mat mat) {
         mBitmap = bitmap;
         mMat = mat;
         mWidth = bitmap.getWidth();
@@ -57,6 +59,14 @@ public class ImageWrapper {
         }
         return new ImageWrapper(toBitmap(image));
     }
+
+    public static ImageWrapper ofMat(Mat mat) {
+        if (mat == null) {
+            return null;
+        }
+        return new ImageWrapper(mat);
+    }
+
 
     public static ImageWrapper ofBitmap(Bitmap bitmap) {
         if (bitmap == null) {
@@ -81,14 +91,17 @@ public class ImageWrapper {
     }
 
     public int getWidth() {
+        ensureNotRecycled();
         return mWidth;
     }
 
     public int getHeight() {
+        ensureNotRecycled();
         return mHeight;
     }
 
     public Mat getMat() {
+        ensureNotRecycled();
         if (mMat == null && mBitmap != null) {
             mMat = new Mat();
             Utils.bitmapToMat(mBitmap, mMat);
@@ -105,7 +118,7 @@ public class ImageWrapper {
                 throw new UncheckedIOException(e);
             }
         } else {
-            Highgui.imwrite(path, mMat);
+            Imgcodecs.imwrite(path, mMat);
         }
     }
 
@@ -119,6 +132,11 @@ public class ImageWrapper {
     }
 
     public Bitmap getBitmap() {
+        ensureNotRecycled();
+        if (mBitmap == null && mMat != null) {
+            mBitmap = Bitmap.createBitmap(mMat.width(), mMat.height(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(mMat, mBitmap);
+        }
         return mBitmap;
     }
 
@@ -137,5 +155,16 @@ public class ImageWrapper {
     public void ensureNotRecycled() {
         if (mBitmap == null && mMat == null)
             throw new IllegalStateException("image has been recycled");
+    }
+
+    public ImageWrapper clone() {
+        ensureNotRecycled();
+        if (mBitmap == null) {
+            return ImageWrapper.ofMat(mMat.clone());
+        }
+        if (mMat == null) {
+            return ImageWrapper.ofBitmap(mBitmap.copy(mBitmap.getConfig(), true));
+        }
+        return new ImageWrapper(mBitmap.copy(mBitmap.getConfig(), true), mMat.clone());
     }
 }

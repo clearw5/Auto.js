@@ -1,8 +1,7 @@
 package com.stardust.pio;
 
-import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -50,21 +49,25 @@ public class PFile extends File {
         mSimplifyPath = PFiles.getSimplifiedPath(getPath());
     }
 
-    public boolean renameTo(String newName) {
-        if (isDirectory())
-            return renameTo(new File(getParent(), newName));
-        else
-            return renameTo(new File(getParent(), newName + "." + getExtension()));
+
+    @NonNull
+    public PFile renameTo(String newName) {
+        PFile newFile = new PFile(getParent(), newName);
+        if (renameTo(newFile)) {
+            return newFile;
+        } else {
+            return this;
+        }
     }
 
-    @Nullable
-    public PFile renameAndReturnNewFile(String newName) {
+    @NonNull
+    public PFile renameWithoutExt(String newName) {
         PFile newFile = isDirectory() ? new PFile(getParent(), newName) :
                 new PFile(getParent(), newName + "." + getExtension());
         if (renameTo(newFile)) {
             return newFile;
         } else {
-            return null;
+            return this;
         }
     }
 

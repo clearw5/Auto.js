@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>综述 | Auto.js 3.0.0 文档</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <title>综述 | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="https://nodejs.org/api/all.html">
@@ -61,7 +61,7 @@
 
     <div id="column1" data-id="all" class="interior">
       <header>
-        <h1>Auto.js 3.0.0 文档</h1>
+        <h1>Auto.js 4.1.0 文档</h1>
         <div id="gtoc">
           <p>
             <a href="index.html" name="toc">索引</a> |
@@ -77,8 +77,9 @@
 <li><span class="stability_undefined"><a href="#overview">综述</a></span></li>
 <li><span class="stability_undefined"><a href="#qa_q_a">Q &amp; A</a></span><ul>
 <li><span class="stability_undefined"><a href="#qa">如何定时运行脚本</a></span></li>
-<li><span class="stability_undefined"><a href="#qa_1">如何把图片和脚本一起打包，或者打包多个脚本</a></span></li>
-<li><span class="stability_undefined"><a href="#qa_2">如何使打包的应用不显示主界面</a></span></li>
+<li><span class="stability_undefined"><a href="#qa_1">定时任何如何获取外部参数</a></span></li>
+<li><span class="stability_undefined"><a href="#qa_2">如何把图片和脚本一起打包，或者打包多个脚本</a></span></li>
+<li><span class="stability_undefined"><a href="#qa_3">如何使打包的应用不显示主界面</a></span></li>
 <li><span class="stability_undefined"><a href="#qa_auto_js">Auto.js自带的模块和函数中没有的功能如何实现</a></span></li>
 </ul>
 </li>
@@ -105,6 +106,11 @@
 <li><span class="stability_undefined"><a href="#app_app_intent_options">app.intent(options)</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_startactivity_options">app.startActivity(options)</a></span></li>
 <li><span class="stability_undefined"><a href="#app_app_sendbroadcast_options">app.sendBroadcast(options)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_startservice_options">app.startService(options)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_sendbroadcast_name">app.sendBroadcast(name)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_intenttoshell_options">app.intentToShell(options)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_parseuri_uri">app.parseUri(uri)</a></span></li>
+<li><span class="stability_undefined"><a href="#app_app_geturiforfile_path">app.getUriForFile(path)</a></span></li>
 </ul>
 </li>
 <li><span class="stability_2"><a href="#console_console">Console</a></span><ul>
@@ -117,10 +123,14 @@
 <li><span class="stability_undefined"><a href="#console_console_warn_data_args">console.warn([data][, ...args])</a></span></li>
 <li><span class="stability_undefined"><a href="#console_console_error_data_args">console.error([data][, ...args])</a></span></li>
 <li><span class="stability_undefined"><a href="#console_console_assert_value_message">console.assert(value, message)</a></span></li>
+<li><span class="stability_undefined"><a href="#console_console_time_label">console.time([label])</a></span></li>
+<li><span class="stability_undefined"><a href="#console_console_timeend_label">console.timeEnd(label)</a></span></li>
+<li><span class="stability_undefined"><a href="#console_console_trace_data_args">console.trace([data][, ...args])</a></span></li>
 <li><span class="stability_undefined"><a href="#console_console_input_data_args">console.input(data[, ...args])</a></span></li>
 <li><span class="stability_undefined"><a href="#console_console_rawinput_data_args">console.rawInput(data[, ...args])</a></span></li>
 <li><span class="stability_undefined"><a href="#console_console_setsize_w_h">console.setSize(w, h)</a></span></li>
 <li><span class="stability_undefined"><a href="#console_console_setposition_x_y">console.setPosition(x, y)</a></span></li>
+<li><span class="stability_undefined"><a href="#console_console_setgloballogconfig_config">console.setGlobalLogConfig(config)</a></span></li>
 <li><span class="stability_undefined"><a href="#console_print_text">print(text)</a></span></li>
 </ul>
 </li>
@@ -415,6 +425,8 @@
 <li><span class="stability_undefined"><a href="#globals_requiresapi_api">requiresApi(api)</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_requiresautojsversion_version">requiresAutojsVersion(version)</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_runtime_requestpermissions_permissions">runtime.requestPermissions(permissions)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_runtime_loadjar_path">runtime.loadJar(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_runtime_loaddex_path">runtime.loadDex(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_context">context</a></span></li>
 </ul>
 </li>
@@ -462,19 +474,35 @@
 <li><span class="stability_undefined"><a href="#images_colors_magenta">colors.MAGENTA</a></span></li>
 <li><span class="stability_undefined"><a href="#images_colors_transparent">colors.TRANSPARENT</a></span></li>
 <li><span class="stability_2"><a href="#images_images">Images</a></span><ul>
-<li><span class="stability_undefined"><a href="#images_images_requestscreencapture_landscape">images.requestScreenCapture([landscape])</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_capturescreen">images.captureScreen()</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_capturescreen_path">images.captureScreen(path)</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_pixel_image_x_y">images.pixel(image, x, y)</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_copy_img">images.copy(img)</a></span></li>
-<li><span class="stability_undefined"><a href="#images_images_save_image_path_format_png_quality_100">images.save(image, path[, format = &quot;png&quot;, quality = 100])</a></span></li>
+<li><span class="stability_undefined"><a href="#images">图片处理</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_read_path">images.read(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_load_url">images.load(url)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_copy_img">images.copy(img)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_save_image_path_format_png_quality_100">images.save(image, path[, format = &quot;png&quot;, quality = 100])</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_frombase64_base64">images.fromBase64(base64)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_tobase64_img_format_png_quality_100">images.toBase64(img[, format = &quot;png&quot;, quality = 100])</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_frombytes_bytes">images.fromBytes(bytes)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_tobytes_img_format_png_quality_100">images.toBytes(img[, format = &quot;png&quot;, quality = 100])</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_clip_img_x_y_w_h">images.clip(img, x, y, w, h)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_resize_img_size_interpolation">images.resize(img, size[, interpolation])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_scale_img_fx_fy_interpolation">images.scale(img, fx, fy[, interpolation])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_rotate_img_degress_x_y">images.rotate(img, degress[, x, y])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_concat_img1_image2_direction">images.concat(img1, image2[, direction])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_grayscale_img">images.grayscale(img)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_image_threshold_img_threshold_maxval_type">image.threshold(img, threshold, maxVal[, type])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_adaptivethreshold_img_maxvalue_adaptivemethod_thresholdtype_blocksize_c">images.adaptiveThreshold(img, maxValue, adaptiveMethod, thresholdType, blockSize, C)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_cvtcolor_img_code_dstcn">images.cvtColor(img, code[, dstCn])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_inrange_img_lowerbound_upperbound">images.inRange(img, lowerBound, upperBound)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_interval_img_color_interval">images.interval(img, color, interval)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_blur_img_size_anchor_type">images.blur(img, size[, anchor, type])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_medianblur_img_size">images.medianBlur(img, size)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_gaussianblur_img_size_sigmax_sigmay_type">images.gaussianBlur(img, size[, sigmaX, sigmaY, type])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_mattoimage_mat">images.matToImage(mat)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_1">找图找色</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_requestscreencapture_landscape">images.requestScreenCapture([landscape])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_capturescreen">images.captureScreen()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_capturescreen_path">images.captureScreen(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_pixel_image_x_y">images.pixel(image, x, y)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findcolor_image_color_options">images.findColor(image, color, options)</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findcolorinregion_img_color_x_y_width_height_threshold">images.findColorInRegion(img, color, x, y[, width, height, threshold])</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findcolorequals_img_color_x_y_width_height">images.findColorEquals(img, color[, x, y, width, height])</a></span></li>
@@ -482,6 +510,21 @@
 <li><span class="stability_undefined"><a href="#images_images_detectscolor_image_color_x_y_threshold_16_algorithm_diff">images.detectsColor(image, color, x, y[, threshold = 16, algorithm = &quot;diff&quot;])</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findimage_img_template_options">images.findImage(img, template[, options])</a></span></li>
 <li><span class="stability_undefined"><a href="#images_images_findimageinregion_img_template_x_y_width_height_threshold">images.findImageInRegion(img, template, x, y[, width, height, threshold])</a></span></li>
+<li><span class="stability_undefined"><a href="#images_images_matchtemplate_img_template_options">images.matchTemplate(img, template, options)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#images_matchingresult">MatchingResult</a></span><ul>
+<li><span class="stability_undefined"><a href="#images_matches">matches</a></span></li>
+<li><span class="stability_undefined"><a href="#images_points">points</a></span></li>
+<li><span class="stability_undefined"><a href="#images_first">first()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_last">last()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_leftmost">leftmost()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_topmost">topmost()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_rightmost">rightmost()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_bottommost">bottommost()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_best">best()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_worst">worst()</a></span></li>
+<li><span class="stability_undefined"><a href="#images_sortby_cmp">sortBy(cmp)</a></span></li>
 </ul>
 </li>
 <li><span class="stability_undefined"><a href="#images_image">Image</a></span><ul>
@@ -538,6 +581,13 @@
 <li><span class="stability_undefined"><a href="#widgets_based_automation_auto_mode">auto([mode])</a></span></li>
 <li><span class="stability_undefined"><a href="#widgets_based_automation_auto_waitfor">auto.waitFor()</a></span></li>
 <li><span class="stability_undefined"><a href="#widgets_based_automation_auto_setmode_mode">auto.setMode(mode)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_setflags_flags">auto.setFlags(flags)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_serivce">auto.serivce</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_windows">auto.windows</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_root">auto.root</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_rootinactivewindow">auto.rootInActiveWindow</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_setwindowfilter_filter">auto.setWindowFilter(filter)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_windowroots">auto.windowRoots</a></span></li>
 </ul>
 </li>
 <li><span class="stability_2"><a href="#widgets_based_automation_simpleactionautomator">SimpleActionAutomator</a></span><ul>
@@ -552,6 +602,7 @@
 </li>
 <li><span class="stability_undefined"><a href="#widgets_based_automation_uiselector">UiSelector</a></span><ul>
 <li><span class="stability_undefined"><a href="#widgets_based_automation_selector">selector()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uiselector_algorithm_algorithm">UiSelector.algorithm(algorithm)</a></span></li>
 <li><span class="stability_undefined"><a href="#widgets_based_automation_uiselector_text_str">UiSelector.text(str)</a></span></li>
 <li><span class="stability_undefined"><a href="#widgets_based_automation_uiselector_textcontains_str">UiSelector.textContains(str)</a></span></li>
 <li><span class="stability_undefined"><a href="#widgets_based_automation_uiselector_textstartswith_prefix">UiSelector.textStartsWith(prefix)</a></span></li>
@@ -933,35 +984,30 @@
 <h1>Q &amp; A<span><a class="mark" href="#qa_q_a" id="qa_q_a">#</a></span></h1>
 <h2>如何定时运行脚本<span><a class="mark" href="#qa" id="qa">#</a></span></h2>
 <p>点击脚本右边的菜单按钮-&gt;更多-&gt;定时任务即可定时运行脚本，但是必须保持Auto.js后台运行(自启动白名单、电源管理白名单等)。同时，可以在脚本的开头使用<code>device.wakeUp()</code>来唤醒屏幕；但是，Auto.js没有解锁屏幕的功能，因此难以在有锁屏密码的设备上达到效果。</p>
-<h2>如何把图片和脚本一起打包，或者打包多个脚本<span><a class="mark" href="#qa_1" id="qa_1">#</a></span></h2>
-<p>如果除了单脚本以外还有其他脚本、图片、音乐等资源一起打包，则需要使用项目打包功能。</p>
-<ol>
-<li>新建一个文件夹，命名为项目名称。</li>
-<li>在该文件夹下新建脚本，或者移动脚本到该文件夹，命名为main.js，表示主脚本。脚本打包后将会从该脚本开始运行。</li>
-<li>把其他资源或脚本放在该文件夹，并通过相对路径引用。</li>
-<li>通过文件夹菜单的&quot;打包&quot;功能来打包该项目</li>
-</ol>
+<h2>定时任何如何获取外部参数<span><a class="mark" href="#qa_1" id="qa_1">#</a></span></h2>
+<p>如果一个脚本是用intent&quot;启动&quot;的，比如定时任务中的特定事件（网络状态变化等）触发而启动的，则可以通过<code>engines.myEngine().execArgv.intent</code>获取启动的intent，从而获取外部参数。</p>
+<h2>如何把图片和脚本一起打包，或者打包多个脚本<span><a class="mark" href="#qa_2" id="qa_2">#</a></span></h2>
+<p>如果除了单脚本以外还有其他脚本、图片、音乐等资源一起打包，则需要使用项目功能。</p>
+<p>点击Auto.js的&quot;+&quot;号，选择项目，填写项目名称、包名等信息以后，点击&quot;√&quot;即可新建一个项目。可以在项目中放多个脚本、模块、资源文件，点击项目工具栏的apk打包图标即可打包一个项目，点击工具栏可以重新配置项目。</p>
 <p>例如，主脚本要读取同一文件夹下的图片1.png，再执行找图，则可以通过<code>images.read(&quot;./1.png&quot;)</code>来读取，其中&quot;./1.png&quot;表示同一目录1.png图片；ui中的图片控件要引用同一文件夹的2.png图片则为<code>&lt;img src=&quot;file://2.png&quot;/&gt;</code>。Auto.js内置的函数和模块都支持相对路径，但是，其他情况则需要使用<code>files.path()</code>函数来把相对路径转换为绝对路径。</p>
-<p>目前Auto.js还不支持项目的图形化管理，后续会加入。</p>
-<h2>如何使打包的应用不显示主界面<span><a class="mark" href="#qa_2" id="qa_2">#</a></span></h2>
-<p>需要使用项目打包功能。</p>
-<ol>
-<li>新建一个文件夹，命名为项目名称。</li>
-<li>在该文件夹下新建脚本，或者移动脚本到该文件夹，命名为main.js，表示主脚本。脚本打包后将会从该脚本开始运行。</li>
-<li>在该文件夹下新建一个project.json的文件，其内容如下：<pre><code>{
-&quot;name&quot;: &quot;项目名称&quot;,
-&quot;versionName&quot;: &quot;1.0.0&quot;,
-&quot;versionCode&quot;: 1,
-&quot;packageName&quot;: &quot;org.autojs.example&quot;,
-&quot;main&quot;: &quot;main.js&quot;,
-&quot;launchConfig&quot;: {
-   &quot;hideLogs&quot;: true
+<h2>如何使打包的应用不显示主界面<span><a class="mark" href="#qa_3" id="qa_3">#</a></span></h2>
+<p>需要使用项目功能。新建项目后，修改项目下的<code>project.json</code>文件，增加以下条目：</p>
+<pre><code>&quot;launchConfig&quot;: {
+    &quot;hideLogs&quot;: true
 }
+</code></pre><p>例如：</p>
+<pre><code>{
+  &quot;name&quot;: &quot;项目名称&quot;,
+  &quot;versionName&quot;: &quot;1.0.0&quot;,
+  &quot;versionCode&quot;: 1,
+  &quot;packageName&quot;: &quot;org.autojs.example&quot;,
+  &quot;main&quot;: &quot;main.js&quot;,
+  &quot;launchConfig&quot;: {
+      &quot;hideLogs&quot;: true
+  }
 }
-</code></pre>其中，项目名称改为自己的项目名称，&quot;org.autojs.example&quot;改成自己的包名，下面的&quot;launchConfig&quot;表示启动配置，&quot;hideLogs&quot;表示隐藏日志。</li>
-<li>通过文件夹菜单的&quot;打包&quot;功能来打包该项目</li>
-</ol>
-<p>有关项目打包和配置的更多信息，参见项目与项目配置(待补)。</p>
+</code></pre><p>&quot;launchConfig&quot;表示启动配置，&quot;hideLogs&quot;表示隐藏日志。</p>
+<p>参见项目与项目配置。</p>
 <h2>Auto.js自带的模块和函数中没有的功能如何实现<span><a class="mark" href="#qa_auto_js" id="qa_auto_js">#</a></span></h2>
 <p>由于Auto.js支持直接调用Android的API，对于Auto.js没有内置的函数，可以直接通过修改Android代码为JavaScript代码实现。例如旋转图片的Android代码为：</p>
 <pre><code>import android.graphics.Bitmap;
@@ -1060,7 +1106,7 @@ launch(&quot;com.tencent.mm&quot;);
 <p>该函数也可以作为全局函数使用。</p>
 <h2>app.viewFile(path)<span><a class="mark" href="#app_app_viewfile_path" id="app_app_viewfile_path">#</a></span></h2>
 <div class="signature"><ul>
-<li>path <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文件路径</li>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文件路径</li>
 </ul>
 </div><p>用其他应用查看文件。文件不存在的情况由查看文件的应用处理。</p>
 <p>如果找不出可以查看该文件的应用，则抛出<code>ActivityNotException</code>。</p>
@@ -1068,7 +1114,7 @@ launch(&quot;com.tencent.mm&quot;);
 app.viewFile(&quot;/sdcard/1.txt&quot;);
 </code></pre><h2>app.editFile(path)<span><a class="mark" href="#app_app_editfile_path" id="app_app_editfile_path">#</a></span></h2>
 <div class="signature"><ul>
-<li>path <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文件路径</li>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文件路径</li>
 </ul>
 </div><p>用其他应用编辑文件。文件不存在的情况由编辑文件的应用处理。</p>
 <p>如果找不出可以编辑该文件的应用，则抛出<code>ActivityNotException</code>。</p>
@@ -1132,17 +1178,36 @@ app.sendEmail({
 </ul>
 <p>本模块提供了构建Intent的函数(<code>app.intent()</code>), 启动Activity的函数<code>app.startActivity()</code>, 发送广播的函数<code>app.sendBroadcast()</code>。</p>
 <p>使用这些方法可以用来方便的调用其他应用。例如直接打开某个QQ号的个人卡片页，打开某个QQ号的聊天窗口等。</p>
-<pre><code>
+<pre><code>var qq = &quot;2732014414&quot;;
+app.startActivity({ 
+    action: &quot;android.intent.action.VIEW&quot;, 
+    data:&quot;mqq://im/chat?chat_type=wpa&amp;version=1&amp;src_type=web&amp;uin=&quot; + qq, 
+    packageName: &quot;com.tencent.mobileqq&quot;, 
+});
 </code></pre><h2>app.intent(options)<span><a class="mark" href="#app_app_intent_options" id="app_app_intent_options">#</a></span></h2>
 <div class="signature"><ul>
-<li>options <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项，包括：<ul>
-<li><code>action</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 意图的Action，指意图要完成的动作，是一个字符串常量，比如&quot;android.intent.action.SEND&quot;。当action以&quot;android.intent.action&quot;开头时，可以省略前缀，直接用&quot;SEND&quot;代替。常见的action参见<code>常用的意图动作</code>。</li>
-<li><code>type</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 意图的MimeType，表示和该意图直接相关的数据的类型，表示比如&quot;text/plain&quot;为纯文本类型。</li>
-<li><code>data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 意图的Data，表示和该意图直接相关的数据，是一个Uri, 可以是文件路径或者Url等。例如要打开一个文件, action为&quot;android.intent.action.VIEW&quot;, data为&quot;file:///sdcard/1.txt&quot;。</li>
-<li><code>category</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 意图的类别。比较少用。</li>
-<li><code>packageName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 目标包名</li>
-<li><code>className</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 目标Activity或Service等组件的名称</li>
-<li><code>extras</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 以键值对构成的这个Intent的Extras(额外信息)。提供该意图的其他信息，例如发送邮件时的邮件标题、邮件正文。</li>
+<li><p><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项，包括：</p>
+<ul>
+<li><p><code>action</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 意图的Action，指意图要完成的动作，是一个字符串常量，比如&quot;android.intent.action.SEND&quot;。当action以&quot;android.intent.action&quot;开头时，可以省略前缀，直接用&quot;SEND&quot;代替。参见<a href="https://developer.android.com/reference/android/content/Intent.html#standard-activity-actions">Actions</a>。</p>
+</li>
+<li><p><code>type</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 意图的MimeType，表示和该意图直接相关的数据的类型，表示比如&quot;text/plain&quot;为纯文本类型。</p>
+</li>
+<li><p><code>data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 意图的Data，表示和该意图直接相关的数据，是一个Uri, 可以是文件路径或者Url等。例如要打开一个文件, action为&quot;android.intent.action.VIEW&quot;, data为&quot;file:///sdcard/1.txt&quot;。</p>
+</li>
+<li><p><code>category</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 意图的类别。比较少用。参见<a href="https://developer.android.com/reference/android/content/Intent.html#standard-categories">Categories</a>。</p>
+</li>
+<li><p><code>packageName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 目标包名</p>
+</li>
+<li><p><code>className</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 目标Activity或Service等组件的名称</p>
+</li>
+<li><p><code>extras</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 以键值对构成的这个Intent的Extras(额外信息)。提供该意图的其他信息，例如发送邮件时的邮件标题、邮件正文。参见<a href="https://developer.android.com/reference/android/content/Intent.html#standard-extra-data">Extras</a>。</p>
+</li>
+<li><p><code>flags</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> intent的标识，字符串数组，例如<code>[&quot;activity_new_task&quot;, &quot;grant_read_uri_permission&quot;]</code>。参见<a href="https://developer.android.com/reference/android/content/Intent.html#setFlags%28int%29">Flags</a>。</p>
+<p><strong>[v4.1.0新增]</strong></p>
+</li>
+<li><p><code>root</code> <span class="type">&lt;Boolea&gt;</span> 是否以root权限启动、发送该intent。使用该参数后，不能使用<code>context.startActivity()</code>等方法，而应该直接使用诸如<code>app.startActivity({...})</code>的方法。</p>
+<p><strong>[v4.1.0新增]</strong></p>
+</li>
 </ul>
 </li>
 </ul>
@@ -1154,19 +1219,75 @@ var i = app.intent({
     type: &quot;image/png&quot;,
     data: &quot;file:///sdcard/1.png&quot;
 });
-app.startActivity(i);
-</code></pre><p>更多信息，请百度<a href="https://www.baidu.com/s?wd=android%20Intent">安卓Intent</a>或参考<a href="https://developer.android.com/guide/components/intents-filters.html#Types">Android指南: Intent</a>。</p>
+context.startActivity(i);
+</code></pre><p>需要注意的是，除非应用专门暴露Activity出来，否则在没有root权限的情况下使用intent是无法跳转到特定Activity、应用的特定界面的。例如我们能通过Intent跳转到QQ的分享界面，是因为QQ对外暴露了分享的Activity；而在没有root权限的情况下，我们无法通过intent跳转到QQ的设置界面，因为QQ并没有暴露这个Activity。</p>
+<p>但如果有root权限，则在intent的参数加上<code>&quot;root&quot;: true</code>即可。例如使用root权限跳转到Auto.js的设置界面为：</p>
+<pre><code>app.startActivity({
+    packageName: &quot;org.autojs.autojs&quot;,
+    className: &quot;org.autojs.autojs.ui.settings.SettingsActivity_&quot;,
+    root: true
+});
+</code></pre><p>另外，关于intent的参数如何获取的问题，一些intent是意外发现并且在网络中传播的（例如跳转QQ聊天窗口是因为QQ给网页提供了跳转到客服QQ的方法），如果要自己获取活动的intent的参数，可以通过例如&quot;intent记录&quot;，&quot;隐式启动&quot;等应用拦截内部intent或者查询暴露的intent。其中拦截内部intent需要XPosed框架，或者可以通过反编译等手段获取参数。总之，没有简单直接的方法。</p>
+<p>更多信息，请百度<a href="https://www.baidu.com/s?wd=android%20Intent">安卓Intent</a>或参考<a href="https://developer.android.com/guide/components/intents-filters.html#Types">Android指南: Intent</a>。</p>
 <h2>app.startActivity(options)<span><a class="mark" href="#app_app_startactivity_options" id="app_app_startactivity_options">#</a></span></h2>
 <div class="signature"><ul>
-<li>options <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项</li>
 </ul>
 </div><p>根据选项构造一个Intent，并启动该Activity。</p>
-<h2>app.sendBroadcast(options)<span><a class="mark" href="#app_app_sendbroadcast_options" id="app_app_sendbroadcast_options">#</a></span></h2>
+<pre><code>app.startActivity({
+    action: &quot;SEND&quot;,
+    type: &quot;text/plain&quot;,
+    data: &quot;file:///sdcard/1.txt&quot;
+});
+</code></pre><h2>app.sendBroadcast(options)<span><a class="mark" href="#app_app_sendbroadcast_options" id="app_app_sendbroadcast_options">#</a></span></h2>
 <div class="signature"><ul>
-<li>options <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项</li>
 </ul>
 </div><p>根据选项构造一个Intent，并发送该广播。</p>
-<!-- [end-include:app.md] -->
+<h2>app.startService(options)<span><a class="mark" href="#app_app_startservice_options" id="app_app_startservice_options">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项</li>
+</ul>
+</div><p>根据选项构造一个Intent，并启动该服务。</p>
+<h2>app.sendBroadcast(name)<span><a class="mark" href="#app_app_sendbroadcast_name" id="app_app_sendbroadcast_name">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 特定的广播名称，包括：<ul>
+<li><code>inspect_layout_hierarchy</code> 布局层次分析</li>
+<li><code>inspect_layout_bounds</code> 布局范围</li>
+</ul>
+</li>
+</ul>
+<p>发送以上特定名称的广播可以触发Auto.js的布局分析，方便脚本调试。这些广播在Auto.js发送才有效，在打包的脚本上运行将没有任何效果。</p>
+<pre><code>app.sendBroadcast(&quot;inspect_layout_bounds&quot;);
+</code></pre><h2>app.intentToShell(options)<span><a class="mark" href="#app_app_intenttoshell_options" id="app_app_intenttoshell_options">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 选项</li>
+</ul>
+<p>根据选项构造一个Intent，转换为对应的shell的intent命令的参数。</p>
+<p>例如: </p>
+<pre><code>shell(&quot;am start &quot; + app.intentToShell({
+    packageName: &quot;org.autojs.autojs&quot;,
+    className: &quot;org.autojs.autojs.ui.settings.SettingsActivity_&quot;
+}), true);
+</code></pre><p>参见<a href="https://developer.android.com/studio/command-line/adb#IntentSpec">intent参数的规范</a>。</p>
+<h2>app.parseUri(uri)<span><a class="mark" href="#app_app_parseuri_uri" id="app_app_parseuri_uri">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>uri</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 一个代表Uri的字符串，例如&quot;file:///sdcard/1.txt&quot;, &quot;<a href="https://www.autojs.org">https://www.autojs.org</a>&quot;</li>
+<li>返回 <span class="type">&lt;Uri&gt;</span> 一个代表Uri的对象，参见<a href="https://developer.android.com/reference/android/net/Uri">android.net.Uri</a>。</li>
+</ul>
+<p>解析uri字符串并返回相应的Uri对象。即使Uri格式错误，该函数也会返回一个Uri对象，但之后如果访问该对象的scheme, path等值可能因解析失败而返回<code>null</code>。</p>
+<p>需要注意的是，在高版本Android上，由于系统限制直接在Uri暴露文件的绝对路径，因此如果uri字符串是文件<code>file://...</code>，返回的Uri会是诸如<code>content://...</code>的形式。</p>
+<h2>app.getUriForFile(path)<span><a class="mark" href="#app_app_geturiforfile_path" id="app_app_geturiforfile_path">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 文件路径，例如&quot;/sdcard/1.txt&quot;</li>
+<li>返回 <span class="type">&lt;Uri&gt;</span> 一个指向该文件的Uri的对象，参见<a href="https://developer.android.com/reference/android/net/Uri">android.net.Uri</a>。</li>
+</ul>
+<p>从一个文件路径创建一个uri对象。需要注意的是，在高版本Android上，由于系统限制直接在Uri暴露文件的绝对路径，因此返回的Uri会是诸如<code>content://...</code>的形式。
+<!-- [end-include:app.md] --></p>
 <!-- [start-include:console.md] -->
 <h1>Console<span><a class="mark" href="#console_console" id="console_console">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>控制台模块提供了一个和Web浏览器中相似的用于调试的控制台。用于输出一些调试信息、中间结果等。
@@ -1179,8 +1300,8 @@ console模块中的一些函数也可以直接作为全局函数使用，例如l
 <p>清空控制台。</p>
 <h2>console.log([data][, ...args])<span><a class="mark" href="#console_console_log_data_args" id="console_console_log_data_args">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>data</code> <any></li>
-<li><code>...args</code> <any></li>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
 </ul>
 </div><p>打印到控制台，并带上换行符。 可以传入多个参数，第一个参数作为主要信息，其他参数作为类似于 <a href="http://man7.org/linux/man-pages/man3/printf.3.html">printf(3)</a> 中的代替值（参数都会传给 util.format()）。</p>
 <pre><code>const count = 5;
@@ -1192,26 +1313,26 @@ console.log(&#39;count:&#39;, count);
 <p>该函数也可以作为全局函数使用。</p>
 <h2>console.verbose([data][, ...args])<span><a class="mark" href="#console_console_verbose_data_args" id="console_console_verbose_data_args">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>data</code> <any></li>
-<li><code>...args</code> <any></li>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
 </ul>
 </div><p>与console.log类似，但输出结果以灰色字体显示。输出优先级低于log，用于输出观察性质的信息。</p>
 <h2>console.info([data][, ...args])<span><a class="mark" href="#console_console_info_data_args" id="console_console_info_data_args">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>data</code> <any></li>
-<li><code>...args</code> <any></li>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
 </ul>
 </div><p>与console.log类似，但输出结果以绿色字体显示。输出优先级高于log, 用于输出重要信息。</p>
 <h2>console.warn([data][, ...args])<span><a class="mark" href="#console_console_warn_data_args" id="console_console_warn_data_args">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>data</code> <any></li>
-<li><code>...args</code> <any></li>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
 </ul>
 </div><p>与console.log类似，但输出结果以蓝色字体显示。输出优先级高于info, 用于输出警告信息。</p>
 <h2>console.error([data][, ...args])<span><a class="mark" href="#console_console_error_data_args" id="console_console_error_data_args">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>data</code> <any></li>
-<li><code>...args</code> <any></li>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
 </ul>
 </div><p>与console.log类似，但输出结果以红色字体显示。输出优先级高于warn, 用于输出错误信息。</p>
 <h2>console.assert(value, message)<span><a class="mark" href="#console_console_assert_value_message" id="console_console_assert_value_message">#</a></span></h2>
@@ -1222,10 +1343,46 @@ console.log(&#39;count:&#39;, count);
 </div><p>断言。如果value为false则输出错误信息message并停止脚本运行。</p>
 <pre><code>var a = 1 + 1;
 console.assert(a == 2, &quot;加法出错啦&quot;);
-</code></pre><h2>console.input(data[, ...args])<span><a class="mark" href="#console_console_input_data_args" id="console_console_input_data_args">#</a></span></h2>
+</code></pre><h2>console.time([label])<span><a class="mark" href="#console_console_time_label" id="console_console_time_label">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;String&gt;</a> 计时器标签，可省略</li>
+</ul>
+<p>启动一个定时器，用以计算一个操作的持续时间。
+定时器由一个唯一的 <code>label</code> 标识。
+当调用 <code>console.timeEnd()</code> 时，可以使用相同的 <code>label</code> 来停止定时器，并以毫秒为单位将持续时间输出到控制台。
+重复启动同一个标签的定时器会覆盖之前启动同一标签的定时器。</p>
+<h2>console.timeEnd(label)<span><a class="mark" href="#console_console_timeend_label" id="console_console_timeend_label">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;String&gt;</a> 计时器标签</li>
+</ul>
+<p>停止之前通过调用 <code>console.time()</code> 启动的定时器，并打印结果到控制台。
+调用 <code>console.timeEnd()</code> 后定时器会被删除。如果不存在标签指定的定时器则会打印 <code>NaNms</code>。</p>
+<pre><code class="lang-js">console.time(&#39;求和&#39;);
+var sum = 0;
+for(let i = 0; i &lt; 100000; i++){
+    sum += i;
+}
+console.timeEnd(&#39;求和&#39;);
+// 打印 求和: xxx ms
+</code></pre>
+<h2>console.trace([data][, ...args])<span><a class="mark" href="#console_console_trace_data_args" id="console_console_trace_data_args">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+<p>与console.log类似，同时会打印出调用这个函数所在的调用栈信息（即当前运行的文件、行数等信息）。</p>
+<pre><code class="lang-js">console.trace(&#39;Show me&#39;);
+// 打印: (堆栈跟踪会根据被调用的跟踪的位置而变化)
+// Show me
+//  at &lt;test&gt;:7
+</code></pre>
+<h2>console.input(data[, ...args])<span><a class="mark" href="#console_console_input_data_args" id="console_console_input_data_args">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>data</code> <any></li>
-<li><code>...args</code> <any></li>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
 </ul>
 </div><p>与console.log一样输出信息，并在控制台显示输入框等待输入。按控制台的确认按钮后会将输入的字符串用eval计算后返回。</p>
 <p><strong>部分机型可能会有控制台不显示输入框的情况，属于bug。</strong></p>
@@ -1236,8 +1393,8 @@ toast(n + 1);
 //显示124
 </code></pre><h2>console.rawInput(data[, ...args])<span><a class="mark" href="#console_console_rawinput_data_args" id="console_console_rawinput_data_args">#</a></span></h2>
 <div class="signature"><ul>
-<li><code>data</code> <any></li>
-<li><code>...args</code> <any></li>
+<li><code>data</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>...args</code> <span class="type">&lt;any&gt;</span></li>
 </ul>
 </div><p>与console.log一样输出信息，并在控制台显示输入框等待输入。按控制台的确认按钮后会将输入的字符串直接返回。</p>
 <p>部分机型可能会有控制台不显示输入框的情况，属于bug。</p>
@@ -1263,7 +1420,24 @@ console.setSize(device.width / 2, device.height / 2);
 </div><p>设置控制台的位置，单位像素。</p>
 <pre><code>console.show();
 console.setPosition(100, 100);
-</code></pre><h2>print(text)<span><a class="mark" href="#console_print_text" id="console_print_text">#</a></span></h2>
+</code></pre><h2>console.setGlobalLogConfig(config)<span><a class="mark" href="#console_console_setgloballogconfig_config" id="console_console_setgloballogconfig_config">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>config</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 日志配置，可选的项有：<ul>
+<li><code>file</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 日志文件路径，将会把日志写入该文件中</li>
+<li><code>maxFileSize</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 最大文件大小，单位字节，默认为512 * 1024 (512KB)</li>
+<li><code>rootLevel</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 写入的日志级别，默认为&quot;ALL&quot;（所有日志），可以为&quot;OFF&quot;(关闭), &quot;DEBUG&quot;, &quot;INFO&quot;, &quot;WARN&quot;, &quot;ERROR&quot;, &quot;FATAL&quot;等。</li>
+<li><code>maxBackupSize</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 日志备份文件最大数量，默认为5</li>
+<li><code>filePattern</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 日志写入格式，参见<a href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/PatternLayout.html">PatternLayout</a></li>
+</ul>
+</li>
+</ul>
+<p>设置日志保存的路径和配置。例如把日志保存到&quot;/sdcard/1.txt&quot;:</p>
+<pre><code>console.setGlobalLogConfig({
+    &quot;file&quot;: &quot;/sdcard/1.txt&quot;
+});
+</code></pre><p>注意该函数会影响所有脚本的日志记录。</p>
+<h2>print(text)<span><a class="mark" href="#console_print_text" id="console_print_text">#</a></span></h2>
 <div class="signature"><ul>
 <li>text <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 要打印到控制台的信息</li>
 </ul>
@@ -2225,6 +2399,10 @@ exec(add, {a: 1, b:2});
 <p>停止所有正在运行的脚本并显示停止的脚本数量。包括当前脚本自身。</p>
 <h2>engines.myEngine()<span><a class="mark" href="#engines_engines_myengine" id="engines_engines_myengine">#</a></span></h2>
 <p>返回当前脚本的脚本引擎对象(<a href="#engines_scriptengine">ScriptEngine</a>)</p>
+<p><strong>[v4.1.0新增]</strong>
+特别的，该对象可以通过<code>execArgv</code>来获取他的运行参数，包括外部参数、intent等。例如：</p>
+<pre><code>log(engines.myEngine().execArgv);
+</code></pre><p>普通脚本的运行参数通常为空，通过定时任务的广播启动的则可以获取到启动的intent。</p>
 <h2>engines.all()<span><a class="mark" href="#engines_engines_all" id="engines_engines_all">#</a></span></h2>
 <div class="signature"><ul>
 <li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a></li>
@@ -3297,6 +3475,23 @@ runtime.requestPermissions([&quot;access_fine_location&quot;]);
 </ul>
 <p>您可以通过APK编辑器来增加Auto.js以及Auto.js打包的应用的权限。</p>
 <p>安卓所有的权限列表参见<a href="https://developer.android.com/guide/topics/permissions/overview">Permissions Overview</a>。（并没有用）</p>
+<h2>runtime.loadJar(path)<span><a class="mark" href="#globals_runtime_loadjar_path" id="globals_runtime_loadjar_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> jar文件路径</li>
+</ul>
+</div><p>加载目标jar文件，加载成功后将可以使用该Jar文件的类。</p>
+<pre><code>// 加载jsoup.jar
+runtime.loadJar(&quot;./jsoup.jar&quot;);
+// 使用jsoup解析html
+importClass(org.jsoup.Jsoup);
+log(Jsoup.parse(files.read(&quot;./test.html&quot;)));
+</code></pre><p>(jsoup是一个Java实现的解析Html DOM的库，可以在<a href="https://jsoup.org/download">Jsoup</a>下载)</p>
+<h2>runtime.loadDex(path)<span><a class="mark" href="#globals_runtime_loaddex_path" id="globals_runtime_loaddex_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> dex文件路径</li>
+</ul>
+</div><p>加载目标dex文件，加载成功后将可以使用该dex文件的类。</p>
+<p>因为加载jar实际上是把jar转换为dex再加载的，因此加载dex文件会比jar文件快得多。可以使用Android SDK的build tools的dx工具把jar转换为dex。</p>
 <h2>context<span><a class="mark" href="#globals_context" id="globals_context">#</a></span></h2>
 <p>全局变量。一个android.content.Context对象。</p>
 <p>注意该对象为ApplicationContext，因此不能用于界面、对话框等的创建。
@@ -3608,7 +3803,304 @@ log(colors.equals(0xFF112233, 0xFF223344));
 <h1>colors.TRANSPARENT<span><a class="mark" href="#images_colors_transparent" id="images_colors_transparent">#</a></span></h1>
 <p>透明，颜色值 #00000000</p>
 <h1>Images<span><a class="mark" href="#images_images" id="images_images">#</a></span></h1>
-<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>images模块提供了一些手机设备中常见的图片处理函数，包括截图、读写图片、图片剪裁、找色、找图等。</p>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>images模块提供了一些手机设备中常见的图片处理函数，包括截图、读写图片、图片剪裁、旋转、二值化、找色找图等。</p>
+<p>该模块分为两个部分，找图找色部分和图片处理部分。</p>
+<p>需要注意的是，image对象创建后尽量在不使用时进行回收，同时避免循环创建大量图片。因为图片是一种占用内存比较大的资源，尽管Auto.js通过各种方式（比如图片缓存机制、垃圾回收时回收图片、脚本结束时回收所有图片）尽量降低图片资源的泄漏和内存占用，但是糟糕的代码仍然可以占用大量内存。</p>
+<p>Image对象通过调用<code>recycle()</code>函数来回收。例如：</p>
+<pre><code>// 读取图片
+var img = images.read(&quot;./1.png&quot;);
+//对图片进行操作
+... 
+// 回收图片
+img.recycle();
+</code></pre><p>例外的是，<code>caputerScreen()</code>返回的图片不需要回收。</p>
+<h2>图片处理<span><a class="mark" href="#images" id="images">#</a></span></h2>
+<h2>images.read(path)<span><a class="mark" href="#images_images_read_path" id="images_images_read_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片路径</li>
+</ul>
+</div><p>读取在路径path的图片文件并返回一个Image对象。如果文件不存在或者文件无法解码则返回null。</p>
+<h2>images.load(url)<span><a class="mark" href="#images_images_load_url" id="images_images_load_url">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片URL地址</li>
+</ul>
+</div><p>加载在地址URL的网络图片并返回一个Image对象。如果地址不存在或者图片无法解码则返回null。</p>
+<h2>images.copy(img)<span><a class="mark" href="#images_images_copy_img" id="images_images_copy_img">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+</div><p>复制一张图片并返回新的副本。该函数会完全复制img对象的数据。</p>
+<h2>images.save(image, path[, format = &quot;png&quot;, quality = 100])<span><a class="mark" href="#images_images_save_image_path_format_png_quality_100" id="images_images_save_image_path_format_png_quality_100">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
+<li><code>format</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片格式，可选的值为:<ul>
+<li><code>png</code></li>
+<li><code>jpeg</code>/<code>jpg</code></li>
+<li><code>webp</code></li>
+</ul>
+</li>
+<li><code>quality</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片质量，为0~100的整数值</li>
+</ul>
+</div><p>把图片image以PNG格式保存到path中。如果文件不存在会被创建；文件存在会被覆盖。</p>
+<pre><code>//把图片压缩为原来的一半质量并保存
+var img = images.read(&quot;/sdcard/1.png&quot;);
+images.save(img, &quot;/sdcard/1.jpg&quot;, &quot;jpg&quot;, 50);
+app.viewFile(&quot;/sdcard/1.jpg&quot;);
+</code></pre><h2>images.fromBase64(base64)<span><a class="mark" href="#images_images_frombase64_base64" id="images_images_frombase64_base64">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>base64</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片的Base64数据</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+</div><p>解码Base64数据并返回解码后的图片Image对象。如果base64无法解码则返回<code>null</code>。</p>
+<h2>images.toBase64(img[, format = &quot;png&quot;, quality = 100])<span><a class="mark" href="#images_images_tobase64_img_format_png_quality_100" id="images_images_tobase64_img_format_png_quality_100">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>image</code> <span class="type">&lt;image&gt;</span> 图片</li>
+<li><code>format</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片格式，可选的值为:<ul>
+<li><code>png</code></li>
+<li><code>jpeg</code>/<code>jpg</code></li>
+<li><code>webp</code></li>
+</ul>
+</li>
+<li><code>quality</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片质量，为0~100的整数值</li>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>把图片编码为base64数据并返回。</p>
+<h2>images.fromBytes(bytes)<span><a class="mark" href="#images_images_frombytes_bytes" id="images_images_frombytes_bytes">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>bytes</code> <span class="type">&lt;byte[]&gt;</span> 字节数组</li>
+</ul>
+</div><p>解码字节数组bytes并返回解码后的图片Image对象。如果bytes无法解码则返回<code>null</code>。</p>
+<h2>images.toBytes(img[, format = &quot;png&quot;, quality = 100])<span><a class="mark" href="#images_images_tobytes_img_format_png_quality_100" id="images_images_tobytes_img_format_png_quality_100">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>image</code> <span class="type">&lt;image&gt;</span> 图片</li>
+<li><code>format</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片格式，可选的值为:<ul>
+<li><code>png</code></li>
+<li><code>jpeg</code>/<code>jpg</code></li>
+<li><code>webp</code></li>
+</ul>
+</li>
+<li><code>quality</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片质量，为0~100的整数值</li>
+<li>返回 <span class="type">&lt;byte[]&gt;</span></li>
+</ul>
+</div><p>把图片编码为字节数组并返回。</p>
+<h2>images.clip(img, x, y, w, h)<span><a class="mark" href="#images_images_clip_img_x_y_w_h" id="images_images_clip_img_x_y_w_h">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的左上角横坐标</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的左上角纵坐标</li>
+<li><code>w</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的宽度</li>
+<li><code>h</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的高度</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+</div><p>从图片img的位置(x, y)处剪切大小为w * h的区域，并返回该剪切区域的新图片。</p>
+<pre><code>var src = images.read(&quot;/sdcard/1.png&quot;);
+var clip = images.clip(src, 100, 100, 400, 400);
+images.save(clip, &quot;/sdcard/clip.png&quot;);
+</code></pre><h2>images.resize(img, size[, interpolation])<span><a class="mark" href="#images_images_resize_img_size_interpolation" id="images_images_resize_img_size_interpolation">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>size</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 两个元素的数组[w, h]，分别表示宽度和高度；如果只有一个元素，则宽度和高度相等</li>
+<li><p><code>interpolation</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 插值方法，可选，默认为&quot;LINEAR&quot;（线性插值），可选的值有：</p>
+<ul>
+<li><code>NEAREST</code> 最近邻插值</li>
+<li><code>LINEAR</code> 线性插值（默认）</li>
+<li><code>AREA</code> 区域插值</li>
+<li><code>CUBIC</code> 三次样条插值</li>
+<li><code>LANCZOS4</code> Lanczos插值
+参见<a href="https://docs.opencv.org/3.4.4/da/d54/group__imgproc__transform.html#ga5bb5a1fea74ea38e1a5445ca803ff121">InterpolationFlags</a></li>
+</ul>
+</li>
+<li><p>返回 <span class="type">&lt;Image&gt;</span></p>
+</li>
+</ul>
+<p>调整图片大小，并返回调整后的图片。例如把图片放缩为200*300：<code>images.resize(img, [200, 300])</code>。</p>
+<p>参见<a href="https://docs.opencv.org/3.4.4/da/d54/group__imgproc__transform.html#ga47a974309e9102f5f08231edc7e7529d">Imgproc.resize</a>。</p>
+<h2>images.scale(img, fx, fy[, interpolation])<span><a class="mark" href="#images_images_scale_img_fx_fy_interpolation" id="images_images_scale_img_fx_fy_interpolation">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>fx</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 宽度放缩倍数</li>
+<li><code>fy</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 高度放缩倍数</li>
+<li><p><code>interpolation</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 插值方法，可选，默认为&quot;LINEAR&quot;（线性插值），可选的值有：</p>
+<ul>
+<li><code>NEAREST</code> 最近邻插值</li>
+<li><code>LINEAR</code> 线性插值（默认）</li>
+<li><code>AREA</code> 区域插值</li>
+<li><code>CUBIC</code> 三次样条插值</li>
+<li><code>LANCZOS4</code> Lanczos插值
+参见<a href="https://docs.opencv.org/3.4.4/da/d54/group__imgproc__transform.html#ga5bb5a1fea74ea38e1a5445ca803ff121">InterpolationFlags</a></li>
+</ul>
+</li>
+<li><p>返回 <span class="type">&lt;Image&gt;</span></p>
+</li>
+</ul>
+<p>放缩图片，并返回放缩后的图片。例如把图片变成原来的一半：<code>images.scale(img, 0.5, 0.5)</code>。</p>
+<p>参见<a href="https://docs.opencv.org/3.4.4/da/d54/group__imgproc__transform.html#ga47a974309e9102f5f08231edc7e7529d">Imgproc.resize</a>。</p>
+<h2>images.rotate(img, degress[, x, y])<span><a class="mark" href="#images_images_rotate_img_degress_x_y" id="images_images_rotate_img_degress_x_y">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>degress</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 旋转角度。</li>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 旋转中心x坐标，默认为图片中点</li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 旋转中心y坐标，默认为图片中点</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>将图片逆时针旋转degress度，返回旋转后的图片对象。</p>
+<p>例如逆时针旋转90度为<code>images.rotate(img, 90)</code>。</p>
+<h2>images.concat(img1, image2[, direction])<span><a class="mark" href="#images_images_concat_img1_image2_direction" id="images_images_concat_img1_image2_direction">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img1</code> <span class="type">&lt;Image&gt;</span> 图片1</li>
+<li><code>img2</code> <span class="type">&lt;Image&gt;</span> 图片2</li>
+<li>direction <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 连接方向，默认为&quot;RIGHT&quot;，可选的值有：<ul>
+<li><code>LEFT</code> 将图片2接到图片1左边</li>
+<li><code>RIGHT</code> 将图片2接到图片1右边</li>
+<li><code>TOP</code> 将图片2接到图片1上边</li>
+<li><code>BOTTOM</code> 将图片2接到图片1下边</li>
+</ul>
+</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>连接两张图片，并返回连接后的图像。如果两张图片大小不一致，小的那张将适当居中。</p>
+<h2>images.grayscale(img)<span><a class="mark" href="#images_images_grayscale_img" id="images_images_grayscale_img">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>灰度化图片，并返回灰度化后的图片。</p>
+<h2>image.threshold(img, threshold, maxVal[, type])<span><a class="mark" href="#images_image_threshold_img_threshold_maxval_type" id="images_image_threshold_img_threshold_maxval_type">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 阈值</li>
+<li><code>maxVal</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 最大值</li>
+<li><p><code>type</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 阈值化类型，默认为&quot;BINARY&quot;，参见<a href="https://docs.opencv.org/3.4.4/d7/d1b/group__imgproc__misc.html#gaa9e58d2860d4afa658ef70a9b1115576">ThresholdTypes</a>, 可选的值:</p>
+<ul>
+<li><code>BINARY</code> </li>
+<li><code>BINARY_INV</code> </li>
+<li><code>TRUNC</code></li>
+<li><code>TOZERO</code></li>
+<li><code>TOZERO_INV</code></li>
+<li><code>OTSU</code></li>
+<li><code>TRIANGLE</code> </li>
+</ul>
+</li>
+<li><p>返回 <span class="type">&lt;Image&gt;</span></p>
+</li>
+</ul>
+<p>将图片阈值化，并返回处理后的图像。可以用这个函数进行图片二值化。例如：<code>images.threshold(img, 100, 255, &quot;BINARY&quot;)</code>，这个代码将图片中大于100的值全部变成255，其余变成0，从而达到二值化的效果。如果img是一张灰度化图片，这个代码将会得到一张黑白图片。</p>
+<p>可以参考有关博客（比如<a href="https://blog.csdn.net/u012566751/article/details/77046445">threshold函数的使用</a>）或者OpenCV文档<a href="https://docs.opencv.org/3.4.4/d7/d1b/group__imgproc__misc.html#gae8a4a146d1ca78c626a53577199e9c57">threshold</a>。</p>
+<h2>images.adaptiveThreshold(img, maxValue, adaptiveMethod, thresholdType, blockSize, C)<span><a class="mark" href="#images_images_adaptivethreshold_img_maxvalue_adaptivemethod_thresholdtype_blocksize_c" id="images_images_adaptivethreshold_img_maxvalue_adaptivemethod_thresholdtype_blocksize_c">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>maxValue</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 最大值</li>
+<li><code>adaptiveMethod</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 在一个邻域内计算阈值所采用的算法，可选的值有：<ul>
+<li><code>MEAN_C</code> 计算出领域的平均值再减去参数C的值</li>
+<li><code>GAUSSIAN_C</code> 计算出领域的高斯均值再减去参数C的值</li>
+</ul>
+</li>
+<li><code>thresholdType</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 阈值化类型，可选的值有：<ul>
+<li><code>BINARY</code></li>
+<li><code>BINARY_INV</code> </li>
+</ul>
+</li>
+<li><code>blockSize</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 邻域块大小</li>
+<li><code>C</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 偏移值调整量</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>对图片进行自适应阈值化处理，并返回处理后的图像。</p>
+<p>可以参考有关博客（比如<a href="https://blog.csdn.net/guduruyu/article/details/68059450">threshold与adaptiveThreshold</a>）或者OpenCV文档<a href="https://docs.opencv.org/3.4.4/d7/d1b/group__imgproc__misc.html#ga72b913f352e4a1b1b397736707afcde3">adaptiveThreshold</a>。</p>
+<h2>images.cvtColor(img, code[, dstCn])<span><a class="mark" href="#images_images_cvtcolor_img_code_dstcn" id="images_images_cvtcolor_img_code_dstcn">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>code</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 颜色空间转换的类型，可选的值有一共有205个（参见<a href="https://docs.opencv.org/3.4.4/d8/d01/group__imgproc__color__conversions.html#ga4e0972be5de079fed4e3a10e24ef5ef0">ColorConversionCodes</a>），这里只列出几个：<ul>
+<li><code>BGR2GRAY</code> BGR转换为灰度</li>
+<li><code>BGR2HSV</code> BGR转换为HSV </li>
+<li>``</li>
+</ul>
+</li>
+<li><code>dstCn</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 目标图像的颜色通道数量，如果不填写则根据其他参数自动决定。</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>对图像进行颜色空间转换，并返回转换后的图像。</p>
+<p>可以参考有关博客（比如<a href="https://blog.csdn.net/u011574296/article/details/70896811?locationNum=14&amp;fps=1">颜色空间转换</a>）或者OpenCV文档<a href="https://docs.opencv.org/3.4.4/d8/d01/group__imgproc__color__conversions.html#ga397ae87e1288a81d2363b61574eb8cab">cvtColor</a>。</p>
+<h2>images.inRange(img, lowerBound, upperBound)<span><a class="mark" href="#images_images_inrange_img_lowerbound_upperbound" id="images_images_inrange_img_lowerbound_upperbound">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>lowerBound</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色下界</li>
+<li><code>upperBound</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色下界</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>将图片二值化，在lowerBound~upperBound范围以外的颜色都变成0，在范围以内的颜色都变成255。</p>
+<p>例如<code>images.inRange(img, &quot;#000000&quot;, &quot;#222222&quot;)</code>。</p>
+<h2>images.interval(img, color, interval)<span><a class="mark" href="#images_images_interval_img_color_interval" id="images_images_interval_img_color_interval">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 颜色值</li>
+<li><code>interval</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 每个通道的范围间隔</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>将图片二值化，在color-interval ~ color+interval范围以外的颜色都变成0，在范围以内的颜色都变成255。这里对color的加减是对每个通道而言的。</p>
+<p>例如<code>images.interval(img, &quot;#888888&quot;, 16)</code>，每个通道的颜色值均为0x88，加减16后的范围是[0x78, 0x98]，因此这个代码将把#787878~#989898的颜色变成#FFFFFF，而把这个范围以外的变成#000000。</p>
+<h2>images.blur(img, size[, anchor, type])<span><a class="mark" href="#images_images_blur_img_size_anchor_type" id="images_images_blur_img_size_anchor_type">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>size</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 定义滤波器的大小，如[3, 3]</li>
+<li><code>anchor</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 指定锚点位置(被平滑点)，默认为图像中心</li>
+<li><code>type</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 推断边缘像素类型，默认为&quot;DEFAULT&quot;，可选的值有：<ul>
+<li><code>CONSTANT</code> iiiiii|abcdefgh|iiiiiii with some specified i</li>
+<li><code>REPLICATE</code> aaaaaa|abcdefgh|hhhhhhh</li>
+<li><code>REFLECT</code> fedcba|abcdefgh|hgfedcb</li>
+<li><code>WRAP</code> cdefgh|abcdefgh|abcdefg</li>
+<li><code>REFLECT_101</code> gfedcb|abcdefgh|gfedcba</li>
+<li><code>TRANSPARENT</code> uvwxyz|abcdefgh|ijklmno</li>
+<li><code>REFLECT101</code> same as BORDER_REFLECT_101</li>
+<li><code>DEFAULT</code> same as BORDER_REFLECT_101</li>
+<li><code>ISOLATED</code> do not look outside of ROI</li>
+</ul>
+</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>对图像进行模糊（平滑处理），返回处理后的图像。</p>
+<p>可以参考有关博客（比如<a href="https://www.cnblogs.com/denny402/p/3848316.html">实现图像平滑处理</a>）或者OpenCV文档<a href="https://docs.opencv.org/3.4.4/d4/d86/group__imgproc__filter.html#ga8c45db9afe636703801b0b2e440fce37">blur</a>。</p>
+<h2>images.medianBlur(img, size)<span><a class="mark" href="#images_images_medianblur_img_size" id="images_images_medianblur_img_size">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>size</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 定义滤波器的大小，如[3, 3]</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>对图像进行中值滤波，返回处理后的图像。</p>
+<p>可以参考有关博客（比如<a href="https://www.cnblogs.com/denny402/p/3848316.html">实现图像平滑处理</a>）或者OpenCV文档<a href="https://docs.opencv.org/3.4.4/d4/d86/group__imgproc__filter.html#ga564869aa33e58769b4469101aac458f9">blur</a>。</p>
+<h2>images.gaussianBlur(img, size[, sigmaX, sigmaY, type])<span><a class="mark" href="#images_images_gaussianblur_img_size_sigmax_sigmay_type" id="images_images_gaussianblur_img_size_sigmax_sigmay_type">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
+<li><code>size</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 定义滤波器的大小，如[3, 3]</li>
+<li><code>sigmaX</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> x方向的标准方差，不填写则自动计算</li>
+<li><code>sigmaY</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> y方向的标准方差，不填写则自动计算</li>
+<li><code>type</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 推断边缘像素类型，默认为&quot;DEFAULT&quot;，参见<code>images.blur</code></li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>对图像进行高斯模糊，返回处理后的图像。</p>
+<p>可以参考有关博客（比如<a href="https://www.cnblogs.com/denny402/p/3848316.html">实现图像平滑处理</a>）或者OpenCV文档<a href="https://docs.opencv.org/3.4.4/d4/d86/group__imgproc__filter.html#gaabe8c836e97159a9193fb0b11ac52cf1">GaussianBlur</a>。</p>
+<h2>images.matToImage(mat)<span><a class="mark" href="#images_images_mattoimage_mat" id="images_images_mattoimage_mat">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>mat</code> <span class="type">&lt;Mat&gt;</span> OpenCV的Mat对象</li>
+<li>返回 <span class="type">&lt;Image&gt;</span></li>
+</ul>
+<p>把Mat对象转换为Image对象。</p>
+<h2>找图找色<span><a class="mark" href="#images_1" id="images_1">#</a></span></h2>
 <h2>images.requestScreenCapture([landscape])<span><a class="mark" href="#images_images_requestscreencapture_landscape" id="images_images_requestscreencapture_landscape">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>landscape</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&lt;boolean&gt;</a> 布尔值， 表示将要执行的截屏是否为横屏。如果landscape为false, 则表示竖屏截图; true为横屏截图。</li>
@@ -3662,90 +4154,7 @@ toast(colors.toString(color));
 </div><p>返回图片image在点(x, y)处的像素的ARGB值。  </p>
 <p>该值的格式为0xAARRGGBB，是一个&quot;32位整数&quot;(虽然JavaScript中并不区分整数类型和其他数值类型)。</p>
 <p>坐标系以图片左上角为原点。以图片左侧边为y轴，上侧边为x轴。</p>
-<h2>images.copy(img)<span><a class="mark" href="#images_images_copy_img" id="images_images_copy_img">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
-<li>返回 <span class="type">&lt;Image&gt;</span></li>
-</ul>
-</div><p>复制一张图片并返回新的副本。该函数会完全复制img对象的数据。</p>
-<h2>images.save(image, path[, format = &quot;png&quot;, quality = 100])<span><a class="mark" href="#images_images_save_image_path_format_png_quality_100" id="images_images_save_image_path_format_png_quality_100">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
-<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 路径</li>
-<li><code>format</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片格式，可选的值为:<ul>
-<li><code>png</code></li>
-<li><code>jpeg</code>/<code>jpg</code></li>
-<li><code>webp</code></li>
-</ul>
-</li>
-<li><code>quality</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片质量，为0~100的整数值</li>
-</ul>
-</div><p>把图片image以PNG格式保存到path中。如果文件不存在会被创建；文件存在会被覆盖。</p>
-<pre><code>//把图片压缩为原来的一半质量并保存
-var img = images.read(&quot;/sdcard/1.png&quot;);
-images.save(img, &quot;/sdcard/1.jpg&quot;, &quot;jpg&quot;, 50);
-app.viewFile(&quot;/sdcard/1.jpg&quot;);
-</code></pre><h2>images.read(path)<span><a class="mark" href="#images_images_read_path" id="images_images_read_path">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片路径</li>
-</ul>
-</div><p>读取在路径path的图片文件并返回一个Image对象。如果文件不存在或者文件无法解码则返回null。</p>
-<h2>images.load(url)<span><a class="mark" href="#images_images_load_url" id="images_images_load_url">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片URL地址</li>
-</ul>
-</div><p>加载在地址URL的网络图片并返回一个Image对象。如果地址不存在或者图片无法解码则返回null。</p>
-<h2>images.fromBase64(base64)<span><a class="mark" href="#images_images_frombase64_base64" id="images_images_frombase64_base64">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>base64</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片的Base64数据</li>
-<li>返回 <span class="type">&lt;Image&gt;</span></li>
-</ul>
-</div><p>解码Base64数据并返回解码后的图片Image对象。如果base64无法解码则返回<code>null</code>。</p>
-<h2>images.toBase64(img[, format = &quot;png&quot;, quality = 100])<span><a class="mark" href="#images_images_tobase64_img_format_png_quality_100" id="images_images_tobase64_img_format_png_quality_100">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>image</code> <span class="type">&lt;image&gt;</span> 图片</li>
-<li><code>format</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片格式，可选的值为:<ul>
-<li><code>png</code></li>
-<li><code>jpeg</code>/<code>jpg</code></li>
-<li><code>webp</code></li>
-</ul>
-</li>
-<li><code>quality</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片质量，为0~100的整数值</li>
-<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a></li>
-</ul>
-</div><p>把图片编码为base64数据并返回。</p>
-<h2>images.fromBytes(bytes)<span><a class="mark" href="#images_images_frombytes_bytes" id="images_images_frombytes_bytes">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>bytes</code> <span class="type">&lt;byte[]&gt;</span> 字节数组</li>
-</ul>
-</div><p>解码字节数组bytes并返回解码后的图片Image对象。如果bytes无法解码则返回<code>null</code>。</p>
-<h2>images.toBytes(img[, format = &quot;png&quot;, quality = 100])<span><a class="mark" href="#images_images_tobytes_img_format_png_quality_100" id="images_images_tobytes_img_format_png_quality_100">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>image</code> <span class="type">&lt;image&gt;</span> 图片</li>
-<li><code>format</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 图片格式，可选的值为:<ul>
-<li><code>png</code></li>
-<li><code>jpeg</code>/<code>jpg</code></li>
-<li><code>webp</code></li>
-</ul>
-</li>
-<li><code>quality</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片质量，为0~100的整数值</li>
-<li>返回 <span class="type">&lt;byte[]&gt;</span></li>
-</ul>
-</div><p>把图片编码为字节数组并返回。</p>
-<h2>images.clip(img, x, y, w, h)<span><a class="mark" href="#images_images_clip_img_x_y_w_h" id="images_images_clip_img_x_y_w_h">#</a></span></h2>
-<div class="signature"><ul>
-<li><code>img</code> <span class="type">&lt;Image&gt;</span> 图片</li>
-<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的左上角横坐标</li>
-<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的左上角纵坐标</li>
-<li><code>w</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的宽度</li>
-<li><code>h</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 剪切区域的高度</li>
-<li>返回 <span class="type">&lt;Image&gt;</span></li>
-</ul>
-</div><p>从图片img的位置(x, y)处剪切大小为w * h的区域，并返回该剪切区域的新图片。</p>
-<pre><code>var src = images.read(&quot;/sdcard/1.png&quot;);
-var clip = images.clip(src, 100, 100, 400, 400);
-images.save(clip, &quot;/sdcard/clip.png&quot;);
-</code></pre><h2>images.findColor(image, color, options)<span><a class="mark" href="#images_images_findcolor_image_color_options" id="images_images_findcolor_image_color_options">#</a></span></h2>
+<h2>images.findColor(image, color, options)<span><a class="mark" href="#images_images_findcolor_image_color_options" id="images_images_findcolor_image_color_options">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>image</code> <span class="type">&lt;Image&gt;</span> 图片</li>
 <li><code>color</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 要寻找的颜色的RGB值。如果是一个整数，则以0xRRGGBB的形式代表RGB值（A通道会被忽略）；如果是字符串，则以&quot;#RRGGBB&quot;代表其RGB值。</li>
@@ -3923,7 +4332,94 @@ if(p){
     threshold: threshold
 })
 </code></pre><p>该函数也可以作为全局函数使用。</p>
-<h1>Image<span><a class="mark" href="#images_image" id="images_image">#</a></span></h1>
+<h2>images.matchTemplate(img, template, options)<span><a class="mark" href="#images_images_matchtemplate_img_template_options" id="images_images_matchtemplate_img_template_options">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>img</code> <span class="type">&lt;Image&gt;</span> 大图片</li>
+<li><code>template</code> <span class="type">&lt;Image&gt;</span> 小图片（模板）</li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&lt;Object&gt;</a> 找图选项：<ul>
+<li><code>threshold</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 图片相似度。取值范围为0~1的浮点数。默认值为0.9。</li>
+<li><code>region</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 找图区域。参见findColor函数关于region的说明。</li>
+<li><code>max</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 找图结果最大数量，默认为5</li>
+<li><code>level</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> <strong>一般而言不必修改此参数</strong>。不加此参数时该参数会根据图片大小自动调整。找图算法是采用图像金字塔进行的, level参数表示金字塔的层次, level越大可能带来越高的找图效率，但也可能造成找图失败（图片因过度缩小而无法分辨）或返回错误位置。因此，除非您清楚该参数的意义并需要进行性能调优，否则不需要用到该参数。</li>
+</ul>
+</li>
+<li>返回 <span class="type">&lt;MatchingResult&gt;</span></li>
+</ul>
+<p>在大图片中搜索小图片，并返回搜索结果MatchingResult。该函数可以用于找图时找出多个位置，可以通过max参数控制最大的结果数量。也可以对匹配结果进行排序、求最值等操作。</p>
+<h1>MatchingResult<span><a class="mark" href="#images_matchingresult" id="images_matchingresult">#</a></span></h1>
+<p><strong>[v4.1.0新增]</strong></p>
+<h2>matches<span><a class="mark" href="#images_matches" id="images_matches">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 匹配结果的数组。</li>
+</ul>
+</div><p>数组的元素是一个Match对象：</p>
+<ul>
+<li><code>point</code> <span class="type">&lt;Point&gt;</span> 匹配位置</li>
+<li><code>similarity</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 相似度</li>
+</ul>
+<p>例如: </p>
+<pre><code>var result = images.matchTemplate(img, template, {
+    max: 100
+});
+result.matches.forEach(match =&gt; {
+    log(&quot;point = &quot; + match.point + &quot;, similarity = &quot; + match.similarity);
+});
+</code></pre><h2>points<span><a class="mark" href="#images_points" id="images_points">#</a></span></h2>
+<div class="signature"><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 匹配位置的数组。</li>
+</ul>
+</div><h2>first()<span><a class="mark" href="#images_first" id="images_first">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>第一个匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>last()<span><a class="mark" href="#images_last" id="images_last">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>最后一个匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>leftmost()<span><a class="mark" href="#images_leftmost" id="images_leftmost">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>位于大图片最左边的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>topmost()<span><a class="mark" href="#images_topmost" id="images_topmost">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>位于大图片最上边的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>rightmost()<span><a class="mark" href="#images_rightmost" id="images_rightmost">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>位于大图片最右边的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>bottommost()<span><a class="mark" href="#images_bottommost" id="images_bottommost">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>位于大图片最下边的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>best()<span><a class="mark" href="#images_best" id="images_best">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>相似度最高的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>worst()<span><a class="mark" href="#images_worst" id="images_worst">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <span class="type">&lt;Match&gt;</span></li>
+</ul>
+</div><p>相似度最低的匹配结果。如果没有任何匹配，则返回<code>null</code>。</p>
+<h2>sortBy(cmp)<span><a class="mark" href="#images_sortby_cmp" id="images_sortby_cmp">#</a></span></h2>
+<div class="signature"><ul>
+<li>cmp <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a>|<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 比较函数，或者是一个字符串表示排序方向。例如&quot;left&quot;表示将匹配结果按匹配位置从左往右排序、&quot;top&quot;表示将匹配结果按匹配位置从上往下排序，&quot;left-top&quot;表示将匹配结果按匹配位置从左往右、从上往下排序。方向包括<code>left</code>（左）, <code>top</code> （上）, <code>right</code> （右）, <code>bottom</code>（下）。</li>
+<li><span class="type">&lt;MatchingResult&gt;</span></li>
+</ul>
+</div><p>对匹配结果进行排序，并返回排序后的结果。</p>
+<pre><code>var result = images.matchTemplate(img, template, {
+    max: 100
+});
+log(result.sortBy(&quot;top-right&quot;));
+</code></pre><h1>Image<span><a class="mark" href="#images_image" id="images_image">#</a></span></h1>
 <p>表示一张图片，可以是截图的图片，或者本地读取的图片，或者从网络获取的图片。</p>
 <h2>Image.getWidth()<span><a class="mark" href="#images_image_getwidth" id="images_image_getwidth">#</a></span></h2>
 <p>返回以像素为单位图片宽度。</p>
@@ -3942,6 +4438,7 @@ if(p){
 </div><p>返回图片image在点(x, y)处的像素的ARGB值。  </p>
 <p>该值的格式为0xAARRGGBB，是一个&quot;32位整数&quot;(虽然JavaScript中并不区分整数类型和其他数值类型)。</p>
 <p>坐标系以图片左上角为原点。以图片左侧边为y轴，上侧边为x轴。</p>
+<p>##</p>
 <h1>Point<span><a class="mark" href="#images_point" id="images_point">#</a></span></h1>
 <p>findColor, findImage返回的对象。表示一个点（坐标）。</p>
 <h2>Point.x<span><a class="mark" href="#images_point_x" id="images_point_x">#</a></span></h2>
@@ -4210,7 +4707,7 @@ sleep(media.getMusicDuration() - 30 * 1000);
 <h1>module (模块)<span><a class="mark" href="#modules_module" id="modules_module">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>Auto.js 有一个简单的模块加载系统。 在 Auto.js 中，文件和模块是一一对应的（每个文件被视为一个独立的模块）。</p>
 <p>例子，假设有一个名为 foo.js 的文件：</p>
-<pre><code>const circle = require(&#39;circle.js&#39;);
+<pre><code>var circle = require(&#39;circle.js&#39;);
 console.log(&quot;半径为 4 的圆的面积是 %d&quot;, circle.area(4));
 </code></pre><p>在第一行中，foo.js 加载了同一目录下的 circle.js 模块。</p>
 <p>circle.js 文件的内容为：</p>
@@ -4218,7 +4715,9 @@ console.log(&quot;半径为 4 的圆的面积是 %d&quot;, circle.area(4));
 
 var circle = {};
 
-circle.area = (r) =&gt; PI * r ** 2;
+circle.area = function (r) {
+  return PI * r * r;
+};
 
 circle.circumference = (r) =&gt; 2 * PI * r;
 
@@ -4261,6 +4760,7 @@ module.exports = function(width) {
 <pre><code>auto();
 </code></pre><h2>auto.waitFor()<span><a class="mark" href="#widgets_based_automation_auto_waitfor" id="widgets_based_automation_auto_waitfor">#</a></span></h2>
 <p>检查无障碍服务是否已经启用，如果没有启用则跳转到无障碍服务启用界面，并等待无障碍服务启动；当无障碍服务启动后脚本会继续运行。</p>
+<p>因为该函数是阻塞的，因此除非是有协程特性，否则不能在ui模式下运行该函数，建议在ui模式下使用<code>auto()</code>函数。</p>
 <h2>auto.setMode(mode)<span><a class="mark" href="#widgets_based_automation_auto_setmode_mode" id="widgets_based_automation_auto_setmode_mode">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>mode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 模式</li>
@@ -4270,6 +4770,72 @@ module.exports = function(width) {
 <li><code>fast</code> 快速模式。该模式下会启用控件缓存，从而选择器获取屏幕控件更快。对于需要快速的控件查看和操作的脚本可以使用该模式，一般脚本则没有必要使用该函数。</li>
 <li><code>normal</code> 正常模式，默认。</li>
 </ul>
+<h2>auto.setFlags(flags)<span><a class="mark" href="#widgets_based_automation_auto_setflags_flags" id="widgets_based_automation_auto_setflags_flags">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>flags</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 一些标志，来启用和禁用某些特性，包括：<ul>
+<li><code>findOnUiThread</code> 使用该特性后，选择器搜索时会在主进程进行。该特性用于解决线程安全问题导致的次生问题，不过目前貌似已知问题并不是线程安全问题。</li>
+<li><code>useUsageStats</code> 使用该特性后，将会以&quot;使用情况统计&quot;服务的结果来检测当前正在运行的应用包名（需要授予&quot;查看使用情况统计&quot;权限)。如果觉得currentPackage()返回的结果不太准确，可以尝试该特性。</li>
+<li><code>useShell</code> 使用该特性后，将使用shell命令获取当前正在运行的应用的包名、活动名称，但是需要root权限。</li>
+</ul>
+</li>
+</ul>
+<p>启用有关automator的一些特性。例如：</p>
+<pre><code>auto.setFlags([&quot;findOnUiThread&quot;, &quot;useShell&quot;]);
+</code></pre><h2>auto.serivce<span><a class="mark" href="#widgets_based_automation_auto_serivce" id="widgets_based_automation_auto_serivce">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><a href="https://developer.android.com/reference/android/accessibilityservice/AccessibilityService">AccessibilityService</a></li>
+</ul>
+<p>获取无障碍服务。如果无障碍服务没有启动，则返回<code>null</code>。</p>
+<p>参见<a href="https://developer.android.com/reference/android/accessibilityservice/AccessibilityService">AccessibilityService</a>。</p>
+<h2>auto.windows<span><a class="mark" href="#widgets_based_automation_auto_windows" id="widgets_based_automation_auto_windows">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a></li>
+</ul>
+<p>当前所有窗口(<a href="https://developer.android.com/reference/android/view/accessibility/AccessibilityWindowInfo">AccessibilityWindowInfo</a>)的数组，可能包括状态栏、输入法、当前应用窗口，弹出窗口、悬浮窗、分屏应用窗口等。可以分别获取每个窗口的布局信息。</p>
+<p>该函数需要Android 5.0以上才能运行。</p>
+<h2>auto.root<span><a class="mark" href="#widgets_based_automation_auto_root" id="widgets_based_automation_auto_root">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><span class="type">&lt;UiObject&gt;</span></li>
+</ul>
+<p>当前窗口的布局根元素。如果无障碍服务未启动或者WindowFilter均返回false，则会返回<code>null</code>。</p>
+<p>如果不设置windowFilter，则当前窗口即为活跃的窗口（获取到焦点、正在触摸的窗口）；如果设置了windowFilter，则获取的是过滤的窗口中的第一个窗口。</p>
+<p>如果系统是Android5.0以下，则始终返回当前活跃的窗口的布局根元素。</p>
+<h2>auto.rootInActiveWindow<span><a class="mark" href="#widgets_based_automation_auto_rootinactivewindow" id="widgets_based_automation_auto_rootinactivewindow">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><span class="type">&lt;UiObject&gt;</span></li>
+</ul>
+<p>当前活跃的窗口（获取到焦点、正在触摸的窗口）的布局根元素。如果无障碍服务未启动则为<code>null</code>。</p>
+<h2>auto.setWindowFilter(filter)<span><a class="mark" href="#widgets_based_automation_auto_setwindowfilter_filter" id="widgets_based_automation_auto_setwindowfilter_filter">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>filter</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 参数为窗口(<a href="https://developer.android.com/reference/android/view/accessibility/AccessibilityWindowInfo">AccessibilityWindowInfo</a>)，返回值为Boolean的函数。</li>
+</ul>
+<p>设置窗口过滤器。这个过滤器可以决定哪些窗口是目标窗口，并影响选择器的搜索。例如，如果想要选择器在所有窗口（包括状态栏、输入法等）中搜索，只需要使用以下代码：</p>
+<pre><code>auto.setWindowFilter(function(window){
+    //不管是如何窗口，都返回true，表示在该窗口中搜索
+    return true;
+});
+</code></pre><p>又例如，当前使用了分屏功能，屏幕上有Auto.js和QQ两个应用，但我们只想选择器对QQ界面进行搜索，则：</p>
+<pre><code>auto.setWindowFilter(function(window){
+    // 对于应用窗口，他的title属性就是应用的名称，因此可以通过title属性来判断一个应用
+    return window.title == &quot;QQ&quot;;
+});
+</code></pre><p>选择器默认是在当前活跃的窗口中搜索，不会搜索诸如悬浮窗、状态栏之类的，使用WindowFilter则可以控制搜索的窗口。</p>
+<p>需要注意的是， 如果WindowFilter返回的结果均为false，则选择器的搜索结果将为空。</p>
+<p>另外setWindowFilter函数也会影响<code>auto.windowRoots</code>的结果。</p>
+<p>该函数需要Android 5.0以上才有效。</p>
+<h2>auto.windowRoots<span><a class="mark" href="#widgets_based_automation_auto_windowroots" id="widgets_based_automation_auto_windowroots">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a></li>
+</ul>
+<p>返回当前被WindowFilter过滤的窗口的布局根元素组成的数组。</p>
+<p>如果系统是Android5.0以下，则始终返回当前活跃的窗口的布局根元素的数组。</p>
 <h1>SimpleActionAutomator<span><a class="mark" href="#widgets_based_automation_simpleactionautomator" id="widgets_based_automation_simpleactionautomator">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>SimpleActionAutomator提供了一些模拟简单操作的函数，例如点击文字、模拟按键等。这些函数可以直接作为全局函数使用。</p>
 <h2>click(text[, i])<span><a class="mark" href="#widgets_based_automation_click_text_i" id="widgets_based_automation_click_text_i">#</a></span></h2>
@@ -4402,6 +4968,18 @@ sendButton.click();
 </div><p>创建一个新的选择器。但一般情况不需要使用该函数，因为可以直接用相应条件的语句创建选择器。</p>
 <p>由于历史遗留原因，本不应该这样设计(不应该让<code>id()</code>, <code>text()</code>等作为全局函数，而是应该用<code>By.id()</code>, <code>By.text()</code>)，但为了后向兼容性只能保留这个设计。</p>
 <p>这样的API设计会污染全局变量，后续可能会支持&quot;去掉这些全局函数而使用By.<em>*</em>&quot;的选项。</p>
+<h2>UiSelector.algorithm(algorithm)<span><a class="mark" href="#widgets_based_automation_uiselector_algorithm_algorithm" id="widgets_based_automation_uiselector_algorithm_algorithm">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>algorithm</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 搜索算法，可选的值有：<ul>
+<li><code>DFS</code> 深度优先算法，选择器的默认算法</li>
+<li><code>BFS</code> 广度优先算法</li>
+</ul>
+</li>
+</ul>
+<p>指定选择器的搜索算法。例如：</p>
+<pre><code>log(selector().text(&quot;文本&quot;).algorithm(&quot;BFS&quot;).find());
+</code></pre><p>广度优先在控件所在层次较低时，或者布局的层次不多时，通常能更快找到控件。</p>
 <h2>UiSelector.text(str)<span><a class="mark" href="#widgets_based_automation_uiselector_text_str" id="widgets_based_automation_uiselector_text_str">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>str</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 控件文本</li>
@@ -6005,11 +6583,12 @@ setTimeout(function(){
 <!-- [start-include:ui.md] -->
 <h1>用户界面: UI<span><a class="mark" href="#ui_ui" id="ui_ui">#</a></span></h1>
 <p>ui模块提供了编写用户界面的支持。</p>
-<p>带有ui的脚本的<strong>第一行</strong>必须使用<code>&quot;ui&quot;</code>指定ui模式，否则脚本将不会以ui模式运行。正确示范:</p>
+<p>带有ui的脚本的的最前面必须使用<code>&quot;ui&quot;;</code>指定ui模式，否则脚本将不会以ui模式运行。正确示范:</p>
 <pre><code>&quot;ui&quot;;
 
 //脚本的其他代码
-</code></pre><p>界面是由视图(View)组成的。View分成两种，控件(Widget)和布局(Layout)。控件(Widget)用来具体显示文字、图片、网页等，比如文本控件(text)用来显示文字，按钮控件(button)则可以显示一个按钮并提供点击效果，图片控件(img)则用来显示来自网络或者文件的图片，除此之外还有输入框控件(input)、进度条控件(progressbar)、单选复选框控件(checkbox)等；布局(Layout)则是装着一个或多个控件的&quot;容器&quot;，用于控制在他里面的控件的位置，比如垂直布局(vertical)会把他里面的控件从上往下依次显示(即纵向排列)，水平布局(horizontal)则会把他里面的控件从左往右依次显示(即横向排列)，以及帧布局(frame)，他会把他里面的控件直接在左上角显示，如果有多个控件，后面的控件会重叠在前面的控件上。</p>
+</code></pre><p>字符串&quot;ui&quot;的前面可以有注释、空行和空格<strong>[v4.1.0新增]</strong>，但是不能有其他代码。</p>
+<p>界面是由视图(View)组成的。View分成两种，控件(Widget)和布局(Layout)。控件(Widget)用来具体显示文字、图片、网页等，比如文本控件(text)用来显示文字，按钮控件(button)则可以显示一个按钮并提供点击效果，图片控件(img)则用来显示来自网络或者文件的图片，除此之外还有输入框控件(input)、进度条控件(progressbar)、单选复选框控件(checkbox)等；布局(Layout)则是装着一个或多个控件的&quot;容器&quot;，用于控制在他里面的控件的位置，比如垂直布局(vertical)会把他里面的控件从上往下依次显示(即纵向排列)，水平布局(horizontal)则会把他里面的控件从左往右依次显示(即横向排列)，以及帧布局(frame)，他会把他里面的控件直接在左上角显示，如果有多个控件，后面的控件会重叠在前面的控件上。</p>
 <p>我们使用xml来编写界面，并通过<code>ui.layout()</code>函数指定界面的布局xml。举个例子：</p>
 <pre><code>&quot;ui&quot;;
 ui.layout(

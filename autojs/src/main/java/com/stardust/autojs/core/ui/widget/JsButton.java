@@ -2,6 +2,8 @@ package com.stardust.autojs.core.ui.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
+import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.widget.Button;
 
@@ -23,6 +25,7 @@ public class JsButton extends Button {
         super(context, attrs, defStyleAttr);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public JsButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }

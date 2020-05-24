@@ -4,6 +4,7 @@
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
+/.idea/caches
 .DS_Store
 /build
 /release
@@ -11,3 +12,4 @@
 .externalNativeBuild
 *.apk
 *.exe
+.idea/caches/build_file_checksums.ser

@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>基于控件的操作 | Auto.js 3.0.0 文档</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <title>基于控件的操作 | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="https://nodejs.org/api/widgets-based-automation.html">
@@ -61,7 +61,7 @@
 
     <div id="column1" data-id="widgets-based-automation" class="interior">
       <header>
-        <h1>Auto.js 3.0.0 文档</h1>
+        <h1>Auto.js 4.1.0 文档</h1>
         <div id="gtoc">
           <p>
             <a href="index.html" name="toc">索引</a> |
@@ -78,6 +78,13 @@
 <li><span class="stability_undefined"><a href="#widgets_based_automation_auto_mode">auto([mode])</a></span></li>
 <li><span class="stability_undefined"><a href="#widgets_based_automation_auto_waitfor">auto.waitFor()</a></span></li>
 <li><span class="stability_undefined"><a href="#widgets_based_automation_auto_setmode_mode">auto.setMode(mode)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_setflags_flags">auto.setFlags(flags)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_serivce">auto.serivce</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_windows">auto.windows</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_root">auto.root</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_rootinactivewindow">auto.rootInActiveWindow</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_setwindowfilter_filter">auto.setWindowFilter(filter)</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_auto_windowroots">auto.windowRoots</a></span></li>
 </ul>
 </li>
 <li><span class="stability_2"><a href="#widgets_based_automation_simpleactionautomator">SimpleActionAutomator</a></span><ul>
@@ -92,6 +99,7 @@
 </li>
 <li><span class="stability_undefined"><a href="#widgets_based_automation_uiselector">UiSelector</a></span><ul>
 <li><span class="stability_undefined"><a href="#widgets_based_automation_selector">selector()</a></span></li>
+<li><span class="stability_undefined"><a href="#widgets_based_automation_uiselector_algorithm_algorithm">UiSelector.algorithm(algorithm)</a></span></li>
 <li><span class="stability_undefined"><a href="#widgets_based_automation_uiselector_text_str">UiSelector.text(str)</a></span></li>
 <li><span class="stability_undefined"><a href="#widgets_based_automation_uiselector_textcontains_str">UiSelector.textContains(str)</a></span></li>
 <li><span class="stability_undefined"><a href="#widgets_based_automation_uiselector_textstartswith_prefix">UiSelector.textStartsWith(prefix)</a></span></li>
@@ -222,6 +230,7 @@
 <pre><code>auto();
 </code></pre><h2>auto.waitFor()<span><a class="mark" href="#widgets_based_automation_auto_waitfor" id="widgets_based_automation_auto_waitfor">#</a></span></h2>
 <p>检查无障碍服务是否已经启用，如果没有启用则跳转到无障碍服务启用界面，并等待无障碍服务启动；当无障碍服务启动后脚本会继续运行。</p>
+<p>因为该函数是阻塞的，因此除非是有协程特性，否则不能在ui模式下运行该函数，建议在ui模式下使用<code>auto()</code>函数。</p>
 <h2>auto.setMode(mode)<span><a class="mark" href="#widgets_based_automation_auto_setmode_mode" id="widgets_based_automation_auto_setmode_mode">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>mode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 模式</li>
@@ -231,6 +240,72 @@
 <li><code>fast</code> 快速模式。该模式下会启用控件缓存，从而选择器获取屏幕控件更快。对于需要快速的控件查看和操作的脚本可以使用该模式，一般脚本则没有必要使用该函数。</li>
 <li><code>normal</code> 正常模式，默认。</li>
 </ul>
+<h2>auto.setFlags(flags)<span><a class="mark" href="#widgets_based_automation_auto_setflags_flags" id="widgets_based_automation_auto_setflags_flags">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>flags</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 一些标志，来启用和禁用某些特性，包括：<ul>
+<li><code>findOnUiThread</code> 使用该特性后，选择器搜索时会在主进程进行。该特性用于解决线程安全问题导致的次生问题，不过目前貌似已知问题并不是线程安全问题。</li>
+<li><code>useUsageStats</code> 使用该特性后，将会以&quot;使用情况统计&quot;服务的结果来检测当前正在运行的应用包名（需要授予&quot;查看使用情况统计&quot;权限)。如果觉得currentPackage()返回的结果不太准确，可以尝试该特性。</li>
+<li><code>useShell</code> 使用该特性后，将使用shell命令获取当前正在运行的应用的包名、活动名称，但是需要root权限。</li>
+</ul>
+</li>
+</ul>
+<p>启用有关automator的一些特性。例如：</p>
+<pre><code>auto.setFlags([&quot;findOnUiThread&quot;, &quot;useShell&quot;]);
+</code></pre><h2>auto.serivce<span><a class="mark" href="#widgets_based_automation_auto_serivce" id="widgets_based_automation_auto_serivce">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><a href="https://developer.android.com/reference/android/accessibilityservice/AccessibilityService">AccessibilityService</a></li>
+</ul>
+<p>获取无障碍服务。如果无障碍服务没有启动，则返回<code>null</code>。</p>
+<p>参见<a href="https://developer.android.com/reference/android/accessibilityservice/AccessibilityService">AccessibilityService</a>。</p>
+<h2>auto.windows<span><a class="mark" href="#widgets_based_automation_auto_windows" id="widgets_based_automation_auto_windows">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a></li>
+</ul>
+<p>当前所有窗口(<a href="https://developer.android.com/reference/android/view/accessibility/AccessibilityWindowInfo">AccessibilityWindowInfo</a>)的数组，可能包括状态栏、输入法、当前应用窗口，弹出窗口、悬浮窗、分屏应用窗口等。可以分别获取每个窗口的布局信息。</p>
+<p>该函数需要Android 5.0以上才能运行。</p>
+<h2>auto.root<span><a class="mark" href="#widgets_based_automation_auto_root" id="widgets_based_automation_auto_root">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><span class="type">&lt;UiObject&gt;</span></li>
+</ul>
+<p>当前窗口的布局根元素。如果无障碍服务未启动或者WindowFilter均返回false，则会返回<code>null</code>。</p>
+<p>如果不设置windowFilter，则当前窗口即为活跃的窗口（获取到焦点、正在触摸的窗口）；如果设置了windowFilter，则获取的是过滤的窗口中的第一个窗口。</p>
+<p>如果系统是Android5.0以下，则始终返回当前活跃的窗口的布局根元素。</p>
+<h2>auto.rootInActiveWindow<span><a class="mark" href="#widgets_based_automation_auto_rootinactivewindow" id="widgets_based_automation_auto_rootinactivewindow">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><span class="type">&lt;UiObject&gt;</span></li>
+</ul>
+<p>当前活跃的窗口（获取到焦点、正在触摸的窗口）的布局根元素。如果无障碍服务未启动则为<code>null</code>。</p>
+<h2>auto.setWindowFilter(filter)<span><a class="mark" href="#widgets_based_automation_auto_setwindowfilter_filter" id="widgets_based_automation_auto_setwindowfilter_filter">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>filter</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&lt;Function&gt;</a> 参数为窗口(<a href="https://developer.android.com/reference/android/view/accessibility/AccessibilityWindowInfo">AccessibilityWindowInfo</a>)，返回值为Boolean的函数。</li>
+</ul>
+<p>设置窗口过滤器。这个过滤器可以决定哪些窗口是目标窗口，并影响选择器的搜索。例如，如果想要选择器在所有窗口（包括状态栏、输入法等）中搜索，只需要使用以下代码：</p>
+<pre><code>auto.setWindowFilter(function(window){
+    //不管是如何窗口，都返回true，表示在该窗口中搜索
+    return true;
+});
+</code></pre><p>又例如，当前使用了分屏功能，屏幕上有Auto.js和QQ两个应用，但我们只想选择器对QQ界面进行搜索，则：</p>
+<pre><code>auto.setWindowFilter(function(window){
+    // 对于应用窗口，他的title属性就是应用的名称，因此可以通过title属性来判断一个应用
+    return window.title == &quot;QQ&quot;;
+});
+</code></pre><p>选择器默认是在当前活跃的窗口中搜索，不会搜索诸如悬浮窗、状态栏之类的，使用WindowFilter则可以控制搜索的窗口。</p>
+<p>需要注意的是， 如果WindowFilter返回的结果均为false，则选择器的搜索结果将为空。</p>
+<p>另外setWindowFilter函数也会影响<code>auto.windowRoots</code>的结果。</p>
+<p>该函数需要Android 5.0以上才有效。</p>
+<h2>auto.windowRoots<span><a class="mark" href="#widgets_based_automation_auto_windowroots" id="widgets_based_automation_auto_windowroots">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a></li>
+</ul>
+<p>返回当前被WindowFilter过滤的窗口的布局根元素组成的数组。</p>
+<p>如果系统是Android5.0以下，则始终返回当前活跃的窗口的布局根元素的数组。</p>
 <h1>SimpleActionAutomator<span><a class="mark" href="#widgets_based_automation_simpleactionautomator" id="widgets_based_automation_simpleactionautomator">#</a></span></h1>
 <div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p>SimpleActionAutomator提供了一些模拟简单操作的函数，例如点击文字、模拟按键等。这些函数可以直接作为全局函数使用。</p>
 <h2>click(text[, i])<span><a class="mark" href="#widgets_based_automation_click_text_i" id="widgets_based_automation_click_text_i">#</a></span></h2>
@@ -363,6 +438,18 @@ sendButton.click();
 </div><p>创建一个新的选择器。但一般情况不需要使用该函数，因为可以直接用相应条件的语句创建选择器。</p>
 <p>由于历史遗留原因，本不应该这样设计(不应该让<code>id()</code>, <code>text()</code>等作为全局函数，而是应该用<code>By.id()</code>, <code>By.text()</code>)，但为了后向兼容性只能保留这个设计。</p>
 <p>这样的API设计会污染全局变量，后续可能会支持&quot;去掉这些全局函数而使用By.<em>*</em>&quot;的选项。</p>
+<h2>UiSelector.algorithm(algorithm)<span><a class="mark" href="#widgets_based_automation_uiselector_algorithm_algorithm" id="widgets_based_automation_uiselector_algorithm_algorithm">#</a></span></h2>
+<p><strong>[v4.1.0新增]</strong></p>
+<ul>
+<li><code>algorithm</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 搜索算法，可选的值有：<ul>
+<li><code>DFS</code> 深度优先算法，选择器的默认算法</li>
+<li><code>BFS</code> 广度优先算法</li>
+</ul>
+</li>
+</ul>
+<p>指定选择器的搜索算法。例如：</p>
+<pre><code>log(selector().text(&quot;文本&quot;).algorithm(&quot;BFS&quot;).find());
+</code></pre><p>广度优先在控件所在层次较低时，或者布局的层次不多时，通常能更快找到控件。</p>
 <h2>UiSelector.text(str)<span><a class="mark" href="#widgets_based_automation_uiselector_text_str" id="widgets_based_automation_uiselector_text_str">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>str</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 控件文本</li>

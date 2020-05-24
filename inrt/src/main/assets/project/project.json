@@ -1,7 +1,13 @@
 {
-  "name": "Hello World",
-  "versionName": "1.0.0",
+  "assets": [],
+  "build": {
+    "build_id": "B883A485-9",
+    "build_number": 1,
+    "build_time": 1543638246643
+  },
+  "main": "main.js",
+  "name": "打包测试",
+  "packageName": "xx.xx",
   "versionCode": 1,
-  "packageName": "org.autojs.example",
-  "main": "main.js"
+  "versionName": "1.0.0"
 }

@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Dialogs | Auto.js 3.0.0 文档</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <title>Dialogs | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="https://nodejs.org/api/dialogs.html">
@@ -61,7 +61,7 @@
 
     <div id="column1" data-id="dialogs" class="interior">
       <header>
-        <h1>Auto.js 3.0.0 文档</h1>
+        <h1>Auto.js 4.1.0 文档</h1>
         <div id="gtoc">
           <p>
             <a href="index.html" name="toc">索引</a> |
@@ -99,6 +99,9 @@
 <li><span class="stability_undefined"><a href="#dialogs_multi_choice">事件: <code>multi_choice</code></a></span></li>
 <li><span class="stability_undefined"><a href="#dialogs_input">事件: <code>input</code></a></span></li>
 <li><span class="stability_undefined"><a href="#dialogs_input_change">事件: <code>input_change</code></a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialog_getprogress">dialog.getProgress()</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialog_getmaxprogress">dialog.getMaxProgress()</a></span></li>
+<li><span class="stability_undefined"><a href="#dialogs_dialog_getactionbutton_action">dialog.getActionButton(action)</a></span></li>
 </ul>
 </li>
 </ul>
@@ -271,11 +274,11 @@ dialogs.select(&quot;请选择一个选项&quot;, [&quot;选项A&quot;, &quot;�
 <li><code>itemsColor</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 对话框列表的选项的文字颜色</li>
 <li><code>itemsSelectMode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框列表的选项选择模式，可以为:<ul>
 <li><code>select</code> 普通选择模式</li>
-<li><code>singleChoice</code> 单选模式</li>
-<li><code>multiChoice</code> 多选模式</li>
+<li><code>single</code> 单选模式</li>
+<li><code>multi</code> 多选模式</li>
 </ul>
 </li>
-<li><code>itemsSelectedIndex</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 对话框列表中？？？</li>
+<li><code>itemsSelectedIndex</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&lt;Array&gt;</a> 对话框列表中预先选中的项目索引，如果是单选模式为一个索引；多选模式则为数组</li>
 <li><code>positive</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框确定按钮的文字内容(最右边按钮)</li>
 <li><code>positiveColor</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a> 对话框确定按钮的文字颜色(最右边按钮)</li>
 <li><code>neutral</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 对话框中立按钮的文字内容(最左边按钮)</li>
@@ -317,9 +320,9 @@ dialogs.select(&quot;请选择一个选项&quot;, [&quot;选项A&quot;, &quot;�
 <pre><code>dialogs.build({
     title: &quot;单选&quot;,
     items: [&quot;选项1&quot;, &quot;选项2&quot;, &quot;选项3&quot;, &quot;选项4&quot;],
-    itemsSelectMode: &quot;singleChoice&quot;,
+    itemsSelectMode: &quot;single&quot;,
     itemsSelectedIndex: 3
-}).on(&quot;item_select&quot;, (index, item)-&gt;{
+}).on(&quot;single_choice&quot;, (index, item)=&gt;{
     toast(&quot;您选择的是&quot; + item);
 }).show();
 </code></pre><p>&quot;处理中&quot;对话框:</p>
@@ -528,7 +531,26 @@ setTimeout(()=&gt;{
 }).on(&quot;input_change&quot;, (text, dialog)=&gt;{
     toast(&quot;你输入的是&quot; + text);
 }).show();
-</code></pre>
+</code></pre><h2>dialog.getProgress()<span><a class="mark" href="#dialogs_dialog_getprogress" id="dialogs_dialog_getprogress">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>获取当前进度条的进度值，是一个整数</p>
+<h2>dialog.getMaxProgress()<span><a class="mark" href="#dialogs_dialog_getmaxprogress" id="dialogs_dialog_getmaxprogress">#</a></span></h2>
+<div class="signature"><ul>
+<li>返回 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>获取当前进度条的最大进度值，是一个整数</p>
+<h2>dialog.getActionButton(action)<span><a class="mark" href="#dialogs_dialog_getactionbutton_action" id="dialogs_dialog_getactionbutton_action">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>action</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> 动作，包括:<ul>
+<li><code>positive</code> </li>
+<li><code>negative</code></li>
+<li><code>neutral</code></li>
+</ul>
+</li>
+</ul>
+</div>
       </div>
     </div>
   </div>

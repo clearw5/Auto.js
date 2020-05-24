@@ -11,11 +11,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.annotation.UiThread;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.annotation.UiThread;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
@@ -79,8 +80,15 @@ public class JsDialog {
         Context context = mDialog.getContext();
         if (!DialogUtils.isActivityContext(context)) {
             Window window = mDialog.getWindow();
-            if (window != null)
-                window.setType(WindowManager.LayoutParams.TYPE_PHONE);
+            if (window != null){
+                int type;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+                } else {
+                    type = WindowManager.LayoutParams.TYPE_PHONE;
+                }
+                window.setType(type);
+            }
         }
     }
 

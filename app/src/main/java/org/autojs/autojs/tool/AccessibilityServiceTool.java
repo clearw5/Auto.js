@@ -6,10 +6,10 @@ import android.text.TextUtils;
 
 import com.stardust.app.GlobalAppContext;
 import org.autojs.autojs.Pref;
-import org.autojs.autojs.App;
 import org.autojs.autojs.R;
+
+import com.stardust.autojs.core.accessibility.AccessibilityService;
 import com.stardust.autojs.core.util.ProcessShell;
-import org.autojs.autojs.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 
 import java.util.Locale;
@@ -35,12 +35,12 @@ public class AccessibilityServiceTool {
     public static void goToAccessibilitySetting() {
         Context context = GlobalAppContext.get();
         if (Pref.isFirstGoToAccessibilitySetting()) {
-            GlobalAppContext.toast(context.getString(R.string.text_please_choose) + context.getString(R.string._app_name));
+            GlobalAppContext.toast(context.getString(R.string.text_please_choose) + context.getString(R.string.app_name));
         }
         try {
-            AccessibilityServiceUtils.goToAccessibilitySetting(context);
+            AccessibilityServiceUtils.INSTANCE.goToAccessibilitySetting(context);
         } catch (ActivityNotFoundException e) {
-            GlobalAppContext.toast(context.getString(R.string.go_to_accessibility_settings) + context.getString(R.string._app_name));
+            GlobalAppContext.toast(context.getString(R.string.go_to_accessibility_settings) + context.getString(R.string.app_name));
         }
     }
 
@@ -66,19 +66,19 @@ public class AccessibilityServiceTool {
 
     public static boolean enableAccessibilityServiceByRootAndWaitFor(long timeOut) {
         if (enableAccessibilityServiceByRoot(sAccessibilityServiceClass)) {
-            return AccessibilityService.waitForEnabled(timeOut);
+            return AccessibilityService.Companion.waitForEnabled(timeOut);
         }
         return false;
     }
 
     public static void enableAccessibilityServiceByRootIfNeeded() {
-        if (AccessibilityService.getInstance() == null)
+        if (AccessibilityService.Companion.getInstance() == null)
             if (Pref.shouldEnableAccessibilityServiceByRoot()) {
                 AccessibilityServiceTool.enableAccessibilityServiceByRoot(sAccessibilityServiceClass);
             }
     }
 
     public static boolean isAccessibilityServiceEnabled(Context context) {
-        return AccessibilityServiceUtils.isAccessibilityServiceEnabled(context, sAccessibilityServiceClass);
+        return AccessibilityServiceUtils.INSTANCE.isAccessibilityServiceEnabled(context, sAccessibilityServiceClass);
     }
 }

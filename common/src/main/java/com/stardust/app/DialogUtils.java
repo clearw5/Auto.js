@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.os.Build;
+import android.os.Looper;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -13,14 +15,30 @@ import android.view.WindowManager;
 
 public class DialogUtils {
 
-    public static <T extends Dialog> T showDialog(T dialog) {
+    public static <T extends Dialog> T showDialog(final T dialog) {
         Context context = dialog.getContext();
+
         if (!isActivityContext(context)) {
             Window window = dialog.getWindow();
+            int type;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            } else {
+                type = WindowManager.LayoutParams.TYPE_PHONE;
+            }
             if (window != null)
-                window.setType(WindowManager.LayoutParams.TYPE_PHONE);
+                window.setType(type);
         }
-        dialog.show();
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            dialog.show();
+        } else {
+            GlobalAppContext.post(new Runnable() {
+                @Override
+                public void run() {
+                    dialog.show();
+                }
+            });
+        }
         return dialog;
     }
 

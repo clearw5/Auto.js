@@ -1,9 +1,5 @@
 package com.stardust.autojs.runtime;
 
-import android.view.View;
-
-import com.stardust.autojs.core.accessibility.UiCollection;
-
 /**
  * Created by Stardust on 2017/7/21.
  */
@@ -19,16 +15,19 @@ public class ScriptBridges {
 
         Object toArray(Iterable o);
 
-        Object asArray(Object o);
-
         Object toString(Object obj);
 
+        Object asArray(Object obj);
     }
 
     private Bridges mBridges;
 
     public void setBridges(Bridges bridges) {
         mBridges = bridges;
+    }
+
+    public Bridges getBridges() {
+        return mBridges;
     }
 
     public Object callFunction(Object func, Object target, Object args) {
@@ -47,15 +46,13 @@ public class ScriptBridges {
         return mBridges.toArray(c);
     }
 
-    public Object asArray(Object o) {
-        checkBridges();
-        return mBridges.asArray(o);
-    }
-
-
     public Object toString(Object obj) {
         checkBridges();
         return mBridges.toString(obj);
     }
 
+    public Object asArray(Object obj) {
+        checkBridges();
+        return mBridges.asArray(obj);
+    }
 }

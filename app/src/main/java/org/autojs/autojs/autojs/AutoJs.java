@@ -1,24 +1,37 @@
 package org.autojs.autojs.autojs;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Looper;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.stardust.app.GlobalAppContext;
-import com.stardust.autojs.core.console.GlobalStardustConsole;
+import com.stardust.autojs.core.console.GlobalConsole;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
+import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.exception.ScriptException;
-import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
-import org.autojs.autojs.App;
+
 import org.autojs.autojs.BuildConfig;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
+import org.autojs.autojs.external.fileprovider.AppFileProvider;
 import org.autojs.autojs.pluginclient.DevPluginService;
+import org.autojs.autojs.ui.floating.FloatyWindowManger;
+import org.autojs.autojs.ui.floating.FullScreenFloatyWindow;
+import org.autojs.autojs.ui.floating.layoutinspector.LayoutBoundsFloatyWindow;
+import org.autojs.autojs.ui.floating.layoutinspector.LayoutHierarchyFloatyWindow;
 import org.autojs.autojs.ui.log.LogActivity_;
-import org.autojs.autojs.ui.settings.SettingsActivity;
 import org.autojs.autojs.ui.settings.SettingsActivity_;
+
 import com.stardust.view.accessibility.AccessibilityService;
+import com.stardust.view.accessibility.LayoutInspector;
+import com.stardust.view.accessibility.NodeInfo;
+
 import org.autojs.autojs.tool.AccessibilityServiceTool;
 
 
@@ -34,19 +47,71 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         return instance;
     }
 
-    public static void initInstance(Application application) {
+
+    public synchronized static void initInstance(Application application) {
+        if (instance != null) {
+            return;
+        }
         instance = new AutoJs(application);
     }
 
+    private interface LayoutInspectFloatyWindow {
+        FullScreenFloatyWindow create(NodeInfo nodeInfo);
+    }
+
+    private BroadcastReceiver mLayoutInspectBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                ensureAccessibilityServiceEnabled();
+                String action = intent.getAction();
+                if (LayoutBoundsFloatyWindow.class.getName().equals(action)) {
+                    capture(LayoutBoundsFloatyWindow::new);
+                } else if (LayoutHierarchyFloatyWindow.class.getName().equals(action)) {
+                    capture(LayoutHierarchyFloatyWindow::new);
+                }
+            } catch (Exception e) {
+                if (Looper.myLooper() != Looper.getMainLooper()) {
+                    throw e;
+                }
+            }
+        }
+    };
 
     private AutoJs(final Application application) {
         super(application);
         getScriptEngineService().registerGlobalScriptExecutionListener(new ScriptExecutionGlobalListener());
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(LayoutBoundsFloatyWindow.class.getName());
+        intentFilter.addAction(LayoutHierarchyFloatyWindow.class.getName());
+        LocalBroadcastManager.getInstance(application).registerReceiver(mLayoutInspectBroadcastReceiver, intentFilter);
+    }
+
+    private void capture(LayoutInspectFloatyWindow window) {
+        LayoutInspector inspector = getLayoutInspector();
+        LayoutInspector.CaptureAvailableListener listener = new LayoutInspector.CaptureAvailableListener() {
+            @Override
+            public void onCaptureAvailable(NodeInfo capture) {
+                inspector.removeCaptureAvailableListener(this);
+                getUiHandler().post(() ->
+                        FloatyWindowManger.addWindow(getApplication().getApplicationContext(), window.create(capture))
+                );
+            }
+        };
+        inspector.addCaptureAvailableListener(listener);
+        if (!inspector.captureCurrentWindow()) {
+            inspector.removeCaptureAvailableListener(listener);
+        }
     }
 
     @Override
-    protected Console createGlobalConsole() {
-        return new GlobalStardustConsole(getUiHandler()) {
+    protected AppUtils createAppUtils(Context context) {
+        return new AppUtils(context, AppFileProvider.AUTHORITY);
+    }
+
+    @Override
+    protected GlobalConsole createGlobalConsole() {
+        return new GlobalConsole(getUiHandler()) {
             @Override
             public String println(int level, CharSequence charSequence) {
                 String log = super.println(level, charSequence);
@@ -57,7 +122,7 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
     }
 
     public void ensureAccessibilityServiceEnabled() {
-        if (AccessibilityService.getInstance() != null) {
+        if (AccessibilityService.Companion.getInstance() != null) {
             return;
         }
         String errorMessage = null;
@@ -80,7 +145,7 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
 
     @Override
     public void waitForAccessibilityServiceEnabled() {
-        if (AccessibilityService.getInstance() != null) {
+        if (AccessibilityService.Companion.getInstance() != null) {
             return;
         }
         String errorMessage = null;
@@ -97,7 +162,7 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         }
         if (errorMessage != null) {
             AccessibilityServiceTool.goToAccessibilitySetting();
-            if (!org.autojs.autojs.accessibility.AccessibilityService.waitForEnabled(-1)) {
+            if (!AccessibilityService.Companion.waitForEnabled(-1)) {
                 throw new ScriptInterruptedException();
             }
         }
@@ -117,6 +182,8 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         ScriptRuntime runtime = super.createRuntime();
         runtime.putProperty("class.settings", SettingsActivity_.class);
         runtime.putProperty("class.console", LogActivity_.class);
+        runtime.putProperty("broadcast.inspect_layout_bounds", LayoutBoundsFloatyWindow.class.getName());
+        runtime.putProperty("broadcast.inspect_layout_hierarchy", LayoutHierarchyFloatyWindow.class.getName());
         return runtime;
     }
 

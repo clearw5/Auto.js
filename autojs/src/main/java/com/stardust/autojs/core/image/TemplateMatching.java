@@ -1,18 +1,25 @@
 package com.stardust.autojs.core.image;
 
-import android.util.Log;
-import android.util.Pair;
 import android.util.TimingLogger;
 
+import com.stardust.autojs.core.opencv.OpenCVHelper;
 import com.stardust.util.Nath;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
-import org.opencv.core.Mat;
+
+import com.stardust.autojs.core.opencv.Mat;
+
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -21,13 +28,35 @@ import org.opencv.imgproc.Imgproc;
 
 public class TemplateMatching {
 
+    public static class Match {
+        public final Point point;
+        public final double similarity;
+
+        public Match(Point point, double similarity) {
+            this.point = point;
+            this.similarity = similarity;
+        }
+
+        @Override
+        public String toString() {
+            return "Match{" +
+                    "point=" + point +
+                    ", similarity=" + similarity +
+                    '}';
+        }
+    }
+
     private static final String LOG_TAG = "TemplateMatching";
 
     public static final int MAX_LEVEL_AUTO = -1;
     public static final int MATCHING_METHOD_DEFAULT = Imgproc.TM_CCOEFF_NORMED;
 
-    public static Point fastTemplateMatching(Mat img, Mat template, float threshold) {
-        return fastTemplateMatching(img, template, MATCHING_METHOD_DEFAULT, 0.75f, threshold, MAX_LEVEL_AUTO);
+    public static Point fastTemplateMatching(Mat img, Mat template, int matchMethod, float weakThreshold, float strictThreshold, int maxLevel) {
+        List<Match> result = fastTemplateMatching(img, template, matchMethod, weakThreshold, strictThreshold, maxLevel, 1);
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result.get(0).point;
     }
 
     /**
@@ -41,7 +70,7 @@ public class TemplateMatching {
      * @param maxLevel        图像金字塔的层数
      * @return
      */
-    public static Point fastTemplateMatching(Mat img, Mat template, int matchMethod, float weakThreshold, float strictThreshold, int maxLevel) {
+    public static List<Match> fastTemplateMatching(Mat img, Mat template, int matchMethod, float weakThreshold, float strictThreshold, int maxLevel, int limit) {
         TimingLogger logger = new TimingLogger(LOG_TAG, "fast_tm");
         if (maxLevel == MAX_LEVEL_AUTO) {
             //自动选取金字塔层数
@@ -49,61 +78,64 @@ public class TemplateMatching {
             logger.addSplit("selectPyramidLevel:" + maxLevel);
         }
         //保存每一轮匹配到模板图片在原图片的位置
-        Point p = null;
-        Mat matchResult = null;
-        double similarity = 0;
+        List<Match> finalMatchResult = new ArrayList<>();
+        List<Match> previousMatchResult = Collections.emptyList();
         boolean isFirstMatching = true;
         for (int level = maxLevel; level >= 0; level--) {
-            //放缩图片
+            // 放缩图片
+            List<Match> currentMatchResult = new ArrayList<>();
             Mat src = getPyramidDownAtLevel(img, level);
             Mat currentTemplate = getPyramidDownAtLevel(template, level);
-            //如果在上一轮中没有匹配到图片，则考虑是否退出匹配
-            if (p == null) {
-                //如果不是第一次匹配，并且不满足shouldContinueMatching的条件，则直接退出匹配（返回null）
+            // 如果在上一轮中没有匹配到图片，则考虑是否退出匹配
+            if (previousMatchResult.isEmpty()) {
+                // 如果不是第一次匹配，并且不满足shouldContinueMatching的条件，则直接退出匹配
                 if (!isFirstMatching && !shouldContinueMatching(level, maxLevel)) {
                     break;
                 }
+                Mat matchResult = matchTemplate(src, currentTemplate, matchMethod);
+                getBestMatched(matchResult, currentTemplate, matchMethod, weakThreshold, currentMatchResult, limit, null);
                 OpenCVHelper.release(matchResult);
-                matchResult = matchTemplate(src, currentTemplate, matchMethod);
-                Pair<Point, Double> bestMatched = getBestMatched(matchResult, matchMethod, weakThreshold);
-                p = bestMatched.first;
-                similarity = bestMatched.second;
             } else {
-                //根据上一轮的匹配点，计算本次匹配的区域
-                Rect r = getROI(p, src, currentTemplate);
-                OpenCVHelper.release(matchResult);
-                Mat m = new Mat(src, r);
-                matchResult = matchTemplate(m, currentTemplate, matchMethod);
-                OpenCVHelper.release(m);
-                Pair<Point, Double> bestMatched = getBestMatched(matchResult, matchMethod, weakThreshold);
-                //不满足弱阈值，返回null
-                if (bestMatched.second < weakThreshold) {
-                    //    p = null;
-                    //  break;
+                for (Match match : previousMatchResult) {
+                    // 根据上一轮的匹配点，计算本次匹配的区域
+                    Rect r = getROI(match.point, src, currentTemplate);
+                    Mat m = new Mat(src, r);
+                    Mat matchResult = matchTemplate(m, currentTemplate, matchMethod);
+                    getBestMatched(matchResult, currentTemplate, matchMethod, weakThreshold, currentMatchResult, limit, r);
+                    OpenCVHelper.release(m);
+                    OpenCVHelper.release(matchResult);
                 }
-                p = bestMatched.first;
-                similarity = bestMatched.second;
-                p.x += r.x;
-                p.y += r.y;
             }
+
             if (src != img)
                 OpenCVHelper.release(src);
             if (currentTemplate != template)
                 OpenCVHelper.release(currentTemplate);
-            //满足强阈值，返回当前结果
-            if (similarity >= strictThreshold) {
-                pyrUp(p, level);
-                break;
+
+            logger.addSplit("level:" + level + ", result:" + previousMatchResult);
+
+            // 把满足强阈值的点找出来，加到最终结果列表
+            if (!currentMatchResult.isEmpty()) {
+                Iterator<Match> iterator = currentMatchResult.iterator();
+                while (iterator.hasNext()) {
+                    Match match = iterator.next();
+                    if (match.similarity >= strictThreshold) {
+                        pyrUp(match.point, level);
+                        finalMatchResult.add(match);
+                        iterator.remove();
+                    }
+                }
+                // 如果所有结果都满足强阈值，则退出循环，返回最终结果
+                if (currentMatchResult.isEmpty()) {
+                    break;
+                }
             }
-            logger.addSplit("level:" + level + " point:" + p);
             isFirstMatching = false;
+            previousMatchResult = currentMatchResult;
         }
-        logger.addSplit("result:" + p);
+        logger.addSplit("result:" + finalMatchResult);
         logger.dumpToLog();
-        if (similarity < strictThreshold) {
-            return null;
-        }
-        return p;
+        return finalMatchResult;
     }
 
 
@@ -167,7 +199,7 @@ public class TemplateMatching {
     }
 
 
-    public static Mat matchTemplate(Mat img, Mat temp, int match_method) {
+    private static Mat matchTemplate(Mat img, Mat temp, int match_method) {
         int result_cols = img.cols() - temp.cols() + 1;
         int result_rows = img.rows() - temp.rows() + 1;
         Mat result = new Mat(result_rows, result_cols, CvType.CV_32FC1);
@@ -175,10 +207,23 @@ public class TemplateMatching {
         return result;
     }
 
-    public static Pair<Point, Double> getBestMatched(Mat tmResult, int matchMethod, float threshold) {
+    private static void getBestMatched(Mat tmResult, Mat template, int matchMethod, float weakThreshold, List<Match> outResult, int limit, Rect rect) {
+        for (int i = 0; i < limit; i++) {
+            Match bestMatched = getBestMatched(tmResult, matchMethod, weakThreshold, rect);
+            if (bestMatched == null) {
+                break;
+            }
+            outResult.add(bestMatched);
+            Point start = new Point(Math.max(0, bestMatched.point.x - template.width() + 1),
+                    Math.max(0, bestMatched.point.y - template.height() + 1));
+            Point end = new Point(Math.min(tmResult.width(), bestMatched.point.x + template.width()),
+                    Math.min(tmResult.height(), bestMatched.point.y + template.height()));
+            Imgproc.rectangle(tmResult, start, end, new Scalar(0, 255, 0), -1);
+        }
+    }
+
+    private static Match getBestMatched(Mat tmResult, int matchMethod, float weakThreshold, Rect rect) {
         TimingLogger logger = new TimingLogger(LOG_TAG, "best_matched_point");
-        // FIXME: 2017/11/26 正交化?
-        //   Core.normalize(tmResult, tmResult, 0, 1, Core.NORM_MINMAX, -1, new Mat());
         Core.MinMaxLocResult mmr = Core.minMaxLoc(tmResult);
         logger.addSplit("minMaxLoc");
         double value;
@@ -190,9 +235,15 @@ public class TemplateMatching {
             pos = mmr.maxLoc;
             value = mmr.maxVal;
         }
+        if (value < weakThreshold) {
+            return null;
+        }
+        if (rect != null) {
+            pos.x += rect.x;
+            pos.y += rect.y;
+        }
         logger.addSplit("value:" + value);
-        logger.dumpToLog();
-        return new Pair<>(pos, value);
+        return new Match(pos, value);
     }
 
 

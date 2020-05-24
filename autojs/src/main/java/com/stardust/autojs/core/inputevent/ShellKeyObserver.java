@@ -1,6 +1,6 @@
 package com.stardust.autojs.core.inputevent;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.SparseArray;
 
 import java.lang.reflect.Field;

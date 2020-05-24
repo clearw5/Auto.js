@@ -7,28 +7,41 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
 
     <application
         >
         <activity
             android:name=".execution.ScriptExecuteActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/ScriptTheme"/>
 
 
         <activity
             android:name="com.stardust.autojs.core.permission.PermissionRequestActivity"
             android:excludeFromRecents="true"
             android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
-            android:theme="@style/AppTheme.Transparent"/>
+            android:theme="@style/ScriptTheme.Transparent"/>
 
         <activity
             android:name="com.stardust.autojs.core.image.capture.ScreenCaptureRequestActivity"
             android:excludeFromRecents="true"
             android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
-            android:theme="@style/AppTheme.Transparent"/>
+            android:theme="@style/ScriptTheme.Transparent"/>
 
+        <service
+            android:name="com.stardust.autojs.core.accessibility.AccessibilityService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config"/>
+        </service>
 
     </application>
 

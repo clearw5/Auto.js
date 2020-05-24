@@ -7,7 +7,6 @@
         android:title="@string/text_script_record"
         android:widgetLayout="@layout/preference_custom">
 
-
         <com.stardust.theme.preference.ThemeColorSwitchPreference
             android:defaultValue="false"
             android:key="@string/key_use_volume_control_record"
@@ -92,23 +91,6 @@
 
     <com.stardust.theme.preference.ThemeColorPreferenceCategory
         android:layout="@layout/preference_category_custom"
-        android:title="@string/text_ad">
-        <Preference
-            android:layout="@layout/preference_custom"
-            android:title="@string/show_ad"
-            />
-        <com.afollestad.materialdialogs.prefs.MaterialListPreference
-            android:defaultValue="@string/text_default"
-            android:entries="@array/ad_showing_mode_keys"
-            android:entryValues="@array/ad_showing_mode_values"
-            android:key="@string/key_ad_showing_mode"
-            android:layout="@layout/preference_custom"
-            android:title="@string/text_ad_showing_settings"
-            />
-    </com.stardust.theme.preference.ThemeColorPreferenceCategory>
-
-    <com.stardust.theme.preference.ThemeColorPreferenceCategory
-        android:layout="@layout/preference_category_custom"
         android:title="@string/text_others">
 
         <com.afollestad.materialdialogs.prefs.MaterialListPreference
@@ -120,14 +102,14 @@
             />
 
         <org.autojs.autojs.ui.settings.ScriptDirPathPreference
+            android:defaultValue="@string/default_value_script_dir_path"
             android:entries="@array/keys_documentation_source"
             android:entryValues="@array/values_documentation_source"
             android:key="@string/key_script_dir_path"
-            android:defaultValue="@string/default_value_script_dir_path"
             android:layout="@layout/preference_custom"
             android:title="@string/text_change_script_dir"
             />
-            android:
+        android:
     </com.stardust.theme.preference.ThemeColorPreferenceCategory>
 
     <com.stardust.theme.preference.ThemeColorPreferenceCategory

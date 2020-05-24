@@ -2,9 +2,9 @@ package org.autojs.autojs.ui.doc;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.annotation.Nullable;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.webkit.WebView;
 
@@ -75,22 +75,11 @@ public class DocsFragment extends ViewPagerFragment implements BackPressedHandle
 
 
     @Override
-    public void onResume() {
-        super.onResume();
-        ((BackPressedHandler.HostActivity) getActivity())
-                .getBackPressedObserver()
-                .registerHandlerAtFront(this);
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         Bundle savedWebViewState = new Bundle();
         mWebView.saveState(savedWebViewState);
         getArguments().putBundle("savedWebViewState", savedWebViewState);
-        ((BackPressedHandler.HostActivity) getActivity())
-                .getBackPressedObserver()
-                .unregisterHandler(this);
     }
 
     @Override

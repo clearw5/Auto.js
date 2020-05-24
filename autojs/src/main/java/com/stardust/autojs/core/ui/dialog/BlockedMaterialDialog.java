@@ -3,14 +3,19 @@ package com.stardust.autojs.core.ui.dialog;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.os.Build;
 import android.os.Looper;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
+
 import android.view.WindowManager;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.stardust.autojs.rhino.continuation.Continuation;
 import com.stardust.autojs.runtime.ScriptBridges;
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.concurrent.VolatileDispose;
 import com.stardust.util.ArrayUtils;
@@ -29,7 +34,13 @@ public class BlockedMaterialDialog extends MaterialDialog {
     @Override
     public void show() {
         if (!isActivityContext(getContext())) {
-            getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
+            int type;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            } else {
+                type = WindowManager.LayoutParams.TYPE_PHONE;
+            }
+            getWindow().setType(type);
         }
         super.show();
     }
@@ -55,11 +66,11 @@ public class BlockedMaterialDialog extends MaterialDialog {
         private ScriptBridges mScriptBridges;
         private boolean mNotified = false;
 
-        public Builder(Context context, UiHandler uiHandler, ScriptBridges scriptBridges, Object callback) {
+        public Builder(Context context, ScriptRuntime runtime, Object callback) {
             super(context);
             super.theme(Theme.LIGHT);
-            mUiHandler = uiHandler;
-            mScriptBridges = scriptBridges;
+            mUiHandler = runtime.uiHandler;
+            mScriptBridges = runtime.bridges;
             mCallback = callback;
             if (Looper.getMainLooper() != Looper.myLooper()) {
                 mResultBox = new VolatileDispose<>();
@@ -136,7 +147,7 @@ public class BlockedMaterialDialog extends MaterialDialog {
         }
 
         public MaterialDialog.Builder itemsCallbackMultiChoice(@Nullable Integer[] selectedIndices) {
-            dismissListener(dialog -> setAndNotify(new Integer[0]));
+            dismissListener(dialog -> setAndNotify(new int[0]));
             super.itemsCallbackMultiChoice(selectedIndices, (dialog, which, text) -> {
                 setAndNotify(ArrayUtils.unbox(which));
                 return true;

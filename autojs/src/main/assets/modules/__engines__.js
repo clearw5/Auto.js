@@ -1,6 +1,7 @@
 
 module.exports = function(__runtime__, scope){
     var rtEngines = __runtime__.engines;
+    var execArgv = null;
 
     var engines = {};
 
@@ -32,20 +33,30 @@ module.exports = function(__runtime__, scope){
         c = c || {};
         c.path = c.path || files.cwd();
         if(c.path){
-            if(Array.isArray(c.path)){
-                config.requirePath(c.path);
-                config.executePath(c.path[0]);
-            }else{
-                config.requirePath([c.path]);
-                config.executePath(c.path);
+           config.workingDirectory = c.path;
+        }
+        config.delay = c.delay || 0;
+        config.interval = c.interval || 0;
+        config.loopTimes = (c.loopTimes === undefined)? 1 : c.loopTimes;
+        if(c.arguments){
+            var arguments = c.arguments;
+            for(var key in arguments){
+                if(arguments.hasOwnProperty(key)){
+                    config.setArgument(key, arguments[key]);
+                }
             }
         }
-        c.delay = c.delay || 0;
-        c.interval = c.interval || 0;
-        c.loopTimes = c.loopTimes || 1;
-        config.loop(c.delay, c.loopTimes, c.interval);
         return config;
     }
+
+    var engine = engines.myEngine();
+    var execArgv = {};
+    var iterator = engine.getTag("execution.config").arguments.entrySet().iterator();
+    while(iterator.hasNext()){
+        var entry = iterator.next();
+        execArgv[entry.getKey()] = entry.getValue();
+    }
+    engine.execArgv = execArgv;
 
     return engines;
 }

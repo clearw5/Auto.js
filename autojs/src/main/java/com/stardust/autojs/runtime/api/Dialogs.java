@@ -42,7 +42,6 @@ public class Dialogs {
                 .showAndGet();
     }
 
-
     @ScriptInterface
     public Object alert(String title, String content, Object callback) {
         MaterialDialog.Builder builder = dialogBuilder(callback)
@@ -66,7 +65,7 @@ public class Dialogs {
             builder.content(content);
         }
         return ((BlockedMaterialDialog.Builder) builder).showAndGet();
-    }
+}
 
     private Context getContext() {
         if (mThemeWrapper != null)
@@ -120,13 +119,20 @@ public class Dialogs {
                 .showAndGet();
     }
 
+    @ScriptInterface
+    public Object selectFile(String title, String prefill, Object callback) {
+        return ((BlockedMaterialDialog.Builder) dialogBuilder(callback)
+                .input(null, prefill, true)
+                .title(title))
+                .showAndGet();
+    }
 
     private BlockedMaterialDialog.Builder dialogBuilder(Object callback) {
         Context context = mRuntime.app.getCurrentActivity();
         if (context == null || ((Activity) context).isFinishing()) {
             context = getContext();
         }
-        return (BlockedMaterialDialog.Builder) new BlockedMaterialDialog.Builder(context, mRuntime.uiHandler, mRuntime.bridges, callback)
+        return (BlockedMaterialDialog.Builder) new BlockedMaterialDialog.Builder(context, mRuntime, callback)
                 .theme(Theme.LIGHT);
     }
 
@@ -138,7 +144,6 @@ public class Dialogs {
         }
         return new JsDialogBuilder(context, mRuntime)
                 .theme(Theme.LIGHT);
-
     }
 
     public class NonUiDialogs {

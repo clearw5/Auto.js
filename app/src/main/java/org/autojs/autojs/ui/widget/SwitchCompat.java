@@ -2,13 +2,12 @@ package org.autojs.autojs.ui.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.CompoundButton;
 
 /**
  * Created by Stardust on 2017/9/18.
  */
 
-public class SwitchCompat extends android.support.v7.widget.SwitchCompat {
+public class SwitchCompat extends androidx.appcompat.widget.SwitchCompat {
 
     private boolean mIgnoreCheckedChange = false;
 
@@ -27,14 +26,11 @@ public class SwitchCompat extends android.support.v7.widget.SwitchCompat {
 
     @Override
     public void setOnCheckedChangeListener(final OnCheckedChangeListener listener) {
-        super.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mIgnoreCheckedChange) {
-                    return;
-                }
-                listener.onCheckedChanged(buttonView, isChecked);
+        super.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (mIgnoreCheckedChange) {
+                return;
             }
+            listener.onCheckedChanged(buttonView, isChecked);
         });
     }
 

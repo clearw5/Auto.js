@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">common</string>
     <string name="text_no_floating_window_permission">没有悬浮窗权限</string>
+    <string name="error_activity_not_found_for_apk_installing">找不到安装apk的应用</string>
 </resources>

@@ -3,8 +3,8 @@ package com.stardust.autojs.core.ui.inflater.inflaters;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.DrawerLayout;
+import androidx.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 
+import com.stardust.autojs.core.ui.ViewExtras;
+import com.stardust.autojs.core.ui.attribute.ViewAttributes;
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
 import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.ViewInflater;
@@ -37,8 +39,9 @@ import java.util.Map;
 
 public class BaseViewInflater<V extends View> implements ViewInflater<V> {
 
+    private static final String LOG_TAG = "BaseViewInflater";
 
-    protected static final ValueMapper<PorterDuff.Mode> TINT_MODES = new ValueMapper<PorterDuff.Mode>("tintMode")
+    public static final ValueMapper<PorterDuff.Mode> TINT_MODES = new ValueMapper<PorterDuff.Mode>("tintMode")
             .map("add", PorterDuff.Mode.ADD)
             .map("multiply", PorterDuff.Mode.MULTIPLY)
             .map("screen", PorterDuff.Mode.SCREEN)
@@ -46,27 +49,27 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
             .map("src_in", PorterDuff.Mode.SRC_IN)
             .map("src_over", PorterDuff.Mode.SRC_OVER);
 
-    private static final ValueMapper<Integer> DRAWABLE_CACHE_QUALITIES = new ValueMapper<Integer>("drawingCacheQuality")
+    public static final ValueMapper<Integer> DRAWABLE_CACHE_QUALITIES = new ValueMapper<Integer>("drawingCacheQuality")
             .map("auto", View.DRAWING_CACHE_QUALITY_AUTO)
             .map("high", View.DRAWING_CACHE_QUALITY_HIGH)
             .map("low", View.DRAWING_CACHE_QUALITY_LOW);
 
-    private static final ValueMapper<Integer> IMPORTANT_FOR_ACCESSIBILITY = new ValueMapper<Integer>("importantForAccessibility")
+    public static final ValueMapper<Integer> IMPORTANT_FOR_ACCESSIBILITY = new ValueMapper<Integer>("importantForAccessibility")
             .map("auto", 0) //View.IMPORTANT_FOR_ACCESSIBILITY_AUTO)
             .map("no", 2) //View.IMPORTANT_FOR_ACCESSIBILITY_NO)
             .map("noHideDescendants", 4) //View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS)
             .map("yes", 1); //View.IMPORTANT_FOR_ACCESSIBILITY_YES);
-    private static final ValueMapper<Integer> LAYOUT_DIRECTIONS = new ValueMapper<Integer>("layoutDirection")
+    public static final ValueMapper<Integer> LAYOUT_DIRECTIONS = new ValueMapper<Integer>("layoutDirection")
             .map("inherit", 2)
             .map("locale", 3)
             .map("ltr", 0)
             .map("rtl", 1);
-    private static final ValueMapper<Integer> SCROLLBARS_STYLES = new ValueMapper<Integer>("scrollbarStyle")
+    public static final ValueMapper<Integer> SCROLLBARS_STYLES = new ValueMapper<Integer>("scrollbarStyle")
             .map("insideInset", View.SCROLLBARS_INSIDE_INSET)
             .map("insideOverlay", View.SCROLLBARS_INSIDE_OVERLAY)
             .map("outsideInset", View.SCROLLBARS_OUTSIDE_INSET)
             .map("outsideOverlay", View.SCROLLBARS_OUTSIDE_OVERLAY);
-    private static final ValueMapper<Integer> SCROLL_INDICATORS = new ValueMapper<Integer>("scrollIndicators")
+    public static final ValueMapper<Integer> SCROLL_INDICATORS = new ValueMapper<Integer>("scrollIndicators")
             .map("bottom", 2) //View.SCROLL_INDICATOR_BOTTOM)
             .map("end", 20) //View.SCROLL_INDICATOR_END)
             .map("left", 4) //View.SCROLL_INDICATOR_LEFT)
@@ -74,11 +77,11 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
             .map("right", 8) //View.SCROLL_INDICATOR_RIGHT)
             .map("start", 10) //View.SCROLL_INDICATOR_START)
             .map("top", 1); //View.SCROLL_INDICATOR_TOP)
-    private static final ValueMapper<Integer> VISIBILITY = new ValueMapper<Integer>("visibility")
+    public static final ValueMapper<Integer> VISIBILITY = new ValueMapper<Integer>("visibility")
             .map("visible", View.VISIBLE)
             .map("invisible", View.INVISIBLE)
             .map("gone", View.GONE);
-    private static final ValueMapper<Integer> TEXT_DIRECTIONS = new ValueMapper<Integer>("textDirection")
+    public static final ValueMapper<Integer> TEXT_DIRECTIONS = new ValueMapper<Integer>("textDirection")
             .map("anyRtl", 2)
             .map("firstStrong", 1)
             .map("firstStrongLtr", 6)
@@ -87,7 +90,7 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
             .map("locale", 5)
             .map("ltr", 3)
             .map("rtl", 4);
-    private static final ValueMapper<Integer> TEXT_ALIGNMENTS = new ValueMapper<Integer>("textAlignment")
+    public static final ValueMapper<Integer> TEXT_ALIGNMENTS = new ValueMapper<Integer>("textAlignment")
             .map("center", 4)
             .map("gravity", 1)
             .map("inherit", 0)
@@ -106,9 +109,20 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
         return mResourceParser.getDrawables();
     }
 
+    public ResourceParser getResourceParser() {
+        return mResourceParser;
+    }
 
     @Override
     public boolean setAttr(V view, String attr, String value, ViewGroup parent, Map<String, String> attrs) {
+        ViewAttributes viewAttributes = ViewExtras.getViewAttributes(view, getResourceParser());
+        ViewAttributes.Attribute attribute = viewAttributes.get(attr);
+        if (attribute != null) {
+            Log.d(LOG_TAG, "setAttr use ViewAttributes: attr = " + attr);
+            attribute.set(value);
+            return true;
+        }
+        Log.d(LOG_TAG, "setAttr cannot use ViewAttributes: attr = " + attr);
         Integer layoutRule = null;
         boolean layoutTarget = false;
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
@@ -129,7 +143,7 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
                         layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                         break;
                     default:
-                        layoutParams.width = Dimensions.parseToPixel(value, view.getResources().getDisplayMetrics(), parent, true);
+                        layoutParams.width = Dimensions.parseToPixel(value, view, parent, true);
                         break;
                 }
                 break;
@@ -144,21 +158,21 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
                         layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
                         break;
                     default:
-                        layoutParams.height = Dimensions.parseToPixel(value, view.getResources().getDisplayMetrics(), parent, false);
+                        layoutParams.height = Dimensions.parseToPixel(value, view, parent, false);
                         break;
                 }
                 break;
             case "layout_gravity":
-                if (parent != null && parent instanceof LinearLayout) {
+                if (parent instanceof LinearLayout) {
                     ((LinearLayout.LayoutParams) layoutParams).gravity = Gravities.parse(value);
-                } else if (parent != null && parent instanceof FrameLayout) {
+                } else if (parent instanceof FrameLayout) {
                     ((FrameLayout.LayoutParams) layoutParams).gravity = Gravities.parse(value);
                 } else {
                     return setLayoutGravity(parent, view, Gravities.parse(value));
                 }
                 break;
             case "layout_weight":
-                if (parent != null && parent instanceof LinearLayout) {
+                if (parent instanceof LinearLayout) {
                     ((LinearLayout.LayoutParams) layoutParams).weight = Float.parseFloat(value);
                 }
                 break;
@@ -270,6 +284,7 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
             case "paddingBottom":
                 view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight(), Dimensions.parseToIntPixel(value, view));
                 break;
+            case "bg":
             case "background":
                 getDrawables().setupWithViewBackground(view, value);
                 break;
@@ -451,7 +466,7 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
                 }
                 break;
             case "requiresFadingEdge":
-                for (String str : value.split("|")) {
+                for (String str : value.split("\\|")) {
                     if (str.equals("horizontal")) {
                         view.setHorizontalFadingEdgeEnabled(true);
                     } else if (str.equals("vertical")) {
@@ -472,10 +487,10 @@ public class BaseViewInflater<V extends View> implements ViewInflater<V> {
                 view.setSaveEnabled(Boolean.valueOf(value));
                 break;
             case "scaleX":
-                view.setScaleX(Dimensions.parseToPixel(value, view));
+                view.setScaleX(Float.parseFloat(value));
                 break;
             case "scaleY":
-                view.setScaleY(Dimensions.parseToPixel(value, view));
+                view.setScaleY(Float.parseFloat(value));
                 break;
             case "scrollIndicators":
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

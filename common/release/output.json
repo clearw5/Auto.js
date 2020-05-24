@@ -1,1 +1,1 @@
-[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":401},"path":"commonRelease-4.0.0 Alpha1.apk","properties":{"packageId":"org.autojs.autojs","split":"","minSdkVersion":"17"}}]
+[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":455,"versionName":"4.1.0 Alpha5","enabled":true,"outputFile":"commonRelease-4.1.0 Alpha5.apk","fullName":"commonRelease","baseName":"common-release"},"path":"commonRelease-4.1.0 Alpha5.apk","properties":{}}]

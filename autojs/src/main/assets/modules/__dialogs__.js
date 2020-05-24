@@ -155,7 +155,7 @@ module.exports = function(__runtime__, scope){
             builder.input(wrapNonNullString(properties.inputHint), wrapNonNullString(properties.inputPrefill), 
                 function(dialog, input){
                     input = input.toString();
-                    builder.emit("input_change", dialog, input);
+                    builder.dialog.emit("input_change", builder.dialog, input);
                 })
                    .alwaysCallInputCallback();
         }
@@ -163,23 +163,23 @@ module.exports = function(__runtime__, scope){
             var itemsSelectMode = properties.itemsSelectMode;
             if(itemsSelectMode == undefined || itemsSelectMode == 'select'){
                 builder.itemsCallback(function(dialog, view, position, text){
-                    dialog.emit("item_select", position, text.toString(), dialog);
+                    builder.dialog.emit("item_select", position, text.toString(), builder.dialog);
                 });
             }else if(itemsSelectMode == 'single'){
                 builder.itemsCallbackSingleChoice(properties.itemsSelectedIndex == undefined ? -1 : properties.itemsSelectedIndex, 
                     function(dialog, view, which, text){
-                        dialog.emit("single_choice", which, text.toString(), dialog);
+                        builder.dialog.emit("single_choice", which, text.toString(), builder.dialog);
                         return true;
                     });
             }else if(itemsSelectMode == 'multi'){
                 builder.itemsCallbackMultiChoice(properties.itemsSelectedIndex == undefined ? null : properties.itemsSelectedIndex, 
                     function(dialog, view, indices, texts){
-                        dialog.emit("multi_choice", toJsArray(indices, (l, i)=> parseInt(l.get(i)), 
-                            toJsArray(texts, (l, i)=> l.get(i).toString())), dialog);
+                        builder.dialog.emit("multi_choice", toJsArray(indices, (l, i)=> parseInt(l.get(i)),
+                            toJsArray(texts, (l, i)=> l.get(i).toString())), builder.dialog);
                             return true;                        
                     });
             }else{
-                throw new Error("unknown itemsSelecteMode " + itemsSelectMode);
+                throw new Error("unknown itemsSelectMode " + itemsSelectMode);
             }
         }
         if(properties.progress != undefined){
@@ -191,8 +191,16 @@ module.exports = function(__runtime__, scope){
         if(properties.checkBoxPrompt != undefined || properties.checkBoxChecked != undefined){
             builder.checkBoxPrompt(wrapNonNullString(properties.checkBoxPrompt),  !!properties.checkBoxChecked, 
                 function(view, checked){
-                    builder.emit("check", checked, builder.getDialog());
+                    builder.getDialog().emit("check", checked, builder.getDialog());
                 });
+        }
+        if(properties.customView != undefined) {
+            let customView = properties.customView;
+            if(typeof(customView) == 'xml' || typeof(customView) == 'string') {
+                customView = ui.run(() => ui.inflate(customView));
+            }
+            let wrapInScrollView = (properties.wrapInScrollView === undefined) ? true : properties.wrapInScrollView;
+            builder.customView(customView, wrapInScrollView);
         }
     }
 

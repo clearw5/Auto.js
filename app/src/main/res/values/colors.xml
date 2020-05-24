@@ -10,5 +10,24 @@
     <color name="prefTextColorSecondary">#9DA0A2</color>
     <color name="prefTextColorPrimary">#282C2F</color>
     <color name="divider_functions_keyboard">#f0f0f0</color>
-    <color name="color_red">#ef5350</color>
+    <color name="theme_color_black">#111214</color>
+
+    <color name="window_background">#FFFFFF</color>
+    <color name="item_background">#FFFFFF</color>
+    <color name="item_background_dark">#FFFFFF</color>
+    <color name="text_color_secondary">#484C4F</color>
+    <color name="text_color_thirdly">#9DA0A2</color>
+    <color name="divider">#f2f3f5</color>
+    <color name="drawer_menu_item_text_color">#484C4F</color>
+    <color name="drawer_menu_group_text_color">#999999</color>
+    <color name="tab_indicator">@android:color/white</color>
+    <color name="tab_text">#a0ffffff</color>
+    <color name="toolbar">@android:color/white</color>
+    <color name="toolbar_disabled">#77e0e0e0</color>
+    <color name="console_debug">#cc000000</color>
+    <color name="console_verbose">#dfc0c0c0</color>
+    <color name="market_button_selected">#e14123</color>
+    <color name="market_button_unselected">#939393</color>
+
+
 </resources>

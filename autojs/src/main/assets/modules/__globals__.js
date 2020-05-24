@@ -9,7 +9,12 @@ module.exports = function(runtime, global){
         global.log(text);
     }
 
-    global.sleep = runtime.sleep.bind(runtime);
+    global.sleep = function(t) {
+        if(ui.isUiThread()){
+            throw new Error("不能在ui线程执行阻塞操作，请使用setTimeout代替");
+        }
+        runtime.sleep(t);
+    }
 
     global.isStopped = function(){
         return runtime.isStopped();
@@ -24,7 +29,6 @@ module.exports = function(runtime, global){
     global.isRunning = global.notStopped;
 
     global.exit = runtime.exit.bind(runtime);
-
 
     global.stop = global.exit;
 
@@ -47,6 +51,7 @@ module.exports = function(runtime, global){
     }
 
     global.waitForActivity = function(activity, period){
+        ensureNonUiThread();
         period = period || 200;
         while(global.currentActivity() != activity){
             sleep(period);
@@ -54,9 +59,16 @@ module.exports = function(runtime, global){
     }
 
     global.waitForPackage = function(packageName, period){
+        ensureNonUiThread();
         period = period || 200;
         while(global.currentPackage() != packageName){
             sleep(period);
+        }
+    }
+
+    function ensureNonUiThread() {
+        if(ui.isUiThread()){
+            throw new Error("不能在ui线程执行阻塞操作，请在子线程或子脚本执行，或者使用setInterval循环检测当前activity和package");
         }
     }
 

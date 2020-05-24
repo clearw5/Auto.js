@@ -36,17 +36,17 @@ public class Floaty {
     public Floaty(UiHandler uiHandler, UI ui, ScriptRuntime runtime) {
         mUiHandler = uiHandler;
         mRuntime = runtime;
-        mContext = new ContextThemeWrapper(mUiHandler.getContext(), R.style.AppTheme);
+        mContext = new ContextThemeWrapper(mUiHandler.getContext(), R.style.ScriptTheme);
         mLayoutInflater = ui.getLayoutInflater();
     }
 
-    public JsResizableWindow window(String xml) {
+    public JsResizableWindow window(BaseResizableFloatyWindow.ViewSupplier supplier) {
         try {
             FloatingPermission.waitForPermissionGranted(mContext);
         } catch (InterruptedException e) {
             throw new ScriptInterruptedException();
         }
-        JsResizableWindow window = new JsResizableWindow((context, parent) -> mLayoutInflater.inflate(xml, parent));
+        JsResizableWindow window = new JsResizableWindow(supplier);
         addWindow(window);
         return window;
     }
@@ -63,13 +63,13 @@ public class Floaty {
         return window;
     }
 
-    public JsRawWindow rawWindow(String xml) {
+    public JsRawWindow rawWindow(RawWindow.RawFloaty floaty) {
         try {
             FloatingPermission.waitForPermissionGranted(mContext);
         } catch (InterruptedException e) {
             throw new ScriptInterruptedException();
         }
-        JsRawWindow window = new JsRawWindow((context, parent) -> mLayoutInflater.inflate(xml, parent));
+        JsRawWindow window = new JsRawWindow(floaty);
         addWindow(window);
         return window;
     }
@@ -122,7 +122,7 @@ public class Floaty {
         }
 
         public View findView(String id) {
-            return JsViewHelper.findViewByStringId(mWindow.getWindowContent(), id);
+            return JsViewHelper.findViewByStringId(mWindow.getContentView(), id);
         }
 
         public int getX() {

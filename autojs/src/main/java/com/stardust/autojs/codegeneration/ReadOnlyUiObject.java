@@ -1,9 +1,9 @@
 package com.stardust.autojs.codegeneration;
 
 import android.graphics.Rect;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 
 import com.stardust.automator.UiObject;
 import com.stardust.view.accessibility.NodeInfo;
@@ -17,12 +17,12 @@ public class ReadOnlyUiObject extends UiObject {
     private NodeInfo mNodeInfo;
 
     public ReadOnlyUiObject(NodeInfo info) {
-        super(info, info.depth, -1);
+        super(null, info.getDepth(), -1);
         mNodeInfo = info;
     }
 
     public ReadOnlyUiObject(NodeInfo info, int indexInParent) {
-        super(info, info.depth, indexInParent);
+        super(null, info.getDepth(), indexInParent);
         mNodeInfo = info;
     }
 
@@ -35,7 +35,7 @@ public class ReadOnlyUiObject extends UiObject {
     @Nullable
     @Override
     public UiObject parent() {
-        return mNodeInfo.parent == null ? null : new ReadOnlyUiObject(mNodeInfo.parent);
+        return mNodeInfo.getParent() == null ? null : new ReadOnlyUiObject(mNodeInfo.getParent());
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ReadOnlyUiObject extends UiObject {
 
     @Override
     public String className() {
-        return mNodeInfo.className;
+        return mNodeInfo.getClassName();
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ReadOnlyUiObject extends UiObject {
 
     @Override
     public String packageName() {
-        return mNodeInfo.packageName;
+        return mNodeInfo.getPackageName();
     }
 
     @Override
@@ -70,12 +70,12 @@ public class ReadOnlyUiObject extends UiObject {
 
     @Override
     public String id() {
-        return mNodeInfo.id;
+        return mNodeInfo.getId();
     }
 
     @Override
     public String desc() {
-        return mNodeInfo.desc;
+        return mNodeInfo.getDesc();
     }
 
     @Override
@@ -101,13 +101,13 @@ public class ReadOnlyUiObject extends UiObject {
 
     @Override
     public int drawingOrder() {
-        return mNodeInfo.drawingOrder;
+        return mNodeInfo.getDrawingOrder();
     }
 
     @NonNull
     @Override
     public String text() {
-        return mNodeInfo.text;
+        return mNodeInfo.getText();
     }
 
     @Override
@@ -138,62 +138,62 @@ public class ReadOnlyUiObject extends UiObject {
 
     @Override
     public int depth() {
-        return mNodeInfo.depth;
+        return mNodeInfo.getDepth();
     }
 
     @Override
     public boolean checkable() {
-        return mNodeInfo.checkable;
+        return mNodeInfo.getCheckable();
     }
 
     @Override
     public boolean checked() {
-        return mNodeInfo.checked;
+        return mNodeInfo.getChecked();
     }
 
     @Override
     public boolean focusable() {
-        return mNodeInfo.focusable;
+        return mNodeInfo.getFocusable();
     }
 
     @Override
     public boolean focused() {
-        return mNodeInfo.focused;
+        return mNodeInfo.getFocused();
     }
 
     @Override
     public boolean visibleToUser() {
-        return mNodeInfo.visibleToUser;
+        return mNodeInfo.getVisibleToUser();
     }
 
     @Override
     public boolean accessibilityFocused() {
-        return mNodeInfo.accessibilityFocused;
+        return mNodeInfo.getAccessibilityFocused();
     }
 
     @Override
     public boolean selected() {
-        return mNodeInfo.selected;
+        return mNodeInfo.getSelected();
     }
 
     @Override
     public boolean clickable() {
-        return mNodeInfo.clickable;
+        return mNodeInfo.getClickable();
     }
 
     @Override
     public boolean longClickable() {
-        return mNodeInfo.longClickable;
+        return mNodeInfo.getLongClickable();
     }
 
     @Override
     public boolean enabled() {
-        return mNodeInfo.enabled;
+        return mNodeInfo.getEnabled();
     }
 
     @Override
     public boolean scrollable() {
-        return mNodeInfo.scrollable;
+        return mNodeInfo.getScrollable();
     }
 
     @Override
@@ -259,47 +259,47 @@ public class ReadOnlyUiObject extends UiObject {
 
     @Override
     public boolean isContextClickable() {
-        return mNodeInfo.contextClickable;
+        return mNodeInfo.getContextClickable();
     }
 
     @Override
     public boolean isDismissable() {
-        return mNodeInfo.dismissable;
+        return mNodeInfo.getDismissable();
     }
 
     @Override
     public boolean isEditable() {
-        return mNodeInfo.editable;
+        return mNodeInfo.getEditable();
     }
 
     @Override
     public int row() {
-        return mNodeInfo.row;
+        return mNodeInfo.getRow();
     }
 
     @Override
     public int column() {
-        return mNodeInfo.column;
+        return mNodeInfo.getColumn();
     }
 
     @Override
     public int rowSpan() {
-        return mNodeInfo.rowSpan;
+        return mNodeInfo.getRowSpan();
     }
 
     @Override
     public int columnSpan() {
-        return mNodeInfo.columnSpan;
+        return mNodeInfo.getColumnSpan();
     }
 
     @Override
     public int rowCount() {
-        return mNodeInfo.rowCount;
+        return mNodeInfo.getRowCount();
     }
 
     @Override
     public int columnCount() {
-        return mNodeInfo.columnCount;
+        return mNodeInfo.getColumnCount();
     }
 
     @Override

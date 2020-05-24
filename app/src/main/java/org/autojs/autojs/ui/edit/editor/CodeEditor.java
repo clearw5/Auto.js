@@ -2,20 +2,24 @@ package org.autojs.autojs.ui.edit.editor;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.design.widget.Snackbar;
+import com.google.android.material.snackbar.Snackbar;
+import android.text.Layout;
 import android.util.AttributeSet;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.android.dx.util.IntList;
 import com.stardust.autojs.script.JsBeautifier;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.ui.edit.theme.Theme;
+
 import com.stardust.util.ClipboardUtil;
 import com.stardust.util.TextUtils;
 
+import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import io.reactivex.Observable;
 
@@ -38,6 +42,11 @@ import io.reactivex.Observable;
  */
 public class CodeEditor extends HVScrollView {
 
+    public static class CheckedPatternSyntaxException extends Exception {
+        public CheckedPatternSyntaxException(PatternSyntaxException cause) {
+            super(cause);
+        }
+    }
 
     public interface CursorChangeCallback {
 
@@ -47,12 +56,11 @@ public class CodeEditor extends HVScrollView {
 
 
     private CodeEditText mCodeEditText;
-    private TextViewRedoUndo mTextViewRedoUndo;
+    private TextViewUndoRedo mTextViewRedoUndo;
     private JavaScriptHighlighter mJavaScriptHighlighter;
     private Theme mTheme;
     private JsBeautifier mJsBeautifier;
     private MaterialDialog mProcessDialog;
-
 
     private CharSequence mReplacement = "";
     private String mKeywords;
@@ -73,12 +81,11 @@ public class CodeEditor extends HVScrollView {
     private void init() {
         //setFillViewport(true);
         inflate(getContext(), R.layout.code_editor, this);
-        mCodeEditText = (CodeEditText) findViewById(R.id.code_edit_text);
+        mCodeEditText = findViewById(R.id.code_edit_text);
         mCodeEditText.addTextChangedListener(new AutoIndent(mCodeEditText));
-        mTextViewRedoUndo = new TextViewRedoUndo(mCodeEditText);
+        mTextViewRedoUndo = new TextViewUndoRedo(mCodeEditText);
         mJavaScriptHighlighter = new JavaScriptHighlighter(mTheme, mCodeEditText);
-        setTheme(Theme.getDefault(getContext()));
-        mJsBeautifier = new JsBeautifier(this, "js/beautify.js");
+        mJsBeautifier = new JsBeautifier(this, "js/js-beautify");
 
     }
 
@@ -137,7 +144,6 @@ public class CodeEditor extends HVScrollView {
         invalidate();
     }
 
-
     public boolean isTextChanged() {
         return mTextViewRedoUndo.isTextChanged();
     }
@@ -166,14 +172,19 @@ public class CodeEditor extends HVScrollView {
     }
 
     public void jumpTo(int line, int col) {
-        if (line >= mCodeEditText.getLayout().getLineCount() || line < 0) {
+        Layout layout = mCodeEditText.getLayout();
+        if (line < 0 || (layout != null && line >= layout.getLineCount())) {
             return;
         }
         mCodeEditText.setSelection(mCodeEditText.getLayout().getLineStart(line) + col);
     }
 
     public void setReadOnly(boolean readOnly) {
-        setEnabled(!readOnly);
+        mCodeEditText.setEnabled(!readOnly);
+    }
+
+    public void setRedoUndoEnabled(boolean enabled) {
+        mTextViewRedoUndo.setEnabled(enabled);
     }
 
     public void setProgress(boolean progress) {
@@ -199,8 +210,12 @@ public class CodeEditor extends HVScrollView {
         mCodeEditText.setText(text);
     }
 
-    public void setCursorChangeCallback(CursorChangeCallback callback) {
-        mCodeEditText.setCursorChangeCallback(callback);
+    public void addCursorChangeCallback(CursorChangeCallback callback) {
+        mCodeEditText.addCursorChangeCallback(callback);
+    }
+
+    public boolean removeCursorChangeCallback(CursorChangeCallback callback) {
+        return mCodeEditText.removeCursorChangeCallback(callback);
     }
 
 
@@ -212,9 +227,13 @@ public class CodeEditor extends HVScrollView {
         mTextViewRedoUndo.redo();
     }
 
-    public void find(String keywords, boolean usingRegex) {
+    public void find(String keywords, boolean usingRegex) throws CheckedPatternSyntaxException {
         if (usingRegex) {
-            mMatcher = Pattern.compile(keywords).matcher(mCodeEditText.getText());
+            try {
+                mMatcher = Pattern.compile(keywords).matcher(mCodeEditText.getText());
+            }catch (PatternSyntaxException e){
+                throw new CheckedPatternSyntaxException(e);
+            }
             mKeywords = null;
         } else {
             mKeywords = keywords;
@@ -223,17 +242,21 @@ public class CodeEditor extends HVScrollView {
         findNext();
     }
 
-    public void replace(String keywords, String replacement, boolean usingRegex) {
+    public void replace(String keywords, String replacement, boolean usingRegex) throws CheckedPatternSyntaxException {
         mReplacement = replacement == null ? "" : replacement;
         find(keywords, usingRegex);
     }
 
-    public void replaceAll(String keywords, String replacement, boolean usingRegex) {
+    public void replaceAll(String keywords, String replacement, boolean usingRegex) throws CheckedPatternSyntaxException {
         if (!usingRegex) {
             keywords = Pattern.quote(keywords);
         }
         String text = mCodeEditText.getText().toString();
-        text = text.replaceAll(keywords, replacement);
+        try {
+            text = text.replaceAll(keywords, replacement);
+        }catch (PatternSyntaxException e){
+            throw new CheckedPatternSyntaxException(e);
+        }
         setText(text);
     }
 
@@ -260,7 +283,7 @@ public class CodeEditor extends HVScrollView {
     }
 
     public void findPrev() {
-        if (mMatcher != null){
+        if (mMatcher != null) {
             Toast.makeText(getContext(), R.string.error_regex_find_prev, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -307,6 +330,11 @@ public class CodeEditor extends HVScrollView {
         mCodeEditText.getText().insert(selection, insertText);
     }
 
+    public void insert(int line, String insertText) {
+        int selection = mCodeEditText.getLayout().getLineStart(line);
+        mCodeEditText.getText().insert(selection, insertText);
+    }
+
     public void moveCursor(int dCh) {
         mCodeEditText.setSelection(mCodeEditText.getSelectionStart() + dCh);
     }
@@ -329,6 +357,40 @@ public class CodeEditor extends HVScrollView {
         mTextViewRedoUndo.markTextAsUnchanged();
     }
 
+    public LinkedHashMap<Integer, Breakpoint> getBreakpoints() {
+        return mCodeEditText.getBreakpoints();
+    }
+
+    public void setDebuggingLine(int line) {
+        mCodeEditText.setDebuggingLine(line);
+    }
+
+    public void setBreakpointChangeListener(BreakpointChangeListener listener) {
+        mCodeEditText.setBreakpointChangeListener(listener);
+    }
+
+    public void addOrRemoveBreakpoint(int line) {
+        if (!mCodeEditText.removeBreakpoint(line)) {
+            mCodeEditText.addBreakpoint(line);
+        }
+    }
+
+    public void addOrRemoveBreakpointAtCurrentLine() {
+        int line = LayoutHelper.getLineOfChar(mCodeEditText.getLayout(), mCodeEditText.getSelectionStart());
+        if (line < 0 || line >= mCodeEditText.getLayout().getLineCount())
+            return;
+        addOrRemoveBreakpoint(line);
+    }
+
+    public void removeAllBreakpoints() {
+        mCodeEditText.removeAllBreakpoints();
+    }
+
+    public void destroy(){
+        mJavaScriptHighlighter.shutdown();
+        mJsBeautifier.shutdown();
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         int codeWidth = getWidth() - getPaddingLeft() - getPaddingRight();
@@ -339,5 +401,21 @@ public class CodeEditor extends HVScrollView {
             invalidate();
         }
         super.onDraw(canvas);
+    }
+
+    public static class Breakpoint {
+
+        public int line;
+        public boolean enabled = true;
+
+        public Breakpoint(int line) {
+            this.line = line;
+        }
+    }
+
+    public interface BreakpointChangeListener {
+        void onBreakpointChange(int line, boolean enabled);
+
+        void onAllBreakpointRemoved(int count);
     }
 }

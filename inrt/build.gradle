@@ -1,28 +1,49 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '26.0.2'
+    compileSdkVersion versions.compile
+    buildToolsVersion versions.buildTool
 
     defaultConfig {
         applicationId "com.stardust.auojs.inrt"
-        minSdkVersion 17
-        targetSdkVersion 23
-        versionCode 203
-        versionName "4.0.0 Beta"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        ndk {
-            abiFilters 'armeabi-v7a'
-        }
-
+        minSdkVersion versions.mini
+        targetSdkVersion versions.target
+        versionCode versions.appVersionCode - 200
+        versionName versions.appVersionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     lintOptions {
+        abortOnError false
         disable 'MissingTranslation'
         disable 'ExtraTranslation'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    splits {
+
+        // Configures multiple APKs based on ABI.
+        abi {
+
+            // Enables building multiple APKs per ABI.
+            enable true
+
+            // By default all ABIs are included, so use reset() and include to specify that we only
+            // want APKs for x86 and x86_64.
+
+            // Resets the list of ABIs that Gradle should create APKs for to none.
+            reset()
+
+            // Specifies a list of ABIs that Gradle should create APKs for.
+            include "x86", "armeabi-v7a"
+
+            // Specifies that we do not want to also generate a universal APK that includes all ABIs.
+            universalApk false
+        }
     }
     buildTypes {
         debug {
@@ -36,6 +57,46 @@ android {
     }
 }
 
+def buildApkPluginForAbi(File pluginProjectDir, String abi) {
+    copy {
+        from file('..\\app\\release\\')
+        into new File(pluginProjectDir, 'app\\src\\main\\assets')
+        def fileName = "inrt-" + abi + "-release.apk"
+        include fileName
+        rename fileName, 'template.apk'
+    }
+    exec {
+        workingDir pluginProjectDir
+        commandLine 'gradlew.bat', 'assembleRelease'
+    }
+    copy {
+        from new File(pluginProjectDir, 'app\\build\\outputs\\apk\\release')
+        into file('..\\common\\release')
+        def fileName = '打包插件-' + versions.appVersionName + '-release.apk'
+        include fileName
+        rename fileName, '打包插件-' + abi + '-' + versions.appVersionName + '-release.apk'
+    }
+}
+
+task buildApkPlugin {
+    doLast {
+        def pluginProjectDirPath = '..\\..\\AutoJsApkBuilderPlugin'
+        def pluginProjectDir = file(pluginProjectDirPath)
+        if (!pluginProjectDir.exists() || !pluginProjectDir.isDirectory()) {
+            println 'pluginProjectDir not exists'
+            return
+        }
+        buildApkPluginForAbi(pluginProjectDir, 'armeabi-v7a')
+        buildApkPluginForAbi(pluginProjectDir, 'x86')
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'assembleRelease') {
+        task.finalizedBy 'buildApkPlugin'
+    }
+}
+
 repositories {
     flatDir {
         dirs 'libs'
@@ -44,17 +105,16 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.1-alpha01', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.4.0'
     //Glide
-    compile('com.github.bumptech.glide:glide:4.2.0', {
+    implementation('com.github.bumptech.glide:glide:4.2.0', {
         exclude group: 'com.android.support'
     })
-    testCompile 'junit:junit:4.12'
-    compile project(':automator')
-    compile project(':common')
-    compile project(':autojs')
+    testImplementation 'junit:junit:4.12'
+    implementation project(':automator')
+    implementation project(':common')
+    implementation project(':autojs')
 }

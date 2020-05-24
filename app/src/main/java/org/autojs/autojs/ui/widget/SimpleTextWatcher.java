@@ -43,6 +43,9 @@ public class SimpleTextWatcher implements TextWatcher {
         mOnTextChangedListener = onTextChangedListener;
     }
 
+    public SimpleTextWatcher() {
+    }
+
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         if (mBeforeTextChangedListener != null) {

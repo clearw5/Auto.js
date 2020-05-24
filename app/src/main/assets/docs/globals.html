@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>全局变量与函数 | Auto.js 3.0.0 文档</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <title>全局变量与函数 | Auto.js 4.1.0 文档</title>
+  <link rel="stylesheet" href="assets/fonts.css">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="https://nodejs.org/api/globals.html">
@@ -61,7 +61,7 @@
 
     <div id="column1" data-id="globals" class="interior">
       <header>
-        <h1>Auto.js 3.0.0 文档</h1>
+        <h1>Auto.js 4.1.0 文档</h1>
         <div id="gtoc">
           <p>
             <a href="index.html" name="toc">索引</a> |
@@ -90,6 +90,8 @@
 <li><span class="stability_undefined"><a href="#globals_requiresapi_api">requiresApi(api)</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_requiresautojsversion_version">requiresAutojsVersion(version)</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_runtime_requestpermissions_permissions">runtime.requestPermissions(permissions)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_runtime_loadjar_path">runtime.loadJar(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#globals_runtime_loaddex_path">runtime.loadDex(path)</a></span></li>
 <li><span class="stability_undefined"><a href="#globals_context">context</a></span></li>
 </ul>
 </li>
@@ -232,6 +234,23 @@ runtime.requestPermissions([&quot;access_fine_location&quot;]);
 </ul>
 <p>您可以通过APK编辑器来增加Auto.js以及Auto.js打包的应用的权限。</p>
 <p>安卓所有的权限列表参见<a href="https://developer.android.com/guide/topics/permissions/overview">Permissions Overview</a>。（并没有用）</p>
+<h2>runtime.loadJar(path)<span><a class="mark" href="#globals_runtime_loadjar_path" id="globals_runtime_loadjar_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> jar文件路径</li>
+</ul>
+</div><p>加载目标jar文件，加载成功后将可以使用该Jar文件的类。</p>
+<pre><code>// 加载jsoup.jar
+runtime.loadJar(&quot;./jsoup.jar&quot;);
+// 使用jsoup解析html
+importClass(org.jsoup.Jsoup);
+log(Jsoup.parse(files.read(&quot;./test.html&quot;)));
+</code></pre><p>(jsoup是一个Java实现的解析Html DOM的库，可以在<a href="https://jsoup.org/download">Jsoup</a>下载)</p>
+<h2>runtime.loadDex(path)<span><a class="mark" href="#globals_runtime_loaddex_path" id="globals_runtime_loaddex_path">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&lt;string&gt;</a> dex文件路径</li>
+</ul>
+</div><p>加载目标dex文件，加载成功后将可以使用该dex文件的类。</p>
+<p>因为加载jar实际上是把jar转换为dex再加载的，因此加载dex文件会比jar文件快得多。可以使用Android SDK的build tools的dx工具把jar转换为dex。</p>
 <h2>context<span><a class="mark" href="#globals_context" id="globals_context">#</a></span></h2>
 <p>全局变量。一个android.content.Context对象。</p>
 <p>注意该对象为ApplicationContext，因此不能用于界面、对话框等的创建。</p>

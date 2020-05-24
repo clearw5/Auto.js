@@ -1,9 +1,14 @@
 package com.stardust.autojs.script;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.util.Log;
 
-import com.stardust.util.MapEntries;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.stardust.autojs.rhino.TokenStream;
+import com.stardust.util.MapBuilder;
+
+import org.mozilla.javascript.Token;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -17,15 +22,19 @@ public abstract class JavaScriptSource extends ScriptSource {
 
     public static final String ENGINE = "com.stardust.autojs.script.JavaScriptSource.Engine";
 
+    public static final String EXECUTION_MODE_UI_PREFIX = "\"ui\";";
+
     public static final int EXECUTION_MODE_NORMAL = 0;
     public static final int EXECUTION_MODE_UI = 0x00000001;
     public static final int EXECUTION_MODE_AUTO = 0x00000002;
 
-    private static final Map<String, Integer> EXECUTION_MODES = new MapEntries<String, Integer>()
-            .entry("ui", EXECUTION_MODE_UI)
-            .entry("auto", EXECUTION_MODE_AUTO)
-            .map();
-    private static final int EXECUTION_MODE_STRING_MAX_LENGTH = 7;
+    private static final String LOG_TAG = "JavaScriptSource";
+
+    private static final Map<String, Integer> EXECUTION_MODES = new MapBuilder<String, Integer>()
+            .put("ui", EXECUTION_MODE_UI)
+            .put("auto", EXECUTION_MODE_AUTO)
+            .build();
+    private static final int PARSING_MAX_TOKEN = 300;
 
     private int mExecutionMode = -1;
 
@@ -55,19 +64,38 @@ public abstract class JavaScriptSource extends ScriptSource {
 
     public int getExecutionMode() {
         if (mExecutionMode == -1) {
-            mExecutionMode = parseExecutionMode(getScript());
+            mExecutionMode = parseExecutionMode();
         }
         return mExecutionMode;
     }
 
-    private int parseExecutionMode(String script) {
-        if (script == null || script.length() == 0 || script.charAt(0) != '"')
+    protected int parseExecutionMode() {
+        String script = getScript();
+        TokenStream ts = new TokenStream(new StringReader(script), null, 1);
+        int token;
+        int count = 0;
+        try {
+            while (count <= PARSING_MAX_TOKEN && (token = ts.getToken()) != Token.EOF) {
+                count++;
+                if (token == Token.EOL || token == Token.COMMENT) {
+                    continue;
+                }
+                if (token == Token.STRING && ts.getTokenLength() > 2) {
+                    String tokenString = script.substring(ts.getTokenBeg() + 1, ts.getTokenEnd() - 1);
+                    if (ts.getToken() != Token.SEMI) {
+                        break;
+                    }
+                    Log.d(LOG_TAG, "string = " + tokenString);
+                    return parseExecutionMode(tokenString.split(" "));
+                }
+                break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             return EXECUTION_MODE_NORMAL;
-        int i = script.lastIndexOf("\";", EXECUTION_MODE_STRING_MAX_LENGTH + 2);
-        if (i == -1)
-            return EXECUTION_MODE_NORMAL;
-        String modeString = script.substring(1, i);
-        return parseExecutionMode(modeString.split(" "));
+        }
+        return EXECUTION_MODE_NORMAL;
+
     }
 
     private int parseExecutionMode(String[] modeStrings) {

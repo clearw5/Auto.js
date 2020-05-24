@@ -1,5 +1,5 @@
 <resources>
-    <string name="_app_name">Auto.js</string>
+    <string name="app_name">Auto.js</string>
     <string name="text_accessibility_service_description">Required by the script automatic operation (click, long press, slide, etc.).</string>
     <string name="text_new_file">New File</string>
     <string name="text_create_fail">Creation failed</string>
@@ -32,13 +32,11 @@
     <string name="developer">Stardust</string>
     <string name="github">Source Code</string>
     <string name="text_already_copy_to_clip">Copied</string>
-    <string name="donate_developer">Donate</string>
     <string name="my_github">https://github.com/hyb1996/NoRootScriptDroid</string>
     <string name="share_app">[UiAutomator]Download：http://www.coolapk.com/apk/org.autojs.autojs </string>
     <string name="text_floating_window">Floating Window</string>
     <string name="text_error_report">Bug Report</string>
     <string name="text_press_again_to_exit">Press again to exit</string>
-    <string name="text_no_running_script">No running scipts</string>
     <string name="text_already_stop_n_scripts">%d script(s) is(are) stopped</string>
     <string name="text_start_running">Running</string>
     <string name="text_open_by_other_apps">Open by other apps</string>
@@ -50,13 +48,11 @@
     <string name="text_error">Error</string>
     <string name="text_copy_debug_info">Copy debugging log</string>
     <string name="text_it_is_the_developer_of_app">This is a software developer(。・・)ノ</string>
-    <string name="text_lll">lol</string>
     <string name="text_please_choose">Please choose </string>
     <string name="text_crash">Crash~ o(≧口≦)o</string>
     <string name="crash_feedback">(ಥ _ ಥ)Exit or submit a bug report or copy debugging log to the developer(≧∇≦)ﾉ</string>
     <string name="text_clear">Clear</string>
     <string name="text_console">Console</string>
-    <string name="text_report_bug">Submit Bug report</string>
     <string name="text_report_fail">Submission Failed</string>
     <string name="text_report_succeed">Submitted successfully</string>
     <string name="edit_and_run_handle_intent_error">Cannot process file</string>
@@ -66,7 +62,6 @@
     <string name="text_recorded">Recording stopped</string>
     <string name="text_copy_to_clip">Copy</string>
     <string name="text_file_write_fail">File writing failed</string>
-    <string name="text_join_qq_group">Join in QQ Group</string>
     <string name="text_use_volume_control_record">Use the volume keys to control</string>
     <string name="summary_use_volume_control_record">Stop or start recording when volume changes</string>
     <string name="key_use_volume_control_record">key_use_volume_control_record</string>
@@ -139,7 +134,6 @@
     <string name="air_title_issue">Issue</string>
     <string name="air_dialog_description_failed_unknown">Unknown error</string>
     <string name="air_label_use_email">Send by email</string>
-    <string name="text_name_should_not_be_empty">Invalid name</string>
     <string name="text_import_fail">Import failed</string>
     <string name="text_no_brower">No brower installed.</string>
     <string name="text_please_choose_a_script">Choose a script</string>
@@ -150,7 +144,6 @@
     <string name="text_check_update_error">Check for updates failed</string>
     <string name="text_download_url">Download</string>
     <string name="text_directly_download">Download now</string>
-    <string name="text_downloading">Dowloading</string>
     <string name="text_download_failed">Download failed</string>
     <string name="text_do_not_ask_again_for_this_version">Do not ask again for this version</string>
     <string name="text_code_beautify">Beautify code</string>

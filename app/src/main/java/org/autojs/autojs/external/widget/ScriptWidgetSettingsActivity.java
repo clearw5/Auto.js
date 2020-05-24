@@ -3,18 +3,20 @@ package org.autojs.autojs.external.widget;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.os.Environment;
+import androidx.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import org.autojs.autojs.R;
-import org.autojs.autojs.model.script.ScriptFile;
-import org.autojs.autojs.storage.file.StorageFileProvider;
-import org.autojs.autojs.ui.BaseActivity;
-import org.autojs.autojs.ui.main.scripts.ScriptListView;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.autojs.autojs.R;
+import org.autojs.autojs.model.explorer.Explorer;
+import org.autojs.autojs.model.explorer.ExplorerDirPage;
+import org.autojs.autojs.model.explorer.ExplorerFileProvider;
+import org.autojs.autojs.model.script.Scripts;
+import org.autojs.autojs.ui.BaseActivity;
+import org.autojs.autojs.ui.explorer.ExplorerView;
 
 /**
  * Created by Stardust on 2017/7/11.
@@ -22,9 +24,8 @@ import org.androidannotations.annotations.EActivity;
 @EActivity(R.layout.activity_script_widget_settings)
 public class ScriptWidgetSettingsActivity extends BaseActivity {
 
-
     private String mSelectedScriptFilePath;
-    private StorageFileProvider mStorageFileProvider;
+    private Explorer mExplorer;
     private int mAppWidgetId;
 
     @Override
@@ -41,11 +42,10 @@ public class ScriptWidgetSettingsActivity extends BaseActivity {
 
 
     private void initScriptListRecyclerView() {
-        mStorageFileProvider = StorageFileProvider.getExternalStorageProvider();
-        ScriptListView scriptList = (ScriptListView) findViewById(R.id.script_list);
-        scriptList.setStorageFileProvider(mStorageFileProvider);
-        scriptList.setCurrentDirectory(new ScriptFile(StorageFileProvider.getDefaultDirectory()));
-        scriptList.setOnScriptFileClickListener((view, file) -> {
+        mExplorer = new Explorer(new ExplorerFileProvider(Scripts.INSTANCE.getFILE_FILTER()), 0);
+        ExplorerView explorerView = findViewById(R.id.script_list);
+        explorerView.setExplorer(mExplorer, ExplorerDirPage.createRoot(Environment.getExternalStorageDirectory()));
+        explorerView.setOnItemClickListener((view, file) -> {
             mSelectedScriptFilePath = file.getPath();
             finish();
         });
@@ -55,7 +55,7 @@ public class ScriptWidgetSettingsActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_refresh) {
-            mStorageFileProvider.refreshAll();
+            mExplorer.refreshAll();
         } else if (item.getItemId() == R.id.action_clear_file_selection) {
             mSelectedScriptFilePath = null;
         }

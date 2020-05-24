@@ -1,8 +1,6 @@
 package com.stardust.autojs.core.http;
 
-import android.widget.AdapterView;
-
-import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
@@ -22,13 +20,24 @@ public class MutableOkHttp extends OkHttpClient {
     private long mTimeout = 30 * 1000;
     private Interceptor mRetryInterceptor = chain -> {
         Request request = chain.request();
-        Response response = chain.proceed(request);
+        Response response = null;
         int tryCount = 0;
-        while (!response.isSuccessful() && tryCount < getMaxRetries()) {
+        do {
+            boolean succeed;
+            try {
+                response = chain.proceed(request);
+                succeed = response.isSuccessful();
+            } catch (SocketTimeoutException e) {
+                succeed = false;
+                if (tryCount >= getMaxRetries()) {
+                    throw e;
+                }
+            }
+            if (succeed || tryCount >= getMaxRetries()) {
+                return response;
+            }
             tryCount++;
-            response = chain.proceed(request);
-        }
-        return response;
+        } while (true);
     };
 
     public MutableOkHttp() {
@@ -69,6 +78,10 @@ public class MutableOkHttp extends OkHttpClient {
     public void setTimeout(long timeout) {
         mTimeout = timeout;
         muteClient();
+    }
+
+    public synchronized void muteClient(Builder builder) {
+        mOkHttpClient = newClient(builder);
     }
 
     protected synchronized void muteClient() {

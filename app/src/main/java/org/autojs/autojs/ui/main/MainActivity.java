@@ -4,54 +4,32 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.core.view.GravityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.tabs.TabLayout;
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.OnActivityResultDelegate;
-import com.stardust.autojs.core.image.OpenCVHelper;
 import com.stardust.autojs.core.permission.OnRequestPermissionsResultCallback;
 import com.stardust.autojs.core.permission.PermissionRequestProxyActivity;
 import com.stardust.autojs.core.permission.RequestPermissionCallbacks;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.pio.PFiles;
-
-import org.autojs.autojs.BuildConfig;
-import org.autojs.autojs.Pref;
-import org.autojs.autojs.R;
-import org.autojs.autojs.autojs.AutoJs;
-import org.autojs.autojs.storage.file.StorageFileProvider;
-import org.autojs.autojs.tool.AccessibilityServiceTool;
-import org.autojs.autojs.ui.BaseActivity;
-import org.autojs.autojs.ui.common.NotAskAgainDialog;
-import org.autojs.autojs.ui.doc.DocsFragment_;
-import org.autojs.autojs.ui.floating.FloatyWindowManger;
-import org.autojs.autojs.ui.log.LogActivity_;
-import org.autojs.autojs.ui.main.community.CommunityFragment;
-import org.autojs.autojs.ui.main.community.CommunityFragment_;
-import org.autojs.autojs.ui.main.sample.SampleListFragment_;
-import org.autojs.autojs.ui.main.scripts.MyScriptListFragment_;
-import org.autojs.autojs.ui.main.task.TaskManagerFragment_;
-import org.autojs.autojs.ui.settings.SettingsActivity_;
-import org.autojs.autojs.ui.update.VersionGuard;
-import org.autojs.autojs.ui.widget.CommonMarkdownView;
-import org.autojs.autojs.ui.widget.SearchViewItem;
-
 import com.stardust.theme.ThemeColorManager;
-
-import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
-
 import com.stardust.util.BackPressedHandler;
 import com.stardust.util.DeveloperUtils;
 import com.stardust.util.DrawerAutoClose;
@@ -60,15 +38,34 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.autojs.autojs.BuildConfig;
+import org.autojs.autojs.Pref;
+import org.autojs.autojs.R;
+import org.autojs.autojs.autojs.AutoJs;
+import org.autojs.autojs.external.foreground.ForegroundService;
+import org.autojs.autojs.model.explorer.Explorers;
+import org.autojs.autojs.tool.AccessibilityServiceTool;
+import org.autojs.autojs.ui.BaseActivity;
+import org.autojs.autojs.ui.common.NotAskAgainDialog;
+import org.autojs.autojs.ui.doc.DocsFragment_;
+import org.autojs.autojs.ui.floating.FloatyWindowManger;
+import org.autojs.autojs.ui.log.LogActivity_;
+import org.autojs.autojs.ui.main.community.CommunityFragment;
+import org.autojs.autojs.ui.main.community.CommunityFragment_;
+import org.autojs.autojs.ui.main.market.MarketFragment;
+import org.autojs.autojs.ui.main.scripts.MyScriptListFragment_;
+import org.autojs.autojs.ui.main.task.TaskManagerFragment_;
+import org.autojs.autojs.ui.settings.SettingsActivity_;
+import org.autojs.autojs.ui.update.VersionGuard;
+import org.autojs.autojs.ui.widget.CommonMarkdownView;
+import org.autojs.autojs.ui.widget.SearchViewItem;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.opencv.core.Core;
 
 import java.util.Arrays;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, BackPressedHandler.HostActivity, PermissionRequestProxyActivity {
-
 
     public static class DrawerOpenEvent {
         static DrawerOpenEvent SINGLETON = new DrawerOpenEvent();
@@ -103,6 +100,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         mVersionGuard = new VersionGuard(this);
         showAnnunciationIfNeeded();
         EventBus.getDefault().register(this);
+        applyDayNightMode();
     }
 
     @AfterViews
@@ -141,7 +139,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     private void checkPermissions() {
-        checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     private void showAccessibilitySettingPromptIfDisabled() {
@@ -161,7 +159,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private void setUpToolbar() {
         Toolbar toolbar = $(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string._app_name);
+        toolbar.setTitle(R.string.app_name);
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.text_drawer_open,
                 R.string.text_drawer_close);
         drawerToggle.syncState();
@@ -171,10 +169,10 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private void setUpTabViewPager() {
         TabLayout tabLayout = $(R.id.tab);
         mPagerAdapter = new FragmentPagerAdapterBuilder(this)
-                .add(new MyScriptListFragment_(), R.string.text_script)
+                .add(new MyScriptListFragment_(), R.string.text_file)
                 .add(new DocsFragment_(), R.string.text_tutorial)
                 .add(new CommunityFragment_(), R.string.text_community)
-                .add(new SampleListFragment_(), R.string.text_sample)
+                .add(new MarketFragment(), R.string.text_market)
                 .add(new TaskManagerFragment_(), R.string.text_manage)
                 .build();
         mViewPager.setAdapter(mPagerAdapter);
@@ -216,6 +214,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     public void exitCompletely() {
         finish();
         FloatyWindowManger.hideCircularMenu();
+        ForegroundService.stop(this);
         stopService(new Intent(this, FloatyService.class));
         AutoJs.getInstance().getScriptEngineService().stopAll();
     }
@@ -243,7 +242,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
             return;
         }
         if (getGrantResult(Manifest.permission.READ_EXTERNAL_STORAGE, permissions, grantResults) == PackageManager.PERMISSION_GRANTED) {
-            StorageFileProvider.getDefault().notifyStoragePermissionGranted();
+            Explorers.workspace().refreshAll();
         }
     }
 
@@ -272,6 +271,12 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Override
     public void onBackPressed() {
+        Fragment fragment = mPagerAdapter.getStoredFragment(mViewPager.getCurrentItem());
+        if (fragment instanceof BackPressedHandler) {
+            if (((BackPressedHandler) fragment).onBackPressed(this)) {
+                return;
+            }
+        }
         if (!mBackPressObserver.onBackPressed(this)) {
             super.onBackPressed();
         }
@@ -318,7 +323,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Subscribe
     public void onLoadUrl(CommunityFragment.LoadUrl loadUrl) {
-        mDrawerLayout.closeDrawer(Gravity.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
 

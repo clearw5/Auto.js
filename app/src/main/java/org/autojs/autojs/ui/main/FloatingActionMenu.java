@@ -3,11 +3,11 @@ package org.autojs.autojs.ui.main;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
-import android.support.annotation.AttrRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import androidx.annotation.AttrRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import org.autojs.autojs.R;
-import org.autojs.autojs.ui.common.ScriptOperations;
 
-import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -34,8 +32,9 @@ public class FloatingActionMenu extends FrameLayout implements View.OnClickListe
     private static final int[] ICONS = {
             R.drawable.ic_floating_action_menu_dir,
             R.drawable.ic_floating_action_menu_file,
-            R.drawable.ic_floating_action_menu_open};
-    private static final int[] LABELS = {R.string.text_directory, R.string.text_file, R.string.text_import};
+            R.drawable.ic_floating_action_menu_open,
+            R.drawable.ic_project};
+    private static final int[] LABELS = {R.string.text_directory, R.string.text_file, R.string.text_import, R.string.text_project};
     private TextView[] mLabels;
     private FloatingActionButton[] mFabs;
     private View[] mFabContainers;

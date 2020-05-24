@@ -68,7 +68,7 @@ public class Media implements MediaScannerConnection.MediaScannerConnectionClien
         mMediaPlayer.seekTo(m);
     }
 
-    public boolean isMuiscPlaying() {
+    public boolean isMusicPlaying() {
         return mMediaPlayer != null && mMediaPlayer.isPlaying();
     }
 

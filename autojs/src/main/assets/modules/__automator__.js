@@ -109,25 +109,90 @@ module.exports = function(runtime, global){
         "fast": 1
     }
 
-    global.auto = function(mode){
+    const flagsMap = {
+        "findOnUiThread": 1,
+        "useUsageStats": 2,
+        "useShell": 4
+    };
+
+    var auto = function(mode){
         if(mode){
             global.auto.setMode(mode);
         }
         runtime.accessibilityBridge.ensureServiceEnabled();
     }
 
-    global.auto.waitFor = function(){
+    auto.waitFor = function(){
         runtime.accessibilityBridge.waitForServiceEnabled();
     }
 
-    global.auto.setMode = function(mode){
-        if(typeof(mode) !== "string"){
+    auto.setMode = function(modeStr){
+        if(typeof(modeStr) !== "string"){
             throw new TypeError("mode should be a string");
         }
-        mode = modes[mode.toLowerCase()] || 0;
+        let mode = modes[modeStr];
+        if(mode == undefined){
+            throw new Error("unknown mode for auto.setMode(): " + modeStr)
+        }
         runtime.accessibilityBridge.setMode(mode);
     }
 
+    auto.setFlags = function(flags){
+        let flagStrings;
+        if(Array.isArray(flags)){
+            flagStrings = flags;
+        } else if(typeof(flags) == "string"){
+            flagStrings = [flags];
+        } else {
+            throw new TypeError("flags = " + flags);
+        }
+        let flagsInt = 0;
+        for(let i = 0; i < flagStrings.length; i++){
+            let flag = flagsMap[flagStrings[i]];
+            if(flag == undefined){
+                throw new Error("unknown flag for auto.setFlags(): " + flagStrings[i]);
+            }
+            flagsInt |= flag;
+        }
+        runtime.accessibilityBridge.setFlags(flagsInt);
+    }
+
+    auto.__defineGetter__("service", function() {
+        return runtime.accessibilityBridge.getService();
+    });
+
+    auto.__defineGetter__("windows", function() {
+        var service = auto.service;
+        return service == null ? [] : util.java.toJsArray(service.getWindows(), true);
+    });
+
+    auto.__defineGetter__("root", function() {
+        var root = runtime.accessibilityBridge.getRootInCurrentWindow();
+        if(root == null){
+            return null;
+        }
+        return com.stardust.automator.UiObject.Companion.createRoot(root);
+    });
+
+    auto.__defineGetter__("rootInActiveWindow", function() {
+        var root = runtime.accessibilityBridge.getRootInActiveWindow();
+        if(root == null){
+            return null;
+        }
+        return com.stardust.automator.UiObject.Companion.createRoot(root);
+    });
+
+    auto.__defineGetter__("windowRoots", function() {
+        return util.java.toJsArray(runtime.accessibilityBridge.windowRoots(), false)
+            .map(root => com.stardust.automator.UiObject.Companion.createRoot(root));
+    });
+
+
+    auto.setWindowFilter = function(filter){
+        runtime.accessibilityBridge.setWindowFilter(new com.stardust.autojs.core.accessibility.AccessibilityBridge.WindowFilter(filter));
+    }
+
+    global.auto = auto;
 
     global.__asGlobal__(runtime.automator, ['back', 'home', 'powerDialog', 'notifications', 'quickSettings', 'recents', 'splitScreen']);
     global.__asGlobal__(automator, ['click', 'longClick', 'press', 'swipe', 'gesture', 'gestures', 'gestureAsync', 'gesturesAsync', 'scrollDown', 'scrollUp', 'input', 'setText']);

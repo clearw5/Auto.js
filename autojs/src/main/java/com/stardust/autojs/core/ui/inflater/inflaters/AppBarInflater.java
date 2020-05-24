@@ -1,11 +1,10 @@
 package com.stardust.autojs.core.ui.inflater.inflaters;
 
-import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
+import androidx.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.ui.inflater.ResourceParser;
 import com.stardust.autojs.core.ui.inflater.ViewCreator;

@@ -9,6 +9,10 @@ package com.stardust.autojs.core.inputevent;
 
 public class InputEventCodes {
 
+
+    public static final int UP = 0x00;
+    public static final int DOWN = 0x01;
+
     
 /*
  * Device properties and quirks

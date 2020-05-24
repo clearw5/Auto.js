@@ -26,7 +26,7 @@ public class ShortcutActivity extends Activity {
 
     private void runScriptFile(String path) {
         try {
-            Scripts.run(new ScriptFile(path));
+            Scripts.INSTANCE.run(new ScriptFile(path));
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();

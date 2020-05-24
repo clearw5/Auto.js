@@ -1,13 +1,14 @@
 package org.autojs.autojs.ui.shortcut;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ShortcutManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,16 +16,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import org.autojs.autojs.R;
-import org.autojs.autojs.ui.BaseActivity;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.autojs.autojs.R;
+import org.autojs.autojs.tool.BitmapTool;
+import org.autojs.autojs.ui.BaseActivity;
+import org.autojs.autojs.workground.WrapContentGridLayoutManger;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -52,10 +55,13 @@ public class ShortcutIconSelectActivity extends BaseActivity {
 
     private void setupApps() {
         mApps.setAdapter(new AppsAdapter());
-        mApps.setLayoutManager(new GridLayoutManager(this, 5));
+        WrapContentGridLayoutManger manager = new WrapContentGridLayoutManger(this, 5);
+        manager.setDebugInfo("IconSelectView");
+        mApps.setLayoutManager(manager);
         loadApps();
     }
 
+    @SuppressLint("CheckResult")
     private void loadApps() {
         List<ApplicationInfo> packages = mPackageManager.getInstalledApplications(PackageManager.GET_META_DATA);
         Observable.fromIterable(packages)
@@ -85,7 +91,7 @@ public class ShortcutIconSelectActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT)
-                .setType("image/*"), 11209);
+                .setType("image/*"), 11234);
         return true;
     }
 
@@ -95,6 +101,23 @@ public class ShortcutIconSelectActivity extends BaseActivity {
             setResult(RESULT_OK, data);
             finish();
         }
+    }
+
+    public static Observable<Bitmap> getBitmapFromIntent(Context context, Intent data) {
+        String packageName = data.getStringExtra(EXTRA_PACKAGE_NAME);
+        if (packageName != null) {
+            return Observable.fromCallable(() -> {
+                Drawable drawable = context.getPackageManager().getApplicationIcon(packageName);
+                return BitmapTool.drawableToBitmap(drawable);
+            });
+        }
+        Uri uri = data.getData();
+        if (uri == null) {
+            return Observable.error(new IllegalArgumentException("invalid intent"));
+        }
+        return Observable.fromCallable(() ->
+                BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri))
+        );
     }
 
     private class AppItem {

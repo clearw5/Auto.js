@@ -1,6 +1,6 @@
 package com.stardust.autojs.core.console;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.stardust.autojs.runtime.api.Console;
 

@@ -24,4 +24,17 @@ public class Objects {
     public static boolean equals(Object a, Object b) {
         return (a == b) || (a != null && a.equals(b));
     }
+
+    /**
+     * Returns the hash code of a non-{@code null} argument and 0 for
+     * a {@code null} argument.
+     *
+     * @param o an object
+     * @return the hash code of a non-{@code null} argument and 0 for
+     * a {@code null} argument
+     * @see Object#hashCode
+     */
+    public static int hashCode(Object o) {
+        return o != null ? o.hashCode() : 0;
+    }
 }

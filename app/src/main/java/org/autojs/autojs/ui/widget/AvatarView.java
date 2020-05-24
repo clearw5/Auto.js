@@ -2,25 +2,22 @@ package org.autojs.autojs.ui.widget;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.support.annotation.AttrRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.AttrRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
-
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.makeramen.roundedimageview.RoundedImageView;
+
 import org.autojs.autojs.R;
-import org.autojs.autojs.network.GlideApp;
-import org.autojs.autojs.network.Glides;
 import org.autojs.autojs.network.NodeBB;
 import org.autojs.autojs.network.entity.user.User;
 
@@ -80,10 +77,12 @@ public class AvatarView extends FrameLayout {
             mIcon.setVisibility(View.VISIBLE);
             mIconText.setVisibility(View.GONE);
             mIcon.setCornerRadius(getWidth() / 2);
-            GlideApp.with(getContext())
+            Glide.with(getContext())
                     .load(NodeBB.BASE_URL + user.getPicture())
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
+                    .apply(new RequestOptions()
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                    )
                     .into(mIcon);
         }
     }

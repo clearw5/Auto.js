@@ -5,9 +5,11 @@
     "editor.background": "#1E1E1E",
     "editor.foreground": "#D4D4D4",
     "editorLineNumber.foreground": "#404040",
+    "editorBreakpoint.foreground": "#1976D2",
     "imeBar.background": "#dd1e1e1e",
     "imeBar.foreground": "#f1f1f1",
-    "editor.lineHighlightBackground": "#2e2e35"
+    "editor.lineHighlightBackground": "#2e2e35",
+    "editor.debuggingLineBackground": "#40c4ff"
   },
   "tokenColors": [
     {

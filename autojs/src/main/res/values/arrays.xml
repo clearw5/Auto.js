@@ -12,6 +12,22 @@
         <item>OncePerDay</item>
     </string-array>
 
+    <string-array name="ad_types_keys">
+        <item>随机</item>
+        <item>新闻</item>
+        <item>社交</item>
+        <item>动漫</item>
+        <item>游戏</item>
+    </string-array>
+
+    <string-array name="ad_types_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
 
     <string-array name="root_record_out_file_type_keys">
         <item>可编辑的js文件</item>

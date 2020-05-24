@@ -2,8 +2,8 @@ package org.autojs.autojs.ui.main.community;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
+import androidx.annotation.Nullable;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.webkit.WebView;
 
 import org.autojs.autojs.R;
@@ -63,7 +63,7 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
     @AfterViews
     void setUpViews() {
         mWebView = mEWebView.getWebView();
-        String url = "http://www.autojs.org/";
+        String url = "https://www.autojs.org/";
         Bundle savedWebViewState = getArguments().getBundle("savedWebViewState");
         if (savedWebViewState != null) {
             mWebView.restoreState(savedWebViewState);
@@ -73,22 +73,11 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        ((BackPressedHandler.HostActivity) getActivity())
-                .getBackPressedObserver()
-                .registerHandlerAtFront(this);
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         Bundle savedWebViewState = new Bundle();
         mWebView.saveState(savedWebViewState);
         getArguments().putBundle("savedWebViewState", savedWebViewState);
-        ((BackPressedHandler.HostActivity) getActivity())
-                .getBackPressedObserver()
-                .unregisterHandler(this);
     }
 
     @Override
@@ -128,7 +117,7 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
 
     private boolean isInPostsPage() {
         String url = mWebView.getUrl();
-        return url.matches(POSTS_PAGE_PATTERN);
+        return url != null &&  url.matches(POSTS_PAGE_PATTERN);
     }
 
     @Override
