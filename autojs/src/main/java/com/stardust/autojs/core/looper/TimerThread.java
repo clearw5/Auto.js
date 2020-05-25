@@ -10,6 +10,8 @@ import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.concurrent.VolatileBox;
 import com.stardust.lang.ThreadCompat;
 
+import org.mozilla.javascript.Context;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -37,12 +39,12 @@ public class TimerThread extends ThreadCompat {
     @Override
     public void run() {
         mRuntime.loopers.prepare();
-        mTimer = new Timer(mRuntime, mMaxCallbackUptimeMillisForAllThreads);
-        sTimerMap.put(Thread.currentThread(), mTimer);
-        ((RhinoJavaScriptEngine) mRuntime.engines.myEngine()).enterContext();
+        Context engineContext = ((RhinoJavaScriptEngine) mRuntime.engines.myEngine()).enterContext();
         notifyRunning();
         new Handler().post(mTarget);
         try {
+            mTimer = new Timer(mRuntime, mMaxCallbackUptimeMillisForAllThreads);
+            sTimerMap.put(Thread.currentThread(), mTimer);
             Looper.loop();
         } catch (Throwable e) {
             if (!ScriptInterruptedException.causedByInterrupted(e)) {
@@ -50,9 +52,9 @@ public class TimerThread extends ThreadCompat {
             }
         } finally {
             onExit();
-            mTimer = null;
-            org.mozilla.javascript.Context.exit();
+            ((RhinoJavaScriptEngine)mRuntime.engines.myEngine()).exitContext(engineContext);
             sTimerMap.remove(Thread.currentThread(), mTimer);
+            mTimer = null;
         }
     }
 
@@ -72,6 +74,7 @@ public class TimerThread extends ThreadCompat {
     @CallSuper
     protected void onExit() {
         mRuntime.loopers.notifyThreadExit(this);
+        LooperHelper.quitForThread(this);
     }
 
     public static Timer getTimerForThread(Thread thread) {

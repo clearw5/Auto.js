@@ -53,7 +53,9 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
         mCacheDir = dir;
         mLibsDir = new File(dir, "libs");
         if (dir.exists()) {
-            PFiles.deleteFilesOfDir(dir);
+            if (!(parent instanceof AndroidClassLoader)) {
+                PFiles.deleteFilesOfDir(dir);
+            }
         } else {
             dir.mkdirs();
         }
@@ -136,6 +138,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
         if (!file.exists()) {
             throw new FileNotFoundException(file.getPath());
         }
+        Log.d(LOG_TAG, "dex file size: " + file.length());
         DexClassLoader loader = new DexClassLoader(file.getPath(), mCacheDir.getPath(), mLibsDir.getPath(), parent);
         // 根据dex文件名 移除已有的，使得最新载入的在LinkedHashMap末尾
         mDexClassLoaders.remove(file.getName());
@@ -167,6 +170,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
         arguments.outName = dexFile.getPath();
         arguments.jarOutput = true;
         Main.run(arguments);
+        Log.d(LOG_TAG, "dex file size: " + dexFile.length());
         DexClassLoader loader = loadDex(dexFile);
         if (isTmpDex) {
             Log.d(LOG_TAG, "delete tmpFile on finalize:" + dexFile.getName());

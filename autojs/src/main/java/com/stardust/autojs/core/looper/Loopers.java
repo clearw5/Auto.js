@@ -173,6 +173,7 @@ public class Loopers implements MessageQueue.IdleHandler {
     public void recycle() {
         quitServantLooper();
         mMainMessageQueue.removeIdleHandler(this);
+        removeThreadLocalValue();
     }
 
     public void setMainLooperQuitHandler(LooperQuitHandler mainLooperQuitHandler) {
@@ -195,9 +196,17 @@ public class Loopers implements MessageQueue.IdleHandler {
             Log.d(LOG_TAG, "looper queueIdle: " + l);
             if (shouldQuitLooper()) {
                 l.quit();
+                removeThreadLocalValue();
             }
         }
         return true;
+    }
+
+    private void removeThreadLocalValue() {
+        maxWaitId.remove();
+        waitIds.remove();
+        looperQuitHandlers.remove();
+        maxWaitId.remove();
     }
 
     public void prepare() {
