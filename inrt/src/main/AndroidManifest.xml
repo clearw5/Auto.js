@@ -56,7 +56,7 @@
         </service>
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="org.autojs.autojsm.inrt.fileprovider"
+            android:authorities="org.autojs.autojs.inrt.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

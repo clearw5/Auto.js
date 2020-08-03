@@ -296,7 +296,7 @@ context.startActivity(i);
 <p>但如果有root权限，则在intent的参数加上<code>&quot;root&quot;: true</code>即可。例如使用root权限跳转到Auto.js的设置界面为：</p>
 <pre><code>app.startActivity({
     packageName: &quot;org.autojs.autojs&quot;,
-    className: &quot;org.autojs.autojsm.ui.settings.SettingsActivity_&quot;,
+    className: &quot;org.autojs.autojs.ui.settings.SettingsActivity_&quot;,
     root: true
 });
 </code></pre><p>另外，关于intent的参数如何获取的问题，一些intent是意外发现并且在网络中传播的（例如跳转QQ聊天窗口是因为QQ给网页提供了跳转到客服QQ的方法），如果要自己获取活动的intent的参数，可以通过例如&quot;intent记录&quot;，&quot;隐式启动&quot;等应用拦截内部intent或者查询暴露的intent。其中拦截内部intent需要XPosed框架，或者可以通过反编译等手段获取参数。总之，没有简单直接的方法。</p>
@@ -341,7 +341,7 @@ context.startActivity(i);
 <p>例如: </p>
 <pre><code>shell(&quot;am start &quot; + app.intentToShell({
     packageName: &quot;org.autojs.autojs&quot;,
-    className: &quot;org.autojs.autojsm.ui.settings.SettingsActivity_&quot;
+    className: &quot;org.autojs.autojs.ui.settings.SettingsActivity_&quot;
 }), true);
 </code></pre><p>参见<a href="https://developer.android.com/studio/command-line/adb#IntentSpec">intent参数的规范</a>。</p>
 <h2>app.parseUri(uri)<span><a class="mark" href="#app_app_parseuri_uri" id="app_app_parseuri_uri">#</a></span></h2>

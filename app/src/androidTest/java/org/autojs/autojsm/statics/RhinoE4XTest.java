@@ -1,4 +1,4 @@
-package org.autojs.autojsm.statics;
+package org.autojs.autojs.statics;
 
 import org.junit.Test;
 import org.mozilla.javascript.Context;

@@ -1,4 +1,4 @@
-package org.autojs.autojsm;
+package org.autojs.autojs;
 
 import org.junit.Test;
 

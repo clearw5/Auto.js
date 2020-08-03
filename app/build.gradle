@@ -32,7 +32,7 @@ android {
     compileSdkVersion versions.compile
     buildToolsVersion versions.buildTool
     defaultConfig {
-        applicationId "org.autojs.autojsm"
+        applicationId "org.autojs.autojs"
         minSdkVersion versions.mini
         targetSdkVersion versions.target
         versionCode versions.appVersionCode
@@ -61,6 +61,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            applicationIdSuffix ".modify"
         }
     }
     compileOptions {

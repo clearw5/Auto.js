@@ -25,7 +25,7 @@ import java.util.zip.ZipFile;
 
 public class DeveloperUtils {
 
-    private static final String PACKAGE_NAME = "org.autojs.autojsm";
+    private static final String PACKAGE_NAME = "org.autojs.autojs";
     private static final String SIGNATURE = "UXxRsWvq2RYpbrPK39V81PhxropPdnCU3fY1M4utIcE=";
     private static final String LOG_TAG = "DeveloperUtils";
     private static final ExecutorService sExecutor = UnderuseExecutors.getExecutor();
