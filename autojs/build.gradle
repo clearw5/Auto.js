@@ -80,5 +80,6 @@ dependencies {
     api project(path: ':common')
     api project(path: ':automator')
     implementation files('libs/rhino-1.7.11.jar')
+    implementation 'com.rmtheis:tess-two:9.1.0'
 }
 
