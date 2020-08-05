@@ -49,4 +49,5 @@ makeColorCenterJar.dependsOn(build)
 dependencies {
     api project(path: ':autojs')
     testImplementation 'junit:junit:4.12'
+    implementation 'com.rmtheis:tess-two:9.1.0'
 }
