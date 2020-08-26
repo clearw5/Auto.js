@@ -427,6 +427,8 @@ public class ScriptRuntime {
         ignoresException(sensors::unregisterAll);
         ignoresException(timers::recycle);
         ignoresException(ui::recycle);
+        mTopLevelScope = null;
+        console.clear();
     }
 
     private void ignoresException(Runnable r) {

@@ -285,11 +285,13 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
         }
         if (mListeningNotification) {
             mAccessibilityBridge.getNotificationObserver().removeNotificationListener(this);
-            mAccessibilityBridge.getNotificationObserver().removeToastListener(this);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
                     && NotificationListenerService.Companion.getInstance() != null) {
                 NotificationListenerService.Companion.getInstance().removeListener(this);
             }
+        }
+        if (mListeningToast) {
+            mAccessibilityBridge.getNotificationObserver().removeToastListener(this);
         }
         if (mKeyInterceptor != null) {
             AccessibilityService service = mAccessibilityBridge.getService();
@@ -304,12 +306,23 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
                 service.getGestureEventDispatcher().removeListener(this);
             }
         }
+        if (mLoopers != null) {
+            mLoopers = null;
+        }
+        if (mScriptRuntime != null) {
+            mScriptRuntime = null;
+        }
+        if (mBridges != null) {
+            mBridges = null;
+            removeAllListeners();
+        }
     }
 
     @Override
     public void onKeyEvent(final int keyCode, final KeyEvent event) {
         mHandler.post(() -> {
-            String keyName = KeyEvent.keyCodeToString(keyCode).substring(8).toLowerCase();
+            String keyString = KeyEvent.keyCodeToString(keyCode);
+            String keyName = keyString.startsWith("KEYCODE_") ? keyString.substring(8).toLowerCase() : keyString;
             emit(keyName, event);
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 emit(PREFIX_KEY_DOWN + keyName, event);

@@ -250,7 +250,6 @@ public class ScriptEngineService {
             synchronized (mEngineLifecycleCallbacks) {
                 mEngineLifecycleCallbacks.add(callback);
             }
-
         }
 
         void unregisterCallback(ScriptEngineManager.EngineLifecycleCallback callback) {

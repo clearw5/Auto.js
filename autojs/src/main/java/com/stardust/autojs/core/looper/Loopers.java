@@ -173,6 +173,14 @@ public class Loopers implements MessageQueue.IdleHandler {
     public void recycle() {
         quitServantLooper();
         mMainMessageQueue.removeIdleHandler(this);
+        mMainLooperQuitHandler = null;
+        mScriptRuntime = null;
+        mThreads = null;
+        mTimers = null;
+        mMainLooper = null;
+        mServantLooper = null;
+        mMainHandler = null;
+        mMainMessageQueue = null;
         removeThreadLocalValue();
     }
 

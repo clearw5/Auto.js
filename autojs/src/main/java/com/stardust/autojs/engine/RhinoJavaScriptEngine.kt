@@ -106,13 +106,13 @@ open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Co
         try {
             super.destroy()
             Log.d(LOG_TAG, "on destroy")
-            sContextEngineMap.remove(context)
             destroySuccess = true;
         } finally {
             if (destroySuccess)
                 Log.d(LOG_TAG, "destroy execute success")
             else
                 Log.d(LOG_TAG, "destroy execute failed")
+            sContextEngineMap.remove(context)
             Context.exit()
         }
     }

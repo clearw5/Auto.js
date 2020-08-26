@@ -57,6 +57,7 @@ public abstract class JavaScriptEngine extends ScriptEngine.AbstractScriptEngine
     @Override
     public synchronized void destroy() {
         mRuntime.onExit();
+        mExecArgv = null;
         super.destroy();
     }
 

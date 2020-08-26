@@ -49,6 +49,7 @@ public interface ScreenCaptureRequester {
                 return;
             if (mCallback != null)
                 mCallback.onRequestResult(Activity.RESULT_CANCELED, null);
+            mCallback = null;
         }
     }
 

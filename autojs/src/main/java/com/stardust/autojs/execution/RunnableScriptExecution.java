@@ -29,6 +29,9 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
     public void run() {
         ThreadCompat.currentThread().setName("ScriptThread-" + getId() + "[" + getSource() + "]");
         execute();
+
+        mScriptEngine = null;
+        mScriptEngineManager = null;
     }
 
     public Object execute() {
