@@ -94,9 +94,13 @@ public class ScriptEngineService {
     private final ScriptEngineManager mScriptEngineManager;
     private final EngineLifecycleObserver mEngineLifecycleObserver = new EngineLifecycleObserver() {
 
+        private final Object lock = new Object();
+
         @Override
         public void onEngineRemove(ScriptEngine engine) {
-            mScriptExecutions.remove(engine.getId());
+            synchronized (lock) {
+                mScriptExecutions.remove(engine.getId());
+            }
             super.onEngineRemove(engine);
         }
     };

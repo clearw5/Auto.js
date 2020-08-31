@@ -273,6 +273,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
 
     public void recycle() {
         broadcast.unregister();
+        broadcast.removeAllListeners();
         if (mListeningKey) {
             AccessibilityService service = mAccessibilityBridge.getService();
             if (service != null) {
