@@ -414,6 +414,7 @@ public class ScriptRuntime {
         }
         ignoresException(threads::shutDownAll);
         ignoresException(events::recycle);
+        ignoresException(events::destroy);
         ignoresException(media::recycle);
         ignoresException(loopers::recycle);
         ignoresException(() -> {

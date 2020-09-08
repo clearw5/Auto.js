@@ -307,15 +307,11 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
                 service.getGestureEventDispatcher().removeListener(this);
             }
         }
-        if (mLoopers != null) {
-            mLoopers = null;
-        }
+    }
+
+    public void destroy() {
         if (mScriptRuntime != null) {
             mScriptRuntime = null;
-        }
-        if (mBridges != null) {
-            mBridges = null;
-            removeAllListeners();
         }
     }
 

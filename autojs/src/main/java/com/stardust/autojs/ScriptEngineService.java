@@ -26,9 +26,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.stardust.autojs.runtime.exception.ScriptInterruptedException.causedByInterrupted;
 
@@ -94,18 +95,14 @@ public class ScriptEngineService {
     private final ScriptEngineManager mScriptEngineManager;
     private final EngineLifecycleObserver mEngineLifecycleObserver = new EngineLifecycleObserver() {
 
-        private final Object lock = new Object();
-
         @Override
         public void onEngineRemove(ScriptEngine engine) {
-            synchronized (lock) {
-                mScriptExecutions.remove(engine.getId());
-            }
+            mScriptExecutions.remove(engine.getId());
             super.onEngineRemove(engine);
         }
     };
     private ScriptExecutionObserver mScriptExecutionObserver = new ScriptExecutionObserver();
-    private LinkedHashMap<Integer, ScriptExecution> mScriptExecutions = new LinkedHashMap<>();
+    private Map<Integer, ScriptExecution> mScriptExecutions = new ConcurrentHashMap<>();
 
     ScriptEngineService(ScriptEngineServiceBuilder builder) {
         mUiHandler = builder.mUiHandler;

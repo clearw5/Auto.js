@@ -63,7 +63,10 @@ public abstract class TaskGroup implements Parent<Task> {
             for (TimedTask timedTask : timedTasks) {
                 mTasks.add(new Task.PendingTask(timedTask));
             }
-            for (IntentTask intentTask : TimedTaskManager.getInstance().getAllIntentTasksAsList()) {
+            List<IntentTask> intentTasks = Observable.fromIterable(TimedTaskManager.getInstance().getAllIntentTasksAsList())
+                    .toSortedList((o1, o2) -> o1.getAction().compareTo(o2.getAction()))
+                    .blockingGet();
+            for (IntentTask intentTask : intentTasks) {
                 mTasks.add(new Task.PendingTask(intentTask));
             }
         }

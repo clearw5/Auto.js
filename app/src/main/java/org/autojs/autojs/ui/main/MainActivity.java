@@ -164,7 +164,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         } catch (Exception e) {
             Log.d(LOG_TAG, "自动设置无障碍失败");
         }
-        if (!autoEnableAccessibility || AccessibilityServiceTool.isAccessibilityServiceEnabled(this)) {
+        if (!autoEnableAccessibility || !AccessibilityServiceTool.isAccessibilityServiceEnabled(this)) {
             new NotAskAgainDialog.Builder(this, "MainActivity.accessibility")
                     .title(R.string.text_need_to_enable_accessibility_service)
                     .content(R.string.explain_accessibility_permission)
