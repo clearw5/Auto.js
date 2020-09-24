@@ -190,7 +190,7 @@ public class TemplateMatching {
     private static int selectPyramidLevel(Mat img, Mat template) {
         int minDim = Nath.min(img.rows(), img.cols(), template.rows(), template.cols());
         //这里选取16为图像缩小后的最小宽高，从而用log(2, minDim / 16)得到最多可以经过几次缩小。
-        int maxLevel = (int) (Math.log(minDim / 16) / Math.log(2));
+        int maxLevel = (int) (Math.log(minDim / 16.0) / Math.log(2));
         if (maxLevel < 0) {
             return 0;
         }

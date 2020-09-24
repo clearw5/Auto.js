@@ -46,6 +46,7 @@ android {
                 ]
             }
         }
+        ndk { }
     }
     buildTypes {
         debug {
@@ -197,7 +198,8 @@ dependencies {
     // Flurry
     implementation 'com.flurry.android:analytics:7.0.0@aar'
     // Bugly
-    implementation 'com.tencent.bugly:crashreport:2.6.6'
+    implementation 'com.tencent.bugly:crashreport:3.2.3'
+    implementation 'com.tencent.bugly:nativecrashreport:3.7.47'
     // MaterialDialogCommon
     implementation('com.afollestad.material-dialogs:commons:0.9.2.3', {
         exclude group: 'com.android.support'

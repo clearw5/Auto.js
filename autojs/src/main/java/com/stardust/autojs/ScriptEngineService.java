@@ -26,10 +26,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import static com.stardust.autojs.runtime.exception.ScriptInterruptedException.causedByInterrupted;
 
@@ -227,7 +227,7 @@ public class ScriptEngineService {
 
     private static class EngineLifecycleObserver implements ScriptEngineManager.EngineLifecycleCallback {
 
-        private final Set<ScriptEngineManager.EngineLifecycleCallback> mEngineLifecycleCallbacks = new LinkedHashSet<>();
+        private final Set<ScriptEngineManager.EngineLifecycleCallback> mEngineLifecycleCallbacks = new CopyOnWriteArraySet<>();
 
         @Override
         public void onEngineCreate(ScriptEngine engine) {

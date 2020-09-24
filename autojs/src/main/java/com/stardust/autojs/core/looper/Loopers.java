@@ -227,6 +227,8 @@ public class Loopers implements MessageQueue.IdleHandler {
         Log.d(LOG_TAG, "notifyThreadExit: " + thread);
         //当子线程退成时，主线程需要检查自身是否退出（主线程在所有子线程执行完成后才能退出，如果主线程已经执行完任务仍然要等待所有子线程），
         //此时通过向主线程发送一个空的Runnable，主线程执行完这个Runnable后会触发IdleHandler，从而检查自身是否退出
-        mMainHandler.post(EMPTY_RUNNABLE);
+        if (mMainHandler != null) {
+            mMainHandler.post(EMPTY_RUNNABLE);
+        }
     }
 }

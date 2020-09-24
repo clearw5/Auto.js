@@ -53,7 +53,7 @@ class App : MultiDexApplication() {
             return
         FlurryAgent.Builder()
                 .withLogEnabled(BuildConfig.DEBUG)
-                .build(this, "D42MH48ZN4PJC5TKNYZD")
+                .build(this, "V5B5VT5NP6TT5F78PZXR")
     }
 
     private fun setUpDebugEnvironment() {
@@ -164,7 +164,7 @@ class App : MultiDexApplication() {
     companion object {
 
         private val TAG = "App"
-        private val BUGLY_APP_ID = "19b3607b53"
+        private val BUGLY_APP_ID = "e020acad30"
 
         private lateinit var instance: WeakReference<App>
 

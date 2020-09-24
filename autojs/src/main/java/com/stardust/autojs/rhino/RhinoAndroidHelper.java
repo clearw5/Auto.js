@@ -50,8 +50,13 @@ public class RhinoAndroidHelper {
      * @return a context prepared for android
      */
     public Context enterContext() {
-        if (!SecurityController.hasGlobal())
-            SecurityController.initGlobal(new NoSecurityController());
+        if (!SecurityController.hasGlobal()) {
+            synchronized (RhinoAndroidHelper.class) {
+                if (!SecurityController.hasGlobal()) {
+                    SecurityController.initGlobal(new NoSecurityController());
+                }
+            }
+        }
         return getContextFactory().enterContext();
     }
 
@@ -59,7 +64,7 @@ public class RhinoAndroidHelper {
      * @return The Context factory which has to be used on android.
      */
     @VisibleForTesting
-    public AndroidContextFactory getContextFactory() {
+    public synchronized AndroidContextFactory getContextFactory() {
         AndroidContextFactory factory;
         if (!ContextFactory.hasExplicitGlobal()) {
             factory = new AndroidContextFactory(cacheDirectory);
