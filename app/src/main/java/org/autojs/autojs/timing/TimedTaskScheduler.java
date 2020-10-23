@@ -42,6 +42,11 @@ public class TimedTaskScheduler {
 
     public void scheduleTaskIfNeeded(Context context, TimedTask timedTask, boolean force) {
         long millis = timedTask.getNextTime();
+        if (millis <= System.currentTimeMillis()) {
+            Log.d(LOG_TAG, "task out date, just run it: " + timedTask);
+            runTask(context, timedTask);
+            return;
+        }
         if ((!force && timedTask.isScheduled()) || millis - System.currentTimeMillis() > SCHEDULE_TASK_MIN_TIME) {
             return;
         }
@@ -63,10 +68,6 @@ public class TimedTaskScheduler {
         long timeWindow = millis - System.currentTimeMillis();
         timedTask.setScheduled(true);
         TimedTaskManager.getInstance().updateTaskWithoutReScheduling(timedTask);
-        if (timeWindow <= 0) {
-            runTask(context, timedTask);
-            return;
-        }
 
         Log.d(LOG_TAG, "schedule task: task = " + timedTask + ", millis = " + millis + ", timeWindow = " + timeWindow);
 

@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
@@ -16,8 +15,7 @@ import com.stardust.app.GlobalAppContext;
 
 import org.autojs.autojs.BuildConfig;
 import org.autojs.autojs.autojs.AutoJs;
-import org.autojs.autojs.external.receiver.StaticBroadcastReceiver;
-import org.autojs.autojs.timing.TaskReceiver;
+import org.autojs.autojs.external.ScriptIntents;
 import org.autojs.autojs.timing.TimedTask;
 import org.autojs.autojs.timing.TimedTaskManager;
 
@@ -124,6 +122,11 @@ public class AlarmManagerProvider extends BroadcastReceiver implements WorkProvi
 
     public void scheduleTaskIfNeeded(Context context, TimedTask timedTask, boolean force) {
         long millis = timedTask.getNextTime();
+        if (millis <= System.currentTimeMillis()) {
+            autoJsLog( "task out date run:" + timedTask);
+            runTask(context, timedTask);
+            return;
+        }
         if (!force && timedTask.isScheduled() || millis - System.currentTimeMillis() > SCHEDULE_TASK_MIN_TIME) {
             return;
         }
@@ -136,17 +139,21 @@ public class AlarmManagerProvider extends BroadcastReceiver implements WorkProvi
             return;
         }
         autoJsLog( "schedule task:" + timedTask);
-        if (millis <= System.currentTimeMillis()) {
-            autoJsLog( "task out date run:" + timedTask);
-            GlobalAppContext.get().sendBroadcast(timedTask.createIntent());
-            return;
-        }
         if (force) {
             cancel(timedTask);
         }
         enqueueWork(timedTask, millis - System.currentTimeMillis());
     }
 
+
+    public void runTask(Context context, TimedTask task) {
+        Log.d(LOG_TAG, "run task: task = " + task);
+        Intent intent = task.createIntent();
+        ScriptIntents.handleIntent(context, intent);
+        TimedTaskManager.getInstance().notifyTaskFinished(task.getId());
+        // 如果队列中有任务正在等待，直接取消
+        cancel(task);
+    }
 
     private void setExactCompat(AlarmManager alarmManager, PendingIntent op, long millis) {
         int type = AlarmManager.RTC_WAKEUP;
