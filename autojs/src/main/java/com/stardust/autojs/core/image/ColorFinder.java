@@ -119,7 +119,10 @@ public class ColorFinder {
             x += startingPoint.x;
             y += startingPoint.y;
             if (x >= image.getWidth() || y >= image.getHeight()
-                    || x < 0 || y < 0) {
+                    || x < 0 || y < 0
+                /* 理论上应该需要判定所有点都在指定范围内才对，但是如果这么修改了 和其他版本的脚本会不兼容，暂不处理
+                    || x < rect.x || y < rect.y
+                    || x > rect.x + rect.width || y > rect.y + rect.height*/) {
                 return false;
             }
             int c = image.pixel(x, y);

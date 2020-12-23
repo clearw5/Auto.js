@@ -13,7 +13,7 @@ public class DefaultGSONResolver implements JSONResolver {
 
     @Override
     public String toJSONString(Object obj) {
-        return new GsonBuilder().create().toJson(originString);
+        return new GsonBuilder().create().toJson(obj);
     }
 
     @Override

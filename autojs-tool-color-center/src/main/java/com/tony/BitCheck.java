@@ -28,7 +28,7 @@ public class BitCheck {
      * then. bytes[idx] = bytes[idx] | pos, =192(11000000)
      */
     public boolean isUnchecked(long val) {
-        // 将待校验值截取 高位 作为位序列索引
+        // 将待校验值截取 高位 作为位序列索引 等价于 val/8
         int idx = (int)(val >> 3);
 
         // 低7位作为待校验值
