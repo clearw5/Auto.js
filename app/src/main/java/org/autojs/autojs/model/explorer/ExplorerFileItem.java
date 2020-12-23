@@ -15,7 +15,7 @@ import java.util.Set;
 public class ExplorerFileItem implements ExplorerItem {
 
     private static final Set<String> sEditableFileExts = new HashSet<>(Arrays.asList(
-            "js", "java", "xml", "json", "txt", "log", "ts"
+            "js", "java", "xml", "json", "txt", "log", "ts", "html"
     ));
 
     private PFile mFile;
