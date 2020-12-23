@@ -216,7 +216,11 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
                 while (reverseIterator.hasPrevious()) {
                     DexClassLoader classLoader = reverseIterator.previous();
 //                    Log.d(LOG_TAG, "try to load class: " + name + " class loader info: " + classLoader.toString());
-                    loadedClass = classLoader.loadClass(name);
+                    try {
+                        loadedClass = classLoader.loadClass(name);
+                    } catch (Exception e) {
+                        // do nothing
+                    }
                     if (loadedClass != null) {
                         break;
                     }
