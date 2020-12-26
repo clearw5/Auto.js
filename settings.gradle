@@ -1,3 +1,4 @@
 include ':app', ':automator', ':common', ':autojs', ':inrt', ':autojs-tool-color-center'
 include ':autojs-tool-download'
 include ':autojs-tool-webview'
+include ':autojs-tool-encrypt'

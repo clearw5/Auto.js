@@ -424,6 +424,7 @@ public class ScriptRuntime {
         });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             ignoresException(images::releaseScreenCapturer);
+            ignoresException(images::recycle);
         }
         ignoresException(sensors::unregisterAll);
         ignoresException(timers::recycle);

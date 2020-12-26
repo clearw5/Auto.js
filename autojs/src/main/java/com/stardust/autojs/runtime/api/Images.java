@@ -267,7 +267,6 @@ public class Images {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mScreenCapturer != null) {
             mScreenCapturer.release();
         }
-        mScriptRuntime = null;
     }
 
     public Point findImage(ImageWrapper image, ImageWrapper template) {
@@ -365,5 +364,9 @@ public class Images {
             result.blockedGet();
         }
 
+    }
+
+    public void recycle() {
+        mScriptRuntime = null;
     }
 }
