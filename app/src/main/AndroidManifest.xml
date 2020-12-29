@@ -27,7 +27,7 @@
 
     <application
         xmlns:tools="http://schemas.android.com/tools"
-        android:name="org.autojs.autojs.App"
+        android:name="org.anonymous.fuck.tb.App"
         android:allowBackup="false"
         android:icon="@drawable/autojs_material"
         android:label="@string/app_name"

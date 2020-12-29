@@ -32,7 +32,7 @@
             android:theme="@style/ScriptTheme.Transparent"/>
 
         <service
-            android:name="com.stardust.autojs.core.accessibility.AccessibilityService"
+            android:name="org.anonymous.fuck.tb.AccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService"/>
