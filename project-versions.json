@@ -2,7 +2,7 @@
   "appVersionCode": 463,
   "appVersionName": "4.1.1 FuckTB",
   "target": 28,
-  "mini": 17,
+  "mini": 21,
   "compile": 28,
   "buildTool": "28.0.3"
 }
