@@ -55,8 +55,7 @@ dependencies {
     api 'com.github.hyb1996:EnhancedFloaty:0.31'
     api 'com.makeramen:roundedimageview:2.3.0'
     // OpenCv
-//    api(name: 'opencv-3.4.13', ext: 'aar')
-    api files('libs/opencv-3.4.13.aar')
+    api files('libs/opencv-4.5.1.aar')
     // OkHttp
     api 'com.squareup.okhttp3:okhttp:3.10.0'
     // JDeferred

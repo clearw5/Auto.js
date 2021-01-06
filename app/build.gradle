@@ -46,7 +46,7 @@ android {
                 ]
             }
         }
-        ndk { }
+        ndk {}
     }
     buildTypes {
         debug {
@@ -62,7 +62,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            applicationIdSuffix ".modify"
+            applicationIdSuffix ".modify.opencv4"
         }
     }
     compileOptions {
@@ -110,13 +110,16 @@ android {
             buildConfigField "String", "CHANNEL", '"coolapk"'
         }
     }
+    externalNativeBuild {
+        cmake {
+            arguments "-DANDROID_STL=c++_shared"
+        }
+    }
     // 避免压缩TensorFlow
 //    aaptOptions {
 //        noCompress "tflite"
 //    }
 }
-
-
 
 
 repositories {
