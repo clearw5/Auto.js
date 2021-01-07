@@ -42,7 +42,7 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [
-                        "resourcePackageName": "org.autojs.autojs"
+                    "resourcePackageName": "org.autojs.autojs"
                 ]
             }
         }
@@ -108,11 +108,6 @@ android {
         }
         coolapk {
             buildConfigField "String", "CHANNEL", '"coolapk"'
-        }
-    }
-    externalNativeBuild {
-        cmake {
-            arguments "-DANDROID_STL=c++_shared"
         }
     }
     // 避免压缩TensorFlow
