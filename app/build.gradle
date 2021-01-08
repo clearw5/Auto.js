@@ -144,10 +144,10 @@ dependencies {
     })
     annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc2'
     // Android supports
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.1.0-alpha01'
-    implementation 'androidx.multidex:multidex:2.0.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
     // Personal libraries
     implementation 'com.github.hyb1996:MutableTheme:1.0.0'
     // Material Dialogs
@@ -180,7 +180,7 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:2.1.2"
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
@@ -204,7 +204,7 @@ dependencies {
         exclude group: 'com.android.support'
     })
     // WorkManager
-    implementation 'androidx.work:work-runtime:2.3.4'
+    implementation 'androidx.work:work-runtime:2.4.0'
     // Android job
     implementation 'com.evernote:android-job:1.2.6'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
