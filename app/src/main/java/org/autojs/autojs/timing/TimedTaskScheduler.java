@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.external.ScriptIntents;
 import org.autojs.autojs.timing.work.AlarmManagerProvider;
 import org.autojs.autojs.timing.work.AndroidJobProvider;
@@ -33,7 +34,7 @@ public class TimedTaskScheduler {
 
     @SuppressLint("CheckResult")
     public void checkTasks(Context context, boolean force) {
-        Log.d(LOG_TAG, "check tasks: force = " + force);
+        autoJsLog("check tasks: force = " + force);
         TimedTaskManager.getInstance().getAllTasks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -43,7 +44,7 @@ public class TimedTaskScheduler {
     public void scheduleTaskIfNeeded(Context context, TimedTask timedTask, boolean force) {
         long millis = timedTask.getNextTime();
         if (millis <= System.currentTimeMillis()) {
-            Log.d(LOG_TAG, "task out date, just run it: " + timedTask);
+            autoJsLog("task out date, just run it: " + timedTask);
             runTask(context, timedTask);
             return;
         }
@@ -69,7 +70,7 @@ public class TimedTaskScheduler {
         timedTask.setScheduled(true);
         TimedTaskManager.getInstance().updateTaskWithoutReScheduling(timedTask);
 
-        Log.d(LOG_TAG, "schedule task: task = " + timedTask + ", millis = " + millis + ", timeWindow = " + timeWindow);
+        autoJsLog("schedule task: task = " + timedTask + ", millis = " + millis + ", timeWindow = " + timeWindow);
 
         getWorkProvider(context).enqueueWork(timedTask, timeWindow);
     }
@@ -84,12 +85,12 @@ public class TimedTaskScheduler {
     }
 
     private static void createCheckWorker(Context context, int delay) {
-        Log.d(LOG_TAG, "创建定期检测任务");
+        autoJsLog("创建定期检测任务");
         getWorkProvider(context).enqueuePeriodicWork(delay);
     }
 
     protected static void runTask(Context context, TimedTask task) {
-        Log.d(LOG_TAG, "run task: task = " + task);
+        autoJsLog("run task: task = " + task);
         Intent intent = task.createIntent();
         ScriptIntents.handleIntent(context, intent);
         TimedTaskManager.getInstance().notifyTaskFinished(task.getId());
@@ -104,14 +105,14 @@ public class TimedTaskScheduler {
             final long currentMillis = System.currentTimeMillis();
             boolean anyLost = TimedTaskManager.getInstance().getAllTasks().any(task -> {
                 if (task.getNextTime() < currentMillis) {
-                    Log.d(LOG_TAG, "task timeout: " + task.toString() + " nextTime:" + task.getNextTime() + " current millis:" + currentMillis);
+                    autoJsLog("task timeout: " + task.toString() + " nextTime:" + task.getNextTime() + " current millis:" + currentMillis);
                     return true;
                 } else {
                     return false;
                 }
             }).blockingGet();
             if (!workFine || anyLost) {
-                Log.d(LOG_TAG, "ensureCheckTaskWorks: " + (workFine ? "PeriodicWork works fine, but missed some work" : "PeriodicWork died"));
+                autoJsLog("ensureCheckTaskWorks: " + (workFine ? "PeriodicWork works fine, but missed some work" : "PeriodicWork died"));
                 createCheckWorker(context, 0);
                 getWorkProvider(context).checkTasks(context, true);
             }
@@ -140,4 +141,8 @@ public class TimedTaskScheduler {
         }
     }
 
+    private static void autoJsLog(String content) {
+        Log.d(LOG_TAG, content);
+        AutoJs.getInstance().debugInfo(content);
+    }
 }

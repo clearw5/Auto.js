@@ -1,8 +1,8 @@
 {
-  "appVersionCode": 462,
+  "appVersionCode": 463,
   "appVersionName": "4.1.1 Alpha2 Modify",
   "target": 28,
-  "mini": 17,
+  "mini": 21,
   "compile": 28,
-  "buildTool": "28.0.3"
+  "buildTool": "30.0.3"
 }

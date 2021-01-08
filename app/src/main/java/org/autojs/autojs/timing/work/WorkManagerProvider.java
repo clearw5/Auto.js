@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.stardust.app.GlobalAppContext;
 
+import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.timing.TimedTask;
 import org.autojs.autojs.timing.TimedTaskManager;
 import org.autojs.autojs.timing.TimedTaskScheduler;
@@ -53,7 +54,7 @@ public class WorkManagerProvider extends TimedTaskScheduler implements WorkProvi
 
     @Override
     public void enqueueWork(TimedTask timedTask, long timeWindow) {
-
+        autoJsLog( "enqueue task:" + timedTask.toString());
         WorkManager.getInstance(context).enqueueUniqueWork(String.valueOf(timedTask.getId()),
                 ExistingWorkPolicy.KEEP,
                 new OneTimeWorkRequest
@@ -67,6 +68,7 @@ public class WorkManagerProvider extends TimedTaskScheduler implements WorkProvi
 
     @Override
     public void enqueuePeriodicWork(int delay) {
+        autoJsLog( "enqueueUniquePeriodicWork");
         PeriodicWorkRequest.Builder builder = new PeriodicWorkRequest
                 .Builder(CheckTaskWorker.class, 20, TimeUnit.MINUTES);
         if (delay > 0) {
@@ -79,12 +81,13 @@ public class WorkManagerProvider extends TimedTaskScheduler implements WorkProvi
     @Override
     public void cancel(TimedTask timedTask) {
         WorkManager.getInstance(context).cancelAllWorkByTag(String.valueOf(timedTask.getId())).getResult();
-        Log.d(LOG_TAG, "cancel task: task = " + timedTask);
+        autoJsLog("cancel task: task = " + timedTask);
     }
 
     @Override
     @SuppressLint("CheckResult")
     public void cancelAllWorks() {
+        autoJsLog("cancel all tasks");
         WorkManager.getInstance(context).cancelAllWork().getResult();
         TimedTaskManager.getInstance()
                 .getAllTasks()
@@ -117,7 +120,12 @@ public class WorkManagerProvider extends TimedTaskScheduler implements WorkProvi
         return workFine;
     }
 
-    public static class TimedTaskWorker extends Worker {
+    private void autoJsLog(String content) {
+        Log.d(LOG_TAG, content);
+        AutoJs.getInstance().debugInfo(content);
+    }
+
+    public class TimedTaskWorker extends Worker {
 
         private static final String DONE_TIME = "DONE_TIME";
 
@@ -134,7 +142,7 @@ public class WorkManagerProvider extends TimedTaskScheduler implements WorkProvi
             long id = this.getInputData().getLong("taskId", -1);
             if (id > -1) {
                 TimedTask task = TimedTaskManager.getInstance().getTimedTask(id);
-                Log.d(LOG_TAG, "onRunJob: id = " + id + ", task = " + task + ", currentMillis=" + System.currentTimeMillis());
+                autoJsLog("onRunJob: id = " + id + ", task = " + task + ", currentMillis=" + System.currentTimeMillis());
                 if (task == null) {
                     return Result.failure();
                 }
@@ -163,6 +171,8 @@ public class WorkManagerProvider extends TimedTaskScheduler implements WorkProvi
             if (isStopped()) {
                 return Result.success();
             }
+            Log.d(LOG_TAG, "定期检测任务运行中");
+            AutoJs.getInstance().debugInfo("定期检测任务运行中");
             TimedTaskScheduler.getWorkProvider(GlobalAppContext.get()).checkTasks(getApplicationContext(), false);
             return Result.success();
         }

@@ -169,10 +169,8 @@ public class AlarmManagerProvider extends BroadcastReceiver implements WorkProvi
             alarmManager.setExactAndAllowWhileIdle(type, millis, op);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(millis, null), op);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(type, millis, op);
         } else {
-            alarmManager.set(type, millis, op);
+            alarmManager.setExact(type, millis, op);
         }
     }
 
