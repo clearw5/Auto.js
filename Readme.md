@@ -4,7 +4,7 @@
 
 ## Important!!
 
-**The open source version of Auto.js is no longer maintained (see [Auto.js Pro FAQ](https://pro.autojs.org/faq) for the reason), and only [Auto.js Pro Professional Edition](https://pro.autojs.org), for more information, see [Auto.js Pro Documentation](https://pro.autojs.org/docs) and [Auto.js Pro Features](https://pro.autojs.org/features). **
+**The open source version of Auto.js is no longer maintained (see [Auto.js Pro FAQ](https://pro.autojs.org/faq) for the reason), and only [Auto.js Pro Professional Edition](https://pro.autojs.org), for more information, see [Auto.js Pro Documentation](https://pro.autojs.org/docs) and [Auto.js Pro Features](https://pro.autojs.org/features).**
 
 ## Introduction
 
