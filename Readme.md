@@ -1,24 +1,25 @@
 # Auto.js
 
-[中文文档](https://github.com/hyb1996/Auto.js/blob/master/Readme-cn.md)
+[中文Readme](https://github.com/hyb1996/Auto.js/blob/master/Readme-cn.md)
 
-## Important!!
+## Important
 
-**The open source version of Auto.js is no longer maintained (see [Auto.js Pro FAQ](https://pro.autojs.org/faq) for the reason), and only [Auto.js Pro Professional Edition](https://pro.autojs.org), for more information, see [Auto.js Pro Documentation](https://pro.autojs.org/docs) and [Auto.js Pro Features](https://pro.autojs.org/features).**
+**The open source version of Auto.js is no longer maintained (see [Auto.js Pro FAQ](https://g.pro.autojs.org/faq) for the reason). Get [Auto.js Pro](https://play.google.com/store/apps/details?id=org.autojs.autojspro) to obtain latest updates. For more information, see [Auto.js Pro Documentation](https://g.pro.autojs.org/docs) and [Auto.js Pro Features](https://g.pro.autojs.org/features).**
 
 ## Introduction
 
-> The documentation is translated by Google Translation.
+> Translated by Google Translation.
 
 A JavaScript IDE on the Android platform that supports accessibility services, and its development goals are JsBox and Workflow.
 
-At the same time, there is [VS Code Extension](https://github.com/hyb1996/Auto.js-VSCode-Extension) which can provide basic functions for desktop development.
+And the [VS Code Extension](https://github.com/hyb1996/Auto.js-VSCode-Extension) which can provide basic functions for desktop development.
 
-Download link: [Coolapk](http://www.coolapk.com/apk/org.autojs.autojspro)
+Download: 
+* [Google Play](https://play.google.com/store/apps/details?id=org.autojs.autojspro)
 
-Alpha version: [Releases](https://github.com/hyb1996/NoRootScriptDroid/releases)
+* [Coolapk](http://www.coolapk.com/apk/org.autojs.autojspro)
 
-Official document: https://hyb1996.github.io/AutoJs-Docs/
+Documentation: https://g.pro.autojs.org/docs
 
 ### Features
 1. Easy-to-use automatic operation functions implemented by accessibility services
