@@ -402,7 +402,7 @@
     <string name="text_project_save_error">项目保存失败 %s</string>
     <string name="text_night_mode">夜间模式</string>
     <string name="key_night_mode">key_night_mode</string>
-    <string name="text_enable_alarm_manager">切换任务调度方式</string>
+    <string name="text_enable_alarm_manager">使用AlarmManager调度任务</string>
     <string name="key_enable_alarm_manager">ENABLE_ALARM_MANAGER</string>
     <string name="text_enable_debug_log">是否打印调试日志</string>
     <string name="key_enable_debug_log">ENABLE_DEBUG_LOG</string>
