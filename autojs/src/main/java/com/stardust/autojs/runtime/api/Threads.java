@@ -100,6 +100,8 @@ public class Threads {
         synchronized (mThreads) {
             shutDownAll();
             mExit = true;
+            mRuntime = null;
+            mMainThreadProxy = null;
         }
     }
 

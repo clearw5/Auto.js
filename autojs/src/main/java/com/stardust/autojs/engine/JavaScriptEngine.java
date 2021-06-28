@@ -69,4 +69,10 @@ public abstract class JavaScriptEngine extends ScriptEngine.AbstractScriptEngine
                 "cwd='" + cwd() + "'" +
                 "}";
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        mRuntime = null;
+    }
 }

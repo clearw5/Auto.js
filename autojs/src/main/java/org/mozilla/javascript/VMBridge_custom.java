@@ -68,14 +68,11 @@ public class VMBridge_custom extends VMBridge_jdk18 {
 
         // --- The following code is copied from super class --
         try {
-            Object proxy = c.newInstance(handler);
-            return proxy;
+            return c.newInstance(handler);
         } catch (InvocationTargetException var10) {
             throw Context.throwAsScriptRuntimeEx(var10);
-        } catch (IllegalAccessException var11) {
+        } catch (IllegalAccessException | InstantiationException var11) {
             throw Kit.codeBug(var11.getMessage());
-        } catch (InstantiationException var12) {
-            throw Kit.codeBug(var12.getMessage());
         }
     }
 

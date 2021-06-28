@@ -368,5 +368,6 @@ public class Images {
 
     public void recycle() {
         mScriptRuntime = null;
+        mScreenCaptureRequester.cancel();
     }
 }

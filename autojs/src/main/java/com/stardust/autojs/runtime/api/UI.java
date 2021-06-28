@@ -2,7 +2,6 @@ package com.stardust.autojs.runtime.api;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.Nullable;
 
 import com.stardust.autojs.core.graphics.ScriptCanvasView;
 import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
@@ -103,15 +102,20 @@ public class UI extends ProxyObject {
         }
     }
 
-    public void recycle(){
+    public void recycle() {
         mDynamicLayoutInflater.setContext(null);
+        mRuntime = null;
     }
 
     private class Drawables extends com.stardust.autojs.core.ui.inflater.util.Drawables {
 
         @Override
         public Drawable decodeImage(String path) {
-            return super.decodeImage(mRuntime.files.path(path));
+            if (mRuntime != null) {
+                return super.decodeImage(mRuntime.files.path(path));
+            } else {
+                return null;
+            }
         }
     }
 

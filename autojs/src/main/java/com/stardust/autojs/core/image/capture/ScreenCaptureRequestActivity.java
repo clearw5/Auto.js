@@ -57,6 +57,7 @@ public class ScreenCaptureRequestActivity extends Activity {
             return;
         mScreenCaptureRequester.cancel();
         mScreenCaptureRequester = null;
+        IntentExtras.fromIntentAndRelease(getIntent());
     }
 
     @Override

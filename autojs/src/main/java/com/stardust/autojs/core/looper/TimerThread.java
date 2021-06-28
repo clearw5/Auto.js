@@ -2,6 +2,7 @@ package com.stardust.autojs.core.looper;
 
 import android.os.Handler;
 import android.os.Looper;
+
 import androidx.annotation.CallSuper;
 
 import com.stardust.autojs.engine.RhinoJavaScriptEngine;
@@ -52,7 +53,7 @@ public class TimerThread extends ThreadCompat {
             }
         } finally {
             onExit();
-            ((RhinoJavaScriptEngine)mRuntime.engines.myEngine()).exitContext(engineContext);
+            ((RhinoJavaScriptEngine) mRuntime.engines.myEngine()).exitContext(engineContext);
             sTimerMap.remove(Thread.currentThread(), mTimer);
             mTimer = null;
         }
@@ -73,8 +74,16 @@ public class TimerThread extends ThreadCompat {
 
     @CallSuper
     protected void onExit() {
-        mRuntime.loopers.notifyThreadExit(this);
-        LooperHelper.quitForThread(this);
+        try {
+            mRuntime.loopers.notifyThreadExit(this);
+        } finally {
+            try {
+                LooperHelper.quitForThread(this);
+            } finally {
+                // 移除弱引用
+                removeReference(this);
+            }
+        }
     }
 
     public static Timer getTimerForThread(Thread thread) {
