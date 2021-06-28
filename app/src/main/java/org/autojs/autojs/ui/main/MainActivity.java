@@ -157,7 +157,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         // 尝试自动设置无障碍权限，需要ADB授权 adb shell pm grant ${BuildConfig.APPLICATION_ID} android.permission.WRITE_SECURE_SETTINGS
         try {
             String enabledServices = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
-            String services = enabledServices + ":" + BuildConfig.APPLICATION_ID + "/org.anonymous.fuck.tb.AccessibilityService";
+            String services = enabledServices + ":" + BuildConfig.APPLICATION_ID + "/com.stardust.autojs.core.accessibility.AccessibilityService";
             Settings.Secure.putString(getApplicationContext().getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, services);
             Settings.Secure.putString(getApplicationContext().getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED, "1");
             autoEnableAccessibility = true;

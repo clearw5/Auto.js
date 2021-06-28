@@ -1,4 +1,4 @@
-package org.anonymous.fuck.tb
+package org.autojs.autojs
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -20,9 +20,6 @@ import com.stardust.autojs.core.ui.inflater.util.Drawables
 import com.stardust.theme.ThemeColor
 import com.tencent.bugly.Bugly
 import com.tencent.bugly.crashreport.CrashReport
-import org.autojs.autojs.BuildConfig
-import org.autojs.autojs.Pref
-import org.autojs.autojs.R
 import org.autojs.autojs.autojs.AutoJs
 import org.autojs.autojs.autojs.key.GlobalKeyObserver
 import org.autojs.autojs.external.receiver.DynamicBroadcastReceivers

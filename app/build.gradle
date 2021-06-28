@@ -32,7 +32,7 @@ android {
     compileSdkVersion versions.compile
     buildToolsVersion versions.buildTool
     defaultConfig {
-        applicationId "org.anonymous.fuck.tb"
+        applicationId "org.autojs.autojs"
         minSdkVersion versions.mini
         targetSdkVersion versions.target
         versionCode versions.appVersionCode
@@ -42,11 +42,11 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [
-                    "resourcePackageName": "org.autojs.autojs"
+                        "resourcePackageName": android.defaultConfig.applicationId
                 ]
             }
         }
-        ndk {}
+        ndk { }
     }
     buildTypes {
         debug {
