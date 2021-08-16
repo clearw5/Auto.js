@@ -14,6 +14,7 @@ import android.view.accessibility.AccessibilityWindowInfo
 import androidx.annotation.RequiresApi
 import com.stardust.app.isOpPermissionGranted
 import com.stardust.autojs.core.util.Shell
+import com.stardust.autojs.engine.ScriptEngineManager
 import com.stardust.view.accessibility.AccessibilityDelegate
 import java.util.regex.Pattern
 
@@ -21,7 +22,7 @@ import java.util.regex.Pattern
  * Created by Stardust on 2017/3/9.
  */
 
-class ActivityInfoProvider(private val context: Context) : AccessibilityDelegate {
+class ActivityInfoProvider(private val context: Context, private val scriptEngineManager: ScriptEngineManager) : AccessibilityDelegate {
 
     private val mPackageManager: PackageManager = context.packageManager
 
@@ -33,6 +34,9 @@ class ActivityInfoProvider(private val context: Context) : AccessibilityDelegate
 
     private var mShell: Shell? = null
     private var mUseShell = false
+
+    private val checkedPackage: Set<String> = HashSet()
+    private val existsPackage: Set<String> = HashSet()
 
     val latestPackage: String
         get() {
@@ -78,8 +82,13 @@ class ActivityInfoProvider(private val context: Context) : AccessibilityDelegate
 
     override fun onAccessibilityEvent(service: AccessibilityService, event: AccessibilityEvent): Boolean {
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            if (scriptEngineManager.engines.size == 0) {
+                return false
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val start: Long = System.currentTimeMillis()
                 val window = service.getWindow(event.windowId)
+                Log.d(LOG_TAG, "get window cost: " + (System.currentTimeMillis() - start) + "ms")
                 if (window?.isFocused != false) {
                     setLatestComponent(event.packageName, event.className)
                     return false
@@ -166,8 +175,13 @@ class ActivityInfoProvider(private val context: Context) : AccessibilityDelegate
     }
 
     private fun isPackageExists(packageName: String): Boolean {
+        if (checkedPackage.contains(packageName)) {
+            return existsPackage.contains(packageName)
+        }
+        checkedPackage.plus(packageName)
         return try {
             mPackageManager.getPackageInfo(packageName, 0)
+            existsPackage.plus(packageName)
             true
         } catch (e: PackageManager.NameNotFoundException) {
             false
