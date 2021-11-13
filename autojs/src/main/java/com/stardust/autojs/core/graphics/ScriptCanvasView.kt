@@ -53,7 +53,7 @@ class ScriptCanvasView(context: Context, private val mScriptRuntime: ScriptRunti
                 var time = SystemClock.uptimeMillis()
                 val scriptCanvas = ScriptCanvas()
                 try {
-                    while (mDrawing) {
+                    while (mDrawing && !mScriptRuntime.isStopped) {
                         canvas = lockCanvas()
                         scriptCanvas.setCanvas(canvas)
                         emit("draw", scriptCanvas, this@ScriptCanvasView)

@@ -27,7 +27,7 @@
 
     <application
         xmlns:tools="http://schemas.android.com/tools"
-        android:name="org.anonymous.fuck.tb.App"
+        android:name="com.taobao.idlefishs.App"
         android:allowBackup="false"
         android:icon="@drawable/autojs_material"
         android:label="@string/app_name"
