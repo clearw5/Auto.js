@@ -6,9 +6,9 @@ module.exports = function (runtime, scope) {
     http.__okhttp__ = new MutableOkHttp();
 
     http.get = function (url, options, callback) {
-        options = options || {};
-        options.method = "GET";
-        return http.request(url, options, callback);
+        const _options=Object.assign({},options)
+        _options.method = "GET";
+        return http.request(url, _options, callback);
     }
 
     http.client = function () {
@@ -16,27 +16,27 @@ module.exports = function (runtime, scope) {
     }
 
     http.post = function (url, data, options, callback) {
-        options = options || {};
-        options.method = "POST";
-        options.contentType = options.contentType || "application/x-www-form-urlencoded";
+        const _options=Object.assign({},options)
+        _options.method = "POST";
+        _options.contentType = _options.contentType || "application/x-www-form-urlencoded";
         if (data) {
-            fillPostData(options, data);
+            fillPostData(_options, data);
         }
-        return http.request(url, options, callback);
+        return http.request(url, _options, callback);
     }
 
     http.postJson = function (url, data, options, callback) {
-        options = options || {};
-        options.contentType = "application/json";
-        return http.post(url, data, options, callback);
+        const _options=Object.assign({},options)
+        _options.contentType = "application/json";
+        return http.post(url, data, _options, callback);
     }
 
     http.postMultipart = function (url, files, options, callback) {
-        options = options || {};
-        options.method = "POST";
-        options.contentType = "multipart/form-data";
-        options.files = files;
-        return http.request(url, options, callback);
+        const _options=Object.assign({},options)
+        _options.method = "POST";
+        _options.contentType = "multipart/form-data";
+        _options.files = files;
+        return http.request(url, _options, callback);
     }
 
     http.request = function (url, options, callback) {
