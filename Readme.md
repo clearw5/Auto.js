@@ -1,39 +1,50 @@
 # Auto.js
-## 简介
-一个支持无障碍服务的Android平台上的JavaScript IDE，其发展目标是JsBox和Workflow。
 
-同时有[VS Code 插件](https://github.com/hyb1996/Auto.js-VSCode-Extension)可提供基础的在桌面开发的功能。
+[中文Readme](https://github.com/hyb1996/Auto.js/blob/master/Readme-cn.md)
 
-下载地址：[酷安](http://www.coolapk.com/apk/org.autojs.autojs)
+## Important
 
-Alpha版本：[Releases](https://github.com/hyb1996/NoRootScriptDroid/releases)
+**The open source version of Auto.js is no longer maintained (see [Auto.js Pro FAQ](https://g.pro.autojs.org/faq) for the reason). Get [Auto.js Pro](https://play.google.com/store/apps/details?id=org.autojs.autojspro) to obtain latest updates. For more information, see [Auto.js Pro Documentation](https://g.pro.autojs.org/docs) and [Auto.js Pro Features](https://g.pro.autojs.org/features).**
 
-官方文档：https://hyb1996.github.io/AutoJs-Docs/
+## Introduction
 
-### 特性
-1. 由无障碍服务实现的简单易用的自动操作函数
-2. 悬浮窗录制和运行
-3. 更专业&强大的选择器API，提供对屏幕上的控件的寻找、遍历、获取信息、操作等。类似于Google的UI测试框架UiAutomator，您也可以把他当做移动版UI测试框架使用
-4. 采用JavaScript为脚本语言，并支持代码补全、变量重命名、代码格式化、查找替换等功能，可以作为一个JavaScript IDE使用
-5. 支持使用e4x编写界面，并可以将JavaScript打包为apk文件，您可以用它来开发小工具应用
-6. 支持使用Root权限以提供更强大的屏幕点击、滑动、录制功能和运行shell命令。录制录制可产生js文件或二进制文件，录制动作的回放比较流畅
-7. 提供截取屏幕、保存截图、图片找色、找图等函数
-8. 可作为Tasker插件使用，结合Tasker可胜任日常工作流
-9. 带有界面分析工具，类似Android Studio的LayoutInspector，可以分析界面层次和范围、获取界面上的控件信息
+> Translated by Google Translation.
 
-本软件与按键精灵等软件不同，主要区别是：
-1. Auto.js主要以自动化、工作流为目标，更多地是方便日常生活工作，例如启动游戏时自动屏蔽通知、一键与特定联系人微信视频（知乎上出现过该问题，老人难以进行复杂的操作和子女进行微信视频）等
-2. Auto.js兼容性更好。以坐标为基础的按键精灵、脚本精灵很容易出现分辨率问题，而以控件为基础的Auto.js则没有这个问题
-3. Auto.js执行大部分任务不需要root权限。只有需要精确坐标点击、滑动的相关函数才需要root权限
-4. Auto.js可以提供界面编写等功能，不仅仅是作为一个脚本软件而存在
+A JavaScript IDE on the Android platform that supports accessibility services, and its development goals are JsBox and Workflow.
+
+And the [VS Code Extension](https://github.com/hyb1996/Auto.js-VSCode-Extension) which can provide basic functions for desktop development.
+
+Download: 
+* [Google Play](https://play.google.com/store/apps/details?id=org.autojs.autojspro)
+
+* [Coolapk](http://www.coolapk.com/apk/org.autojs.autojspro)
+
+Documentation: https://g.pro.autojs.org/docs
+
+### Features
+1. Easy-to-use automatic operation functions implemented by accessibility services
+2. Floating window recording and running
+3. More professional & powerful selector API, which provides searching, traversing, obtaining information, and operating the controls on the screen. Similar to Google’s UI testing framework UiAutomator, you can also use it as a mobile UI testing framework
+4. Use JavaScript as the scripting language, and support functions such as code completion, variable renaming, code formatting, search and replacement, and can be used as a JavaScript IDE
+5. Support the use of e4x to write the interface, and JavaScript can be packaged as an apk file, you can use it to develop small tool applications
+6. Support the use of Root permissions to provide more powerful screen click, slide, record functions and run shell commands. Recording can generate js files or binary files, and the playback of recording actions is relatively smooth
+7. Provides functions such as screen capture, screenshot saving, picture color finding, picture finding, etc.
+8. Can be used as a Tasker plug-in, combined with Tasker can be competent for daily workflow
+9. With interface analysis tools, similar to Android Studio's LayoutInspector, it can analyze the interface level and scope, and obtain control information on the interface
+
+This software is different from software such as button wizard, the main differences are:
+1. Auto.js mainly aims at automation and workflow. It is more convenient for daily work, such as automatically blocking notifications when starting the game, one-click and WeChat video of specific contacts (this problem has occurred on Zhihu, it is difficult for the elderly Perform complex operations and children’s WeChat video) etc.
+2. Auto.js has better compatibility. The coordinate-based button sprites and script sprites are prone to resolution problems, while the control-based Auto.js does not have this problem.
+3. Auto.js does not need root permissions to perform most tasks. Only related functions that require precise coordinates to click and slide require root privileges
+4. Auto.js can provide functions such as interface writing, not only exists as a scripting software
 
 
-### 信息
-* 官方论坛： [autojs.org](http://www.autojs.org)
-* 文档：可在[这里](https://hyb1996.github.io/AutoJs-Docs/)查看在线文档。目前文档仍然不完善。
-* 示例：可在[这里](https://github.com/hyb1996/NoRootScriptDroid/tree/master/app/src/main/assets/sample)查看一些示例，或者直接在应用内查看和运行。
+### Information
+* Official forum: [autojs.org](http://www.autojs.org)
+* Documentation: You can view the online documentation [here](https://hyb1996.github.io/AutoJs-Docs/). The current documentation is still incomplete.
+* Examples: You can view some examples [here](https://github.com/hyb1996/Auto.js/tree/master/app/src/main/assets/sample), or view and run them directly in the app.
 
-### 截图
+### Screenshot
 
 ![screen-capture2](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss02.png)
 
@@ -44,5 +55,5 @@ Alpha版本：[Releases](https://github.com/hyb1996/NoRootScriptDroid/releases)
 ![screen-capture5](https://raw.githubusercontent.com/hyb1996/NoRootScriptDroid/master/screen-captures/ss08.png)
 
 ## License
-基于[Mozilla Public License Version 2.0](https://github.com/hyb1996/NoRootScriptDroid/blob/master/LICENSE.md)并附加以下条款：
-* **非商业性使用** — 不得将此项目及其衍生的项目的源代码和二进制产品用于任何商业和盈利用途
+Based on [Mozilla Public License Version 2.0](https://github.com/hyb1996/NoRootScriptDroid/blob/master/LICENSE.md) with the following terms attached:
+* **Non-commercial use**-The source code and binary products of this project and its derivative projects must not be used for any commercial and profitable purposes
