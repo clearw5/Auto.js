@@ -38,9 +38,9 @@ import ezy.assist.compat.SettingsCompat;
 
 public class Device {
 
-    public static final int width = ScreenMetrics.getDeviceScreenWidth();
+    public static int width = ScreenMetrics.getDeviceScreenWidth();
 
-    public static final int height = ScreenMetrics.getDeviceScreenHeight();
+    public static int height = ScreenMetrics.getDeviceScreenHeight();
 
     public static final String buildId = Build.ID;
 
@@ -93,6 +93,8 @@ public class Device {
 
     public Device(Context context) {
         mContext = context;
+        width = ScreenMetrics.getDeviceScreenWidth();
+        height = ScreenMetrics.getDeviceScreenHeight();
     }
 
     @SuppressLint("HardwareIds")

@@ -159,6 +159,7 @@ public abstract class AutoJs {
 
             @Override
             public void onActivityResumed(Activity activity) {
+                ScreenMetrics.initIfNeeded(activity);
                 mAppUtils.setCurrentActivity(activity);
             }
         });
