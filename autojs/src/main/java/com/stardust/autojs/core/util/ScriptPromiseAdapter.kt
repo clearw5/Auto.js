@@ -1,7 +1,5 @@
 package com.stardust.autojs.core.util
 
-import com.stardust.autojs.core.internal.Functions
-
 class ScriptPromiseAdapter {
 
     interface Callback {
@@ -36,11 +34,18 @@ class ScriptPromiseAdapter {
     fun resolve(result: Any?) {
         mResult = result
         mResolveCallback?.call(result)
+        releaseCallbacks()
     }
 
     fun reject(error: Any?) {
         mError = error
         mRejectCallback?.call(error)
+        releaseCallbacks()
+    }
+
+    fun releaseCallbacks() {
+        mResolveCallback = null
+        mRejectCallback = null
     }
 
     companion object {

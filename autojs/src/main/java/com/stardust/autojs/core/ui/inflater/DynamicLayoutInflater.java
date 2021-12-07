@@ -357,5 +357,9 @@ public class DynamicLayoutInflater {
         return value.indexOf("}}", i + 1) >= 0;
     }
 
-
+    public void recycle() {
+        setContext(null);
+        mViewAttrSetters.clear();
+        mViewCreators.clear();
+    }
 }

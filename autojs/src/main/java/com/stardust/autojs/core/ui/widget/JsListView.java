@@ -15,6 +15,7 @@ import org.w3c.dom.NodeList;
 
 import com.stardust.autojs.workground.WrapContentLinearLayoutManager;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -130,6 +131,12 @@ public class JsListView extends RecyclerView {
 
     }
 
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mScriptRuntime = null;
+    }
+
     private class Adapter extends RecyclerView.Adapter<ViewHolder> {
 
         @Override
@@ -147,6 +154,9 @@ public class JsListView extends RecyclerView {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
+            if (mScriptRuntime == null) {
+                return;
+            }
             try {
                 Object oldCtx = mScriptRuntime.ui.getBindingContext();
                 Object item = mDataSourceAdapter.getItem(mDataSource, position);
@@ -182,6 +192,18 @@ public class JsListView extends RecyclerView {
             return mDataSource == null ? 0
                     : mDataSourceAdapter == null ? 0
                     : mDataSourceAdapter.getItemCount(mDataSource);
+        }
+
+        @Override
+        public void onViewDetachedFromWindow(@NonNull ViewHolder holder) {
+            super.onViewDetachedFromWindow(holder);
+            mScriptRuntime = null;
+        }
+
+        @Override
+        public void onViewRecycled(@NonNull ViewHolder holder) {
+            super.onViewRecycled(holder);
+            mScriptRuntime = null;
         }
     }
 

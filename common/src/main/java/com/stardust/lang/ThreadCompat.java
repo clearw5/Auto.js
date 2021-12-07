@@ -1,8 +1,6 @@
 package com.stardust.lang;
 
-import java.lang.ref.WeakReference;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.Set;
 import java.util.WeakHashMap;
 

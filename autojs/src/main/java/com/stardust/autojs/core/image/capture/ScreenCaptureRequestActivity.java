@@ -52,12 +52,12 @@ public class ScreenCaptureRequestActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        IntentExtras.fromIntentAndRelease(getIntent());
         mCallback = null;
         if (mScreenCaptureRequester == null)
             return;
         mScreenCaptureRequester.cancel();
         mScreenCaptureRequester = null;
-        IntentExtras.fromIntentAndRelease(getIntent());
     }
 
     @Override

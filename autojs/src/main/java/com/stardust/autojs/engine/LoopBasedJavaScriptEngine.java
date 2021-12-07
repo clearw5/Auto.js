@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.MessageQueue;
-import android.util.Log;
 
 import com.stardust.autojs.core.looper.LooperHelper;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
-import com.stardust.util.Callback;
 
 import org.mozilla.javascript.ContinuationPending;
 

@@ -20,10 +20,11 @@ import java.util.concurrent.Executors
  */
 
 @SuppressLint("ViewConstructor")
-class ScriptCanvasView(context: Context, private val mScriptRuntime: ScriptRuntime) : TextureView(context), TextureView.SurfaceTextureListener {
+class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : TextureView(context), TextureView.SurfaceTextureListener {
     @Volatile
     private var mDrawing = true
-    private val mEventEmitter: EventEmitter = EventEmitter(mScriptRuntime.bridges)
+    private val mEventEmitter: EventEmitter = EventEmitter(scriptRuntime.bridges)
+    private var mScriptRuntime: ScriptRuntime? = null
     private var mDrawingThreadPool: ExecutorService? = null
     @Volatile
     private var mTimePerDraw = (1000 / 30).toLong()
@@ -33,6 +34,7 @@ class ScriptCanvasView(context: Context, private val mScriptRuntime: ScriptRunti
 
     init {
         surfaceTextureListener = this
+        mScriptRuntime = scriptRuntime
     }
 
     fun setMaxFps(maxFps: Int) {
@@ -53,7 +55,7 @@ class ScriptCanvasView(context: Context, private val mScriptRuntime: ScriptRunti
                 var time = SystemClock.uptimeMillis()
                 val scriptCanvas = ScriptCanvas()
                 try {
-                    while (mDrawing && !mScriptRuntime.isStopped) {
+                    while (mDrawing && !mScriptRuntime?.isStopped!!) {
                         canvas = lockCanvas()
                         scriptCanvas.setCanvas(canvas)
                         emit("draw", scriptCanvas, this@ScriptCanvasView)
@@ -66,7 +68,7 @@ class ScriptCanvasView(context: Context, private val mScriptRuntime: ScriptRunti
                         time = SystemClock.uptimeMillis()
                     }
                 } catch (e: Exception) {
-                    mScriptRuntime.exit(e)
+                    mScriptRuntime?.exit(e)
                     mDrawing = false
                 } finally {
                     if (canvas != null) {
@@ -158,12 +160,18 @@ class ScriptCanvasView(context: Context, private val mScriptRuntime: ScriptRunti
     override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
         mDrawing = false
         mDrawingThreadPool?.shutdown()
+        mScriptRuntime = null
         Log.d(LOG_TAG, "onSurfaceTextureDestroyed: ${this}")
         return true
     }
 
     override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
 
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        mScriptRuntime = null
     }
 
     companion object {
