@@ -1,7 +1,6 @@
 package com.tony.autojs.common;
 
 import com.stardust.autojs.core.image.capture.ScreenCapturer;
-import com.stardust.autojs.core.util.ScriptPromiseAdapter;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.api.Images;
 

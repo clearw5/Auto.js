@@ -24,6 +24,7 @@ public class ProcessMappedShare {
     private final RandomAccessFile randomAccessFile;
     private boolean loop;
     private long timeout;
+    private long interval;
     private volatile boolean subscribing;
     private volatile boolean unsubscribe;
     private Object threads;
@@ -50,6 +51,7 @@ public class ProcessMappedShare {
         }
         this.isSubscriber = isSubscriber;
         timeout = 60;
+        interval = 1000;
         threads = scriptRuntime.threads;
     }
 
@@ -93,6 +95,13 @@ public class ProcessMappedShare {
                             subscribing = false;
                             return;
                         }
+                        try {
+                            synchronized (this) {
+                                wait(interval);
+                            }
+                        } catch (InterruptedException e) {
+                            // e.printStackTrace();
+                        }
                     }
                     int index = 1;
                     byte read = mbb.get(index++);
@@ -117,7 +126,9 @@ public class ProcessMappedShare {
                     int count = 0;
                     while (count++ < timeout && subscribing) {
                         try {
-                            Thread.sleep(1000);
+                            synchronized (this) {
+                                this.wait(1000);
+                            }
                         } catch (Exception e) {
                             //
                         }
@@ -162,6 +173,23 @@ public class ProcessMappedShare {
             throw new IllegalStateException("只有订阅模式可以设置当前配置");
         }
         this.loop = loop;
+        return this;
+    }
+
+    /**
+     * 设置文件监听的间隔时间 默认1000ms
+     *
+     * @param interval
+     * @return
+     */
+    public ProcessMappedShare setInterval(long interval) {
+        if (!isSubscriber) {
+            throw new IllegalStateException("只有订阅模式可以设置当前配置");
+        }
+        if (interval <= 0) {
+            interval = 1000;
+        }
+        this.interval = interval;
         return this;
     }
 
