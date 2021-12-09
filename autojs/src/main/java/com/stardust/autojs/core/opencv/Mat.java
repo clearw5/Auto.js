@@ -87,7 +87,9 @@ public class Mat extends org.opencv.core.Mat implements ResourceMonitor.Resource
 
     @Override
     public void release() {
-        super.release();
+        if (this.nativeObj != 0) {
+            super.release();
+        }
         mReleased = true;
         ResourceMonitor.onClose(this);
     }
@@ -96,7 +98,9 @@ public class Mat extends org.opencv.core.Mat implements ResourceMonitor.Resource
     protected void finalize() throws Throwable {
         if (!mReleased) {
             ResourceMonitor.onFinalize(this);
-            super.release();
+            if (this.nativeObj != 0) {
+                super.release();
+            }
             mReleased = true;
         }
         super.finalize();

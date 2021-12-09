@@ -10,6 +10,7 @@ import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.MimeTypes;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 /**
  * Created by Stardust on 2018/2/12.
@@ -19,17 +20,17 @@ public class Media implements MediaScannerConnection.MediaScannerConnectionClien
 
     private MediaScannerConnection mScannerConnection;
     private MediaPlayerWrapper mMediaPlayer;
-    private ScriptRuntime mRuntime;
+    private WeakReference<ScriptRuntime> mRuntime;
 
     public Media(Context context, ScriptRuntime runtime) {
         mScannerConnection = new MediaScannerConnection(context, this);
-        mRuntime = runtime;
+        mRuntime = new WeakReference<>(runtime);
         mScannerConnection.connect();
     }
 
     public void scanFile(String path) {
         String mimeType = MimeTypes.fromFileOr(path, null);
-        mScannerConnection.scanFile(mRuntime.files.path(path), mimeType);
+        mScannerConnection.scanFile(mRuntime.get().files.path(path), mimeType);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class Media implements MediaScannerConnection.MediaScannerConnectionClien
     }
 
     public void playMusic(String path, float volume, boolean looping) {
-        path = mRuntime.files.path(path);
+        path = mRuntime.get().files.path(path);
         if (mMediaPlayer == null) {
             mMediaPlayer = new MediaPlayerWrapper();
         }

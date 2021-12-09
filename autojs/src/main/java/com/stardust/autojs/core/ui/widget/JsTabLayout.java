@@ -18,4 +18,5 @@ public class JsTabLayout extends TabLayout {
     public JsTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
 }

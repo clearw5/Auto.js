@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
-import android.widget.CompoundButton;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
@@ -13,10 +12,10 @@ import com.stardust.autojs.annotation.ScriptInterface;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.ui.dialog.BlockedMaterialDialog;
 import com.stardust.autojs.core.ui.dialog.JsDialogBuilder;
-import com.stardust.autojs.runtime.ScriptBridges;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.util.ArrayUtils;
-import com.stardust.util.UiHandler;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Created by Stardust on 2017/5/8.
@@ -25,13 +24,13 @@ import com.stardust.util.UiHandler;
 public class Dialogs {
 
     private ContextThemeWrapper mThemeWrapper;
-    private final ScriptRuntime mRuntime;
+    private WeakReference<ScriptRuntime> mRuntime;
 
     @ScriptVariable
     public final NonUiDialogs nonUiDialogs = new NonUiDialogs();
 
     public Dialogs(ScriptRuntime runtime) {
-        mRuntime = runtime;
+        mRuntime = new WeakReference<>(runtime);
     }
 
     @ScriptInterface
@@ -65,12 +64,12 @@ public class Dialogs {
             builder.content(content);
         }
         return ((BlockedMaterialDialog.Builder) builder).showAndGet();
-}
+    }
 
     private Context getContext() {
         if (mThemeWrapper != null)
             return mThemeWrapper;
-        mThemeWrapper = new ContextThemeWrapper(mRuntime.uiHandler.getContext().getApplicationContext(), R.style.Theme_AppCompat_Light);
+        mThemeWrapper = new ContextThemeWrapper(mRuntime.get().uiHandler.getContext().getApplicationContext(), R.style.Theme_AppCompat_Light);
         return mThemeWrapper;
     }
 
@@ -128,21 +127,21 @@ public class Dialogs {
     }
 
     private BlockedMaterialDialog.Builder dialogBuilder(Object callback) {
-        Context context = mRuntime.app.getCurrentActivity();
+        Context context = mRuntime.get().app.getCurrentActivity();
         if (context == null || ((Activity) context).isFinishing()) {
             context = getContext();
         }
-        return (BlockedMaterialDialog.Builder) new BlockedMaterialDialog.Builder(context, mRuntime, callback)
+        return (BlockedMaterialDialog.Builder) new BlockedMaterialDialog.Builder(context, mRuntime.get(), callback)
                 .theme(Theme.LIGHT);
     }
 
     @ScriptInterface
     public MaterialDialog.Builder newBuilder() {
-        Context context = mRuntime.app.getCurrentActivity();
+        Context context = mRuntime.get().app.getCurrentActivity();
         if (context == null || ((Activity) context).isFinishing()) {
             context = getContext();
         }
-        return new JsDialogBuilder(context, mRuntime)
+        return new JsDialogBuilder(context, mRuntime.get())
                 .theme(Theme.LIGHT);
     }
 

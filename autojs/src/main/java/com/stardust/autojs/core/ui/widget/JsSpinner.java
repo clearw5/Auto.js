@@ -2,14 +2,15 @@ package com.stardust.autojs.core.ui.widget;
 
 import android.content.Context;
 import android.content.res.Resources;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class JsSpinner extends androidx.appcompat.widget.AppCompatSpinner {
 
@@ -159,4 +160,5 @@ public class JsSpinner extends androidx.appcompat.widget.AppCompatSpinner {
             return textView;
         }
     }
+
 }

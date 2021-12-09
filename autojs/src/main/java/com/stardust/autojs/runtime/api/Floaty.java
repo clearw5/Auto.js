@@ -10,7 +10,7 @@ import com.stardust.autojs.R;
 import com.stardust.autojs.core.floaty.BaseResizableFloatyWindow;
 import com.stardust.autojs.core.floaty.RawWindow;
 import com.stardust.autojs.core.ui.JsViewHelper;
-import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
+import com.stardust.autojs.core.ui.ViewExtras;
 import com.stardust.autojs.core.ui.inflater.inflaters.Exceptions;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
@@ -19,6 +19,7 @@ import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.util.UiHandler;
 import com.stardust.util.ViewUtil;
 
+import java.lang.ref.WeakReference;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -27,17 +28,15 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public class Floaty {
 
-    private DynamicLayoutInflater mLayoutInflater;
     private Context mContext;
     private UiHandler mUiHandler;
     private CopyOnWriteArraySet<JsWindow> mWindows = new CopyOnWriteArraySet<>();
-    private ScriptRuntime mRuntime;
+    private WeakReference<ScriptRuntime> mRuntime;
 
     public Floaty(UiHandler uiHandler, UI ui, ScriptRuntime runtime) {
         mUiHandler = uiHandler;
-        mRuntime = runtime;
+        mRuntime = new WeakReference<>(runtime);
         mContext = new ContextThemeWrapper(mUiHandler.getContext(), R.style.ScriptTheme);
-        mLayoutInflater = ui.getLayoutInflater();
     }
 
     public JsResizableWindow window(BaseResizableFloatyWindow.ViewSupplier supplier) {
@@ -195,7 +194,7 @@ public class Floaty {
                 mWindow.close();
                 mWindow = null;
                 if (mExitOnClose) {
-                    mRuntime.exit();
+                    mRuntime.get().exit();
                 }
             });
         }
@@ -301,14 +300,14 @@ public class Floaty {
                 return;
             }
             runWithWindow(() -> {
+                ViewExtras.recycle(mView);
                 mWindow.close();
                 mWindow = null;
                 if (mExitOnClose) {
-                    mRuntime.exit();
+                    mRuntime.get().exit();
                 }
             });
         }
     }
-
 
 }

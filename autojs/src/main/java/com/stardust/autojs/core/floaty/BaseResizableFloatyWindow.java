@@ -6,10 +6,12 @@ import androidx.annotation.Nullable;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.stardust.autojs.R;
+import com.stardust.autojs.core.ui.ViewExtras;
 import com.stardust.autojs.core.ui.inflater.inflaters.Exceptions;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.concurrent.VolatileDispose;
@@ -17,8 +19,8 @@ import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.enhancedfloaty.ResizableFloaty;
 import com.stardust.enhancedfloaty.ResizableFloatyWindow;
 import com.stardust.enhancedfloaty.WindowBridge;
-import com.stardust.enhancedfloaty.gesture.DragGesture;
-import com.stardust.enhancedfloaty.gesture.ResizeGesture;
+
+import java.lang.reflect.Field;
 
 /**
  * Created by Stardust on 2017/12/5.
@@ -125,6 +127,7 @@ public class BaseResizableFloatyWindow extends ResizableFloatyWindow {
 
         private ViewSupplier mContentViewSupplier;
         private View mRootView;
+        private FrameLayout mContainer;
         private Context mContext;
 
 
@@ -136,8 +139,8 @@ public class BaseResizableFloatyWindow extends ResizableFloatyWindow {
         @Override
         public View inflateView(FloatyService floatyService, ResizableFloatyWindow resizableFloatyWindow) {
             mRootView = View.inflate(mContext, R.layout.floaty_window, null);
-            FrameLayout container = mRootView.findViewById(R.id.container);
-            View contentView = mContentViewSupplier.inflate(mContext, container);
+            mContainer = mRootView.findViewById(R.id.container);
+            mContentViewSupplier.inflate(mContext, mContainer);
             return mRootView;
         }
 
@@ -151,6 +154,27 @@ public class BaseResizableFloatyWindow extends ResizableFloatyWindow {
         @Override
         public View getMoveCursorView(View view) {
             return view.findViewById(R.id.move_cursor);
+        }
+
+        public void recycle() {
+            ViewExtras.recycle(mRootView);
+            ViewExtras.recycle(mContainer);
+        }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        try {
+            Field mFloatyField = ResizableFloatyWindow.class.getDeclaredField("mFloaty");
+            mFloatyField.setAccessible(true);
+            Object myFloaty = mFloatyField.get(this);
+            if (myFloaty instanceof MyFloaty) {
+                ((MyFloaty)myFloaty).recycle();
+            }
+            mFloatyField.set(this, null);
+        } catch (Exception e) {
+            //
         }
     }
 }

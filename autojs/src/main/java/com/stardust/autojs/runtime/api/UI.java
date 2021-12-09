@@ -18,6 +18,7 @@ import com.stardust.autojs.runtime.ScriptRuntime;
 
 import org.mozilla.javascript.Scriptable;
 
+import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,12 +32,12 @@ public class UI extends ProxyObject {
     private Context mContext;
     private Map<String, Object> mProperties = new ConcurrentHashMap<>();
     private DynamicLayoutInflater mDynamicLayoutInflater;
-    private ScriptRuntime mRuntime;
+    private WeakReference<ScriptRuntime> mRuntime;
     private ResourceParser mResourceParser;
 
     public UI(Context context, ScriptRuntime runtime) {
         mContext = context;
-        mRuntime = runtime;
+        mRuntime = new WeakReference<>(runtime);
         mResourceParser = new ResourceParser(new Drawables());
         mDynamicLayoutInflater = new DynamicLayoutInflater(mResourceParser);
         mDynamicLayoutInflater.setContext(context);
@@ -102,17 +103,21 @@ public class UI extends ProxyObject {
         }
     }
 
+    @Override
     public void recycle() {
+        super.recycle();
         mDynamicLayoutInflater.recycle();
-        mRuntime = null;
+        mDynamicLayoutInflater = null;
+        mProperties.clear();
+        mResourceParser = null;
     }
 
     private class Drawables extends com.stardust.autojs.core.ui.inflater.util.Drawables {
 
         @Override
         public Drawable decodeImage(String path) {
-            if (mRuntime != null) {
-                return super.decodeImage(mRuntime.files.path(path));
+            if (mRuntime.get() != null) {
+                return super.decodeImage(mRuntime.get().files.path(path));
             } else {
                 return null;
             }

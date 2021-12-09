@@ -2,12 +2,13 @@ package com.stardust.autojs.core.ui.widget;
 
 import android.content.Context;
 import android.os.Build;
-import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * Created by Stardust on 2017/11/29.
@@ -48,5 +49,6 @@ public class JsWebView extends WebView {
         setWebViewClient(new WebViewClient());
         setWebChromeClient(new WebChromeClient());
     }
+
 
 }

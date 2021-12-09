@@ -1,18 +1,16 @@
 package com.stardust.autojs.core.ui.nativeview;
 
-import android.graphics.PorterDuff;
 import android.view.View;
-import android.widget.Button;
 
 import com.stardust.autojs.core.ui.JsViewHelper;
 import com.stardust.autojs.core.ui.ViewExtras;
 import com.stardust.autojs.core.ui.attribute.ViewAttributes;
 import com.stardust.autojs.rhino.NativeJavaObjectWithPrototype;
 
-import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.NativeObject;
-import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
+
+import java.lang.ref.WeakReference;
 
 public class NativeView extends NativeJavaObjectWithPrototype {
 
@@ -33,30 +31,30 @@ public class NativeView extends NativeJavaObjectWithPrototype {
     }
 
     public static class LongClickEvent {
-        public final View view;
+        public final WeakReference<View> view;
 
         public LongClickEvent(View view) {
-            this.view = view;
+            this.view = new WeakReference<>(view);
         }
     }
 
 
-    private final ViewAttributes mViewAttributes;
-    private final View mView;
-    private final ViewPrototype mViewPrototype;
+    private final WeakReference<ViewAttributes> mViewAttributes;
+    private final WeakReference<View> mView;
+    private final WeakReference<ViewPrototype> mViewPrototype;
 
     public NativeView(Scriptable scope, View view, Class<?> staticType, com.stardust.autojs.runtime.ScriptRuntime runtime) {
         super(scope, view, staticType);
-        mViewAttributes = ViewExtras.getViewAttributes(view, runtime.ui.getResourceParser());
-        mView = view;
-        mViewPrototype = new ViewPrototype(mView, mViewAttributes, scope, runtime);
-        prototype = new NativeJavaObjectWithPrototype(scope, mViewPrototype, mViewPrototype.getClass());
+        mViewAttributes = new WeakReference<>(ViewExtras.getViewAttributes(view, runtime.ui.getResourceParser()));
+        mView = new WeakReference<>(view);
+        mViewPrototype = new WeakReference<>(new ViewPrototype(view, mViewAttributes.get(), scope, runtime));
+        prototype = new NativeJavaObjectWithPrototype(scope, mViewPrototype.get(), mViewPrototype.get().getClass());
         prototype.setPrototype(new NativeObject());
     }
 
     @Override
     public boolean has(String name, Scriptable start) {
-        if (mViewAttributes.contains(name)) {
+        if (mViewAttributes.get().contains(name)) {
             return true;
         }
         return super.has(name, start);
@@ -67,7 +65,7 @@ public class NativeView extends NativeJavaObjectWithPrototype {
         if (super.has(name, start)) {
             return super.get(name, start);
         } else {
-            View view = JsViewHelper.findViewByStringId(mView, name);
+            View view = JsViewHelper.findViewByStringId(mView.get(), name);
             if (view != null) {
                 return view;
             }
@@ -76,12 +74,12 @@ public class NativeView extends NativeJavaObjectWithPrototype {
     }
 
     public ViewPrototype getViewPrototype() {
-        return mViewPrototype;
+        return mViewPrototype.get();
     }
 
     @Override
     public View unwrap() {
-        return mView;
+        return mView.get();
     }
 
 }

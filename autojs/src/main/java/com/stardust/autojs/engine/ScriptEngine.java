@@ -1,14 +1,13 @@
 package com.stardust.autojs.engine;
 
-import androidx.annotation.CallSuper;
-
 import com.stardust.autojs.execution.ScriptExecution;
 import com.stardust.autojs.script.ScriptSource;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import androidx.annotation.CallSuper;
 
 /**
  * Created by Stardust on 2017/4/2.
@@ -100,6 +99,7 @@ public interface ScriptEngine<S extends ScriptSource> {
             if (mOnDestroyListener != null) {
                 mOnDestroyListener.onDestroy(this);
             }
+            mTags.clear();
             mDestroyed = true;
         }
 

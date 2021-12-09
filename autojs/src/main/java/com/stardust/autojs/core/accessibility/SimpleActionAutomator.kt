@@ -17,16 +17,25 @@ import com.stardust.automator.simple_action.ActionTarget
 import com.stardust.automator.simple_action.SimpleAction
 import com.stardust.util.DeveloperUtils
 import com.stardust.util.ScreenMetrics
+import java.lang.ref.WeakReference
 
 /**
  * Created by Stardust on 2017/4/2.
  */
 
-class SimpleActionAutomator(private val mAccessibilityBridge: AccessibilityBridge, private val mScriptRuntime: ScriptRuntime) {
+class SimpleActionAutomator(
+    private val mAccessibilityBridge: AccessibilityBridge,
+    scriptRuntime: ScriptRuntime
+) {
 
     private lateinit var mGlobalActionAutomator: GlobalActionAutomator
 
     private var mScreenMetrics: ScreenMetrics? = null
+    private val mScriptRuntime: WeakReference<ScriptRuntime>
+
+    init {
+        mScriptRuntime = WeakReference(scriptRuntime)
+    }
 
     private val isRunningPackageSelf: Boolean
         get() = DeveloperUtils.isSelfPackage(mAccessibilityBridge.infoProvider.latestPackage)
@@ -75,12 +84,22 @@ class SimpleActionAutomator(private val mAccessibilityBridge: AccessibilityBridg
 
     @ScriptInterface
     fun scrollBackward(i: Int): Boolean {
-        return performAction(ActionFactory.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, i))
+        return performAction(
+            ActionFactory.createScrollAction(
+                AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD,
+                i
+            )
+        )
     }
 
     @ScriptInterface
     fun scrollForward(i: Int): Boolean {
-        return performAction(ActionFactory.createScrollAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, i))
+        return performAction(
+            ActionFactory.createScrollAction(
+                AccessibilityNodeInfo.ACTION_SCROLL_FORWARD,
+                i
+            )
+        )
     }
 
     @ScriptInterface
@@ -186,10 +205,11 @@ class SimpleActionAutomator(private val mAccessibilityBridge: AccessibilityBridg
     private fun prepareForGesture() {
         ScriptRuntime.requiresApi(24)
         if (!::mGlobalActionAutomator.isInitialized) {
-            mGlobalActionAutomator = GlobalActionAutomator(Handler(mScriptRuntime.loopers.servantLooper)) {
-                ensureAccessibilityServiceEnabled()
-                return@GlobalActionAutomator mAccessibilityBridge.service!!
-            }
+            mGlobalActionAutomator =
+                GlobalActionAutomator(Handler(mScriptRuntime.get()?.loopers?.servantLooper)) {
+                    ensureAccessibilityServiceEnabled()
+                    return@GlobalActionAutomator mAccessibilityBridge.service!!
+                }
         }
         mGlobalActionAutomator.setScreenMetrics(mScreenMetrics)
     }

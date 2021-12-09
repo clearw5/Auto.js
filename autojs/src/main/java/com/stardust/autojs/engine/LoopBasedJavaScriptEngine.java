@@ -85,6 +85,7 @@ public class LoopBasedJavaScriptEngine extends RhinoJavaScriptEngine {
     public synchronized void destroy() {
         Thread thread = getThread();
         LooperHelper.quitForThread(thread);
+        mHandler = null;
         super.destroy();
     }
 

@@ -5,9 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
-import androidx.annotation.RequiresApi;
 
 import com.stardust.app.OnActivityResultDelegate;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * Created by Stardust on 2017/5/17.
@@ -26,6 +27,8 @@ public interface ScreenCaptureRequester {
     void request();
 
     void setOnActivityResultCallback(Callback callback);
+
+    void recycle();
 
     abstract class AbstractScreenCaptureRequester implements ScreenCaptureRequester {
 
@@ -49,6 +52,12 @@ public interface ScreenCaptureRequester {
                 return;
             if (mCallback != null)
                 mCallback.onRequestResult(Activity.RESULT_CANCELED, null);
+            mCallback = null;
+        }
+
+        @Override
+        public void recycle() {
+            mResult = null;
             mCallback = null;
         }
     }
@@ -77,6 +86,12 @@ public interface ScreenCaptureRequester {
             mResult = data;
             mMediator.removeDelegate(this);
             onResult(resultCode, data);
+        }
+
+        @Override
+        public void recycle() {
+            super.recycle();
+            mMediator.removeDelegate(this);
         }
     }
 

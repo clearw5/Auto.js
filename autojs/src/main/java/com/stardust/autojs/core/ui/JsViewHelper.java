@@ -1,10 +1,11 @@
 package com.stardust.autojs.core.ui;
 
-import androidx.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.stardust.autojs.core.ui.inflater.util.Ids;
+
+import androidx.annotation.Nullable;
 
 
 /**
@@ -15,6 +16,9 @@ public class JsViewHelper {
 
     @Nullable
     public static View findViewByStringId(View view, String id) {
+        if (view == null) {
+            return null;
+        }
         View result = view.findViewById(Ids.parse(id));
         if (result != null)
             return result;

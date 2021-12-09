@@ -2,8 +2,6 @@ package com.stardust.autojs.core.ui.inflater;
 
 import android.content.Context;
 import android.os.Build;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.InflateException;
@@ -20,6 +18,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.android.material.appbar.AppBarLayout;
+import com.stardust.autojs.core.ui.ViewExtras;
 import com.stardust.autojs.core.ui.inflater.inflaters.AppBarInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.BaseViewInflater;
 import com.stardust.autojs.core.ui.inflater.inflaters.DatePickerInflater;
@@ -46,11 +45,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.ByteArrayInputStream;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 
 public class DynamicLayoutInflater {
@@ -63,6 +67,7 @@ public class DynamicLayoutInflater {
 
     private Map<String, ViewInflater<?>> mViewAttrSetters = new HashMap<>();
     private Map<String, ViewCreator<?>> mViewCreators = new HashMap<>();
+    private LinkedList<WeakReference<View>> createdViews = new LinkedList<>();
     private Context mContext;
     private ResourceParser mResourceParser;
     @NonNull
@@ -159,7 +164,7 @@ public class DynamicLayoutInflater {
         return mLayoutInflaterDelegate.afterInflation(context, doInflation(context, xml, parent, attachToParent), xml, parent);
     }
 
-    public InflateContext newInflateContext(){
+    public InflateContext newInflateContext() {
         return new InflateContext();
     }
 
@@ -274,7 +279,9 @@ public class DynamicLayoutInflater {
         View view = mLayoutInflaterDelegate.beforeCreateView(context, node, viewName, parent, attrs);
         if (view != null)
             return view;
-        return mLayoutInflaterDelegate.afterCreateView(context, createViewForName(viewName, attrs), node, viewName, parent, attrs);
+        view = mLayoutInflaterDelegate.afterCreateView(context, createViewForName(viewName, attrs), node, viewName, parent, attrs);
+        createdViews.add(new WeakReference<>(view));
+        return view;
     }
 
     public View createViewForName(String name, HashMap<String, String> attrs) {
@@ -361,5 +368,10 @@ public class DynamicLayoutInflater {
         setContext(null);
         mViewAttrSetters.clear();
         mViewCreators.clear();
+        for (WeakReference<View> createdView : createdViews) {
+            if (createdView.get() != null) {
+                ViewExtras.recycle(createdView.get());
+            }
+        }
     }
 }

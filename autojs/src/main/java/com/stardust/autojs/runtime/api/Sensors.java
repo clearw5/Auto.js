@@ -5,7 +5,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import androidx.annotation.NonNull;
 
 import com.stardust.autojs.core.eventloop.EventEmitter;
 import com.stardust.autojs.core.looper.Loopers;
@@ -13,10 +12,13 @@ import com.stardust.autojs.runtime.ScriptBridges;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.util.MapBuilder;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by Stardust on 2018/2/5.
@@ -82,7 +84,7 @@ public class Sensors extends EventEmitter implements Loopers.LooperQuitHandler {
     private final SensorManager mSensorManager;
     private final ScriptBridges mScriptBridges;
     private final SensorEventEmitter mNoOpSensorEventEmitter;
-    private final ScriptRuntime mScriptRuntime;
+    private WeakReference<ScriptRuntime> mScriptRuntime;
 
 
     public Sensors(Context context, ScriptRuntime runtime) {
@@ -90,7 +92,7 @@ public class Sensors extends EventEmitter implements Loopers.LooperQuitHandler {
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         mScriptBridges = runtime.bridges;
         mNoOpSensorEventEmitter = new SensorEventEmitter(runtime.bridges);
-        mScriptRuntime = runtime;
+        mScriptRuntime = new WeakReference<>(runtime);
         runtime.loopers.addLooperQuitHandler(this);
     }
 
@@ -166,6 +168,6 @@ public class Sensors extends EventEmitter implements Loopers.LooperQuitHandler {
             }
             mSensorEventEmitters.clear();
         }
-        mScriptRuntime.loopers.removeLooperQuitHandler(this);
+        mScriptRuntime.get().loopers.removeLooperQuitHandler(this);
     }
 }

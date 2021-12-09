@@ -7,6 +7,7 @@ import com.stardust.autojs.core.looper.Timer;
 import com.stardust.autojs.runtime.ScriptBridges;
 import com.stardust.autojs.runtime.exception.ScriptException;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,11 +54,11 @@ public class EventEmitter {
             Iterator<ListenerWrapper> listenerIterator = mListenerWrappers.iterator();
             while (listenerIterator.hasNext()) {
                 ListenerWrapper listenerWrapper = listenerIterator.next();
-                if (mTimer != null) {
-                    mTimer.setImmediate(listenerWrapper.listener, args);
+                if (mTimer != null && mTimer.get() != null) {
+                    mTimer.get().setImmediate(listenerWrapper.listener, args);
                 } else {
-                    if (mBridges != null) {
-                        mBridges.callFunction(listenerWrapper.listener, EventEmitter.this, args);
+                    if (mBridges.get() != null) {
+                        mBridges.get().callFunction(listenerWrapper.listener, EventEmitter.this, args);
                     } else {
                         mListenerWrappers.remove(listenerWrapper);
                     }
@@ -101,16 +102,16 @@ public class EventEmitter {
     private Map<String, Listeners> mListenersMap = new HashMap<>();
     public static int defaultMaxListeners = 10;
     private int mMaxListeners = defaultMaxListeners;
-    protected ScriptBridges mBridges;
-    private Timer mTimer;
+    protected WeakReference<ScriptBridges> mBridges;
+    private WeakReference<Timer> mTimer;
 
     public EventEmitter(ScriptBridges bridges) {
-        mBridges = bridges;
+        mBridges = new WeakReference<>(bridges);
     }
 
     public EventEmitter(ScriptBridges bridges, Timer timer) {
-        mTimer = timer;
-        mBridges = bridges;
+        mTimer = new WeakReference<>(timer);
+        mBridges = new WeakReference<>(bridges);
     }
 
     public EventEmitter once(String eventName, Object listener) {

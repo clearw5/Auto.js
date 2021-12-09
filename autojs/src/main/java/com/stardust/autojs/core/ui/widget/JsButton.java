@@ -3,9 +3,10 @@ package com.stardust.autojs.core.ui.widget;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
-import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.widget.Button;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * Created by Stardust on 2017/5/15.
@@ -37,4 +38,5 @@ public class JsButton extends Button {
     public void text(CharSequence text) {
         setText(text);
     }
+
 }

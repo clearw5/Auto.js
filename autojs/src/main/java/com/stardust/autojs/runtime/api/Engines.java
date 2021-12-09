@@ -9,7 +9,7 @@ import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptFileSource;
 import com.stardust.autojs.script.StringScriptSource;
 
-import java.util.Collections;
+import java.lang.ref.WeakReference;
 
 /**
  * Created by Stardust on 2017/8/4.
@@ -18,12 +18,12 @@ import java.util.Collections;
 public class Engines {
 
     private ScriptEngineService mEngineService;
-    private JavaScriptEngine mScriptEngine;
-    private ScriptRuntime mScriptRuntime;
+    private WeakReference<JavaScriptEngine> mScriptEngine;
+    private WeakReference<ScriptRuntime> mScriptRuntime;
 
     public Engines(ScriptEngineService engineService, ScriptRuntime scriptRuntime) {
         mEngineService = engineService;
-        mScriptRuntime = scriptRuntime;
+        mScriptRuntime = new WeakReference<>(scriptRuntime);
     }
 
     public ScriptExecution execScript(String name, String script, ExecutionConfig config) {
@@ -31,15 +31,15 @@ public class Engines {
     }
 
     public ScriptExecution execScriptFile(String path, ExecutionConfig config) {
-        return mEngineService.execute(new JavaScriptFileSource(mScriptRuntime.files.path(path)), config);
+        return mEngineService.execute(new JavaScriptFileSource(mScriptRuntime.get().files.path(path)), config);
     }
 
     public ScriptExecution execAutoFile(String path, ExecutionConfig config) {
-        return mEngineService.execute(new AutoFileSource(mScriptRuntime.files.path(path)), config);
+        return mEngineService.execute(new AutoFileSource(mScriptRuntime.get().files.path(path)), config);
     }
 
     public Object all() {
-        return mScriptRuntime.bridges.toArray(mEngineService.getEngines());
+        return mScriptRuntime.get().bridges.toArray(mEngineService.getEngines());
     }
 
     public int stopAll() {
@@ -54,10 +54,10 @@ public class Engines {
     public void setCurrentEngine(JavaScriptEngine engine) {
         if (mScriptEngine != null)
             throw new IllegalStateException();
-        mScriptEngine = engine;
+        mScriptEngine = new WeakReference<>(engine);
     }
 
     public JavaScriptEngine myEngine() {
-        return mScriptEngine;
+        return mScriptEngine.get();
     }
 }

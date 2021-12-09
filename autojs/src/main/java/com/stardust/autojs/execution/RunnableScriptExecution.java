@@ -2,13 +2,17 @@ package com.stardust.autojs.execution;
 
 import android.util.Log;
 
+import com.stardust.autojs.AutoJs;
+import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.engine.ScriptEngineManager;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.autojs.script.ScriptSource;
 import com.stardust.lang.ThreadCompat;
 
-import org.mozilla.javascript.ContinuationPending;
+import org.apache.log4j.Logger;
+
+
 
 /**
  * Created by Stardust on 2017/5/1.
@@ -19,6 +23,7 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
     private static final String TAG = "RunnableJSExecution";
     private ScriptEngine mScriptEngine;
     private ScriptEngineManager mScriptEngineManager;
+    private static final Logger logger = Logger.getLogger(RunnableScriptExecution.class);
 
     public RunnableScriptExecution(ScriptEngineManager manager, ScriptExecutionTask task) {
         super(task);
@@ -28,10 +33,16 @@ public class RunnableScriptExecution extends ScriptExecution.AbstractScriptExecu
     @Override
     public void run() {
         ThreadCompat.currentThread().setName("ScriptThread-" + getId() + "[" + getSource() + "]");
-        execute();
-
-        mScriptEngine = null;
-        mScriptEngineManager = null;
+        try {
+            execute();
+        } catch (Exception e) {
+            logger.error("脚本执行异常", e);
+            ScriptEngineService.getInstance().removeExecution(getId());
+            throw e;
+        } finally {
+            mScriptEngine = null;
+            mScriptEngineManager = null;
+        }
     }
 
     public Object execute() {

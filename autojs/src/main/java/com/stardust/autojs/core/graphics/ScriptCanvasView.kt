@@ -9,9 +9,11 @@ import android.util.Log
 import android.view.TextureView
 import android.view.View
 import com.stardust.autojs.core.eventloop.EventEmitter
+import com.stardust.autojs.core.ui.ViewExtras
 import com.stardust.autojs.runtime.ScriptRuntime
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException
 import com.stardust.ext.ifNull
+import java.lang.ref.WeakReference
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -20,12 +22,14 @@ import java.util.concurrent.Executors
  */
 
 @SuppressLint("ViewConstructor")
-class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : TextureView(context), TextureView.SurfaceTextureListener {
+class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : TextureView(context),
+    TextureView.SurfaceTextureListener {
     @Volatile
     private var mDrawing = true
     private val mEventEmitter: EventEmitter = EventEmitter(scriptRuntime.bridges)
-    private var mScriptRuntime: ScriptRuntime? = null
+    private val mScriptRuntime: WeakReference<ScriptRuntime>
     private var mDrawingThreadPool: ExecutorService? = null
+
     @Volatile
     private var mTimePerDraw = (1000 / 30).toLong()
 
@@ -34,7 +38,7 @@ class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : Texture
 
     init {
         surfaceTextureListener = this
-        mScriptRuntime = scriptRuntime
+        mScriptRuntime = WeakReference(scriptRuntime)
     }
 
     fun setMaxFps(maxFps: Int) {
@@ -55,7 +59,7 @@ class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : Texture
                 var time = SystemClock.uptimeMillis()
                 val scriptCanvas = ScriptCanvas()
                 try {
-                    while (mDrawing && !mScriptRuntime?.isStopped!!) {
+                    while (mDrawing && !mScriptRuntime.get()?.isStopped!!) {
                         canvas = lockCanvas()
                         scriptCanvas.setCanvas(canvas)
                         emit("draw", scriptCanvas, this@ScriptCanvasView)
@@ -68,7 +72,7 @@ class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : Texture
                         time = SystemClock.uptimeMillis()
                     }
                 } catch (e: Exception) {
-                    mScriptRuntime?.exit(e)
+                    mScriptRuntime.get()?.exit(e)
                     mDrawing = false
                 } finally {
                     if (canvas != null) {
@@ -89,7 +93,10 @@ class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : Texture
     }
 
     override fun onWindowVisibilityChanged(visibility: Int) {
-        Log.d(LOG_TAG, "onWindowVisibilityChanged: " + this + ": visibility=" + visibility + ", mDrawingThreadPool=" + mDrawingThreadPool)
+        Log.d(
+            LOG_TAG,
+            "onWindowVisibilityChanged: " + this + ": visibility=" + visibility + ", mDrawingThreadPool=" + mDrawingThreadPool
+        )
         val oldDrawing = mDrawing
         mDrawing = visibility == View.VISIBLE
         if (!oldDrawing && mDrawing) {
@@ -158,20 +165,18 @@ class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : Texture
     override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {}
 
     override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
+        removeAllListeners()
         mDrawing = false
         mDrawingThreadPool?.shutdown()
-        mScriptRuntime = null
+        surfaceTextureListener = null
+        setOnTouchListener(null)
         Log.d(LOG_TAG, "onSurfaceTextureDestroyed: ${this}")
+        ViewExtras.recycle(this)
         return true
     }
 
     override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
 
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        mScriptRuntime = null
     }
 
     companion object {

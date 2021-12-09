@@ -54,4 +54,15 @@ public class ProxyObject extends NativeObject {
     public Object getDefaultValue(Class<?> typeHint) {
         return toString();
     }
+
+    public void recycle() {
+        if (mGetter != null) {
+            mGetter.setParentScope(null);
+            mGetter.setPrototype(null);
+        }
+        if (mSetter != null) {
+            mSetter.setParentScope(null);
+            mSetter.setPrototype(null);
+        }
+    }
 }

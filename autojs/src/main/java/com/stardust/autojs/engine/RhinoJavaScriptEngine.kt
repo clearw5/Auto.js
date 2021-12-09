@@ -22,6 +22,7 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStreamReader
 import java.io.Reader
+import java.lang.ref.WeakReference
 import java.net.URI
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -30,53 +31,65 @@ import java.util.concurrent.ConcurrentHashMap
  * Created by Stardust on 2017/4/2.
  */
 
-open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Context) : JavaScriptEngine() {
+open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Context) :
+    JavaScriptEngine() {
 
-    val context: Context
-    private val mScriptable: TopLevelScope
-    lateinit var thread: Thread
-        private set
+    private val context: WeakReference<Context>
+    private val mScriptable: WeakReference<TopLevelScope>
+    lateinit var threadRef: WeakReference<Thread>
 
     private val initScript: Script
         get() {
             return sInitScript ?: {
                 try {
                     val reader = InputStreamReader(mAndroidContext.assets.open("init.js"))
-                    val script = context.compileReader(reader, SOURCE_NAME_INIT, 1, null)
+                    val script = context.get()?.compileReader(reader, SOURCE_NAME_INIT, 1, null)
                     sInitScript = script
                     script
                 } catch (e: IOException) {
                     throw UncheckedIOException(e)
                 }
-            }()
+            }()!!
         }
 
+    fun getContext(): Context? {
+        return context.get()
+    }
+
+    fun getThread(): Thread? {
+        return threadRef.get()
+    }
+
     val scriptable: Scriptable
-        get() = mScriptable
+        get() = mScriptable.get()!!
 
     init {
-        this.context = enterContext()
-        mScriptable = createScope(this.context)
+        this.context = WeakReference(enterContext())
+        mScriptable = this.context.get()?.let { createScope(it) }!!
     }
 
     override fun put(name: String, value: Any?) {
-        ScriptableObject.putProperty(mScriptable, name, Context.javaToJS(value, mScriptable))
+        ScriptableObject.putProperty(
+            mScriptable.get(),
+            name,
+            Context.javaToJS(value, mScriptable.get())
+        )
     }
 
     override fun setRuntime(runtime: ScriptRuntime) {
         super.setRuntime(runtime)
-        runtime.topLevelScope = mScriptable
+        runtime.topLevelScope = mScriptable.get()
     }
 
     public override fun doExecution(source: JavaScriptSource): Any? {
         var reader = source.nonNullScriptReader
         try {
             reader = preprocess(reader)
-            val script = context.compileReader(reader, source.toString(), 1, null)
+            val script = context.get()?.compileReader(reader, source.toString(), 1, null)
             return if (hasFeature(ScriptConfig.FEATURE_CONTINUATION)) {
-                context.executeScriptWithContinuations(script, mScriptable)
+                context.get()?.executeScriptWithContinuations(script, mScriptable.get())
             } else {
-                script.exec(context, mScriptable)
+                script?.exec(context.get(), mScriptable.get())
             }
         } catch (e: IOException) {
             throw UncheckedIOException(e)
@@ -95,8 +108,8 @@ open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Co
     }
 
     override fun forceStop() {
-        Log.d(LOG_TAG, "forceStop: interrupt Thread: $thread")
-        thread.interrupt()
+        Log.d(LOG_TAG, "forceStop: interrupt Thread: ${threadRef.get()}")
+        threadRef.get()?.interrupt()
     }
 
 
@@ -112,20 +125,20 @@ open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Co
                 Log.d(LOG_TAG, "destroy execute success")
             else
                 Log.d(LOG_TAG, "destroy execute failed")
-            sContextEngineMap.remove(context)
+            sContextEngineMap.remove(context.get())
             Context.exit()
         }
     }
 
     override fun init() {
-        thread = Thread.currentThread()
-        ScriptableObject.putProperty(mScriptable, "__engine__", this)
-        initRequireBuilder(context, mScriptable)
+        threadRef = WeakReference(Thread.currentThread())
+        ScriptableObject.putProperty(mScriptable.get(), "__engine__", this)
+        mScriptable.get()?.let { context.get()?.let { ctx -> initRequireBuilder(ctx, it) } }
         try {
-            context.executeScriptWithContinuations(initScript, mScriptable)
+            context.get()?.executeScriptWithContinuations(initScript, mScriptable.get())
         } catch (e: IllegalArgumentException) {
             if ("Script argument was not a script or was not created by interpreted mode " == e.message) {
-                initScript.exec(context, mScriptable)
+                initScript.exec(context.get(), mScriptable.get())
             } else {
                 throw e
             }
@@ -133,20 +146,22 @@ open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Co
     }
 
     internal fun initRequireBuilder(context: Context, scope: Scriptable) {
-        val provider = AssetAndUrlModuleSourceProvider(mAndroidContext, MODULES_PATH,
-                listOf<URI>(File("/").toURI()))
+        val provider = AssetAndUrlModuleSourceProvider(
+            mAndroidContext, MODULES_PATH,
+            listOf<URI>(File("/").toURI())
+        )
         RequireBuilder()
-                .setModuleScriptProvider(SoftCachingModuleScriptProvider(provider))
-                .setSandboxed(true)
-                .createRequire(context, scope)
-                .install(scope)
+            .setModuleScriptProvider(SoftCachingModuleScriptProvider(provider))
+            .setSandboxed(true)
+            .createRequire(context, scope)
+            .install(scope)
 
     }
 
-    protected fun createScope(context: Context): TopLevelScope {
+    protected fun createScope(context: Context): WeakReference<TopLevelScope> {
         val topLevelScope = TopLevelScope()
         topLevelScope.initStandardObjects(context, false)
-        return topLevelScope
+        return WeakReference(topLevelScope)
     }
 
     fun enterContext(): Context {
@@ -186,7 +201,12 @@ open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Co
             }
         }
 
-        override fun wrapAsJavaObject(cx: Context?, scope: Scriptable, javaObject: Any?, staticType: Class<*>?): Scriptable? {
+        override fun wrapAsJavaObject(
+            cx: Context?,
+            scope: Scriptable,
+            javaObject: Any?,
+            staticType: Class<*>?
+        ): Scriptable? {
             //Log.d(LOG_TAG, "wrapAsJavaObject: java = " + javaObject + ", result = " + result + ", scope = " + scope);
             return if (javaObject is View) {
                 ViewExtras.getNativeView(scope, javaObject, staticType, runtime)

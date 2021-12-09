@@ -3,6 +3,7 @@ package com.stardust.autojs.core.looper;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.lang.ThreadCompat;
 
+import java.lang.ref.WeakReference;
 import java.util.Map;
 
 /**
@@ -12,11 +13,11 @@ import java.util.Map;
 public class MainThreadProxy {
 
     private final Thread mThread;
-    private ScriptRuntime mRuntime;
+    private WeakReference<ScriptRuntime> mRuntime;
 
     public MainThreadProxy(Thread thread, ScriptRuntime runtime) {
         mThread = thread;
-        mRuntime = runtime;
+        mRuntime = new WeakReference<>(runtime);
     }
 
     public int setTimeout(Object callback, long delay, Object... args) {
@@ -24,7 +25,7 @@ public class MainThreadProxy {
     }
 
     private Timer getMainTimer() {
-        return mRuntime.timers.getMainTimer();
+        return mRuntime.get().timers.getMainTimer();
     }
 
     public boolean clearTimeout(int id) {

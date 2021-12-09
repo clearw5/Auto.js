@@ -4,12 +4,14 @@ import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.autojs.script.ScriptSource;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created by Stardust on 2017/8/3.
  */
 
 public abstract class JavaScriptEngine extends ScriptEngine.AbstractScriptEngine<JavaScriptSource> {
-    private ScriptRuntime mRuntime;
+    private WeakReference<ScriptRuntime> mRuntime;
     private Object mExecArgv;
 
     @Override
@@ -23,20 +25,20 @@ public abstract class JavaScriptEngine extends ScriptEngine.AbstractScriptEngine
     protected abstract Object doExecution(JavaScriptSource scriptSource);
 
     public ScriptRuntime getRuntime() {
-        return mRuntime;
+        return mRuntime.get();
     }
 
     public void setRuntime(ScriptRuntime runtime) {
         if (mRuntime != null) {
             throw new IllegalStateException("a runtime has been set");
         }
-        mRuntime = runtime;
-        mRuntime.engines.setCurrentEngine(this);
+        mRuntime = new WeakReference<>(runtime);
+        runtime.engines.setCurrentEngine(this);
         put("runtime", runtime);
     }
 
     public void emit(String eventName, Object... args) {
-        mRuntime.timers.getMainTimer().postDelayed(() -> mRuntime.events.emit(eventName, args), 0);
+        mRuntime.get().timers.getMainTimer().postDelayed(() -> mRuntime.get().events.emit(eventName, args), 0);
     }
 
     public ScriptSource getSource() {
@@ -56,7 +58,7 @@ public abstract class JavaScriptEngine extends ScriptEngine.AbstractScriptEngine
 
     @Override
     public synchronized void destroy() {
-        mRuntime.onExit();
+        mRuntime.get().onExit();
         mExecArgv = null;
         super.destroy();
     }
@@ -68,11 +70,5 @@ public abstract class JavaScriptEngine extends ScriptEngine.AbstractScriptEngine
                 "source='" + getTag(TAG_SOURCE) + "'," +
                 "cwd='" + cwd() + "'" +
                 "}";
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        mRuntime = null;
     }
 }

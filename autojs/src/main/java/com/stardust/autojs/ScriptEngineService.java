@@ -209,6 +209,10 @@ public class ScriptEngineService {
         return mScriptExecutions.get(id);
     }
 
+    public void removeExecution(int id) {
+        mScriptExecutions.remove(id);
+    }
+
     public static void setInstance(ScriptEngineService service) {
         if (sInstance == null) {
             synchronized (ScriptEngineService.class) {

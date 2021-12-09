@@ -10,8 +10,14 @@ import com.stardust.autojs.R;
 import com.stardust.autojs.ScriptEngineService;
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
+import com.stardust.autojs.core.accessibility.SimpleActionAutomator;
+import com.stardust.autojs.core.accessibility.UiSelector;
+import com.stardust.autojs.core.activity.ActivityInfoProvider;
 import com.stardust.autojs.core.image.Colors;
+import com.stardust.autojs.core.image.capture.ScreenCaptureRequester;
+import com.stardust.autojs.core.looper.Loopers;
 import com.stardust.autojs.core.permission.Permissions;
+import com.stardust.autojs.core.util.ProcessShell;
 import com.stardust.autojs.rhino.AndroidClassLoader;
 import com.stardust.autojs.rhino.TopLevelScope;
 import com.stardust.autojs.rhino.continuation.Continuation;
@@ -19,35 +25,29 @@ import com.stardust.autojs.runtime.api.AbstractShell;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.runtime.api.Console;
 import com.stardust.autojs.runtime.api.Device;
+import com.stardust.autojs.runtime.api.Dialogs;
 import com.stardust.autojs.runtime.api.Engines;
 import com.stardust.autojs.runtime.api.Events;
 import com.stardust.autojs.runtime.api.Files;
 import com.stardust.autojs.runtime.api.Floaty;
-import com.stardust.autojs.core.looper.Loopers;
+import com.stardust.autojs.runtime.api.Images;
 import com.stardust.autojs.runtime.api.Media;
 import com.stardust.autojs.runtime.api.Plugins;
 import com.stardust.autojs.runtime.api.Sensors;
 import com.stardust.autojs.runtime.api.Threads;
 import com.stardust.autojs.runtime.api.Timers;
-import com.stardust.autojs.core.accessibility.UiSelector;
-import com.stardust.autojs.runtime.api.Images;
-import com.stardust.autojs.core.image.capture.ScreenCaptureRequester;
-import com.stardust.autojs.runtime.api.Dialogs;
+import com.stardust.autojs.runtime.api.UI;
 import com.stardust.autojs.runtime.exception.ScriptEnvironmentException;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
-import com.stardust.autojs.core.accessibility.SimpleActionAutomator;
-import com.stardust.autojs.runtime.api.UI;
 import com.stardust.concurrent.VolatileDispose;
 import com.stardust.lang.ThreadCompat;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ClipboardUtil;
-import com.stardust.autojs.core.util.ProcessShell;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.SdkVersionUtil;
 import com.stardust.util.Supplier;
 import com.stardust.util.UiHandler;
-import com.stardust.autojs.core.activity.ActivityInfoProvider;
 
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.RhinoException;
@@ -201,7 +201,8 @@ public class ScriptRuntime {
     private Supplier<AbstractShell> mShellSupplier;
     private ScreenMetrics mScreenMetrics = new ScreenMetrics();
     private Thread mThread;
-    private TopLevelScope mTopLevelScope;
+    private WeakReference<TopLevelScope> mTopLevelScope;
+    private boolean stop = false;
 
 
     protected ScriptRuntime(Builder builder) {
@@ -239,14 +240,14 @@ public class ScriptRuntime {
     }
 
     public TopLevelScope getTopLevelScope() {
-        return mTopLevelScope;
+        return mTopLevelScope.get();
     }
 
     public void setTopLevelScope(TopLevelScope topLevelScope) {
         if (mTopLevelScope != null) {
             throw new IllegalStateException("top level has already exists");
         }
-        mTopLevelScope = topLevelScope;
+        mTopLevelScope = new WeakReference<>(topLevelScope);
     }
 
     public static void setApplicationContext(Context context) {
@@ -324,7 +325,7 @@ public class ScriptRuntime {
     }
 
     public boolean isStopped() {
-        return Thread.currentThread().isInterrupted();
+        return stop || Thread.currentThread().isInterrupted();
     }
 
     public static void requiresApi(int i) {
@@ -370,9 +371,13 @@ public class ScriptRuntime {
     }
 
     public void exit() {
-        mThread.interrupt();
+        stop = true;
         engines.myEngine().forceStop();
         threads.exit();
+        if (mThread != null) {
+            mThread.interrupt();
+            mThread = null;
+        }
         if (Looper.myLooper() != Looper.getMainLooper()) {
             throw new ScriptInterruptedException();
         }
@@ -402,6 +407,7 @@ public class ScriptRuntime {
     }
 
     public void onExit() {
+        stop = true;
         Log.d(TAG, "on exit");
         //清除interrupt状态
         ThreadCompat.interrupted();
@@ -414,7 +420,6 @@ public class ScriptRuntime {
         }
         ignoresException(threads::shutDownAll);
         ignoresException(events::recycle);
-        ignoresException(events::destroy);
         ignoresException(media::recycle);
         ignoresException(loopers::recycle);
         ignoresException(() -> {
@@ -427,9 +432,10 @@ public class ScriptRuntime {
             ignoresException(images::recycle);
         }
         ignoresException(sensors::unregisterAll);
+        sensors = null;
         ignoresException(timers::recycle);
         ignoresException(ui::recycle);
-        mTopLevelScope = null;
+        ignoresException(() -> mTopLevelScope.get().markReleased(engines.myEngine().getSource().toString()));
         console.clear();
     }
 
@@ -458,7 +464,7 @@ public class ScriptRuntime {
     }
 
     public Continuation createContinuation() {
-        return Continuation.Companion.create(this, mTopLevelScope);
+        return Continuation.Companion.create(this, mTopLevelScope.get());
     }
 
     public Continuation createContinuation(Scriptable scope) {

@@ -12,10 +12,12 @@ import com.stardust.autojs.runtime.ScriptRuntime;
 
 import org.mozilla.javascript.Scriptable;
 
+import java.lang.ref.WeakReference;
+
 public class ViewExtras {
 
     private static final String LOG_TAG = "ViewExtras";
-    private NativeView mNativeView;
+    private WeakReference<NativeView> mNativeView;
 
     private ViewAttributes mViewAttributes;
 
@@ -60,7 +62,7 @@ public class ViewExtras {
     }
 
     public final NativeView getNativeView() {
-        return mNativeView;
+        return mNativeView == null ? null : mNativeView.get();
     }
 
     public final ViewAttributes getViewAttributes() {
@@ -68,10 +70,26 @@ public class ViewExtras {
     }
 
     public final void setNativeView(NativeView nativeView) {
-        mNativeView = nativeView;
+        mNativeView = new WeakReference<>(nativeView);
     }
 
     public final void setViewAttributes(ViewAttributes viewAttributes) {
         mViewAttributes = viewAttributes;
+    }
+
+    public static void recycle(View view) {
+        ViewExtras extras;
+        Object tag = view.getTag(R.id.view_tag_view_extras);
+        if (tag instanceof ViewExtras) {
+            extras = (ViewExtras) tag;
+            if (extras.getViewAttributes() != null) {
+                extras.getViewAttributes().recycle();
+                extras.setViewAttributes(null);
+            }
+            if (extras.getNativeView() != null) {
+                extras.setNativeView(null);
+            }
+            view.setTag(R.id.view_tag_view_extras, null);
+        }
     }
 }

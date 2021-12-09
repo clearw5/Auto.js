@@ -11,9 +11,6 @@ import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-
-import androidx.annotation.RequiresApi;
-
 import android.util.Base64;
 import android.view.Gravity;
 
@@ -41,12 +38,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * Created by Stardust on 2017/5/20.
@@ -54,7 +52,7 @@ import java.util.List;
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class Images {
 
-    private ScriptRuntime mScriptRuntime;
+    private WeakReference<ScriptRuntime> mScriptRuntime;
     private ScreenCaptureRequester mScreenCaptureRequester;
     private ScreenCapturer mScreenCapturer;
     private Context mContext;
@@ -67,10 +65,10 @@ public class Images {
     public final ColorFinder colorFinder;
 
     public Images(Context context, ScriptRuntime scriptRuntime, ScreenCaptureRequester screenCaptureRequester) {
-        mScriptRuntime = scriptRuntime;
+        mScriptRuntime = new WeakReference<>(scriptRuntime);
         mScreenCaptureRequester = screenCaptureRequester;
         mContext = context;
-        mScreenMetrics = mScriptRuntime.getScreenMetrics();
+        mScreenMetrics = scriptRuntime.getScreenMetrics();
         colorFinder = new ColorFinder(mScreenMetrics);
     }
 
@@ -83,7 +81,7 @@ public class Images {
             promiseAdapter.resolve(true);
             return promiseAdapter;
         }
-        Looper servantLooper = mScriptRuntime.loopers.getServantLooper();
+        Looper servantLooper = mScriptRuntime.get().loopers.getServantLooper();
         mScreenCaptureRequester.setOnActivityResultCallback((result, data) -> {
             if (result == Activity.RESULT_OK) {
                 mScreenCapturer = new ScreenCapturer(mContext, data, orientation, ScreenMetrics.getDeviceScreenDensity(),
@@ -117,7 +115,7 @@ public class Images {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean captureScreen(String path) {
-        path = mScriptRuntime.files.path(path);
+        path = mScriptRuntime.get().files.path(path);
         ImageWrapper image = captureScreen();
         if (image != null) {
             image.saveTo(path);
@@ -135,7 +133,7 @@ public class Images {
         if (compressFormat == null)
             throw new IllegalArgumentException("unknown format " + format);
         Bitmap bitmap = image.getBitmap();
-        FileOutputStream outputStream = new FileOutputStream(mScriptRuntime.files.path(path));
+        FileOutputStream outputStream = new FileOutputStream(mScriptRuntime.get().files.path(path));
         return bitmap.compress(compressFormat, quality, outputStream);
     }
 
@@ -188,7 +186,7 @@ public class Images {
     }
 
     public ImageWrapper read(String path) {
-        path = mScriptRuntime.files.path(path);
+        path = mScriptRuntime.get().files.path(path);
         Bitmap bitmap = BitmapFactory.decodeFile(path);
         return ImageWrapper.ofBitmap(bitmap);
     }
@@ -346,20 +344,20 @@ public class Images {
         if (mOpenCvInitialized || OpenCVHelper.isInitialized()) {
             return;
         }
-        Activity currentActivity = mScriptRuntime.app.getCurrentActivity();
+        Activity currentActivity = mScriptRuntime.get().app.getCurrentActivity();
         Context context = currentActivity == null ? mContext : currentActivity;
-        mScriptRuntime.console.info("opencv initializing");
+        mScriptRuntime.get().console.info("opencv initializing");
         if (Looper.myLooper() == Looper.getMainLooper()) {
             OpenCVHelper.initIfNeeded(context, () -> {
                 mOpenCvInitialized = true;
-                mScriptRuntime.console.info("opencv initialized");
+                mScriptRuntime.get().console.info("opencv initialized");
             });
         } else {
             VolatileDispose<Boolean> result = new VolatileDispose<>();
             OpenCVHelper.initIfNeeded(context, () -> {
                 mOpenCvInitialized = true;
                 result.setAndNotify(true);
-                mScriptRuntime.console.info("opencv initialized");
+                mScriptRuntime.get().console.info("opencv initialized");
             });
             result.blockedGet();
         }
@@ -367,7 +365,6 @@ public class Images {
     }
 
     public void recycle() {
-        mScriptRuntime = null;
-        mScreenCaptureRequester.cancel();
+        mScreenCaptureRequester.recycle();
     }
 }

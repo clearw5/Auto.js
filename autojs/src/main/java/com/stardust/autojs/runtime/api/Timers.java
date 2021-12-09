@@ -37,7 +37,11 @@ public class Timers {
     }
 
     public Timer getTimerForCurrentThread() {
-        return getTimerForThread(Thread.currentThread());
+        Timer timer = getTimerForThread(Thread.currentThread());
+        if (timer == null) {
+            throw new IllegalStateException("thread is not alive");
+        }
+        return timer;
     }
 
     public Timer getTimerForThread(Thread thread) {

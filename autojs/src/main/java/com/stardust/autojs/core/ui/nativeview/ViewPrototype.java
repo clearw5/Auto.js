@@ -3,7 +3,7 @@ package com.stardust.autojs.core.ui.nativeview;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Looper;
-import androidx.core.view.ViewCompat;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -17,6 +17,7 @@ import com.stardust.autojs.runtime.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,25 +25,25 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ViewPrototype {
 
     private final EventEmitter mEventEmitter;
-    private final View mView;
+    private final WeakReference<View> mView;
     private final Set<String> mRegisteredEvents = Collections.newSetFromMap(new ConcurrentHashMap<>());
-    private final Scriptable mScope;
-    private final ViewAttributes mViewAttributes;
+    private final WeakReference<Scriptable> mScope;
+    private final WeakReference<ViewAttributes> mViewAttributes;
     private Object mWidget;
 
     public ViewPrototype(View view, ViewAttributes viewAttributes, Scriptable scope, ScriptRuntime runtime) {
-        mView = view;
-        mViewAttributes = viewAttributes;
+        mView = new WeakReference<>(view);
+        mViewAttributes = new WeakReference<>(viewAttributes);
         mEventEmitter = runtime.events.emitter();
-        mScope = scope;
+        mScope = new WeakReference<>(scope);
     }
 
     public ViewAttributes getViewAttributes() {
-        return mViewAttributes;
+        return mViewAttributes.get();
     }
 
     public Object attr(String name) {
-        ViewAttributes.Attribute attribute = mViewAttributes.get(name);
+        ViewAttributes.Attribute attribute = mViewAttributes.get().get(name);
         if (attribute != null) {
             return attribute.get();
         }
@@ -50,7 +51,7 @@ public class ViewPrototype {
     }
 
     public void attr(String name, Object value) {
-        ViewAttributes.Attribute attribute = mViewAttributes.get(name);
+        ViewAttributes.Attribute attribute = mViewAttributes.get().get(name);
         if (attribute != null) {
             attribute.set(org.mozilla.javascript.ScriptRuntime.toString(value));
         }
@@ -65,11 +66,11 @@ public class ViewPrototype {
     }
 
     public void click() {
-        mView.performClick();
+        mView.get().performClick();
     }
 
     public void longClick() {
-        mView.performLongClick();
+        mView.get().performLongClick();
     }
 
     public void click(Object listener) {
@@ -104,7 +105,7 @@ public class ViewPrototype {
                 mRegisteredEvents.add(eventName);
             }
         } else {
-            mView.post(() -> {
+            mView.get().post(() -> {
                 if (mRegisteredEvents.contains(eventName)) {
                     return;
                 }
@@ -118,6 +119,15 @@ public class ViewPrototype {
 
     @SuppressLint("ClickableViewAccessibility")
     private boolean registerEvent(String eventName) {
+        View mView = this.mView.get();
+        if (mView == null) {
+            return false;
+        }
+        Scriptable mScope = this.mScope.get();
+        if (mScope == null) {
+            Log.d("EVENT_REGISTER", "SCOPE IS RELEASED");
+            return false;
+        }
         switch (eventName) {
             case "touch_down":
             case "touch_up":

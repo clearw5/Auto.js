@@ -59,7 +59,6 @@ public class Loopers implements MessageQueue.IdleHandler {
     private volatile ThreadLocal<CopyOnWriteArrayList<LooperQuitHandler>> looperQuitHandlers = new ThreadLocal<>();
     private volatile Looper mServantLooper;
     private Timers mTimers;
-    private ScriptRuntime mScriptRuntime;
     private LooperQuitHandler mMainLooperQuitHandler;
     private Handler mMainHandler;
     private Looper mMainLooper;
@@ -69,7 +68,6 @@ public class Loopers implements MessageQueue.IdleHandler {
     public Loopers(ScriptRuntime runtime) {
         mTimers = runtime.timers;
         mThreads = runtime.threads;
-        mScriptRuntime = runtime;
         prepare();
         mMainLooper = Looper.myLooper();
         mMainHandler = new Handler();
@@ -173,15 +171,9 @@ public class Loopers implements MessageQueue.IdleHandler {
     public void recycle() {
         quitServantLooper();
         mMainMessageQueue.removeIdleHandler(this);
-        mMainLooperQuitHandler = null;
-        mScriptRuntime = null;
-        mThreads = null;
-        mTimers = null;
-        mMainLooper = null;
-        mServantLooper = null;
         mMainHandler = null;
-        mMainMessageQueue = null;
-        removeThreadLocalValue();
+        mMainLooperQuitHandler = null;
+        mMainLooper = null;
     }
 
     public void setMainLooperQuitHandler(LooperQuitHandler mainLooperQuitHandler) {
@@ -204,17 +196,9 @@ public class Loopers implements MessageQueue.IdleHandler {
             Log.d(LOG_TAG, "looper queueIdle: " + l);
             if (shouldQuitLooper()) {
                 l.quit();
-                removeThreadLocalValue();
             }
         }
         return true;
-    }
-
-    private void removeThreadLocalValue() {
-        maxWaitId.remove();
-        waitIds.remove();
-        looperQuitHandlers.remove();
-        maxWaitId.remove();
     }
 
     public void prepare() {

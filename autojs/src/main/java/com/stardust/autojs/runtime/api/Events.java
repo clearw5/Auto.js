@@ -7,24 +7,21 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
-
-import androidx.annotation.RequiresApi;
-
 import android.view.KeyEvent;
 
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
 import com.stardust.autojs.core.boardcast.BroadcastEmitter;
 import com.stardust.autojs.core.eventloop.EventEmitter;
+import com.stardust.autojs.core.inputevent.InputEventObserver;
+import com.stardust.autojs.core.inputevent.TouchObserver;
 import com.stardust.autojs.core.looper.Loopers;
 import com.stardust.autojs.core.looper.MainThreadProxy;
 import com.stardust.autojs.core.looper.Timer;
 import com.stardust.autojs.runtime.ScriptRuntime;
+import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.notification.Notification;
 import com.stardust.notification.NotificationListenerService;
-import com.stardust.autojs.runtime.exception.ScriptException;
-import com.stardust.autojs.core.inputevent.InputEventObserver;
-import com.stardust.autojs.core.inputevent.TouchObserver;
 import com.stardust.util.MapBuilder;
 import com.stardust.view.accessibility.AccessibilityNotificationObserver;
 import com.stardust.view.accessibility.AccessibilityService;
@@ -32,9 +29,12 @@ import com.stardust.view.accessibility.KeyInterceptor;
 import com.stardust.view.accessibility.NotificationListener;
 import com.stardust.view.accessibility.OnKeyListener;
 
+import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * Created by Stardust on 2017/7/18.
@@ -74,7 +74,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     private boolean mListeningNotification = false;
     private boolean mListeningGesture = false;
     private boolean mListeningToast = false;
-    private ScriptRuntime mScriptRuntime;
+    private WeakReference<ScriptRuntime> mScriptRuntime;
     private volatile boolean mInterceptsAllKey = false;
     private KeyInterceptor mKeyInterceptor;
     private Set<String> mInterceptedKeys = new HashSet<>();
@@ -86,21 +86,21 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
         mAccessibilityBridge = accessibilityBridge;
         mContext = context;
         mLoopers = runtime.loopers;
-        mScriptRuntime = runtime;
+        mScriptRuntime = new WeakReference<>(runtime);
         broadcast = new BroadcastEmitter(runtime.bridges, runtime.timers.getMainTimer());
     }
 
     public EventEmitter emitter() {
-        return new EventEmitter(mBridges);
+        return new EventEmitter(mBridges.get());
     }
 
     public EventEmitter emitter(Thread thread) {
-        Timer timer = mScriptRuntime.timers.getTimerForThread(thread);
-        return new EventEmitter(mBridges, timer);
+        Timer timer = mScriptRuntime.get().timers.getTimerForThread(thread);
+        return new EventEmitter(mBridges.get(), timer);
     }
 
     public EventEmitter emitter(MainThreadProxy mainThreadProxy) {
-        return new EventEmitter(mBridges, mScriptRuntime.timers.getMainTimer());
+        return new EventEmitter(mBridges.get(), mScriptRuntime.get().timers.getMainTimer());
     }
 
     public void observeKey() {
@@ -162,7 +162,7 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
     }
 
     private AccessibilityService getAccessibilityService() {
-        mScriptRuntime.ensureAccessibilityServiceEnabled();
+        mScriptRuntime.get().ensureAccessibilityServiceEnabled();
         AccessibilityService service = mAccessibilityBridge.getService();
         if (service == null)
             throw new ScriptException("AccessibilityService = null");
@@ -306,12 +306,6 @@ public class Events extends EventEmitter implements OnKeyListener, TouchObserver
             if (service != null) {
                 service.getGestureEventDispatcher().removeListener(this);
             }
-        }
-    }
-
-    public void destroy() {
-        if (mScriptRuntime != null) {
-            mScriptRuntime = null;
         }
     }
 

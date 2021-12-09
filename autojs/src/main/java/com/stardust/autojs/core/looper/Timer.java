@@ -8,6 +8,8 @@ import android.util.SparseArray;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.concurrent.VolatileBox;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created by Stardust on 2017/12/27.
  */
@@ -18,19 +20,19 @@ public class Timer {
 
     private SparseArray<Runnable> mHandlerCallbacks = new SparseArray<>();
     private int mCallbackMaxId = 0;
-    private ScriptRuntime mRuntime;
+    private WeakReference<ScriptRuntime> mRuntime;
     private Handler mHandler;
     private long mMaxCallbackUptimeMillis = 0;
     private final VolatileBox<Long> mMaxCallbackMillisForAllThread;
 
     public Timer(ScriptRuntime runtime, VolatileBox<Long> maxCallbackMillisForAllThread) {
-        mRuntime = runtime;
+        mRuntime = new WeakReference<>(runtime);
         mMaxCallbackMillisForAllThread = maxCallbackMillisForAllThread;
         mHandler = new Handler();
     }
 
     public Timer(ScriptRuntime runtime, VolatileBox<Long> maxCallbackMillisForAllThread, Looper looper) {
-        mRuntime = runtime;
+        mRuntime = new WeakReference<>(runtime);
         mMaxCallbackMillisForAllThread = maxCallbackMillisForAllThread;
         mHandler = new Handler(looper);
     }
@@ -48,14 +50,18 @@ public class Timer {
     }
 
     private void callFunction(Object callback, Object thiz, Object[] args) {
-        if(Looper.myLooper() == Looper.getMainLooper()){
+        ScriptRuntime runtime = mRuntime.get();
+        if (runtime == null) {
+            return;
+        }
+        if (Looper.myLooper() == Looper.getMainLooper()) {
             try {
-                mRuntime.bridges.callFunction(callback, thiz, args);
-            }catch (Exception e){
-                mRuntime.exit(e);
+                runtime.bridges.callFunction(callback, thiz, args);
+            } catch (Exception e) {
+                runtime.exit(e);
             }
-        }else {
-            mRuntime.bridges.callFunction(callback, thiz, args);
+        } else {
+            runtime.bridges.callFunction(callback, thiz, args);
         }
     }
 

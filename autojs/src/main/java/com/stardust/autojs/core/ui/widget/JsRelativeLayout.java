@@ -2,12 +2,13 @@ package com.stardust.autojs.core.ui.widget;
 
 import android.content.Context;
 import android.os.Build;
-import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.stardust.autojs.core.ui.JsViewHelper;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * Created by Stardust on 2017/5/14.
@@ -34,4 +35,5 @@ public class JsRelativeLayout extends RelativeLayout {
     public View id(String id) {
         return JsViewHelper.findViewByStringId(this, id);
     }
+
 }

@@ -9,13 +9,13 @@ import com.stardust.autojs.core.ui.inflater.DynamicLayoutInflater;
 import com.stardust.autojs.core.ui.nativeview.NativeView;
 import com.stardust.autojs.core.ui.nativeview.ViewPrototype;
 import com.stardust.autojs.runtime.ScriptRuntime;
+import com.stardust.autojs.workground.WrapContentLinearLayoutManager;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.stardust.autojs.workground.WrapContentLinearLayoutManager;
+import java.lang.ref.WeakReference;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -41,14 +41,14 @@ public class JsListView extends RecyclerView {
 
     private Node mItemTemplate;
     private DynamicLayoutInflater mDynamicLayoutInflater;
-    private ScriptRuntime mScriptRuntime;
+    private final WeakReference<ScriptRuntime> mScriptRuntime;
     private Object mDataSource;
     private DataSourceAdapter mDataSourceAdapter;
     private OnItemTouchListener mOnItemTouchListener;
 
     public JsListView(Context context, ScriptRuntime scriptRuntime) {
         super(context);
-        mScriptRuntime = scriptRuntime;
+        mScriptRuntime = new WeakReference<>(scriptRuntime);
         init();
     }
 
@@ -58,7 +58,7 @@ public class JsListView extends RecyclerView {
     }
 
     protected ScriptRuntime getScriptRuntime() {
-        return mScriptRuntime;
+        return mScriptRuntime.get();
     }
 
     public void setOnItemTouchListener(OnItemTouchListener onItemTouchListener) {
@@ -134,7 +134,9 @@ public class JsListView extends RecyclerView {
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mScriptRuntime = null;
+        mDataSourceAdapter = null;
+        mOnItemTouchListener = null;
+        mDynamicLayoutInflater = null;
     }
 
     private class Adapter extends RecyclerView.Adapter<ViewHolder> {
@@ -145,7 +147,10 @@ public class JsListView extends RecyclerView {
                 mDynamicLayoutInflater.setInflateFlags(DynamicLayoutInflater.FLAG_IGNORES_DYNAMIC_ATTRS);
                 return new ViewHolder(mDynamicLayoutInflater.inflate(mDynamicLayoutInflater.newInflateContext(), mItemTemplate, parent, false));
             } catch (Exception e) {
-                mScriptRuntime.exit(e);
+                ScriptRuntime scriptRuntime = mScriptRuntime.get();
+                if (scriptRuntime != null) {
+                    scriptRuntime.exit(e);
+                }
                 return new ViewHolder(new View(parent.getContext()));
             } finally {
                 mDynamicLayoutInflater.setInflateFlags(DynamicLayoutInflater.FLAG_DEFAULT);
@@ -154,19 +159,20 @@ public class JsListView extends RecyclerView {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            if (mScriptRuntime == null) {
+            ScriptRuntime scriptRuntime = mScriptRuntime.get();
+            if (scriptRuntime == null) {
                 return;
             }
             try {
-                Object oldCtx = mScriptRuntime.ui.getBindingContext();
+                Object oldCtx = scriptRuntime.ui.getBindingContext();
                 Object item = mDataSourceAdapter.getItem(mDataSource, position);
                 holder.item = item;
-                mScriptRuntime.ui.setBindingContext(item);
+                scriptRuntime.ui.setBindingContext(item);
                 mDynamicLayoutInflater.setInflateFlags(DynamicLayoutInflater.FLAG_JUST_DYNAMIC_ATTRS);
                 applyDynamicAttrs(mItemTemplate, holder.itemView, JsListView.this);
-                mScriptRuntime.ui.setBindingContext(oldCtx);
+                scriptRuntime.ui.setBindingContext(oldCtx);
             } catch (Exception e) {
-                mScriptRuntime.exit(e);
+                scriptRuntime.exit(e);
             } finally {
                 mDynamicLayoutInflater.setInflateFlags(DynamicLayoutInflater.FLAG_DEFAULT);
             }
@@ -192,18 +198,6 @@ public class JsListView extends RecyclerView {
             return mDataSource == null ? 0
                     : mDataSourceAdapter == null ? 0
                     : mDataSourceAdapter.getItemCount(mDataSource);
-        }
-
-        @Override
-        public void onViewDetachedFromWindow(@NonNull ViewHolder holder) {
-            super.onViewDetachedFromWindow(holder);
-            mScriptRuntime = null;
-        }
-
-        @Override
-        public void onViewRecycled(@NonNull ViewHolder holder) {
-            super.onViewRecycled(holder);
-            mScriptRuntime = null;
         }
     }
 

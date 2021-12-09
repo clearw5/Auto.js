@@ -1,16 +1,17 @@
 package com.stardust.autojs.runtime.api;
 
-import androidx.annotation.NonNull;
-
 import com.stardust.autojs.core.looper.MainThreadProxy;
 import com.stardust.autojs.core.looper.TimerThread;
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.concurrent.VolatileDispose;
 
+import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by Stardust on 2017/12/3.
@@ -19,16 +20,16 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Threads {
 
     private final HashSet<Thread> mThreads = new HashSet<>();
-    private ScriptRuntime mRuntime;
-    private final Thread mMainThread;
+    private WeakReference<ScriptRuntime> mRuntime;
+    private Thread mMainThread;
     private MainThreadProxy mMainThreadProxy;
     private int mSpawnCount = 0;
     private boolean mExit = false;
 
     public Threads(ScriptRuntime runtime) {
-        mRuntime = runtime;
+        mRuntime = new WeakReference<>(runtime);
         mMainThread = Thread.currentThread();
-        mMainThreadProxy = new MainThreadProxy(Thread.currentThread(), mRuntime);
+        mMainThreadProxy = new MainThreadProxy(Thread.currentThread(), runtime);
     }
 
     public Thread getMainThread() {
@@ -58,7 +59,7 @@ public class Threads {
 
     @NonNull
     private TimerThread createThread(Runnable runnable) {
-        return new TimerThread(mRuntime, mRuntime.timers.getMaxCallbackUptimeMillisForAllThreads(),
+        return new TimerThread(mRuntime.get(), mRuntime.get().timers.getMaxCallbackUptimeMillisForAllThreads(),
                 runnable
         ) {
             @Override
@@ -100,7 +101,7 @@ public class Threads {
         synchronized (mThreads) {
             shutDownAll();
             mExit = true;
-            mRuntime = null;
+            mMainThread = null;
             mMainThreadProxy = null;
         }
     }

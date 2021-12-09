@@ -8,6 +8,7 @@ import com.stardust.util.Func1;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 /**
  * Created by Stardust on 2018/1/23.
@@ -15,10 +16,11 @@ import java.io.IOException;
 
 public class Files {
 
-    private final ScriptRuntime mRuntime;
+    private final WeakReference<ScriptRuntime> mRuntime;
+    private String cwd;
 
     public Files(ScriptRuntime runtime) {
-        mRuntime = runtime;
+        mRuntime = new WeakReference<>(runtime);
     }
 
     // FIXME: 2018/10/16 is not correct in sub-directory?
@@ -42,7 +44,10 @@ public class Files {
     }
 
     public String cwd() {
-        return mRuntime.engines.myEngine().cwd();
+        if (cwd == null || cwd.length() == 0) {
+            cwd = mRuntime.get().engines.myEngine().cwd();
+        }
+        return cwd;
     }
 
     public PFileInterface open(String path, String mode, String encoding, int bufferSize) {
@@ -92,7 +97,7 @@ public class Files {
 
     public String readAssets(String path, String encoding) {
         try {
-            return PFiles.read(mRuntime.getUiHandler().getContext().getAssets().open(path), encoding);
+            return PFiles.read(mRuntime.get().getUiHandler().getContext().getAssets().open(path), encoding);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

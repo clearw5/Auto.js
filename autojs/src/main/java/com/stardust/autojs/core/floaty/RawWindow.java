@@ -5,9 +5,11 @@ import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.WindowManager;
 
 import com.stardust.autojs.R;
+import com.stardust.autojs.core.ui.ViewExtras;
 import com.stardust.autojs.core.ui.inflater.inflaters.Exceptions;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.concurrent.VolatileBox;
@@ -103,4 +105,14 @@ public class RawWindow extends FloatyWindow {
         updateWindowLayoutParams(windowLayoutParams);
     }
 
+    @Override
+    public void close() {
+        super.close();
+        ViewExtras.recycle(mContentView);
+        ViewParent parent = mContentView.getParent();
+        if (parent instanceof View) {
+            ViewExtras.recycle((View)parent);
+        }
+        mContentView = null;
+    }
 }

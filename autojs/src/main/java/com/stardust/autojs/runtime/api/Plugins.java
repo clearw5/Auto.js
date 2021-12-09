@@ -7,23 +7,24 @@ import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.pio.PFiles;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 
 public class Plugins {
 
     private final Context mContext;
-    private final ScriptRuntime mRuntime;
+    private final WeakReference<ScriptRuntime> mRuntime;
     private File mPluginCacheDir;
 
     public Plugins(Context context, ScriptRuntime runtime) {
         mContext = context;
-        mRuntime = runtime;
+        mRuntime = new WeakReference<>(runtime);
         mPluginCacheDir = new File(mContext.getCacheDir(), "plugin-scripts/");
     }
 
     public Plugin load(String packageName) {
         try {
             Context packageContext = mContext.createPackageContext(packageName, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
-            Plugin plugin = Plugin.load(mContext, packageContext, mRuntime, mRuntime.getTopLevelScope());
+            Plugin plugin = Plugin.load(mContext, packageContext, mRuntime.get(), mRuntime.get().getTopLevelScope());
             if (plugin == null) {
                 return null;
             }

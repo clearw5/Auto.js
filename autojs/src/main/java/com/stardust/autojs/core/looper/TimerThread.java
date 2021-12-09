@@ -25,7 +25,7 @@ public class TimerThread extends ThreadCompat {
 
     private Timer mTimer;
     private final VolatileBox<Long> mMaxCallbackUptimeMillisForAllThreads;
-    private final ScriptRuntime mRuntime;
+    private ScriptRuntime mRuntime;
     private Runnable mTarget;
     private boolean mRunning = false;
     private final Object mRunningLock = new Object();
@@ -40,6 +40,7 @@ public class TimerThread extends ThreadCompat {
     @Override
     public void run() {
         mRuntime.loopers.prepare();
+        RhinoJavaScriptEngine engine = ((RhinoJavaScriptEngine) mRuntime.engines.myEngine());
         Context engineContext = ((RhinoJavaScriptEngine) mRuntime.engines.myEngine()).enterContext();
         notifyRunning();
         new Handler().post(mTarget);
@@ -52,8 +53,8 @@ public class TimerThread extends ThreadCompat {
                 mRuntime.console.error(Thread.currentThread().toString() + ": ", e);
             }
         } finally {
+            engine.exitContext(engineContext);
             onExit();
-            ((RhinoJavaScriptEngine) mRuntime.engines.myEngine()).exitContext(engineContext);
             sTimerMap.remove(Thread.currentThread(), mTimer);
             mTimer = null;
         }
@@ -80,6 +81,7 @@ public class TimerThread extends ThreadCompat {
             try {
                 LooperHelper.quitForThread(this);
             } finally {
+                mRuntime = null;
                 // 移除弱引用
                 removeReference(this);
             }
