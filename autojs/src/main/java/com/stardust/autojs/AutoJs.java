@@ -6,14 +6,12 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
 import com.stardust.autojs.core.accessibility.AccessibilityBridge;
-import com.stardust.autojs.core.console.GlobalConsole;
+import com.stardust.autojs.core.activity.ActivityInfoProvider;
 import com.stardust.autojs.core.console.ConsoleImpl;
+import com.stardust.autojs.core.console.GlobalConsole;
 import com.stardust.autojs.core.image.capture.ScreenCaptureRequestActivity;
 import com.stardust.autojs.core.image.capture.ScreenCaptureRequester;
 import com.stardust.autojs.core.record.accessibility.AccessibilityActionRecorder;
@@ -30,7 +28,6 @@ import com.stardust.autojs.script.JavaScriptSource;
 import com.stardust.util.ResourceMonitor;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.UiHandler;
-import com.stardust.autojs.core.activity.ActivityInfoProvider;
 import com.stardust.view.accessibility.AccessibilityNotificationObserver;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.LayoutInspector;
@@ -39,6 +36,10 @@ import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.WrappedException;
 
 import java.io.File;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import de.mindpipe.android.logging.log4j.LogConfigurator;
 
 /**
  * Created by Stardust on 2017/11/29.
@@ -264,5 +265,15 @@ public abstract class AutoJs {
                 ScreenCaptureRequestActivity.request(mContext, mCallback);
             }
         }
+    }
+
+    protected void setLogFilePath(String path) {
+        LogConfigurator logConfigurator = new LogConfigurator();
+        String pid = String.valueOf(android.os.Process.myPid());
+        logConfigurator.setFilePattern("%d - [%p]\t[" + pid + "] %c - %m%n");
+        logConfigurator.setFileName(path + "/.logs/autojs-log4j" + (BuildConfig.DEBUG ? "-debug" : "") + ".txt");
+        // 设置最大10MB
+        logConfigurator.setMaxFileSize(10 * 1024 * 1024);
+        logConfigurator.configure();
     }
 }

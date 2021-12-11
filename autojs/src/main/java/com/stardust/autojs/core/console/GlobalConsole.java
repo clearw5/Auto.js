@@ -29,7 +29,7 @@ public class GlobalConsole extends ConsoleImpl {
         String log = String.format(Locale.getDefault(), "%s/%s: %s",
                 DATE_FORMAT.format(new Date()), getLevelChar(level), charSequence.toString());
         LOGGER.log(toLog4jLevel(level), log);
-        android.util.Log.d(LOG_tAG, log);
+//        android.util.Log.d(LOG_tAG, log);
         super.println(level, log);
         return log;
     }

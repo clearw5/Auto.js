@@ -123,9 +123,9 @@ public class TimedTaskScheduler {
 
     public static WorkProvider getWorkProvider(Context context) {
         try {
-            PreferenceManager.getDefaultSharedPreferences(context).getString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.WORK_MANAGER_PROVIDER);
+            PreferenceManager.getDefaultSharedPreferences(context).getString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.ALARM_MANAGER_PROVIDER);
         } catch (Exception e) {
-            PreferenceManager.getDefaultSharedPreferences(context).edit().putString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.WORK_MANAGER_PROVIDER).apply();
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.ALARM_MANAGER_PROVIDER).apply();
         }
         String currentActive = PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.WORK_MANAGER_PROVIDER);

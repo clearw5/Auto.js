@@ -12,8 +12,10 @@ import android.util.Log;
 
 import com.stardust.app.GlobalAppContext;
 
+import org.apache.log4j.Logger;
 import org.autojs.autojs.BuildConfig;
 import org.mozilla.javascript.RhinoException;
+
 
 import com.stardust.view.accessibility.AccessibilityService;
 import com.tencent.bugly.crashreport.BuglyLog;
@@ -24,6 +26,7 @@ import java.util.Map;
 
 public class CrashHandler extends CrashReport.CrashHandleCallback implements UncaughtExceptionHandler {
     private static final String TAG = "CrashHandler";
+    private static final Logger logger = Logger.getLogger(CrashHandler.class);
     private static int crashCount = 0;
     private static long firstCrashMillis = 0;
     private final Class<?> mErrorReportClass;
@@ -72,6 +75,7 @@ public class CrashHandler extends CrashReport.CrashHandleCallback implements Unc
             String msg = errorType + ": " + errorMessage;
             startErrorReportActivity(msg, errorStack);
         } catch (Throwable throwable) {
+            logger.error("崩溃了：", throwable);
             throwable.printStackTrace();
         }
         return super.onCrashHandleStart(crashType, errorType, errorMessage, errorStack);
