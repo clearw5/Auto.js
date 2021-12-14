@@ -7,13 +7,12 @@ import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.TopLevel;
 
-
 import java.lang.reflect.Field;
 import java.util.Map;
 
 public class TopLevelScope extends ImporterTopLevel {
     private static final Logger logger = Logger.getLogger(TopLevelScope.class);
-    private long createdStamp;
+    private final long createdStamp;
     private long releasedStamp;
     private String engineSource;
 
@@ -23,14 +22,19 @@ public class TopLevelScope extends ImporterTopLevel {
     }
 
     @Override
-    public void finalize() {
-        logger.debug("回收TopLevelScope资源, 存活总时间：" + (System.currentTimeMillis() - this.createdStamp) + "ms 释放后经过：" + (System.currentTimeMillis() - releasedStamp));
+    public void finalize() throws Throwable {
+        logger.debug("回收TopLevelScope资源[" + engineSource + "], 存活总时间："
+                + (System.currentTimeMillis() - this.createdStamp)
+                + "ms 释放后经过：" + (System.currentTimeMillis() - releasedStamp) + "ms");
 //        recycle();
+        super.finalize();
     }
 
     public void markReleased(String engineSource) {
         this.engineSource = engineSource;
         releasedStamp = System.currentTimeMillis();
+        logger.debug("标记TopLevelScope资源已不再使用[" + engineSource + "], 存活总时间："
+                + (releasedStamp - this.createdStamp) + "ms");
     }
 
     /**
