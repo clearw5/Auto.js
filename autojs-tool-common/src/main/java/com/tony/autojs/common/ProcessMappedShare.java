@@ -28,6 +28,7 @@ public class ProcessMappedShare {
     private volatile boolean subscribing;
     private volatile boolean unsubscribe;
     private Object threads;
+    private static final byte TERMINATE = '\n';
 
     /**
      * 指定文件路径、通信数据缓冲区字节大小
@@ -79,8 +80,8 @@ public class ProcessMappedShare {
         FileChannel fc = randomAccessFile.getChannel();
         final MappedByteBuffer mbb = fc.map(FileChannel.MapMode.READ_WRITE, 0, bufferSize);
         final ByteArrayOutputStream bos = new ByteArrayOutputStream(bufferSize);
-        final byte terminate = '\n';
-        clearBuffer(mbb);
+
+        clearBuffer(mbb, bufferSize);
         unsubscribe = false;
         subscribing = true;
         final Thread runningThread = start(new Runnable() {
@@ -108,12 +109,12 @@ public class ProcessMappedShare {
                     do {
                         bos.write(read);
                         read = mbb.get(index++);
-                    } while (read != terminate);
+                    } while (read != TERMINATE);
 
                     String result = new String(bos.toByteArray(), StandardCharsets.UTF_8);
                     callback.call(result);
                     bos.reset();
-                    clearBuffer(mbb);
+                    clearBuffer(mbb, index);
                 } while (loop && !Thread.currentThread().isInterrupted() && !unsubscribe);
                 subscribing = false;
             }
@@ -155,10 +156,10 @@ public class ProcessMappedShare {
      *
      * @param mbb
      */
-    private void clearBuffer(MappedByteBuffer mbb) {
+    private void clearBuffer(MappedByteBuffer mbb, int readEnd) {
         // 清除文件内容
-        for (int i = 0; i < bufferSize; i++) {
-            mbb.put(i, (byte) 10);
+        for (int i = 0; i < readEnd; i++) {
+            mbb.put(i, TERMINATE);
         }
     }
 
