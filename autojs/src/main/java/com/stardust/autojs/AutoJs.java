@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.stardust.app.OnActivityResultDelegate;
 import com.stardust.app.SimpleActivityLifecycleCallbacks;
@@ -36,6 +37,7 @@ import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.WrappedException;
 
 import java.io.File;
+import java.nio.file.Files;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -271,6 +273,16 @@ public abstract class AutoJs {
         LogConfigurator logConfigurator = new LogConfigurator();
         String pid = String.valueOf(android.os.Process.myPid());
         logConfigurator.setFilePattern("%d - [%p]\t[" + pid + "] %c - %m%n");
+        String logPath = path + "/.logs/";
+        File logDir = new File(logPath);
+        if (!logDir.exists() && !logDir.mkdirs()) {
+            Log.d("LOG4J-CONFIG", "创建日志目录失败，无法记录log4j日志");
+            return;
+        }
+        if (!logDir.isDirectory()) {
+            Log.d("LOG4J-CONFIG", "日志目录不是文件夹，无法记录log4j日志");
+            return;
+        }
         logConfigurator.setFileName(path + "/.logs/autojs-log4j" + (BuildConfig.DEBUG ? "-debug" : "") + ".txt");
         // 设置最大10MB
         logConfigurator.setMaxFileSize(10 * 1024 * 1024);
