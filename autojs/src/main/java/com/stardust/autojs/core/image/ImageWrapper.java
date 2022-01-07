@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.Image;
 import android.os.Build;
+import android.util.Log;
 
 import com.stardust.autojs.core.opencv.Mat;
 import com.stardust.autojs.core.opencv.OpenCVHelper;
@@ -140,10 +141,12 @@ public class ImageWrapper {
         return mBitmap;
     }
 
-    public void recycle() {
-        if (mBitmap != null) {
+    public synchronized void recycle() {
+        if (mBitmap != null && !mBitmap.isRecycled()) {
             mBitmap.recycle();
             mBitmap = null;
+        } else if (mBitmap != null && mBitmap.isRecycled()) {
+            Log.d("ImageWrapper", "recycle bitmap: not null but is recycled");
         }
         if (mMat != null) {
             OpenCVHelper.release(mMat);
