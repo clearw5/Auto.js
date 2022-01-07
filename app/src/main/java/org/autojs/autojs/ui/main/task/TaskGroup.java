@@ -5,6 +5,7 @@ import android.content.Context;
 import com.bignerdranch.expandablerecyclerview.model.Parent;
 import com.stardust.autojs.execution.ScriptExecution;
 
+import org.apache.commons.lang3.StringUtils;
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
 import org.autojs.autojs.timing.IntentTask;
@@ -13,6 +14,7 @@ import org.autojs.autojs.timing.TimedTaskManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -64,7 +66,7 @@ public abstract class TaskGroup implements Parent<Task> {
                 mTasks.add(new Task.PendingTask(timedTask));
             }
             List<IntentTask> intentTasks = Observable.fromIterable(TimedTaskManager.getInstance().getAllIntentTasksAsList())
-                    .toSortedList((o1, o2) -> o1.getAction().compareTo(o2.getAction()))
+                    .toSortedList((o1, o2) -> StringUtils.compare(o1.getAction(), o2.getAction()))
                     .blockingGet();
             for (IntentTask intentTask : intentTasks) {
                 mTasks.add(new Task.PendingTask(intentTask));
