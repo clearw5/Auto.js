@@ -3,12 +3,14 @@ package com.stardust.autojs.core.looper;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.util.SparseArray;
 
 import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.concurrent.VolatileBox;
 
 import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by Stardust on 2017/12/27.
@@ -18,8 +20,11 @@ public class Timer {
 
     private static final String LOG_TAG = "Timer";
 
-    private SparseArray<Runnable> mHandlerCallbacks = new SparseArray<>();
-    private int mCallbackMaxId = 0;
+    /**
+     * SparseArray存在线程安全问题 改为ConcurrentHashMap
+     */
+    private Map<Integer, Runnable> mHandlerCallbacks = new ConcurrentHashMap<>();
+    private AtomicInteger mCallbackMaxId = new AtomicInteger();
     private WeakReference<ScriptRuntime> mRuntime;
     private Handler mHandler;
     private long mMaxCallbackUptimeMillis = 0;
@@ -38,8 +43,7 @@ public class Timer {
     }
 
     public int setTimeout(final Object callback, final long delay, final Object... args) {
-        mCallbackMaxId++;
-        final int id = mCallbackMaxId;
+        final int id = mCallbackMaxId.getAndIncrement();
         Runnable r = () -> {
             callFunction(callback, null, args);
             mHandlerCallbacks.remove(id);
@@ -70,8 +74,7 @@ public class Timer {
     }
 
     public int setInterval(final Object listener, final long interval, final Object... args) {
-        mCallbackMaxId++;
-        final int id = mCallbackMaxId;
+        final int id = mCallbackMaxId.getAndIncrement();
         final Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -104,8 +107,7 @@ public class Timer {
     }
 
     public int setImmediate(final Object listener, final Object... args) {
-        mCallbackMaxId++;
-        final int id = mCallbackMaxId;
+        final int id = mCallbackMaxId.getAndIncrement();
         Runnable r = () -> {
             callFunction(listener, null, args);
             mHandlerCallbacks.remove(id);

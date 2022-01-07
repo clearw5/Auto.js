@@ -94,6 +94,7 @@ public class IntentExtras implements Serializable {
     }
 
     public Intent putInIntent(Intent intent) {
+        fromIntentAndRelease(intent);
         intent.putExtra(EXTRA_ID, mId);
         return intent;
     }

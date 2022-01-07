@@ -3,6 +3,7 @@ package com.stardust.autojs.runtime.api;
 import android.os.Looper;
 import android.os.SystemClock;
 
+import com.stardust.autojs.core.looper.DeadTimer;
 import com.stardust.autojs.core.looper.Timer;
 import com.stardust.autojs.core.looper.TimerThread;
 import com.stardust.autojs.runtime.ScriptRuntime;
@@ -39,7 +40,7 @@ public class Timers {
     public Timer getTimerForCurrentThread() {
         Timer timer = getTimerForThread(Thread.currentThread());
         if (timer == null) {
-            throw new IllegalStateException("thread is not alive");
+            return new DeadTimer();
         }
         return timer;
     }
@@ -91,8 +92,6 @@ public class Timers {
     public void recycle() {
         mMainTimer.removeAllCallbacks();
         mUiTimer.removeAllCallbacks();
-        mUiTimer = null;
-        mMainTimer = null;
     }
 
 }
