@@ -92,7 +92,7 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         LocalBroadcastManager.getInstance(application).registerReceiver(mLayoutInspectBroadcastReceiver, intentFilter);
         this.enableDebugLog = PreferenceManager.getDefaultSharedPreferences(GlobalAppContext.get())
                 .getBoolean(GlobalAppContext.getString(R.string.key_enable_debug_log), false);
-        setLogFilePath(Pref.getScriptDirPath());
+        setLogFilePath(Pref.getScriptDirPath(), BuildConfig.DEBUG);
     }
 
     private void capture(LayoutInspectFloatyWindow window) {

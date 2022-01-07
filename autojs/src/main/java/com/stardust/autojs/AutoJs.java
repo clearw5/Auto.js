@@ -26,6 +26,7 @@ import com.stardust.autojs.runtime.accessibility.AccessibilityConfig;
 import com.stardust.autojs.runtime.api.AppUtils;
 import com.stardust.autojs.script.AutoFileSource;
 import com.stardust.autojs.script.JavaScriptSource;
+import com.stardust.pio.PFiles;
 import com.stardust.util.ResourceMonitor;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.UiHandler;
@@ -37,7 +38,6 @@ import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.WrappedException;
 
 import java.io.File;
-import java.nio.file.Files;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -269,7 +269,7 @@ public abstract class AutoJs {
         }
     }
 
-    protected void setLogFilePath(String path) {
+    protected void setLogFilePath(String path, boolean isDebug) {
         LogConfigurator logConfigurator = new LogConfigurator();
         String pid = String.valueOf(android.os.Process.myPid());
         logConfigurator.setFilePattern("%d - [%p]\t[" + pid + "] %c - %m%n");
@@ -283,9 +283,20 @@ public abstract class AutoJs {
             Log.d("LOG4J-CONFIG", "日志目录不是文件夹，无法记录log4j日志");
             return;
         }
-        logConfigurator.setFileName(path + "/.logs/autojs-log4j" + (BuildConfig.DEBUG ? "-debug" : "") + ".txt");
+        String logFileName = path + "/.logs/autojs-log4j" + (isDebug ? "-debug" : "") + ".txt";
+        try {
+            PFiles.write(logFileName, "");
+        } catch (Exception e) {
+            Log.d("LOG4J-CONFIG", "日志文件无写入权限，无法记录log4j日志");
+            return;
+        }
+        logConfigurator.setFileName(logFileName);
         // 设置最大10MB
         logConfigurator.setMaxFileSize(10 * 1024 * 1024);
-        logConfigurator.configure();
+        try {
+            logConfigurator.configure();
+        } catch (Exception e) {
+            Log.d("LOG4J-CONFIG", "初始化log4j失败");
+        }
     }
 }
