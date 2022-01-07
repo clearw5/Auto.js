@@ -36,6 +36,7 @@ open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Co
 
     private val context: WeakReference<Context>
     private val mScriptable: WeakReference<TopLevelScope>
+    private var unsealed: Boolean = false
     lateinit var threadRef: WeakReference<Thread>
 
     private val initScript: Script
@@ -66,6 +67,7 @@ open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Co
     init {
         this.context = WeakReference(enterContext())
         mScriptable = this.context.get()?.let { createScope(it) }!!
+        this.context.get()?.seal(mScriptable)
     }
 
     override fun put(name: String, value: Any?) {
@@ -161,6 +163,10 @@ open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Co
     protected fun createScope(context: Context): WeakReference<TopLevelScope> {
         val topLevelScope = TopLevelScope()
         topLevelScope.initStandardObjects(context, false)
+        if (unsealed) {
+            // FIXME 会导致无法正常被回收 存在内存泄露可能
+            topLevelScope.setNoRecycle()
+        }
         return WeakReference(topLevelScope)
     }
 
@@ -181,14 +187,16 @@ open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Co
     }
 
     protected fun setupContext(context: Context) {
-        context.optimizationLevel = -1
-        context.languageVersion = Context.VERSION_ES6
-        context.locale = Locale.getDefault()
-        context.wrapFactory = WrapFactory()
-    }
-
-    protected fun removeContext(context: Context) {
-        context.wrapFactory = null
+        // FIXME 同时跑多个UI脚本时会共用同一个Context 此时的WrapFactory会被覆盖
+        if (context.isSealed) {
+            unsealed = true
+            context.unseal(sContextEngineMap[context]?.mScriptable)
+        } else {
+            context.optimizationLevel = -1
+            context.languageVersion = Context.VERSION_ES6
+            context.locale = Locale.getDefault()
+            context.wrapFactory = WrapFactory()
+        }
     }
 
     private inner class WrapFactory : org.mozilla.javascript.WrapFactory() {

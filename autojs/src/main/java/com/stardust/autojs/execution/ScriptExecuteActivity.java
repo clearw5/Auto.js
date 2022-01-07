@@ -25,6 +25,8 @@ import com.stardust.autojs.script.ScriptSource;
 
 import org.mozilla.javascript.ContinuationPending;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created by Stardust on 2017/2/5.
  */
@@ -39,7 +41,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
     private ScriptExecutionListener mExecutionListener;
     private ScriptSource mScriptSource;
     private ActivityScriptExecution mScriptExecution;
-    private ScriptRuntime mRuntime;
+    private WeakReference<ScriptRuntime> mRuntime;
 
 
     private EventEmitter mEventEmitter;
@@ -72,8 +74,8 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         mScriptSource = mScriptExecution.getSource();
         mScriptEngine = mScriptExecution.createEngine(this);
         mExecutionListener = mScriptExecution.getListener();
-        mRuntime = ((JavaScriptEngine) mScriptEngine).getRuntime();
-        mEventEmitter = new EventEmitter(mRuntime.bridges);
+        mRuntime = new WeakReference<> (((JavaScriptEngine) mScriptEngine).getRuntime());
+        mEventEmitter = new EventEmitter(mRuntime.get().bridges);
         runScript();
         emit("create", savedInstanceState);
     }
@@ -228,7 +230,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
         try {
             mEventEmitter.emit(event, (Object[]) args);
         } catch (Exception e) {
-            mRuntime.exit(e);
+            mRuntime.get().exit(e);
         }
     }
 

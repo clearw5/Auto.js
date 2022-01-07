@@ -250,6 +250,14 @@ public class ScriptRuntime {
         mTopLevelScope = new WeakReference<>(topLevelScope);
     }
 
+    /**
+     * 使脚本可以在脚本引擎结束后 持续运行 不被回收
+     * 最好不要使用，如果不能准时回收 可能导致内存泄露问题
+     */
+    public void setNoRecycle() {
+        mTopLevelScope.get().setNoRecycle();
+    }
+
     public static void setApplicationContext(Context context) {
         applicationContext = new WeakReference<>(context);
     }
@@ -384,6 +392,9 @@ public class ScriptRuntime {
     }
 
     public void exit(Throwable e) {
+        if (stop) {
+            return;
+        }
         engines.myEngine().uncaughtException(e);
         exit();
     }

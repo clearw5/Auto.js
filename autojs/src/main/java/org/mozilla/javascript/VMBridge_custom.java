@@ -131,8 +131,10 @@ public class VMBridge_custom extends VMBridge_jdk18 {
 
         private Object call(ContextFactory cf, ContextAction action) {
             Context cx = Context.enter(null, cf);
-            //TODO null check
-            cx.setWrapFactory(mCallerContext.getWrapFactory());
+            if (!cx.isSealed()) {
+                // TODO null check
+                cx.setWrapFactory(mCallerContext.getWrapFactory());
+            }
             try {
                 return action.run(cx);
             } finally {

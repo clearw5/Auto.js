@@ -38,6 +38,7 @@ import com.stardust.autojs.core.ui.widget.JsSpinner;
 import com.stardust.autojs.core.ui.widget.JsTabLayout;
 import com.stardust.autojs.core.ui.widget.JsToolbar;
 import com.stardust.autojs.core.ui.xml.XmlConverter;
+import com.stardust.autojs.runtime.ScriptRuntime;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -70,6 +71,7 @@ public class DynamicLayoutInflater {
     private LinkedList<WeakReference<View>> createdViews = new LinkedList<>();
     private Context mContext;
     private ResourceParser mResourceParser;
+    private WeakReference<ScriptRuntime> mRuntime;
     @NonNull
     private LayoutInflaterDelegate mLayoutInflaterDelegate = LayoutInflaterDelegate.NO_OP;
     private int mInflateFlags;
@@ -85,6 +87,10 @@ public class DynamicLayoutInflater {
         this.mContext = inflater.mContext;
         this.mViewAttrSetters = new HashMap<>(inflater.mViewAttrSetters);
         this.mViewCreators = new HashMap<>(inflater.mViewCreators);
+    }
+
+    public void setRuntime(ScriptRuntime runtime) {
+        this.mRuntime = new WeakReference<>(runtime);
     }
 
     public int getInflateFlags() {
@@ -188,6 +194,9 @@ public class DynamicLayoutInflater {
         try {
             return mLayoutInflaterDelegate.afterConvertXml(context, XmlConverter.convertToAndroidLayout(xml));
         } catch (Exception e) {
+            if (mRuntime != null) {
+                mRuntime.get().exit();
+            }
             throw new InflateException(e);
         }
     }
