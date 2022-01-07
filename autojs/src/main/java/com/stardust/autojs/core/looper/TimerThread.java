@@ -2,6 +2,7 @@ package com.stardust.autojs.core.looper;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.CallSuper;
 
@@ -29,16 +30,19 @@ public class TimerThread extends ThreadCompat {
     private Runnable mTarget;
     private boolean mRunning = false;
     private final Object mRunningLock = new Object();
+    private final String TAG = "TimerThread";
 
     public TimerThread(ScriptRuntime runtime, VolatileBox<Long> maxCallbackUptimeMillisForAllThreads, Runnable target) {
         super(target);
         mRuntime = runtime;
         mTarget = target;
         mMaxCallbackUptimeMillisForAllThreads = maxCallbackUptimeMillisForAllThreads;
+        Log.d(TAG, "create thread: " + this.toString());
     }
 
     @Override
     public void run() {
+        Log.d(TAG, "run thread: " + this.toString());
         mRuntime.loopers.prepare();
         RhinoJavaScriptEngine engine = ((RhinoJavaScriptEngine) mRuntime.engines.myEngine());
         Context engineContext = ((RhinoJavaScriptEngine) mRuntime.engines.myEngine()).enterContext();

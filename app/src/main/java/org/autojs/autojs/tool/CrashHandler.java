@@ -44,6 +44,7 @@ public class CrashHandler extends CrashReport.CrashHandleCallback implements Unc
 
     public void uncaughtException(Thread thread, Throwable ex) {
         Log.e(TAG, "Uncaught Exception", ex);
+        logger.error("Uncaught Exception", ex);
         if (thread != Looper.getMainLooper().getThread()) {
             if(!(ex instanceof RhinoException)){
                 CrashReport.postCatchedException(ex, thread);
@@ -68,6 +69,8 @@ public class CrashHandler extends CrashReport.CrashHandleCallback implements Unc
     public synchronized Map<String, String> onCrashHandleStart(int crashType, String errorType,
                                                                String errorMessage, String errorStack) {
         Log.d(TAG, "onCrashHandleStart: crashType = " + crashType + ", errorType = " + errorType + ", msg = "
+                + errorMessage + ", stack = " + errorStack);
+        logger.error(TAG + "：" + "onCrashHandleStart: crashType = " + crashType + ", errorType = " + errorType + ", msg = "
                 + errorMessage + ", stack = " + errorStack);
         try {
             if (crashTooManyTimes())

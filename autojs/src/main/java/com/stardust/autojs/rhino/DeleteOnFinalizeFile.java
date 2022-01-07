@@ -1,6 +1,6 @@
 package com.stardust.autojs.rhino;
 
-import android.util.Log;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 
@@ -8,7 +8,7 @@ public class DeleteOnFinalizeFile {
 
     private File fileObject;
 
-    private String LOG_TAG = "DeleteOnFinalizeFile";
+    private static final Logger logger = Logger.getLogger("DeleteOnFinalizeFile");
 
     public DeleteOnFinalizeFile(File file) {
         fileObject = file;
@@ -16,11 +16,11 @@ public class DeleteOnFinalizeFile {
 
     @Override
     protected void finalize() throws Throwable {
+        super.finalize();
         if (fileObject != null) {
-            Log.d(LOG_TAG, "finalize delete file" + fileObject.getName());
+            logger.debug("finalize delete file " + fileObject.getName());
             if (fileObject.exists())
                 fileObject.delete();
         }
-        super.finalize();
     }
 }
