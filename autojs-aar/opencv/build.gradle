@@ -1,0 +1,2 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('opencv-4.5.5.aar'))
