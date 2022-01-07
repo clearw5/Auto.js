@@ -57,6 +57,7 @@ public class TimedTaskScheduler {
 
     /**
      * only available in WorkManagerProvider and AndroidJobProvider
+     *
      * @param context
      * @param timedTask
      * @param millis
@@ -123,16 +124,19 @@ public class TimedTaskScheduler {
 
     public static WorkProvider getWorkProvider(Context context) {
         try {
-            PreferenceManager.getDefaultSharedPreferences(context).getString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.ALARM_MANAGER_PROVIDER);
+            // 尝试获取默认的类型 失败后设置ALARM_MANAGER作为默认的
+            PreferenceManager.getDefaultSharedPreferences(context).getString(WorkProviderConstants.ACTIVE_PROVIDER,
+                    WorkProviderConstants.ALARM_MANAGER_PROVIDER);
         } catch (Exception e) {
-            PreferenceManager.getDefaultSharedPreferences(context).edit().putString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.ALARM_MANAGER_PROVIDER).apply();
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putString(WorkProviderConstants.ACTIVE_PROVIDER,
+                    WorkProviderConstants.ALARM_MANAGER_PROVIDER).apply();
         }
         String currentActive = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.WORK_MANAGER_PROVIDER);
+                .getString(WorkProviderConstants.ACTIVE_PROVIDER, WorkProviderConstants.ALARM_MANAGER_PROVIDER);
         if (WorkProviderConstants.WORK_MANAGER_PROVIDER.equals(currentActive)) {
             Log.d(LOG_TAG, "当前启用的定时任务方式为WorkManager");
             return WorkManagerProvider.getInstance(context);
-        } else if (WorkProviderConstants.ANDROID_JOB_PROVIDER.equals(currentActive)){
+        } else if (WorkProviderConstants.ANDROID_JOB_PROVIDER.equals(currentActive)) {
             Log.d(LOG_TAG, "当前启用的定时任务方式为AndroidJob");
             return AndroidJobProvider.getInstance(context);
         } else {

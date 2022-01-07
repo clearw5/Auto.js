@@ -1,8 +1,6 @@
 package com.stardust.autojs.rhino;
 
-import java.util.WeakHashMap;
-
-import android.util.Log;
+import android.os.Build;
 
 import com.android.dx.command.dexer.Main;
 import com.stardust.pio.PFiles;
@@ -13,18 +11,24 @@ import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
 import net.lingala.zip4j.model.ZipParameters;
 
+import org.apache.log4j.Logger;
 import org.mozilla.javascript.GeneratedClassLoader;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.WeakHashMap;
 
+import androidx.annotation.RequiresApi;
 import dalvik.system.DexClassLoader;
 
 /**
@@ -39,6 +43,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
     private final Map<String, DexClassLoader> mDexClassLoaders = new LinkedHashMap<>();
     private final File mCacheDir;
     private final File mLibsDir;
+    private Logger logger = Logger.getLogger(AndroidClassLoader.class);
 
     private final WeakHashMap<DeleteOnFinalizeFile, String> weakDexFileMap = new WeakHashMap<>();
 
@@ -67,7 +72,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
      */
     @Override
     public Class<?> defineClass(String name, byte[] data) {
-        Log.d(LOG_TAG, "defineClass: name = " + name + " data.length = " + data.length);
+        logger.debug("defineClass: name = " + name + " data.length = " + data.length);
         File classFile = null;
         try {
             classFile = generateTempFile(name, false);
@@ -75,7 +80,9 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
             final ZipParameters parameters = new ZipParameters();
             parameters.setFileNameInZip(name.replace('.', '/') + ".class");
             parameters.setSourceExternalStream(true);
-            zipFile.addStream(new ByteArrayInputStream(data), parameters);
+            ByteArrayInputStream is = new ByteArrayInputStream(data);
+            zipFile.addStream(is, parameters);
+            is.close();
             return dexJar(classFile, null).loadClass(name);
         } catch (IOException | ZipException | ClassNotFoundException e) {
             throw new FatalLoadingException(e);
@@ -87,7 +94,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
     }
 
     private File generateTempFile(String name, boolean create) throws IOException {
-        File file = new File(mCacheDir, name.hashCode() + System.currentTimeMillis() + ".jar");
+        File file = new File(mCacheDir, name.hashCode() + "_" + System.currentTimeMillis() + ".jar");
         if (create) {
             if (!file.exists()) {
                 file.createNewFile();
@@ -99,7 +106,7 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
     }
 
     public void loadJar(File jar) throws IOException {
-        Log.d(LOG_TAG, "loadJar: jar = " + jar);
+        logger.debug("loadJar: jar = " + jar);
         if (!jar.exists() || !jar.canRead()) {
             throw new FileNotFoundException("File does not exist or readable: " + jar.getPath());
         }
@@ -134,11 +141,11 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
     }
 
     public DexClassLoader loadDex(File file) throws FileNotFoundException {
-        Log.d(LOG_TAG, "loadDex: file = " + file);
+        logger.debug("loadDex: file = " + file);
         if (!file.exists()) {
             throw new FileNotFoundException(file.getPath());
         }
-        Log.d(LOG_TAG, "dex file size: " + file.length());
+        logger.debug("dex file size: " + file.length());
         DexClassLoader loader = new DexClassLoader(file.getPath(), mCacheDir.getPath(), mLibsDir.getPath(), parent);
         // 根据dex文件名 移除已有的，使得最新载入的在LinkedHashMap末尾
         mDexClassLoaders.remove(file.getName());
@@ -169,16 +176,38 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
         }
         arguments.outName = dexFile.getPath();
         arguments.jarOutput = true;
+        arguments.verbose = true;
         Main.run(arguments);
-        Log.d(LOG_TAG, "dex file size: " + dexFile.length());
+        logger.debug("dex file size: " + dexFile.length());
+        if (dexFile.length() == 0) {
+            // 出现了异常
+            logger.error("创建dex文件失败，class文件路径：" + classFile.getPath() + " 大小：" + classFile.length());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                dumpClassfileIntoLog(classFile);
+            }
+        }
         DexClassLoader loader = loadDex(dexFile);
         if (isTmpDex) {
-            Log.d(LOG_TAG, "delete tmpFile on finalize:" + dexFile.getName());
+            logger.debug("delete tmpFile on finalize:" + dexFile.getName());
             // 当弱引用失去引用时 删除File对象
             weakDexFileMap.put(new DeleteOnFinalizeFile(dexFile), dexFile.getName());
-            Log.d(LOG_TAG, "current weakMap size:" + weakDexFileMap.size());
+            logger.debug("current weakMap size:" + weakDexFileMap.size());
         }
         return loader;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void dumpClassfileIntoLog(File classFile) {
+        try (
+                FileInputStream fis = new FileInputStream(classFile);
+        ) {
+            byte[] buff = new byte[(int) classFile.length()];
+            fis.read(buff);
+            String base64 = Base64.getEncoder().encodeToString(buff);
+            logger.debug("class file content base64:" + base64);
+        } catch (Exception e) {
+            logger.error("备份class文件异常", e);
+        }
     }
 
     /**
