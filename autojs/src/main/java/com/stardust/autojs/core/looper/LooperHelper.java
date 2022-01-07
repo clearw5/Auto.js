@@ -1,9 +1,7 @@
 package com.stardust.autojs.core.looper;
 
-import android.os.Build;
 import android.os.Looper;
 
-import androidx.annotation.RequiresApi;
 
 import java.util.concurrent.ConcurrentHashMap;
 

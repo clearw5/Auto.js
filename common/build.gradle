@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion versions.compile
@@ -32,8 +32,8 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.1-alpha01', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testImplementation 'junit:junit:4.12'
+    testImplementation "junit:junit:$junit_version"
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    api 'androidx.annotation:annotation:1.0.0'
+    api 'androidx.annotation:annotation:1.3.0'
     api 'com.github.hyb1996:settingscompat:1.1.5'
 }

@@ -38,7 +38,7 @@ class App : Application() {
                 Glide.with(this@App)
                         .load(uri)
                         .into(object : SimpleTarget<Drawable>() {
-                            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>) {
+                            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                                 view.background = resource
                             }
                         })
@@ -52,7 +52,7 @@ class App : Application() {
                 Glide.with(this@App)
                         .load(uri)
                         .into(object : SimpleTarget<Drawable>() {
-                            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>) {
+                            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                                 drawableCallback.onLoaded(resource)
                             }
                         })
@@ -63,7 +63,7 @@ class App : Application() {
                         .asBitmap()
                         .load(uri)
                         .into(object : SimpleTarget<Bitmap>() {
-                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>) {
+                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                 bitmapCallback.onLoaded(resource)
                             }
                         })

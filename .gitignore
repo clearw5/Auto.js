@@ -6,7 +6,7 @@
 /.idea/libraries
 /.idea/caches
 .DS_Store
-/build
+build/
 /release
 /captures
 .externalNativeBuild
