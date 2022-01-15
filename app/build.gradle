@@ -96,7 +96,7 @@ android {
             reset()
 
             // Specifies a list of ABIs that Gradle should create APKs for.
-            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            include "x86", "x86_64", "armeabi-v7a", "arm64-v8a"
 //            include "x86", "armeabi-v7a"
 
             // Specifies that we do not want to also generate a universal APK that includes all ABIs.

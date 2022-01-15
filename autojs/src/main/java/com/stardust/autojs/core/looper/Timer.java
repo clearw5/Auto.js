@@ -24,7 +24,7 @@ public class Timer {
      * SparseArray存在线程安全问题 改为ConcurrentHashMap
      */
     private Map<Integer, Runnable> mHandlerCallbacks = new ConcurrentHashMap<>();
-    private AtomicInteger mCallbackMaxId = new AtomicInteger();
+    private AtomicInteger mCallbackMaxId = new AtomicInteger(1);
     private WeakReference<ScriptRuntime> mRuntime;
     private Handler mHandler;
     private long mMaxCallbackUptimeMillis = 0;

@@ -78,6 +78,9 @@ public class ViewExtras {
     }
 
     public static void recycle(View view) {
+        if (view == null) {
+            return;
+        }
         ViewExtras extras;
         Object tag = view.getTag(R.id.view_tag_view_extras);
         if (tag instanceof ViewExtras) {

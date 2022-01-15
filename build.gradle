@@ -6,8 +6,13 @@ buildscript {
     ext.kotlin_version = '1.6.10'
     ext.junit_version = '4.13.2'
     repositories {
+        mavenCentral()
         google()
-        jcenter()
+        maven { url "https://maven.aliyun.com/repository/central" }
+        maven { url "https://maven.aliyun.com/repository/google" }
+        maven { url "https://maven.aliyun.com/repository/gradle-plugin" }
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
+        maven { url "https://maven.aliyun.com/repository/public" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.4'
@@ -19,12 +24,15 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
-        maven {
-            url "https://jitpack.io"
-        }
+        mavenCentral()
         google()
+        maven { url "https://jitpack.io" }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url "https://maven.aliyun.com/repository/central" }
+        maven { url "https://maven.aliyun.com/repository/google" }
+        maven { url "https://maven.aliyun.com/repository/gradle-plugin" }
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
+        maven { url "https://maven.aliyun.com/repository/public" }
     }
 }
 
