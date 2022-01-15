@@ -3,37 +3,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.stardust.autojs">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.LOCAL_MAC_ADDRESS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         >
         <activity
-            android:name=".execution.ScriptExecuteActivity"
+            android:name=".execution.ScriptExecuteActivity" android:exported="false"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/ScriptTheme"/>
 
 
         <activity
             android:name="com.stardust.autojs.core.permission.PermissionRequestActivity"
-            android:excludeFromRecents="true"
+            android:excludeFromRecents="true" android:exported="false"
             android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
             android:theme="@style/ScriptTheme.Transparent"/>
 
         <activity
             android:name="com.stardust.autojs.core.image.capture.ScreenCaptureRequestActivity"
-            android:excludeFromRecents="true"
+            android:excludeFromRecents="true" android:exported="false"
             android:taskAffinity="com.stardust.autojs.runtime.api.image.ScreenCaptureRequestActivity"
             android:theme="@style/ScriptTheme.Transparent"/>
 
         <service
             android:name="com.stardust.autojs.core.accessibility.AccessibilityService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService"/>
             </intent-filter>

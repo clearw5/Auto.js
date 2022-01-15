@@ -15,7 +15,8 @@
 
 
     <!-- 非Auto.js运行必需，不会主动申请，某些脚本可以自行申请-->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" tools:ignore="CoarseFineLocation" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" tools:ignore="CoarseFineLocation" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
 
@@ -30,13 +31,14 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:label, android:allowBackup"
         tools:targetApi="m">
-        <activity android:name=".LogActivity">
+        <activity android:name=".LogActivity" android:exported="false">
 
         </activity>
 
         <activity
             android:name=".SplashActivity"
-            android:theme="@style/AppTheme.Splash">
+            android:theme="@style/AppTheme.Splash"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -44,12 +46,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SettingsActivity"/>
+        <activity android:name=".SettingsActivity" android:exported="false"/>
 
         <service
             android:name="com.stardust.notification.NotificationListenerService"
             android:label="inrt"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService"/>
             </intent-filter>

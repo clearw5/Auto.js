@@ -206,7 +206,7 @@ class SimpleActionAutomator(
         ScriptRuntime.requiresApi(24)
         if (!::mGlobalActionAutomator.isInitialized) {
             mGlobalActionAutomator =
-                GlobalActionAutomator(Handler(mScriptRuntime.get()?.loopers?.servantLooper)) {
+                GlobalActionAutomator(mScriptRuntime.get()?.loopers?.servantLooper?.let { Handler(it) }) {
                     ensureAccessibilityServiceEnabled()
                     return@GlobalActionAutomator mAccessibilityBridge.service!!
                 }

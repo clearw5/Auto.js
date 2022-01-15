@@ -63,7 +63,9 @@ class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : Texture
                         canvas = lockCanvas()
                         scriptCanvas.setCanvas(canvas)
                         emit("draw", scriptCanvas, this@ScriptCanvasView)
-                        unlockCanvasAndPost(canvas)
+                        if (canvas != null) {
+                            unlockCanvasAndPost(canvas)
+                        }
                         canvas = null
                         val dt = mTimePerDraw - (SystemClock.uptimeMillis() - time)
                         if (dt > 0) {

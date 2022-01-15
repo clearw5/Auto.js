@@ -96,7 +96,7 @@ android {
             reset()
 
             // Specifies a list of ABIs that Gradle should create APKs for.
-            include "armeabi-v7a", "arm64-v8a"
+            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
 //            include "x86", "armeabi-v7a"
 
             // Specifies that we do not want to also generate a universal APK that includes all ABIs.
@@ -141,7 +141,7 @@ dependencies {
     })
     kapt 'com.jakewharton:butterknife-compiler:10.2.3'
     // Android supports
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -201,10 +201,10 @@ dependencies {
         exclude group: 'com.android.support'
     })
     // WorkManager
-    implementation 'androidx.work:work-runtime:2.5.0'
+    implementation 'androidx.work:work-runtime:2.7.1'
     // Android job
     implementation 'com.evernote:android-job:1.4.2'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
     // Optional, if you use support library fragments:
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
