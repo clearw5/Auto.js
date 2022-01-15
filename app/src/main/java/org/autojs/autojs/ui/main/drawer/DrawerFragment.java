@@ -96,13 +96,13 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
 
     @ViewById(R.id.header)
     View mHeaderView;
-    @ViewById(R.id.username)
+//    @ViewById(R.id.username)
     TextView mUserName;
-    @ViewById(R.id.avatar)
+//    @ViewById(R.id.avatar)
     AvatarView mAvatar;
     @ViewById(R.id.shadow)
     View mShadow;
-    @ViewById(R.id.default_cover)
+//    @ViewById(R.id.default_cover)
     View mDefaultCover;
     @ViewById(R.id.drawer_menu)
     RecyclerView mDrawerMenu;
@@ -188,31 +188,6 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
         mDrawerMenu.setAdapter(mDrawerMenuAdapter);
         mDrawerMenu.setLayoutManager(new LinearLayoutManager(getContext()));
     }
-
-
-    @SuppressLint("CheckResult")
-    @Click(R.id.avatar)
-    void loginOrShowUserInfo() {
-        UserService.getInstance()
-                .me()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(user -> {
-                            if (getActivity() == null)
-                                return;
-                            WebActivity_.intent(this)
-                                    .extra(WebActivity.EXTRA_URL, NodeBB.url("user/" + user.getUserslug()))
-                                    .extra(Intent.EXTRA_TITLE, user.getUsername())
-                                    .start();
-                        },
-                        error -> {
-                            if (getActivity() == null)
-                                return;
-                            LoginActivity_.intent(getActivity()).start();
-                        }
-                );
-    }
-
 
     void enableOrDisableAccessibilityService(DrawerMenuItemViewHolder holder) {
         boolean isAccessibilityServiceEnabled = isAccessibilityServiceEnabled();
@@ -398,51 +373,6 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
     public void onResume() {
         super.onResume();
         syncSwitchState();
-//        syncUserInfo();
-    }
-
-    private void syncUserInfo() {
-        NodeBB.getInstance().getRetrofit()
-                .create(UserApi.class)
-                .me()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::setUpUserInfo, error -> {
-                    error.printStackTrace();
-                    setUpUserInfo(null);
-                });
-    }
-
-    private void setUpUserInfo(@Nullable User user) {
-        if (mUserName == null || mAvatar == null)
-            return;
-        if (user == null) {
-            mUserName.setText(R.string.not_login);
-            mAvatar.setIcon(R.drawable.profile_avatar_placeholder);
-        } else {
-            mUserName.setText(user.getUsername());
-            mAvatar.setUser(user);
-        }
-        setCoverImage(user);
-    }
-
-    private void setCoverImage(User user) {
-        if (mDefaultCover == null || mShadow == null || mHeaderView == null)
-            return;
-        if (user == null || TextUtils.isEmpty(user.getCoverUrl()) || user.getCoverUrl().equals("/assets/images/cover-default.png")) {
-            mDefaultCover.setVisibility(View.VISIBLE);
-            mShadow.setVisibility(View.GONE);
-            mHeaderView.setBackgroundColor(ThemeColorManagerCompat.getColorPrimary());
-        } else {
-            mDefaultCover.setVisibility(View.GONE);
-            mShadow.setVisibility(View.VISIBLE);
-            Glide.with(this)
-                    .load(NodeBB.BASE_URL + user.getCoverUrl())
-                    .apply(new RequestOptions()
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    )
-                    .into(new BackgroundTarget(mHeaderView));
-        }
     }
 
     private void syncSwitchState() {
@@ -491,14 +421,6 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
             mCommunityDrawerMenu.hideCommunityMenu(mDrawerMenuAdapter);
         }
         mDrawerMenu.scrollToPosition(0);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLoginStateChange(UserService.LoginStateChange change) {
-        syncUserInfo();
-        if (mCommunityDrawerMenu.isShown()) {
-            mCommunityDrawerMenu.setUserOnlineStatus(mDrawerMenuAdapter, change.isOnline());
-        }
     }
 
 

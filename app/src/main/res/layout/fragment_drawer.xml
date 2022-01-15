@@ -13,7 +13,8 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="170dp"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="5dp"
+        android:visibility="gone">
 
         <View
             android:id="@+id/shadow"
@@ -44,20 +45,21 @@
 <!--            android:textColor="@android:color/white"-->
 <!--            android:textSize="16sp"/>-->
 
-        <ImageView
-            android:id="@+id/default_cover"
-            android:layout_width="match_parent"
-            android:layout_height="118dp"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/avatar"
-            android:alpha="0.08"
-            android:src="@drawable/android_eating_half"
-            android:tint="#000000"/>
+<!--        <ImageView-->
+<!--            android:id="@+id/default_cover"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="118dp"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_toRightOf="@+id/avatar"-->
+<!--            android:alpha="0.08"-->
+<!--            android:src="@drawable/android_eating_half"-->
+<!--            android:tint="#000000"/>-->
 
     </RelativeLayout>
 
 
     <LinearLayout
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -93,9 +95,9 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
                     android:src="@drawable/ic_ali_settings"
-                    android:tint="#666666"/>
+                    app:tint="#666666" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -120,9 +122,9 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
                     android:src="@drawable/ic_ali_exit"
-                    android:tint="#666666"/>
+                    app:tint="#666666" />
 
                 <TextView
                     android:layout_width="wrap_content"
