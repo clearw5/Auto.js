@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
-          package="com.stardust.autojs"
-    >
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.stardust.autojs">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
@@ -43,6 +43,11 @@
                 android:resource="@xml/accessibility_service_config"/>
         </service>
 
+        <service android:name="com.stardust.autojs.core.floaty.AccessibilityFloatyService"
+            android:exported="false"/>
+
+        <service android:name="com.stardust.enhancedfloaty.FloatyService"
+            android:exported="false" tools:node="merge"/>
     </application>
 
 </manifest>

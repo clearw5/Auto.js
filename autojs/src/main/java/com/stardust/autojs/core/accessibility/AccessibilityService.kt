@@ -2,10 +2,13 @@ package com.stardust.autojs.core.accessibility
 
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.os.Build
+import android.view.WindowManager
 import com.stardust.autojs.core.pref.Pref
 import com.stardust.view.accessibility.AccessibilityService
 
 class AccessibilityService : AccessibilityService() {
+
+    private lateinit var windowManager: WindowManager
 
     override fun onServiceConnected() {
         val serviceInfo = serviceInfo
@@ -21,7 +24,12 @@ class AccessibilityService : AccessibilityService() {
                 serviceInfo.flags = serviceInfo.flags and AccessibilityServiceInfo.FLAG_REQUEST_TOUCH_EXPLORATION_MODE.inv()
             }
         }
+        windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         setServiceInfo(serviceInfo)
         super.onServiceConnected()
+    }
+
+    override fun getWindowManager() : WindowManager {
+        return windowManager
     }
 }
