@@ -96,6 +96,8 @@
     <string name="key_use_volume_control_running">key_use_volume_control_running</string>
     <string name="text_use_volume_to_stop_running">Stop all scripts when volume changes</string>
     <string name="text_need_to_enable_accessibility_service">Need to enable Accessibility Service</string>
+    <string name="text_need_manage_all_files_access">Manage All Files Permission</string>
+    <string name="explain_all_files_access">Requires manage all files permission to manage all the code files</string>
     <string name="text_refresh">Refresh</string>
     <string name="notice_no_running_script"><![CDATA[No running script φ(>ω<*)]]></string>
     <string name="text_checking_update">Checking for updates</string>

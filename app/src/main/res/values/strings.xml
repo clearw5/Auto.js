@@ -104,6 +104,8 @@
     <string name="key_use_volume_control_running">key_use_volume_control_running</string>
     <string name="text_use_volume_to_stop_running">音量上键停止所有脚本</string>
     <string name="text_need_to_enable_accessibility_service">需要启用无障碍服务</string>
+    <string name="text_need_manage_all_files_access">需要所有文件的管理权限</string>
+    <string name="explain_all_files_access">软件需要所有文件的管理权限才能正常进行编辑、修改、删除脚本等操作，如果不授予相关权限将无法查看和运行脚本。</string>
     <string name="text_import_fail">导入失败</string>
     <string name="text_no_brower">没有浏览器耶o(╯□╰)o快去安装一个吧</string>
     <string name="text_refresh">刷新</string>

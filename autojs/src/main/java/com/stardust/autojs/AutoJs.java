@@ -269,7 +269,7 @@ public abstract class AutoJs {
         }
     }
 
-    protected void setLogFilePath(String path, boolean isDebug) {
+    public void setLogFilePath(String path, boolean isDebug) {
         LogConfigurator logConfigurator = new LogConfigurator();
         String pid = String.valueOf(android.os.Process.myPid());
         logConfigurator.setFilePattern("%d - [%p]\t[" + pid + "] %c - %m%n");

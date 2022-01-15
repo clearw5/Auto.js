@@ -3,9 +3,13 @@ package org.autojs.autojs.ui.main;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
@@ -13,10 +17,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.OnActivityResultDelegate;
+import com.stardust.autojs.core.floaty.AccessibilityFloatyService;
 import com.stardust.autojs.core.permission.OnRequestPermissionsResultCallback;
 import com.stardust.autojs.core.permission.PermissionRequestProxyActivity;
 import com.stardust.autojs.core.permission.RequestPermissionCallbacks;
@@ -55,6 +61,8 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
@@ -140,8 +148,32 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     private void checkPermissions() {
-        checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // 先判断有没有权限
+            if (!Environment.isExternalStorageManager()) {
+                ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+                        new ActivityResultContracts.StartActivityForResult(), result -> {
+                            if (Environment.isExternalStorageManager()) {
+                                AutoJs.getInstance().setLogFilePath(Pref.getScriptDirPath(), BuildConfig.DEBUG);
+                                Explorers.workspace().refreshAll();
+                            }
+                        });
+                new MaterialDialog.Builder(this)
+                        .title(R.string.text_need_manage_all_files_access)
+                        .content(R.string.explain_all_files_access)
+                        .positiveText(R.string.text_go_to_setting)
+                        .negativeText(R.string.text_cancel)
+                        .onPositive((dialog, which) -> {
+                            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                            intent.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
+                            launcher.launch(intent);
+                        }).show();
+            }
+        } else {
+            checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
     }
+
 
     private void showAccessibilitySettingPromptIfDisabled() {
         if (AccessibilityServiceTool.isAccessibilityServiceEnabled(this)) {
@@ -240,6 +272,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         FloatyWindowManger.hideCircularMenu();
         ForegroundService.stop(this);
         stopService(new Intent(this, FloatyService.class));
+        stopService(new Intent(this, AccessibilityFloatyService.class));
         AutoJs.getInstance().getScriptEngineService().stopAll();
     }
 
@@ -258,6 +291,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         mActivityResultMediator.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -269,6 +303,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         }
         if (getGrantResult(Manifest.permission.READ_EXTERNAL_STORAGE, permissions, grantResults) == PackageManager.PERMISSION_GRANTED) {
             Explorers.workspace().refreshAll();
+            AutoJs.getInstance().setLogFilePath(Pref.getScriptDirPath(), BuildConfig.DEBUG);
         }
     }
 
