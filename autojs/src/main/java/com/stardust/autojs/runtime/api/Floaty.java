@@ -7,7 +7,6 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 
 import com.stardust.autojs.R;
-import com.stardust.autojs.core.floaty.AccessibilityFloatyService;
 import com.stardust.autojs.core.floaty.BaseResizableFloatyWindow;
 import com.stardust.autojs.core.floaty.RawWindow;
 import com.stardust.autojs.core.ui.JsViewHelper;
@@ -112,8 +111,8 @@ public class Floaty {
         public JsRawWindow(RawWindow.RawFloaty floaty) {
             mWindow = new RawWindow(floaty);
             mUiHandler.post(() -> {
-                mUiHandler.getContext().startService(new Intent(mUiHandler.getContext(), AccessibilityFloatyService.class));
-                AccessibilityFloatyService.addWindow(mWindow);
+                mUiHandler.getContext().startService(new Intent(mUiHandler.getContext(), FloatyService.class));
+                FloatyService.addWindow(mWindow);
             });
             RuntimeException exception = mWindow.waitForCreation();
             if (exception != Exceptions.NO_EXCEPTION && exception != null) {

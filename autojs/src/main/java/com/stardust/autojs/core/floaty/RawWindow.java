@@ -84,7 +84,7 @@ public class RawWindow extends FloatyWindow {
 
     private int getWindowType() {
         if (AccessibilityService.Companion.getInstance()!= null
-                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             return WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY;
         }
         return WindowTypeCompat.getWindowType();
@@ -116,6 +116,9 @@ public class RawWindow extends FloatyWindow {
     @Override
     public void close() {
         super.close();
+        if (mContentView == null) {
+            return;
+        }
         ViewExtras.recycle(mContentView);
         ViewParent parent = mContentView.getParent();
         if (parent instanceof View) {

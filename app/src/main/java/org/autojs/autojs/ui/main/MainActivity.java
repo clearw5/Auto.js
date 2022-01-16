@@ -22,7 +22,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.OnActivityResultDelegate;
-import com.stardust.autojs.core.floaty.AccessibilityFloatyService;
 import com.stardust.autojs.core.permission.OnRequestPermissionsResultCallback;
 import com.stardust.autojs.core.permission.PermissionRequestProxyActivity;
 import com.stardust.autojs.core.permission.RequestPermissionCallbacks;
@@ -272,7 +271,6 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         FloatyWindowManger.hideCircularMenu();
         ForegroundService.stop(this);
         stopService(new Intent(this, FloatyService.class));
-        stopService(new Intent(this, AccessibilityFloatyService.class));
         AutoJs.getInstance().getScriptEngineService().stopAll();
     }
 

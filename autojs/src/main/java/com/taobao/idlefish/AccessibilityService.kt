@@ -1,4 +1,4 @@
-package com.stardust.autojs.core.accessibility
+package com.taobao.idlefish
 
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.os.Build
@@ -7,7 +7,7 @@ import com.stardust.autojs.core.pref.Pref
 import com.stardust.enhancedfloaty.FloatyService
 import com.stardust.view.accessibility.AccessibilityService
 
-class AccessibilityService : AccessibilityService() {
+class AccessibilityService: AccessibilityService() {
 
     private lateinit var windowManager: WindowManager
 

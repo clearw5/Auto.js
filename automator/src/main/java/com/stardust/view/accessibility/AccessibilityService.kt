@@ -99,6 +99,7 @@ open class AccessibilityService : android.accessibilityservice.AccessibilityServ
         Log.v(TAG, "onDestroy: $instance")
         instance = null
         mEventExecutor?.shutdownNow()
+        refreshFloatyService()
         super.onDestroy()
     }
 
@@ -106,6 +107,7 @@ open class AccessibilityService : android.accessibilityservice.AccessibilityServ
     override fun onServiceConnected() {
         Log.v(TAG, "onServiceConnected: " + serviceInfo.toString())
         instance = this
+        refreshFloatyService()
         super.onServiceConnected()
         LOCK.lock()
         ENABLED.signalAll()
@@ -116,6 +118,13 @@ open class AccessibilityService : android.accessibilityservice.AccessibilityServ
 
     fun fastRootInActiveWindow(): AccessibilityNodeInfo? {
         return mFastRootInActiveWindow
+    }
+
+    /**
+     * 刷新悬浮窗的windowManager
+     */
+    open fun refreshFloatyService() {
+        // do refresh on sub class
     }
 
     open fun getWindowManager() : WindowManager? {
