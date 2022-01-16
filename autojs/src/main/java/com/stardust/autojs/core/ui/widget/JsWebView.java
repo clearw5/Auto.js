@@ -46,6 +46,10 @@ public class JsWebView extends WebView {
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setDomStorageEnabled(true);
         settings.setDisplayZoomControls(false);
+        settings.setAllowContentAccess(true);
+        settings.setAllowFileAccess(true);
+        settings.setAllowFileAccessFromFileURLs(true);
+        settings.setAllowUniversalAccessFromFileURLs(true);
         setWebViewClient(new WebViewClient());
         setWebChromeClient(new WebChromeClient());
     }
