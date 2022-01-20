@@ -4,7 +4,6 @@ import groovy.json.JsonSlurper
 
 buildscript {
     ext.kotlin_version = '1.6.10'
-    ext.junit_version = '4.13.2'
     repositories {
         mavenCentral()
         google()
@@ -42,4 +41,6 @@ task clean(type: Delete) {
 
 ext {
     versions = new JsonSlurper().parse(file('./project-versions.json'))
+    ext.junit_version = '4.13.2'
+    ext.appcompat_version = '1.4.1'
 }

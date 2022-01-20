@@ -1,5 +1,6 @@
 package com.stardust.autojs.core.ui.xml;
 
+import android.os.Build;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
@@ -23,6 +24,7 @@ import com.stardust.autojs.core.ui.widget.JsRelativeLayout;
 import com.stardust.autojs.core.ui.widget.JsSpinner;
 import com.stardust.autojs.core.ui.widget.JsTabLayout;
 import com.stardust.autojs.core.ui.widget.JsTextView;
+import com.stardust.autojs.core.ui.widget.JsTextViewOld;
 import com.stardust.autojs.core.ui.widget.JsToolbar;
 import com.stardust.autojs.core.ui.widget.JsViewPager;
 import com.stardust.autojs.core.ui.widget.JsWebView;
@@ -58,7 +60,7 @@ public class XmlConverter {
                     .map("horizontal", JsLinearLayout.class.getName())
                     .map("relative", JsRelativeLayout.class.getName())
                     .map("button", JsButton.class.getName())
-                    .map("text", JsTextView.class.getName())
+                    .map("text", Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? JsTextView.class.getName() : JsTextViewOld.class.getName())
                     .map("input", JsEditText.class.getName())
                     .map("img", JsImageView.class.getName())
                     .map("datepicker", DatePicker.class.getName())
