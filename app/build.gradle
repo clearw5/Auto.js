@@ -18,15 +18,15 @@ android {
     signingConfigs {
         release {
             storeFile file(homePath + '/auto-js-t-pkcs12.jks')
-            storePassword 'fixture'
-            keyPassword 'fixture'
-            keyAlias = 'autojs-t'
+            storePassword System.getenv('autojspasswd')
+            keyPassword System.getenv('autojspasswd')
+            keyAlias = System.getenv('autojsalias')
         }
         debug {
-            storeFile file(homePath + '/auto-js-t-pkcs12.jks')
+            storeFile file('debug/autojs-pkcs12-debug.jks')
             storePassword 'fixture'
             keyPassword 'fixture'
-            keyAlias = 'autojs-t'
+            keyAlias = 'autojs-debug'
         }
     }
     compileSdkVersion versions.compile
@@ -141,7 +141,8 @@ dependencies {
     })
     kapt 'com.jakewharton:butterknife-compiler:10.2.3'
     // Android supports
-    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "androidx.appcompat:appcompat-resources:$appcompat_version"
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.multidex:multidex:2.0.1'

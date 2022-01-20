@@ -135,4 +135,8 @@ public class TopLevelScope extends ImporterTopLevel {
     public void setNoRecycle() {
         noRecycle = true;
     }
+
+    public boolean isRecycled() {
+        return recycledStamp > 0;
+    }
 }

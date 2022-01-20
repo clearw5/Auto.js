@@ -46,7 +46,7 @@ public class ShortcutManager {
         ShortcutInfo shortcut = buildShortcutInfo(label, id, icon, intent);
         int req = getRequestCode(id);
         PendingIntent successCallback = PendingIntent.getBroadcast(mContext, req,
-                mShortcutManager.createShortcutResultIntent(shortcut), 0);
+                mShortcutManager.createShortcutResultIntent(shortcut), PendingIntent.FLAG_IMMUTABLE);
         mShortcutManager.requestPinShortcut(shortcut, successCallback.getIntentSender());
     }
 

@@ -447,7 +447,6 @@ public class ScriptRuntime {
         ignoresException(timers::recycle);
         ignoresException(ui::recycle);
         ignoresException(() -> mTopLevelScope.get().markReleased(engines.myEngine().getSource().toString()));
-        console.clear();
     }
 
     private void ignoresException(Runnable r) {

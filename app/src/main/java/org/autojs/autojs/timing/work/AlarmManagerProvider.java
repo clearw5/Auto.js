@@ -207,14 +207,17 @@ public class AlarmManagerProvider extends BroadcastReceiver implements WorkProvi
 
     private PendingIntent createTaskCheckPendingIntent(Context context) {
         if (sCheckTasksPendingIntent == null) {
+            int flags = PendingIntent.FLAG_UPDATE_CURRENT |
+                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0);
             sCheckTasksPendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE_CHECK_TASK_REPEATEDLY,
                     new Intent(ACTION_CHECK_TASK)
-                            .setComponent(new ComponentName(BuildConfig.APPLICATION_ID, "org.autojs.autojs.timing.work.AlarmManagerProvider")),
-                    PendingIntent.FLAG_UPDATE_CURRENT);
+                            .setComponent(new ComponentName(BuildConfig.APPLICATION_ID,
+                                    "org.autojs.autojs.timing.work.AlarmManagerProvider")),
+                    flags);
         }
         return sCheckTasksPendingIntent;
     }
-    
+
     private void autoJsLog(String content) {
         Log.d(LOG_TAG, content);
         AutoJs.getInstance().debugInfo(content);

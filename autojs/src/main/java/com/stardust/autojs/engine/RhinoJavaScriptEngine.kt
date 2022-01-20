@@ -9,6 +9,7 @@ import com.stardust.autojs.project.ScriptConfig
 import com.stardust.autojs.rhino.RhinoAndroidHelper
 import com.stardust.autojs.rhino.TopLevelScope
 import com.stardust.autojs.runtime.ScriptRuntime
+import com.stardust.autojs.runtime.exception.ScriptInterruptedException
 import com.stardust.autojs.script.JavaScriptSource
 import com.stardust.automator.UiObjectCollection
 import com.stardust.pio.UncheckedIOException
@@ -205,7 +206,14 @@ open class RhinoJavaScriptEngine(private val mAndroidContext: android.content.Co
             return when {
                 obj is String -> runtime.bridges.toString(obj.toString())
                 staticType == UiObjectCollection::class.java -> runtime.bridges.asArray(obj)
-                else -> super.wrap(cx, scope, obj, staticType)
+                else -> {
+                    if (scope is TopLevelScope) {
+                        if (scope.isRecycled) {
+                            throw ScriptInterruptedException()
+                        }
+                    }
+                    super.wrap(cx, scope, obj, staticType)
+                }
             }
         }
 

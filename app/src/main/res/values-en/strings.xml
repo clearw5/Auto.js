@@ -160,5 +160,14 @@
     <string name="text_show_widget_infomation">View info</string>
     <string name="text_show_layout_hierarchy">View in layout bounds\' view</string>
     <string name="default_value_script_dir_path">/Scripts/</string>
+    <string name="text_timed_task">TimedTask</string>
+    <string name="text_send">Send</string>
+    <string name="text_run_repeatedly">RunRepeatedly</string>
+    <string name="text_loop_interval">Interval(S)</string>
+    <string name="text_loop_delay">Delay(S)</string>
+    <string name="text_loop_times">Loop times</string>
+    <string name="hint_loop_times">0 for infinite loops</string>
+    <string name="hint_loop_delay">delay start till provided seconds</string>
+    <string name="text_more">More</string>
 
 </resources>

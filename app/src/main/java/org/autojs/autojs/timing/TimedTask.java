@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import com.stardust.autojs.execution.ExecutionConfig;
 
@@ -218,8 +219,12 @@ public class TimedTask extends BaseModel {
 
 
     public PendingIntent createPendingIntent(Context context) {
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
         return PendingIntent.getBroadcast(context, (int) ((REQUEST_CODE + 1 + getId()) % 65535),
-                createIntent(), PendingIntent.FLAG_UPDATE_CURRENT);
+                createIntent(), flags);
     }
 
     @Override
