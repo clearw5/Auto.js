@@ -148,22 +148,26 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
         logger.debug("dex file size: " + file.length());
         DexClassLoader loader = new DexClassLoader(file.getPath(), mCacheDir.getPath(), mLibsDir.getPath(), parent);
         // 根据dex文件名 移除已有的，使得最新载入的在LinkedHashMap末尾
-        mDexClassLoaders.remove(file.getName());
-        mDexClassLoaders.put(file.getName(), loader);
+        synchronized (mDexClassLoaders) {
+            mDexClassLoaders.remove(file.getName());
+            mDexClassLoaders.put(file.getName(), loader);
+        }
         return loader;
     }
 
     /**
      * 移除已加载的dex文件
      */
-    public void unloadAllDex() {
-        PFiles.deleteFilesOfDir(mCacheDir);
-        this.mDexClassLoaders.clear();
-        if (!mCacheDir.exists()) {
-            mCacheDir.mkdirs();
-        }
-        if (!mLibsDir.exists()) {
-            mLibsDir.mkdir();
+    public synchronized void unloadAllDex() {
+        synchronized (mDexClassLoaders) {
+            PFiles.deleteFilesOfDir(mCacheDir);
+            this.mDexClassLoaders.clear();
+            if (!mCacheDir.exists()) {
+                mCacheDir.mkdirs();
+            }
+            if (!mLibsDir.exists()) {
+                mLibsDir.mkdir();
+            }
         }
     }
 
@@ -241,17 +245,19 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
                 }
             }
             if (loadedClass == null) {
-                ListIterator<DexClassLoader> reverseIterator = new ArrayList<>(mDexClassLoaders.values()).listIterator(mDexClassLoaders.size());
-                while (reverseIterator.hasPrevious()) {
-                    DexClassLoader classLoader = reverseIterator.previous();
+                synchronized (mDexClassLoaders) {
+                    ListIterator<DexClassLoader> reverseIterator = new ArrayList<>(mDexClassLoaders.values()).listIterator(mDexClassLoaders.size());
+                    while (reverseIterator.hasPrevious()) {
+                        DexClassLoader classLoader = reverseIterator.previous();
 //                    Log.d(LOG_TAG, "try to load class: " + name + " class loader info: " + classLoader.toString());
-                    try {
-                        loadedClass = classLoader.loadClass(name);
-                    } catch (Exception e) {
-                        // do nothing
-                    }
-                    if (loadedClass != null) {
-                        break;
+                        try {
+                            loadedClass = classLoader.loadClass(name);
+                        } catch (Exception e) {
+                            // do nothing
+                        }
+                        if (loadedClass != null) {
+                            break;
+                        }
                     }
                 }
             }
