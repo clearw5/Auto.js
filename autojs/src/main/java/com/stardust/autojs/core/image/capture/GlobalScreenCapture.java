@@ -174,21 +174,11 @@ public class GlobalScreenCapture {
             return;
         }
 
-        if (mHandler != null) {
-            setImageListener(mHandler);
-            return;
-        }
-        new Thread(() -> {
-            Log.d(TAG, "AcquireImageLoop: start");
-            Looper.prepare();
-            mImageAcquireLooper = Looper.myLooper();
-            setImageListener(new Handler());
-            Looper.loop();
-            Log.d(TAG, "AcquireImageLoop: stop");
-        }).start();
+        setImageListener(mHandler);
     }
 
     private void setImageListener(Handler handler) {
+        Log.d(TAG, "注册imageListener: ");
         mImageReader.setOnImageAvailableListener(reader -> {
             try {
                 if (noRegister) {
@@ -226,6 +216,7 @@ public class GlobalScreenCapture {
             }
             if (System.currentTimeMillis() - startTime > 1000) {
                 startTime = System.currentTimeMillis();
+                Log.d(TAG, "capture: 获取截图失败，刷新virtualDisplay");
                 this.refreshVirtualDisplay(mOrientation);
             }
         }
@@ -258,6 +249,7 @@ public class GlobalScreenCapture {
     private void release() {
         noRegister = true;
         hasPermission = false;
+        mOrientation = -1;
         if (mImageAcquireLooper != null) {
             mImageAcquireLooper.quit();
             mImageAcquireLooper = null;
@@ -268,6 +260,7 @@ public class GlobalScreenCapture {
         }
         if (mVirtualDisplay != null) {
             mVirtualDisplay.release();
+            mVirtualDisplay = null;
         }
         if (mImageReader != null) {
             mImageReader.setOnImageAvailableListener(null, null);
