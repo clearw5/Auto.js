@@ -53,6 +53,8 @@ public class DocsFragment extends ViewPagerFragment implements BackPressedHandle
     @AfterViews
     void setUpViews() {
         mWebView = mEWebView.getWebView();
+        mWebView.getSettings().setSupportZoom(false);
+        mWebView.getSettings().setBuiltInZoomControls(false);
         mEWebView.getSwipeRefreshLayout().setOnRefreshListener(() -> {
             if (TextUtils.equals(mWebView.getUrl(), mIndexUrl)) {
                 loadUrl();

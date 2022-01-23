@@ -432,16 +432,14 @@ public class ScriptRuntime {
         ignoresException(threads::shutDownAll);
         ignoresException(events::recycle);
         ignoresException(media::recycle);
+        ignoresException(images::releaseScreenCapturer);
+        ignoresException(images::recycle);
         ignoresException(loopers::recycle);
         ignoresException(() -> {
             if (mRootShell != null) mRootShell.exit();
             mRootShell = null;
             mShellSupplier = null;
         });
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            ignoresException(images::releaseScreenCapturer);
-            ignoresException(images::recycle);
-        }
         ignoresException(sensors::unregisterAll);
         sensors = null;
         ignoresException(timers::recycle);

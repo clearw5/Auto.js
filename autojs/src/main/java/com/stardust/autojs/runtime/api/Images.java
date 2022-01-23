@@ -12,14 +12,15 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 
 import com.stardust.autojs.annotation.ScriptVariable;
 import com.stardust.autojs.core.image.ColorFinder;
 import com.stardust.autojs.core.image.ImageWrapper;
 import com.stardust.autojs.core.image.TemplateMatching;
+import com.stardust.autojs.core.image.capture.GlobalScreenCapture;
 import com.stardust.autojs.core.image.capture.ScreenCaptureRequester;
-import com.stardust.autojs.core.image.capture.ScreenCapturer;
 import com.stardust.autojs.core.opencv.Mat;
 import com.stardust.autojs.core.opencv.OpenCVHelper;
 import com.stardust.autojs.core.ui.inflater.util.Drawables;
@@ -54,12 +55,13 @@ public class Images {
 
     private WeakReference<ScriptRuntime> mScriptRuntime;
     private ScreenCaptureRequester mScreenCaptureRequester;
-    private ScreenCapturer mScreenCapturer;
     private Context mContext;
     private Image mPreCapture;
     private ImageWrapper mPreCaptureImage;
     private ScreenMetrics mScreenMetrics;
     private volatile boolean mOpenCvInitialized = false;
+
+    private final static String TAG = "Images";
 
     @ScriptVariable
     public final ColorFinder colorFinder;
@@ -76,16 +78,23 @@ public class Images {
     public ScriptPromiseAdapter requestScreenCapture(int orientation) {
         ScriptRuntime.requiresApi(21);
         ScriptPromiseAdapter promiseAdapter = new ScriptPromiseAdapter();
-        if (mScreenCapturer != null) {
-            mScreenCapturer.setOrientation(orientation);
-            promiseAdapter.resolve(true);
-            return promiseAdapter;
+        if (GlobalScreenCapture.getInstance().hasPermission()) {
+            synchronized (GlobalScreenCapture.getInstance()) {
+                if (GlobalScreenCapture.getInstance().hasPermission()) {
+                    Log.d(TAG, "requestScreenCapture hasPermission 直接注册");
+                    GlobalScreenCapture.getInstance().setOrientation(orientation);
+                    GlobalScreenCapture.getInstance().register(mScriptRuntime.get().loopers.getMainLooper());
+                    new Handler(mScriptRuntime.get().loopers.getMainLooper())
+                            .post(() -> promiseAdapter.resolve(true));
+                    return promiseAdapter;
+                }
+            }
         }
-        Looper servantLooper = mScriptRuntime.get().loopers.getServantLooper();
+
         mScreenCaptureRequester.setOnActivityResultCallback((result, data) -> {
             if (result == Activity.RESULT_OK) {
-                mScreenCapturer = new ScreenCapturer(mContext, data, orientation, ScreenMetrics.getDeviceScreenDensity(),
-                        new Handler(servantLooper));
+                GlobalScreenCapture.getInstance().initCapture(mContext, data, orientation);
+                GlobalScreenCapture.getInstance().register(mScriptRuntime.get().loopers.getMainLooper());
                 promiseAdapter.resolve(true);
             } else {
                 promiseAdapter.resolve(false);
@@ -97,11 +106,12 @@ public class Images {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public synchronized ImageWrapper captureScreen() {
+        Log.d(TAG, "captureScreen: 请求截图 " + mScriptRuntime.get().loopers.getMainLooper().getThread().getName());
         ScriptRuntime.requiresApi(21);
-        if (mScreenCapturer == null) {
+        if (!GlobalScreenCapture.getInstance().hasPermission()) {
             throw new SecurityException("No screen capture permission");
         }
-        Image capture = mScreenCapturer.capture();
+        Image capture = GlobalScreenCapture.getInstance().capture();
         if (capture == mPreCapture && mPreCaptureImage != null) {
             return mPreCaptureImage;
         }
@@ -262,8 +272,10 @@ public class Images {
     }
 
     public void releaseScreenCapturer() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mScreenCapturer != null) {
-            mScreenCapturer.release();
+        if (GlobalScreenCapture.getInstance().hasPermission()) {
+            synchronized (GlobalScreenCapture.getInstance()) {
+                GlobalScreenCapture.getInstance().unregister(mScriptRuntime.get().loopers.getMainLooper());
+            }
         }
     }
 

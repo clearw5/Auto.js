@@ -24,7 +24,7 @@ public class ViewExtras {
     public static ViewExtras get(View view) {
         ViewExtras extras;
         Object tag = view.getTag(R.id.view_tag_view_extras);
-        Log.d(LOG_TAG, "view = " + view + ", tag = " + tag);
+//        Log.d(LOG_TAG, "view = " + view + ", tag = " + tag);
         if (tag instanceof ViewExtras) {
             extras = (ViewExtras) tag;
         } else {

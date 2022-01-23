@@ -14,3 +14,4 @@ build/
 *.exe
 .idea/caches/build_file_checksums.ser
 .idea/
+*.log

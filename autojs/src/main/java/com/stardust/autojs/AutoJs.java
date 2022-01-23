@@ -101,9 +101,9 @@ public abstract class AutoJs {
             return exception;
         });
         ResourceMonitor.setUnclosedResourceDetectedHandler(mGlobalConsole::error);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            mContext.startForegroundService(new Intent(mContext, CaptureForegroundService.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            mContext.startForegroundService(new Intent(mContext, CaptureForegroundService.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+//        }
     }
 
     public abstract void ensureAccessibilityServiceEnabled();

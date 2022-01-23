@@ -49,6 +49,7 @@ public class CaptureForegroundService extends Service {
 
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Recording")
+                .setContentText("本通知为截图权限需要")
                 .setSmallIcon(R.drawable.autojs_material)
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(contentIntent)

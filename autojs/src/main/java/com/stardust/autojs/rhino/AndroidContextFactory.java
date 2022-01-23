@@ -50,5 +50,11 @@ public class AndroidContextFactory extends ShellContextFactory {
         return cx;
     }
 
-
+    @Override
+    protected boolean hasFeature(Context cx, int featureIndex) {
+        if (featureIndex == Context.FEATURE_ENABLE_XML_SECURE_PARSING) {
+            return false;
+        }
+        return super.hasFeature(cx, featureIndex);
+    }
 }

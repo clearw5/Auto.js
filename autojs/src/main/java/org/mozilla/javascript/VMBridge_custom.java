@@ -55,9 +55,11 @@ public class VMBridge_custom extends VMBridge_jdk18 {
                 } catch (Throwable e) {
                     e.printStackTrace();
                     // notify the script thread to exit
-                    com.stardust.autojs.runtime.ScriptRuntime runtime = engine.getRuntime();
-                    Log.d(LOG_TAG, "runtime = " + runtime);
-                    runtime.exit(e);
+                    if (engine != null) {
+                        com.stardust.autojs.runtime.ScriptRuntime runtime = engine.getRuntime();
+                        Log.d(LOG_TAG, "runtime = " + runtime);
+                        runtime.exit(e);
+                    }
                     // even if we caught the exception, we must return a value to for the method call.
                     return defaultValue(method.getReturnType());
                 }

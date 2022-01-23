@@ -6,6 +6,9 @@ apply plugin: 'com.jakewharton.butterknife'
 def AAVersion = '4.8.0'
 def SupportLibVersion = '28.0.0'
 def homePath = System.properties['user.home']
+def storePasswd = System.getenv('autojspasswd')
+def keyPasswd = System.getenv('autojspasswd')
+def alias = System.getenv('autojsalias')
 
 configurations.all {
     resolutionStrategy {
@@ -18,9 +21,9 @@ android {
     signingConfigs {
         release {
             storeFile file(homePath + '/auto-js-t-pkcs12.jks')
-            storePassword System.getenv('autojspasswd')
-            keyPassword System.getenv('autojspasswd')
-            keyAlias = System.getenv('autojsalias')
+            storePassword storePasswd
+            keyPassword keyPasswd
+            keyAlias = alias
         }
         debug {
             storeFile file('debug/autojs-pkcs12-debug.jks')
@@ -53,7 +56,7 @@ android {
             shrinkResources false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
             applicationIdSuffix ".debug"
         }
         release {
