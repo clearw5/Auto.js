@@ -3,6 +3,7 @@ package com.tony.autojs.tool.encrypt;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Base64;
 
 import com.stardust.autojs.execution.ExecutionConfig;
 import com.stardust.autojs.runtime.api.Engines;
@@ -99,5 +100,16 @@ public class DecryptRunner {
 
     public void setSecretKey(SecretKey secretKey) {
         this.secretKey = secretKey;
+    }
+
+    public void setSecretKeyByBase64(String base64Key) {
+        this.secretKey = AESEncrypt.loadKeyByBytes(Base64.decode(base64Key, Base64.NO_WRAP));
+    }
+
+    public String getSecretKeyBase64() {
+        if (this.secretKey == null) {
+            return null;
+        }
+        return Base64.encodeToString(this.secretKey.getEncoded(), Base64.NO_WRAP);
     }
 }
