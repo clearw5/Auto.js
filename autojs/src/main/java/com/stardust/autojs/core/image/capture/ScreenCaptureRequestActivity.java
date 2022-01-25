@@ -23,9 +23,6 @@ public class ScreenCaptureRequestActivity extends Activity {
     private ScreenCaptureRequester.Callback mCallback;
 
     public static void request(Context context, ScreenCaptureRequester.Callback callback) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            context.startForegroundService(new Intent(context, CaptureForegroundService.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        }
         Intent intent = new Intent(context, ScreenCaptureRequestActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         IntentExtras.newExtras()

@@ -84,8 +84,11 @@ public class Images {
                     Log.d(TAG, "requestScreenCapture hasPermission 直接注册");
                     GlobalScreenCapture.getInstance().setOrientation(orientation);
                     GlobalScreenCapture.getInstance().register(mScriptRuntime.get().loopers.getMainLooper());
-                    new Handler(mScriptRuntime.get().loopers.getMainLooper())
-                            .post(() -> promiseAdapter.resolve(true));
+                    new Handler(Looper.getMainLooper())
+                            .post(() -> {
+                                promiseAdapter.awaitResolver();
+                                promiseAdapter.resolve(true);
+                            });
                     return promiseAdapter;
                 }
             }
