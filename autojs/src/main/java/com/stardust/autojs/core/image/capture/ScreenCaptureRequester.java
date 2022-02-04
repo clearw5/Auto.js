@@ -79,9 +79,6 @@ public interface ScreenCaptureRequester {
 
         @Override
         public void request() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                mActivity.startForegroundService(new Intent(mActivity, CaptureForegroundService.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-            }
             mActivity.startActivityForResult(((MediaProjectionManager) mActivity.getSystemService(Context.MEDIA_PROJECTION_SERVICE)).createScreenCaptureIntent(), REQUEST_CODE_MEDIA_PROJECTION);
         }
 

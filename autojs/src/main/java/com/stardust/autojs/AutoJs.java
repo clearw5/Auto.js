@@ -263,6 +263,9 @@ public abstract class AutoJs {
         @Override
         public void request() {
             Activity activity = mAppUtils.getCurrentActivity();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                mContext.startForegroundService(new Intent(mContext, CaptureForegroundService.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            }
             if (activity instanceof OnActivityResultDelegate.DelegateHost) {
                 ScreenCaptureRequester requester = new ActivityScreenCaptureRequester(
                         ((OnActivityResultDelegate.DelegateHost) activity).getOnActivityResultDelegateMediator(), activity);

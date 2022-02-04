@@ -17,8 +17,6 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.OrientationEventListener;
 
-import androidx.annotation.Nullable;
-
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.lang.ThreadCompat;
@@ -27,6 +25,8 @@ import com.stardust.util.ScreenMetrics;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
+
+import androidx.annotation.Nullable;
 
 /**
  * Created by TonyJiangWJ on 2022/1/22
@@ -50,8 +50,9 @@ public class GlobalScreenCapture {
     private Handler mHandler;
     private final AtomicReference<Image> mCachedImage = new AtomicReference<>();
     private volatile Exception mException;
+    private boolean foregroundServiceStarted = false;
 
-    private final int mScreenDensity;
+    private int mScreenDensity;
     private int mOrientation = -1;
     private int mDetectedOrientation;
     private OrientationEventListener mOrientationEventListener;
@@ -59,28 +60,43 @@ public class GlobalScreenCapture {
     private boolean hasPermission;
     private boolean noRegister;
 
+    @SuppressLint("StaticFieldLeak")
+    private static volatile GlobalScreenCapture INSTANCE;
+
     private GlobalScreenCapture() {
         mScreenDensity = ScreenMetrics.getDeviceScreenDensity();
     }
 
-    private static class Holder {
-        @SuppressLint("StaticFieldLeak")
-        private final static GlobalScreenCapture INSTANCE = new GlobalScreenCapture();
-    }
-
     public static GlobalScreenCapture getInstance() {
-        return Holder.INSTANCE;
+        if (INSTANCE == null) {
+            synchronized (GlobalScreenCapture.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new GlobalScreenCapture();
+                }
+            }
+        }
+        return INSTANCE;
     }
 
     public synchronized void initCapture(Context context, Intent data, int orientation) {
-        Log.d(TAG, "initCapture: ");
+        Log.d(TAG, "initCapture: " + mScreenDensity);
+        if (mScreenDensity == 0) {
+            mScreenDensity = ScreenMetrics.getDeviceScreenDensity();
+        }
+        if (!foregroundServiceStarted) {
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                throw new ScriptInterruptedException();
+            }
+        }
         mProjectionManager = (MediaProjectionManager) context.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
         mMediaProjection = mProjectionManager.getMediaProjection(Activity.RESULT_OK, (Intent) data.clone());
         mContext = context;
         mData = (Intent) data.clone();
         new Thread(() -> {
             Looper.prepare();
-            mHandler = new Handler(Looper.myLooper());
+            mHandler = new Handler(Looper.getMainLooper());
             synchronized (GlobalScreenCapture.this) {
                 GlobalScreenCapture.this.notifyAll();
             }
@@ -96,6 +112,11 @@ public class GlobalScreenCapture {
         observeOrientation();
         setOrientation(orientation);
         hasPermission = true;
+    }
+
+    public synchronized void notifyStarted() {
+        this.foregroundServiceStarted = true;
+        this.notify();
     }
 
     public synchronized boolean hasPermission() {
@@ -144,19 +165,26 @@ public class GlobalScreenCapture {
         if (mVirtualDisplay != null) {
             mVirtualDisplay.release();
         }
-        try {
-            mMediaProjection = mProjectionManager.getMediaProjection(Activity.RESULT_OK, (Intent) mData.clone());
-        } catch (Exception e) {
-            Log.d(TAG, "refreshVirtualDisplay: 获取新projection失败 可能只是MIUI的bug " + e);
-        }
         int screenHeight = ScreenMetrics.getOrientationAwareScreenHeight(orientation);
         int screenWidth = ScreenMetrics.getOrientationAwareScreenWidth(orientation);
         initVirtualDisplay(screenWidth, screenHeight, mScreenDensity);
         startAcquireImageLoop();
     }
 
+    private void grantMediaProjection() {
+        try {
+            if (mMediaProjection != null) {
+                mMediaProjection.stop();
+            }
+            mMediaProjection = mProjectionManager.getMediaProjection(Activity.RESULT_OK, (Intent) mData.clone());
+        } catch (Exception e) {
+            Log.d(TAG, "grantMediaProjection: 获取新projection失败 可能只是MIUI的bug " + e);
+        }
+    }
+
     @SuppressLint("WrongConstant")
     private void initVirtualDisplay(int width, int height, int screenDensity) {
+        Log.d(TAG, "initVirtualDisplay: width:" + width + ",height:" + height + ",density:" + screenDensity);
         mImageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 3);
         try {
             mVirtualDisplay = mMediaProjection.createVirtualDisplay(TAG,
@@ -174,21 +202,11 @@ public class GlobalScreenCapture {
             return;
         }
 
-        if (mHandler != null) {
-            setImageListener(mHandler);
-            return;
-        }
-        new Thread(() -> {
-            Log.d(TAG, "AcquireImageLoop: start");
-            Looper.prepare();
-            mImageAcquireLooper = Looper.myLooper();
-            setImageListener(new Handler());
-            Looper.loop();
-            Log.d(TAG, "AcquireImageLoop: stop");
-        }).start();
+        setImageListener(mHandler);
     }
 
     private void setImageListener(Handler handler) {
+        Log.d(TAG, "注册imageListener: ");
         mImageReader.setOnImageAvailableListener(reader -> {
             try {
                 if (noRegister) {
@@ -226,6 +244,8 @@ public class GlobalScreenCapture {
             }
             if (System.currentTimeMillis() - startTime > 1000) {
                 startTime = System.currentTimeMillis();
+                Log.d(TAG, "capture: 获取截图失败，刷新virtualDisplay");
+                this.grantMediaProjection();
                 this.refreshVirtualDisplay(mOrientation);
             }
         }
@@ -258,6 +278,8 @@ public class GlobalScreenCapture {
     private void release() {
         noRegister = true;
         hasPermission = false;
+        mOrientation = -1;
+        foregroundServiceStarted = false;
         if (mImageAcquireLooper != null) {
             mImageAcquireLooper.quit();
             mImageAcquireLooper = null;
@@ -268,6 +290,7 @@ public class GlobalScreenCapture {
         }
         if (mVirtualDisplay != null) {
             mVirtualDisplay.release();
+            mVirtualDisplay = null;
         }
         if (mImageReader != null) {
             mImageReader.setOnImageAvailableListener(null, null);
