@@ -3,6 +3,8 @@ package com.baidu.paddle.lite.ocr;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import org.opencv.android.OpenCVLoader;
+
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -13,6 +15,8 @@ public class OCRPredictorNative {
     public static void loadLibrary() throws RuntimeException {
         if (!isSOLoaded.get() && isSOLoaded.compareAndSet(false, true)) {
             try {
+                // 可能和AJ中的OpenCV冲突，直接初始化一遍
+                OpenCVLoader.initDebug();
                 System.loadLibrary("Native");
             } catch (Throwable e) {
                 RuntimeException exception = new RuntimeException(

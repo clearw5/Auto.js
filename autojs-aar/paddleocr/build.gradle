@@ -37,6 +37,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(path: ':autojs-aar:opencv')
 }
 
 def archives = [
@@ -44,10 +45,10 @@ def archives = [
                 'src' : 'https://paddleocr.bj.bcebos.com/dygraph_v2.0/lite/paddle_lite_libs_v2_9_0.tar.gz',
                 'dest': 'PaddleLite'
         ],
-        [
-                'src' : 'https://paddlelite-demo.bj.bcebos.com/libs/android/opencv-4.2.0-android-sdk.tar.gz',
-                'dest': 'OpenCV'
-        ],
+//        [
+//                'src' : 'https://paddlelite-demo.bj.bcebos.com/libs/android/opencv-4.2.0-android-sdk.tar.gz',
+//                'dest': 'OpenCV'
+//        ],
         [
                 'src' : 'https://paddleocr.bj.bcebos.com/dygraph_v2.0/lite/ocr_v2_for_cpu.tar.gz',
                 'dest' : 'src/main/assets/models'
@@ -55,6 +56,13 @@ def archives = [
         [
                 'src' : 'https://paddleocr.bj.bcebos.com/dygraph_v2.0/lite/ch_dict.tar.gz',
                 'dest' : 'src/main/assets/labels'
+        ]
+]
+
+def zipArchives = [
+        [
+            'src' : 'https://phoenixnap.dl.sourceforge.net/project/opencvlibrary/4.5.5/opencv-4.5.5-android-sdk.zip',
+            'dest': 'OpenCV'
         ]
 ]
 
@@ -82,6 +90,24 @@ task downloadAndExtractArchives(type: DefaultTask) {
             if (copyFiles) {
                 copy {
                     from tarTree("${cachePath}/${cacheName}.tar.gz")
+                    into "${archive.dest}"
+                }
+            }
+        }
+        zipArchives.eachWithIndex { archive, index ->
+            MessageDigest messageDigest = MessageDigest.getInstance('MD5')
+            messageDigest.update(archive.src.bytes)
+            String cacheName = new BigInteger(1, messageDigest.digest()).toString(32)
+            // Download the target archive if not exists
+            boolean copyFiles = !file("${archive.dest}").exists()
+            if (!file("${cachePath}/${cacheName}.zip").exists()) {
+                ant.get(src: archive.src, dest: file("${cachePath}/${cacheName}.zip"))
+                copyFiles = true; // force to copy files from the latest archive files
+            }
+            // Extract the target archive if its dest path does not exists
+            if (copyFiles) {
+                copy {
+                    from zipTree("${cachePath}/${cacheName}.zip")
                     into "${archive.dest}"
                 }
             }

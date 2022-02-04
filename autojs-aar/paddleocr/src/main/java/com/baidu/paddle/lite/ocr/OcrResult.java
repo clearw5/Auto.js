@@ -5,7 +5,6 @@ import android.graphics.Rect;
 
 public class OcrResult {
     private String label;
-    private int wordCounts;
     private float confidence;
     private Rect bounds;
 

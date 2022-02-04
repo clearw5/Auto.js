@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.4.1)
 set(PaddleLite_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../PaddleLite")
 include_directories(${PaddleLite_DIR}/cxx/include)
 
-set(OpenCV_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../OpenCV/sdk/native/jni")
+set(OpenCV_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../OpenCV/OpenCV-android-sdk/sdk/native/jni")
 message(STATUS "opencv dir: ${OpenCV_DIR}")
 find_package(OpenCV REQUIRED)
 message(STATUS "OpenCV libraries: ${OpenCV_LIBS}")
