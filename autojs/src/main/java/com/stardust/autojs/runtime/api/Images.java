@@ -30,6 +30,7 @@ import com.stardust.concurrent.VolatileDispose;
 import com.stardust.pio.UncheckedIOException;
 import com.stardust.util.ScreenMetrics;
 
+import org.mozilla.javascript.ast.Loop;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
@@ -83,12 +84,11 @@ public class Images {
                 if (GlobalScreenCapture.getInstance().hasPermission()) {
                     Log.d(TAG, "requestScreenCapture hasPermission 直接注册");
                     GlobalScreenCapture.getInstance().setOrientation(orientation);
-                    GlobalScreenCapture.getInstance().register(mScriptRuntime.get().loopers.getMainLooper());
-                    new Handler(Looper.getMainLooper())
-                            .post(() -> {
-                                promiseAdapter.awaitResolver();
-                                promiseAdapter.resolve(true);
-                            });
+                    GlobalScreenCapture.getInstance().register(mScriptRuntime.get());
+                    new Thread(() -> {
+                        promiseAdapter.awaitResolver();
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> promiseAdapter.resolve(true), 50);
+                    }).start();
                     return promiseAdapter;
                 }
             }
@@ -97,7 +97,7 @@ public class Images {
         mScreenCaptureRequester.setOnActivityResultCallback((result, data) -> {
             if (result == Activity.RESULT_OK) {
                 GlobalScreenCapture.getInstance().initCapture(mContext, data, orientation);
-                GlobalScreenCapture.getInstance().register(mScriptRuntime.get().loopers.getMainLooper());
+                GlobalScreenCapture.getInstance().register(mScriptRuntime.get());
                 promiseAdapter.resolve(true);
             } else {
                 promiseAdapter.resolve(false);
@@ -277,7 +277,7 @@ public class Images {
     public void releaseScreenCapturer() {
         if (GlobalScreenCapture.getInstance().hasPermission()) {
             synchronized (GlobalScreenCapture.getInstance()) {
-                GlobalScreenCapture.getInstance().unregister(mScriptRuntime.get().loopers.getMainLooper());
+                GlobalScreenCapture.getInstance().unregister(mScriptRuntime.get());
             }
         }
     }

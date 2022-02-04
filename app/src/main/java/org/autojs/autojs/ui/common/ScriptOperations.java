@@ -369,6 +369,7 @@ public class ScriptOperations {
     public void timedTask(ScriptFile scriptFile) {
         TimedTaskSettingActivity_.intent(mContext)
                 .extra(ScriptIntents.EXTRA_KEY_PATH, scriptFile.getPath())
+                .flags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .start();
     }
 

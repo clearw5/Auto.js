@@ -66,7 +66,7 @@ public class ScriptExecuteActivity extends AppCompatActivity {
             return;
         }
         ScriptExecution execution = ScriptEngineService.getInstance().getScriptExecution(executionId);
-        if (execution == null || !(execution instanceof ActivityScriptExecution)) {
+        if (!(execution instanceof ActivityScriptExecution)) {
             super.finish();
             return;
         }

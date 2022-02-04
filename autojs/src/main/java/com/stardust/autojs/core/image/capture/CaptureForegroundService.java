@@ -85,6 +85,7 @@ public class CaptureForegroundService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        GlobalScreenCapture.getInstance().foregroundServiceDown();
         stopForeground(true);
     }
 }

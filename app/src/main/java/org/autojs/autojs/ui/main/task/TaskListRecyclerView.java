@@ -1,6 +1,7 @@
 package org.autojs.autojs.ui.main.task;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -250,6 +251,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
                         : TimedTaskSettingActivity.EXTRA_TASK_ID;
                 TimedTaskSettingActivity_.intent(getContext())
                         .extra(extra, task.getId())
+                        .flags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         .start();
             }
         }

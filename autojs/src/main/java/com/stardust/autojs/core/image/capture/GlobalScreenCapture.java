@@ -12,15 +12,19 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.OrientationEventListener;
 
+import com.stardust.autojs.runtime.ScriptRuntime;
 import com.stardust.autojs.runtime.exception.ScriptException;
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException;
 import com.stardust.lang.ThreadCompat;
 import com.stardust.util.ScreenMetrics;
+
+import org.mozilla.javascript.ast.Loop;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,7 +41,7 @@ public class GlobalScreenCapture {
     public static final int ORIENTATION_PORTRAIT = Configuration.ORIENTATION_PORTRAIT;
 
     private static final String TAG = "GlobalScreenCapture";
-    private final ConcurrentHashMap<Thread, Boolean> registeredThreads = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<ScriptRuntime, Boolean> registeredRuntimes = new ConcurrentHashMap<>();
 
     private MediaProjectionManager mProjectionManager;
     private ImageReader mImageReader;
@@ -83,24 +87,16 @@ public class GlobalScreenCapture {
         if (mScreenDensity == 0) {
             mScreenDensity = ScreenMetrics.getDeviceScreenDensity();
         }
-        if (!foregroundServiceStarted) {
-            try {
-                this.wait();
-            } catch (InterruptedException e) {
-                throw new ScriptInterruptedException();
-            }
-        }
+        awaitForegroundServiceIfNeeded();
         mProjectionManager = (MediaProjectionManager) context.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
         mMediaProjection = mProjectionManager.getMediaProjection(Activity.RESULT_OK, (Intent) data.clone());
         mContext = context;
         mData = (Intent) data.clone();
         new Thread(() -> {
-            Looper.prepare();
             mHandler = new Handler(Looper.getMainLooper());
             synchronized (GlobalScreenCapture.this) {
                 GlobalScreenCapture.this.notifyAll();
             }
-            Looper.loop();
         }).start();
         synchronized (this) {
             try {
@@ -114,13 +110,35 @@ public class GlobalScreenCapture {
         hasPermission = true;
     }
 
+    private void awaitForegroundServiceIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !foregroundServiceStarted) {
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                throw new ScriptInterruptedException();
+            }
+        }
+    }
+
     public synchronized void notifyStarted() {
         this.foregroundServiceStarted = true;
         this.notify();
     }
 
+    public void foregroundServiceDown() {
+        this.foregroundServiceStarted = false;
+    }
+
     public synchronized boolean hasPermission() {
-        return hasPermission;
+        if (!hasPermission) {
+            return false;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !foregroundServiceStarted) {
+            // 前台服务可能丢失，重新获取
+            mContext.startForegroundService(new Intent(mContext, CaptureForegroundService.class));
+            awaitForegroundServiceIfNeeded();
+            return foregroundServiceStarted;
+        }
+        return true;
     }
 
     public void setOrientation(int orientation) {
@@ -129,9 +147,12 @@ public class GlobalScreenCapture {
         }
         mOrientation = orientation;
         mDetectedOrientation = mContext.getResources().getConfiguration().orientation;
-        refreshVirtualDisplay(mOrientation == ORIENTATION_AUTO ? mDetectedOrientation : mOrientation);
+        refreshVirtualDisplay(getOrientation());
     }
 
+    private int getOrientation() {
+        return mOrientation == ORIENTATION_AUTO ? mDetectedOrientation : mOrientation;
+    }
 
     private void observeOrientation() {
         mOrientationEventListener = new OrientationEventListener(mContext) {
@@ -179,6 +200,7 @@ public class GlobalScreenCapture {
             mMediaProjection = mProjectionManager.getMediaProjection(Activity.RESULT_OK, (Intent) mData.clone());
         } catch (Exception e) {
             Log.d(TAG, "grantMediaProjection: 获取新projection失败 可能只是MIUI的bug " + e);
+            release();
         }
     }
 
@@ -246,33 +268,35 @@ public class GlobalScreenCapture {
                 startTime = System.currentTimeMillis();
                 Log.d(TAG, "capture: 获取截图失败，刷新virtualDisplay");
                 this.grantMediaProjection();
-                this.refreshVirtualDisplay(mOrientation);
+                this.refreshVirtualDisplay(getOrientation());
             }
         }
         throw new ScriptInterruptedException();
     }
 
-    public synchronized void unregister(Looper looper) {
-        Log.d(TAG, "unregister: " + looper.getThread().getName());
-        registeredThreads.remove(looper.getThread());
-        Iterator<Thread> keyThreads = registeredThreads.keySet().iterator();
-        while (keyThreads.hasNext()) {
-            Thread thread = keyThreads.next();
-            if (!thread.isAlive()) {
-                keyThreads.remove();
+    public synchronized void unregister(ScriptRuntime runtime) {
+        Log.d(TAG, "unregister: " + runtime);
+        registeredRuntimes.remove(runtime);
+        Iterator<ScriptRuntime> keyRuntime = registeredRuntimes.keySet().iterator();
+        while (keyRuntime.hasNext()) {
+            ScriptRuntime scriptRuntime = keyRuntime.next();
+            Looper looper = scriptRuntime.loopers.getMainLooper();
+            if (looper == null || !looper.getThread().isAlive()) {
+                keyRuntime.remove();
             }
         }
-        noRegister = registeredThreads.size() == 0;
+        noRegister = registeredRuntimes.size() == 0;
         if (noRegister) {
             Log.d(TAG, "全部引擎已注销，释放截图权限，清除通知");
             release();
         }
     }
 
-    public synchronized void register(Looper looper) {
-        Log.d(TAG, "新引擎注册：" + looper.getThread().getName() + " hasPermission? " + hasPermission);
+    public synchronized void register(ScriptRuntime runtime) {
+        Looper looper = runtime.loopers.getMainLooper();
+        Log.d(TAG, "新引擎注册：" + (looper != null ? looper.getThread().getName() : runtime.engines.myEngine().toString()) + " hasPermission? " + hasPermission);
         noRegister = false;
-        registeredThreads.put(looper.getThread(), true);
+        registeredRuntimes.put(runtime, true);
     }
 
     private void release() {

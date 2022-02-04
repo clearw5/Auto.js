@@ -216,9 +216,7 @@ public class ScriptRuntime {
         this.automator = new SimpleActionAutomator(accessibilityBridge, this);
         automator.setScreenMetrics(mScreenMetrics);
         this.info = accessibilityBridge.getInfoProvider();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            images = new Images(context, this, builder.mScreenCaptureRequester);
-        }
+        images = new Images(context, this, builder.mScreenCaptureRequester);
         engines = new Engines(builder.mEngineService, this);
         dialogs = new Dialogs(this);
         device = new Device(context);

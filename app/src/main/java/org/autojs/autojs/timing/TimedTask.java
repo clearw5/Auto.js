@@ -214,7 +214,8 @@ public class TimedTask extends BaseModel {
                 .putExtra(ScriptIntents.EXTRA_KEY_PATH, mScriptPath)
                 .putExtra(ScriptIntents.EXTRA_KEY_DELAY, mDelay)
                 .putExtra(ScriptIntents.EXTRA_KEY_LOOP_TIMES, mLoopTimes)
-                .putExtra(ScriptIntents.EXTRA_KEY_LOOP_INTERVAL, mInterval);
+                .putExtra(ScriptIntents.EXTRA_KEY_LOOP_INTERVAL, mInterval)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
 
