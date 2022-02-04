@@ -1,0 +1,5 @@
+/build
+cache/
+OpenCV/
+PaddleLite/
+.cxx/

@@ -74,6 +74,7 @@ dependencies {
     api project(path: ':autojs-aar:emulatorview')
     api project(path: ':autojs-aar:term')
     api project(path: ':autojs-aar:rhino-jdk7')
+    api project(path: ':autojs-aar:paddleocr')
     api project(path: ':common')
     api project(path: ':automator')
     implementation 'com.rmtheis:tess-two:9.1.0'
