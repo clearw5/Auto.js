@@ -68,6 +68,12 @@ public class ImageWrapper {
         return new ImageWrapper(mat);
     }
 
+    public static ImageWrapper ofMat(org.opencv.core.Mat mat) {
+        if (mat == null) {
+            return null;
+        }
+        return new ImageWrapper(new Mat(mat.clone().getNativeObjAddr()));
+    }
 
     public static ImageWrapper ofBitmap(Bitmap bitmap) {
         if (bitmap == null) {

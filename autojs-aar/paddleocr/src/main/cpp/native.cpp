@@ -48,6 +48,12 @@ str_to_cpu_mode(const std::string &cpu_mode) {
                  ::toupper);
   auto index = cpu_mode_map.find(upper_key);
   if (index == cpu_mode_map.end()) {
+    // 可能因为大小写转换后找不到 直接通过入参查找
+    index = cpu_mode_map.find(cpu_mode);
+    if (index != cpu_mode_map.end()) {
+      LOGI("find cpu_mode by &cpu_mode %s", cpu_mode.c_str());
+      return index->second;
+    }
     LOGE("cpu_mode not found %s", upper_key.c_str());
     return paddle::lite_api::LITE_POWER_HIGH;
   } else {

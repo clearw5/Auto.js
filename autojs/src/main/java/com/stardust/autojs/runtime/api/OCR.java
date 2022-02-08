@@ -8,22 +8,26 @@ import com.baidu.paddle.lite.ocr.OcrResult;
 import com.baidu.paddle.lite.ocr.Predictor;
 import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.core.image.ImageWrapper;
+import com.stardust.concurrent.VolatileDispose;
 
 import java.util.Collections;
 import java.util.List;
 
 public class OCR {
 
-    private Predictor mPredictor = new Predictor();
+    private final Predictor mPredictor = new Predictor();
+
 
     public synchronized boolean init(boolean useSlim) {
-        if (!mPredictor.isLoaded) {
+        if (!mPredictor.isLoaded || useSlim != mPredictor.isUseSlim()) {
             if (Looper.getMainLooper() == Looper.myLooper()) {
+                VolatileDispose<Boolean> result = new VolatileDispose<>();
                 new Thread(() -> {
-                    mPredictor.init(GlobalAppContext.get(), useSlim);
+                    result.setAndNotify(mPredictor.init(GlobalAppContext.get(), useSlim));
                 }).start();
+                return result.blockedGet();
             } else {
-                mPredictor.init(GlobalAppContext.get(), useSlim);
+                return mPredictor.init(GlobalAppContext.get(), useSlim);
             }
         }
         return mPredictor.isLoaded;
@@ -33,7 +37,7 @@ public class OCR {
         mPredictor.releaseModel();
     }
 
-    public List<OcrResult> R(ImageWrapper image, int cpuThreadNum, boolean useSlim) {
+    public List<OcrResult> detect(ImageWrapper image, int cpuThreadNum, boolean useSlim) {
         if (image == null) {
             return Collections.emptyList();
         }
@@ -41,34 +45,38 @@ public class OCR {
         if (bitmap == null || bitmap.isRecycled()) {
             return Collections.emptyList();
         }
+        if (mPredictor.cpuThreadNum != cpuThreadNum) {
+            mPredictor.releaseModel();
+            mPredictor.cpuThreadNum = cpuThreadNum;
+        }
         init(useSlim);
-        return mPredictor.ocr(bitmap, cpuThreadNum);
+        return mPredictor.runOcr(bitmap);
     }
 
-    public List<OcrResult> R(ImageWrapper image, int cpuThreadNum) {
-        return R(image, cpuThreadNum, true);
+    public List<OcrResult> detect(ImageWrapper image, int cpuThreadNum) {
+        return detect(image, cpuThreadNum, true);
     }
 
-    public List<OcrResult> R(ImageWrapper image) {
-        return R(image, 4, true);
+    public List<OcrResult> detect(ImageWrapper image) {
+        return detect(image, 4, true);
     }
 
-    public String[] T(ImageWrapper image, int cpuThreadNum, boolean useSlim) {
-        List<OcrResult> words_result = R(image, cpuThreadNum, useSlim);
+    public String[] recognizeText(ImageWrapper image, int cpuThreadNum, boolean useSlim) {
+        List<OcrResult> words_result = detect(image, cpuThreadNum, useSlim);
         String[] outputResult = new String[words_result.size()];
         for (int i = 0; i < words_result.size(); i++) {
-            outputResult[i] = words_result.get(i).words;
-            Log.i("outputResult", outputResult[i].toString()); // show LOG in Logcat panel
+            outputResult[i] = words_result.get(i).getLabel();
+            Log.i("outputResult", outputResult[i]); // show LOG in Logcat panel
         }
         return outputResult;
     }
 
-    public String[] T(ImageWrapper image, int cpuThreadNum) {
-        return T(image, cpuThreadNum, true);
+    public String[] recognizeText(ImageWrapper image, int cpuThreadNum) {
+        return recognizeText(image, cpuThreadNum, true);
     }
 
-    public String[] T(ImageWrapper image) {
-        return T(image, 4, true);
+    public String[] recognizeText(ImageWrapper image) {
+        return recognizeText(image, 4, true);
     }
 
 }

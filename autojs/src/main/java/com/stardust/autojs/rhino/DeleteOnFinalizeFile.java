@@ -13,7 +13,7 @@ public class DeleteOnFinalizeFile {
     public DeleteOnFinalizeFile(File file) {
         fileObject = file;
     }
-/*
+
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
@@ -23,5 +23,4 @@ public class DeleteOnFinalizeFile {
                 fileObject.delete();
         }
     }
- */
 }

@@ -452,6 +452,7 @@ public class ScriptRuntime {
         sensors = null;
         ignoresException(timers::recycle);
         ignoresException(ui::recycle);
+        ignoresException(ocr::release);
         ignoresException(() -> mTopLevelScope.get().markReleased(engines.myEngine().getSource().toString()));
     }
 

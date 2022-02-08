@@ -33,7 +33,7 @@ public class OCRPredictorNative {
     public OCRPredictorNative(Config config) {
         this.config = config;
         loadLibrary();
-        nativePointer = init(config.detModelFilename, config.recModelFilename,config.clsModelFilename,
+        nativePointer = init(config.detModelFilename, config.recModelFilename, config.clsModelFilename,
                 config.cpuThreadNum, config.cpuPower);
         Log.i("OCRPredictorNative", "load success " + nativePointer);
 
@@ -44,8 +44,7 @@ public class OCRPredictorNative {
         Log.i("OCRPredictorNative", "begin to run image " + inputData.length + " " + width + " " + height);
         float[] dims = new float[]{1, channels, height, width};
         float[] rawResults = forward(nativePointer, inputData, dims, originalImage);
-        ArrayList<OcrResultModel> results = postprocess(rawResults);
-        return results;
+        return postprocess(rawResults);
     }
 
     public static class Config {
@@ -57,15 +56,14 @@ public class OCRPredictorNative {
 
     }
 
-    // 原代码中该方法名为“destory()”，此处应该是拼写错误，其它类中调用此方法的名称也已修正
-    public void destroy(){
+    public void destroy() {
         if (nativePointer != 0) {
             release(nativePointer);
             nativePointer = 0;
         }
     }
 
-    protected native long init(String detModelPath, String recModelPath,String clsModelPath, int threadNum, String cpuMode);
+    protected native long init(String detModelPath, String recModelPath, String clsModelPath, int threadNum, String cpuMode);
 
     protected native float[] forward(long pointer, float[] buf, float[] ddims, Bitmap originalImage);
 

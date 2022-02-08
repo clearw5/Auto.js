@@ -2,16 +2,11 @@ package com.baidu.paddle.lite.ocr;
 
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.Parcelable;
 
 public class OcrResult {
-    public float confidence;
-    public float preprocessTime;
-    public float inferenceTime;
-    public String words;
-    public Rect bounds;
-    public RectLocation location;
     private String label;
+    private float confidence;
+    private Rect bounds;
 
     public OcrResult() {
     }
@@ -63,8 +58,16 @@ public class OcrResult {
         return bounds;
     }
 
+    public RectLocation getLocation() {
+        return new RectLocation(bounds);
+    }
+
     public void setBounds(Rect bounds) {
         this.bounds = bounds;
+    }
+
+    public String getWords() {
+        return label.trim().replace("\r", "");
     }
 
     public static class RectLocation {
@@ -73,11 +76,21 @@ public class OcrResult {
         public int width;
         public int height;
 
+        public RectLocation() {
+        }
+
         public RectLocation(int left, int top, int width, int height) {
             this.left = left;
             this.top = top;
             this.width = width;
             this.height = height;
+        }
+
+        public RectLocation(Rect rect) {
+            left = rect.left;
+            top = rect.top;
+            width = rect.right - rect.left;
+            height = rect.bottom - rect.top;
         }
     }
 }
