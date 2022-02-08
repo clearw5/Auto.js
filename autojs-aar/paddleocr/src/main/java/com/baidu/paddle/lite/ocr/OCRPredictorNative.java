@@ -57,7 +57,8 @@ public class OCRPredictorNative {
 
     }
 
-    public void destory(){
+    // 原代码中该方法名为“destory()”，此处应该是拼写错误，其它类中调用此方法的名称也已修正
+    public void destroy(){
         if (nativePointer != 0) {
             release(nativePointer);
             nativePointer = 0;
@@ -105,6 +106,6 @@ public class OCRPredictorNative {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        destory();
+        destroy();
     }
 }

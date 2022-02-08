@@ -1,0 +1,2 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('libp7zip-1.7.2.aar'))
