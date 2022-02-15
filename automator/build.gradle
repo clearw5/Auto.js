@@ -9,8 +9,6 @@ android {
     defaultConfig {
         minSdkVersion versions.mini
         targetSdkVersion versions.target
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -40,7 +38,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation "junit:junit:$junit_version"
-    api "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation("androidx.appcompat:appcompat-resources:$appcompat_version")
     api project(path: ':common')
 }

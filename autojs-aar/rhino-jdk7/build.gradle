@@ -8,8 +8,6 @@ android {
     defaultConfig {
         minSdk versions.mini
         targetSdk versions.target
-        versionCode 1
-        versionName "1.0"
     }
 
     buildTypes {

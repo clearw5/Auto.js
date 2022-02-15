@@ -49,14 +49,14 @@ def archives = [
 //                'src' : 'https://paddlelite-demo.bj.bcebos.com/libs/android/opencv-4.2.0-android-sdk.tar.gz',
 //                'dest': 'OpenCV'
 //        ],
-        [
-                'src' : 'https://paddleocr.bj.bcebos.com/dygraph_v2.0/lite/ocr_v2_for_cpu.tar.gz',
-                'dest' : 'src/main/assets/models'
-        ],
-        [
-                'src' : 'https://paddleocr.bj.bcebos.com/dygraph_v2.0/lite/ch_dict.tar.gz',
-                'dest' : 'src/main/assets/labels'
-        ]
+//        [
+//                'src' : 'https://paddleocr.bj.bcebos.com/dygraph_v2.0/lite/ocr_v2_for_cpu.tar.gz',
+//                'dest' : 'src/main/assets/models'
+//        ],
+//        [
+//                'src' : 'https://paddleocr.bj.bcebos.com/dygraph_v2.0/lite/ch_dict.tar.gz',
+//                'dest' : 'src/main/assets/labels'
+//        ]
 ]
 
 def zipArchives = [

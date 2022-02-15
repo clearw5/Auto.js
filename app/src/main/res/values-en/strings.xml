@@ -153,7 +153,7 @@
     <string name="summary_guard_mode">Prevent automation of scripts when Auto.js in the front</string>
     <string name="text_layout_inspector_is_dumping">Inspecting layout…</string>
     <string name="text_force_stop">Force stop</string>
-    <string name="text_execution_finished">\\n------------\\n[%s]Finished，spent %f seconds.</string>
+    <string name="text_execution_finished" formatted="false">\\n------------\\n[%s]Finished，spent %f seconds.</string>
     <string name="text_about_me_and_repo">About app and developer</string>
     <string name="text_attribute">Attribute</string>
     <string name="text_value">Value</string>
