@@ -197,6 +197,7 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
     @Click(R.id.icon)
     void selectIcon() {
         ShortcutIconSelectActivity_.intent(this)
+                .flags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .startForResult(REQUEST_CODE);
     }
 

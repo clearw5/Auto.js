@@ -189,6 +189,7 @@ public class ProjectConfigActivity extends BaseActivity {
     @Click(R.id.icon)
     void selectIcon() {
         ShortcutIconSelectActivity_.intent(this)
+                .flags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .startForResult(REQUEST_CODE);
     }
 

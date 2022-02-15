@@ -149,7 +149,11 @@ public class ImageWrapper {
 
     public synchronized void recycle() {
         if (mBitmap != null && !mBitmap.isRecycled()) {
-            mBitmap.recycle();
+            try {
+                mBitmap.recycle();
+            } catch (Exception e) {
+                Log.e("ImageWrapper", "回收bitmap失败");
+            }
             mBitmap = null;
         } else if (mBitmap != null && mBitmap.isRecycled()) {
             Log.d("ImageWrapper", "recycle bitmap: not null but is recycled");

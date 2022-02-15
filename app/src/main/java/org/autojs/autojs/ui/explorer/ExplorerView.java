@@ -2,6 +2,7 @@ package org.autojs.autojs.ui.explorer;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
@@ -354,6 +355,7 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
             case R.id.action_build_apk:
                 BuildActivity_.intent(getContext())
                         .extra(BuildActivity.EXTRA_SOURCE, mSelectedItem.getPath())
+                        .flags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         .start();
                 notifyOperated();
                 break;
