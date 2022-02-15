@@ -63,6 +63,7 @@ public class OCR {
 
     public String[] recognizeText(ImageWrapper image, int cpuThreadNum, boolean useSlim) {
         List<OcrResult> words_result = detect(image, cpuThreadNum, useSlim);
+        Collections.sort(words_result);
         String[] outputResult = new String[words_result.size()];
         for (int i = 0; i < words_result.size(); i++) {
             outputResult[i] = words_result.get(i).getLabel();

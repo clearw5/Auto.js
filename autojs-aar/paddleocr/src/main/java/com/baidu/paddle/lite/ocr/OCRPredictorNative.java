@@ -7,10 +7,12 @@ import org.opencv.android.OpenCVLoader;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class OCRPredictorNative {
 
     private static final AtomicBoolean isSOLoaded = new AtomicBoolean();
+    private static final ReentrantLock lock = new ReentrantLock();
 
     public static void loadLibrary() throws RuntimeException {
         if (!isSOLoaded.get() && isSOLoaded.compareAndSet(false, true)) {
@@ -19,9 +21,8 @@ public class OCRPredictorNative {
                 OpenCVLoader.initDebug();
                 System.loadLibrary("Native");
             } catch (Throwable e) {
-                RuntimeException exception = new RuntimeException(
+                throw new RuntimeException(
                         "Load libNative.so failed, please check it exists in apk file.", e);
-                throw exception;
             }
         }
     }
@@ -31,20 +32,29 @@ public class OCRPredictorNative {
     private long nativePointer = 0;
 
     public OCRPredictorNative(Config config) {
-        this.config = config;
-        loadLibrary();
-        nativePointer = init(config.detModelFilename, config.recModelFilename, config.clsModelFilename,
-                config.cpuThreadNum, config.cpuPower);
-        Log.i("OCRPredictorNative", "load success " + nativePointer);
-
+        lock.lock();
+        try {
+            this.config = config;
+            loadLibrary();
+            nativePointer = init(config.detModelFilename, config.recModelFilename, config.clsModelFilename,
+                    config.cpuThreadNum, config.cpuPower);
+            Log.i("OCRPredictorNative", "load success " + nativePointer);
+        } finally {
+            lock.unlock();
+        }
     }
 
 
     public ArrayList<OcrResultModel> runImage(float[] inputData, int width, int height, int channels, Bitmap originalImage) {
-        Log.i("OCRPredictorNative", "begin to run image " + inputData.length + " " + width + " " + height);
-        float[] dims = new float[]{1, channels, height, width};
-        float[] rawResults = forward(nativePointer, inputData, dims, originalImage);
-        return postprocess(rawResults);
+        lock.lock();
+        try {
+            Log.i("OCRPredictorNative", "begin to run image " + inputData.length + " " + width + " " + height);
+            float[] dims = new float[]{1, channels, height, width};
+            float[] rawResults = forward(nativePointer, inputData, dims, originalImage);
+            return postprocess(rawResults);
+        } finally {
+            lock.unlock();
+        }
     }
 
     public static class Config {

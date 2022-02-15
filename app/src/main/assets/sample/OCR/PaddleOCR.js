@@ -8,16 +8,22 @@ let useSlim = false
 let predictor = new Predictor()
 // predictor.cpuThreadNum = 4 //可以自定义使用CPU的线程数
 // 初始化模型 首次运行时会比较耗时
-let loadSuccess = predictor.init(context, useSlim) // predictor.init(context) 为默认不使用精简版
-// 内置默认 modelPath 为 models/ocr_v2_for_cpu，初始化自定义模型请写绝对路径否则无法获取到
-// 内置默认 labelPath 为 labels/ppocr_keys_v1.txt
-// let modelPath = files.path('./models/customize') // 指定自定义模型路径
-// let labelPath = files.path('./models/customize') // 指定自定义label路径
-// 使用自定义模型时det rec cls三个模型文件名称需要手动指定
-// predictor.detModelFilename = 'ch_ppocr_mobile_v2.0_det_opt.nb'
-// predictor.recModelFilename = 'ch_ppocr_mobile_v2.0_rec_opt.nb'
-// predictor.clsModelFilename = 'ch_ppocr_mobile_v2.0_cls_opt.nb'
-// predictor.init(context, modelPath, labelPath)
+let loading = threads.disposable()
+// 建议在新线程中初始化模型
+threads.start(function () {
+  loading.setAndNotify(predictor.init(context, useSlim))
+  // loading.setAndNotify(predictor.init(context)) 为默认不使用精简版
+  // 内置默认 modelPath 为 models/ocr_v2_for_cpu，初始化自定义模型请写绝对路径否则无法获取到
+  // 内置默认 labelPath 为 labels/ppocr_keys_v1.txt
+  // let modelPath = files.path('./models/customize') // 指定自定义模型路径
+  // let labelPath = files.path('./models/customize') // 指定自定义label路径
+  // 使用自定义模型时det rec cls三个模型文件名称需要手动指定
+  // predictor.detModelFilename = 'ch_ppocr_mobile_v2.0_det_opt.nb'
+  // predictor.recModelFilename = 'ch_ppocr_mobile_v2.0_rec_opt.nb'
+  // predictor.clsModelFilename = 'ch_ppocr_mobile_v2.0_cls_opt.nb'
+  // loading.setAndNotify(predictor.init(context, modelPath, labelPath))
+})
+let loadSuccess = loading.blockedGet()
 toastLog('加载模型结果：' + loadSuccess)
 let start = new Date()
 let img = images.read('test.png')
@@ -28,7 +34,3 @@ log('识别结果：' + JSON.stringify(results))
 predictor.releaseModel()
 // 回收图片
 img.recycle()
-
-
-
-

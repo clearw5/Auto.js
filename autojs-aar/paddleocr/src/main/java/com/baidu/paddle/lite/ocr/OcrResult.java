@@ -3,7 +3,7 @@ package com.baidu.paddle.lite.ocr;
 import android.graphics.Point;
 import android.graphics.Rect;
 
-public class OcrResult {
+public class OcrResult implements Comparable<OcrResult> {
     private String label;
     private float confidence;
     private Rect bounds;
@@ -68,6 +68,16 @@ public class OcrResult {
 
     public String getWords() {
         return label.trim().replace("\r", "");
+    }
+
+    @Override
+    public int compareTo(OcrResult o) {
+        // 上下差距小于二分之一的高度 判定为同一行
+        if (Math.abs(this.bounds.bottom - o.bounds.bottom) < this.bounds.height() / 2) {
+            return this.bounds.left - o.bounds.left;
+        } else {
+            return this.bounds.bottom - o.bounds.bottom;
+        }
     }
 
     public static class RectLocation {
