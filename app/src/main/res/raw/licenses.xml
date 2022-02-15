@@ -101,4 +101,16 @@
         <url>http://www.lingala.net/zip4j/</url>
         <license>Apache Software License 2.0</license>
     </notice>
+    <notice>
+        <name>p7zip-android</name>
+        <copyright/>
+        <url>https://sparanoid.com/lab/7z/</url>
+        <license>GNU General Public License 3.0</license>
+    </notice>
+    <notice>
+        <name>paddle</name>
+        <copyright>Copyright (c) 2016 PaddlePaddle Authors. All Rights Reserved</copyright>
+        <url>https://github.com/paddlepaddle/paddle</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
 </notices>
