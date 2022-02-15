@@ -111,7 +111,7 @@ public class GlobalScreenCapture {
     }
 
     private void awaitForegroundServiceIfNeeded() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !foregroundServiceStarted) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !foregroundServiceStarted) {
             try {
                 this.wait();
             } catch (InterruptedException e) {
@@ -132,7 +132,7 @@ public class GlobalScreenCapture {
     public synchronized boolean hasPermission() {
         if (!hasPermission) {
             return false;
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !foregroundServiceStarted) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !foregroundServiceStarted) {
             // 前台服务可能丢失，重新获取
             mContext.startForegroundService(new Intent(mContext, CaptureForegroundService.class));
             awaitForegroundServiceIfNeeded();
