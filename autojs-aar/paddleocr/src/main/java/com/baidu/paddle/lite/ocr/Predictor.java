@@ -138,7 +138,8 @@ public class Predictor {
             // Read model files from custom path if the first character of mode path is '/'
             // otherwise copy model to cache from assets
             realPath = appCtx.getCacheDir() + "/" + modelPath;
-            Utils.copyDirectoryFromAssets(appCtx, modelPath, realPath);
+            // 没有必要每次都复制
+            Utils.copyDirectoryFromAssetsIfNeeded(appCtx, modelPath, realPath);
         }
 
         OCRPredictorNative.Config config = new OCRPredictorNative.Config();

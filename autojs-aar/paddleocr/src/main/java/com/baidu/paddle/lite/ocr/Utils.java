@@ -61,6 +61,16 @@ public class Utils {
         }
     }
 
+    public static void copyDirectoryFromAssetsIfNeeded(Context appCtx, String srcDir, String dstDir) {
+        if (dstDir.isEmpty()) {
+            return;
+        }
+        if (new File(dstDir).exists()) {
+            return;
+        }
+        copyDirectoryFromAssets(appCtx, srcDir, dstDir);
+    }
+
     public static float[] parseFloatsFromString(String string, String delimiter) {
         String[] pieces = string.trim().toLowerCase().split(delimiter);
         float[] floats = new float[pieces.length];
