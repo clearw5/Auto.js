@@ -16,6 +16,9 @@ import com.stardust.ext.ifNull
 import java.lang.ref.WeakReference
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.locks.Condition
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * Created by Stardust on 2018/3/16.
@@ -24,11 +27,16 @@ import java.util.concurrent.Executors
 @SuppressLint("ViewConstructor")
 class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : TextureView(context),
     TextureView.SurfaceTextureListener {
-    @Volatile
-    private var mDrawing = true
     private val mEventEmitter: EventEmitter = EventEmitter(scriptRuntime.bridges)
     private val mScriptRuntime: WeakReference<ScriptRuntime>
     private var mDrawingThreadPool: ExecutorService? = null
+    private val state: AtomicReference<CanvasState>
+    private val lock: ReentrantLock
+    private val resumed: Condition
+
+    private enum class CanvasState {
+        INIT, DRAWING, PAUSE, EXITING, END
+    }
 
     @Volatile
     private var mTimePerDraw = (1000 / 30).toLong()
@@ -39,6 +47,9 @@ class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : Texture
     init {
         surfaceTextureListener = this
         mScriptRuntime = WeakReference(scriptRuntime)
+        state = AtomicReference(CanvasState.INIT)
+        lock = ReentrantLock()
+        resumed = lock.newCondition()
     }
 
     fun setMaxFps(maxFps: Int) {
@@ -49,37 +60,67 @@ class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : Texture
         }
     }
 
+    private fun drawOnce(scriptCanvas: ScriptCanvas) {
+        var canvas: Canvas? = null
+        lock.lock()
+        try {
+            if (state.get() != CanvasState.DRAWING) {
+                Log.d(LOG_TAG, "canvas state is not drawing ${state.get()}")
+                return
+            }
+            Log.d(LOG_TAG, "canvas draw")
+            val time = SystemClock.uptimeMillis()
+            canvas = lockCanvas()
+            scriptCanvas.setCanvas(canvas)
+            emit("draw", scriptCanvas, this@ScriptCanvasView)
+            if (state.get() != CanvasState.DRAWING) {
+                Log.d(LOG_TAG, "canvas state is not drawing ${state.get()}")
+                return
+            }
+            val dt = mTimePerDraw - (SystemClock.uptimeMillis() - time)
+            if (dt > 0) {
+                sleep(dt)
+            }
+        } catch (e: Exception) {
+            mScriptRuntime.get()?.exit(e)
+            state.set(CanvasState.END)
+        } finally {
+            if (canvas != null) {
+                unlockCanvasAndPost(canvas)
+            }
+            lock.unlock()
+        }
+    }
+
     @Synchronized
     private fun performDraw() {
         ::mDrawingThreadPool.ifNull {
             Executors.newCachedThreadPool()
         }.run {
             execute {
-                var canvas: Canvas? = null
-                var time = SystemClock.uptimeMillis()
-                val scriptCanvas = ScriptCanvas()
                 try {
-                    while (mDrawing && !mScriptRuntime.get()?.isStopped!!) {
-                        canvas = lockCanvas()
-                        scriptCanvas.setCanvas(canvas)
-                        emit("draw", scriptCanvas, this@ScriptCanvasView)
-                        if (canvas != null) {
-                            unlockCanvasAndPost(canvas)
+                    val scriptCanvas = ScriptCanvas()
+                    while (true) {
+                        if (mScriptRuntime.get()?.isStopped == true) {
+                            Log.d(LOG_TAG, "performDraw: script runtime stopped ${mScriptRuntime.get()?.isStopped}")
+                            break
                         }
-                        canvas = null
-                        val dt = mTimePerDraw - (SystemClock.uptimeMillis() - time)
-                        if (dt > 0) {
-                            sleep(dt)
+                        try {
+                            lock.lock()
+                            while (state.get() == CanvasState.PAUSE || state.get() == CanvasState.INIT) {
+                                Log.d(LOG_TAG, "canvas draw paused, wait for resume")
+                                resumed.await()
+                                Log.d(LOG_TAG, "canvas draw resume")
+                            }
+                        } finally {
+                            lock.unlock()
                         }
-                        time = SystemClock.uptimeMillis()
+                        drawOnce(scriptCanvas)
                     }
                 } catch (e: Exception) {
+                    Log.e(LOG_TAG, "performDraw: error $e")
                     mScriptRuntime.get()?.exit(e)
-                    mDrawing = false
-                } finally {
-                    if (canvas != null) {
-                        unlockCanvasAndPost(canvas)
-                    }
+                    state.set(CanvasState.END)
                 }
             }
         }
@@ -99,10 +140,18 @@ class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : Texture
             LOG_TAG,
             "onWindowVisibilityChanged: " + this + ": visibility=" + visibility + ", mDrawingThreadPool=" + mDrawingThreadPool
         )
-        val oldDrawing = mDrawing
-        mDrawing = visibility == View.VISIBLE
-        if (!oldDrawing && mDrawing) {
-            performDraw()
+        if (visibility == View.VISIBLE) {
+            if (state.compareAndSet(CanvasState.PAUSE, CanvasState.DRAWING)) {
+                lock.lock()
+                try {
+                    Log.d(LOG_TAG, "resume canvas draw")
+                    resumed.signalAll()
+                } finally {
+                    lock.unlock()
+                }
+            }
+        } else if (state.compareAndSet(CanvasState.DRAWING, CanvasState.PAUSE)) {
+            Log.d(LOG_TAG, "pause canvas draw")
         }
         super.onWindowVisibilityChanged(visibility)
     }
@@ -160,16 +209,37 @@ class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : Texture
     }
 
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-        performDraw()
         Log.d(LOG_TAG, "onSurfaceTextureAvailable: ${this}, width = $width, height = $height")
+        if (state.compareAndSet(CanvasState.INIT, CanvasState.DRAWING)) {
+            Log.d(LOG_TAG, "start drawing")
+            lock.lock()
+            try {
+                performDraw()
+                resumed.signalAll()
+            } finally {
+                lock.unlock()
+            }
+        }
     }
 
     override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {}
 
     override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
         removeAllListeners()
-        mDrawing = false
-        mDrawingThreadPool?.shutdown()
+        val currentStat = state.get()
+        while (
+            currentStat != CanvasState.END && currentStat != CanvasState.EXITING
+            && !state.compareAndSet(currentStat, CanvasState.EXITING)
+        ) {
+            // waiting
+        }
+        lock.lock()
+        try {
+            state.set(CanvasState.END)
+            mDrawingThreadPool?.shutdown()
+        } finally {
+            lock.unlock()
+        }
         surfaceTextureListener = null
         setOnTouchListener(null)
         Log.d(LOG_TAG, "onSurfaceTextureDestroyed: ${this}")
