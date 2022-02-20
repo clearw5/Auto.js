@@ -68,7 +68,7 @@ class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : Texture
                 Log.d(LOG_TAG, "canvas state is not drawing ${state.get()}")
                 return
             }
-            Log.d(LOG_TAG, "canvas draw")
+//            Log.d(LOG_TAG, "canvas draw")
             val time = SystemClock.uptimeMillis()
             canvas = lockCanvas()
             scriptCanvas.setCanvas(canvas)

@@ -50,7 +50,9 @@ public class OCR {
             mPredictor.cpuThreadNum = cpuThreadNum;
         }
         init(useSlim);
-        return mPredictor.runOcr(bitmap);
+        List<OcrResult> results = mPredictor.runOcr(bitmap);
+        Collections.sort(results);
+        return results;
     }
 
     public List<OcrResult> detect(ImageWrapper image, int cpuThreadNum) {

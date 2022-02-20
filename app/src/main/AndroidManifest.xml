@@ -4,6 +4,7 @@
           package="org.autojs.autojs">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.BROADCAST_CLOSE_SYSTEM_DIALOGS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
@@ -143,7 +144,8 @@
             android:theme="@style/IssueReporterTheme"/>
 
 
-        <service android:name="org.autojs.autojs.external.foreground.ForegroundService" android:exported="false"/>
+        <service android:name="org.autojs.autojs.external.foreground.ForegroundService"
+            android:foregroundServiceType="mediaProjection" android:exported="false"/>
         <service android:name="org.autojs.autojs.external.ScriptExecutionIntentService" android:exported="false"/>
 
         <activity android:name=".external.tasker.TaskPrefEditActivity_" android:exported="false"/>
