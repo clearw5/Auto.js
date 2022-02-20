@@ -129,14 +129,27 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
         };
     }
 
-    public void ensureAccessibilityServiceEnabled() {
+    private String checkAccessibilityServiceEnabled() {
         if (AccessibilityService.Companion.getInstance() != null) {
-            return;
+            return null;
         }
         String errorMessage = null;
         if (AccessibilityServiceTool.isAccessibilityServiceEnabled(GlobalAppContext.get())) {
+            if (Pref.haveAdbPermission(getApplication())) {
+                // 尝试通过ADB权限移除无障碍权限 再重新通过ADB获取权限
+                if (AccessibilityServiceTool.disableAccessibilityServiceByAdb()
+                        && AccessibilityServiceTool.enableAccessibilityServiceByAdbAndWaitFor( 2000)) {
+                    // 重新获取无障碍权限成功
+                    return null;
+                }
+            }
             errorMessage = GlobalAppContext.getString(R.string.text_auto_operate_service_enabled_but_not_running);
         } else {
+            if (Pref.haveAdbPermission(getApplication())) {
+                if (AccessibilityServiceTool.enableAccessibilityServiceByAdbAndWaitFor( 2000)) {
+                    return null;
+                }
+            }
             if (Pref.shouldEnableAccessibilityServiceByRoot()) {
                 if (!AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(2000)) {
                     errorMessage = GlobalAppContext.getString(R.string.text_enable_accessibility_service_by_root_timeout);
@@ -145,6 +158,11 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
                 errorMessage = GlobalAppContext.getString(R.string.text_no_accessibility_permission);
             }
         }
+        return errorMessage;
+    }
+
+    public void ensureAccessibilityServiceEnabled() {
+        String errorMessage = checkAccessibilityServiceEnabled();
         if (errorMessage != null) {
             AccessibilityServiceTool.goToAccessibilitySetting();
             throw new ScriptException(errorMessage);
@@ -153,21 +171,7 @@ public class AutoJs extends com.stardust.autojs.AutoJs {
 
     @Override
     public void waitForAccessibilityServiceEnabled() {
-        if (AccessibilityService.Companion.getInstance() != null) {
-            return;
-        }
-        String errorMessage = null;
-        if (AccessibilityServiceTool.isAccessibilityServiceEnabled(GlobalAppContext.get())) {
-            errorMessage = GlobalAppContext.getString(R.string.text_auto_operate_service_enabled_but_not_running);
-        } else {
-            if (Pref.shouldEnableAccessibilityServiceByRoot()) {
-                if (!AccessibilityServiceTool.enableAccessibilityServiceByRootAndWaitFor(2000)) {
-                    errorMessage = GlobalAppContext.getString(R.string.text_enable_accessibility_service_by_root_timeout);
-                }
-            } else {
-                errorMessage = GlobalAppContext.getString(R.string.text_no_accessibility_permission);
-            }
-        }
+        String errorMessage = checkAccessibilityServiceEnabled();
         if (errorMessage != null) {
             AccessibilityServiceTool.goToAccessibilitySetting();
             if (!AccessibilityService.Companion.waitForEnabled(-1)) {

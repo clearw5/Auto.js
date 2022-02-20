@@ -1,6 +1,8 @@
 package com.stardust.auojs.inrt
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.preference.PreferenceManager
 
 import com.stardust.app.GlobalAppContext
@@ -38,6 +40,10 @@ object Pref {
 
     fun shouldEnableAccessibilityServiceByRoot(): Boolean {
         return preferences.getBoolean(getString(R.string.key_enable_accessibility_service_by_root), false)
+    }
+
+    fun haveAdbPermission(context: Context): Boolean {
+        return PackageManager.PERMISSION_GRANTED == context.packageManager.checkPermission("android.permission.WRITE_SECURE_SETTINGS", context.packageName)
     }
 
     fun shouldHideLogs(): Boolean {

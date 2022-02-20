@@ -178,30 +178,13 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         if (AccessibilityServiceTool.isAccessibilityServiceEnabled(this)) {
             return;
         }
-        boolean autoEnableAccessibility = false;
-
-        // 尝试自动设置无障碍权限，需要ADB授权 adb shell pm grant ${BuildConfig.APPLICATION_ID} android.permission.WRITE_SECURE_SETTINGS
-        try {
-            String enabledServices = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
-            String requiredService = BuildConfig.APPLICATION_ID + "/com.stardust.autojs.core.accessibility.AccessibilityService";
-            String services = enabledServices + ":" + requiredService;
-            String[] serviceInfo = services.split(":");
-            StringBuilder sb = new StringBuilder();
-            for (String service : serviceInfo) {
-                if (SERVICE_PATTERN.matcher(service).find()) {
-                    sb.append(service).append(":");
-                }
-            }
-            if (sb.length() > 0) {
-                sb.deleteCharAt(sb.length() - 1);
-            }
-            Settings.Secure.putString(getApplicationContext().getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, sb.toString());
-            Settings.Secure.putString(getApplicationContext().getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED, "1");
-            autoEnableAccessibility = true;
-        } catch (Exception e) {
-            Log.d(LOG_TAG, "自动设置无障碍失败");
+        if (Pref.haveAdbPermission(this) && AccessibilityServiceTool.enableAccessibilityServiceByAdb()) {
+            return;
         }
-        if (!autoEnableAccessibility || !AccessibilityServiceTool.isAccessibilityServiceEnabled(this)) {
+        if (Pref.shouldEnableAccessibilityServiceByRoot() && AccessibilityServiceTool.enableAccessibilityServiceByRoot()) {
+            return;
+        }
+        if (!AccessibilityServiceTool.isAccessibilityServiceEnabled(this)) {
             new NotAskAgainDialog.Builder(this, "MainActivity.accessibility")
                     .title(R.string.text_need_to_enable_accessibility_service)
                     .content(R.string.explain_accessibility_permission)

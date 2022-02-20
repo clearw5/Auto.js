@@ -2,6 +2,7 @@ package org.autojs.autojs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
@@ -168,5 +169,11 @@ public class Pref {
 
     public static boolean isForegroundServiceEnabled() {
         return def().getBoolean(getString(R.string.key_foreground_servie), false);
+    }
+
+    public static boolean haveAdbPermission(Context context) {
+        return PackageManager.PERMISSION_GRANTED == context.getPackageManager()
+                .checkPermission("android.permission.WRITE_SECURE_SETTINGS",
+                        context.getPackageName());
     }
 }
