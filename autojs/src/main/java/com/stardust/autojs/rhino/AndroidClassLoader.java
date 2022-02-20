@@ -114,6 +114,8 @@ public class AndroidClassLoader extends ClassLoader implements GeneratedClassLoa
         if (dexFile.exists()) {
             loadDex(dexFile);
             return;
+        } else {
+            dexFile.createNewFile();
         }
         try {
             final File classFile = generateTempFile(jar.getPath(), false);
