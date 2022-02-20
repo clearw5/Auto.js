@@ -16,6 +16,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
+import java.util.concurrent.locks.ReentrantLock;
 
 import androidx.annotation.RequiresApi;
 
@@ -25,9 +26,11 @@ import androidx.annotation.RequiresApi;
 public class ImageWrapper {
 
     private Mat mMat;
-    private int mWidth;
-    private int mHeight;
+    private final int mWidth;
+    private final int mHeight;
     private Bitmap mBitmap;
+    private static final ReentrantLock bitmapLock = new ReentrantLock();
+    private static final String LOG_TAG = "ImageWrapper";
 
     protected ImageWrapper(Mat mat) {
         mMat = mat;
@@ -109,7 +112,7 @@ public class ImageWrapper {
 
     public Mat getMat() {
         ensureNotRecycled();
-        if (mMat == null && mBitmap != null) {
+        if (mMat == null && ensureBitmapNotRecycled()) {
             mMat = new Mat();
             Utils.bitmapToMat(mBitmap, mMat);
         }
@@ -118,45 +121,54 @@ public class ImageWrapper {
 
     public void saveTo(String path) {
         ensureNotRecycled();
-        if (mBitmap != null) {
+        if (mBitmap != null && !mBitmap.isRecycled()) {
             try {
                 mBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(path));
             } catch (FileNotFoundException e) {
                 throw new UncheckedIOException(e);
             }
         } else {
+            ensureMatNotRecycled();
             Imgcodecs.imwrite(path, mMat);
         }
     }
 
     public int pixel(int x, int y) {
         ensureNotRecycled();
-        if (mBitmap != null) {
+        if (mBitmap != null && !mBitmap.isRecycled()) {
             return mBitmap.getPixel(x, y);
         }
+        ensureMatNotRecycled();
         double[] channels = mMat.get(x, y);
         return Color.argb((int) channels[3], (int) channels[0], (int) channels[1], (int) channels[2]);
     }
 
     public Bitmap getBitmap() {
         ensureNotRecycled();
-        if (mBitmap == null && mMat != null) {
+        if ((mBitmap == null || mBitmap.isRecycled()) && ensureMatNotRecycled()) {
             mBitmap = Bitmap.createBitmap(mMat.width(), mMat.height(), Bitmap.Config.ARGB_8888);
             Utils.matToBitmap(mMat, mBitmap);
         }
         return mBitmap;
     }
 
-    public synchronized void recycle() {
+    public void recycle() {
         if (mBitmap != null && !mBitmap.isRecycled()) {
+            bitmapLock.lock();
             try {
-                mBitmap.recycle();
+                if (mBitmap != null && !mBitmap.isRecycled()) {
+                    mBitmap.recycle();
+                } else {
+                    Log.w(LOG_TAG, "bitmap recycle 并发错误，已释放");
+                }
             } catch (Exception e) {
-                Log.e("ImageWrapper", "回收bitmap失败");
+                Log.e(LOG_TAG, "回收bitmap失败 " + e);
+            } finally {
+                mBitmap = null;
+                bitmapLock.unlock();
             }
-            mBitmap = null;
         } else if (mBitmap != null && mBitmap.isRecycled()) {
-            Log.d("ImageWrapper", "recycle bitmap: not null but is recycled");
+            Log.d(LOG_TAG, "recycle bitmap: not null but is recycled");
         }
         if (mMat != null) {
             OpenCVHelper.release(mMat);
@@ -168,11 +180,39 @@ public class ImageWrapper {
     public void ensureNotRecycled() {
         if (mBitmap == null && mMat == null)
             throw new IllegalStateException("image has been recycled");
+        if (mBitmap != null && mBitmap.isRecycled() && mMat != null && mMat.isReleased()) {
+            Log.d(LOG_TAG, "ensureNotRecycled: bitmap and mat all recycled");
+            throw new IllegalStateException("image has been recycled");
+        }
+    }
+
+    public boolean ensureBitmapNotRecycled() {
+        if (mBitmap == null || mBitmap.isRecycled())
+            throw new IllegalStateException("image has been recycled");
+        return true;
+    }
+
+    public boolean ensureMatNotRecycled() {
+        if (mMat == null || mMat.isReleased())
+            throw new IllegalStateException("image has been recycled");
+        return true;
+    }
+
+    public boolean isRecycled() {
+        if (mBitmap == null && mMat == null) {
+            Log.d(LOG_TAG, "isRecycled: bitmap and mat all is null");
+            return true;
+        }
+        if (mBitmap != null && mBitmap.isRecycled() && mMat != null && mMat.isReleased()) {
+            Log.d(LOG_TAG, "isRecycled: bitmap and mat all recycled");
+            return true;
+        }
+        return false;
     }
 
     public ImageWrapper clone() {
         ensureNotRecycled();
-        if (mBitmap == null) {
+        if (mBitmap == null || mBitmap.isRecycled()) {
             return ImageWrapper.ofMat(mMat.clone());
         }
         if (mMat == null) {

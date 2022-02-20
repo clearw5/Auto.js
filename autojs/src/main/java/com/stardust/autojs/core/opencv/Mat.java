@@ -110,4 +110,8 @@ public class Mat extends org.opencv.core.Mat implements ResourceMonitor.Resource
     public int getResourceId() {
         return mResourceId;
     }
+
+    public boolean isReleased() {
+        return mReleased;
+    }
 }
