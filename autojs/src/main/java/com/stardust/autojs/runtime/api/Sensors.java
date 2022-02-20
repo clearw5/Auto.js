@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import com.stardust.autojs.core.eventloop.EventEmitter;
 import com.stardust.autojs.core.looper.Loopers;
@@ -82,15 +83,16 @@ public class Sensors extends EventEmitter implements Loopers.LooperQuitHandler {
 
     private final Set<SensorEventEmitter> mSensorEventEmitters = new HashSet<>();
     private final SensorManager mSensorManager;
-    private final ScriptBridges mScriptBridges;
+    private final WeakReference<ScriptBridges> mScriptBridges;
     private final SensorEventEmitter mNoOpSensorEventEmitter;
-    private WeakReference<ScriptRuntime> mScriptRuntime;
+    private final WeakReference<ScriptRuntime> mScriptRuntime;
+    private final String LOG_TAG = "Sensors";
 
 
     public Sensors(Context context, ScriptRuntime runtime) {
         super(runtime.bridges);
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        mScriptBridges = runtime.bridges;
+        mScriptBridges = new WeakReference<>(runtime.bridges);
         mNoOpSensorEventEmitter = new SensorEventEmitter(runtime.bridges);
         mScriptRuntime = new WeakReference<>(runtime);
         runtime.loopers.addLooperQuitHandler(this);
@@ -116,9 +118,9 @@ public class Sensors extends EventEmitter implements Loopers.LooperQuitHandler {
     }
 
     private SensorEventEmitter register(@NonNull Sensor sensor, int delay) {
-        SensorEventEmitter emitter = new SensorEventEmitter(mScriptBridges);
-        mSensorManager.registerListener(emitter, sensor, delay);
+        SensorEventEmitter emitter = new SensorEventEmitter(mScriptBridges.get());
         synchronized (mSensorEventEmitters) {
+            mSensorManager.registerListener(emitter, sensor, delay);
             mSensorEventEmitters.add(emitter);
         }
         return emitter;
@@ -157,12 +159,13 @@ public class Sensors extends EventEmitter implements Loopers.LooperQuitHandler {
             return;
         synchronized (mSensorEventEmitters) {
             mSensorEventEmitters.remove(emitter);
+            mSensorManager.unregisterListener(emitter);
         }
-        mSensorManager.unregisterListener(emitter);
     }
 
     public void unregisterAll() {
         synchronized (mSensorEventEmitters) {
+            Log.d(LOG_TAG, "unregister all sensor emitter total: " + mSensorEventEmitters.size());
             for (SensorEventEmitter emitter : mSensorEventEmitters) {
                 mSensorManager.unregisterListener(emitter);
             }

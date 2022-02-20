@@ -442,14 +442,13 @@ public class ScriptRuntime {
         ignoresException(media::recycle);
         ignoresException(images::releaseScreenCapturer);
         ignoresException(images::recycle);
+        ignoresException(sensors::unregisterAll);
         ignoresException(loopers::recycle);
         ignoresException(() -> {
             if (mRootShell != null) mRootShell.exit();
             mRootShell = null;
             mShellSupplier = null;
         });
-        ignoresException(sensors::unregisterAll);
-        sensors = null;
         ignoresException(timers::recycle);
         ignoresException(ui::recycle);
         ignoresException(ocr::release);
