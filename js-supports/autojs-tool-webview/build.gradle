@@ -38,6 +38,23 @@ task makeJar(type: Copy) {
     rename ('classes.jar', 'web-bridge-sdk.jar')
 }
 
+task dexJar(type: Exec) {
+    def dxFile = file('../dex_support/dx')
+    if (!dxFile.exists()) {
+        println 'dx文件不存在，无法执行 请在dex_support下创建软连接文件'
+        return
+    }
+    dependsOn(makeJar)
+    workingDir './'
+    def commands = []
+    commands << '../dex_support/dx'
+    commands << '--dex'
+    commands << '--output'
+    commands << 'build/libs/web-bridge.dex'
+    commands << 'build/libs/web-bridge-sdk.jar'
+    commandLine = commands
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }

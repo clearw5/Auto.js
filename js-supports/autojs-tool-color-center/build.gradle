@@ -25,6 +25,7 @@ android {
 }
 
 task makeColorCenterJar(type: Copy) {
+    dependsOn build
     // 删除存在的
     delete 'build/libs/color-center-sdk.jar'
     // 设置拷贝的文件
@@ -40,7 +41,22 @@ task makeColorCenterJar(type: Copy) {
     rename ('classes.jar', 'color-center-sdk.jar')
 }
 
-makeColorCenterJar.dependsOn(build)
+task dexJar(type: Exec) {
+    def dxFile = file('../dex_support/dx')
+    if (!dxFile.exists()) {
+        println 'dx文件不存在，无法执行 请在dex_support下创建软连接文件'
+        return
+    }
+    dependsOn(makeColorCenterJar)
+    workingDir './'
+    def commands = []
+    commands << '../dex_support/dx'
+    commands << '--dex'
+    commands << '--output'
+    commands << 'build/libs/color-center.dex'
+    commands << 'build/libs/color-center-sdk.jar'
+    commandLine = commands
+}
 
 dependencies {
     implementation project(path: ':autojs')

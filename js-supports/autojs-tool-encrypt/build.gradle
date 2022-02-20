@@ -36,6 +36,22 @@ task makeEncryptJar(type: Copy) {
     // 重命名
     rename ('classes.jar', 'encrypt-sdk.jar')
 }
+task dexJar(type: Exec) {
+    def dxFile = file('../dex_support/dx')
+    if (!dxFile.exists()) {
+        println 'dx文件不存在，无法执行 请在dex_support下创建软连接文件'
+        return
+    }
+    dependsOn(makeEncryptJar)
+    workingDir './'
+    def commands = []
+    commands << '../dex_support/dx'
+    commands << '--dex'
+    commands << '--output'
+    commands << 'build/libs/encrypt.dex'
+    commands << 'build/libs/encrypt-sdk.jar'
+    commandLine = commands
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

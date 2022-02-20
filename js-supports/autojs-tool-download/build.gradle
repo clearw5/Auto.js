@@ -28,7 +28,7 @@ task makeDownloadJar(type: Copy) {
     // 删除存在的
     delete 'build/libs/download-sdk.jar'
     // 设置拷贝的文件
-    from('build/intermediates/packaged-classes/release/')
+    from('build/intermediates/aar_main_jar/release/')
     // 打进jar包后的文件目录
     into('build/libs/')
     // 将classes.jar放入build/libs/目录下
@@ -37,6 +37,23 @@ task makeDownloadJar(type: Copy) {
     include('classes.jar')
     // 重命名
     rename ('classes.jar', 'download-sdk.jar')
+}
+
+task dexJar(type: Exec) {
+    def dxFile = file('../dex_support/dx')
+    if (!dxFile.exists()) {
+        println 'dx文件不存在，无法执行 请在dex_support下创建软连接文件'
+        return
+    }
+    dependsOn(makeDownloadJar)
+    workingDir './'
+    def commands = []
+    commands << '../dex_support/dx'
+    commands << '--dex'
+    commands << '--output'
+    commands << 'build/libs/download.dex'
+    commands << 'build/libs/download-sdk.jar'
+    commandLine = commands
 }
 
 dependencies {
