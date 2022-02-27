@@ -135,6 +135,11 @@ class ScriptCanvasView(context: Context, scriptRuntime: ScriptRuntime) : Texture
 
     }
 
+    override fun setVisibility(visibility: Int) {
+        super.setVisibility(visibility)
+        onWindowVisibilityChanged(visibility)
+    }
+
     override fun onWindowVisibilityChanged(visibility: Int) {
         Log.d(
             LOG_TAG,
