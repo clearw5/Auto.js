@@ -67,11 +67,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
         encoding = 'utf-8'
     }
-    lintOptions {
-        disable 'MissingTranslation'
-        disable 'ExtraTranslation'
-        abortOnError false
-    }
 
     configurations.all {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
@@ -107,6 +102,10 @@ android {
         coolapk {
             buildConfigField "String", "CHANNEL", '"coolapk"'
         }
+    }
+    lint {
+        abortOnError false
+        disable 'MissingTranslation', 'ExtraTranslation'
     }
     // 避免压缩TensorFlow
 //    aaptOptions {

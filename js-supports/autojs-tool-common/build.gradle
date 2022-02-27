@@ -13,10 +13,10 @@ android {
             minifyEnabled false
         }
     }
-
-    lintOptions {
+    lint {
         abortOnError false
     }
+
 
 }
 
