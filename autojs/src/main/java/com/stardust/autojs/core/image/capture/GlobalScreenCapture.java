@@ -255,6 +255,7 @@ public class GlobalScreenCapture {
         }
         Thread thread = ThreadCompat.currentThread();
         long startTime = System.currentTimeMillis();
+        int retryLimit = 5;
         while (!thread.isInterrupted()) {
             Image cachedImage = mCachedImage.getAndSet(null);
             if (cachedImage != null) {
@@ -269,6 +270,10 @@ public class GlobalScreenCapture {
                 Log.d(TAG, "capture: 获取截图失败，刷新virtualDisplay");
                 this.grantMediaProjection();
                 this.refreshVirtualDisplay(getOrientation());
+                if (retryLimit-- <= 0) {
+                    Log.d(TAG, "capture: 获取截图异常，重试多次失败 退出");
+                    break;
+                }
             }
         }
         throw new ScriptInterruptedException();
