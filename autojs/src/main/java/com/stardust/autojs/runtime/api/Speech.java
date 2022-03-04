@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-// 此代码属新加文件，无需遵循原autojs项目的协议（MPL2.0及非商业性使用条款 ）
+// 此代码属全新文件，除上面一行所声明的协议（商业使用需要另外授权），无需遵循原autojs项目协议（MPL2.0及非商业性使用条款 ）
 package com.stardust.autojs.runtime.api;
 
 import android.content.Context;
