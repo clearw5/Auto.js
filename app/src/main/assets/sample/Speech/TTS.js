@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0
+// 此代码属新加JS脚本，调用了autojs相关API，原则上除了上面一行所声明的协议，也不需遵循原autojs项目的MPL2.0及非商业性使用条款。
 "ui";
 
 ui.layout(
