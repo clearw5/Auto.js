@@ -73,7 +73,8 @@ public class OcrResult implements Comparable<OcrResult> {
     @Override
     public int compareTo(OcrResult o) {
         // 上下差距小于二分之一的高度 判定为同一行
-        int deviation = Math.max(this.bounds.height() / 2, o.bounds.height() / 2);
+        int deviation = Math.max(this.bounds.height(), o.bounds.height()) / 2;
+        // 通过垂直中心点的距离判定
         if (Math.abs((this.bounds.top + this.bounds.bottom) / 2 - (o.bounds.top + o.bounds.bottom) / 2) < deviation) {
             return this.bounds.left - o.bounds.left;
         } else {

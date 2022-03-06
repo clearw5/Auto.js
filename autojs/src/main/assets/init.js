@@ -72,6 +72,7 @@ runtime.init();
             var m = modules[i];
             scope[m] = require('__' + m + '__')(scope.runtime, scope);
         }
+        ['speech'].forEach(module => require('__' + module + '__')(scope.runtime, scope));
     })(global);
 
     importClass(android.view.KeyEvent);
