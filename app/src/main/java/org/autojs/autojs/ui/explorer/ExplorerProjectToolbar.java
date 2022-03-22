@@ -3,6 +3,8 @@ package org.autojs.autojs.ui.explorer;
 import android.content.Context;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -85,6 +87,7 @@ public class ExplorerProjectToolbar extends CardView {
     @OnClick(R.id.build)
     void build() {
         BuildActivity_.intent(getContext())
+                .flags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .extra(BuildActivity.EXTRA_SOURCE, mDirectory.getPath())
                 .start();
     }
@@ -120,6 +123,7 @@ public class ExplorerProjectToolbar extends CardView {
 
     void edit() {
         ProjectConfigActivity_.intent(getContext())
+                .flags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .extra(ProjectConfigActivity.EXTRA_DIRECTORY, mDirectory.getPath())
                 .start();
     }
