@@ -7,6 +7,7 @@ ui.layout(
         <text id="name" text="TTS" textSize="22sp" textColor="#fbfbfe" bg="#00afff" w="*" gravity="center">
         </text>
         <input id="text" maxHeight="700" hint="请输入你最想说的一句话"/>
+        <text text="一次朗读的文本不能过长否则可能无法全部朗读"></text>
         <horizontal>
             <text id="pitchTxt" text="音调:1.0" textSize="12sp" gravity="center"></text>
             <seekbar id="pitch" progress="100" max="500" w="*" h="*" />
@@ -30,6 +31,7 @@ ui.layout(
             <button id="voices">音色列表</button>
             <button id="saveToFile">存为音频</button>
         </horizontal>
+        <progressbar id="loading"/>
         <text id="instruction" line="18"/>
     </vertical>
 );
@@ -52,15 +54,23 @@ ui.instruction.setText("说明: 本功能基于系统语音服务实现(需要�
  + "  $speech.shutdown();// 关闭\n"
  + "  $speech.destroy();// 关闭，释放资源，非必要，供万一出现内存泄露时使用\n"
   );
-
+ui.post(() => {
+    ui.loading.setVisibility(android.view.View.GONE);
+})
 ui.play.click(function() {
+    if ($speech.isSpeaking()) {
+        toastLog('正在阅读中，请等待')
+        return
+    }
     let text = ui.text.getText();
     if (text == null || text == "") text = "想说的话很多，可最后还是选择了沉默。"
     $speech.setLanguage('中文').then(resp => {
         let pitch = parseFloat(ui.pitch.getProgress().toString()) / 100
         let speed = parseFloat(ui.speed.getProgress().toString()) / 100
         let volume = parseFloat(ui.volume.getProgress().toString()) / 100
-        $speech.speak(text, pitch, speed, volume)
+        $speech.speak(text, pitch, speed, volume).then(() => {
+            console.log('朗读完毕')
+        }).cache(() => console.log('朗读失败'))
     })
 });
 ui.stop.click(function() {
@@ -76,13 +86,26 @@ ui.voices.click(function() {
     toastLog(JSON.stringify($speech.getVoices()));
 });
 ui.saveToFile.click(function() {
+    if ($speech.isSpeaking()) {
+        toastLog('正在阅读中，请等待')
+        return
+    }
     let text = ui.text.getText();
     if (text == null || text == "") text = "想说的话很多，可最后还是选择了沉默。"
     let pitch = parseFloat(ui.pitch.getProgress().toString()) / 100
     let speed = parseFloat(ui.speed.getProgress().toString()) / 100
     let volume = parseFloat(ui.volume.getProgress().toString()) / 100
+    toastLog("正在保存tts语音文件请稍等")
+    showLoading()
     $speech.synthesizeToFile(text, "/sdcard/脚本/tts.wav", { pitch: pitch, speechRate: speed, volume: volume })
-    toastLog("TTS音频已保存为：/sdcard/脚本/tts.wav")
+    .then(() => {
+        toastLog("TTS音频已保存为：/sdcard/脚本/tts.wav")
+        hideLoading()
+    })
+    .catch(() => {
+        toastLog("转换tts失败")
+        hideLoading()
+    })
 });
 ui.quit.click(function() {
     $speech.shutdown();
@@ -116,3 +139,15 @@ ui.volume.setOnSeekBarChangeListener({
     })
   }
 });
+
+function hideLoading() {
+    ui.post(() => {
+        ui.loading.setVisibility(android.view.View.GONE);
+    })
+}
+
+function showLoading() {
+    ui.post(() => {
+        ui.loading.setVisibility(android.view.View.VISIBLE);
+    })
+}

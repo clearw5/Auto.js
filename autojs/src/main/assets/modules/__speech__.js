@@ -49,7 +49,21 @@ module.exports = function(runtime, global){
         pitch = pitch || 1.0;
         speedRate = speedRate || 1.0;
         volume = volume || 0.8;
-        $javaSpeech.speak(text, pitch, speedRate, volume);
+        return new Promise(function (resolve, reject) {
+            $javaSpeech.speak(text, pitch, speedRate, volume, {
+                onStart: function () {},
+                onDone: function () {
+                    threads.start(function() {
+                        resolve('朗读完毕');
+                    });
+                },
+                onError: function () {
+                    threads.start(function() {
+                        reject('朗读失败');
+                    });
+                }
+            });
+        });
     }
 
     $speech.synthesizeToFile = function (text, wavPath, options) {
@@ -57,7 +71,25 @@ module.exports = function(runtime, global){
         let speedRate = options.speedRate || 1.0;
         let volume = options.volume || 0.8;
         wavPath = files.path(wavPath);
-        $javaSpeech.synthesizeToFile(text, pitch, speedRate, volume, wavPath);
+        return new Promise(function (resolve, reject) {
+            $javaSpeech.synthesizeToFile(text, pitch, speedRate, volume, wavPath, {
+                onStart: function () {},
+                onDone: function () {
+                    threads.start(function () {
+                        resolve('保存文件成功');
+                    });
+                },
+                onError: function () {
+                    threads.start(function () {
+                        reject('保存文件失败');
+                    });
+                }
+            });
+        });
+    }
+
+    $speech.isSpeaking = function () {
+        return $javaSpeech.isSpeaking();
     }
 
     $speech.stop = function () {
