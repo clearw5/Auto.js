@@ -21,6 +21,7 @@ public class ScreenCaptureRequestActivity extends Activity {
     private OnActivityResultDelegate.Mediator mOnActivityResultDelegateMediator = new OnActivityResultDelegate.Mediator();
     private ScreenCaptureRequester mScreenCaptureRequester;
     private ScreenCaptureRequester.Callback mCallback;
+    private int extraId = 0;
 
     public static void request(Context context, ScreenCaptureRequester.Callback callback) {
         Intent intent = new Intent(context, ScreenCaptureRequestActivity.class)
@@ -39,6 +40,7 @@ public class ScreenCaptureRequestActivity extends Activity {
             finish();
             return;
         }
+        extraId = extras.getId();
         mCallback = extras.get("callback");
         if (mCallback == null) {
             finish();
@@ -52,7 +54,7 @@ public class ScreenCaptureRequestActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        IntentExtras.fromIntentAndRelease(getIntent());
+        IntentExtras.fromIdAndRelease(extraId);
         mCallback = null;
         if (mScreenCaptureRequester == null)
             return;
@@ -63,6 +65,7 @@ public class ScreenCaptureRequestActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mOnActivityResultDelegateMediator.onActivityResult(requestCode, resultCode, data);
+        IntentExtras.fromIdAndRelease(extraId);
         finish();
     }
 
