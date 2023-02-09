@@ -112,7 +112,7 @@ Node.js引擎加密目前未被还原代码，即将推出在线优化进一步�
 
 本仓库为Auto.js 4.1的开源代码，从Auto.js Pro开始不再开源。
 
-为了避免之前的开源代码继续传播，按有关要求，现删除本仓库所有源代码，虽然这并不能阻止其他人的代码备份、Fork等继续传播，但。
+为了避免之前的开源代码继续传播，现删除本仓库所有源代码。
 
 ## License
 基于[Mozilla Public License Version 2.0](https://github.com/hyb1996/NoRootScriptDroid/blob/master/LICENSE.md)并附加以下条款：
