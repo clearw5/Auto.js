@@ -6,9 +6,9 @@
 
 **Automation & Workflow Javascript IDE**
 
-A JavaScript IDE on the Android platform that supports Node.js, accessibility services, and its development goals are JsBox and Workflow.
+A JavaScript IDE on the Android platform that supports Node.js, and its development goals are JsBox and Workflow.
 
-And the [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=hyb1996.auto-js-pro-ext) which can provide basic functions for desktop development.
+The [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=hyb1996.auto-js-pro-ext) which can provide basic functions for desktop development.
 
 Download: 
 * [Google Play](https://play.google.com/store/apps/details?id=org.autojs.autojspro)
